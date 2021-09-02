@@ -1,45 +1,4 @@
-from lib_utils import Base
-
-
-class Simulator(Base):
-    """Runs simulations for BGP attack/defend scenarios"""
-
-    def run(self,
-            num_trials=1,
-            graph_lines=[]):
-        """Downloads relationship data, runs simulation"""
-
-@dataclass(frozen=True)
-class DataPoint:
-    percent_adoption: float
-    ASCls: AS
-    propagation_round: int
-
-class Test:
-    def __init__(self, trial=None, engine=None):
-        self.trial = trial
-        self.engine = engine
-
-    def run(self):
-        # Run engine
-        self.engine.run()
-        self._collect_data()
-        # delete engine from attrs so that garbage collector can come
-        engine = self.engine
-        del self.engine
-        # Return engine so that propogation can run again
-        return engine
-
-    def _collect_data(self):
-        """Collects data about the test run before engine is deleted"""
-
-        pass
-
-
 class Graph:
-
-    DataPtCls = 
-
     def __init__(self, perc_adopts, as_classes, as_dict, total_rounds=1):
         assert isinstance(perc_adopts, list)
         self.percent_adoptions = perc_adopts
@@ -61,7 +20,7 @@ class Graph:
                     for propogation_round in range(self.total_rounds):
                         # Generate the test
                         test = Test(trial=trial, engine=engine)
-                        # Run test, remove reference to engine
+                        # Run test, remove reference to engine and return it
                         engine = test.run()
                         # Get data point - just a frozen data class
                         # Just makes it easier to access properties later
