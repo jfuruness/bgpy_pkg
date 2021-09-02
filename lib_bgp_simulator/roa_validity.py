@@ -9,6 +9,8 @@ class ROAValidity(Enum):
     and invalid by max length for another roa
     """
 
+    __slots__ = []
+
     VALID = 0
     UNKNOWN = 1
     INVALID = 2

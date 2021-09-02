@@ -1,9 +1,7 @@
 from datetime import datetime
 
-from .graph_writer import write_graph
-
-from ...bgp_as import BGPAS
-from ...simulator_engine import SimulatorEngine
+from ..engine.bgp_as import BGPAS
+from ..engine.simulator_engine import SimulatorEngine
 
 
 # tmp_path is a pytest fixture
@@ -19,18 +17,18 @@ def run_example(tmp_path,
 
     print("populating engine")
     start = datetime.now()
-    engine = SimulatorEngine(customer_providers,
-                             peers,
-                             BaseAsCls=BaseAsCls,
+    engine = SimulatorEngine(set(customer_providers),
+                             set(peers),
+                             BaseASCls=BaseASCls,
                              as_policies=as_policies)
     print((start-datetime.now()).total_seconds())
     print("Running engine")
     start = datetime.now()
     engine.run(announcements, clear=False)
-    input((start-datetime.now()).total_seconds())
-    for as_obj in engine:
-        print("ASN:", as_obj.asn)
+    print((start-datetime.now()).total_seconds())
+    if local_ribs:
+        for as_obj in engine.as_dict.values():
+            print("ASN:", as_obj.asn)
         for prefix, ann in as_obj.local_rib.items():
             print(ann)
-        if local_ribs:
-            as_obj.local_rib.assert_eq(local_ribs[as_obj.asn])
+        as_obj.local_rib.assert_eq(local_ribs[as_obj.asn])

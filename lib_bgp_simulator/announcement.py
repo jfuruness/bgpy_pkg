@@ -1,11 +1,11 @@
-from .relationships import Relationships
+from .engine.relationships import Relationships
 
 
 class Announcement:
     """MRT Announcement"""
 
     __slots__ = ["prefix", "timestamp", "as_path", "roa_validity",
-                 "recv_relationship", "priority", "seed_asn", "seeded"]
+                 "recv_relationship", "priority", "seed_asn"]
 
     def __init__(self,
                  prefix=None,
@@ -24,10 +24,11 @@ class Announcement:
             # Where the announcement came from
             self.recv_relationship = Relationships.ORIGIN
         else:
+            print("fix l8r")
+            self.recv_relationship = Relationships.ORIGIN
             # Must set the relationship based on the actual relationship
-            raise NotImplementedError
+            #raise NotImplementedError
         self.priority = None
-        self.seeded = True
 
     def __lt__(self, other):
         assert isinstance(other, Announcement)

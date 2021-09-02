@@ -1,11 +1,14 @@
+from lib_caida_collector import PeerLink, CustomerProviderLink as CPLink
+
 from ..defaults import ASNs
 from ..defaults import ASTypes
 from ..defaults import subprefix_hijack_anns
 from ..defaults import HijackLocalRib
-from ..utils import run_example, PeerLink, CustomerProviderLink as CPLink
+from ..run_example import run_example
 
 
-from ...bgp_as import BGPAS
+from ...engine.bgp_as import BGPAS
+from ...engine.bgp_policy import BGPPolicy
 
 
 def test_hidden_hijack_bgp(tmp_path):
@@ -21,11 +24,11 @@ def test_hidden_hijack_bgp(tmp_path):
 
     # Graph data
     peers = [PeerLink(2, 3)]
-    customer_providers = [CPLink(provider=1, customer=2),
-                          CPLink(provider=2, customer=ASNs.VICTIM.value),
-                          CPLink(provider=3, customer=ASNs.ATTACKER.value)]
+    customer_providers = [CPLink(provider_asn=1, customer_asn=2),
+                          CPLink(provider_asn=2, customer_asn=ASNs.VICTIM.value),
+                          CPLink(provider_asn=3, customer_asn=ASNs.ATTACKER.value)]
     # Number identifying the type of AS class
-    as_policies = {asn: BGPolicy for asn in
+    as_policies = {asn: BGPPolicy for asn in
                    list(range(1, 4)) + [ASNs.VICTIM.value, ASNs.ATTACKER.value]}
 
     # Local RIB data
@@ -48,4 +51,5 @@ def test_hidden_hijack_bgp(tmp_path):
                 customer_providers=customer_providers,
                 as_policies=as_policies,
                 announcements=subprefix_hijack_anns,
-                local_ribs=local_ribs)
+                local_ribs=local_ribs,
+                BaseASCls=BGPAS)

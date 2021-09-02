@@ -1,8 +1,9 @@
 from lib_caida_collector import BGPDAG
 
-from .announcement import Announcement
+
 from .bgp_as import BGPAS
 from .relationships import Relationships
+from ..announcement import Announcement
 
 
 class SimulatorEngine(BGPDAG):
@@ -16,9 +17,38 @@ class SimulatorEngine(BGPDAG):
         super(SimulatorEngine, self).__init__(*args,
                                               BaseASCls=BaseASCls,
                                               **kwargs)
-        # Assign policies
-        for as_obj in self:
-            as_obj.policy = as_policies[as_obj.asn]
+
+        from datetime import datetime
+        start = datetime.now()
+        print(start)
+        for asn, Policy in as_policies.items():
+            self.as_dict[asn].policy = Policy()
+        print((datetime.now()-start).total_seconds())
+        # Redefine references with correct classes
+        """
+        for asn, as_obj in self.as_dict.items():
+            NewCls = as_classes[asn]
+            if NewCls == BaseASCls and False:
+                continue
+            else:
+                self.as_dict[asn] = as_classes[asn](
+                    as_obj.asn,
+                    peers=as_obj.peers,
+                    providers=as_obj.providers,
+                    customers=as_obj.customers,
+                    as_rank=as_obj.as_rank,
+                    propagation_rank=as_obj.propagation_rank)
+
+        for asn, as_obj in self.as_dict.items():
+            as_obj.peers = tuple([self.as_dict[x.asn] for x in as_obj.peers])
+            as_obj.customers = tuple([self.as_dict[x.asn] for x in as_obj.customers])
+            as_obj.providers = tuple([self.as_dict[x.asn] for x in as_obj.providers])
+
+        self.propagation_ranks = list(self.propagation_ranks)
+        for i, rank_tuple in enumerate(self.propagation_ranks): 
+            self.propagation_ranks[i] = tuple([self.as_dict[x.asn] for x in rank_tuple])
+        input((datetime.now()-start).total_seconds())
+        """
 
     def run(self, announcements, save_path=None, clear=True):
         """Propogates announcements"""
@@ -33,7 +63,7 @@ class SimulatorEngine(BGPDAG):
         #for as_obj in self.as_dict.values():
         #    print(f"{as_obj.asn} {as_obj.local_rib}")
 
-        self._propogate()
+        self._propagate()
         if save_path:
             self._save(save_path)
         if clear:
@@ -56,12 +86,12 @@ class SimulatorEngine(BGPDAG):
         msg = "You should never have overlapping prefix origin pairs"
         assert len(prefix_origins) == len(set(prefix_origins)), msg
 
-    def _propogate(self):
+    def _propagate(self):
         """Propogates announcements"""
 
-        for i, rank in enumerate(self.ranks):
+        for i, rank in enumerate(self.propagation_ranks):
 
-            print(f"propogating up with rank {i}/{len(self.ranks)} of len {len(rank)}")
+            print(f"propogating up with rank {i}/{len(self.propagation_ranks)} of len {len(rank)}")
             # Nothing to process at the start
             if i > 0:
                 # Process first because maybe it recv from lower ranks
@@ -69,26 +99,26 @@ class SimulatorEngine(BGPDAG):
                     as_obj.process_incoming_anns(Relationships.CUSTOMERS)
             # Send to the higher ranks
             for as_obj in rank:
-                as_obj.propogate_to_providers()
-            #print("\npropogated to providers for this rank")
+                as_obj.propagate_to_providers()
+            #print("\npropagated to providers for this rank")
             #print(self)
 
             for as_obj in rank:
-                as_obj.propogate_to_peers()
+                as_obj.propagate_to_peers()
             for as_obj in rank:
                 as_obj.process_incoming_anns(Relationships.PEERS)
-            #print("\npropogated to peers for this rank")
+            #print("\npropagated to peers for this rank")
             #print(self)
 
 
-        for i, rank in enumerate(reversed(self.ranks)):
-            print(f"propogating down with rank {len(self.ranks) -i}/{len(self.ranks)}")
+        for i, rank in enumerate(reversed(self.propagation_ranks)):
+            print(f"propogating down with rank {len(self.propagation_ranks) -i}/{len(self.propagation_ranks)}")
             # There are no incomming Anns at the top
             if i > 0:
                 for as_obj in rank:
                     as_obj.process_incoming_anns(Relationships.PROVIDERS)
             for as_obj in rank:
-                as_obj.propogate_to_customers()
+                as_obj.propagate_to_customers()
 
     def _save(self):
         """Saves DAG"""

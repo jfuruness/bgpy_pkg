@@ -1,9 +1,11 @@
 import csv
 
-from lib_caida_collector import CaidaCollector
+from lib_caida_collector import CaidaCollector, CustomerProviderLink, PeerLink
 
 from .defaults import SubprefixHijackAtkAnn, PrefixHijackVicAnn
-from .utils import CustomerProviderLink, PeerLink, run_example
+from .run_example import run_example
+from ..engine.bgp_as import BGPAS
+from ..engine.bgp_policy import BGPPolicy
 
 def test_proof_of_concept(tmp_path):
     collector = CaidaCollector()
@@ -17,7 +19,7 @@ def test_proof_of_concept(tmp_path):
         reader = csv.DictReader(f, delimiter="\t")
         asns = []
         for row in reader:
-            asns.append(int(row["asn"]))
+
             if row["peers"] == "{}":
                 row_peers = []
             else:
@@ -32,15 +34,18 @@ def test_proof_of_concept(tmp_path):
                 row_providers = [int(x) for x in row["providers"][1:-1].split(",")]
 
             for peer in row_peers:
-                peers.add(tuple(list(sorted([int(row["asn"]), peer]))))
+                peers.add(tuple(list(sorted([int(row["asn"]), int(peer)]))))
             for customer in row_customers:
-                cps.add(tuple(list(sorted([customer, int(row["asn"])]))))
+                cps.add(tuple(list(sorted([int(customer), int(row["asn"])]))))
             for provider in row_providers:
-                cps.add(tuple(list(sorted([int(row["asn"]), provider]))))
+                cps.add(tuple(list(sorted([int(row["asn"]), int(provider)]))))
+            # Just ignore the random IXPs for now
+            if len(row_peers) + len(row_customers) + len(row_providers) > 0:
+                asns.append(int(row["asn"]))
 
     peer_classes = [PeerLink(*x) for x in sorted(peers)]
-    cp_classes = [CustomerProviderLink(customer=x[0], provider=x[1]) for x in sorted(cps)]
-    as_types = {asn: 0 for asn in asns}
+    cp_classes = [CustomerProviderLink(customer_asn=x[0], provider_asn=x[1]) for x in sorted(cps)]
+    as_policies = {asn: BGPPolicy for asn in asns}
     # These ASes are mh with lots of providers
     #announcements = [PrefixHijackVicAnn(as_path=(393226,)),
     #                 SubprefixHijackAtkAnn(as_path=(262194,))]
@@ -56,9 +61,11 @@ def test_proof_of_concept(tmp_path):
              262254,262255,262256,393323,393332,118,131183,393336,393337,121,
              393341,131197,131199,393344,262272,393346,262278,262280,393355]
     announcements = []
-    for i, stub in enumerate(stubs):
-        prefix = str(i) * len("1.2.0.0/16")
+    for i, stub in enumerate([12,25]):#stubs):
+        if i >= 2:
+            continue
+        prefix = i#str(i) * (10 if i <10 else 11)
         announcements.append(PrefixHijackVicAnn(prefix=prefix, as_path=(stub,)))
 
     run_example(tmp_path, peers=peer_classes, customer_providers=cp_classes,
-                as_types=as_types, announcements=announcements)
+                as_policies=as_policies, announcements=announcements, BaseASCls=BGPAS)

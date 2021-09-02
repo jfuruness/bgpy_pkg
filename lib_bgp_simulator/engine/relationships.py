@@ -2,6 +2,8 @@ from enum import Enum
 
 
 class Relationships(Enum):
+    __slots__ = []
+
     PROVIDERS = 0
     PEERS = 1
     # Customers have highest priority

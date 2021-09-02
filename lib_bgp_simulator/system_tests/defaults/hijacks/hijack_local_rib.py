@@ -3,7 +3,7 @@ from .prefix_hijack_atk_ann import PrefixHijackAtkAnn
 from .subprefix_hijack_atk_ann import SubprefixHijackAtkAnn
 from .superprefix_hijack_atk_ann import SuperprefixHijackAtkAnn
 from ..enums import ASNs
-from ....local_rib import LocalRib
+from ....engine.local_rib import LocalRib
 
 
 class HijackLocalRib(LocalRib):
@@ -15,8 +15,8 @@ class HijackLocalRib(LocalRib):
                  subprefix_as_path=None):
         super(HijackLocalRib, self).__init__()
 
-        for path in [prefix_as_path, superprefix_as_path, subprefix_as_path]:
-            assert path is None or len(path) == 1
+        #for path in [prefix_as_path, superprefix_as_path, subprefix_as_path]:
+        #    assert path is None or len(path) == 1
 
         anns = []
         if prefix_as_path:
