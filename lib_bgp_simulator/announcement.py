@@ -30,13 +30,6 @@ class Announcement:
             #raise NotImplementedError
         self.priority = None
 
-    def __lt__(self, other):
-        assert isinstance(other, Announcement)
-        assert isinstance(self.priority, int), self.priority
-        assert isinstance(other.priority, int), other.priority
-
-        return self.priority < other.priority
-        
     def seed(self, as_dict):
         """Seeds announcement at the proper AS
 

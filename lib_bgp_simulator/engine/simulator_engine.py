@@ -24,33 +24,8 @@ class SimulatorEngine(BGPDAG):
         for asn, Policy in as_policies.items():
             self.as_dict[asn].policy = Policy()
         print((datetime.now()-start).total_seconds())
-        # Redefine references with correct classes
-        """
-        for asn, as_obj in self.as_dict.items():
-            NewCls = as_classes[asn]
-            if NewCls == BaseASCls and False:
-                continue
-            else:
-                self.as_dict[asn] = as_classes[asn](
-                    as_obj.asn,
-                    peers=as_obj.peers,
-                    providers=as_obj.providers,
-                    customers=as_obj.customers,
-                    as_rank=as_obj.as_rank,
-                    propagation_rank=as_obj.propagation_rank)
 
-        for asn, as_obj in self.as_dict.items():
-            as_obj.peers = tuple([self.as_dict[x.asn] for x in as_obj.peers])
-            as_obj.customers = tuple([self.as_dict[x.asn] for x in as_obj.customers])
-            as_obj.providers = tuple([self.as_dict[x.asn] for x in as_obj.providers])
-
-        self.propagation_ranks = list(self.propagation_ranks)
-        for i, rank_tuple in enumerate(self.propagation_ranks): 
-            self.propagation_ranks[i] = tuple([self.as_dict[x.asn] for x in rank_tuple])
-        input((datetime.now()-start).total_seconds())
-        """
-
-    def run(self, announcements, save_path=None, clear=True):
+    def run(self, announcements, save_path=None, clear=False):
         """Propogates announcements"""
 
         self._seed(announcements)

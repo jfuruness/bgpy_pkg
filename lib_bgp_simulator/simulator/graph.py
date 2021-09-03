@@ -1,11 +1,18 @@
+from copy import deepcopy
+
 class Graph:
-    def __init__(self, perc_adopts, as_classes, as_dict, total_rounds=1):
-        assert isinstance(perc_adopts, list)
-        self.percent_adoptions = perc_adopts
-        self.as_classes = as_classes
+    def __init__(self,
+                 perc_adopts,
+                 as_policies,
+                 base_engine,
+                 total_rounds=1):
+        assert isinstance(percent_adoptions, list)
+        self.percent_adoptions = percent_adoptions
+        self.as_policies = as_policies
         # Why total rounds? Because some atk/def scenarios might require
         # More than one round of propogation
         self.total_rounds = total_rounds
+        self.base_engine = deepcopy(base_engine)
         self.data_points = self._get_data_points()
         self.subgraphs: dict = self._get_subgraphs(as_dict)
         self._validate_subgraphs()
@@ -15,13 +22,13 @@ class Graph:
             for percent_adopt in self.percent_adoptions:
                 attack = self._get_attack()
                 adopting_asns = self._get_adopting_ases(percent_adopt, attack)
-                for ASCls in self.as_classes:
-                    engine = self._get_engine({x: ASCls for x in adopting_asns})
+                for PolicyCls in self.policy_classes:
+                    engine = self._get_engine({x: PolicyCls for x in adopting_asns})
                     for propogation_round in range(self.total_rounds):
                         # Generate the test
-                        test = Test(trial=trial, engine=engine)
+                        test = Test(trial=trial, engine=engine, attack=attack)
                         # Run test, remove reference to engine and return it
-                        engine = test.run()
+                        engine = test.run(self.subgraphs)
                         # Get data point - just a frozen data class
                         # Just makes it easier to access properties later
                         dp = DataPoint(percent_adopt, ASCls, propogation_round)
@@ -45,9 +52,8 @@ class Graph:
     def _get_subgraphs(self):
         """Returns all the subgraphs that you want to keep track of"""
 
-        msg = "If there as_rank==0, we must do <100, not <=100 on next line"
-        assert not any([x.as_rank == 0 for x in self.as_dict]), msg
-        top_level = set([x.asn for x in self.as_dict if x.as_rank <= 100])
+        top_level = set(sorted(self.as_dict.values(),
+                               key=lambda x: x.as_rank)[:100])
         stubs_and_mh = set([x.asn for x in self.as_dict
                             if any((x.stub, x.multihomed))])
 
@@ -98,7 +104,10 @@ class Graph:
         # Return all ASes other than the attacker
         return subgraph_asns.difference([attack.attacker])
 
-    def _get_engine(self, as_classes: dict):
+    def _get_engine(self, as_policies: dict):
         # Make engine here!
 
-        pass
+        new_engine = deepcopy(self.base_engine)
+        for asn, PolicyCls in as_policies.items():
+            new_engine.as_dict[asn].policy = PolicyCls()
+        return new_engine

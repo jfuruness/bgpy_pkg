@@ -17,8 +17,8 @@ class BGPAS(AS):
         self.policy = BGPPolicy()
         # Dicts were just .25s slower, but this way
         # Will make it very easy to do traceback
-        self.local_rib = [None, None, None]
-        self.incoming_anns = tuple([[], [], []])
+        self.local_rib = LocalRib()
+        self.incoming_anns = IncomingAnns()
 
     def propagate_to_providers(self):
         """Propogates to providers"""

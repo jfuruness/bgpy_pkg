@@ -11,7 +11,6 @@ class Simulator(Base):
             base_as=[]):
         """Downloads relationship data, runs simulation"""
 
-        
         self._download_relationships()
         self._download_as_rank()
 
