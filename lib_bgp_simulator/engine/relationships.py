@@ -13,4 +13,16 @@ class Relationships(Enum):
     # Origin must always remain
     ORIGIN = 400
 
+    def __lt__(self, other):
+        if isinstance(other, Relationships):
+            return self.value < other.value
+        else:
+            raise NotImplementedError
+
+    def __le__(self, other):
+        if isinstance(other, Relationships):
+            return self.value < other.value or self.value == other.value
+        else:
+            raise NotImplementedError
+
 # Assert here all divisible by 100

@@ -5,13 +5,13 @@ class Graph:
                  perc_adopts,
                  as_policies,
                  base_engine,
-                 total_rounds=1):
+                 propagation_rounds=1):
         assert isinstance(percent_adoptions, list)
         self.percent_adoptions = percent_adoptions
         self.as_policies = as_policies
-        # Why total rounds? Because some atk/def scenarios might require
+        # Why propagation rounds? Because some atk/def scenarios might require
         # More than one round of propogation
-        self.total_rounds = total_rounds
+        self.propagation_rounds = propagation_rounds
         self.base_engine = deepcopy(base_engine)
         self.data_points = self._get_data_points()
         self.subgraphs: dict = self._get_subgraphs(as_dict)
@@ -24,7 +24,7 @@ class Graph:
                 adopting_asns = self._get_adopting_ases(percent_adopt, attack)
                 for PolicyCls in self.policy_classes:
                     engine = self._get_engine({x: PolicyCls for x in adopting_asns})
-                    for propogation_round in range(self.total_rounds):
+                    for propogation_round in range(self.propagation_rounds):
                         # Generate the test
                         test = Test(trial=trial, engine=engine, attack=attack)
                         # Run test, remove reference to engine and return it
@@ -43,9 +43,9 @@ class Graph:
 
         data_points = dict()
         for percent_adoption in self.percent_adoptions:
-            for ASCls in self.as_classes:
-                for round_num in self.total_rounds:
-                    dp = DataPoint(percent_adoption, ASCls, propagation_round)
+            for Policy in self.as_policies:
+                for propagation_round in self.propagation_rounds:
+                    dp = DataPoint(percent_adoption, Policy, propagation_round)
                     data_points[dp] = list()
         return data_points
 
