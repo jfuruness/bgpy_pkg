@@ -5,20 +5,16 @@ from lib_caida_collector import AS
 from .local_rib import LocalRib
 from .incoming_anns import IncomingAnns
 from .bgp_policy import BGPPolicy
-from ..relationships import Relationships
+from ..enums import Relationships
 from ..announcement import Announcement as Ann
 
 
 class BGPAS(AS):
-    __slots__ = ["local_rib", "incoming_anns", "policy"]
+    __slots__ = ["policy"]
 
     def __init__(self, *args, **kwargs):
         super(BGPAS, self).__init__(*args, **kwargs)
         self.policy = BGPPolicy()
-        # Dicts were just .25s slower, but this way
-        # Will make it very easy to do traceback
-        self.local_rib = LocalRib()
-        self.incoming_anns = IncomingAnns()
 
     def propagate_to_providers(self):
         """Propogates to providers"""

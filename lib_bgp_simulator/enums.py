@@ -1,6 +1,26 @@
 from enum import Enum
 
 
+class Outcomes(Enum):
+    HIJACKED = 0
+    NOT_HIJACKED = 1
+    DISCONNECTED = 2
+
+
+class Relationships(Enum):
+    __slots__ = []
+
+    # Must start at one for the priority
+    PROVIDERS = 100
+    PEERS = 200
+    # Customers have highest priority
+    # Economic incentives first!
+    CUSTOMERS = 300
+    # Origin must always remain
+    ORIGIN = 400
+
+# Assert here all divisible by 100
+
 class ROAValidity(Enum):
     """Possible values for ROA Validity
 
@@ -15,7 +35,6 @@ class ROAValidity(Enum):
     VALID = 0
     UNKNOWN = 1
     INVALID = 2
-
 
 class Timestamps(Enum):
     """Different timestamps to use"""
@@ -40,7 +59,6 @@ class Prefixes(Enum):
     PREFIX = "1.2.0.0/16"
     SUBPREFIX = "1.2.3.0/24"
 
-
 class ASNs(Enum):
     """Default ASNs for various ASNs"""
 
@@ -48,3 +66,4 @@ class ASNs(Enum):
 
     ATTACKER = 666
     VICTIM = 777
+

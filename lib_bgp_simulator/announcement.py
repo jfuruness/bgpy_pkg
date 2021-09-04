@@ -1,4 +1,4 @@
-from .relationships import Relationships
+from .enums import Relationships
 
 
 class Announcement:
@@ -37,7 +37,7 @@ class Announcement:
         never have to worry about overlapping announcements
         """
 
-        as_dict[self.seed_asn].local_rib[self.prefix] = self
+        as_dict[self.seed_asn].policy.local_rib[self.prefix] = self
 
     @property
     def origin(self):

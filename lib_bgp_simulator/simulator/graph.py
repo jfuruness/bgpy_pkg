@@ -1,8 +1,12 @@
 from copy import deepcopy
+import logging
 import random
 
 from .attacks import Attack
 from .data_point import DataPoint
+from .scenario import Scenario
+
+from ..engine import BGPPolicy
 
 class Graph:
     def __init__(self,
@@ -20,10 +24,10 @@ class Graph:
         self.propagation_rounds = propagation_rounds
         self.AttackCls = AttackCls
 
-    def run(self, base_engine, pbar):
+    def run(self, engine, pbar):
         # Get data points and subgraphs
         self.data_points = self._get_data_points()
-        self.subgraphs: dict = self._get_subgraphs(base_engine)
+        self.subgraphs: dict = self._get_subgraphs(engine)
         self._validate_subgraphs()
 
         # Get all the tests and run them
@@ -34,20 +38,20 @@ class Graph:
                 adopting_asns = self._get_adopting_ases(percent_adopt, attack)
                 print("Selected adopting")
                 for PolicyCls in self.adopt_policies:
-                    engine = self._get_engine({x: PolicyCls for x in adopting_asns}, base_engine)
+                    self._replace_engine_policies({x: PolicyCls for x in adopting_asns}, engine)
                     print("got engine")
                     for propogation_round in range(self.propagation_rounds):
                         # Generate the test
                         scenario = Scenario(trial=trial, engine=engine, attack=attack)
                         print("about to run")
                         # Run test, remove reference to engine and return it
-                        engine = scenario.run(self.subgraphs)
+                        scenario.run(self.subgraphs)
                         print("ran")
                         # Get data point - just a frozen data class
                         # Just makes it easier to access properties later
-                        dp = DataPoint(percent_adopt, ASCls, propogation_round)
+                        dp = DataPoint(percent_adopt, PolicyCls, propogation_round)
                         # Append the test to all tests for that data point
-                        self.data_pts[dp].append(test)
+                        self.data_points[dp].append(scenario)
                         pbar.update()
 
     def _get_data_points(self):
@@ -109,9 +113,13 @@ class Graph:
                                                              attack)
 
             # N choose k, k is number of ASNs that will adopt
-            k = int(len(possible_adopting_ases) * percent_adopt)
+            k = len(possible_adopting_ases) * percent_adopt // 100
             if k == 0:
-                logging.warning("ASNs adopting rounded down to 0")
+                logging.warning("ASNs adopting rounded down to 0, increasing it to 1")
+                k = 1
+            elif k == len(possible_adopting_ases):
+                logging.warning("K is 100%, changing to 100% -1")
+                k -= 1
 
             asns_adopting.extend(random.sample(possible_adopting_ases, k))
         return asns_adopting
@@ -126,12 +134,10 @@ class Graph:
         # Return all ASes other than the attacker
         return subgraph_asns.difference([attack.attacker_asn])
 
-    def _get_engine(self, as_policy_dict, base_engine):
+    def _replace_engine_policies(self, as_policy_dict, base_engine):
         # Make engine here!
-        new_engine = deepcopy(base_engine)
-        for asn, PolicyCls in as_policy_dict.items():
-            new_engine.as_dict[asn].policy = PolicyCls()
-        return new_engine
+        for asn, as_obj in base_engine.as_dict.items():
+            as_obj.policy = as_policy_dict.get(asn, BGPPolicy)()        
 
     @property
     def total_scenarios(self):

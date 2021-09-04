@@ -4,12 +4,24 @@ from lib_caida_collector import AS
 
 from .local_rib import LocalRib
 from .incoming_anns import IncomingAnns
-from ..relationships import Relationships
+from ..enums import Relationships
 from ..announcement import Announcement as Ann
 
 
 class BGPPolicy:
-    __slots__ = []
+    __slots__ = ["local_rib", "incoming_anns"]
+
+    name = "BGP"
+
+    def __init__(self):
+        """Add local rib and data structures here
+
+        This way they can be easily cleared later without having to redo
+        the graph
+        """
+
+        self.local_rib = LocalRib()
+        self.incoming_anns = IncomingAnns()
 
     def propagate_to_providers(policy_self, self):
         """Propogates to providers"""
@@ -42,19 +54,19 @@ class BGPPolicy:
         """
 
         for as_obj in getattr(self, propagate_to.name.lower()):
-            for prefix, ann in self.local_rib.items():
+            for prefix, ann in policy_self.local_rib.items():
                 if ann.recv_relationship in send_rels:
                     # Add the new ann to the incoming anns for that prefix
-                    if as_obj.incoming_anns.get(prefix) is None:
-                        as_obj.incoming_anns[prefix] = list()
-                    as_obj.incoming_anns[prefix].append(ann)
+                    if as_obj.policy.incoming_anns.get(prefix) is None:
+                        as_obj.policy.incoming_anns[prefix] = list()
+                    as_obj.policy.incoming_anns[prefix].append(ann)
 
     def process_incoming_anns(policy_self, self, recv_relationship: Relationships):
         """Process all announcements that were incoming from a specific rel"""
 
-        for prefix, ann_list in self.incoming_anns.items():
+        for prefix, ann_list in policy_self.incoming_anns.items():
             # Get announcement currently in local rib
-            og_best_ann = self.local_rib.get(prefix)
+            og_best_ann = policy_self.local_rib.get(prefix)
             best_ann = og_best_ann
 
             # Done here to optimize
@@ -92,8 +104,8 @@ class BGPPolicy:
                 best_ann.recv_relationship = recv_relationship
                 best_ann.priority = best_priority
                 # Save to local rib
-                self.local_rib[prefix] = best_ann
-        self.incoming_anns = IncomingAnns()
+                policy_self.local_rib[prefix] = best_ann
+        policy_self.incoming_anns = IncomingAnns()
 
     def _get_priority(policy_self, ann: Ann, recv_relationship: Relationships):
         """Assigns the priority to an announcement according to Gao Rexford"""

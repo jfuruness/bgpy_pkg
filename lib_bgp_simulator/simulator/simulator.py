@@ -15,10 +15,10 @@ class Simulator(Base):
 
     def run(self,
             BaseASCls=BGPAS,
-            graphs=[Graph(percent_adoptions=[1, 5,10,20,30,50,75, 99],
+            graphs=[Graph(percent_adoptions=[0, 5,10,20,30,40,60,80,100],
                           adopt_policies=[ROVPolicy],
                           AttackCls=SubprefixHijack,
-                          num_trials=1)]
+                          num_trials=100)]
             ):
         """Downloads relationship data, runs simulation"""
 

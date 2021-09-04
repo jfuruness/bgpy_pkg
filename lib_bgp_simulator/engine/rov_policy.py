@@ -1,11 +1,13 @@
 from .bgp_policy import BGPPolicy
 
-from ..relationships import Relationships
+from ..enums import Relationships, ROAValidity
 from ..announcement import Announcement as Ann
 
 
 class ROVPolicy(BGPPolicy):
     __slots__ = []
+
+    name = "ROV"
 
     def _get_priority(policy_self, ann: Ann, recv_relationship: Relationships):
         """Assigns the priority to an announcement according to Gao Rexford"""

@@ -1,5 +1,5 @@
 from .attack import Attack
-from .enums import Prefixes, Timestamps, ASNs, ROAValidity
+from ...enums import Prefixes, Timestamps, ASNs, ROAValidity
 from ...announcement import Announcement as Ann
 
 
