@@ -31,11 +31,18 @@ class BGPRIBSPolicy(BGPPolicy):
                 for ann in anns:
                     as_obj.recv_q[self.asn][prefix].append(ann)
 
-    def process_incoming_anns(policy_self, self, recv_relationship: Relationships):
+    def process_incoming_anns(policy_self, self, recv_relationship: Relationships,
+        recv_q=None, limit_prefix=None):
         """Process all announcements that were incoming from a specific rel"""
 
-        for neighbor, value in self.recv_q.items():
+        if recv_q is None:
+            recv_q = self.recv_q
+
+        for neighbor, value in recv_q.items():
             for prefix, ann_list in value.items():
+                if limit_prefix is not None and limit_prefix != prefix:
+                    # limit_prefix allows limiting processing to a specific prefix
+                    continue
                 # Get announcement currently in local rib
                 og_best_ann = self.local_rib.get(prefix)
                 best_ann = og_best_ann
@@ -47,14 +54,36 @@ class BGPRIBSPolicy(BGPPolicy):
                 else:
                     best_priority = best_ann.priority
 
-                # TODO WITHDRAWALS
-                possible_replace = True if best_ann is None else best_ann.recv_relationship <= recv_relationship
+                possible_replace = (True if best_ann is None else 
+                    best_ann.recv_relationship <= recv_relationship)
                 # For each announcement that was incoming
                 for ann in ann_list:
                     if not ann in self.ribs_in[neighbor][prefix]:
                         # If never seen before, copy to ribs_in
                         self.ribs_in[neighbor][prefix].append(ann)
-                        if possible_replace:
+                        if ann.withdraw:
+                            # Remove withdrawn routes
+                            ann_to_remove = deepcopy(ann)
+                            ann_to_remove.withdraw = False
+                            self.ribs_in[neighbor][prefix].remove(ann_to_remove)
+                            # Update AS path for loc_rib and ribs_out
+                            ann_to_remove.as_path = (self.asn, *ann.as_path)
+                            self.loc_rib[prefix].remove(ann_to_remove)
+                            for send_neighbor in self.ribs_out:
+                                if ann_to_remove in self.ribs_out[send_neighbor][prefix]:
+                                    if ann_to_remove in self.send_q[send_neighbor][prefix]:
+                                        # If the withdrawn route has not been sent to the send_neighbor yet, don't send it
+                                        self.send_q[send_neighbor][prefix].remove(ann_to_remove)
+                                    else:
+                                        # Otherwise propagate the withdrawal
+                                        withdraw = deepcopy(ann_to_remove)
+                                        withdraw.withdraw = True
+                                        self.send_q[send_neighbor][prefix].append(withdraw)
+                                    self.ribs_out[send_neighbor][prefix].remove(ann_to_remove)
+                            self.loc_rib[prefix] = policy_self.process_incoming_anns(self, recv_relationship, 
+                                recv_q=self.ribs_in, limit_prefix=prefix)
+
+                        elif possible_replace:
                             priority = policy_self._get_priority(ann, recv_relationship)
                             # If the new priority is higher
                             if priority > best_priority:
@@ -81,12 +110,18 @@ class BGPRIBSPolicy(BGPPolicy):
                     # Update RIBs out, remove old announcement only
                     for neighbor, value in self.ribs_out.items():
                         for prefix, ann in value.items():
-                            if og_best_ann in self.ribs_out[as_obj.asn][prefix]:
-                                self.ribs_out[as_obj.asn][prefix].remove(og_best_ann)
-                                # Withdrawal is guaranteed to be propagated before the new best ann
-                                withdraw = deepcopy(og_best_ann)
-                                withdraw.withdraw = True
-                                self.send_q[as_obj.asn][prefix].append(withdraw)
+                            if og_best_ann in self.ribs_out[neighbor][prefix]:
+                                    if ann_to_remove in self.send_q[neighbor][prefix]:
+                                        # If the withdrawn route has not been sent to the send_neighbor yet, don't send it
+                                        self.send_q[neighbor][prefix].remove(og_best_ann)
+                                    else:
+                                        # Otherwise propagate the withdrawal
+                                        # Withdrawal is guaranteed to be propagated before the new best ann
+                                        withdraw = deepcopy(og_best_ann)
+                                        withdraw.withdraw = True
+                                        self.send_q[neighbor][prefix].append(withdraw)
 
-        self.recv_q = RecvQueue()
+        if recv_q == self.recv_q and limit_prefix is None:
+            # If this is the normal processing of announcements, reset the recv_q
+            self.recv_q = RecvQueue()
 
