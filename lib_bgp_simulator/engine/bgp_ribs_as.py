@@ -17,8 +17,6 @@ class BGPRIBSAS(BGPAS):
 
     def __init__(self, *args, **kwargs):
         super(BGPRIBSAS, self).__init__(*args, **kwargs)
-        #self.incoming_anns = IncomingAnns()
-        #self.local_rib = LocalRib()
         self.ribs_in = RibsIn()
         self.ribs_out = RibsOut()
         self.recv_q = RecvQueue()
