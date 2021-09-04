@@ -2,11 +2,12 @@ from .outcomes import Outcomes
 from .relationships import Relationships
 
 
-class Test:
+class Scenario:
     def __init__(self, trial=None, engine=None, attack=None):
         self.trial = trial
         self.engine = engine
         self.attack = attack
+        self.data = dict()
 
     def run(self, subgraphs):
         # Run engine
@@ -26,7 +27,8 @@ class Test:
         all_data = {"data": dict(), "meta": dict()}
         for k, subgraph_asns in subgraphs.items():
             all_data["data"][k] = self._get_outcomes(policies, subgraph_asns)
-            all_data["meta"][k] = {"total": l
+            all_data["totals"][k] = self._get_policy_totals(policies, subgraph_asns)
+        self.data = all_data
 
     def _get_outcomes(self, policies, subgraph_asns):
         outcomes = {x: {y: 0 for y in policies}
@@ -79,3 +81,12 @@ class Test:
             if most_specific_prefix is not None:
                 break
         return most_specific_prefix
+
+    def _get_policy_totals(self, policy_names, subgraph_asns):
+        """Determines the total amount of ASes per policy"""
+
+        totals = {x: 0 for x in policy_names}
+        for asn in subgraph_asns:
+            as_obj = self.engine.as_dict[asn]
+            totals[as_obj.policy.name] += 1
+        return totals

@@ -1,21 +1,33 @@
+from tqdm import tqdm
+
 from lib_caida_collector import CaidaCollector
-from lib_utils import Base
+from lib_utils.base_classes import Base
+
+from .attacks import SubprefixHijack
+from .graph import Graph
+from ..engine import BGPAS
+from ..engine import ROVPolicy
+from ..engine import SimulatorEngine
 
 
 class Simulator(Base):
     """Runs simulations for BGP attack/defend scenarios"""
 
     def run(self,
-            num_trials=1,
-            graphs=[],
-            base_as=[]):
+            BaseASCls=BGPAS,
+            graphs=[Graph(percent_adoptions=[1, 5,10,20,30,50,75, 99],
+                          adopt_policies=[ROVPolicy],
+                          AttackCls=SubprefixHijack,
+                          num_trials=1)]
+            ):
         """Downloads relationship data, runs simulation"""
 
-        self._download_relationships()
-        self._download_as_rank()
+        collector = CaidaCollector(BaseASCls=BGPAS,
+                                   GraphCls=SimulatorEngine)
+        base_engine = collector.run()
 
-    def _download_relationships(self):
-        pass
-
-    def _download_as_rank(self):
-        pass
+        total = sum(x.total_scenarios for x in graphs)
+        with tqdm(total=total, desc="Running trials") as pbar:
+            for graph in graphs:
+                graph.run(base_engine, pbar)
+        return graphs

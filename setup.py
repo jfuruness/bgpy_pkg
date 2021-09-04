@@ -30,7 +30,9 @@ setup(
         'License :: OSI Approved :: BSD License',
         'Operating System :: POSIX :: Linux',
         'Programming Language :: Python :: 3'],
-    entry_points={},
+    entry_points={
+        'console_scripts': 'lib_bgp_simulator = lib_bgp_simulator.__main__:main'
+    },
     setup_requires=['pytest-runner'],
     tests_require=['pytest'],
 )

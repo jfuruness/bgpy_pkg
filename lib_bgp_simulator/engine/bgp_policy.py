@@ -4,7 +4,7 @@ from lib_caida_collector import AS
 
 from .local_rib import LocalRib
 from .incoming_anns import IncomingAnns
-from .relationships import Relationships
+from ..relationships import Relationships
 from ..announcement import Announcement as Ann
 
 

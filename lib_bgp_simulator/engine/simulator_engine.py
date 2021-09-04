@@ -2,7 +2,7 @@ from lib_caida_collector import BGPDAG
 
 
 from .bgp_as import BGPAS
-from .relationships import Relationships
+from ..relationships import Relationships
 from ..announcement import Announcement
 
 

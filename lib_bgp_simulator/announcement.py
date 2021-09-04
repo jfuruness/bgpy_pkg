@@ -1,4 +1,4 @@
-from .engine.relationships import Relationships
+from .relationships import Relationships
 
 
 class Announcement:

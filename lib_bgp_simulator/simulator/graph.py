@@ -1,39 +1,54 @@
 from copy import deepcopy
+import random
+
+from .attacks import Attack
+from .data_point import DataPoint
 
 class Graph:
     def __init__(self,
-                 perc_adopts,
-                 as_policies,
-                 base_engine,
-                 total_rounds=1):
+                 percent_adoptions=[1, 5, 10, 20, 30, 50, 75, 99],
+                 adopt_policies=[],
+                 AttackCls=None,
+                 num_trials=1,
+                 propagation_rounds=1):
         assert isinstance(percent_adoptions, list)
         self.percent_adoptions = percent_adoptions
-        self.as_policies = as_policies
-        # Why total rounds? Because some atk/def scenarios might require
+        self.adopt_policies = adopt_policies
+        self.num_trials = num_trials
+        # Why propagation rounds? Because some atk/def scenarios might require
         # More than one round of propogation
-        self.total_rounds = total_rounds
-        self.base_engine = deepcopy(base_engine)
+        self.propagation_rounds = propagation_rounds
+        self.AttackCls = AttackCls
+
+    def run(self, base_engine, pbar):
+        # Get data points and subgraphs
         self.data_points = self._get_data_points()
-        self.subgraphs: dict = self._get_subgraphs(as_dict)
+        self.subgraphs: dict = self._get_subgraphs(base_engine)
         self._validate_subgraphs()
 
-    def run(self, num_trials: int):
-        for trial in range(num_trials):
+        # Get all the tests and run them
+        for trial in range(self.num_trials):
             for percent_adopt in self.percent_adoptions:
                 attack = self._get_attack()
+                print("adopting ases")
                 adopting_asns = self._get_adopting_ases(percent_adopt, attack)
-                for PolicyCls in self.policy_classes:
-                    engine = self._get_engine({x: PolicyCls for x in adopting_asns})
-                    for propogation_round in range(self.total_rounds):
+                print("Selected adopting")
+                for PolicyCls in self.adopt_policies:
+                    engine = self._get_engine({x: PolicyCls for x in adopting_asns}, base_engine)
+                    print("got engine")
+                    for propogation_round in range(self.propagation_rounds):
                         # Generate the test
-                        test = Test(trial=trial, engine=engine, attack=attack)
+                        scenario = Scenario(trial=trial, engine=engine, attack=attack)
+                        print("about to run")
                         # Run test, remove reference to engine and return it
-                        engine = test.run(self.subgraphs)
+                        engine = scenario.run(self.subgraphs)
+                        print("ran")
                         # Get data point - just a frozen data class
                         # Just makes it easier to access properties later
                         dp = DataPoint(percent_adopt, ASCls, propogation_round)
                         # Append the test to all tests for that data point
                         self.data_pts[dp].append(test)
+                        pbar.update()
 
     def _get_data_points(self):
         """Returns all data points for this graph
@@ -43,31 +58,35 @@ class Graph:
 
         data_points = dict()
         for percent_adoption in self.percent_adoptions:
-            for ASCls in self.as_classes:
-                for round_num in self.total_rounds:
-                    dp = DataPoint(percent_adoption, ASCls, propagation_round)
+            for Policy in self.adopt_policies:
+                for propagation_round in range(self.propagation_rounds):
+                    dp = DataPoint(percent_adoption, Policy, propagation_round)
                     data_points[dp] = list()
         return data_points
 
-    def _get_subgraphs(self):
+    def _get_subgraphs(self, engine):
         """Returns all the subgraphs that you want to keep track of"""
 
-        top_level = set(sorted(self.as_dict.values(),
-                               key=lambda x: x.as_rank)[:100])
-        stubs_and_mh = set([x.asn for x in self.as_dict
-                            if any((x.stub, x.multihomed))])
+        top_level = set(x.asn for x in sorted(engine.as_dict.values(),
+                               key=lambda x: x.customer_cone_size,
+                               reverse=True)[:100])
+        stubs_and_mh = set([x.asn for x in engine.as_dict.values()
+                            if x.stub or x.multihomed])
 
+        subgraphs = dict()
         # Remove sets to make keeping deterministic properties easier
-        self.subgraphs["etc"] =  set([x.asn for x in self.bgp_dag
-                                      if x not in (top_level | stubs_and_mh)])
-        self.subgraphs["top_100"] = top_level
-        self.subgraphs["stubs_and_mb"] = stubs_and_mh
+        subgraphs["etc"] =  set([x.asn for x in engine.as_dict.values()
+                                      if x.asn not in top_level
+                                        and x.asn not in stubs_and_mh])
+        subgraphs["top_100"] = top_level
+        subgraphs["stubs_and_mh"] = stubs_and_mh
+        return subgraphs
 
     def _validate_subgraphs(self):
         """Makes sure subgraphs are mutually exclusive and contain ASNs"""
 
         all_ases = []
-        for subgraph_asns in self.subgraphs:
+        for subgraph_asns in self.subgraphs.values():
             msg = "Subgraphs must be sets for fast lookups"
             assert isinstance(subgraph_asns, set), msg
             all_ases.extend(subgraph_asns)
@@ -76,18 +95,21 @@ class Graph:
 
         msg = "subgraphs not mutually exclusive"
         assert len(all_ases) == len(set(all_ases)), msg
+
+    def _get_attack(self):
+        return self.AttackCls(*random.sample(self.subgraphs["stubs_and_mh"], 2))
  
-    def _get_adopting_ases(self, percent_adopt) -> list:
+    def _get_adopting_ases(self, percent_adopt, attack) -> list:
         """Return a list of adopting ASNs that aren't attackers"""
 
         asns_adopting = list()
         for subgraph_asns in self.subgraphs.values():
             # Get all possible ASes that could adopt
-            possible_ases = self._get_possible_adopting_asns(subgraph_asns,
+            possible_adopting_ases = self._get_possible_adopting_asns(subgraph_asns,
                                                              attack)
 
             # N choose k, k is number of ASNs that will adopt
-            k = int(len(possible_ases) * percent_adopt)
+            k = int(len(possible_adopting_ases) * percent_adopt)
             if k == 0:
                 logging.warning("ASNs adopting rounded down to 0")
 
@@ -102,12 +124,18 @@ class Graph:
         """
 
         # Return all ASes other than the attacker
-        return subgraph_asns.difference([attack.attacker])
+        return subgraph_asns.difference([attack.attacker_asn])
 
-    def _get_engine(self, as_policies: dict):
+    def _get_engine(self, as_policy_dict, base_engine):
         # Make engine here!
-
-        new_engine = deepcopy(self.base_engine)
-        for asn, PolicyCls in as_policies.items():
+        new_engine = deepcopy(base_engine)
+        for asn, PolicyCls in as_policy_dict.items():
             new_engine.as_dict[asn].policy = PolicyCls()
         return new_engine
+
+    @property
+    def total_scenarios(self):
+        total_scenarios = self.num_trials * len(self.percent_adoptions)
+        total_scenarios *= len(self.adopt_policies)
+        total_scenarios *= self.propagation_rounds
+        return total_scenarios
