@@ -1,17 +1,14 @@
 from lib_caida_collector import PeerLink, CustomerProviderLink as CPLink
 
-from ..defaults import ASNs
-from ..defaults import ASTypes
-from ..defaults import subprefix_hijack_anns
-from ..defaults import HijackLocalRib
-from ..run_example import run_example
+from ..enums import ASNs
+from .run_example import run_example
+from .hijack_local_rib import HijackLocalRib
+from ..simulator.attacks import SubprefixHijack
+
+from ..engine.bgp_policy import BGPPolicy
 
 
-from ...engine.bgp_as import BGPAS
-from ...engine.bgp_policy import BGPPolicy
-
-
-def test_hidden_hijack_bgp(tmp_path):
+def test_hidden_hijack_bgp():
     r"""Hidden hijack example with BGP
     Figure 1a in our ROV++ paper
 
@@ -33,23 +30,21 @@ def test_hidden_hijack_bgp(tmp_path):
 
     # Local RIB data
     local_ribs = {
-        1: HijackLocalRib(prefix_as_path=(1, 2, ASNs.VICTIM.value)),
-        2: HijackLocalRib(prefix_as_path=(2, ASNs.VICTIM.value),
+        1: HijackLocalRib(prefix_vic_as_path=(1, 2, ASNs.VICTIM.value)),
+        2: HijackLocalRib(prefix_vic_as_path=(2, ASNs.VICTIM.value),
                           subprefix_as_path=(2, 3, ASNs.ATTACKER.value)),
-        3: HijackLocalRib(prefix_as_path=(3, 2, ASNs.VICTIM.value),
+        3: HijackLocalRib(prefix_vic_as_path=(3, 2, ASNs.VICTIM.value),
                           subprefix_as_path=(3, ASNs.ATTACKER.value)),
 
-        ASNs.VICTIM.value: HijackLocalRib(prefix_as_path=(ASNs.VICTIM.value,),
+        ASNs.VICTIM.value: HijackLocalRib(prefix_vic_as_path=(ASNs.VICTIM.value,),
             subprefix_as_path=(ASNs.VICTIM.value, 2, 3, ASNs.ATTACKER.value,)),
 
         ASNs.ATTACKER.value: HijackLocalRib(subprefix_as_path=(ASNs.ATTACKER.value,),
-            prefix_as_path=(ASNs.ATTACKER.value, 3, 2, ASNs.VICTIM.value,)),
+            prefix_vic_as_path=(ASNs.ATTACKER.value, 3, 2, ASNs.VICTIM.value,)),
     }
 
-    run_example(tmp_path,
-                peers=peers,
+    run_example(peers=peers,
                 customer_providers=customer_providers,
                 as_policies=as_policies,
-                announcements=subprefix_hijack_anns,
-                local_ribs=local_ribs,
-                BaseASCls=BGPAS)
+                announcements=SubprefixHijack().announcements,
+                local_ribs=local_ribs)
