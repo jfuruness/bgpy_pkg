@@ -18,7 +18,7 @@ class Simulator(Base):
             graphs=[Graph(percent_adoptions=[0, 5,10,20,30,40,60,80,100],
                           adopt_policies=[ROVPolicy],
                           AttackCls=SubprefixHijack,
-                          num_trials=100)]
+                          num_trials=1)]
             ):
         """Downloads relationship data, runs simulation"""
 
