@@ -29,6 +29,7 @@ class Announcement:
             # Must set the relationship based on the actual relationship
             #raise NotImplementedError
         self.priority = None
+        self.withdraw = False
 
     def seed(self, as_dict):
         """Seeds announcement at the proper AS
