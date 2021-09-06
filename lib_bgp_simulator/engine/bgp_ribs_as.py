@@ -6,8 +6,8 @@ from .local_rib import LocalRib
 from .bgp_as import BGPAS
 from .ribs import RibsIn, RibsOut
 from .ann_queues import SendQueue, RecvQueue
-from .relationships import Relationships
 from ..announcement import Announcement as Ann
+from ..enums import Relationships
 from .bgp_ribs_policy import BGPRIBSPolicy
 
 

@@ -4,7 +4,7 @@ from lib_caida_collector import AS
 
 from .local_rib import LocalRib
 from .ann_queues import SendQueue, RecvQueue
-from .relationships import Relationships
+from ..enums import Relationships
 from ..announcement import Announcement as Ann
 from .bgp_policy import BGPPolicy
 

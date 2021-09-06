@@ -5,7 +5,7 @@ class Announcement:
     """MRT Announcement"""
 
     __slots__ = ["prefix", "timestamp", "as_path", "roa_validity",
-                 "recv_relationship", "priority", "seed_asn"]
+                 "recv_relationship", "priority", "seed_asn", "withdraw"]
 
     def __init__(self,
                  prefix=None,

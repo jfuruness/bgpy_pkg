@@ -6,11 +6,8 @@ from .hijack_local_rib import HijackLocalRib
 from ..simulator.attacks import SubprefixHijack
 
 from ..engine.bgp_policy import BGPPolicy
-
-from ...engine.bgp_as import BGPAS # is this import necessary?
-from ...engine.bgp_policy import BGPPolicy
-from ...engine.bgp_ribs_as import BGPRIBSAS
-from ...engine.bgp_ribs_policy import BGPRIBSPolicy
+from ..engine.bgp_ribs_policy import BGPRIBSPolicy
+from ..engine.bgp_ribs_as import BGPRIBSAS
 
 def test_hidden_hijack_bgp():
     r"""Hidden hijack example with BGP
@@ -22,6 +19,7 @@ def test_hidden_hijack_bgp():
         /     \
        777     666
     """
+
 
     # Graph data
     peers = [PeerLink(2, 3)]
@@ -70,22 +68,22 @@ def test_hidden_hijack_bgp_ribs(tmp_path):
                           CPLink(provider_asn=2, customer_asn=ASNs.VICTIM.value),
                           CPLink(provider_asn=3, customer_asn=ASNs.ATTACKER.value)]
     # Number identifying the type of AS class
-    as_policies = {asn: BGPRIBSPolicy for asn in
+    as_policies = {asn: BGPPolicy for asn in
                    list(range(1, 4)) + [ASNs.VICTIM.value, ASNs.ATTACKER.value]}
 
     # Local RIB data
     local_ribs = {
-        1: HijackLocalRib(prefix_as_path=(1, 2, ASNs.VICTIM.value)),
-        2: HijackLocalRib(prefix_as_path=(2, ASNs.VICTIM.value),
+        1: HijackLocalRib(prefix_vic_as_path=(1, 2, ASNs.VICTIM.value)),
+        2: HijackLocalRib(prefix_vic_as_path=(2, ASNs.VICTIM.value),
                           subprefix_as_path=(2, 3, ASNs.ATTACKER.value)),
-        3: HijackLocalRib(prefix_as_path=(3, 2, ASNs.VICTIM.value),
+        3: HijackLocalRib(prefix_vic_as_path=(3, 2, ASNs.VICTIM.value),
                           subprefix_as_path=(3, ASNs.ATTACKER.value)),
 
-        ASNs.VICTIM.value: HijackLocalRib(prefix_as_path=(ASNs.VICTIM.value,),
+        ASNs.VICTIM.value: HijackLocalRib(prefix_vic_as_path=(ASNs.VICTIM.value,),
             subprefix_as_path=(ASNs.VICTIM.value, 2, 3, ASNs.ATTACKER.value,)),
 
         ASNs.ATTACKER.value: HijackLocalRib(subprefix_as_path=(ASNs.ATTACKER.value,),
-            prefix_as_path=(ASNs.ATTACKER.value, 3, 2, ASNs.VICTIM.value,)),
+            prefix_vic_as_path=(ASNs.ATTACKER.value, 3, 2, ASNs.VICTIM.value,)),
     }
 
     run_example(peers=peers,
