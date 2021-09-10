@@ -1,6 +1,5 @@
 from .bgp_as import BGPAS
 from .bgp_ribs_policy import BGPPolicy
-from .bgp_ribs_as import BGPRIBSAS
 from .bgp_ribs_policy import BGPRIBSPolicy
 from .incoming_anns import IncomingAnns
 from .local_rib import LocalRib

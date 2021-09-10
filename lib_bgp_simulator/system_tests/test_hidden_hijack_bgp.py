@@ -7,7 +7,6 @@ from ..simulator.attacks import SubprefixHijack
 
 from ..engine.bgp_policy import BGPPolicy
 from ..engine.bgp_ribs_policy import BGPRIBSPolicy
-from ..engine.bgp_ribs_as import BGPRIBSAS
 
 def test_hidden_hijack_bgp():
     r"""Hidden hijack example with BGP
@@ -90,6 +89,5 @@ def test_hidden_hijack_bgp_ribs(tmp_path):
                 customer_providers=customer_providers,
                 as_policies=as_policies,
                 announcements=SubprefixHijack().announcements,
-                BaseASCls=BGPRIBSAS,
                 local_ribs=local_ribs)
 
