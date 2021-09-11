@@ -67,7 +67,7 @@ def test_hidden_hijack_bgp_ribs(tmp_path):
                           CPLink(provider_asn=2, customer_asn=ASNs.VICTIM.value),
                           CPLink(provider_asn=3, customer_asn=ASNs.ATTACKER.value)]
     # Number identifying the type of AS class
-    as_policies = {asn: BGPPolicy for asn in
+    as_policies = {asn: BGPRIBSPolicy for asn in
                    list(range(1, 4)) + [ASNs.VICTIM.value, ASNs.ATTACKER.value]}
 
     # Local RIB data

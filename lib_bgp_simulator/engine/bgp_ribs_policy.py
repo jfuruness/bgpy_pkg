@@ -66,7 +66,7 @@ class BGPRIBSPolicy(BGPPolicy):
                 # announcement from a worse relationship replacing one from a
                 # better one, so don't bother checking
                 possible_replace = (True if best_ann is None else 
-                    best_ann.recv_relationship <= recv_relationship)
+                    best_ann.recv_relationship.value <= recv_relationship.value)
 
                 # For each announcement that is incoming
                 for ann in ann_list:
@@ -89,7 +89,7 @@ class BGPRIBSPolicy(BGPPolicy):
                         policy_self.ribs_in[neighbor][prefix].append(ann)
 
                     if possible_replace:
-                        priority = policy_self._get_priority(self, ann, recv_relationship)
+                        priority = policy_self._get_priority(ann, recv_relationship)
                         # If the new priority is higher
                         if priority > best_priority:
                             # Save the priority and announcement for later
