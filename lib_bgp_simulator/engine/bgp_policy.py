@@ -66,56 +66,50 @@ class BGPPolicy:
 
         for prefix, ann_list in policy_self.incoming_anns.items():
             # Get announcement currently in local rib
-            og_best_ann = policy_self.local_rib.get(prefix)
-            best_ann = og_best_ann
+            best_ann = policy_self.local_rib.get(prefix)
 
             # Done here to optimize
             if best_ann is not None and best_ann.seed_asn is not None:
                 continue
-
             if best_ann is None:
-                best_priority = -1
-            else:
-                best_priority = best_ann.priority
+                best_ann = deepcopy(ann_list[0])
+                best_ann.seed_asn = None
+                best_ann.as_path = (self.asn, *best_ann.as_path)
+                best_ann.recv_relationship = recv_relationship
+                # Save to local rib
+                policy_self.local_rib[prefix] = best_ann
 
             # For each announcement that was incoming
             for ann in ann_list:
-                # Get the priority
-                priority = policy_self._get_priority(ann, recv_relationship)
+                new_ann_is_better = policy_self._new_ann_is_better(self, best_ann, ann, recv_relationship)
                 # If the new priority is higher
-                if priority > best_priority:
-                    # Save the priority and announcement for later
-                    # We don't copy the ann here, since we might find another better ann later
-                    best_priority = priority
-                    best_ann = ann
+                if new_ann_is_better:
+                    # Don't bother tiebreaking, if priority is same, keep existing
+                    # Just like normal BGP
+                    # Tiebreaking with time and such should go into the priority
+                    # If we ever decide to do that
+                    best_ann = deepcopy(ann)
+                    best_ann.seed_asn = None
+                    best_ann.as_path = (self.asn, *ann.as_path)
+                    best_ann.recv_relationship = recv_relationship
+                    # Save to local rib
+                    policy_self.local_rib[prefix] = best_ann
+            policy_self.incoming_anns = IncomingAnns()
 
-            # Now that we know the best ann, copy and save it
-            # Unless it did not change
-            if best_ann is og_best_ann:
-                continue
-            else:
-                # Don't bother tiebreaking, if priority is same, keep existing
-                # Just like normal BGP
-                # Tiebreaking with time and such should go into the priority
-                # If we ever decide to do that
-                best_ann = deepcopy(best_ann)
-                best_ann.seed_asn = None
-                best_ann.as_path = (self.asn, *ann.as_path)
-                best_ann.recv_relationship = recv_relationship
-                best_ann.priority = best_priority
-                # Save to local rib
-                policy_self.local_rib[prefix] = best_ann
-        policy_self.incoming_anns = IncomingAnns()
-
-    def _get_priority(policy_self, ann: Ann, recv_relationship: Relationships):
+    def _new_ann_is_better(policy_self, self, deep_ann, shallow_ann, recv_relationship: Relationships):
         """Assigns the priority to an announcement according to Gao Rexford"""
 
-        #ann.recv_relationship = recv_relationship
-        # Document this later
-        # Seeded (a bool)
-        # Relationship
-        # Path length
-        # 100 - is to invert the as_path so that longer paths are worse
-        assert len(ann.as_path) < 100
-        # We subtract an extra 1 because this is still the old ann
-        return recv_relationship.value + 100 - len(ann.as_path) - 1
+        if deep_ann.recv_relationship.value > recv_relationship.value:
+            return False
+        elif deep_ann.recv_relationship.value < recv_relationship.value:
+            return True
+        else:
+            if len(deep_ann.as_path) < len(shallow_ann.as_path) + 1:
+                return False
+            elif len(deep_ann.as_path) > len(shallow_ann.as_path) + 1:
+                return True
+            else:
+                if deep_ann.as_path[0] <= self.asn:
+                    return False
+                else:
+                    return True
