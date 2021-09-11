@@ -24,7 +24,8 @@ class Simulator(Base):
         """Downloads relationship data, runs simulation"""
 
         collector = CaidaCollector(BaseASCls=BGPAS,
-                                   GraphCls=SimulatorEngine)
+                                   GraphCls=SimulatorEngine,
+                                   **self.kwargs)
         base_engine = collector.run()
 
         total = sum(x.total_scenarios for x in graphs)
