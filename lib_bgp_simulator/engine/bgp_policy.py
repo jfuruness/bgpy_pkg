@@ -81,6 +81,9 @@ class BGPPolicy:
 
             # For each announcement that was incoming
             for ann in ann_list:
+                # BGP Loop Prevention Check
+                if self.asn in ann.as_path:
+                    continue
                 new_ann_is_better = policy_self._new_ann_is_better(self, best_ann, ann, recv_relationship)
                 # If the new priority is higher
                 if new_ann_is_better:

@@ -80,6 +80,10 @@ class BGPRIBSPolicy(BGPPolicy):
                             recv_q=policy_self.ribs_in, limit_prefix=prefix)
                         continue
 
+                    # BGP Loop Prevention Check
+                    if self.asn in ann.as_path:
+                        continue
+
                     if not ann in policy_self.ribs_in[neighbor][prefix]:
                         # If never seen before, copy to ribs_in
                         policy_self.ribs_in[neighbor][prefix].append(ann)
