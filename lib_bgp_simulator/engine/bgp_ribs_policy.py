@@ -57,10 +57,6 @@ class BGPRIBSPolicy(BGPPolicy):
                 # Done here to optimize
                 if best_ann is not None and best_ann.seed_asn is not None:
                     continue
-                if best_ann is None:
-                    best_priority = -1
-                else:
-                    best_priority = best_ann.priority
 
                 # Another optimization, there is never a possibility of an
                 # announcement from a worse relationship replacing one from a
@@ -88,33 +84,19 @@ class BGPRIBSPolicy(BGPPolicy):
                         # If never seen before, copy to ribs_in
                         policy_self.ribs_in[neighbor][prefix].append(ann)
 
-                    if possible_replace:
-                        priority = policy_self._get_priority(ann, recv_relationship)
-                        # If the new priority is higher
-                        if priority > best_priority:
-                            # Save the priority and announcement for later
-                            # We don't copy the ann here, since we might find another better ann later
-                            best_priority = priority
-                            best_ann = ann
-
-                # If it did not change
-                if best_ann is og_best_ann:
-                    continue
-                else:
-                    # Don't bother tiebreaking, if priority is same, keep existing
-                    # Just like normal BGP
-                    # Tiebreaking with time and such should go into the priority
-                    # If we ever decide to do that
-                    best_ann = deepcopy(best_ann)
-                    best_ann.seed_asn = None
-                    best_ann.as_path = (self.asn, *ann.as_path)
-                    best_ann.recv_relationship = recv_relationship
-                    best_ann.priority = best_priority
-                    # Save to local rib
-                    policy_self.local_rib[prefix] = best_ann
-                    # Update RIBs out, remove old announcement only
-                    if og_best_ann is not None:
-                        policy_self.withdraw_route(self, og_best_ann)
+                    new_ann_is_better = (True if best_ann is None else 
+                        policy_self._new_ann_is_better(self, best_ann, ann, recv_relationship))
+                    # If the new priority is higher
+                    if new_ann_is_better:
+                        best_ann = deepcopy(ann)
+                        best_ann.seed_asn = None
+                        best_ann.as_path = (self.asn, *ann.as_path)
+                        best_ann.recv_relationship = recv_relationship
+                        # Save to local rib
+                        policy_self.local_rib[prefix] = best_ann
+                        # Update RIBs out, remove old announcement only
+                        if og_best_ann is not None:
+                            policy_self.withdraw_route(self, og_best_ann)
 
         if recv_q == policy_self.recv_q and limit_prefix is None:
             # If this is the normal processing of announcements, reset the recv_q
@@ -138,3 +120,22 @@ class BGPRIBSPolicy(BGPPolicy):
                     withdraw.withdraw = True
                     policy_self.send_q[send_neighbor][prefix].append(withdraw)
                 policy_self.ribs_out[send_neighbor][prefix].remove(ann_to_remove)
+
+
+    def _new_ann_is_better(policy_self, self, deep_ann, shallow_ann, recv_relationship: Relationships):
+        """Assigns the priority to an announcement according to Gao Rexford"""
+
+        if deep_ann.recv_relationship.value > recv_relationship.value:
+            return False
+        elif deep_ann.recv_relationship.value < recv_relationship.value:
+            return True
+        else:
+            if len(deep_ann.as_path) < len(shallow_ann.as_path) + 1:
+                return False
+            elif len(deep_ann.as_path) > len(shallow_ann.as_path) + 1:
+                return True
+            else:
+                if deep_ann.as_path[0] <= self.asn:
+                    return False
+                else:
+                    return True
