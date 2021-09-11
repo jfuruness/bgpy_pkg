@@ -10,6 +10,7 @@ def run_example(peers=list(),
                 as_policies=dict(),
                 announcements=list(),
                 local_ribs=dict(),
+                BaseASCls=BGPAS,
                 ):
     """Runs an example"""
 
@@ -17,7 +18,8 @@ def run_example(peers=list(),
     start = datetime.now()
     engine = SimulatorEngine(set(customer_providers),
                              set(peers),
-                             as_policies=as_policies)
+                             as_policies=as_policies,
+                             BaseASCls=BaseASCls)
     print((start-datetime.now()).total_seconds())
     print("Running engine")
     start = datetime.now()

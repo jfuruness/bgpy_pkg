@@ -5,7 +5,7 @@ class Announcement:
     """MRT Announcement"""
 
     __slots__ = ["prefix", "timestamp", "as_path", "roa_validity",
-                 "recv_relationship", "seed_asn"]
+                 "recv_relationship", "seed_asn", "withdraw"]
 
     def __init__(self,
                  prefix=None,
@@ -28,6 +28,7 @@ class Announcement:
             self.recv_relationship = Relationships.ORIGIN
             # Must set the relationship based on the actual relationship
             #raise NotImplementedError
+        self.withdraw = False
 
     def seed(self, as_dict):
         """Seeds announcement at the proper AS
