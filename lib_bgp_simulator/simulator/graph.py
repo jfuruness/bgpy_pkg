@@ -14,7 +14,8 @@ class Graph:
                  adopt_policies=[],
                  AttackCls=None,
                  num_trials=1,
-                 propagation_rounds=1):
+                 propagation_rounds=1,
+                 base_policy=BGPPolicy):
         assert isinstance(percent_adoptions, list)
         self.percent_adoptions = percent_adoptions
         self.adopt_policies = adopt_policies
@@ -23,6 +24,7 @@ class Graph:
         # More than one round of propogation
         self.propagation_rounds = propagation_rounds
         self.AttackCls = AttackCls
+        self.base_policy = base_policy
 
     def run(self, engine, pbar):
         # Get data points and subgraphs
@@ -137,7 +139,7 @@ class Graph:
     def _replace_engine_policies(self, as_policy_dict, base_engine):
         # Make engine here!
         for asn, as_obj in base_engine.as_dict.items():
-            as_obj.policy = as_policy_dict.get(asn, BGPPolicy)()        
+            as_obj.policy = as_policy_dict.get(asn, self.base_policy)()        
 
     @property
     def total_scenarios(self):

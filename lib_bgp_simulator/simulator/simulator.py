@@ -5,7 +5,7 @@ from lib_utils.base_classes import Base
 
 from .attacks import SubprefixHijack
 from .graph import Graph
-from ..engine import BGPAS
+from ..engine import BGPAS, BGPPolicy
 from ..engine import ROVPolicy
 from ..engine import SimulatorEngine
 
@@ -18,7 +18,8 @@ class Simulator(Base):
             graphs=[Graph(percent_adoptions=[0, 5,10,20,30,40,60,80,100],
                           adopt_policies=[ROVPolicy],
                           AttackCls=SubprefixHijack,
-                          num_trials=1)]
+                          num_trials=1,
+                          base_policy=BGPPolicy)]
             ):
         """Downloads relationship data, runs simulation"""
 
