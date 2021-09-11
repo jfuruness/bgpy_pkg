@@ -1,3 +1,4 @@
+import ipaddress
 from ..enums import Relationships, Outcomes
 
 
@@ -84,7 +85,7 @@ class Scenario:
             prefixes.add(ann.prefix)
 
         # Prefixes with most specific subprefix first
-        return tuple(sorted(prefixes, reverse=True))
+        return tuple(sorted(prefixes, key=lambda x: ipaddress.ip_network(x).num_addresses))
 
     def _get_longest_ann(self, as_obj, ordered_prefixes):
         for prefix in ordered_prefixes:
