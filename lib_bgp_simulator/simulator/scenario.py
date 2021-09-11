@@ -49,15 +49,15 @@ class Scenario:
         # Loop all the way through to the end
         for i in range(max_path + 1):
             # Get most specific announcement, or empty RIB
-            longest_ann = self._get_longest_ann(as_obj, ordered_prefixes)
-            if longest_ann is None:
+            most_specific_ann = self._get_most_specific_ann(as_obj, ordered_prefixes)
+            if most_specific_ann is None:
                 has_rib = False
                 break
-            elif longest_ann.recv_relationship == Relationships.ORIGIN:
+            elif most_specific_ann.recv_relationship == Relationships.ORIGIN:
                 break
             else:
                 # Continue looping by getting the last AS
-                as_obj = self.engine.as_dict[longest_ann.as_path[1]]
+                as_obj = self.engine.as_dict[most_specific_ann.as_path[1]]
                 if as_obj.asn in ases:
                     print(ases)
                     input("looping")
@@ -87,7 +87,7 @@ class Scenario:
         # Prefixes with most specific subprefix first
         return tuple(sorted(prefixes, key=lambda x: ipaddress.ip_network(x).num_addresses))
 
-    def _get_longest_ann(self, as_obj, ordered_prefixes):
+    def _get_most_specific_ann(self, as_obj, ordered_prefixes):
         for prefix in ordered_prefixes:
             most_specific_prefix = as_obj.policy.local_rib.get(prefix)
             if most_specific_prefix is not None:
