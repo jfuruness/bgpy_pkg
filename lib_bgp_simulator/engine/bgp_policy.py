@@ -69,20 +69,14 @@ class BGPPolicy:
             # Done here to optimize
             if best_ann is not None and best_ann.seed_asn is not None:
                 continue
-            if best_ann is None:
-                best_ann = deepcopy(ann_list[0])
-                best_ann.seed_asn = None
-                best_ann.as_path = (self.asn, *best_ann.as_path)
-                best_ann.recv_relationship = recv_relationship
-                # Save to local rib
-                policy_self.local_rib[prefix] = best_ann
 
             # For each announcement that was incoming
             for ann in ann_list:
                 # BGP Loop Prevention Check
                 if self.asn in ann.as_path:
                     continue
-                new_ann_is_better = policy_self._new_ann_is_better(self, best_ann, ann, recv_relationship)
+                new_ann_is_better = (True if best_ann is None else
+                    policy_self._new_ann_is_better(self, best_ann, ann, recv_relationship))
                 # If the new priority is higher
                 if new_ann_is_better:
                     # Don't bother tiebreaking, if priority is same, keep existing
