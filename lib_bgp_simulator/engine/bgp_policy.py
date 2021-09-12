@@ -57,8 +57,6 @@ class BGPPolicy:
             for prefix, ann in policy_self.local_rib.items():
                 if ann.recv_relationship in send_rels:
                     # Add the new ann to the incoming anns for that prefix
-                    if as_obj.policy.incoming_anns.get(prefix) is None:
-                        as_obj.policy.incoming_anns[prefix] = list()
                     as_obj.policy.incoming_anns[prefix].append(ann)
 
     def process_incoming_anns(policy_self, self, recv_relationship: Relationships):
@@ -109,7 +107,4 @@ class BGPPolicy:
             elif len(deep_ann.as_path) > len(shallow_ann.as_path) + 1:
                 return True
             else:
-                if deep_ann.as_path[0] <= self.asn:
-                    return False
-                else:
-                    return True
+                return not deep_ann.as_path[0] <= self.asn
