@@ -20,5 +20,9 @@ from .simulator import SubprefixHijack
 from .simulator import UnannouncedPrefixHijack
 from .simulator import DataPoint
 from .simulator import Graph
+from .simulator import Scenario
 from .enums import Outcomes
 from .simulator import Simulator
+
+from .announcement import Announcement
+from .enums import Relationships

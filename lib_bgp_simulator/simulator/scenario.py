@@ -3,7 +3,7 @@ from ..enums import Relationships, Outcomes
 
 
 class Scenario:
-    def __init__(self, trial=None, engine=None, attack=None):
+    def __init__(self, trial=None, engine=None, attack=None, post_run_hooks=None):
         self.trial = trial
         self.engine = engine
         self.attack = attack
@@ -14,6 +14,9 @@ class Scenario:
         self.engine.run(self.attack.announcements)
         print("Engine finished running")
         self._collect_data(subgraphs)
+        print("Calling post_run_hooks (if defined)")
+        for func in self.attack.post_run_hooks:
+            func(self)
         # delete engine from attrs so that garbage collector can come
         engine = self.engine
         del self.engine
