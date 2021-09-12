@@ -33,6 +33,7 @@ class BGPPolicy:
         """Propogates to customers"""
 
         send_rels = set([Relationships.ORIGIN,
+                         Relationships.CUSTOMERS,
                          Relationships.PEERS,
                          Relationships.PROVIDERS])
         policy_self._propagate(self, Relationships.CUSTOMERS, send_rels)
