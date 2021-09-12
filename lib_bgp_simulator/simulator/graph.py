@@ -21,7 +21,7 @@ class Graph:
         self.adopt_policies = adopt_policies
         self.num_trials = num_trials
         # Why propagation rounds? Because some atk/def scenarios might require
-        # More than one round of propogation
+        # More than one round of propagation
         self.propagation_rounds = propagation_rounds
         self.AttackCls = AttackCls
         self.base_policy = base_policy
@@ -42,7 +42,7 @@ class Graph:
                 for PolicyCls in self.adopt_policies:
                     self._replace_engine_policies({x: PolicyCls for x in adopting_asns}, engine)
                     print("got engine")
-                    for propogation_round in range(self.propagation_rounds):
+                    for propagation_round in range(self.propagation_rounds):
                         # Generate the test
                         scenario = Scenario(trial=trial, engine=engine, attack=attack)
                         print("about to run")
@@ -51,7 +51,7 @@ class Graph:
                         print("ran")
                         # Get data point - just a frozen data class
                         # Just makes it easier to access properties later
-                        dp = DataPoint(percent_adopt, PolicyCls, propogation_round)
+                        dp = DataPoint(percent_adopt, PolicyCls, propagation_round)
                         # Append the test to all tests for that data point
                         self.data_points[dp].append(scenario)
                         pbar.update()

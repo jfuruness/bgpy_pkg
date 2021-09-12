@@ -78,6 +78,10 @@ class BGPRIBSPolicy(BGPPolicy):
                         continue
 
                     # NOTE: needs fixing obj comp
+                    # BGP Loop Prevention Check
+                    if self.asn in ann.as_path:
+                        continue
+
                     if not ann in policy_self.ribs_in[neighbor][prefix]:
                         # If never seen before, copy to ribs_in
                         policy_self.ribs_in[neighbor][prefix].append(ann)
