@@ -30,9 +30,9 @@ class BGPRIBSPolicy(BGPPolicy):
             for prefix, ann in policy_self.local_rib.items():
                 if ann.recv_relationship in send_rels:
                     # Update RIBs out
-                        if ann not in policy_self.ribs_out[as_obj.asn][prefix]:
-                            policy_self.ribs_out[as_obj.asn][prefix].append(ann)
-                            policy_self.send_q[as_obj.asn][prefix].append(ann)
+                    if ann not in policy_self.ribs_out[as_obj.asn][prefix]:
+                        policy_self.ribs_out[as_obj.asn][prefix].append(ann)
+                        policy_self.send_q[as_obj.asn][prefix].append(ann)
 
             # Send everything in the send queues
             for prefix, anns in policy_self.send_q[as_obj.asn].items():
@@ -58,28 +58,26 @@ class BGPRIBSPolicy(BGPPolicy):
                 if best_ann is not None and best_ann.seed_asn is not None:
                     continue
 
-                # Another optimization, there is never a possibility of an
-                # announcement from a worse relationship replacing one from a
-                # better one, so don't bother checking
-                possible_replace = (True if best_ann is None else 
-                    best_ann.recv_relationship.value <= recv_relationship.value)
-
                 # For each announcement that is incoming
                 for ann in ann_list:
                     if ann.withdraw:
                         # Remove withdrawn routes
                         ann_to_remove = deepcopy(ann)
                         ann_to_remove.withdraw = False
+                        # NOTE: needs fixing
                         policy_self.ribs_in[neighbor][prefix].remove(ann_to_remove)
                         # Update AS path for loc_rib and ribs_out
                         ann_to_remove.as_path = (self.asn, *ann.as_path)
+                        # NOTE: needs fixing
                         self.loc_rib[prefix].remove(ann_to_remove)
                         policy_self.withdraw_route(self, ann_to_remove)
                         # Get next-best announcement from ribs_in
-                        self.loc_rib[prefix] = policy_self.process_incoming_anns(self, recv_relationship, 
+                        # NOTE Needs fixing
+                        policy_self.process_incoming_anns(self, recv_relationship, 
                             recv_q=policy_self.ribs_in, limit_prefix=prefix)
                         continue
 
+                    # NOTE: needs fixing obj comp
                     # BGP Loop Prevention Check
                     if self.asn in ann.as_path:
                         continue
@@ -114,32 +112,11 @@ class BGPRIBSPolicy(BGPPolicy):
         """
         prefix = ann_to_remove.prefix
         for send_neighbor in policy_self.ribs_out:
+            # NOTE needs fixing
             if ann_to_remove in policy_self.ribs_out[send_neighbor][prefix]:
-                if ann_to_remove in policy_self.send_q[send_neighbor][prefix]:
-                    # If the withdrawn route has not been sent to the send_neighbor yet, don't send it
-                    policy_self.send_q[send_neighbor][prefix].remove(ann_to_remove)
-                else:
-                    # Otherwise propagate the withdrawal
-                    withdraw = deepcopy(ann_to_remove)
-                    withdraw.withdraw = True
-                    policy_self.send_q[send_neighbor][prefix].append(withdraw)
+                # Otherwise propagate the withdrawal
+                withdraw = deepcopy(ann_to_remove)
+                withdraw.withdraw = True
+                policy_self.send_q[send_neighbor][prefix].append(withdraw)
+                # NOTE Shouldn't be a list
                 policy_self.ribs_out[send_neighbor][prefix].remove(ann_to_remove)
-
-
-    def _new_ann_is_better(policy_self, self, deep_ann, shallow_ann, recv_relationship: Relationships):
-        """Assigns the priority to an announcement according to Gao Rexford"""
-
-        if deep_ann.recv_relationship.value > recv_relationship.value:
-            return False
-        elif deep_ann.recv_relationship.value < recv_relationship.value:
-            return True
-        else:
-            if len(deep_ann.as_path) < len(shallow_ann.as_path) + 1:
-                return False
-            elif len(deep_ann.as_path) > len(shallow_ann.as_path) + 1:
-                return True
-            else:
-                if deep_ann.as_path[0] <= self.asn:
-                    return False
-                else:
-                    return True

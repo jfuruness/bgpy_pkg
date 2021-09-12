@@ -18,12 +18,8 @@ class SimulatorEngine(BGPDAG):
                                               BaseASCls=BaseASCls,
                                               **kwargs)
 
-        from datetime import datetime
-        start = datetime.now()
-        print(start)
         for asn, Policy in as_policies.items():
             self.as_dict[asn].policy = Policy()
-        print((datetime.now()-start).total_seconds())
 
     def run(self, announcements, save_path=None, clear=False):
         """Propogates announcements"""
