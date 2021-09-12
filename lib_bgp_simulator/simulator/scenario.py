@@ -3,7 +3,7 @@ from ..enums import Relationships, Outcomes
 
 
 class Scenario:
-    def __init__(self, trial=None, engine=None, attack=None, post_run_hooks=None):
+    def __init__(self, trial=None, engine=None, attack=None):
         self.trial = trial
         self.engine = engine
         self.attack = attack
