@@ -46,16 +46,11 @@ class SimulatorEngine(BGPDAG):
         for ann in announcements:
             assert isinstance(ann, Announcement)
 
-        prefix_origins = list()
         for ann in announcements:
             # Let the announcement do the seeding
             # That way it's easy for anns to seed with path manipulation
             # Simply inherit the announcement class
             ann.seed(self.as_dict)
-            prefix_origins.append((ann.prefix, ann.origin))
-
-        msg = "You should never have overlapping prefix origin pairs"
-        assert len(prefix_origins) == len(set(prefix_origins)), msg
 
     def _propagate(self):
         """Propogates announcements"""
