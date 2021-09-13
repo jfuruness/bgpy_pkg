@@ -12,12 +12,14 @@ class Scenario:
     def run(self, subgraphs):
         # Run engine
         self.engine.run(self.attack.announcements)
-        print("Engine finished running")
+        #print("Engine finished running")
         self._collect_data(subgraphs)
-        print("Calling post_run_hooks (if defined)")
+        #print("Calling post_run_hooks (if defined)")
         for func in self.attack.post_run_hooks:
             func(self)
         # delete engine from attrs so that garbage collector can come
+        # NOTE that if there are multiple propagation rounds, the engine
+        # Will still be there
         engine = self.engine
         del self.engine
 
@@ -38,8 +40,11 @@ class Scenario:
                     for x in list(Outcomes)}
         # Most specific to least specific
         ordered_prefixes = self._get_ordered_prefixes()
+        # NOTE: this should be changed to ONLY iterate over subgraph asns
         for og_as_obj in self.engine.as_dict.values():
             if og_as_obj.asn not in subgraph_asns:
+                continue
+            if og_as_obj.asn in [self.attack.attacker_asn, self.attack.victim_asn]:
                 continue
             final_as_obj, has_rib = self._get_final_as(og_as_obj, ordered_prefixes, outcomes)
             self._store_outcome(final_as_obj, has_rib, og_as_obj, outcomes)
@@ -67,7 +72,6 @@ class Scenario:
                 else:
                     ases.add(as_obj.asn)
         assert i != max_path, "looping"
-
         return as_obj, has_rib
 
     def _store_outcome(self, as_obj, has_rib, og_as_obj, outcomes):
@@ -75,7 +79,7 @@ class Scenario:
             # Store the outcome so long as there is a rib
             if as_obj.asn == self.attack.attacker_asn:
                 outcomes[Outcomes.HIJACKED][og_as_obj.policy.name] += 1
-            if as_obj.asn == self.attack.victim_asn:
+            elif as_obj.asn == self.attack.victim_asn:
                 outcomes[Outcomes.NOT_HIJACKED][og_as_obj.policy.name] += 1
             else:
                 outcomes[Outcomes.DISCONNECTED][og_as_obj.policy.name] += 1
@@ -102,6 +106,8 @@ class Scenario:
 
         totals = {x: 0 for x in policy_names}
         for asn in subgraph_asns:
+            if asn in [self.attack.attacker_asn, self.attack.victim_asn]:
+                continue
             as_obj = self.engine.as_dict[asn]
             totals[as_obj.policy.name] += 1
         return totals
