@@ -54,9 +54,6 @@ class SimulatorEngine(BGPDAG):
             ann.seed(self.as_dict)
             prefix_origins.append((ann.prefix, ann.origin))
 
-        msg = "You should never have overlapping prefix origin pairs"
-        assert len(prefix_origins) == len(set(prefix_origins)), msg
-
     def _propagate(self):
         """Propogates announcements"""
 
