@@ -22,6 +22,7 @@ setup(
     packages=find_packages(),
     install_requires=[
         'lib_caida_collector',
+        'matplotlib',
         'pytest',
         'tqdm',
     ],
