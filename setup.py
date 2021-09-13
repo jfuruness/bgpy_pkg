@@ -7,7 +7,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 # https://stackoverflow.com/a/58534041/8903959
 setup(
     name='lib_bgp_simulator',
-    author="Justin Furuness",
+    author="Justin Furuness, Cameron Morris",
     author_email="jfuruness@gmail.com",
     version="0.0.1",
     url='https://github.com/jfuruness/lib_bgp_simulator.git',
