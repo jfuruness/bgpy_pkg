@@ -92,6 +92,7 @@ class Scenario:
         for ann in self.attack.announcements:
             prefixes.add(ann.prefix)
 
+        assert len(prefixes) > 0
         # Prefixes with most specific subprefix first
         return tuple(sorted(prefixes, key=lambda x: ipaddress.ip_network(x).num_addresses))
 
