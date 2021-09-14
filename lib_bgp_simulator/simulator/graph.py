@@ -1,12 +1,16 @@
+from concurrent.futures import ProcessPoolExecutor
 from copy import deepcopy
 import logging
+from multiprocessing import Pool, cpu_count
 import random
+
+from lib_caida_collector import CaidaCollector
 
 from .attacks import Attack
 from .data_point import DataPoint
 from .scenario import Scenario
 
-from ..engine import BGPPolicy
+from ..engine import BGPPolicy, BGPAS, SimulatorEngine
 
 class Graph:
     from .graph_writer import aggregate_and_write
@@ -29,48 +33,65 @@ class Graph:
         self.AttackCls = AttackCls
         self.base_policy = base_policy
 
-    def run(self, engine, pbar):
-        # Get data points and subgraphs
-        self.data_points = self._get_data_points()
-        self.subgraphs: dict = self._get_subgraphs(engine)
+    def run(self, parse_cpus, debug=False):
+        self.data_points = dict()
+
+        if debug:
+            for x in self.percent_adoptions:
+                self.data_points.update(self._run_adoption_percentage(x))
+        else:
+            print("About to run pool")
+            # Pool is much faster than ProcessPoolExecutor
+            with Pool(parse_cpus) as pool:
+                for result in pool.map(self._run_adoption_percentage,
+                                       self.percent_adoptions):
+                    self.data_points.update(result)
+
+        print("\nGraph complete")
+        # Done just to get subgraphs, change this later
+        engine = CaidaCollector(BaseASCls=BGPAS,
+                                GraphCls=SimulatorEngine,
+                                _dir="/tmp/throwaway_graph").run()
+
+        self.subgraphs = self._get_subgraphs(engine)
         self._validate_subgraphs()
 
-        # Get all the tests and run them
-        for trial in range(self.num_trials):
-            for percent_adopt in self.percent_adoptions:
-                attack = self._get_attack()
-                print("adopting ases")
-                adopting_asns = self._get_adopting_ases(percent_adopt, attack)
-                print("Selected adopting")
-                for PolicyCls in self.adopt_policies:
-                    self._replace_engine_policies({x: PolicyCls for x in adopting_asns}, engine)
-                    print("got engine")
-                    for propagation_round in range(self.propagation_rounds):
-                        # Generate the test
-                        scenario = Scenario(trial=trial, engine=engine, attack=attack)
-                        print("about to run")
-                        # Run test, remove reference to engine and return it
-                        scenario.run(self.subgraphs, propagation_round)
-                        print("ran")
-                        # Get data point - just a frozen data class
-                        # Just makes it easier to access properties later
-                        dp = DataPoint(percent_adopt, PolicyCls, propagation_round)
-                        # Append the test to all tests for that data point
-                        self.data_points[dp].append(scenario)
-                        pbar.update()
+    def _run_adoption_percentage(self, percent_adopt):
 
-    def _get_data_points(self):
-        """Returns all data points for this graph
+        # Engine is not picklable or dillable AT ALL, so do it here
+        # Changing recursion depth does nothing
+        # Making nothing a reference does nothing
+        engine = CaidaCollector(BaseASCls=BGPAS,
+                                GraphCls=SimulatorEngine,
+                                _dir=f"/tmp/{percent_adopt}").run()
 
-        each of which contains a list of trials
-        """
+        self.subgraphs = self._get_subgraphs(engine) 
+        self._validate_subgraphs()
 
         data_points = dict()
-        for percent_adoption in self.percent_adoptions:
-            for Policy in self.adopt_policies:
+
+        for trial in range(self.num_trials):
+            print(f"Percent adopt {percent_adopt} trial {trial}        ", end="\r")
+            attack = self._get_attack()
+            #print("adopting ases")
+            adopting_asns = self._get_adopting_ases(percent_adopt, attack)
+            assert len(adopting_asns) != 0
+            #print("Selected adopting")
+            for PolicyCls in self.adopt_policies:
+                self._replace_engine_policies({x: PolicyCls for x in adopting_asns}, engine)
                 for propagation_round in range(self.propagation_rounds):
-                    dp = DataPoint(percent_adoption, Policy, propagation_round)
-                    data_points[dp] = list()
+                    # Generate the test
+                    scenario = Scenario(trial=trial, engine=engine, attack=attack)
+                    #print("about to run")
+                    # Run test, remove reference to engine and return it
+                    scenario.run(self.subgraphs, propagation_round)
+                    #print("ran")
+                    # Get data point - just a frozen data class
+                    # Just makes it easier to access properties later
+                    dp = DataPoint(percent_adopt, PolicyCls, propagation_round)
+                    # Append the test to all tests for that data point
+                    data_points[dp] = data_points.get(dp, [])
+                    data_points[dp].append(scenario)
         return data_points
 
     def _get_subgraphs(self, engine):

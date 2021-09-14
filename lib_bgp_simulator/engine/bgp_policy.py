@@ -73,6 +73,8 @@ class BGPPolicy:
 
             # For each announcement that was incoming
             for ann in ann_list:
+                
+
                 # BGP Loop Prevention Check
                 if self.asn in ann.as_path:
                     continue

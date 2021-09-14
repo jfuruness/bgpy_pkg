@@ -12,14 +12,10 @@ class SimulatorEngine(BGPDAG):
     def __init__(self,
                  *args,
                  BaseASCls=BGPAS,
-                 as_policies=dict(),
                  **kwargs):
         super(SimulatorEngine, self).__init__(*args,
                                               BaseASCls=BaseASCls,
                                               **kwargs)
-
-        for asn, Policy in as_policies.items():
-            self.as_dict[asn].policy = Policy()
 
     def run(self, announcements, propagation_round=0):
         """Propogates announcements"""
