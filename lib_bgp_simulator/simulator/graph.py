@@ -50,7 +50,7 @@ class Graph:
                         scenario = Scenario(trial=trial, engine=engine, attack=attack)
                         print("about to run")
                         # Run test, remove reference to engine and return it
-                        scenario.run(self.subgraphs)
+                        scenario.run(self.subgraphs, propagation_round)
                         print("ran")
                         # Get data point - just a frozen data class
                         # Just makes it easier to access properties later

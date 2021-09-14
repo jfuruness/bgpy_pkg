@@ -30,15 +30,16 @@ class Announcement:
             #raise NotImplementedError
         self.withdraw = False
 
-    def seed(self, as_dict):
+    def seed(self, as_dict, propagation_round):
         """Seeds announcement at the proper AS
 
         Since this is the simulator engine, we should
         never have to worry about overlapping announcements
         """
 
-        assert as_dict[self.seed_asn].policy.local_rib.get(self.prefix) is None, "Seeding conflict"
-        as_dict[self.seed_asn].policy.local_rib[self.prefix] = self
+        if propagation_round == 0:
+            assert as_dict[self.seed_asn].policy.local_rib.get(self.prefix) is None, "Seeding conflict"
+            as_dict[self.seed_asn].policy.local_rib[self.prefix] = self
 
     @property
     def origin(self):

@@ -9,9 +9,10 @@ class Scenario:
         self.attack = attack
         self.data = dict()
 
-    def run(self, subgraphs):
+    def run(self, subgraphs, propagation_round: int):
         # Run engine
-        self.engine.run(self.attack.announcements)
+        self.engine.run(self.attack.announcements,
+                        propagation_round=propagation_round)
         #print("Engine finished running")
         self._collect_data(subgraphs)
         #print("Calling post_run_hooks (if defined)")

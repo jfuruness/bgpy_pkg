@@ -21,13 +21,13 @@ class SimulatorEngine(BGPDAG):
         for asn, Policy in as_policies.items():
             self.as_dict[asn].policy = Policy()
 
-    def run(self, announcements):
+    def run(self, announcements, propagation_round=0):
         """Propogates announcements"""
 
-        self._seed(announcements)
+        self._seed(announcements, propagation_round)
         self._propagate()
 
-    def _seed(self, announcements: list):
+    def _seed(self, announcements: list, propagation_round: int):
         """Seeds/inserts announcements into the BGP DAG"""
 
         for ann in announcements:
@@ -37,7 +37,7 @@ class SimulatorEngine(BGPDAG):
             # Let the announcement do the seeding
             # That way it's easy for anns to seed with path manipulation
             # Simply inherit the announcement class
-            ann.seed(self.as_dict)
+            ann.seed(self.as_dict, propagation_round)
 
     def _propagate(self):
         """Propogates announcements"""
