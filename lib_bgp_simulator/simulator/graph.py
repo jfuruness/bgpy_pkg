@@ -9,6 +9,9 @@ from .scenario import Scenario
 from ..engine import BGPPolicy
 
 class Graph:
+    from .graph_writer import aggregate_and_write
+    from .graph_writer import _write
+
     def __init__(self,
                  percent_adoptions=[1, 5, 10, 20, 30, 50, 75, 99],
                  adopt_policies=[],

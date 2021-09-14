@@ -1,3 +1,6 @@
+import os
+import tarfile
+
 from tqdm import tqdm
 
 from lib_caida_collector import CaidaCollector
@@ -19,7 +22,8 @@ class Simulator(Base):
                           adopt_policies=[ROVPolicy],
                           AttackCls=SubprefixHijack,
                           num_trials=1,
-                          base_policy=BGPPolicy)]
+                          base_policy=BGPPolicy)],
+            graph_path="/tmp/graphs.tar.gz",
             ):
         """Downloads relationship data, runs simulation"""
 
@@ -32,4 +36,11 @@ class Simulator(Base):
         with tqdm(total=total, desc="Running trials") as pbar:
             for graph in graphs:
                 graph.run(base_engine, pbar)
+        for graph in graphs:
+            graph.aggregate_and_write(self._dir)
+
+        with tarfile.open(graph_path, "w:gz") as tar:
+            tar.add(self._dir, arcname=os.path.basename(self._dir))
+        print(f"Wrote graphs to {graph_path}")
+
         return graphs

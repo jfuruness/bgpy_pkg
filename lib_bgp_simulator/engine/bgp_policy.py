@@ -76,8 +76,7 @@ class BGPPolicy:
                 # BGP Loop Prevention Check
                 if self.asn in ann.as_path:
                     continue
-                new_ann_is_better = (True if best_ann is None else
-                    policy_self._new_ann_is_better(self, best_ann, ann, recv_relationship))
+                new_ann_is_better = policy_self._new_ann_is_better(self, best_ann, ann, recv_relationship)
                 # If the new priority is higher
                 if new_ann_is_better:
                     # Don't bother tiebreaking, if priority is same, keep existing
@@ -90,10 +89,13 @@ class BGPPolicy:
                     best_ann.recv_relationship = recv_relationship
                     # Save to local rib
                     policy_self.local_rib[prefix] = best_ann
-            policy_self.incoming_anns = IncomingAnns()
+        policy_self.incoming_anns = IncomingAnns()
 
     def _new_ann_is_better(policy_self, self, deep_ann, shallow_ann, recv_relationship: Relationships):
         """Assigns the priority to an announcement according to Gao Rexford"""
+
+        if deep_ann is None:
+            return True
 
         if deep_ann.recv_relationship.value > recv_relationship.value:
             return False
