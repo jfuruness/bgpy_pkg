@@ -1,6 +1,7 @@
 from collections import defaultdict
+import math
 import os
-from statistics import mean
+from statistics import mean, stdev
 
 import matplotlib
 import matplotlib.pyplot as plt
@@ -44,8 +45,12 @@ def aggregate_and_write(self, graph_dir):
                             line = non_adopting_lines[f"{policy} ({data_point.PolicyCls.name} adopting)"]
                         line.x.append(data_point.percent_adoption)
                         line.y.append(mean(list_of_percents))
-                        # NOTE: fix l8r
-                        line.yerr.append(0)
+                        # 95% conf intervals
+                        # If trials == 1, stdev doesn't work
+                        if len(list_of_percents) > 1:
+                            line.yerr.append(1.645 * 2 * stdev(list_of_percents) / math.sqrt(len(list_of_percents)))
+                        else:
+                            line.yerr.append(0)
                 # Write graph here
                 self._write(adopting_lines, outcome, subgraph_name,
                             propagation_round, graph_dir, adopting=True)

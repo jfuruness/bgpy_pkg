@@ -154,10 +154,10 @@ class Graph:
             # N choose k, k is number of ASNs that will adopt
             k = len(possible_adopting_ases) * percent_adopt // 100
             if k == 0:
-                logging.warning("ASNs adopting rounded down to 0, increasing it to 1")
+                logging.debug("ASNs adopting rounded down to 0, increasing it to 1")
                 k = 1
             elif k == len(possible_adopting_ases):
-                logging.warning("K is 100%, changing to 100% -1")
+                logging.debug("K is 100%, changing to 100% -1")
                 k -= 1
 
             asns_adopting.extend(random.sample(possible_adopting_ases, k))
