@@ -37,8 +37,18 @@ class Graph:
         self.data_points = dict()
 
         if debug:
+           # Done just to get subgraphs, change this later
+            engine = CaidaCollector(BaseASCls=BGPAS,
+                                    GraphCls=SimulatorEngine,
+                                    _dir="/tmp/throwaway_graph").run()
+
+            self.subgraphs = self._get_subgraphs(engine)
+            self._validate_subgraphs()
+           
             for x in self.percent_adoptions:
-                self.data_points.update(self._run_adoption_percentage(x))
+                self.data_points.update(self._run_adoption_percentage(x,
+                                                                      engine=engine,
+                                                                      subgraphs=self.subgraphs))
         else:
             print("About to run pool")
             # Pool is much faster than ProcessPoolExecutor
@@ -48,25 +58,28 @@ class Graph:
                     self.data_points.update(result)
 
         print("\nGraph complete")
-        # Done just to get subgraphs, change this later
-        engine = CaidaCollector(BaseASCls=BGPAS,
-                                GraphCls=SimulatorEngine,
-                                _dir="/tmp/throwaway_graph").run()
+        if not debug:
+            # Done just to get subgraphs, change this later
+            engine = CaidaCollector(BaseASCls=BGPAS,
+                                    GraphCls=SimulatorEngine,
+                                    _dir="/tmp/throwaway_graph").run()
 
-        self.subgraphs = self._get_subgraphs(engine)
-        self._validate_subgraphs()
+            self.subgraphs = self._get_subgraphs(engine)
+            self._validate_subgraphs()
 
-    def _run_adoption_percentage(self, percent_adopt):
+    def _run_adoption_percentage(self, percent_adopt, engine=None, subgraphs=None):
 
-        # Engine is not picklable or dillable AT ALL, so do it here
-        # Changing recursion depth does nothing
-        # Making nothing a reference does nothing
-        engine = CaidaCollector(BaseASCls=BGPAS,
-                                GraphCls=SimulatorEngine,
-                                _dir=f"/tmp/{percent_adopt}").run()
+        if engine is None:
+            # Engine is not picklable or dillable AT ALL, so do it here
+            # Changing recursion depth does nothing
+            # Making nothing a reference does nothing
+            engine = CaidaCollector(BaseASCls=BGPAS,
+                                    GraphCls=SimulatorEngine,
+                                    _dir=f"/tmp/{percent_adopt}").run()
 
-        self.subgraphs = self._get_subgraphs(engine) 
-        self._validate_subgraphs()
+        if subgraphs is None:
+            self.subgraphs = self._get_subgraphs(engine) 
+            self._validate_subgraphs()
 
         data_points = dict()
 
