@@ -66,14 +66,14 @@ class Scenario:
             else:
                 # Continue looping by getting the last AS
                 as_obj = self.engine.as_dict[most_specific_ann.as_path[1]]
-                # If the attacker is on the path, the outcome is hijacked
-                if as_obj.asn == self.attack.attacker_asn:
-                    return as_obj, has_rib
                 if as_obj.asn in ases:
                     print(ases)
                     input("looping")
                 else:
                     ases.add(as_obj.asn)
+                # If the attacker is on the path, the outcome is hijacked
+                if as_obj.asn == self.attack.attacker_asn:
+                    return as_obj, has_rib
         assert i != max_path, "looping"
         return as_obj, has_rib
 
