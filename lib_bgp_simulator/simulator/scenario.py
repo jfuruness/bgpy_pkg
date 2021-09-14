@@ -70,6 +70,9 @@ class Scenario:
                     input("looping")
                 else:
                     ases.add(as_obj.asn)
+                # If the attacker is on the path, the outcome is hijacked
+                if as_obj.asn == self.attack.attacker_asn:
+                    return as_obj, has_rib
         assert i != max_path, "looping"
         return as_obj, has_rib
 
