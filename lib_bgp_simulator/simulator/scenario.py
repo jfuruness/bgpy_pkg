@@ -66,6 +66,9 @@ class Scenario:
             else:
                 # Continue looping by getting the last AS
                 as_obj = self.engine.as_dict[most_specific_ann.as_path[1]]
+                # If the attacker is on the path, the outcome is hijacked
+                if as_obj.asn == self.attack.attacker_asn:
+                    return as_obj, has_rib
                 if as_obj.asn in ases:
                     print(ases)
                     input("looping")
@@ -95,6 +98,7 @@ class Scenario:
         return tuple(sorted(prefixes, key=lambda x: ipaddress.ip_network(x).num_addresses))
 
     def _get_most_specific_ann(self, as_obj, ordered_prefixes):
+        most_specific_prefix = None
         for prefix in ordered_prefixes:
             most_specific_prefix = as_obj.policy.local_rib.get(prefix)
             if most_specific_prefix is not None:

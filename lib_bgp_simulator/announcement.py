@@ -37,7 +37,8 @@ class Announcement:
         never have to worry about overlapping announcements
         """
 
-        assert as_dict[self.seed_asn].policy.local_rib.get(self.prefix) is None, "Seeding conflict"
+        assert (as_dict[self.seed_asn].policy.local_rib.get(self.prefix) is None or
+            as_dict[self.seed_asn].policy.local_rib.get(self.prefix).recv_relationship == Relationships.ORIGIN), "Seeding conflict"
         as_dict[self.seed_asn].policy.local_rib[self.prefix] = self
 
     @property
