@@ -38,7 +38,7 @@ class Announcement:
         """
 
         assert (as_dict[self.seed_asn].policy.local_rib.get(self.prefix) is None or
-            as_dict[self.seed_asn].policy.local_rib.get(self.prefix).recv_relationship == Relationships.ORIGIN), "Seeding conflict"
+            as_dict[self.seed_asn].policy.local_rib.get(self.prefix).seed_asn is not None), "Seeding conflict"
         as_dict[self.seed_asn].policy.local_rib[self.prefix] = self
 
     @property
