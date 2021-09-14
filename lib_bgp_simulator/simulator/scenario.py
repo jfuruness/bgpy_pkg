@@ -9,9 +9,10 @@ class Scenario:
         self.attack = attack
         self.data = dict()
 
-    def run(self, subgraphs):
+    def run(self, subgraphs, propagation_round: int):
         # Run engine
-        self.engine.run(self.attack.announcements)
+        self.engine.run(self.attack.announcements,
+                        propagation_round=propagation_round)
         #print("Engine finished running")
         self._collect_data(subgraphs)
         #print("Calling post_run_hooks (if defined)")
@@ -94,11 +95,11 @@ class Scenario:
         for ann in self.attack.announcements:
             prefixes.add(ann.prefix)
 
+        assert len(prefixes) > 0
         # Prefixes with most specific subprefix first
         return tuple(sorted(prefixes, key=lambda x: ipaddress.ip_network(x).num_addresses))
 
     def _get_most_specific_ann(self, as_obj, ordered_prefixes):
-        most_specific_prefix = None
         for prefix in ordered_prefixes:
             most_specific_prefix = as_obj.policy.local_rib.get(prefix)
             if most_specific_prefix is not None:
