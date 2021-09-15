@@ -18,8 +18,9 @@ def run_example(peers=list(),
     start = datetime.now()
     engine = SimulatorEngine(set(customer_providers),
                              set(peers),
-                             as_policies=as_policies,
                              BaseASCls=BaseASCls)
+    for asn, as_policy in as_policies.items():
+        engine.as_dict[asn].policy = as_policy()
     print((start-datetime.now()).total_seconds())
     print("Running engine")
     start = datetime.now()
