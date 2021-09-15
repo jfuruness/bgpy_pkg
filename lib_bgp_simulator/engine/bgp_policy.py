@@ -12,6 +12,19 @@ class BGPPolicy:
     __slots__ = ["local_rib", "incoming_anns"]
 
     name = "BGP"
+    subclass_names = []
+
+    def __init_subclass__(cls, **kwargs):
+        """This method essentially creates a list of all subclasses
+        This is allows us to know all attackers that have been created
+        """
+
+        super().__init_subclass__(**kwargs)
+        assert hasattr(cls, "name"), "Policy must have a name"
+        cls.subclass_names.append(cls.name)
+        msg = (f"Duplicate name {cls.name} with {cls.__name__}."
+               "Please make a class attr name for the policy something different")
+        assert len(set(cls.subclass_names)) == len(cls.subclass_names), msg
 
     def __init__(self):
         """Add local rib and data structures here
