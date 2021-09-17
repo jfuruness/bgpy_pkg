@@ -1,19 +1,35 @@
-from .ribs import RibsIn, RibsOut
+from collections import defaultdict
 
-class RecvQueue(RibsIn):
+
+class AnnQueue(defaultdict):
+    """Adj_RIBs_In for a BGP AS
+
+    Map neighbors to the announcements they sent to this AS.
+    {neighbor: {prefix: list_of_ann}}
+    """
+
+    __slots__ = []
+
+    def __init__(self, *args, **kwargs):
+        super(AnnQueue, self).__init__(lambda : defaultdict(list), *args, **kwargs)
+
+    def assert_eq(self, other):
+        """Checks equality of local ribs using prefix, origin, as_path, time"""
+
+        raise NotImplementedError
+
+
+class RecvQueue(AnnQueue):
     """Incomming announcements for a BGP AS
-
-    Done separately for easy comparisons in unit testing
 
     neighbor: {prefix: announcement_list}
     """
 
     __slots__ = []
 
-class SendQueue(RibsOut):
-    """Incomming announcements for a BGP AS
 
-    Done separately for easy comparisons in unit testing
+class SendQueue(AnnQueue):
+    """Incomming announcements for a BGP AS
 
     neighbor: {prefix: announcement_list}
     """

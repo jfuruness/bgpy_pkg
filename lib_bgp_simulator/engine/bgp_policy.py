@@ -80,7 +80,7 @@ class BGPPolicy:
             # Get announcement currently in local rib
             best_ann = policy_self.local_rib.get(prefix)
 
-            # Done here to optimize
+            # Announcement will never be overriden, so continue
             if best_ann is not None and best_ann.seed_asn is not None:
                 continue
 
@@ -91,17 +91,11 @@ class BGPPolicy:
                 # BGP Loop Prevention Check
                 if self.asn in ann.as_path:
                     continue
+
                 new_ann_is_better = policy_self._new_ann_is_better(self, best_ann, ann, recv_relationship)
                 # If the new priority is higher
                 if new_ann_is_better:
-                    # Don't bother tiebreaking, if priority is same, keep existing
-                    # Just like normal BGP
-                    # Tiebreaking with time and such should go into the priority
-                    # If we ever decide to do that
-                    best_ann = deepcopy(ann)
-                    best_ann.seed_asn = None
-                    best_ann.as_path = (self.asn, *ann.as_path)
-                    best_ann.recv_relationship = recv_relationship
+                    best_ann = policy_self._deep_copy_ann(self, ann, recv_relationship)
                     # Save to local rib
                     policy_self.local_rib[prefix] = best_ann
         policy_self.incoming_anns = IncomingAnns()
@@ -123,3 +117,12 @@ class BGPPolicy:
                 return True
             else:
                 return not deep_ann.as_path[0] <= self.asn
+
+    def _deep_copy_ann(policy_self, self, ann, recv_relationship):
+        """Deep copies ann and modifies attrs"""
+
+        ann = deepcopy(ann)
+        ann.seed_asn = None
+        ann.as_path = (self.asn, *ann.as_path)
+        ann.recv_relationship = recv_relationship
+        return ann

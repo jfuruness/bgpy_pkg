@@ -52,10 +52,12 @@ class SimulatorEngine(BGPDAG):
             #print("\npropagated to providers for this rank")
             #print(self)
 
-            for as_obj in rank:
-                as_obj.propagate_to_peers()
+            # MUST process ann before propagating
+            # This is a property for the bgp_ribs policy that MUST be maintained
             for as_obj in rank:
                 as_obj.process_incoming_anns(Relationships.PEERS)
+            for as_obj in rank:
+                as_obj.propagate_to_peers()
             #print("\npropagated to peers for this rank")
             #print(self)
 

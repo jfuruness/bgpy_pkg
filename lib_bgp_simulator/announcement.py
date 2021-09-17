@@ -41,6 +41,16 @@ class Announcement:
             assert as_dict[self.seed_asn].policy.local_rib.get(self.prefix) is None, "Seeding conflict"
             as_dict[self.seed_asn].policy.local_rib[self.prefix] = self
 
+    def prefix_path_attributes_eq(self, ann):
+        """Checks prefix and as path equivalency"""
+
+        if ann is None:
+            return False
+        elif isinstance(ann, Announcement):
+            return (ann.prefix, ann.as_path) == (self.prefix, self.as_path)
+        else:
+            raise NotImplementedError
+
     @property
     def origin(self):
         return self.as_path[-1]

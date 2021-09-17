@@ -11,10 +11,11 @@ from .bgp_policy import BGPPolicy
 
 
 class BGPRIBSPolicy(BGPPolicy):
-    __slots__ = ["ribs_in", "ribs_out", "recv_q", "send_q"]
+    __slots__ = ["ribs_in", "ribs_out", "recv_q", "send_q", "local_rib"]
 
     def __init__(self, *args, **kwargs):
-        super(BGPRIBSPolicy, self).__init__(*args, **kwargs)
+        self.local_rib = LocalRib()
+        # Ribs in contains unprocessed anns, unchanged from previous AS
         self.ribs_in = RibsIn()
         self.ribs_out = RibsOut()
         self.recv_q = RecvQueue()
@@ -26,97 +27,135 @@ class BGPRIBSPolicy(BGPPolicy):
         send_rels is the relationships that are acceptable to send
         """
 
+        # Populate the send queue, which might have anns and withdrawals
+        policy_self._populate_send_q(self, propagate_to, send_rels)
+        # Send announcements/withdrawals and add to ribs out
+        policy_self._send_anns(self, propagate_to)
+
+    def _populate_send_q(policy_self, self, propagate_to, send_rels):
+        """Populates send queue and ribs out"""
+
         for as_obj in getattr(self, propagate_to.name.lower()):
             for prefix, ann in policy_self.local_rib.items():
                 if ann.recv_relationship in send_rels:
-                    # Update RIBs out
-                    if ann not in policy_self.ribs_out[as_obj.asn][prefix]:
-                        policy_self.ribs_out[as_obj.asn][prefix].append(ann)
+                    ribs_out_ann = policy_self.ribs_out[as_obj.asn].get(prefix)
+                    # To make sure we don't repropagate anns we have already sent
+                    if not ann.prefix_path_attributes_eq(ribs_out_ann):
                         policy_self.send_q[as_obj.asn][prefix].append(ann)
 
+    def _send_anns(policy_self, self, propagate_to: Relationships):
+        """Sends announcements and populates ribs out"""
+
+        for as_obj in getattr(self, propagate_to.name.lower()):
             # Send everything in the send queues
             for prefix, anns in policy_self.send_q[as_obj.asn].items():
+                assert len(anns) <= 2, "Shouldn't have more than an ann and withdrawal"
                 for ann in anns:
                     as_obj.policy.recv_q[self.asn][prefix].append(ann)
+                    # Update Ribs out if it's not a withdraw
+                    if not ann.withdraw:
+                        policy_self.ribs_out[as_obj.asn][prefix] = ann
+        policy_self.send_q = SendQueue()
 
-    def process_incoming_anns(policy_self, self, recv_relationship: Relationships,
-        recv_q=None, limit_prefix=None):
+    def process_incoming_anns(policy_self, self, recv_relationship: Relationships):
         """Process all announcements that were incoming from a specific rel"""
 
-        if recv_q is None:
-            recv_q = policy_self.recv_q
+        for neighbor, inner_dict in policy_self.recv_q.items():
+            for prefix, ann_list in inner_dict.items():
 
-        for neighbor, value in recv_q.items():
-            for prefix, ann_list in value.items():
-                if limit_prefix is not None and limit_prefix != prefix:
-                    # limit_prefix allows limiting processing to a specific prefix
-                    continue
                 # Get announcement currently in local rib
-                og_best_ann = policy_self.local_rib.get(prefix)
-                best_ann = og_best_ann
-                # Done here to optimize
+                local_rib_ann = policy_self.local_rib.get(prefix)
+                best_ann = local_rib_ann
+
+                # Announcement will never be overriden, so continue
                 if best_ann is not None and best_ann.seed_asn is not None:
                     continue
 
                 # For each announcement that is incoming
                 for ann in ann_list:
                     if ann.withdraw:
-                        # Remove withdrawn routes
-                        ann_to_remove = deepcopy(ann)
-                        ann_to_remove.withdraw = False
-                        # NOTE: needs fixing
-                        policy_self.ribs_in[neighbor][prefix].remove(ann_to_remove)
-                        # Update AS path for loc_rib and ribs_out
-                        ann_to_remove.as_path = (self.asn, *ann.as_path)
-                        # NOTE: needs fixing
-                        self.loc_rib[prefix].remove(ann_to_remove)
-                        policy_self.withdraw_route(self, ann_to_remove)
-                        # Get next-best announcement from ribs_in
-                        # NOTE Needs fixing
-                        policy_self.process_incoming_anns(self, recv_relationship, 
-                            recv_q=policy_self.ribs_in, limit_prefix=prefix)
-                        continue
+                        policy_self._process_incoming_withdrawal(ann)
 
-                    # NOTE: needs fixing obj comp
-                    # BGP Loop Prevention Check
-                    if self.asn in ann.as_path:
-                        continue
+                    else:
+                        # BGP Loop Prevention Check
+                        if self.asn in ann.as_path:
+                            continue
 
-                    if not ann in policy_self.ribs_in[neighbor][prefix]:
-                        # If never seen before, copy to ribs_in
-                        policy_self.ribs_in[neighbor][prefix].append(ann)
+                        policy_self.ribs_in[neighbor][prefix] = (ann, recv_relationship)
 
-                    new_ann_is_better = (True if best_ann is None else 
-                        policy_self._new_ann_is_better(self, best_ann, ann, recv_relationship))
-                    # If the new priority is higher
-                    if new_ann_is_better:
-                        best_ann = deepcopy(ann)
-                        best_ann.seed_asn = None
-                        best_ann.as_path = (self.asn, *ann.as_path)
-                        best_ann.recv_relationship = recv_relationship
-                        # Save to local rib
-                        policy_self.local_rib[prefix] = best_ann
-                        # Update RIBs out, remove old announcement only
-                        if og_best_ann is not None:
-                            policy_self.withdraw_route(self, og_best_ann)
+                        new_ann_is_better = policy_self._new_ann_is_better(self, best_ann, ann, recv_relationship)
+                        # If the new priority is higher
+                        if new_ann_is_better:
+                            if best_ann is not None:
+                                policy_self.withdraw_route(self, best_ann)
+                            best_ann = policy_self._deep_copy_ann(self, ann, recv_relationship)
+                            # Save to local rib
+                            policy_self.local_rib[prefix] = best_ann
 
-        if recv_q == policy_self.recv_q and limit_prefix is None:
-            # If this is the normal processing of announcements, reset the recv_q
-            policy_self.recv_q = RecvQueue()
+        # If this is the normal processing of announcements, reset the recv_q
+        policy_self.recv_q = RecvQueue()
 
-    def withdraw_route(policy_self, self, ann_to_remove):
-        """Withdraw a route from all neighbors. 
+    def _process_incoming_withdrawal(policy_self, self, ann, neighbor, prefix,
+                                     recv_relationship):
+        current_ann_ribs_in, _ = policy_self.ribs_in[neighbor][prefix]
+        assert ann.prefix_path_attributes_eq(current_ann_ribs_in)
+        
+        # Remove ann from Ribs in
+        del policy_self.ribs_in[neighbor][prefix]
+
+        # Remove ann from local rib
+        withdraw_ann = self._deep_copy_ann(self, ann, recv_relationship)
+        if withdraw_ann.prefix_path_attributes_eq(self.loc_rib.get(prefix)):
+            del self.local_rib[prefix]
+            # Also remove from neighbors
+            policy_self._withdraw_ann_from_neighbors(self, withdraw_ann)
+
+        best_ann = policy_self._select_best_ribs_in(self, prefix)
+        
+        # Put new ann in local rib
+        if best_ann is not None:
+            policy_self.local_rib[prefix] = best_ann
+
+        policy_self.send_q[neighbor][prefix].extend([withdraw_ann, best_ann])
+
+    def _withdraw_ann_from_neighbors(policy_self, self, withdraw_ann):
+        """Withdraw a route from all neighbors.
 
         This function will not remove an announcement from the local rib, that
         should be done before calling this function.
+
+        Note that withdraw_ann is a deep copied ann
         """
-        prefix = ann_to_remove.prefix
-        for send_neighbor in policy_self.ribs_out:
-            # NOTE needs fixing
-            if ann_to_remove in policy_self.ribs_out[send_neighbor][prefix]:
-                # Otherwise propagate the withdrawal
-                withdraw = deepcopy(ann_to_remove)
-                withdraw.withdraw = True
-                policy_self.send_q[send_neighbor][prefix].append(withdraw)
-                # NOTE Shouldn't be a list
-                policy_self.ribs_out[send_neighbor][prefix].remove(ann_to_remove)
+
+        for send_neighbor, inner_dict in policy_self.ribs_out.items():
+            # If the two announcements are equal
+            if withdraw_ann.prefix_path_attributes_eq(inner_dict[withdraw_ann.prefix]):
+                assert withdraw_ann.withdraw is True
+                # Delete ann from ribs out
+                del policy_self.ribs_out[send_neighbor][prefix]
+                # If the ann being withdrawn has not been sent yet, remove it
+                # from the send_q and do not send the withdrawal. 
+                for i, ann in enumerate(policy_self.send_q[send_neighbor][prefix]):
+                    if withdraw_ann.prefix_path_attributes_eq(ann):
+                        policy_self.send_q[send_neighbor][prefix].pop(i)
+                        return
+                # Add to send queue
+                policy_self.send_q[send_neighbor][withdraw_ann.prefix].append(withdraw_ann)
+ 
+    def _select_best_ribs_in(policy_self, self, prefix):
+        """Selects best ann from ribs in. Remember, ribs in anns are NOT deep copied"""
+
+        ann_list = []
+        for neighbor, inner_dict in policy_self.ribs_in.items():
+            ann_list.append(inner_dict[prefix])
+
+        if len(ann_list) == 0:
+            return None
+        else:
+            # Get the best announcement
+            best_ann = None
+            for ann, recv_relationship in ann_list:
+                if policy_self._new_ann_is_better(self, best_ann, ann, recv_relationship):
+                    best_ann = self._deep_copy_ann(self, ann, recv_relationship)
+
+            return best_ann
