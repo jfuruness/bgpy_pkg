@@ -131,7 +131,7 @@ class BGPRIBSPolicy(BGPPolicy):
         # Check ribs_out to see where the withdrawn ann was sent
         for send_neighbor, inner_dict in policy_self.ribs_out.items():
             # If the two announcements are equal
-            if withdraw_ann.prefix_path_attributes_eq(inner_dict[withdraw_ann.prefix]):
+            if withdraw_ann.prefix_path_attributes_eq(inner_dict.get(withdraw_ann.prefix)):
                 # Delete ann from ribs out
                 del policy_self.ribs_out[send_neighbor][withdraw_ann.prefix]
                 # If the ann being withdrawn has not been sent yet, remove it
@@ -147,7 +147,7 @@ class BGPRIBSPolicy(BGPPolicy):
 
         # Now re-check the send_q for any that have not been sent yet
         for send_neighbor, inner_dict in policy_self.send_q.items():
-            for i, ann in enumerate(policy_self.send_q[send_neighbor][withdraw_ann.prefix]):
+            for i, ann in enumerate(inner_dict.get(withdraw_ann.prefix)):
                 if withdraw_ann.prefix_path_attributes_eq(ann) and not ann.withdraw:
                     policy_self.send_q[send_neighbor][withdraw_ann.prefix].pop(i)
  
@@ -166,6 +166,6 @@ class BGPRIBSPolicy(BGPPolicy):
             best_ann = None
             for ann, recv_relationship in ann_list:
                 if policy_self._new_ann_is_better(self, best_ann, ann, recv_relationship):
-                    best_ann = self._deep_copy_ann(self, ann, recv_relationship)
+                    best_ann = policy_self._deep_copy_ann(self, ann, recv_relationship)
 
             return best_ann

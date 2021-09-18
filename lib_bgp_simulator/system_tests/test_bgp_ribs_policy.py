@@ -165,7 +165,34 @@ def test_process_incoming_withdraw_ribs_out():
     # Assert send_q has withdrawal
     assert(len(a.policy.send_q[2][prefix]) == 1)
 
-
+def test_withdraw_best_alternative():
+    """Customers > Peers > Providers"""
+    prefix = '137.99.0.0/16'
+    ann1 = Announcement(prefix=prefix, as_path=(13794,),timestamp=0)
+    ann2 = Announcement(prefix=prefix, as_path=(13795,),timestamp=0)
+    ann3 = Announcement(prefix=prefix, as_path=(13796,),timestamp=0)
+    ann2_w = deepcopy(ann2)
+    ann2_w.withdraw = True
+    ann3_w = deepcopy(ann3)
+    ann3_w.withdraw = True
+    a = BGPAS(1) 
+    a.policy = BGPRIBSPolicy()
+    # Populate ribs_in with three announcements
+    a.policy.recv_q[13794][prefix].append(ann1)
+    a.policy.process_incoming_anns(a, Relationships.PROVIDERS)
+    a.policy.recv_q[13795][prefix].append(ann2)
+    a.policy.process_incoming_anns(a, Relationships.PEERS)
+    a.policy.recv_q[13796][prefix].append(ann3)
+    a.policy.process_incoming_anns(a, Relationships.CUSTOMERS)
+    assert(a.policy.local_rib[prefix].origin == ann3.origin)
+    # Withdraw ann3, now AS should use ann2
+    a.policy.recv_q[13796][prefix].append(ann3_w)
+    a.policy.process_incoming_anns(a, Relationships.CUSTOMERS)
+    assert(a.policy.local_rib[prefix].origin == ann2.origin)
+    # Withdraw ann2, now AS should use ann1
+    a.policy.recv_q[13795][prefix].append(ann2_w)
+    a.policy.process_incoming_anns(a, Relationships.PEERS)
+    assert(a.policy.local_rib[prefix].origin == ann1.origin)
 
 def test_propagate_bgp_ribs():
     r"""
