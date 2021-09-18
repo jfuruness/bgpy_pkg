@@ -87,7 +87,9 @@ class BGPRIBSPolicy(BGPPolicy):
                         # If the new priority is higher
                         if new_ann_is_better:
                             if best_ann is not None:
-                                policy_self.withdraw_route(self, best_ann)
+                                withdraw_ann = deepcopy(best_ann)
+                                withdraw_ann.withdraw = True
+                                policy_self._withdraw_ann_from_neighbors(self, best_ann)
                             best_ann = policy_self._deep_copy_ann(self, ann, recv_relationship)
                             # Save to local rib
                             policy_self.local_rib[prefix] = best_ann
