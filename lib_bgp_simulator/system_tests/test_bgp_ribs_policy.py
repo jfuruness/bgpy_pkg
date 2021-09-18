@@ -1,3 +1,5 @@
+from copy import deepcopy
+
 from lib_caida_collector import PeerLink, CustomerProviderLink as CPLink
 
 from ..enums import ASNs, Relationships
@@ -103,6 +105,26 @@ def test_process_incoming_anns_bgp_loop_check():
     a.policy.recv_q[13796][prefix].append(ann1)
     a.policy.process_incoming_anns(a, Relationships.CUSTOMERS)
     assert(prefix not in a.policy.local_rib)
+
+def test_process_incoming_withdraw():
+    """Sanity check that duplicated announcements do not cause problems"""
+    prefix = '137.99.0.0/16'
+    ann = Announcement(prefix=prefix, as_path=(13796,),timestamp=0)
+    ann_w = deepcopy(ann)
+    ann_w.withdraw = True
+    a = BGPAS(1) 
+    a.policy = BGPRIBSPolicy()
+    a.policy.recv_q[13796][prefix].append(ann)
+    a.policy.process_incoming_anns(a, Relationships.CUSTOMERS)
+    assert(a.policy.local_rib[prefix].origin == ann.origin)
+    a.policy.recv_q[13796][prefix].append(ann_w)
+    a.policy.process_incoming_anns(a, Relationships.CUSTOMERS)
+    # Assert announcement is removed from the local rib
+    assert(a.policy.local_rib.get(prefix) is None)
+    a.policy.recv_q[13796][prefix].append(ann)
+    a.policy.process_incoming_anns(a, Relationships.CUSTOMERS)
+    assert(a.policy.local_rib[prefix].origin == ann.origin)
+
 
 def test_propagate_bgp():
     r"""

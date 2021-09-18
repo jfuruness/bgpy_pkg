@@ -74,7 +74,7 @@ class BGPRIBSPolicy(BGPPolicy):
                 # For each announcement that is incoming
                 for ann in ann_list:
                     if ann.withdraw:
-                        policy_self._process_incoming_withdrawal(ann)
+                        policy_self._process_incoming_withdrawal(self, ann, neighbor, ann.prefix, recv_relationship)
 
                     else:
                         # BGP Loop Prevention Check
@@ -106,9 +106,9 @@ class BGPRIBSPolicy(BGPPolicy):
         del policy_self.ribs_in[neighbor][prefix]
 
         # Remove ann from local rib
-        withdraw_ann = self._deep_copy_ann(self, ann, recv_relationship)
-        if withdraw_ann.prefix_path_attributes_eq(self.loc_rib.get(prefix)):
-            del self.local_rib[prefix]
+        withdraw_ann = policy_self._deep_copy_ann(self, ann, recv_relationship)
+        if withdraw_ann.prefix_path_attributes_eq(policy_self.local_rib.get(prefix)):
+            del policy_self.local_rib[prefix]
             # Also remove from neighbors
             policy_self._withdraw_ann_from_neighbors(self, withdraw_ann)
 
@@ -149,7 +149,8 @@ class BGPRIBSPolicy(BGPPolicy):
 
         ann_list = []
         for neighbor, inner_dict in policy_self.ribs_in.items():
-            ann_list.append(inner_dict[prefix])
+            if prefix in inner_dict:
+                ann_list.append(inner_dict[prefix])
 
         if len(ann_list) == 0:
             return None
