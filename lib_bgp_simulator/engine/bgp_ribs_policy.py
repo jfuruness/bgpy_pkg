@@ -99,6 +99,14 @@ class BGPRIBSPolicy(BGPPolicy):
 
     def _process_incoming_withdrawal(policy_self, self, ann, neighbor, prefix,
                                      recv_relationship):
+
+        # Return if the current ann was seeded (for an attack)
+        local_rib_ann = policy_self.local_rib.get(prefix)
+        if (local_rib_ann is not None and
+            ann.prefix_path_attributes_eq(local_rib_ann) and
+            local_rib_ann.seed_asn is not None):
+            return
+
         current_ann_ribs_in, _ = policy_self.ribs_in[neighbor][prefix]
         assert ann.prefix_path_attributes_eq(current_ann_ribs_in)
         

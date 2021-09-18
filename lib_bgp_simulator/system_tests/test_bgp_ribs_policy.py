@@ -194,6 +194,24 @@ def test_withdraw_best_alternative():
     a.policy.process_incoming_anns(a, Relationships.PEERS)
     assert(a.policy.local_rib[prefix].origin == ann1.origin)
 
+def test_withdraw_seeded():
+    """Customers > Peers > Providers"""
+    prefix = '137.99.0.0/16'
+    ann = Announcement(prefix=prefix, as_path=(13796,),timestamp=0)
+    ann_w = deepcopy(ann)
+    ann_w.withdraw = True
+    a = BGPAS(1) 
+    a.policy = BGPRIBSPolicy()
+    # Populate ribs_in with an announcement
+    a.policy.recv_q[13796][prefix].append(ann)
+    a.policy.process_incoming_anns(a, Relationships.CUSTOMERS)
+    a.policy.local_rib[prefix].seed_asn = 1
+    # Withdraw ann
+    a.policy.recv_q[13796][prefix].append(ann_w)
+    a.policy.process_incoming_anns(a, Relationships.CUSTOMERS)
+    # Assert ann is still there
+    assert(a.policy.local_rib[prefix].origin == ann.origin)
+
 def test_propagate_bgp_ribs():
     r"""
     Test propagating up without multihomed support in the following test graph.
