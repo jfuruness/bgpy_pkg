@@ -145,6 +145,26 @@ def test_process_incoming_withdraw_send_q():
     # Assert send_q is empty
     assert(len(a.policy.send_q[2][prefix]) == 0)
 
+def test_process_incoming_withdraw_ribs_out():
+    """Test processing of incoming withdraw when announcement has already been sent to neighbors"""
+    prefix = '137.99.0.0/16'
+    ann = Announcement(prefix=prefix, as_path=(13796,),timestamp=0)
+    ann_w = deepcopy(ann)
+    ann_w.withdraw = True
+    a = BGPAS(1) 
+    a.policy = BGPRIBSPolicy()
+    a.policy.recv_q[13796][prefix].append(ann)
+    a.policy.process_incoming_anns(a, Relationships.CUSTOMERS)
+    # Assert ann was received
+    assert(a.policy.local_rib[prefix].origin == ann.origin)
+    # Manually add this to the ribs out
+    a.policy.ribs_out[2][prefix] = a.policy.local_rib[prefix]
+    # Withdraw it
+    a.policy.recv_q[13796][prefix].append(ann_w)
+    a.policy.process_incoming_anns(a, Relationships.CUSTOMERS)
+    # Assert send_q has withdrawal
+    assert(len(a.policy.send_q[2][prefix]) == 1)
+
 
 
 def test_propagate_bgp_ribs():
