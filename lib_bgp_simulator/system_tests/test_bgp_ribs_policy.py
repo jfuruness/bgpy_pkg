@@ -32,10 +32,8 @@ def test_process_incoming_anns_bgp_duplicate():
     a.policy = BGPRIBSPolicy()
     a.policy.recv_q[13796][prefix].append(ann)
     a.policy.process_incoming_anns(a, Relationships.CUSTOMERS)
-    print("first", a.policy.local_rib)
     a.policy.recv_q[13796][prefix].append(ann)
     a.policy.process_incoming_anns(a, Relationships.CUSTOMERS)
-    print("second", a.policy.local_rib)
     # assert announcement was accepted to local rib
     assert(a.policy.local_rib[prefix].origin == ann.origin)
 
@@ -107,7 +105,7 @@ def test_process_incoming_anns_bgp_loop_check():
     assert(prefix not in a.policy.local_rib)
 
 def test_process_incoming_withdraw():
-    """Sanity check that duplicated announcements do not cause problems"""
+    """Test basic processing of incoming withdraw"""
     prefix = '137.99.0.0/16'
     ann = Announcement(prefix=prefix, as_path=(13796,),timestamp=0)
     ann_w = deepcopy(ann)
@@ -116,6 +114,7 @@ def test_process_incoming_withdraw():
     a.policy = BGPRIBSPolicy()
     a.policy.recv_q[13796][prefix].append(ann)
     a.policy.process_incoming_anns(a, Relationships.CUSTOMERS)
+    # Assert ann was received
     assert(a.policy.local_rib[prefix].origin == ann.origin)
     a.policy.recv_q[13796][prefix].append(ann_w)
     a.policy.process_incoming_anns(a, Relationships.CUSTOMERS)
@@ -123,10 +122,32 @@ def test_process_incoming_withdraw():
     assert(a.policy.local_rib.get(prefix) is None)
     a.policy.recv_q[13796][prefix].append(ann)
     a.policy.process_incoming_anns(a, Relationships.CUSTOMERS)
+    # Assert ann was replaced in local rib
     assert(a.policy.local_rib[prefix].origin == ann.origin)
 
+def test_process_incoming_withdraw_send_q():
+    """Test processing of incoming withdraw when announcement has not yet been sent to neighbors"""
+    prefix = '137.99.0.0/16'
+    ann = Announcement(prefix=prefix, as_path=(13796,),timestamp=0)
+    ann_w = deepcopy(ann)
+    ann_w.withdraw = True
+    a = BGPAS(1) 
+    a.policy = BGPRIBSPolicy()
+    a.policy.recv_q[13796][prefix].append(ann)
+    a.policy.process_incoming_anns(a, Relationships.CUSTOMERS)
+    # Assert ann was received
+    assert(a.policy.local_rib[prefix].origin == ann.origin)
+    # Manually add this to the send queue
+    a.policy.send_q[2][prefix].append(a.policy.local_rib[prefix])
+    # Withdraw it
+    a.policy.recv_q[13796][prefix].append(ann_w)
+    a.policy.process_incoming_anns(a, Relationships.CUSTOMERS)
+    # Assert send_q is empty
+    assert(len(a.policy.send_q[2][prefix]) == 0)
 
-def test_propagate_bgp():
+
+
+def test_propagate_bgp_ribs():
     r"""
     Test propagating up without multihomed support in the following test graph.
     Horizontal lines are peer relationships, vertical lines are customer-provider. 

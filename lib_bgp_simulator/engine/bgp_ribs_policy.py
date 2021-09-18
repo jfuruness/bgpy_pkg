@@ -89,7 +89,7 @@ class BGPRIBSPolicy(BGPPolicy):
                             if best_ann is not None:
                                 withdraw_ann = deepcopy(best_ann)
                                 withdraw_ann.withdraw = True
-                                policy_self._withdraw_ann_from_neighbors(self, best_ann)
+                                policy_self._withdraw_ann_from_neighbors(self, withdraw_ann)
                             best_ann = policy_self._deep_copy_ann(self, ann, recv_relationship)
                             # Save to local rib
                             policy_self.local_rib[prefix] = best_ann
@@ -118,8 +118,6 @@ class BGPRIBSPolicy(BGPPolicy):
         if best_ann is not None:
             policy_self.local_rib[prefix] = best_ann
 
-        policy_self.send_q[neighbor][prefix].extend([withdraw_ann, best_ann])
-
     def _withdraw_ann_from_neighbors(policy_self, self, withdraw_ann):
         """Withdraw a route from all neighbors.
 
@@ -129,20 +127,29 @@ class BGPRIBSPolicy(BGPPolicy):
         Note that withdraw_ann is a deep copied ann
         """
 
+        assert withdraw_ann.withdraw is True
+        # Check ribs_out to see where the withdrawn ann was sent
         for send_neighbor, inner_dict in policy_self.ribs_out.items():
             # If the two announcements are equal
             if withdraw_ann.prefix_path_attributes_eq(inner_dict[withdraw_ann.prefix]):
-                assert withdraw_ann.withdraw is True
                 # Delete ann from ribs out
-                del policy_self.ribs_out[send_neighbor][prefix]
+                del policy_self.ribs_out[send_neighbor][withdraw_ann.prefix]
                 # If the ann being withdrawn has not been sent yet, remove it
                 # from the send_q and do not send the withdrawal. 
-                for i, ann in enumerate(policy_self.send_q[send_neighbor][prefix]):
-                    if withdraw_ann.prefix_path_attributes_eq(ann):
-                        policy_self.send_q[send_neighbor][prefix].pop(i)
-                        return
-                # Add to send queue
-                policy_self.send_q[send_neighbor][withdraw_ann.prefix].append(withdraw_ann)
+                found_in_send_q = False
+                for i, ann in enumerate(policy_self.send_q[send_neighbor][withdraw_ann.prefix]):
+                    if withdraw_ann.prefix_path_attributes_eq(ann) and not ann.withdraw:
+                        policy_self.send_q[send_neighbor][withdraw_ann.prefix].pop(i)
+                        found_in_send_q = True
+                # Add withdrawal to send queue
+                if not found_in_send_q:
+                    policy_self.send_q[send_neighbor][withdraw_ann.prefix].append(withdraw_ann)
+
+        # Now re-check the send_q for any that have not been sent yet
+        for send_neighbor, inner_dict in policy_self.send_q.items():
+            for i, ann in enumerate(policy_self.send_q[send_neighbor][withdraw_ann.prefix]):
+                if withdraw_ann.prefix_path_attributes_eq(ann) and not ann.withdraw:
+                    policy_self.send_q[send_neighbor][withdraw_ann.prefix].pop(i)
  
     def _select_best_ribs_in(policy_self, self, prefix):
         """Selects best ann from ribs in. Remember, ribs in anns are NOT deep copied"""

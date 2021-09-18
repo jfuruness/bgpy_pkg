@@ -28,10 +28,8 @@ def test_process_incoming_anns_bgp_duplicate():
     a = BGPAS(1) 
     a.policy.incoming_anns[prefix].append(ann)
     a.policy.process_incoming_anns(a, Relationships.CUSTOMERS)
-    print("first", a.policy.local_rib)
     a.policy.incoming_anns[prefix].append(ann)
     a.policy.process_incoming_anns(a, Relationships.CUSTOMERS)
-    print("second", a.policy.local_rib)
     # assert announcement was accepted to local rib
     assert(a.policy.local_rib[prefix].origin == ann.origin)
 
