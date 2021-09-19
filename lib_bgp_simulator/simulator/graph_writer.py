@@ -1,6 +1,7 @@
 from collections import defaultdict
 import math
 import os
+import shutil
 from statistics import mean, stdev
 
 import matplotlib
@@ -17,9 +18,12 @@ class Line:
 def aggregate_and_write(self, graph_dir):
     """Writes the graph in specified dir"""
 
+    print("Can't do this with more than 1 graph, write a better solution")
+    shutil.rmtree(graph_dir)
     for subgraph_name in self.subgraphs:
         for outcome in list(Outcomes):
             for propagation_round in range(self.propagation_rounds):
+                all_ases_lines = defaultdict(Line)
                 adopting_lines = defaultdict(Line)
                 non_adopting_lines = defaultdict(Line)
                 for data_point, list_of_scenarios in self.data_points.items():
@@ -35,12 +39,25 @@ def aggregate_and_write(self, graph_dir):
                         totals = scenario.data["totals"][subgraph_name]
                         for policy, num in data.items():
                             percentages[policy].append(num * 100 // totals[policy])
+                        agg_num = 0
+                        total = 0
+                        # For aggregate graph lol
+                        #####################################################3
+                        for subg_name in self.subgraphs:
+                            data = scenario.data["data"][subg_name][outcome]
+                            totals = scenario.data["totals"][subg_name]
+                            for policy, num in data.items():
+                                agg_num += num
+                                total += totals[policy]
+                        percentages["all_ases"].append(agg_num * 100 // total)
 
                     # Aggregate now into a line
                     for policy, list_of_percents in percentages.items():
                         line = None
                         if policy == data_point.PolicyCls.name:
                             line = adopting_lines[policy]
+                        elif policy == "all_ases":
+                            line = all_ases_lines[f"all_ases {data_point.PolicyCls.name}"]
                         else:
                             line = non_adopting_lines[f"{policy} ({data_point.PolicyCls.name} adopting)"]
                         line.x.append(data_point.percent_adoption)
@@ -53,11 +70,13 @@ def aggregate_and_write(self, graph_dir):
                             line.yerr.append(0)
                 # Write graph here
                 self._write(adopting_lines, outcome, subgraph_name,
-                            propagation_round, graph_dir, adopting=True)
+                            propagation_round, graph_dir, adopting="adopting")
                 self._write(non_adopting_lines, outcome, subgraph_name,
-                            propagation_round, graph_dir, adopting=False)
+                            propagation_round, graph_dir, adopting="non_adopting")
+                self._write(all_ases_lines, outcome, "ALL", propagation_round,
+                            graph_dir, adopting="all")
 
-def _write(self, lines, outcome, subgraph_name, propagation_round, graph_dir, adopting=False):
+def _write(self, lines, outcome, subgraph_name, propagation_round, graph_dir, adopting=None):
     fig, ax = plt.subplots()
     plt.xlim(0, 100)
     plt.ylim(0, 100)
@@ -82,7 +101,10 @@ def _write(self, lines, outcome, subgraph_name, propagation_round, graph_dir, ad
     atk_dir = os.path.join(subgraph_dir, self.AttackCls.__name__)
     if not os.path.exists(atk_dir):
         os.makedirs(atk_dir)
-    adopting_dir = os.path.join(atk_dir, "adopting" if adopting else "non_adopting")
-    if not os.path.exists(adopting_dir):
-        os.makedirs(adopting_dir)
+    if adopting != "all":
+        adopting_dir = os.path.join(atk_dir, adopting)
+        if not os.path.exists(adopting_dir):
+            os.makedirs(adopting_dir)
+    else:
+        adopting_dir = atk_dir
     plt.savefig(os.path.join(adopting_dir, fname))
