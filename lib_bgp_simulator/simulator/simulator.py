@@ -26,9 +26,13 @@ class Simulator(Base):
             ):
         """Downloads relationship data, runs simulation"""
 
+        # Done here so that the caida files are cached
+        # So that multiprocessing doesn't interfere with one another
+        CaidaCollector(_dir=self._dir).read_file()
+
         total = sum(x.total_scenarios for x in graphs)
         for graph in graphs:
-            graph.run(self.parse_cpus, debug=self.debug)
+            graph.run(self.parse_cpus, self._dir, debug=self.debug)
         for graph in graphs:
             graph.aggregate_and_write(self._dir)
 

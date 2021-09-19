@@ -33,14 +33,15 @@ class Graph:
         self.AttackCls = AttackCls
         self.base_policy = base_policy
 
-    def run(self, parse_cpus, debug=False):
+    def run(self, parse_cpus, _dir, debug=False):
         self.data_points = dict()
+        self._dir = _dir
 
         if debug:
-           # Done just to get subgraphs, change this later
+            # Done just to get subgraphs, change this later
             engine = CaidaCollector(BaseASCls=BGPAS,
                                     GraphCls=SimulatorEngine,
-                                    _dir="/tmp/throwaway_graph").run()
+                                    _dir=_dir).run(tsv=False)
 
             self.subgraphs = self._get_subgraphs(engine)
             self._validate_subgraphs()
@@ -62,7 +63,7 @@ class Graph:
             # Done just to get subgraphs, change this later
             engine = CaidaCollector(BaseASCls=BGPAS,
                                     GraphCls=SimulatorEngine,
-                                    _dir="/tmp/throwaway_graph").run()
+                                    _dir=_dir).run(tsv=False)
 
             self.subgraphs = self._get_subgraphs(engine)
             self._validate_subgraphs()
@@ -75,7 +76,8 @@ class Graph:
             # Making nothing a reference does nothing
             engine = CaidaCollector(BaseASCls=BGPAS,
                                     GraphCls=SimulatorEngine,
-                                    _dir=f"/tmp/{percent_adopt}").run()
+                                    _dir=self._dir,
+                                    _dir_exist_ok=True).run(tsv=False)
 
         if subgraphs is None:
             self.subgraphs = self._get_subgraphs(engine) 
