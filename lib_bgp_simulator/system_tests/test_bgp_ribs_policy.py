@@ -1,3 +1,5 @@
+from copy import deepcopy
+
 from lib_caida_collector import PeerLink, CustomerProviderLink as CPLink
 
 from ..enums import ASNs, Relationships
@@ -16,7 +18,8 @@ def test_process_incoming_anns_bgp():
     prefix = '137.99.0.0/16'
     ann = Announcement(prefix=prefix, as_path=(13796,),timestamp=0)
     a = BGPAS(1) 
-    a.policy.incoming_anns[prefix].append(ann)
+    a.policy = BGPRIBSPolicy()
+    a.policy.recv_q[13796][prefix].append(ann)
     a.policy.process_incoming_anns(a, Relationships.CUSTOMERS)
     # assert announcement was accepted to local rib
     assert(a.policy.local_rib[prefix].origin == ann.origin)
@@ -26,9 +29,10 @@ def test_process_incoming_anns_bgp_duplicate():
     prefix = '137.99.0.0/16'
     ann = Announcement(prefix=prefix, as_path=(13796,),timestamp=0)
     a = BGPAS(1) 
-    a.policy.incoming_anns[prefix].append(ann)
+    a.policy = BGPRIBSPolicy()
+    a.policy.recv_q[13796][prefix].append(ann)
     a.policy.process_incoming_anns(a, Relationships.CUSTOMERS)
-    a.policy.incoming_anns[prefix].append(ann)
+    a.policy.recv_q[13796][prefix].append(ann)
     a.policy.process_incoming_anns(a, Relationships.CUSTOMERS)
     # assert announcement was accepted to local rib
     assert(a.policy.local_rib[prefix].origin == ann.origin)
@@ -40,16 +44,17 @@ def test_process_incoming_anns_bgp_relationships():
     ann2 = Announcement(prefix=prefix, as_path=(13795,),timestamp=0)
     ann3 = Announcement(prefix=prefix, as_path=(13796,),timestamp=0)
     a = BGPAS(1) 
-    a.policy.incoming_anns[prefix].append(ann1)
+    a.policy = BGPRIBSPolicy()
+    a.policy.recv_q[13794][prefix].append(ann1)
     a.policy.process_incoming_anns(a, Relationships.PROVIDERS)
     assert(a.policy.local_rib[prefix].origin == ann1.origin)
-    a.policy.incoming_anns[prefix].append(ann2)
+    a.policy.recv_q[13795][prefix].append(ann2)
     a.policy.process_incoming_anns(a, Relationships.PEERS)
     assert(a.policy.local_rib[prefix].origin == ann2.origin)
-    a.policy.incoming_anns[prefix].append(ann3)
+    a.policy.recv_q[13796][prefix].append(ann3)
     a.policy.process_incoming_anns(a, Relationships.CUSTOMERS)
     assert(a.policy.local_rib[prefix].origin == ann3.origin)
-    a.policy.incoming_anns[prefix].append(ann1)
+    a.policy.recv_q[13794][prefix].append(ann1)
     a.policy.process_incoming_anns(a, Relationships.PROVIDERS)
     assert(a.policy.local_rib[prefix].origin == ann3.origin)
 
@@ -60,16 +65,17 @@ def test_process_incoming_anns_bgp_path_len():
     ann2 = Announcement(prefix=prefix, as_path=(2, 13795,),timestamp=0)
     ann3 = Announcement(prefix=prefix, as_path=(13796,),timestamp=0)
     a = BGPAS(1) 
-    a.policy.incoming_anns[prefix].append(ann1)
+    a.policy = BGPRIBSPolicy()
+    a.policy.recv_q[2][prefix].append(ann1)
     a.policy.process_incoming_anns(a, Relationships.PROVIDERS)
     assert(a.policy.local_rib[prefix].origin == ann1.origin)
-    a.policy.incoming_anns[prefix].append(ann2)
+    a.policy.recv_q[2][prefix].append(ann2)
     a.policy.process_incoming_anns(a, Relationships.PROVIDERS)
     assert(a.policy.local_rib[prefix].origin == ann2.origin)
-    a.policy.incoming_anns[prefix].append(ann3)
+    a.policy.recv_q[13796][prefix].append(ann3)
     a.policy.process_incoming_anns(a, Relationships.PROVIDERS)
     assert(a.policy.local_rib[prefix].origin == ann3.origin)
-    a.policy.incoming_anns[prefix].append(ann1)
+    a.policy.recv_q[2][prefix].append(ann1)
     a.policy.process_incoming_anns(a, Relationships.PROVIDERS)
     assert(a.policy.local_rib[prefix].origin == ann3.origin)
 
@@ -81,9 +87,10 @@ def test_process_incoming_anns_bgp_seeded():
     ann2 = Announcement(prefix=prefix, as_path=(13795,),timestamp=0)
     ann3 = Announcement(prefix=prefix, as_path=(13796,),timestamp=0)
     a = BGPAS(1) 
+    a.policy = BGPRIBSPolicy()
     a.policy.local_rib[prefix] = ann1
     assert(a.policy.local_rib[prefix].origin == ann1.origin)
-    a.policy.incoming_anns[prefix].append(ann2)
+    a.policy.recv_q[13795][prefix].append(ann2)
     a.policy.process_incoming_anns(a, Relationships.CUSTOMERS)
     assert(a.policy.local_rib[prefix].origin == ann1.origin)
 
@@ -92,11 +99,120 @@ def test_process_incoming_anns_bgp_loop_check():
     prefix = '137.99.0.0/16'
     ann1 = Announcement(prefix=prefix, as_path=(13796, 1),timestamp=0)
     a = BGPAS(1) 
-    a.policy.incoming_anns[prefix].append(ann1)
+    a.policy = BGPRIBSPolicy()
+    a.policy.recv_q[13796][prefix].append(ann1)
     a.policy.process_incoming_anns(a, Relationships.CUSTOMERS)
     assert(prefix not in a.policy.local_rib)
 
-def test_propagate_bgp():
+def test_process_incoming_withdraw():
+    """Test basic processing of incoming withdraw"""
+    prefix = '137.99.0.0/16'
+    ann = Announcement(prefix=prefix, as_path=(13796,),timestamp=0)
+    ann_w = deepcopy(ann)
+    ann_w.withdraw = True
+    a = BGPAS(1) 
+    a.policy = BGPRIBSPolicy()
+    a.policy.recv_q[13796][prefix].append(ann)
+    a.policy.process_incoming_anns(a, Relationships.CUSTOMERS)
+    # Assert ann was received
+    assert(a.policy.local_rib[prefix].origin == ann.origin)
+    a.policy.recv_q[13796][prefix].append(ann_w)
+    a.policy.process_incoming_anns(a, Relationships.CUSTOMERS)
+    # Assert announcement is removed from the local rib
+    assert(a.policy.local_rib.get(prefix) is None)
+    a.policy.recv_q[13796][prefix].append(ann)
+    a.policy.process_incoming_anns(a, Relationships.CUSTOMERS)
+    # Assert ann was replaced in local rib
+    assert(a.policy.local_rib[prefix].origin == ann.origin)
+
+def test_process_incoming_withdraw_send_q():
+    """Test processing of incoming withdraw when announcement has not yet been sent to neighbors"""
+    prefix = '137.99.0.0/16'
+    ann = Announcement(prefix=prefix, as_path=(13796,),timestamp=0)
+    ann_w = deepcopy(ann)
+    ann_w.withdraw = True
+    a = BGPAS(1) 
+    a.policy = BGPRIBSPolicy()
+    a.policy.recv_q[13796][prefix].append(ann)
+    a.policy.process_incoming_anns(a, Relationships.CUSTOMERS)
+    # Assert ann was received
+    assert(a.policy.local_rib[prefix].origin == ann.origin)
+    # Manually add this to the send queue
+    a.policy.send_q[2][prefix].append(a.policy.local_rib[prefix])
+    # Withdraw it
+    a.policy.recv_q[13796][prefix].append(ann_w)
+    a.policy.process_incoming_anns(a, Relationships.CUSTOMERS)
+    # Assert send_q is empty
+    assert(len(a.policy.send_q[2][prefix]) == 0)
+
+def test_process_incoming_withdraw_ribs_out():
+    """Test processing of incoming withdraw when announcement has already been sent to neighbors"""
+    prefix = '137.99.0.0/16'
+    ann = Announcement(prefix=prefix, as_path=(13796,),timestamp=0)
+    ann_w = deepcopy(ann)
+    ann_w.withdraw = True
+    a = BGPAS(1) 
+    a.policy = BGPRIBSPolicy()
+    a.policy.recv_q[13796][prefix].append(ann)
+    a.policy.process_incoming_anns(a, Relationships.CUSTOMERS)
+    # Assert ann was received
+    assert(a.policy.local_rib[prefix].origin == ann.origin)
+    # Manually add this to the ribs out
+    a.policy.ribs_out[2][prefix] = a.policy.local_rib[prefix]
+    # Withdraw it
+    a.policy.recv_q[13796][prefix].append(ann_w)
+    a.policy.process_incoming_anns(a, Relationships.CUSTOMERS)
+    # Assert send_q has withdrawal
+    assert(len(a.policy.send_q[2][prefix]) == 1)
+
+def test_withdraw_best_alternative():
+    """Customers > Peers > Providers"""
+    prefix = '137.99.0.0/16'
+    ann1 = Announcement(prefix=prefix, as_path=(13794,),timestamp=0)
+    ann2 = Announcement(prefix=prefix, as_path=(13795,),timestamp=0)
+    ann3 = Announcement(prefix=prefix, as_path=(13796,),timestamp=0)
+    ann2_w = deepcopy(ann2)
+    ann2_w.withdraw = True
+    ann3_w = deepcopy(ann3)
+    ann3_w.withdraw = True
+    a = BGPAS(1) 
+    a.policy = BGPRIBSPolicy()
+    # Populate ribs_in with three announcements
+    a.policy.recv_q[13794][prefix].append(ann1)
+    a.policy.process_incoming_anns(a, Relationships.PROVIDERS)
+    a.policy.recv_q[13795][prefix].append(ann2)
+    a.policy.process_incoming_anns(a, Relationships.PEERS)
+    a.policy.recv_q[13796][prefix].append(ann3)
+    a.policy.process_incoming_anns(a, Relationships.CUSTOMERS)
+    assert(a.policy.local_rib[prefix].origin == ann3.origin)
+    # Withdraw ann3, now AS should use ann2
+    a.policy.recv_q[13796][prefix].append(ann3_w)
+    a.policy.process_incoming_anns(a, Relationships.CUSTOMERS)
+    assert(a.policy.local_rib[prefix].origin == ann2.origin)
+    # Withdraw ann2, now AS should use ann1
+    a.policy.recv_q[13795][prefix].append(ann2_w)
+    a.policy.process_incoming_anns(a, Relationships.PEERS)
+    assert(a.policy.local_rib[prefix].origin == ann1.origin)
+
+def test_withdraw_seeded():
+    """Customers > Peers > Providers"""
+    prefix = '137.99.0.0/16'
+    ann = Announcement(prefix=prefix, as_path=(13796,),timestamp=0)
+    ann_w = deepcopy(ann)
+    ann_w.withdraw = True
+    a = BGPAS(1) 
+    a.policy = BGPRIBSPolicy()
+    # Populate ribs_in with an announcement
+    a.policy.recv_q[13796][prefix].append(ann)
+    a.policy.process_incoming_anns(a, Relationships.CUSTOMERS)
+    a.policy.local_rib[prefix].seed_asn = 1
+    # Withdraw ann
+    a.policy.recv_q[13796][prefix].append(ann_w)
+    a.policy.process_incoming_anns(a, Relationships.CUSTOMERS)
+    # Assert ann is still there
+    assert(a.policy.local_rib[prefix].origin == ann.origin)
+
+def test_propagate_bgp_ribs():
     r"""
     Test propagating up without multihomed support in the following test graph.
     Horizontal lines are peer relationships, vertical lines are customer-provider. 
@@ -116,7 +232,7 @@ def test_propagate_bgp():
                           CPLink(provider_asn=2, customer_asn=4),
                           CPLink(provider_asn=3, customer_asn=7)]
     # Number identifying the type of AS class
-    as_policies = {asn: BGPPolicy for asn in
+    as_policies = {asn: BGPRIBSPolicy for asn in
                    list(range(1, 8))}
 
     # Announcements
