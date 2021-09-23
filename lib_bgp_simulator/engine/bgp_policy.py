@@ -70,10 +70,22 @@ class BGPPolicy:
         for as_obj in getattr(self, propagate_to.name.lower()):
             for prefix, ann in policy_self.local_rib.items():
                 if ann.recv_relationship in send_rels:
-                    # Add the new ann to the incoming anns for that prefix
-                    as_obj.policy.incoming_anns[prefix].append(ann)
+                    # Policy took care of it's own propagation for this ann
+                    if policy_self._policy_propagate(self, propagate_to, send_rels, ann, as_obj):
+                        continue
+                    else:
+                        # Add the new ann to the incoming anns for that prefix
+                        as_obj.policy.incoming_anns[prefix].append(ann)
 
-    def process_incoming_anns(policy_self, self, recv_relationship: Relationships):
+    def _policy_propagate(policy_self, self, propagate_to, send_rels, ann, as_obj):
+        """Custom policy propagation that can be overriden"""
+
+        return False
+
+    def process_incoming_anns(policy_self,
+                              self,
+                              recv_relationship: Relationships,
+                              reset_q=True):
         """Process all announcements that were incoming from a specific rel"""
 
         for prefix, ann_list in policy_self.incoming_anns.items():
@@ -86,22 +98,26 @@ class BGPPolicy:
 
             # For each announcement that was incoming
             for ann in ann_list:
-                
+                # Make sure there are no loops
+                # In ROV subclass also check roa validity
+                if policy_self._valid_ann(self, ann):
+                    new_ann_is_better = policy_self._new_ann_is_better(self, best_ann, ann, recv_relationship)
+                    # If the new priority is higher
+                    if new_ann_is_better:
+                        best_ann = policy_self._deep_copy_ann(self, ann, recv_relationship)
+                        # Save to local rib
+                        policy_self.local_rib[prefix] = best_ann
 
-                # BGP Loop Prevention Check
-                if self.asn in ann.as_path:
-                    continue
+        policy_self._reset_q(reset_q)
 
-                new_ann_is_better = policy_self._new_ann_is_better(self, best_ann, ann, recv_relationship)
-                # If the new priority is higher
-                if new_ann_is_better:
-                    best_ann = policy_self._deep_copy_ann(self, ann, recv_relationship)
-                    # Save to local rib
-                    policy_self.local_rib[prefix] = best_ann
-        policy_self.incoming_anns = IncomingAnns()
+    def _reset_q(policy_self, reset_q):
+        if reset_q:
+            policy_self.incoming_anns = IncomingAnns()
 
     def _new_ann_is_better(policy_self, self, deep_ann, shallow_ann, recv_relationship: Relationships):
         """Assigns the priority to an announcement according to Gao Rexford"""
+
+        assert self.asn not in shallow_ann.as_path, "Should have been removed in ann validation func"
 
         if deep_ann is None:
             return True
@@ -126,3 +142,9 @@ class BGPPolicy:
         ann.as_path = (self.asn, *ann.as_path)
         ann.recv_relationship = recv_relationship
         return ann
+
+    def _valid_ann(policy_self, self, ann):
+        """Determine if an announcement is valid or should be dropped"""
+
+        # BGP Loop Prevention Check
+        return not (self.asn in ann.as_path)

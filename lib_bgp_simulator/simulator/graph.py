@@ -41,7 +41,8 @@ class Graph:
             # Done just to get subgraphs, change this later
             engine = CaidaCollector(BaseASCls=BGPAS,
                                     GraphCls=SimulatorEngine,
-                                    _dir=_dir).run(tsv=False)
+                                    _dir=_dir,
+                                    _dir_exist_ok=True).run(tsv=False)
 
             self.subgraphs = self._get_subgraphs(engine)
             self._validate_subgraphs()
@@ -63,7 +64,8 @@ class Graph:
             # Done just to get subgraphs, change this later
             engine = CaidaCollector(BaseASCls=BGPAS,
                                     GraphCls=SimulatorEngine,
-                                    _dir=_dir).run(tsv=False)
+                                    _dir=_dir,
+                                    _dir_exist_ok=True).run(tsv=False)
 
             self.subgraphs = self._get_subgraphs(engine)
             self._validate_subgraphs()
