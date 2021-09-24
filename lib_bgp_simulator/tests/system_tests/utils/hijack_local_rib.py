@@ -1,6 +1,6 @@
-from ..engine.local_rib import LocalRib
-from ..announcement import Announcement
-from ..enums import Prefixes, Timestamps, ASNs, ROAValidity
+from ....engine.local_rib import LocalRib
+from ....announcement import Announcement
+from ....enums import Prefixes, Timestamps, ASNs, ROAValidity
 
 
 class HijackLocalRib(LocalRib):
