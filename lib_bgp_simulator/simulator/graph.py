@@ -71,7 +71,6 @@ class Graph:
             self._validate_subgraphs()
 
     def _run_adoption_percentage(self, percent_adopt, engine=None, subgraphs=None):
-
         if engine is None:
             # Engine is not picklable or dillable AT ALL, so do it here
             # Changing recursion depth does nothing

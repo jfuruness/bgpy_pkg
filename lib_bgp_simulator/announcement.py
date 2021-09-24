@@ -24,7 +24,7 @@ class Announcement:
             # Where the announcement came from
             self.recv_relationship = Relationships.ORIGIN
         else:
-            print("fix l8r")
+            #print("fix l8r")
             self.recv_relationship = Relationships.ORIGIN
             # Must set the relationship based on the actual relationship
             #raise NotImplementedError
