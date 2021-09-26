@@ -4,7 +4,6 @@ from lib_caida_collector import AS
 
 from .local_rib import LocalRib
 from .ann_queues import RecvQueue
-from .incoming_anns import IncomingAnns
 from ..enums import Relationships
 from ..announcement import Announcement as Ann
 
@@ -136,10 +135,10 @@ class BGPPolicy:
             else:
                 return not deep_ann.as_path[0] <= self.asn
 
-    def _deep_copy_ann(policy_self, self, ann, recv_relationship):
+    def _deep_copy_ann(policy_self, self, ann, recv_relationship, **extra_kwargs):
         """Deep copies ann and modifies attrs"""
 
-        new_ann = ann.copy_w_sim_attrs(recv_relationship=recv_relationship)
+        new_ann = ann.copy_w_sim_attrs(recv_relationship=recv_relationship, **extra_kwargs)
         # Changes as path here because that's not a simulator attr
         new_ann.as_path = (self.asn, *ann.as_path)
 

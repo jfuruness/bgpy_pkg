@@ -1,5 +1,3 @@
-from copy import deepcopy
-
 from lib_caida_collector import AS
 
 from .local_rib import LocalRib
@@ -55,7 +53,7 @@ class BGPRIBSPolicy(BGPPolicy):
                     # Update Ribs out if it's not a withdraw
                     if not ann.withdraw:
                         policy_self.ribs_out[as_obj.asn][prefix] = ann
-            policy_self.send_q[as_obj.asn] = []
+            policy_self.send_q[as_obj.asn] = {}
 
     def process_incoming_anns(policy_self, self, recv_relationship: Relationships):
         """Process all announcements that were incoming from a specific rel"""
@@ -87,8 +85,10 @@ class BGPRIBSPolicy(BGPPolicy):
                         # If the new priority is higher
                         if new_ann_is_better:
                             if best_ann is not None:
-                                withdraw_ann = deepcopy(best_ann)
-                                withdraw_ann.withdraw = True
+                                withdraw_ann = policy_self._deep_copy_ann(self,
+                                                                          ann,
+                                                                          recv_relationship,
+                                                                          withdraw=True)
                                 policy_self._withdraw_ann_from_neighbors(self, withdraw_ann)
                             best_ann = policy_self._deep_copy_ann(self, ann, recv_relationship)
                             # Save to local rib
@@ -155,9 +155,11 @@ class BGPRIBSPolicy(BGPPolicy):
 
         # Now re-check the send_q for any that have not been sent yet
         for send_neighbor, inner_dict in policy_self.send_q.items():
-            for i, ann in enumerate(inner_dict.get(withdraw_ann.prefix)):
-                if withdraw_ann.prefix_path_attributes_eq(ann) and not ann.withdraw:
-                    policy_self.send_q[send_neighbor][withdraw_ann.prefix].pop(i)
+            ann_list = inner_dict.get(withdraw_ann.prefix)
+            if ann_list:
+                for i, ann in enumerate(reversed(ann_list)):
+                    if withdraw_ann.prefix_path_attributes_eq(ann) and not ann.withdraw:
+                        policy_self.send_q[send_neighbor][withdraw_ann.prefix].pop(i)
  
     def _select_best_ribs_in(policy_self, self, prefix):
         """Selects best ann from ribs in. Remember, ribs in anns are NOT deep copied"""
