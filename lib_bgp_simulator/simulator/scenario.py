@@ -15,9 +15,6 @@ class Scenario:
                         propagation_round=propagation_round)
         #print("Engine finished running")
         self._collect_data(subgraphs)
-        #print("Calling post_run_hooks (if defined)")
-        for func in self.attack.post_run_hooks:
-            func(self)
         # delete engine from attrs so that garbage collector can come
         # NOTE that if there are multiple propagation rounds, the engine
         # Will still be there

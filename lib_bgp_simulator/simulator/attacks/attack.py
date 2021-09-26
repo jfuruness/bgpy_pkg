@@ -1,9 +1,14 @@
 from ipaddress import ip_network
 
+from ...announcement import Announcement
+
+
 class Attack:
     """Contains information regarding an attack"""
 
     __slots__ = ["attacker_asn", "victim_asn", "announcements", "post_run_hooks"]
+
+    AnnCls = Announcement
 
     def __init__(self, attacker: int, victim: int, announcements: list, post_run_hooks=None):
         self.attacker_asn = attacker

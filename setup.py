@@ -23,7 +23,7 @@ setup(
     install_requires=[
         'lib_caida_collector',
         'lib_utils',
-        'matplotlib==3.3.4',
+        'matplotlib',
         'pytest',
         'tqdm',
     ],

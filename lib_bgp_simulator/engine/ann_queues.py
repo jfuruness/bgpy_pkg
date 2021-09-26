@@ -13,6 +13,14 @@ class AnnQueue(defaultdict):
     def __init__(self, *args, **kwargs):
         super(AnnQueue, self).__init__(lambda : defaultdict(list), *args, **kwargs)
 
+    @property
+    def announcements(self):
+        """Returns all announcements in the q"""
+
+        for neighbor, prefix_ann_dict in self.items():
+            for ann in prefix_ann_dict.values():
+                yield ann
+
     def assert_eq(self, other):
         """Checks equality of local ribs using prefix, origin, as_path, time"""
 
