@@ -4,10 +4,12 @@ from lib_caida_collector import PeerLink, CustomerProviderLink as CPLink
 
 from ..utils import run_example, HijackLocalRib
 
-from ....enums import ASNs
+from ....enums import ASNs, Prefixes, Timestamps, ROAValidity, Relationships
 from ....simulator.attacks import SubprefixHijack
+from ....engine import LocalRib
 from ....engine.bgp_policy import BGPPolicy
 from ....engine.bgp_ribs_policy import BGPRIBSPolicy
+from ....announcement import Announcement
 
 @pytest.mark.parametrize("BasePolicyCls", [BGPPolicy, BGPRIBSPolicy])
 def test_hidden_hijack_bgp(BasePolicyCls):
@@ -31,19 +33,51 @@ def test_hidden_hijack_bgp(BasePolicyCls):
     as_policies = {asn: BasePolicyCls for asn in
                    list(range(1, 4)) + [ASNs.VICTIM.value, ASNs.ATTACKER.value]}
 
+    vic_kwargs = {"prefix": Prefixes.PREFIX.value,
+                  "timestamp": Timestamps.VICTIM.value,
+                  "seed_asn": None,
+                  "roa_validity": ROAValidity.VALID}
+    atk_kwargs = {"prefix": Prefixes.SUBPREFIX.value,
+                  "timestamp": Timestamps.ATTACKER.value,
+                  "seed_asn": None,
+                  "roa_validity": ROAValidity.VALID}
+
+
+
     # Local RIB data
     local_ribs = {
-        1: HijackLocalRib(prefix_vic_as_path=(1, 2, ASNs.VICTIM.value)),
-        2: HijackLocalRib(prefix_vic_as_path=(2, ASNs.VICTIM.value),
-                          subprefix_as_path=(2, 3, ASNs.ATTACKER.value)),
-        3: HijackLocalRib(prefix_vic_as_path=(3, 2, ASNs.VICTIM.value),
-                          subprefix_as_path=(3, ASNs.ATTACKER.value)),
-
-        ASNs.VICTIM.value: HijackLocalRib(prefix_vic_as_path=(ASNs.VICTIM.value,),
-            subprefix_as_path=(ASNs.VICTIM.value, 2, 3, ASNs.ATTACKER.value,)),
-
-        ASNs.ATTACKER.value: HijackLocalRib(subprefix_as_path=(ASNs.ATTACKER.value,),
-            prefix_vic_as_path=(ASNs.ATTACKER.value, 3, 2, ASNs.VICTIM.value,)),
+        1: LocalRib({Prefixes.PREFIX.value: Announcement(as_path=(1, 2, ASNs.VICTIM.value),
+                                                         recv_relationship=Relationships.CUSTOMERS,
+                                                         **vic_kwargs)}),
+        2: LocalRib({Prefixes.PREFIX.value: Announcement(as_path=(2, ASNs.VICTIM.value),
+                                                         recv_relationship=Relationships.CUSTOMERS,
+                                                         **vic_kwargs),
+                     Prefixes.SUBPREFIX.value: Announcement(as_path=(2, 3, ASNs.ATTACKER.value),
+                                                         recv_relationship=Relationships.PEERS,
+                                                         **atk_kwargs)}),
+        3: LocalRib({Prefixes.PREFIX.value: Announcement(as_path=(3, 2, ASNs.VICTIM.value),
+                                                         recv_relationship=Relationships.PEERS,
+                                                         **vic_kwargs),
+                     Prefixes.SUBPREFIX.value: Announcement(as_path=(3, ASNs.ATTACKER.value),
+                                                         recv_relationship=Relationships.CUSTOMERS,
+                                                         **atk_kwargs)}),
+        ASNs.VICTIM.value:
+           LocalRib({Prefixes.PREFIX.value: Announcement(as_path=(ASNs.VICTIM.value,),
+                                                         recv_relationship=Relationships.ORIGIN,
+                                                         **vic_kwargs),
+                     Prefixes.SUBPREFIX.value: Announcement(as_path=(ASNs.VICTIM.value,
+                                                                    2,
+                                                                    3,
+                                                                    ASNs.ATTACKER.value),
+                                                         recv_relationship=Relationships.CUSTOMERS,
+                                                         **atk_kwargs)}),
+        ASNs.ATTACKER.value:
+           LocalRib({Prefixes.PREFIX.value: Announcement(as_path=(ASNs.ATTACKER.value,3, 2, ASNs.VICTIM.value),
+                                                         recv_relationship=Relationships.PROVIDERS,
+                                                         **vic_kwargs),
+                     Prefixes.SUBPREFIX.value: Announcement(as_path=(ASNs.ATTACKER.value,),
+                                                         recv_relationship=Relationships.ORIGIN,
+                                                         **atk_kwargs)}),
     }
 
     run_example(peers=peers,

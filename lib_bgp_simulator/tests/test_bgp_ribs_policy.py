@@ -4,7 +4,7 @@ import pytest
 
 from lib_caida_collector import PeerLink, CustomerProviderLink as CPLink
 
-from ..enums import ASNs, Relationships
+from ..enums import ASNs, Relationships, ROAValidity
 from ..announcement import Announcement
 
 from ..engine.bgp_as import BGPAS
@@ -12,14 +12,25 @@ from ..engine.bgp_policy import BGPPolicy
 from ..engine.bgp_ribs_policy import BGPRIBSPolicy
 from ..engine.local_rib import LocalRib
 
-def test_process_incoming_withdraw():
-    """Test basic processing of incoming withdraw"""
+def get_prefix_ann_ann_w_a():
     prefix = '137.99.0.0/16'
-    ann = Announcement(prefix=prefix, as_path=(13796,),timestamp=0)
-    ann_w = deepcopy(ann)
-    ann_w.withdraw = True
+    ann = Announcement(prefix=prefix,
+                       as_path=(13796,),
+                       timestamp=0,
+                       roa_validity=ROAValidity.UNKNOWN,
+                       recv_relationship=Relationships.ORIGIN)
+    ann_w = ann.copy_w_sim_attrs(withdraw=True)
     a = BGPAS(1) 
     a.policy = BGPRIBSPolicy()
+    return prefix, ann, ann_w, a
+ 
+
+
+def test_process_incoming_withdraw():
+    """Test basic processing of incoming withdraw"""
+
+    prefix, ann, ann_w, a = get_prefix_ann_ann_w_a()
+
     a.policy.recv_q[13796][prefix].append(ann)
     a.policy.process_incoming_anns(a, Relationships.CUSTOMERS)
     # Assert ann was received
@@ -35,12 +46,8 @@ def test_process_incoming_withdraw():
 
 def test_process_incoming_withdraw_send_q():
     """Test processing of incoming withdraw when announcement has not yet been sent to neighbors"""
-    prefix = '137.99.0.0/16'
-    ann = Announcement(prefix=prefix, as_path=(13796,),timestamp=0)
-    ann_w = deepcopy(ann)
-    ann_w.withdraw = True
-    a = BGPAS(1) 
-    a.policy = BGPRIBSPolicy()
+    prefix, ann, ann_w, a = get_prefix_ann_ann_w_a()
+
     a.policy.recv_q[13796][prefix].append(ann)
     a.policy.process_incoming_anns(a, Relationships.CUSTOMERS)
     # Assert ann was received
@@ -55,12 +62,7 @@ def test_process_incoming_withdraw_send_q():
 
 def test_process_incoming_withdraw_ribs_out():
     """Test processing of incoming withdraw when announcement has already been sent to neighbors"""
-    prefix = '137.99.0.0/16'
-    ann = Announcement(prefix=prefix, as_path=(13796,),timestamp=0)
-    ann_w = deepcopy(ann)
-    ann_w.withdraw = True
-    a = BGPAS(1) 
-    a.policy = BGPRIBSPolicy()
+    prefix, ann, ann_w, a = get_prefix_ann_ann_w_a()
     a.policy.recv_q[13796][prefix].append(ann)
     a.policy.process_incoming_anns(a, Relationships.CUSTOMERS)
     # Assert ann was received
@@ -76,13 +78,27 @@ def test_process_incoming_withdraw_ribs_out():
 def test_withdraw_best_alternative():
     """Customers > Peers > Providers"""
     prefix = '137.99.0.0/16'
-    ann1 = Announcement(prefix=prefix, as_path=(13794,),timestamp=0)
-    ann2 = Announcement(prefix=prefix, as_path=(13795,),timestamp=0)
-    ann3 = Announcement(prefix=prefix, as_path=(13796,),timestamp=0)
-    ann2_w = deepcopy(ann2)
-    ann2_w.withdraw = True
-    ann3_w = deepcopy(ann3)
-    ann3_w.withdraw = True
+    ann1 = Announcement(prefix=prefix,
+                       as_path=(13794,),
+                       timestamp=0,
+                       roa_validity=ROAValidity.UNKNOWN,
+                       recv_relationship=Relationships.ORIGIN)
+    ann1_w = ann1.copy_w_sim_attrs(withdraw=True)
+
+    ann2 = Announcement(prefix=prefix,
+                       as_path=(13795,),
+                       timestamp=0,
+                       roa_validity=ROAValidity.UNKNOWN,
+                       recv_relationship=Relationships.ORIGIN)
+    ann2_w = ann2.copy_w_sim_attrs(withdraw=True)
+ 
+    ann3 = Announcement(prefix=prefix,
+                       as_path=(13796,),
+                       timestamp=0,
+                       roa_validity=ROAValidity.UNKNOWN,
+                       recv_relationship=Relationships.ORIGIN)
+    ann3_w = ann3.copy_w_sim_attrs(withdraw=True)
+ 
     a = BGPAS(1) 
     a.policy = BGPRIBSPolicy()
     # Populate ribs_in with three announcements
@@ -104,12 +120,7 @@ def test_withdraw_best_alternative():
 
 def test_withdraw_seeded():
     """Customers > Peers > Providers"""
-    prefix = '137.99.0.0/16'
-    ann = Announcement(prefix=prefix, as_path=(13796,),timestamp=0)
-    ann_w = deepcopy(ann)
-    ann_w.withdraw = True
-    a = BGPAS(1) 
-    a.policy = BGPRIBSPolicy()
+    prefix, ann, ann_w, a = get_prefix_ann_ann_w_a()
     # Populate ribs_in with an announcement
     a.policy.recv_q[13796][prefix].append(ann)
     a.policy.process_incoming_anns(a, Relationships.CUSTOMERS)

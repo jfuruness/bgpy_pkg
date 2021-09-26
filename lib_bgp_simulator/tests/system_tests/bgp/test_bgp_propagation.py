@@ -4,7 +4,7 @@ from lib_caida_collector import PeerLink, CustomerProviderLink as CPLink
 
 from ..utils import run_example, HijackLocalRib
 
-from ....enums import ASNs, Relationships
+from ....enums import ASNs, Relationships as Rels, ROAValidity
 from ....announcement import Announcement
 from ....simulator.attacks import SubprefixHijack
 
@@ -39,17 +39,23 @@ def test_propagate_bgp(BasePolicyCls):
 
     # Announcements
     prefix = '137.99.0.0/16'
-    announcements = [Announcement(prefix=prefix, as_path=(5,),timestamp=0, seed_asn=5)]
+    announcements = [Announcement(prefix=prefix, as_path=(5,),timestamp=0, seed_asn=5,
+                                  roa_validity=ROAValidity.UNKNOWN,
+                                  recv_relationship=Rels.ORIGIN,
+                                  traceback_end=True)]
+
+    kwargs = {"prefix": prefix, "timestamp": 0, "roa_validity": ROAValidity.UNKNOWN,
+                      "traceback_end": False}
 
     # Local RIB data
     local_ribs = {
-        1: LocalRib({prefix: Announcement(prefix=prefix, timestamp=0, as_path=(1, 2, 5))}),
-        2: LocalRib({prefix: Announcement(prefix=prefix, timestamp=0, as_path=(2, 5))}),
-        3: LocalRib({prefix: Announcement(prefix=prefix, timestamp=0, as_path=(3, 2, 5))}),
-        4: LocalRib({prefix: Announcement(prefix=prefix, timestamp=0, as_path=(4, 2, 5))}),
-        5: LocalRib({prefix: Announcement(prefix=prefix, timestamp=0, as_path=(5,))}),
-        6: LocalRib({prefix: Announcement(prefix=prefix, timestamp=0, as_path=(6, 5))}),
-        7: LocalRib({prefix: Announcement(prefix=prefix, timestamp=0, as_path=(7, 3, 2, 5))}),
+        1: LocalRib({prefix: Announcement(as_path=(1, 2, 5), recv_relationship=Rels.CUSTOMERS, **kwargs)}),
+        2: LocalRib({prefix: Announcement(as_path=(2, 5), recv_relationship=Rels.CUSTOMERS, **kwargs)}),
+        3: LocalRib({prefix: Announcement(as_path=(3, 2, 5), recv_relationship=Rels.PEERS, **kwargs)}),
+        4: LocalRib({prefix: Announcement(as_path=(4, 2, 5), recv_relationship=Rels.PROVIDERS, **kwargs)}),
+        5: LocalRib({prefix: announcements[0]}),
+        6: LocalRib({prefix: Announcement(as_path=(6, 5), recv_relationship=Rels.PEERS, **kwargs)}),
+        7: LocalRib({prefix: Announcement(as_path=(7, 3, 2, 5), recv_relationship=Rels.PROVIDERS, **kwargs)}),
     }
 
     run_example(peers=peers,
