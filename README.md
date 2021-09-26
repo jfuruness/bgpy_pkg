@@ -11,6 +11,13 @@ Installation for speed
 ```
 sudo apt install -y pypy3 pypy3-dev python3-venv
 pypy3 -m venv env
+source env/bin/activate
+git clone git@github.com:jfuruness/lib_utils.git
+cd lib_bgp_simulator
+pypy3 setup.py develop
+git clone git@github.com:jfuruness/lib_caida_collector.git
+cd lib_bgp_simulator
+pypy3 setup.py develop
 git clone git@github.com:jfuruness/lib_bgp_simulator.git
 cd lib_bgp_simulator
 pypy3 setup.py develop
