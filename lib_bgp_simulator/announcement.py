@@ -82,17 +82,11 @@ class Announcement:
         else:
             raise NotImplementedError
 
-    def copy_w_sim_attrs(self, cls=None, **extra_kwargs):
+    def copy(self, cls=None, **extra_kwargs):
         """Creates a new ann with proper sim attrs"""
 
-        kwargs = {"prefix": self.prefix,
-                  "as_path": self.as_path,
-                  "timestamp": self.timestamp,
-                  "seed_asn": None,
-                  "roa_validity": self.roa_validity,
-                  "recv_relationship": self.recv_relationship,
-                  "withdraw": self.withdraw,
-                  "traceback_end": False}
+        kwargs = self.default_copy_kwargs
+        # This is for subclasses to have their own attrs here
         kwargs.update(extra_kwargs)
 
         prefix = kwargs.pop("prefix")
@@ -101,6 +95,17 @@ class Announcement:
             cls = self.__class__
 
         return cls(prefix, **kwargs)
+
+    @property
+    def default_copy_kwargs(self):
+        return {"prefix": self.prefix,
+                "as_path": self.as_path,
+                "timestamp": self.timestamp,
+                "seed_asn": None,
+                "roa_validity": self.roa_validity,
+                "recv_relationship": self.recv_relationship,
+                "withdraw": self.withdraw,
+                "traceback_end": False}
 
     @property
     def origin(self):

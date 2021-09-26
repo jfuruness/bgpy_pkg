@@ -39,7 +39,10 @@ class BGPRIBSPolicy(BGPPolicy):
                     ribs_out_ann = policy_self.ribs_out[as_obj.asn].get(prefix)
                     # To make sure we don't repropagate anns we have already sent
                     if not ann.prefix_path_attributes_eq(ribs_out_ann):
-                        policy_self.send_q[as_obj.asn][prefix].append(ann)
+                        policy_self._add_ann_to_send_q(self, as_obj, ann, propagate_to, send_rels)
+
+    def _add_ann_to_send_q(policy_self, self, as_obj, ann, propagate_to, send_rels):
+        policy_self.send_q[as_obj.asn][ann.prefix].append(ann)
 
     def _send_anns(policy_self, self, propagate_to: Relationships):
         """Sends announcements and populates ribs out"""
@@ -89,6 +92,7 @@ class BGPRIBSPolicy(BGPPolicy):
                                                                           ann,
                                                                           recv_relationship,
                                                                           withdraw=True)
+
                                 policy_self._withdraw_ann_from_neighbors(self, withdraw_ann)
                             best_ann = policy_self._deep_copy_ann(self, ann, recv_relationship)
                             # Save to local rib
@@ -114,9 +118,10 @@ class BGPRIBSPolicy(BGPPolicy):
         del policy_self.ribs_in[neighbor][prefix]
 
         # Remove ann from local rib
-        withdraw_ann = policy_self._deep_copy_ann(self, ann, recv_relationship)
+        withdraw_ann = policy_self._deep_copy_ann(self, ann, recv_relationship, withdraw=True)
         if withdraw_ann.prefix_path_attributes_eq(policy_self.local_rib.get(prefix)):
             del policy_self.local_rib[prefix]
+
             # Also remove from neighbors
             policy_self._withdraw_ann_from_neighbors(self, withdraw_ann)
 

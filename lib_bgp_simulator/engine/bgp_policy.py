@@ -74,8 +74,11 @@ class BGPPolicy:
                     if policy_self._policy_propagate(self, propagate_to, send_rels, ann, as_obj):
                         continue
                     else:
-                        # Add the new ann to the incoming anns for that prefix
-                        as_obj.policy.recv_q[self.asn][prefix].append(ann)
+                        self._add_ann_to_send_q(self, as_obj, ann)
+
+    def _add_ann_to_send_q(policy_self, self, as_obj, ann):
+        # Add the new ann to the incoming anns for that prefix
+        as_obj.policy.recv_q[self.asn][prefix].append(ann)
 
     def _policy_propagate(policy_self, self, propagate_to, send_rels, ann, as_obj):
         """Custom policy propagation that can be overriden"""
@@ -138,11 +141,10 @@ class BGPPolicy:
     def _deep_copy_ann(policy_self, self, ann, recv_relationship, **extra_kwargs):
         """Deep copies ann and modifies attrs"""
 
-        new_ann = ann.copy_w_sim_attrs(recv_relationship=recv_relationship, **extra_kwargs)
-        # Changes as path here because that's not a simulator attr
-        new_ann.as_path = (self.asn, *ann.as_path)
+        kwargs = {"as_path": (self.asn, *ann.as_path)}
+        kwargs.update(extra_kwargs)
 
-        return new_ann
+        return ann.copy(recv_relationship=recv_relationship, **kwargs)
 
     def _valid_ann(policy_self, self, ann):
         """Determine if an announcement is valid or should be dropped"""
