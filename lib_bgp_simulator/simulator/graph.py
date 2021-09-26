@@ -41,6 +41,7 @@ class Graph:
             # Done just to get subgraphs, change this later
             engine = CaidaCollector(BaseASCls=BGPAS,
                                     GraphCls=SimulatorEngine,
+                                    _dir_exist_ok=True,
                                     _dir=_dir).run(tsv=False)
 
             self.subgraphs = self._get_subgraphs(engine)
@@ -63,6 +64,7 @@ class Graph:
             # Done just to get subgraphs, change this later
             engine = CaidaCollector(BaseASCls=BGPAS,
                                     GraphCls=SimulatorEngine,
+                                    _dir_exist_ok=True,
                                     _dir=_dir).run(tsv=False)
 
             self.subgraphs = self._get_subgraphs(engine)
@@ -87,12 +89,14 @@ class Graph:
 
         for trial in range(self.num_trials):
             print(f"Percent adopt {percent_adopt} trial {trial}        ", end="\r")
-            attack = self._get_attack()
+            og_attack = self._get_attack()
             #print("adopting ases")
-            adopting_asns = self._get_adopting_ases(percent_adopt, attack)
+            adopting_asns = self._get_adopting_ases(percent_adopt, og_attack)
             assert len(adopting_asns) != 0
             #print("Selected adopting")
             for PolicyCls in self.adopt_policies:
+                # In case the attack has state we deepcopy it so that it doesn't remain from policy to policy
+                attack = deepcopy(og_attack)
                 self._replace_engine_policies({x: PolicyCls for x in adopting_asns}, engine)
                 for propagation_round in range(self.propagation_rounds):
                     # Generate the test
@@ -107,6 +111,8 @@ class Graph:
                     # Append the test to all tests for that data point
                     data_points[dp] = data_points.get(dp, [])
                     data_points[dp].append(scenario)
+                    for func in attack.post_run_hooks:
+                        func(engine, dp)
         return data_points
 
     def _get_subgraphs(self, engine):
@@ -176,7 +182,6 @@ class Graph:
         return subgraph_asns.difference([attack.attacker_asn])
 
     def _replace_engine_policies(self, as_policy_dict, base_engine):
-        # Make engine here!
         for asn, as_obj in base_engine.as_dict.items():
             as_obj.policy = as_policy_dict.get(asn, self.base_policy)()        
 

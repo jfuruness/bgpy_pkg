@@ -15,9 +15,6 @@ class Scenario:
                         propagation_round=propagation_round)
         #print("Engine finished running")
         self._collect_data(subgraphs)
-        #print("Calling post_run_hooks (if defined)")
-        for func in self.attack.post_run_hooks:
-            func(self)
         # delete engine from attrs so that garbage collector can come
         # NOTE that if there are multiple propagation rounds, the engine
         # Will still be there
@@ -33,6 +30,9 @@ class Scenario:
             all_data["data"][k] = self._get_outcomes(policies, subgraph_asns)
             all_data["totals"][k] = self._get_policy_totals(policies, subgraph_asns)
         self.data = all_data
+        from pprint import pprint
+        pprint(all_data)
+
 
     def _get_outcomes(self, policies, subgraph_asns):
         outcomes = {x: {y: 0 for y in policies}
