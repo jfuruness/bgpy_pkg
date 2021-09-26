@@ -88,7 +88,6 @@ class Graph:
 
         for trial in range(self.num_trials):
             print(f"Percent adopt {percent_adopt} trial {trial}        ", end="\r")
-            attack = self._get_attack()
             og_attack = self._get_attack()
             #print("adopting ases")
             adopting_asns = self._get_adopting_ases(percent_adopt, attack)
