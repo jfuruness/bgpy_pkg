@@ -34,7 +34,8 @@ class Announcement:
                  as_path=None,
                  timestamp=None,
                  seed_asn=None,
-                 roa_validity=None,
+                 # Ez requeset
+                 roa_validity=ROAValidity.UNKNOWN,
                  recv_relationship=None,#Relationships.origin,
                  withdraw=False,
                  traceback_end=False):
