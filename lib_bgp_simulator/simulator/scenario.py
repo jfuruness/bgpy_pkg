@@ -30,9 +30,8 @@ class Scenario:
             all_data["data"][k] = self._get_outcomes(policies, subgraph_asns)
             all_data["totals"][k] = self._get_policy_totals(policies, subgraph_asns)
         self.data = all_data
-        from pprint import pprint
-        pprint(all_data)
-
+        #from pprint import pprint
+        #pprint(all_data)
 
     def _get_outcomes(self, policies, subgraph_asns):
         outcomes = {x: {y: 0 for y in policies}
@@ -66,6 +65,7 @@ class Scenario:
                 # Continue looping by getting the last AS
                 as_obj = self.engine.as_dict[most_specific_ann.as_path[1]]
                 if as_obj.asn in ases:
+                    print(ases)
                     print(ases)
                     input("looping")
                 else:

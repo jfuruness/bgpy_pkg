@@ -41,8 +41,8 @@ class Graph:
             # Done just to get subgraphs, change this later
             engine = CaidaCollector(BaseASCls=BGPAS,
                                     GraphCls=SimulatorEngine,
-                                    _dir_exist_ok=True,
-                                    _dir=_dir).run(tsv=False)
+                                    _dir=_dir,
+                                    _dir_exist_ok=True).run(tsv=False)
 
             self.subgraphs = self._get_subgraphs(engine)
             self._validate_subgraphs()
@@ -64,14 +64,13 @@ class Graph:
             # Done just to get subgraphs, change this later
             engine = CaidaCollector(BaseASCls=BGPAS,
                                     GraphCls=SimulatorEngine,
-                                    _dir_exist_ok=True,
-                                    _dir=_dir).run(tsv=False)
+                                    _dir=_dir,
+                                    _dir_exist_ok=True).run(tsv=False)
 
             self.subgraphs = self._get_subgraphs(engine)
             self._validate_subgraphs()
 
     def _run_adoption_percentage(self, percent_adopt, engine=None, subgraphs=None):
-
         if engine is None:
             # Engine is not picklable or dillable AT ALL, so do it here
             # Changing recursion depth does nothing
