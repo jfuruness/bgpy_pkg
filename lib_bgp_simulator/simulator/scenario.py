@@ -83,9 +83,9 @@ class Scenario:
         if has_rib:
             # Store the outcome so long as there is a rib
             if as_obj.asn == self.attack.attacker_asn:
-                outcomes[Outcomes.HIJACKED][og_as_obj.policy.name] += 1
+                outcomes[Outcomes.ATTACKER_SUCCESS][og_as_obj.policy.name] += 1
             elif as_obj.asn == self.attack.victim_asn:
-                outcomes[Outcomes.NOT_HIJACKED][og_as_obj.policy.name] += 1
+                outcomes[Outcomes.VICTIM_SUCCESS][og_as_obj.policy.name] += 1
             else:
                 outcomes[Outcomes.DISCONNECTED][og_as_obj.policy.name] += 1
         else:

@@ -2,8 +2,8 @@ from enum import Enum
 
 
 class Outcomes(Enum):
-    HIJACKED = 0
-    NOT_HIJACKED = 1
+    ATTACKER_SUCCESS = 0
+    VICTIM_SUCCESS = 1
     DISCONNECTED = 2
 
 
