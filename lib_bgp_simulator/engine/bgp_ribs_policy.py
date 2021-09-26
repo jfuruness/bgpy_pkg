@@ -1,3 +1,5 @@
+from collections import defaultdict
+
 from lib_caida_collector import AS
 
 from .local_rib import LocalRib
@@ -56,7 +58,7 @@ class BGPRIBSPolicy(BGPPolicy):
                     # Update Ribs out if it's not a withdraw
                     if not ann.withdraw:
                         policy_self.ribs_out[as_obj.asn][prefix] = ann
-            policy_self.send_q[as_obj.asn] = {}
+            policy_self.send_q[as_obj.asn] = defaultdict(list)
 
     def process_incoming_anns(policy_self, self, recv_relationship: Relationships):
         """Process all announcements that were incoming from a specific rel"""

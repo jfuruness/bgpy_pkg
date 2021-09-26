@@ -19,7 +19,7 @@ def get_prefix_ann_ann_w_a():
                        timestamp=0,
                        roa_validity=ROAValidity.UNKNOWN,
                        recv_relationship=Relationships.ORIGIN)
-    ann_w = ann.copy_w_sim_attrs(withdraw=True)
+    ann_w = ann.copy(withdraw=True)
     a = BGPAS(1) 
     a.policy = BGPRIBSPolicy()
     return prefix, ann, ann_w, a
@@ -83,21 +83,21 @@ def test_withdraw_best_alternative():
                        timestamp=0,
                        roa_validity=ROAValidity.UNKNOWN,
                        recv_relationship=Relationships.ORIGIN)
-    ann1_w = ann1.copy_w_sim_attrs(withdraw=True)
+    ann1_w = ann1.copy(withdraw=True)
 
     ann2 = Announcement(prefix=prefix,
                        as_path=(13795,),
                        timestamp=0,
                        roa_validity=ROAValidity.UNKNOWN,
                        recv_relationship=Relationships.ORIGIN)
-    ann2_w = ann2.copy_w_sim_attrs(withdraw=True)
+    ann2_w = ann2.copy(withdraw=True)
  
     ann3 = Announcement(prefix=prefix,
                        as_path=(13796,),
                        timestamp=0,
                        roa_validity=ROAValidity.UNKNOWN,
                        recv_relationship=Relationships.ORIGIN)
-    ann3_w = ann3.copy_w_sim_attrs(withdraw=True)
+    ann3_w = ann3.copy(withdraw=True)
  
     a = BGPAS(1) 
     a.policy = BGPRIBSPolicy()
