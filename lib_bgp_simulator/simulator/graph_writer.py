@@ -84,7 +84,7 @@ def _write(self, lines, outcome, subgraph_name, propagation_round, graph_dir, ad
         #input()
         ax.errorbar(line.x, line.y, yerr=line.yerr, label=policy, marker="*")
 
-    ax.set_ylabel(f"Percent {outcome.name}")
+    ax.set_ylabel(self.AttackCls.y_labels[outcome])
     ax.set_xlabel("Percent adoption of adopted policy")
 
     # Might throw warnings later?
@@ -108,3 +108,7 @@ def _write(self, lines, outcome, subgraph_name, propagation_round, graph_dir, ad
     else:
         adopting_dir = atk_dir
     plt.savefig(os.path.join(adopting_dir, fname))
+    # Done here so that it does not leave graphs open which accumulate memory
+    # Other methods appear to be wrong here
+    # https://stackoverflow.com/a/33343289/8903959
+    plt.close(fig)

@@ -27,7 +27,7 @@ def run_example(peers=list(),
     engine.run(announcements)
     print((start-datetime.now()).total_seconds())
     if local_ribs:
-        for as_obj in engine.as_dict.values():
+        for as_obj in engine:
             print("ASN:", as_obj.asn)
             for prefix, ann in as_obj.policy.local_rib.items():
                 print(ann)

@@ -24,7 +24,7 @@ class Scenario:
     def _collect_data(self, subgraphs):
         """Collects data about the test run before engine is deleted"""
 
-        policies = set([x.policy.name for x in self.engine.as_dict.values()])
+        policies = set([x.policy.name for x in self.engine])
         all_data = {"data": dict(), "totals": dict()}
         for k, subgraph_asns in subgraphs.items():
             all_data["data"][k] = self._get_outcomes(policies, subgraph_asns)
@@ -38,55 +38,40 @@ class Scenario:
                     for x in list(Outcomes)}
         # Most specific to least specific
         ordered_prefixes = self._get_ordered_prefixes()
-        # NOTE: this should be changed to ONLY iterate over subgraph asns
-        for og_as_obj in self.engine.as_dict.values():
-            if og_as_obj.asn not in subgraph_asns:
-                continue
-            if og_as_obj.asn in [self.attack.attacker_asn, self.attack.victim_asn]:
-                continue
-            final_as_obj, has_rib = self._get_final_as(og_as_obj, ordered_prefixes, outcomes)
-            self._store_outcome(final_as_obj, has_rib, og_as_obj, outcomes)
+
+        countable_asns = subgraph_asns.difference(self.attack.uncountable_asns)
+
+        for asn in countable_asns:
+            as_obj = self.engine.as_dict[asn]
+            # Get the attack outcome
+            outcome = self._get_atk_outcome(as_obj, ordered_prefixes)
+            # Incriment the outcome and policy by 1
+            outcomes[outcome][as_obj.policy.name] += 1
         return outcomes
 
-    def _get_final_as(self, as_obj, ordered_prefixes, outcomes):
-        has_rib = True
-        max_path = 128
+    def _get_atk_outcome(self, as_obj, ordered_prefixes):
+        # Used to prevent looping
         ases = set([as_obj.asn])
-        # Loop all the way through to the end
-        for i in range(max_path + 1):
+
+        attack_outcome = None
+        while attack_outcome is None:
             # Get most specific announcement, or empty RIB
             most_specific_ann = self._get_most_specific_ann(as_obj, ordered_prefixes)
-            if most_specific_ann is None:
-                has_rib = False
+            # Determine the outcome of the attack
+            attack_outcome = self.attack.determine_outcome(as_obj, most_specific_ann)
+            # Must add this here or else it tries to go back 1 further than possible
+            if attack_outcome:
                 break
-            elif most_specific_ann.recv_relationship == Relationships.ORIGIN:
-                break
-            else:
-                # Continue looping by getting the last AS
-                as_obj = self.engine.as_dict[most_specific_ann.as_path[1]]
-                if as_obj.asn in ases:
-                    print(ases)
-                    print(ases)
-                    input("looping")
-                else:
-                    ases.add(as_obj.asn)
-                # If the attacker is on the path, the outcome is hijacked
-                if as_obj.asn == self.attack.attacker_asn:
-                    return as_obj, has_rib
-        assert i != max_path, "looping"
-        return as_obj, has_rib
 
-    def _store_outcome(self, as_obj, has_rib, og_as_obj, outcomes):
-        if has_rib:
-            # Store the outcome so long as there is a rib
-            if as_obj.asn == self.attack.attacker_asn:
-                outcomes[Outcomes.ATTACKER_SUCCESS][og_as_obj.policy.name] += 1
-            elif as_obj.asn == self.attack.victim_asn:
-                outcomes[Outcomes.VICTIM_SUCCESS][og_as_obj.policy.name] += 1
-            else:
-                outcomes[Outcomes.DISCONNECTED][og_as_obj.policy.name] += 1
-        else:
-            outcomes[Outcomes.DISCONNECTED][og_as_obj.policy.name] += 1
+            # Continue tracing back by getting the last AS
+            as_obj = self.engine.as_dict[most_specific_ann.as_path[1]]
+            # Loop prevention
+            assert as_obj.asn not in ases, f"looping {ases}"
+            ases.add(as_obj.asn)
+
+        assert attack_outcome is not None, "Attack should be disconnected, why is this wrong?"
+
+        return attack_outcome
 
     def _get_ordered_prefixes(self):
         prefixes = set()
@@ -108,9 +93,6 @@ class Scenario:
         """Determines the total amount of ASes per policy"""
 
         totals = {x: 0 for x in policy_names}
-        for asn in subgraph_asns:
-            if asn in [self.attack.attacker_asn, self.attack.victim_asn]:
-                continue
-            as_obj = self.engine.as_dict[asn]
-            totals[as_obj.policy.name] += 1
+        for asn in subgraph_asns.difference(self.attack.uncountable_asns):
+            totals[self.engine.as_dict[asn].policy.name] += 1
         return totals

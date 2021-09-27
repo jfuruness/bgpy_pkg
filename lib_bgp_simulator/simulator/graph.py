@@ -116,18 +116,18 @@ class Graph:
     def _get_subgraphs(self, engine):
         """Returns all the subgraphs that you want to keep track of"""
 
-        top_level = set(x.asn for x in sorted(engine.as_dict.values(),
-                               key=lambda x: x.customer_cone_size,
-                               reverse=True)[:100])
-        stubs_and_mh = set([x.asn for x in engine.as_dict.values()
-                            if x.stub or x.multihomed])
+        #top_level = set(x.asn for x in sorted(engine.as_dict.values(),
+        #                       key=lambda x: x.customer_cone_size,
+        #                       reverse=True)[:100])
+        top_level = set(x.asn for x in engine if x.input_clique)
+        stubs_and_mh = set([x.asn for x in engine if x.stub or x.multihomed])
 
         subgraphs = dict()
         # Remove sets to make keeping deterministic properties easier
-        subgraphs["etc"] =  set([x.asn for x in engine.as_dict.values()
-                                      if x.asn not in top_level
-                                        and x.asn not in stubs_and_mh])
-        subgraphs["top_100"] = top_level
+        subgraphs["etc"] =  set([x.asn for x in engine
+                                 if x.asn not in top_level
+                                 and x.asn not in stubs_and_mh])
+        subgraphs["input_clique"] = top_level
         subgraphs["stubs_and_mh"] = stubs_and_mh
         return subgraphs
 
