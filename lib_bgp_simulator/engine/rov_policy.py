@@ -15,8 +15,8 @@ class ROVPolicy(BGPPolicy):
         else:
             return super(ROVPolicy, policy_self)._valid_ann(self, ann, **kwargs)
 
-    def _new_ann_is_better(policy_self, self, deep_ann, shallow_ann, recv_relationship: Relationships):
+    def _new_ann_is_better(policy_self, self, deep_ann, shallow_ann, recv_relationship: Relationships, **kwargs):
         # Should have been dropped earlier by _valid_ann
         assert shallow_ann.roa_validity == ROAValidity.VALID
 
-        return super(ROVPolicy, policy_self)._new_ann_is_better(self, deep_ann, shallow_ann, recv_relationship)
+        return super(ROVPolicy, policy_self)._new_ann_is_better(self, deep_ann, shallow_ann, recv_relationship, **kwargs)

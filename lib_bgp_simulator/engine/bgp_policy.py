@@ -120,25 +120,54 @@ class BGPPolicy:
         if reset_q:
             policy_self.recv_q = RecvQueue()
 
-    def _new_ann_is_better(policy_self, self, deep_ann, shallow_ann, recv_relationship: Relationships):
-        """Assigns the priority to an announcement according to Gao Rexford"""
+    def _new_ann_is_better(policy_self, self, deep_ann, second_ann, recv_relationship: Relationships, processed=False):
+        """Assigns the priority to an announcement according to Gao Rexford
 
-        assert self.asn not in shallow_ann.as_path, "Should have been removed in ann validation func"
+        NOTE: processed is processed for second ann"""
 
+        assert self.asn not in second_ann.as_path, "Should have been removed in ann validation func"
+
+        best_by_relationship = policy_self._best_by_relationship(deep_ann, second_ann if processed else recv_relationship)
+        if best_by_relationship is not None:
+            return best_by_relationship
+        else:
+            return policy_self._best_as_path_ties(self, deep_ann, second_ann, processed=processed)
+
+    def _best_by_relationship(policy_self, deep_ann, other):
         if deep_ann is None:
             return True
 
-        if deep_ann.recv_relationship.value > recv_relationship.value:
+        if isinstance(other, Relationships):
+            other_relationship = other
+        elif isinstance(other, Announcement):
+            other_relationship = other.recv_relationship
+        else:
+            raise NotImplementedError
+
+        if deep_ann.recv_relationship.value > other_relationship.value:
             return False
-        elif deep_ann.recv_relationship.value < recv_relationship.value:
+        elif deep_ann.recv_relationship.value < other_relationship.value:
             return True
         else:
-            if len(deep_ann.as_path) < len(shallow_ann.as_path) + 1:
-                return False
-            elif len(deep_ann.as_path) > len(shallow_ann.as_path) + 1:
-                return True
-            else:
-                return not deep_ann.as_path[0] <= self.asn
+            return None
+
+    def _best_as_path_ties(policy_self, self, deep_ann, second_ann, processed=False):
+        best_as_path = policy_self._best_as_path(deep_ann, second_ann, processed)
+        if best_as_path is not None:
+            return best_as_path
+        else:
+            return policy_self._best_tiebreak(self, deep_ann, second_ann, processed)
+
+    def _best_as_path(policy_self, deep_ann, second_ann, processed):
+        if len(deep_ann.as_path) < len(second_ann.as_path) + int(not processed):
+            return False
+        elif len(deep_ann.as_path) > len(second_ann.as_path) + int(not processed):
+            return True
+        else:
+            return None
+
+    def _best_tiebreak(policy_self, self, deep_ann, second_ann, processed) -> bool:
+        return not deep_ann.as_path[0] <= self.asn
 
     def _deep_copy_ann(policy_self, self, ann, recv_relationship, **extra_kwargs):
         """Deep copies ann and modifies attrs"""

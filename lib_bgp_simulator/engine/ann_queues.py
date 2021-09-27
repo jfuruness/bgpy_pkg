@@ -18,8 +18,9 @@ class AnnQueue(defaultdict):
         """Returns all announcements in the q"""
 
         for neighbor, prefix_ann_dict in self.items():
-            for ann in prefix_ann_dict.values():
-                yield ann
+            for ann_list in prefix_ann_dict.values():
+                for ann in ann_list:
+                    yield ann
 
     def assert_eq(self, other):
         """Checks equality of local ribs using prefix, origin, as_path, time"""
