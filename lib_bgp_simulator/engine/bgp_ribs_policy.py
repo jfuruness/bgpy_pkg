@@ -26,24 +26,24 @@ class BGPRIBSPolicy(BGPPolicy):
 
         send_rels is the relationships that are acceptable to send
         """
-
-        # Populate the send queue, which might have anns and withdrawals
+        # _policy_propagate and _add_ann_to_q have been overriden
+        # So that instead of propagating, announcements end up in the send_q
+        # Send q contains both announcements and withdrawals
         policy_self._populate_send_q(self, propagate_to, send_rels)
+
         # Send announcements/withdrawals and add to ribs out
         policy_self._send_anns(self, propagate_to)
 
     def _populate_send_q(policy_self, self, propagate_to, send_rels):
-        """Populates send queue and ribs out"""
+        return super(BGPRIBSPolicy, policy_self)._propagate(self, propagate_to, send_rels)
 
-        for as_obj in getattr(self, propagate_to.name.lower()):
-            for prefix, ann in policy_self.local_rib.items():
-                if ann.recv_relationship in send_rels:
-                    ribs_out_ann = policy_self.ribs_out[as_obj.asn].get(prefix)
-                    # To make sure we don't repropagate anns we have already sent
-                    if not ann.prefix_path_attributes_eq(ribs_out_ann):
-                        policy_self._add_ann_to_send_q(self, as_obj, ann, propagate_to, send_rels)
+    def _policy_propagate(policy_self, self, propagate_to, send_rels, ann, as_obj):
+        """Don't send what we've already sent"""
 
-    def _add_ann_to_send_q(policy_self, self, as_obj, ann, propagate_to, send_rels):
+        ribs_out_ann = policy_self.ribs_out[as_obj.asn].get(ann.prefix)
+        return ann.prefix_path_attributes_eq(ribs_out_ann)
+
+    def _add_ann_to_q(policy_self, self, as_obj, ann, propagate_to, send_rels):
         policy_self.send_q[as_obj.asn][ann.prefix].append(ann)
 
     def _send_anns(policy_self, self, propagate_to: Relationships):

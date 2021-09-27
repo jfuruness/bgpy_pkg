@@ -12,6 +12,7 @@ from ..engine.local_rib import LocalRib
 
 
 class EasyAnn(Announcement):
+    __slots__ = []
     def __init__(self,
                  _prefix=None,
                  as_path=None,

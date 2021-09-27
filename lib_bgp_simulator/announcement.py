@@ -1,3 +1,6 @@
+import inspect
+from itertools import chain
+
 from .enums import Relationships, ROAValidity
 
 
@@ -60,6 +63,10 @@ class Announcement:
 
         self.traceback_end = traceback_end
 
+        # https://stackoverflow.com/a/427533/8903959
+        if "__slots__" not in inspect.getsource(self.__class__):
+            raise Exception("Your ann class needs __slots__. See base class for ex.")
+
     def seed(self, as_dict, propagation_round):
         """Seeds announcement at the proper AS
 
@@ -98,14 +105,16 @@ class Announcement:
 
     @property
     def default_copy_kwargs(self):
-        return {"prefix": self.prefix,
-                "as_path": self.as_path,
-                "timestamp": self.timestamp,
-                "seed_asn": None,
-                "roa_validity": self.roa_validity,
-                "recv_relationship": self.recv_relationship,
-                "withdraw": self.withdraw,
-                "traceback_end": False}
+
+        # Gets all slots from parent classes and this class
+        # https://stackoverflow.com/a/6720815/8903959
+        slots = chain.from_iterable(getattr(cls, '__slots__', [])
+                                            for cls in self.__class__.__mro__)
+
+        kwargs = {attr: getattr(self, attr) for attr in slots}
+        kwargs["seed_asn"] = None
+        kwargs["traceback_end"] = False
+        return kwargs
 
     @property
     def origin(self):
