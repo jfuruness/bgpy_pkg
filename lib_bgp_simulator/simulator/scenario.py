@@ -12,7 +12,8 @@ class Scenario:
     def run(self, subgraphs, propagation_round: int):
         # Run engine
         self.engine.run(self.attack.announcements,
-                        propagation_round=propagation_round)
+                        propagation_round=propagation_round,
+                        attack=self.attack)
         #print("Engine finished running")
         self._collect_data(subgraphs)
         # delete engine from attrs so that garbage collector can come

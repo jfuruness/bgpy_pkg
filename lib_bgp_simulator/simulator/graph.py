@@ -87,12 +87,15 @@ class Graph:
         data_points = dict()
 
         for trial in range(self.num_trials):
-            print(f"Percent adopt {percent_adopt} trial {trial}        ", end="\r")
+
             og_attack = self._get_attack()
             adopting_asns = self._get_adopting_ases(percent_adopt, og_attack)
             assert len(adopting_asns) != 0
             #print("Selected adopting")
             for PolicyCls in self.adopt_policies:
+
+                print(f"Percent adopt {percent_adopt} trial {trial} {PolicyCls.name}",
+                      end=" " * 10 + "\r")
                 # In case the attack has state we deepcopy it so that it doesn't remain from policy to policy
                 attack = deepcopy(og_attack)
                 self._replace_engine_policies({x: PolicyCls for x in adopting_asns}, engine)

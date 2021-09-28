@@ -90,7 +90,11 @@ class BGPPolicy:
     def process_incoming_anns(policy_self,
                               self,
                               recv_relationship: Relationships,
-                              reset_q=True):
+                              *args,
+                              propagation_round=None,
+                              attack=None,  # Usually None
+                              reset_q=True,
+                              **kwargs):
         """Process all announcements that were incoming from a specific rel"""
 
         for neighbor, prefix_ann_dict in policy_self.recv_q.items():
@@ -114,7 +118,7 @@ class BGPPolicy:
                             # Save to local rib
                             policy_self.local_rib[prefix] = best_ann
 
-            policy_self._reset_q(reset_q)
+        policy_self._reset_q(reset_q)
 
     def _reset_q(policy_self, reset_q):
         if reset_q:
@@ -139,7 +143,7 @@ class BGPPolicy:
 
         if isinstance(other, Relationships):
             other_relationship = other
-        elif isinstance(other, Announcement):
+        elif isinstance(other, Ann):
             other_relationship = other.recv_relationship
         else:
             raise NotImplementedError

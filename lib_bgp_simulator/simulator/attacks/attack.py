@@ -7,7 +7,7 @@ from ...enums import Outcomes, Relationships
 class Attack:
     """Contains information regarding an attack"""
 
-    __slots__ = ["attacker_asn", "victim_asn", "announcements", "post_run_hooks", "uncountable_asns"]
+    __slots__ = ["attacker_asn", "victim_asn", "announcements", "post_run_hooks", "uncountable_asns", "prefix_subprefix_dict"]
 
     AnnCls = Announcement
 
@@ -27,6 +27,9 @@ class Attack:
         first_prefix = ip_network(self.announcements[0].prefix)
         for ann in self.announcements:
             assert ip_network(ann.prefix).overlaps(first_prefix)
+
+        # Get all the prefix along with their subprefixes
+        # self.prefix_subprefix_dict = self._get_prefix_subprefix_dict()
 
     def determine_outcome(self, as_obj, ann):
         """This assumes that the as_obj is the last in the path"""
@@ -51,3 +54,24 @@ class Attack:
         # Keep going
         else:
             return None
+
+    def _get_prefix_subprefix_dict(policy_self):
+        prefixes = set([])
+        for ann in policy_self.recv_q.announcements:
+            prefixes.add(ann.prefix)
+        # Do this here for speed
+        prefixes = [ip_network(x) for x in prefixes]
+
+        for prefix in prefixes:
+            # Supported in python3.7, not by pypy yet
+            def subnet_of(other):
+                return str(prefix) in [str(x) for x in other.subnets()]
+            prefix.subnet_of = subnet_of
+
+        prefix_subprefix_dict = {x: [] for x in prefixes}
+        for outer_prefix, subprefix_list in prefix_subprefix_dict.items():
+            for prefix in prefixes:
+                if prefix.subnet_of(outer_prefix):
+                    subprefix_list.append(str(prefix))
+        # Get rid of ip_network
+        return {str(k): v for k, v in prefix_subprefix_dict.items()}

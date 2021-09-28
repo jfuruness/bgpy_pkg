@@ -4,9 +4,12 @@ from ...announcement import Announcement as Ann
 
 
 class UnannouncedPrefixHijack(Attack):
-    __slots__ = []
+    __slots__ = ["victim_prefix", "attacker_prefix"]
     def __init__(self, attacker=ASNs.ATTACKER.value, victim=None):
-        anns = [self.AnnCls(prefix=Prefixes.PREFIX.value,
+        self.victim_prefix = None
+        self.attacker_prefix = prefix=Prefixes.PREFIX.value
+
+        anns = [self.AnnCls(prefix=self.attacker_prefix,
                     timestamp=Timestamps.ATTACKER.value,
                     as_path=(attacker,),
                     seed_asn=attacker,

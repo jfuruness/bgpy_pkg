@@ -60,7 +60,15 @@ class BGPRIBSPolicy(BGPPolicy):
                         policy_self.ribs_out[as_obj.asn][prefix] = ann
             policy_self.send_q[as_obj.asn] = defaultdict(list)
 
-    def process_incoming_anns(policy_self, self, recv_relationship: Relationships):
+    def process_incoming_anns(policy_self,
+                              self,
+                              recv_relationship: Relationships,
+                              *args,
+                              propagation_round=None,
+                              # Usually None for attack
+                              attack=None,
+                              reset_q=True,
+                              **kwargs):
         """Process all announcements that were incoming from a specific rel"""
 
         for neighbor, inner_dict in policy_self.recv_q.items():
@@ -100,8 +108,7 @@ class BGPRIBSPolicy(BGPPolicy):
                             # Save to local rib
                             policy_self.local_rib[prefix] = best_ann
 
-        # If this is the normal processing of announcements, reset the recv_q
-        policy_self.recv_q = RecvQueue()
+        policy_self._reset_q(reset_q)
 
     def _process_incoming_withdrawal(policy_self, self, ann, neighbor, prefix,
                                      recv_relationship):

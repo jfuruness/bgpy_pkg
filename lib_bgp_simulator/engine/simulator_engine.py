@@ -17,11 +17,11 @@ class SimulatorEngine(BGPDAG):
                                               BaseASCls=BaseASCls,
                                               **kwargs)
 
-    def run(self, announcements, propagation_round=0):
+    def run(self, announcements, propagation_round=0, attack=None):
         """Propogates announcements"""
 
         self._seed(announcements, propagation_round)
-        self._propagate()
+        self._propagate(propagation_round, attack)
 
     def _seed(self, announcements: list, propagation_round: int):
         """Seeds/inserts announcements into the BGP DAG"""
@@ -35,7 +35,7 @@ class SimulatorEngine(BGPDAG):
             # Simply inherit the announcement class
             ann.seed(self.as_dict, propagation_round)
 
-    def _propagate(self):
+    def _propagate(self, propagation_round, attack):
         """Propogates announcements"""
 
         for i, rank in enumerate(self.propagation_ranks):
@@ -45,7 +45,7 @@ class SimulatorEngine(BGPDAG):
             if i > 0:
                 # Process first because maybe it recv from lower ranks
                 for as_obj in rank:
-                    as_obj.process_incoming_anns(Relationships.CUSTOMERS)
+                    as_obj.process_incoming_anns(Relationships.CUSTOMERS, propagation_round=propagation_round, attack=attack)
             # Send to the higher ranks
             for as_obj in rank:
                 as_obj.propagate_to_providers()
@@ -57,7 +57,7 @@ class SimulatorEngine(BGPDAG):
             for as_obj in rank:
                 as_obj.propagate_to_peers()
             for as_obj in rank:
-                as_obj.process_incoming_anns(Relationships.PEERS)
+                as_obj.process_incoming_anns(Relationships.PEERS, propagation_round=propagation_round, attack=attack)
             #print("\npropagated to peers for this rank")
             #print(self)
 
@@ -67,7 +67,7 @@ class SimulatorEngine(BGPDAG):
             # There are no incomming Anns at the top
             if i > 0:
                 for as_obj in rank:
-                    as_obj.process_incoming_anns(Relationships.PROVIDERS)
+                    as_obj.process_incoming_anns(Relationships.PROVIDERS, propagation_round=propagation_round, attack=attack)
             for as_obj in rank:
                 as_obj.propagate_to_customers()
 

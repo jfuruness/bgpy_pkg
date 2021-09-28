@@ -30,7 +30,7 @@ class BGPAS(AS):
 
         self.policy.propagate_to_peers(self)
 
-    def process_incoming_anns(self, recv_relationship: Relationships):
+    def process_incoming_anns(self, recv_relationship: Relationships, *args, **kwargs):
         """Process all announcements that were incoming from a specific rel"""
 
-        self.policy.process_incoming_anns(self, recv_relationship)
+        self.policy.process_incoming_anns(self, recv_relationship, *args, **kwargs)
