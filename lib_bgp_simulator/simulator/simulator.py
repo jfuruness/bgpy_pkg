@@ -1,5 +1,7 @@
+import logging
 import os
 import tarfile
+import sys
 
 from tqdm import tqdm
 
@@ -25,6 +27,10 @@ class Simulator(Base):
             graph_path="/tmp/graphs.tar.gz",
             ):
         """Downloads relationship data, runs simulation"""
+
+        # https://stackoverflow.com/a/51996829/8903959
+        if "pypy" not in sys.executable:
+            logging.warning("Not running with pypy")
 
         # Done here so that the caida files are cached
         # So that multiprocessing doesn't interfere with one another
