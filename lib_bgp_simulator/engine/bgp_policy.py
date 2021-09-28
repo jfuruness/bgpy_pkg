@@ -82,7 +82,7 @@ class BGPPolicy:
         # Add the new ann to the incoming anns for that prefix
         as_obj.policy.recv_q[self.asn][ann.prefix].append(ann)
 
-    def _policy_propagate(policy_self, self, propagate_to, send_rels, ann, as_obj):
+    def _policy_propagate(*args, **kwargs):
         """Custom policy propagation that can be overriden"""
 
         return False
