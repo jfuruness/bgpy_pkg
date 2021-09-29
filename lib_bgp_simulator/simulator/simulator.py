@@ -30,7 +30,7 @@ class Simulator(Base):
 
         # https://stackoverflow.com/a/51996829/8903959
         if "pypy" not in sys.executable:
-            logging.warning("Not running with pypy")
+            input("Not running with pypy. Press enter to continue")
 
         # Done here so that the caida files are cached
         # So that multiprocessing doesn't interfere with one another

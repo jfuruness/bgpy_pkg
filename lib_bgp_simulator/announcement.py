@@ -64,8 +64,8 @@ class Announcement:
         self.traceback_end = traceback_end
 
         # https://stackoverflow.com/a/427533/8903959
-        if "__slots__" not in inspect.getsource(self.__class__):
-            raise Exception("Your ann class needs __slots__. See base class for ex.")
+        #if "__slots__" not in inspect.getsource(self.__class__):
+        #    raise Exception("Your ann class needs __slots__. See base class for ex.")
 
     def seed(self, as_dict, propagation_round):
         """Seeds announcement at the proper AS
