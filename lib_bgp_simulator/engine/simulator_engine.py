@@ -39,8 +39,6 @@ class SimulatorEngine(BGPDAG):
         """Propogates announcements"""
 
         for i, rank in enumerate(self.propagation_ranks):
-
-            # print(f"propogating up with rank {i}/{len(self.propagation_ranks)} of len {len(rank)}")
             # Nothing to process at the start
             if i > 0:
                 # Process first because maybe it recv from lower ranks
@@ -49,21 +47,17 @@ class SimulatorEngine(BGPDAG):
             # Send to the higher ranks
             for as_obj in rank:
                 as_obj.propagate_to_providers()
-            #print("\npropagated to providers for this rank")
-            #print(self)
 
-            # MUST propagate peers then process
-            # Or else peers will not have ann to process yet
-            for as_obj in rank:
-                as_obj.propagate_to_peers()
-            for as_obj in rank:
-                as_obj.process_incoming_anns(Relationships.PEERS, propagation_round=propagation_round, attack=attack)
-            #print("\npropagated to peers for this rank")
-            #print(self)
+        # The reason you must separate this for loop here is because propagation ranks do not take into account peering
+        # It'd be impossible to take into account peering since different customers peer to different ranks
+        # So first do customer to provider propagation, then peer propagation
+        for as_obj in self:
+            as_obj.propagate_to_peers()
+        for as_obj in self:
+            as_obj.process_incoming_anns(Relationships.PEERS, propagation_round=propagation_round, attack=attack)
 
 
         for i, rank in enumerate(reversed(self.propagation_ranks)):
-            # print(f"propogating down with rank {len(self.propagation_ranks) -i}/{len(self.propagation_ranks)}")
             # There are no incomming Anns at the top
             if i > 0:
                 for as_obj in rank:
