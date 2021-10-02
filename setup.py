@@ -21,9 +21,9 @@ setup(
     python_requires=">=3.8",
     packages=find_packages(),
     install_requires=[
-        'lib_caida_collector',
-        'lib_utils',
-        'matplotlib',
+        'lib_caida_collector@git+https://github.com/jfuruness/lib_caida_collector',
+        'lib_utils@git+https://github.com/jfuruness/lib_utils',
+        'matplotlib==3.3.4',
         'pytest',
         'tqdm',
     ],
