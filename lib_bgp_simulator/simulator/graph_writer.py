@@ -88,7 +88,10 @@ def _write(self, lines, outcome, subgraph_name, propagation_round, graph_dir, ad
     ax.set_xlabel("Percent adoption of adopted policy")
 
     # Might throw warnings later?
-    ax.legend()
+    #ax.legend()
+    # I do this because of the stupid warning that occurs if I don't
+    handles, labels = ax.get_legend_handles_labels()
+    ax.legend(handles, labels)
     plt.tight_layout()
     plt.rcParams.update({"font.size": 14, "lines.markersize": 10})
     matplotlib.use('Agg')

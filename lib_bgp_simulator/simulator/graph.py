@@ -33,6 +33,24 @@ class Graph:
         self.AttackCls = AttackCls
         self.base_policy = base_policy
 
+    def _get_mp_chunks(self, parse_cpus):
+        """Not a generator since we need this for multiprocessing"""
+
+        percents_and_trials = []
+        for percent_adoption in self.percent_adoptions:
+            for trial in range(self.num_trials):
+                percents_and_trials.append((percent_adoption, trial))
+
+        # Refactor this later
+        chunks = [[] for _ in range(min(parse_cpus, len(percents_and_trials)))]
+        chunk_index = 0
+        for percent_and_trial in percents_and_trials:
+            chunks[chunk_index].append(percent_and_trial)
+            chunk_index += 1
+            if chunk_index == len(chunks):
+                chunk_index = 0
+        return chunks
+
     def run(self, parse_cpus, _dir, debug=False):
         self.data_points = dict()
         self._dir = _dir
@@ -46,18 +64,21 @@ class Graph:
 
             self.subgraphs = self._get_subgraphs(engine)
             self._validate_subgraphs()
-           
-            for x in self.percent_adoptions:
-                self.data_points.update(self._run_adoption_percentage(x,
-                                                                      engine=engine,
-                                                                      subgraphs=self.subgraphs))
+            for chunk in self._get_mp_chunks(parse_cpus):
+                result = self._run_mp_chunk(chunk, engine=engine, subgraphs=self.subgraphs)
+                for data_point, trial_info_list in result.items():
+                        if data_point not in self.data_points:
+                            self.data_points[data_point] = []
+                        self.data_points[data_point].extend(trial_info_list)
         else:
             print("About to run pool")
             # Pool is much faster than ProcessPoolExecutor
             with Pool(parse_cpus) as pool:
-                for result in pool.map(self._run_adoption_percentage,
-                                       self.percent_adoptions):
-                    self.data_points.update(result)
+                for result in pool.map(self._run_mp_chunk, self._get_mp_chunks(parse_cpus)):
+                    for data_point, trial_info_list in result.items():
+                        if data_point not in self.data_points:
+                            self.data_points[data_point] = []
+                        self.data_points[data_point].extend(trial_info_list)
 
         print("\nGraph complete")
         if not debug:
@@ -70,7 +91,7 @@ class Graph:
             self.subgraphs = self._get_subgraphs(engine)
             self._validate_subgraphs()
 
-    def _run_adoption_percentage(self, percent_adopt, engine=None, subgraphs=None):
+    def _run_mp_chunk(self, chunk, engine=None, subgraphs=None):
         if engine is None:
             # Engine is not picklable or dillable AT ALL, so do it here
             # Changing recursion depth does nothing
@@ -86,7 +107,7 @@ class Graph:
 
         data_points = dict()
 
-        for trial in range(self.num_trials):
+        for percent_adopt, trial in chunk:
 
             og_attack = self._get_attack()
             adopting_asns = self._get_adopting_ases(percent_adopt, og_attack)
