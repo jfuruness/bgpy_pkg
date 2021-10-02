@@ -21,7 +21,7 @@ git clone git@github.com:jfuruness/lib_bgp_simulator.git
 cd lib_bgp_simulator
 # Many benifits to not using setup.py develop. One of which being that this installs from git repos
 # https://stackoverflow.com/a/15731459/8903959
-pip3 install -e .
+pypy3 -m pip install -e .
 ```
 
 
