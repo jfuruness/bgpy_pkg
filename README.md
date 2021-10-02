@@ -9,7 +9,9 @@ python3 setup.py develop
 
 Installation for speed
 ```
-sudo apt install -y pypy3 pypy3-dev python3-venv
+sudo apt install -y pypy3-dev python3-venv
+# Higher version than in apt
+sudo snap install pypy3 --classic
 pypy3 -m venv env
 source env/bin/activate
 sudo apt-get install libtiff5-dev libjpeg8-dev libopenjp2-7-dev zlib1g-dev     libfreetype6-dev liblcms2-dev libwebp-dev tcl8.6-dev tk8.6-dev python3-tk     libharfbuzz-dev libfribidi-dev libxcb1-dev
