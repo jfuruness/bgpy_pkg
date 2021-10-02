@@ -15,6 +15,7 @@ sudo apt install -y pypy3-dev python3-venv
 # https://www.pypy.org/download.html
 <tarball_dir>/bin/pypy3 -m venv env
 source env/bin/activate
+# NOTE: I don't think you need the sudo apt command anymore
 sudo apt-get install libtiff5-dev libjpeg8-dev libopenjp2-7-dev zlib1g-dev libfreetype6-dev liblcms2-dev libwebp-dev tcl8.6-dev tk8.6-dev python3-tk libharfbuzz-dev libfribidi-dev libxcb1-dev
 git clone git@github.com:jfuruness/lib_bgp_simulator.git
 cd lib_bgp_simulator
