@@ -2,9 +2,9 @@ from collections import defaultdict
 
 from lib_caida_collector import AS
 
-from .local_rib import LocalRib
-from .ribs import RibsIn, RibsOut
-from .ann_queues import SendQueue, RecvQueue
+from .ann_containers import LocalRib
+from .ann_containers import RibsIn, RibsOut
+from .ann_containers import SendQueue, RecvQueue
 from ..enums import Relationships
 from ..announcement import Announcement as Ann
 from .bgp_policy import BGPPolicy

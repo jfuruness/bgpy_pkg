@@ -2,7 +2,6 @@ from copy import deepcopy
 
 from lib_caida_collector import AS
 
-from .local_rib import LocalRib
 from .bgp_policy import BGPPolicy
 from ..enums import Relationships
 from ..announcement import Announcement as Ann
