@@ -67,6 +67,16 @@ class Announcement:
         #if "__slots__" not in inspect.getsource(self.__class__):
         #    raise Exception("Your ann class needs __slots__. See base class for ex.")
 
+    def __eq__(self, other):
+        if isinstance(other, Announcement):
+            eq = True
+            for attr in ["prefix", "as_path", "recv_relationship"]:
+                if getattr(self, attr) != getattr(other, attr):
+                    eq = False
+            return eq
+        else:
+            raise NotImplementedError
+
     def seed(self, as_dict, propagation_round):
         """Seeds announcement at the proper AS
 
@@ -121,4 +131,4 @@ class Announcement:
         return self.as_path[-1]
 
     def __str__(self):
-        return f"{self.prefix} {self.origin} {self.as_path}"
+        return f"{self.prefix} {self.as_path} {self.recv_relationship}"
