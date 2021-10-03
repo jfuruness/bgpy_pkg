@@ -49,13 +49,13 @@ def test_propagate_bgp(BasePolicyCls):
 
     # Local RIB data
     local_ribs = {
-        1: LocalRib({prefix: Announcement(as_path=(1, 2, 5), recv_relationship=Rels.CUSTOMERS, **kwargs)}),
-        2: LocalRib({prefix: Announcement(as_path=(2, 5), recv_relationship=Rels.CUSTOMERS, **kwargs)}),
-        3: LocalRib({prefix: Announcement(as_path=(3, 2, 5), recv_relationship=Rels.PEERS, **kwargs)}),
-        4: LocalRib({prefix: Announcement(as_path=(4, 2, 5), recv_relationship=Rels.PROVIDERS, **kwargs)}),
-        5: LocalRib({prefix: announcements[0]}),
-        6: LocalRib({prefix: Announcement(as_path=(6, 5), recv_relationship=Rels.PEERS, **kwargs)}),
-        7: LocalRib({prefix: Announcement(as_path=(7, 3, 2, 5), recv_relationship=Rels.PROVIDERS, **kwargs)}),
+        1: ({prefix: Announcement(as_path=(1, 2, 5), recv_relationship=Rels.CUSTOMERS, **kwargs)}),
+        2: ({prefix: Announcement(as_path=(2, 5), recv_relationship=Rels.CUSTOMERS, **kwargs)}),
+        3: ({prefix: Announcement(as_path=(3, 2, 5), recv_relationship=Rels.PEERS, **kwargs)}),
+        4: ({prefix: Announcement(as_path=(4, 2, 5), recv_relationship=Rels.PROVIDERS, **kwargs)}),
+        5: ({prefix: announcements[0]}),
+        6: ({prefix: Announcement(as_path=(6, 5), recv_relationship=Rels.PEERS, **kwargs)}),
+        7: ({prefix: Announcement(as_path=(7, 3, 2, 5), recv_relationship=Rels.PROVIDERS, **kwargs)}),
     }
 
     run_example(peers=peers,

@@ -42,7 +42,7 @@ def test_process_incoming_anns_bgp(Policy):
     a.policy.recv_q[2][prefix].append(ann)
     a.policy.process_incoming_anns(a, Relationships.CUSTOMERS)
     # assert announcement was accepted to local rib
-    assert(a.policy.local_rib[prefix].origin == ann.origin)
+    assert(a.policy.local_rib.get_ann(prefix).origin == ann.origin)
 
 @pytest.mark.parametrize("Policy", [BGPPolicy, BGPRIBSPolicy])
 def test_process_incoming_anns_bgp_duplicate(Policy):
@@ -56,7 +56,7 @@ def test_process_incoming_anns_bgp_duplicate(Policy):
     a.policy.recv_q[2][prefix].append(ann)
     a.policy.process_incoming_anns(a, Relationships.CUSTOMERS)
     # assert announcement was accepted to local rib
-    assert(a.policy.local_rib[prefix].origin == ann.origin)
+    assert(a.policy.local_rib.get_ann(prefix).origin == ann.origin)
 
 @pytest.mark.parametrize("Policy", [BGPPolicy, BGPRIBSPolicy])
 def test_process_incoming_anns_bgp_relationships(Policy):
@@ -69,16 +69,16 @@ def test_process_incoming_anns_bgp_relationships(Policy):
     a.policy = Policy()
     a.policy.recv_q[2][prefix].append(ann1)
     a.policy.process_incoming_anns(a, Relationships.PROVIDERS)
-    assert(a.policy.local_rib[prefix].origin == ann1.origin)
+    assert(a.policy.local_rib.get_ann(prefix).origin == ann1.origin)
     a.policy.recv_q[2][prefix].append(ann2)
     a.policy.process_incoming_anns(a, Relationships.PEERS)
-    assert(a.policy.local_rib[prefix].origin == ann2.origin)
+    assert(a.policy.local_rib.get_ann(prefix).origin == ann2.origin)
     a.policy.recv_q[2][prefix].append(ann3)
     a.policy.process_incoming_anns(a, Relationships.CUSTOMERS)
-    assert(a.policy.local_rib[prefix].origin == ann3.origin)
+    assert(a.policy.local_rib.get_ann(prefix).origin == ann3.origin)
     a.policy.recv_q[2][prefix].append(ann1)
     a.policy.process_incoming_anns(a, Relationships.PROVIDERS)
-    assert(a.policy.local_rib[prefix].origin == ann3.origin)
+    assert(a.policy.local_rib.get_ann(prefix).origin == ann3.origin)
 
 @pytest.mark.parametrize("Policy", [BGPPolicy, BGPRIBSPolicy])
 def test_process_incoming_anns_bgp_path_len(Policy):
@@ -91,16 +91,16 @@ def test_process_incoming_anns_bgp_path_len(Policy):
     a.policy = Policy()
     a.policy.recv_q[2][prefix].append(ann1)
     a.policy.process_incoming_anns(a, Relationships.PROVIDERS)
-    assert(a.policy.local_rib[prefix].origin == ann1.origin)
+    assert(a.policy.local_rib.get_ann(prefix).origin == ann1.origin)
     a.policy.recv_q[2][prefix].append(ann2)
     a.policy.process_incoming_anns(a, Relationships.PROVIDERS)
-    assert(a.policy.local_rib[prefix].origin == ann2.origin)
+    assert(a.policy.local_rib.get_ann(prefix).origin == ann2.origin)
     a.policy.recv_q[2][prefix].append(ann3)
     a.policy.process_incoming_anns(a, Relationships.PROVIDERS)
-    assert(a.policy.local_rib[prefix].origin == ann3.origin)
+    assert(a.policy.local_rib.get_ann(prefix).origin == ann3.origin)
     a.policy.recv_q[2][prefix].append(ann1)
     a.policy.process_incoming_anns(a, Relationships.PROVIDERS)
-    assert(a.policy.local_rib[prefix].origin == ann3.origin)
+    assert(a.policy.local_rib.get_ann(prefix).origin == ann3.origin)
 
 @pytest.mark.parametrize("Policy", [BGPPolicy, BGPRIBSPolicy])
 def test_process_incoming_anns_bgp_seeded(Policy):
@@ -112,11 +112,11 @@ def test_process_incoming_anns_bgp_seeded(Policy):
     ann3 = EasyAnn(_prefix=prefix, as_path=(13796,),timestamp=0)
     a = BGPAS(1) 
     a.policy = Policy()
-    a.policy.local_rib[prefix] = ann1
-    assert(a.policy.local_rib[prefix].origin == ann1.origin)
+    a.policy.local_rib.add_ann(ann1, prefix=prefix)
+    assert(a.policy.local_rib.get_ann(prefix).origin == ann1.origin)
     a.policy.recv_q[2][prefix].append(ann2)
     a.policy.process_incoming_anns(a, Relationships.CUSTOMERS)
-    assert(a.policy.local_rib[prefix].origin == ann1.origin)
+    assert(a.policy.local_rib.get_ann(prefix).origin == ann1.origin)
 
 @pytest.mark.parametrize("Policy", [BGPPolicy, BGPRIBSPolicy])
 def test_process_incoming_anns_bgp_loop_check(Policy):
@@ -127,4 +127,4 @@ def test_process_incoming_anns_bgp_loop_check(Policy):
     a.policy = Policy()
     a.policy.recv_q[2][prefix].append(ann1)
     a.policy.process_incoming_anns(a, Relationships.CUSTOMERS)
-    assert(prefix not in a.policy.local_rib)
+    assert a.policy.local_rib.get_ann(prefix) is None

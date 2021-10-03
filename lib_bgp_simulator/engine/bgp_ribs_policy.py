@@ -75,7 +75,7 @@ class BGPRIBSPolicy(BGPPolicy):
             for prefix, ann_list in inner_dict.items():
 
                 # Get announcement currently in local rib
-                local_rib_ann = policy_self.local_rib.get(prefix)
+                local_rib_ann = policy_self.local_rib.get_ann(prefix)
                 best_ann = local_rib_ann
 
                 # Announcement will never be overriden, so continue
@@ -106,7 +106,7 @@ class BGPRIBSPolicy(BGPPolicy):
                                 policy_self._withdraw_ann_from_neighbors(self, withdraw_ann)
                             best_ann = policy_self._deep_copy_ann(self, ann, recv_relationship)
                             # Save to local rib
-                            policy_self.local_rib[prefix] = best_ann
+                            policy_self.local_rib.add_ann(best_ann, prefix=prefix)
 
         policy_self._reset_q(reset_q)
 
@@ -114,7 +114,7 @@ class BGPRIBSPolicy(BGPPolicy):
                                      recv_relationship):
 
         # Return if the current ann was seeded (for an attack)
-        local_rib_ann = policy_self.local_rib.get(prefix)
+        local_rib_ann = policy_self.local_rib.get_ann(prefix)
         if (local_rib_ann is not None and
             ann.prefix_path_attributes_eq(local_rib_ann) and
             local_rib_ann.seed_asn is not None):
@@ -128,8 +128,8 @@ class BGPRIBSPolicy(BGPPolicy):
 
         # Remove ann from local rib
         withdraw_ann = policy_self._deep_copy_ann(self, ann, recv_relationship, withdraw=True)
-        if withdraw_ann.prefix_path_attributes_eq(policy_self.local_rib.get(prefix)):
-            del policy_self.local_rib[prefix]
+        if withdraw_ann.prefix_path_attributes_eq(policy_self.local_rib.get_ann(prefix)):
+            policy_self.local_rib.remove_ann(prefix)
 
             # Also remove from neighbors
             policy_self._withdraw_ann_from_neighbors(self, withdraw_ann)
@@ -138,7 +138,7 @@ class BGPRIBSPolicy(BGPPolicy):
         
         # Put new ann in local rib
         if best_ann is not None:
-            policy_self.local_rib[prefix] = best_ann
+            policy_self.local_rib.add_ann(best_ann, prefix=prefix)
 
     def _withdraw_ann_from_neighbors(policy_self, self, withdraw_ann):
         """Withdraw a route from all neighbors.

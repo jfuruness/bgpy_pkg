@@ -68,7 +68,7 @@ class BGPPolicy:
         """
 
         for as_obj in getattr(self, propagate_to.name.lower()):
-            for prefix, ann in policy_self.local_rib.items():
+            for prefix, ann in policy_self.local_rib.prefix_anns():#items():
                 if ann.recv_relationship in send_rels:
                     # Policy took care of it's own propagation for this ann
                     if policy_self._policy_propagate(self, propagate_to, send_rels, ann, as_obj):
@@ -100,7 +100,7 @@ class BGPPolicy:
         for neighbor, prefix_ann_dict in policy_self.recv_q.items():
             for prefix, ann_list in prefix_ann_dict.items():
                 # Get announcement currently in local rib
-                best_ann = policy_self.local_rib.get(prefix)
+                best_ann = policy_self.local_rib.get_ann(prefix)#get(prefix)
 
                 # Announcement will never be overriden, so continue
                 if best_ann is not None and best_ann.seed_asn is not None:
@@ -116,7 +116,8 @@ class BGPPolicy:
                         if new_ann_is_better:
                             best_ann = policy_self._deep_copy_ann(self, ann, recv_relationship)
                             # Save to local rib
-                            policy_self.local_rib[prefix] = best_ann
+                            policy_self.local_rib.add_ann(best_ann, prefix=prefix)
+                            #policy_self.local_rib[prefix] = best_ann
 
         policy_self._reset_q(reset_q)
 

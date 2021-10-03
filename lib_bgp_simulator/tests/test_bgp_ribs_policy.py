@@ -34,15 +34,15 @@ def test_process_incoming_withdraw():
     a.policy.recv_q[13796][prefix].append(ann)
     a.policy.process_incoming_anns(a, Relationships.CUSTOMERS)
     # Assert ann was received
-    assert(a.policy.local_rib[prefix].origin == ann.origin)
+    assert(a.policy.local_rib.get_ann(prefix).origin == ann.origin)
     a.policy.recv_q[13796][prefix].append(ann_w)
     a.policy.process_incoming_anns(a, Relationships.CUSTOMERS)
     # Assert announcement is removed from the local rib
-    assert(a.policy.local_rib.get(prefix) is None)
+    assert(a.policy.local_rib.get_ann(prefix) is None)
     a.policy.recv_q[13796][prefix].append(ann)
     a.policy.process_incoming_anns(a, Relationships.CUSTOMERS)
     # Assert ann was replaced in local rib
-    assert(a.policy.local_rib[prefix].origin == ann.origin)
+    assert(a.policy.local_rib.get_ann(prefix).origin == ann.origin)
 
 def test_process_incoming_withdraw_send_q():
     """Test processing of incoming withdraw when announcement has not yet been sent to neighbors"""
@@ -51,9 +51,9 @@ def test_process_incoming_withdraw_send_q():
     a.policy.recv_q[13796][prefix].append(ann)
     a.policy.process_incoming_anns(a, Relationships.CUSTOMERS)
     # Assert ann was received
-    assert(a.policy.local_rib[prefix].origin == ann.origin)
+    assert(a.policy.local_rib.get_ann(prefix).origin == ann.origin)
     # Manually add this to the send queue
-    a.policy.send_q[2][prefix].append(a.policy.local_rib[prefix])
+    a.policy.send_q[2][prefix].append(a.policy.local_rib.get_ann(prefix))
     # Withdraw it
     a.policy.recv_q[13796][prefix].append(ann_w)
     a.policy.process_incoming_anns(a, Relationships.CUSTOMERS)
@@ -66,9 +66,9 @@ def test_process_incoming_withdraw_ribs_out():
     a.policy.recv_q[13796][prefix].append(ann)
     a.policy.process_incoming_anns(a, Relationships.CUSTOMERS)
     # Assert ann was received
-    assert(a.policy.local_rib[prefix].origin == ann.origin)
+    assert(a.policy.local_rib.get_ann(prefix).origin == ann.origin)
     # Manually add this to the ribs out
-    a.policy.ribs_out[2][prefix] = a.policy.local_rib[prefix]
+    a.policy.ribs_out[2][prefix] = a.policy.local_rib.get_ann(prefix)
     # Withdraw it
     a.policy.recv_q[13796][prefix].append(ann_w)
     a.policy.process_incoming_anns(a, Relationships.CUSTOMERS)
@@ -108,15 +108,15 @@ def test_withdraw_best_alternative():
     a.policy.process_incoming_anns(a, Relationships.PEERS)
     a.policy.recv_q[13796][prefix].append(ann3)
     a.policy.process_incoming_anns(a, Relationships.CUSTOMERS)
-    assert(a.policy.local_rib[prefix].origin == ann3.origin)
+    assert(a.policy.local_rib.get_ann(prefix).origin == ann3.origin)
     # Withdraw ann3, now AS should use ann2
     a.policy.recv_q[13796][prefix].append(ann3_w)
     a.policy.process_incoming_anns(a, Relationships.CUSTOMERS)
-    assert(a.policy.local_rib[prefix].origin == ann2.origin)
+    assert(a.policy.local_rib.get_ann(prefix).origin == ann2.origin)
     # Withdraw ann2, now AS should use ann1
     a.policy.recv_q[13795][prefix].append(ann2_w)
     a.policy.process_incoming_anns(a, Relationships.PEERS)
-    assert(a.policy.local_rib[prefix].origin == ann1.origin)
+    assert(a.policy.local_rib.get_ann(prefix).origin == ann1.origin)
 
 def test_withdraw_seeded():
     """Customers > Peers > Providers"""
@@ -124,9 +124,9 @@ def test_withdraw_seeded():
     # Populate ribs_in with an announcement
     a.policy.recv_q[13796][prefix].append(ann)
     a.policy.process_incoming_anns(a, Relationships.CUSTOMERS)
-    a.policy.local_rib[prefix].seed_asn = 1
+    a.policy.local_rib.get_ann(prefix).seed_asn = 1
     # Withdraw ann
     a.policy.recv_q[13796][prefix].append(ann_w)
     a.policy.process_incoming_anns(a, Relationships.CUSTOMERS)
     # Assert ann is still there
-    assert(a.policy.local_rib[prefix].origin == ann.origin)
+    assert(a.policy.local_rib.get_ann(prefix).origin == ann.origin)
