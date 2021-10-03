@@ -44,21 +44,19 @@ class BGPRIBSPolicy(BGPPolicy):
         return ann.prefix_path_attributes_eq(ribs_out_ann)
 
     def _add_ann_to_q(policy_self, self, as_obj, ann, propagate_to, send_rels):
-        policy_self.send_q._info[as_obj.asn][ann.prefix].append(ann)
+        policy_self.send_q.add_ann(as_obj.asn, ann)
 
     def _send_anns(policy_self, self, propagate_to: Relationships):
         """Sends announcements and populates ribs out"""
 
-        for as_obj in getattr(self, propagate_to.name.lower()):
-            # Send everything in the send queues
-            for prefix, anns in policy_self.send_q._info[as_obj.asn].items():
-                assert len(anns) <= 2, "Shouldn't have more than an ann and withdrawal"
-                for ann in anns:
-                    as_obj.policy.recv_q.add_ann(ann, prefix=prefix)
-                    # Update Ribs out if it's not a withdraw
-                    if not ann.withdraw:
-                        policy_self.ribs_out[as_obj.asn][prefix] = ann
-            policy_self.send_q._info[as_obj.asn] = defaultdict(list)
+        neighbor_prefix_anns = policy_self.send_q.neighbor_prefix_anns(neighbors=getattr(self, propagate_to.name.lower()))
+
+        for (neighbor_obj, prefix, ann) in neighbor_prefix_anns:
+            neighbor_obj.policy.recv_q.add_ann(ann, prefix=prefix)
+            # Update Ribs out if it's not a withdraw
+            if not ann.withdraw:
+               policy_self.ribs_out[neighbor_obj.asn][prefix] = ann
+            policy_self.send_q.reset_neighbor(neighbor_obj.asn)
 
     def process_incoming_anns(policy_self,
                               self,
@@ -84,7 +82,7 @@ class BGPRIBSPolicy(BGPPolicy):
             # For each announcement that is incoming
             for ann in ann_list:
                 if ann.withdraw:
-                    policy_self._process_incoming_withdrawal(self, ann, neighbor, ann.prefix, recv_relationship)
+                    policy_self._process_incoming_withdrawal(self, ann, ann.as_path[0], ann.prefix, recv_relationship)
 
                 else:
                     # BGP Loop Prevention Check
@@ -155,25 +153,11 @@ class BGPRIBSPolicy(BGPPolicy):
             if withdraw_ann.prefix_path_attributes_eq(inner_dict.get(withdraw_ann.prefix)):
                 # Delete ann from ribs out
                 del policy_self.ribs_out[send_neighbor][withdraw_ann.prefix]
-                # If the ann being withdrawn has not been sent yet, remove it
-                # from the send_q and do not send the withdrawal. 
-                found_in_send_q = False
-                for i, ann in enumerate(policy_self.send_q._info[send_neighbor][withdraw_ann.prefix]):
-                    if withdraw_ann.prefix_path_attributes_eq(ann) and not ann.withdraw:
-                        policy_self.send_q._info[send_neighbor][withdraw_ann.prefix].pop(i)
-                        found_in_send_q = True
-                # Add withdrawal to send queue
-                if not found_in_send_q:
-                    policy_self.send_q._info[send_neighbor][withdraw_ann.prefix].append(withdraw_ann)
 
-        # Now re-check the send_q for any that have not been sent yet
-        for send_neighbor, inner_dict in policy_self.send_q._info.items():
-            ann_list = inner_dict.get(withdraw_ann.prefix)
-            if ann_list:
-                for i, ann in enumerate(reversed(ann_list)):
-                    if withdraw_ann.prefix_path_attributes_eq(ann) and not ann.withdraw:
-                        policy_self.send_q._info[send_neighbor][withdraw_ann.prefix].pop(i)
- 
+        # Adds withdrawal, or cancels out if we are withdrawing an ann we haven't sent
+        for neighbor_obj in self.peers + self.customers + self.providers:
+            policy_self.send_q.add_ann(neighbor_obj.asn, withdraw_ann)
+            
     def _select_best_ribs_in(policy_self, self, prefix):
         """Selects best ann from ribs in. Remember, ribs in anns are NOT deep copied"""
 
