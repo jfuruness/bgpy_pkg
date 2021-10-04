@@ -7,8 +7,8 @@ from ..utils import run_example, HijackLocalRib
 from ....enums import ASNs, Prefixes, Timestamps, ROAValidity, Relationships
 from ....simulator.attacks import SubprefixHijack
 from ....engine import LocalRib
-from ....engine.bgp_policy import BGPPolicy
-from ....engine.bgp_ribs_policy import BGPRIBSPolicy
+from ....engine import BGPPolicy
+from ....engine import BGPRIBSPolicy
 from ....announcement import Announcement
 
 @pytest.mark.parametrize("BasePolicyCls", [BGPPolicy, BGPRIBSPolicy])

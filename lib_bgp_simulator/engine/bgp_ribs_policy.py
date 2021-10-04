@@ -56,6 +56,7 @@ class BGPRIBSPolicy(BGPPolicy):
             # Update Ribs out if it's not a withdraw
             if not ann.withdraw:
                policy_self.ribs_out[neighbor_obj.asn][prefix] = ann
+        for neighbor_obj in getattr(self, propagate_to.name.lower()):
             policy_self.send_q.reset_neighbor(neighbor_obj.asn)
 
     def process_incoming_anns(policy_self,
@@ -81,29 +82,48 @@ class BGPRIBSPolicy(BGPPolicy):
 
             # For each announcement that is incoming
             for ann in ann_list:
-                if ann.withdraw:
-                    policy_self._process_incoming_withdrawal(self, ann, ann.as_path[0], ann.prefix, recv_relationship)
+                # withdrawals
+                err = "Recieved two withdrawals from the same neighbor"
+                assert len([x.as_path[0] for x in ann_list if x.withdraw]) == len(set([x.as_path[0] for x in ann_list if x.withdraw])), err
 
-                else:
-                    # BGP Loop Prevention Check
-                    if self.asn in ann.as_path:
-                        continue
+                err = "Recieved two NON withdrawals from the same neighbor"
+                assert len([x.as_path[0] for x in ann_list if not x.withdraw]) == len(set([x.as_path[0] for x in ann_list if not x.withdraw])), err
+
+               # Always add to ribs in if it's not a withdrawal
+                if not ann.withdraw:
+                    try:
+                        err = "you should never be replacing anns. You should always withdraw first, have it be blank, then add the new one"
+                        assert policy_self.ribs_in[ann.as_path[0]].get(prefix) is None, err
+                    except:
+                        print("Incoming anns")
+                        for ann in ann_list:
+                            print(ann, ann.withdraw)
+                        __ann, rel = (policy_self.ribs_in[ann.as_path[0]].get(prefix))
+                        print("RIBS IN", str(__ann), rel)
+                        input("ERROR!!!! fix this later with better error checking")
+                        raise NotImplementedError
 
                     policy_self.ribs_in[ann.as_path[0]][prefix] = (ann, recv_relationship)
 
-                    new_ann_is_better = policy_self._new_ann_is_better(self, best_ann, ann, recv_relationship)
-                    # If the new priority is higher
-                    if new_ann_is_better:
-                        if best_ann is not None:
-                            withdraw_ann = policy_self._deep_copy_ann(self,
-                                                                      ann,
-                                                                      recv_relationship,
-                                                                      withdraw=True)
+                # If it's valid, process it
+                if policy_self._valid_ann(self, ann):
+                    if ann.withdraw:
+                        policy_self._process_incoming_withdrawal(self, ann, ann.as_path[0], ann.prefix, recv_relationship)
 
-                            policy_self._withdraw_ann_from_neighbors(self, withdraw_ann)
-                        best_ann = policy_self._deep_copy_ann(self, ann, recv_relationship)
-                        # Save to local rib
-                        policy_self.local_rib.add_ann(best_ann, prefix=prefix)
+                    else:
+                        new_ann_is_better = policy_self._new_ann_is_better(self, best_ann, ann, recv_relationship)
+                        # If the new priority is higher
+                        if new_ann_is_better:
+                            if best_ann is not None:
+                                # Best ann has already been processed
+                                withdraw_ann = best_ann.copy(withdraw=True)
+
+                                policy_self._withdraw_ann_from_neighbors(self, withdraw_ann)
+                                err = "withdrawing an announcement that is identical to new ann"
+                                assert not withdraw_ann.prefix_path_attributes_eq(policy_self._deep_copy_ann(self, ann, recv_relationship)), err
+                            best_ann = policy_self._deep_copy_ann(self, ann, recv_relationship)
+                            # Save to local rib
+                            policy_self.local_rib.add_ann(best_ann, prefix=prefix)
 
         policy_self._reset_q(reset_q)
 
@@ -112,13 +132,12 @@ class BGPRIBSPolicy(BGPPolicy):
 
         # Return if the current ann was seeded (for an attack)
         local_rib_ann = policy_self.local_rib.get_ann(prefix)
-        if (local_rib_ann is not None and
-            ann.prefix_path_attributes_eq(local_rib_ann) and
-            local_rib_ann.seed_asn is not None):
-            return
+        assert not ((local_rib_ann is not None) and ((ann.prefix_path_attributes_eq(local_rib_ann)) and (local_rib_ann.seed_asn is not None))), f"Trying to withdraw a seeded ann {local_rib_ann.seed_asn}"
+
 
         current_ann_ribs_in, _ = policy_self.ribs_in[neighbor][prefix]
-        assert ann.prefix_path_attributes_eq(current_ann_ribs_in)
+        err = f"Cannot withdraw ann that was never sent.\n\t Ribs in: {current_ann_ribs_in}\n\t withdraw: {ann}"
+        assert ann.prefix_path_attributes_eq(current_ann_ribs_in), err
         
         # Remove ann from Ribs in
         del policy_self.ribs_in[neighbor][prefix]
@@ -127,7 +146,6 @@ class BGPRIBSPolicy(BGPPolicy):
         withdraw_ann = policy_self._deep_copy_ann(self, ann, recv_relationship, withdraw=True)
         if withdraw_ann.prefix_path_attributes_eq(policy_self.local_rib.get_ann(prefix)):
             policy_self.local_rib.remove_ann(prefix)
-
             # Also remove from neighbors
             policy_self._withdraw_ann_from_neighbors(self, withdraw_ann)
 
@@ -137,6 +155,9 @@ class BGPRIBSPolicy(BGPPolicy):
         if best_ann is not None:
             policy_self.local_rib.add_ann(best_ann, prefix=prefix)
 
+        err = "Best ann should not be identical to the one we just withdrew"
+        assert not withdraw_ann.prefix_path_attributes_eq(best_ann), err
+
     def _withdraw_ann_from_neighbors(policy_self, self, withdraw_ann):
         """Withdraw a route from all neighbors.
 
@@ -145,7 +166,6 @@ class BGPRIBSPolicy(BGPPolicy):
 
         Note that withdraw_ann is a deep copied ann
         """
-
         assert withdraw_ann.withdraw is True
         # Check ribs_out to see where the withdrawn ann was sent
         for send_neighbor, inner_dict in policy_self.ribs_out.items():
@@ -153,10 +173,16 @@ class BGPRIBSPolicy(BGPPolicy):
             if withdraw_ann.prefix_path_attributes_eq(inner_dict.get(withdraw_ann.prefix)):
                 # Delete ann from ribs out
                 del policy_self.ribs_out[send_neighbor][withdraw_ann.prefix]
+                policy_self.send_q.add_ann(send_neighbor, withdraw_ann)
 
-        # Adds withdrawal, or cancels out if we are withdrawing an ann we haven't sent
+        # We may not have sent the ann yet, it may just be in the send queue and not ribs out
+        # We want to cancel out any anns in the send_queue that match the withdrawal
         for neighbor_obj in self.peers + self.customers + self.providers:
-            policy_self.send_q.add_ann(neighbor_obj.asn, withdraw_ann)
+            send_info = policy_self.send_q.get_send_info(neighbor_obj, withdraw_ann.prefix)
+            if send_info is None or send_info.ann is None:
+                continue
+            elif send_info.ann.prefix_path_attributes_eq(withdraw_ann):
+                send_info.ann = None
             
     def _select_best_ribs_in(policy_self, self, prefix):
         """Selects best ann from ribs in. Remember, ribs in anns are NOT deep copied"""

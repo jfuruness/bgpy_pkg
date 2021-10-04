@@ -11,8 +11,11 @@ class SendInfo:
 
     @property
     def anns(self):
-        return [x for x in [self.ann, self.withdrawal_ann]
+        return [x for x in [self.withdrawal_ann, self.ann]
                 if x is not None]
+
+    def __str__(self):
+        return f"send_info: ann: {self.ann}, withdrawal_ann {self.withdrawal_ann}"
 
 
 class SendQueue:
@@ -36,13 +39,26 @@ class SendQueue:
         # Withdraw
         if ann.withdraw:
             send_info = self._info[neighbor_asn][prefix]
+            assert send_info.withdrawal_ann is None, f"replacing withdrawal? {send_info.withdrawal_ann}"
             if send_info.ann is not None and send_info.ann.prefix_path_attributes_eq(ann):
                 del self._info[neighbor_asn][prefix]
             else:
                 send_info.withdrawal_ann = ann
         # Normal ann
         else:
+            send_info = self._info[neighbor_asn][prefix]
+            assert send_info.ann is None, "Replacing valid ann?"
+            err = "Can't send identical withdrawal and ann"
+            err += f" {ann}, {send_info.withdrawal_ann}"
+            assert not ann.prefix_path_attributes_eq(send_info.withdrawal_ann), err
             self._info[neighbor_asn][prefix].ann = ann
+
+    def get_send_info(self, neighbor_obj, prefix):
+        neighbor_info = self._info.get(neighbor_obj.asn)
+        if neighbor_info is None:
+            return neighbor_info
+        else:
+            return neighbor_info.get(prefix)
 
     def neighbor_prefix_anns(self, neighbors):
         for neighbor_obj in neighbors:

@@ -8,10 +8,10 @@ from ....enums import ASNs, Relationships as Rels, ROAValidity
 from ....announcement import Announcement
 from ....simulator.attacks import SubprefixHijack
 
-from ....engine.bgp_as import BGPAS
-from ....engine.bgp_policy import BGPPolicy
-from ....engine.bgp_ribs_policy import BGPRIBSPolicy
-from ....engine.local_rib import LocalRib
+from ....engine import BGPAS
+from ....engine import BGPPolicy
+from ....engine import BGPRIBSPolicy
+from ....engine import LocalRib
 
 @pytest.mark.parametrize("BasePolicyCls", [BGPPolicy, BGPRIBSPolicy])
 def test_propagate_bgp(BasePolicyCls):
