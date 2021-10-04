@@ -118,27 +118,6 @@ class BGPRIBSPolicy(BGPPolicy):
                             current_best_ann = ann
                             current_best_ann_processed = False
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
             if local_rib_ann is not None and current_best_ann_processed is False:
                 # Best ann has already been processed
                 withdraw_ann = local_rib_ann.copy(withdraw=True)
