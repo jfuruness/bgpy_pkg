@@ -9,8 +9,8 @@ class ROVPolicy(BGPPolicy):
 
     name = "ROV"
 
-    def _valid_ann(policy_self, self, ann, **kwargs):
+    def _valid_ann(policy_self, self, ann, *args, **kwargs):
         if ann.roa_validity == ROAValidity.INVALID:
             return False
         else:
-            return super(ROVPolicy, policy_self)._valid_ann(self, ann, **kwargs)
+            return super(ROVPolicy, policy_self)._valid_ann(self, ann, *args, **kwargs)

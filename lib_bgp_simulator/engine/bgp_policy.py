@@ -99,24 +99,34 @@ class BGPPolicy:
 
         for prefix, ann_list in policy_self.recv_q.prefix_anns():
             # Get announcement currently in local rib
-            best_ann = policy_self.local_rib.get_ann(prefix)#get(prefix)
+            current_best_ann = policy_self.local_rib.get_ann(prefix)#get(prefix)
+            current_best_ann_processed = True
 
             # Announcement will never be overriden, so continue
-            if best_ann is not None and best_ann.seed_asn is not None:
+            if current_best_ann is not None and current_best_ann.seed_asn is not None:
                 continue
 
             # For each announcement that was incoming
             for ann in ann_list:
                 # Make sure there are no loops
                 # In ROV subclass also check roa validity
-                if policy_self._valid_ann(self, ann):
-                    new_ann_is_better = policy_self._new_ann_is_better(self, best_ann, ann, recv_relationship)
-                    # If the new priority is higher
+                if policy_self._valid_ann(self, ann, recv_relationship):
+                    new_ann_is_better = policy_self._new_ann_is_better(self,
+                                                                       current_best_ann,
+                                                                       current_best_ann_processed,
+                                                                       ann,
+                                                                       False,
+                                                                       recv_relationship)
                     if new_ann_is_better:
-                        best_ann = policy_self._deep_copy_ann(self, ann, recv_relationship)
-                        # Save to local rib
-                        policy_self.local_rib.add_ann(best_ann, prefix=prefix)
-                        #policy_self.local_rib[prefix] = best_ann
+                        current_best_ann = ann
+                        current_best_ann_processed = False
+
+            # This is a new best ann
+            if current_best_ann_processed is False:
+                best_ann = policy_self._deep_copy_ann(self, ann, recv_relationship)
+                # Save to local rib
+                policy_self.local_rib.add_ann(best_ann, prefix=prefix)
+                #policy_self.local_rib[prefix] = best_ann
 
         policy_self._reset_q(reset_q)
 
@@ -124,54 +134,79 @@ class BGPPolicy:
         if reset_q:
             policy_self.recv_q = RecvQueue()
 
-    def _new_ann_is_better(policy_self, self, deep_ann, second_ann, recv_relationship: Relationships, processed=False):
+    def _new_ann_is_better(policy_self,
+                           self,
+                           current_best_ann,
+                           current_best_ann_processed,
+                           new_ann,
+                           new_ann_processed,
+                           recv_relationship: Relationships):
         """Assigns the priority to an announcement according to Gao Rexford
 
         NOTE: processed is processed for second ann"""
 
-        assert self.asn not in second_ann.as_path, "Should have been removed in ann validation func"
+        assert self.asn not in new_ann.as_path, "Should have been removed in ann validation func"
 
-        best_by_relationship = policy_self._best_by_relationship(deep_ann, second_ann if processed else recv_relationship)
-        if best_by_relationship is not None:
-            return best_by_relationship
+        new_rel_is_better = policy_self._new_relationship_is_better(current_best_ann,
+                                                                    current_best_ann_processed,
+                                                                    new_ann,
+                                                                    new_ann_processed,
+                                                                    recv_relationship)
+        if new_rel_is_better is not None:
+            return new_rel_is_better
         else:
-            return policy_self._best_as_path_ties(self, deep_ann, second_ann, processed=processed)
+            return policy_self._new_as_path_ties_is_better(self,
+                                                           current_best_ann,
+                                                           current_best_ann_processed,
+                                                           new_ann,
+                                                           new_ann_processed)
 
-    def _best_by_relationship(policy_self, deep_ann, other):
-        if deep_ann is None:
+    def _new_relationship_is_better(policy_self,
+                                    current_best_ann,
+                                    current_best_ann_processed,
+                                    new_ann,
+                                    new_ann_processed,
+                                    recv_relationship):
+        if current_best_ann is None:
             return True
 
-        if isinstance(other, Relationships):
-            other_relationship = other
-        elif isinstance(other, Ann):
-            other_relationship = other.recv_relationship
+        if current_best_ann_processed:
+            current_best_rel = current_best_ann.recv_relationship
         else:
-            raise NotImplementedError
+            current_best_rel = recv_relationship
 
-        if deep_ann.recv_relationship.value > other_relationship.value:
+        if new_ann_processed:
+            new_rel = new_ann.recv_relationship
+        else:
+            new_rel = recv_relationship
+
+        if current_best_rel.value > new_rel.value:
             return False
-        elif deep_ann.recv_relationship.value < other_relationship.value:
+        elif current_best_rel.value < new_rel.value:
             return True
         else:
             return None
 
-    def _best_as_path_ties(policy_self, self, deep_ann, second_ann, processed=False):
-        best_as_path = policy_self._best_as_path(deep_ann, second_ann, processed)
+    def _new_as_path_ties_is_better(policy_self, self, current_best_ann, current_best_ann_processed, new_ann, new_ann_processed):
+        best_as_path = policy_self._new_as_path_is_better(current_best_ann, current_best_ann_processed, new_ann, new_ann_processed)
         if best_as_path is not None:
             return best_as_path
         else:
-            return policy_self._best_tiebreak(self, deep_ann, second_ann, processed)
+            return policy_self._new_wins_tiebreaks(current_best_ann, current_best_ann_processed, new_ann, new_ann_processed)
 
-    def _best_as_path(policy_self, deep_ann, second_ann, processed):
-        if len(deep_ann.as_path) < len(second_ann.as_path) + int(not processed):
+    def _new_as_path_is_better(policy_self, current_best_ann, current_best_ann_processed, new_ann, new_ann_processed):
+        if len(current_best_ann.as_path) + int(not current_best_ann_processed) < len(new_ann.as_path) + int(not new_ann_processed):
             return False
-        elif len(deep_ann.as_path) > len(second_ann.as_path) + int(not processed):
+        elif len(current_best_ann.as_path) + int(not current_best_ann_processed) > len(new_ann.as_path) + int(not new_ann_processed):
             return True
         else:
             return None
 
-    def _best_tiebreak(policy_self, self, deep_ann, second_ann, processed) -> bool:
-        return not deep_ann.as_path[0] <= self.asn
+    def _new_wins_tiebreaks(policy_self, current_best_ann, current_best_ann_processed, new_ann, new_ann_processed) -> bool:
+        current_best_index = min(int(current_best_ann_processed), len(current_best_ann.as_path) - 1)
+        new_index = min(int(new_ann_processed), len(new_ann.as_path) - 1)
+        assert current_best_ann.as_path[current_best_index] != new_ann.as_path[new_index], "Cameron says no ties lol"
+        return current_best_ann.as_path[current_best_index] > new_ann.as_path[new_index]
 
     def _deep_copy_ann(policy_self, self, ann, recv_relationship, **extra_kwargs):
         """Deep copies ann and modifies attrs"""
@@ -181,7 +216,7 @@ class BGPPolicy:
 
         return ann.copy(recv_relationship=recv_relationship, **kwargs)
 
-    def _valid_ann(policy_self, self, ann):
+    def _valid_ann(policy_self, self, ann, recv_relationship):
         """Determine if an announcement is valid or should be dropped"""
 
         # BGP Loop Prevention Check

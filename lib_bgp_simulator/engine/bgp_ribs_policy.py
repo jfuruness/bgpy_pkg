@@ -74,10 +74,11 @@ class BGPRIBSPolicy(BGPPolicy):
 
             # Get announcement currently in local rib
             local_rib_ann = policy_self.local_rib.get_ann(prefix)
-            best_ann = local_rib_ann
+            current_best_ann = local_rib_ann
+            current_best_ann_processed = True
 
             # Announcement will never be overriden, so continue
-            if best_ann is not None and best_ann.seed_asn is not None:
+            if current_best_ann is not None and current_best_ann.seed_asn is not None:
                 continue
 
             # For each announcement that is incoming
@@ -106,24 +107,50 @@ class BGPRIBSPolicy(BGPPolicy):
                     policy_self.ribs_in[ann.as_path[0]][prefix] = (ann, recv_relationship)
 
                 # If it's valid, process it
-                if policy_self._valid_ann(self, ann):
+                if policy_self._valid_ann(self, ann, recv_relationship):
                     if ann.withdraw:
                         policy_self._process_incoming_withdrawal(self, ann, ann.as_path[0], ann.prefix, recv_relationship)
 
                     else:
-                        new_ann_is_better = policy_self._new_ann_is_better(self, best_ann, ann, recv_relationship)
+                        new_ann_is_better = policy_self._new_ann_is_better(self, current_best_ann, current_best_ann_processed, ann, False, recv_relationship)
                         # If the new priority is higher
                         if new_ann_is_better:
-                            if best_ann is not None:
-                                # Best ann has already been processed
-                                withdraw_ann = best_ann.copy(withdraw=True)
+                            current_best_ann = ann
+                            current_best_ann_processed = False
 
-                                policy_self._withdraw_ann_from_neighbors(self, withdraw_ann)
-                                err = "withdrawing an announcement that is identical to new ann"
-                                assert not withdraw_ann.prefix_path_attributes_eq(policy_self._deep_copy_ann(self, ann, recv_relationship)), err
-                            best_ann = policy_self._deep_copy_ann(self, ann, recv_relationship)
-                            # Save to local rib
-                            policy_self.local_rib.add_ann(best_ann, prefix=prefix)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            if local_rib_ann is not None and current_best_ann_processed is False:
+                # Best ann has already been processed
+                withdraw_ann = local_rib_ann.copy(withdraw=True)
+                policy_self._withdraw_ann_from_neighbors(self, withdraw_ann)
+                err = "withdrawing an announcement that is identical to new ann"
+                assert not withdraw_ann.prefix_path_attributes_eq(policy_self._deep_copy_ann(self, ann, recv_relationship)), err
+
+            # We have a new best!
+            if current_best_ann_processed is False:
+                current_best_ann = policy_self._deep_copy_ann(self, ann, recv_relationship)
+                # Save to local rib
+                policy_self.local_rib.add_ann(current_best_ann, prefix=prefix)
 
         policy_self._reset_q(reset_q)
 
@@ -198,7 +225,7 @@ class BGPRIBSPolicy(BGPPolicy):
             # Get the best announcement
             best_ann = None
             for ann, recv_relationship in ann_list:
-                if policy_self._new_ann_is_better(self, best_ann, ann, recv_relationship):
+                if policy_self._new_ann_is_better(self, best_ann, False, ann, False, recv_relationship):
                     best_ann = policy_self._deep_copy_ann(self, ann, recv_relationship)
 
             return best_ann
