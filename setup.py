@@ -22,7 +22,7 @@ setup(
     packages=find_packages(),
     install_requires=[
         'lib_caida_collector @ git+ssh://git@github.com/jfuruness/lib_caida_collector.git',
-        'lib_utils @ git+ssh://git@github.com/jfuruness/lib_utils.git@master',
+        'lib_utils @ git+ssh://git@github.com/jfuruness/lib_utils.git',
         'matplotlib',
         'pytest',
         'tqdm',

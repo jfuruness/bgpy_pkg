@@ -123,7 +123,7 @@ class BGPPolicy:
 
             # This is a new best ann
             if current_best_ann_processed is False:
-                best_ann = policy_self._deep_copy_ann(self, ann, recv_relationship)
+                best_ann = policy_self._deep_copy_ann(self, current_best_ann, recv_relationship)
                 # Save to local rib
                 policy_self.local_rib.add_ann(best_ann, prefix=prefix)
                 #policy_self.local_rib[prefix] = best_ann
