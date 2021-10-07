@@ -123,10 +123,9 @@ class BGPPolicy:
 
             # This is a new best ann
             if current_best_ann_processed is False:
-                best_ann = policy_self._deep_copy_ann(self, current_best_ann, recv_relationship)
+                current_best_ann = policy_self._deep_copy_ann(self, current_best_ann, recv_relationship)
                 # Save to local rib
-                policy_self.local_rib.add_ann(best_ann, prefix=prefix)
-                #policy_self.local_rib[prefix] = best_ann
+                policy_self.local_rib.add_ann(current_best_ann, prefix=prefix)
 
         policy_self._reset_q(reset_q)
 
@@ -206,7 +205,8 @@ class BGPPolicy:
         current_best_index = min(int(current_best_ann_processed), len(current_best_ann.as_path) - 1)
         new_index = min(int(new_ann_processed), len(new_ann.as_path) - 1)
         assert current_best_ann.as_path[current_best_index] != new_ann.as_path[new_index], "Cameron says no ties lol"
-        return current_best_ann.as_path[current_best_index] > new_ann.as_path[new_index]
+
+        return new_ann.as_path[new_index] < current_best_ann.as_path[current_best_index]
 
     def _deep_copy_ann(policy_self, self, ann, recv_relationship, **extra_kwargs):
         """Deep copies ann and modifies attrs"""
