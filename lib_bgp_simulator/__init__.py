@@ -26,3 +26,5 @@ from .simulator import Simulator
 
 from .announcement import Announcement
 from .enums import Relationships
+
+from .tests import run_example
