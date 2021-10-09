@@ -9,7 +9,7 @@ from ..enums import Relationships
 from ..announcement import Announcement as Ann
 
 
-class BGPPolicy:
+class BGPPolicy(AS):
     __slots__ = ["local_rib", "recv_q"]
 
     name = "BGP"
@@ -27,39 +27,40 @@ class BGPPolicy:
                "Please make a class attr name for the policy something different")
         assert len(set(cls.subclass_names)) == len(cls.subclass_names), msg
 
-    def __init__(self):
+    def __init__(self, *args, **kwargs):
         """Add local rib and data structures here
 
         This way they can be easily cleared later without having to redo
         the graph
         """
 
+        super(BGPPolicy, self).__init__(*args, **kwargs)
         self.local_rib = LocalRib()
         self.recv_q = RecvQueue()
 
-    def propagate_to_providers(policy_self, self):
+    def propagate_to_providers(self):
         """Propogates to providers"""
 
         send_rels = set([Relationships.ORIGIN, Relationships.CUSTOMERS])
-        policy_self._propagate(self, Relationships.PROVIDERS, send_rels)
+        self._propagate(Relationships.PROVIDERS, send_rels)
 
-    def propagate_to_customers(policy_self, self):
+    def propagate_to_customers(self):
         """Propogates to customers"""
 
         send_rels = set([Relationships.ORIGIN,
                          Relationships.CUSTOMERS,
                          Relationships.PEERS,
                          Relationships.PROVIDERS])
-        policy_self._propagate(self, Relationships.CUSTOMERS, send_rels)
+        self._propagate(Relationships.CUSTOMERS, send_rels)
 
-    def propagate_to_peers(policy_self, self):
+    def propagate_to_peers(self):
         """Propogates to peers"""
 
         send_rels = set([Relationships.ORIGIN,
                          Relationships.CUSTOMERS])
-        policy_self._propagate(self, Relationships.PEERS, send_rels)
+        self._propagate(Relationships.PEERS, send_rels)
 
-    def _propagate(policy_self, self, propagate_to: Relationships, send_rels: list):
+    def _propagate_anns(self, propagate_to: Relationships, send_rels: list):
         """Propogates announcements from local rib to other ASes
 
         send_rels is the relationships that are acceptable to send
@@ -68,29 +69,29 @@ class BGPPolicy:
         being sent. But this is just proof of concept.
         """
 
-        for as_obj in getattr(self, propagate_to.name.lower()):
-            for prefix, ann in policy_self.local_rib.prefix_anns():#items():
+        for neighbor in getattr(self, propagate_to.name.lower()):
+            for prefix, ann in self.local_rib.prefix_anns():#items():
                 if ann.recv_relationship in send_rels:
+                    propagate_args = [neighbor, ann, propagate_to, send_rels]
                     # Policy took care of it's own propagation for this ann
-                    if policy_self._policy_propagate(self, propagate_to, send_rels, ann, as_obj):
+                    if self._policy_propagate(*propagate_args):
                         continue
                     else:
-                        policy_self._add_ann_to_q(self, as_obj, ann, propagate_to, send_rels)
-
-    def _add_ann_to_q(policy_self, self, as_obj, ann, propagate_to, send_rels):
-        """Adds ann to the neighbors recv q"""
-
-        # Add the new ann to the incoming anns for that prefix
-        as_obj.policy.recv_q.add_ann(ann)
+                        self._process_outgoing_ann(*propagate_args)
 
     def _policy_propagate(*args, **kwargs):
         """Custom policy propagation that can be overriden"""
 
         return False
 
-    def process_incoming_anns(policy_self,
-                              self,
-                              recv_relationship: Relationships,
+    def _process_outgoing_ann(self, neighbor, ann, propagate_to, send_rels):
+        """Adds ann to the neighbors recv q"""
+
+        # Add the new ann to the incoming anns for that prefix
+        neighbor.recv_q.add_ann(ann)
+
+    def process_incoming_anns(self,
+                              from_rel: Relationships,
                               *args,
                               propagation_round=None,
                               attack=None,  # Usually None
@@ -98,46 +99,45 @@ class BGPPolicy:
                               **kwargs):
         """Process all announcements that were incoming from a specific rel"""
 
-        for prefix, ann_list in policy_self.recv_q.prefix_anns():
+        for prefix, ann_list in self.recv_q.prefix_anns():
             # Get announcement currently in local rib
-            current_ann = policy_self.local_rib.get_ann(prefix)#get(prefix)
+            current_ann = self.local_rib.get_ann(prefix)
             current_processed = True
 
-            # Announcement will never be overriden, so continue
-            if current_ann is not None and current_ann.seed_asn is not None:
+            # Seeded Ann will never be overriden, so continue
+            if getattr(current_ann, "seed_asn", None) is not None:
                 continue
 
             # For each announcement that was incoming
             for ann in ann_list:
                 # Make sure there are no loops
                 # In ROV subclass also check roa validity
-                if policy_self._valid_ann(self, ann, recv_relationship):
-                    new_ann_better = policy_self._new_ann_better(self,
-                                                                 current_ann,
-                                                                 current_processed,
-                                                                 recv_relationship,
-                                                                 ann,
-                                                                 False,
-                                                                 recv_relationship)
+                if self._valid_ann(ann, recv_relationship):
+                    new_ann_better = self._new_ann_better(current_ann,
+                                                          current_processed,
+                                                          from_rel,
+                                                          ann,
+                                                          False,
+                                                          from_rel)
                     if new_ann_better:
                         current_ann = ann
                         current_processed = False
 
             # This is a new best ann. Process it and add it to the local rib
             if current_processed is False:
-                current_ann = policy_self._deep_copy_ann(self, current_ann, recv_relationship)
+                current_ann = self._deep_copy_ann(current_ann, from_rel)
                 # Save to local rib
-                policy_self.local_rib.add_ann(current_ann, prefix=prefix)
+                self.local_rib.add_ann(current_ann)
 
-        policy_self._reset_q(reset_q)
+        self._reset_q(reset_q)
 
-    def _valid_ann(policy_self, self, ann, recv_relationship):
+    def _valid_ann(self, ann, recv_relationship):
         """Determine if an announcement is valid or should be dropped"""
 
         # BGP Loop Prevention Check
         return not (self.asn in ann.as_path)
 
-    def _deep_copy_ann(policy_self, self, ann, recv_relationship, **extra_kwargs):
+    def _deep_copy_ann(self, ann, recv_relationship, **extra_kwargs):
         """Deep copies ann and modifies attrs"""
 
         kwargs = {"as_path": (self.asn, *ann.as_path)}
@@ -145,10 +145,9 @@ class BGPPolicy:
 
         return ann.copy(recv_relationship=recv_relationship, **kwargs)
 
-    def _reset_q(policy_self, reset_q):
+    def _reset_q(self, reset_q):
         if reset_q:
-            policy_self.recv_q = RecvQueue()
-
+            self.recv_q = RecvQueue()
 
     from .gao_rexford import _new_ann_better
     from .gao_rexford import _new_as_path_ties_better
