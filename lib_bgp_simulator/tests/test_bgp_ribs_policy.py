@@ -63,7 +63,6 @@ def test_process_incoming_withdraw_send_q():
     a.policy.recv_q.add_ann(ann_w)
     a.policy.process_incoming_anns(a, Relationships.CUSTOMERS)
     send_info = a.policy.send_q._info[2].get(prefix)
-    print(send_info.withdrawal_ann, send_info.ann)
     # Assert send_q is empty
     assert a.policy.send_q._info[2].get(prefix).ann is None
 
@@ -116,8 +115,11 @@ def test_withdraw_best_alternative():
     a.policy.process_incoming_anns(a, Relationships.PEERS)
     a.policy.recv_q.add_ann(ann3)
     a.policy.process_incoming_anns(a, Relationships.CUSTOMERS)
+
     assert(a.policy.local_rib.get_ann(prefix).origin == ann3.origin)
-    # Withdraw ann3, now AS should use ann2
+
+
+    # Withdraw ann3, now AS should use ann2'
     a.policy.recv_q.add_ann(ann3_w)
     a.policy.process_incoming_anns(a, Relationships.CUSTOMERS)
     assert(a.policy.local_rib.get_ann(prefix).origin == ann2.origin)

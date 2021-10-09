@@ -1,4 +1,5 @@
 from copy import deepcopy
+import functools
 
 from lib_caida_collector import AS
 
@@ -114,6 +115,7 @@ class BGPPolicy:
                     new_ann_is_better = policy_self._new_ann_is_better(self,
                                                                        current_best_ann,
                                                                        current_best_ann_processed,
+                                                                       recv_relationship,
                                                                        ann,
                                                                        False,
                                                                        recv_relationship)
@@ -121,7 +123,7 @@ class BGPPolicy:
                         current_best_ann = ann
                         current_best_ann_processed = False
 
-            # This is a new best ann
+            # This is a new best ann. Process it and add it to the local rib
             if current_best_ann_processed is False:
                 current_best_ann = policy_self._deep_copy_ann(self, current_best_ann, recv_relationship)
                 # Save to local rib
@@ -137,47 +139,77 @@ class BGPPolicy:
                            self,
                            current_best_ann,
                            current_best_ann_processed,
+                           default_current_best_ann_recv_rel,
                            new_ann,
                            new_ann_processed,
-                           recv_relationship: Relationships):
+                           default_new_ann_recv_rel):
         """Assigns the priority to an announcement according to Gao Rexford
 
         NOTE: processed is processed for second ann"""
 
-        assert self.asn not in new_ann.as_path, "Should have been removed in ann validation func"
+        # Can't assert this here due to passing new_ann as None now that it can be prpcessed or not
+        #assert self.asn not in new_ann.as_path, "Should have been removed in ann validation func"
 
-        new_rel_is_better = policy_self._new_relationship_is_better(current_best_ann,
-                                                                    current_best_ann_processed,
-                                                                    new_ann,
+        none_validation = policy_self._none_validation(current_best_ann, new_ann)
+        if none_validation is not None:
+            return none_validation
+        else:
+            new_ann_is_better_no_tiebreaks = policy_self._new_ann_is_better_no_tiebreaks(len(current_best_ann.as_path),
+                                                                                         current_best_ann_processed,
+                                                                                         current_best_ann.recv_relationship,
+                                                                                         default_current_best_ann_recv_rel,
+                                                                                         len(new_ann.as_path),
+                                                                                         new_ann_processed,
+                                                                                         new_ann.recv_relationship,
+                                                                                         default_new_ann_recv_rel)
+            if new_ann_is_better_no_tiebreaks is not None:
+                return new_ann_is_better_no_tiebreaks
+            else:
+                return policy_self._new_ann_wins_ties(current_best_ann, current_best_ann_processed, new_ann, new_ann_processed)
+
+    def _none_validation(policy_self, current_best_ann, new_ann):
+        if current_best_ann is None:
+            return True
+        elif new_ann is None:
+            return False
+        else:
+            return None
+
+    def _new_ann_is_better_no_tiebreaks(policy_self,
+                                        current_best_as_path_len,
+                                        current_best_processed,
+                                        current_best_recv_relationship,
+                                        default_current_best_ann_recv_rel,
+                                        new_ann_as_path_len,
+                                        new_ann_processed,
+                                        new_ann_recv_relationship,
+                                        default_new_ann_recv_rel):
+        new_rel_is_better = policy_self._new_relationship_is_better(current_best_recv_relationship,
+                                                                    current_best_processed,
+                                                                    default_current_best_ann_recv_rel,
+                                                                    new_ann_recv_relationship,
                                                                     new_ann_processed,
-                                                                    recv_relationship)
+                                                                    default_new_ann_recv_rel)
         if new_rel_is_better is not None:
             return new_rel_is_better
         else:
-            return policy_self._new_as_path_ties_is_better(self,
-                                                           current_best_ann,
-                                                           current_best_ann_processed,
-                                                           new_ann,
-                                                           new_ann_processed)
+            return policy_self._new_as_path_is_shorter(current_best_as_path_len,
+                                                       current_best_processed,
+                                                       new_ann_as_path_len,
+                                                       new_ann_processed)
 
     def _new_relationship_is_better(policy_self,
-                                    current_best_ann,
-                                    current_best_ann_processed,
-                                    new_ann,
+                                    current_best_ann_recv_relationship,
+                                    current_best_processed,
+                                    default_current_best_ann_recv_rel,
+                                    new_ann_recv_relationship,
                                     new_ann_processed,
-                                    recv_relationship):
-        if current_best_ann is None:
-            return True
+                                    default_new_ann_recv_rel
+                                    ):
 
-        if current_best_ann_processed:
-            current_best_rel = current_best_ann.recv_relationship
-        else:
-            current_best_rel = recv_relationship
 
-        if new_ann_processed:
-            new_rel = new_ann.recv_relationship
-        else:
-            new_rel = recv_relationship
+        current_best_rel = current_best_ann_recv_relationship if current_best_processed else default_current_best_ann_recv_rel
+        new_rel = new_ann_recv_relationship if new_ann_processed else default_new_ann_recv_rel
 
         if current_best_rel.value > new_rel.value:
             return False
@@ -186,22 +218,16 @@ class BGPPolicy:
         else:
             return None
 
-    def _new_as_path_ties_is_better(policy_self, self, current_best_ann, current_best_ann_processed, new_ann, new_ann_processed):
-        best_as_path = policy_self._new_as_path_is_better(current_best_ann, current_best_ann_processed, new_ann, new_ann_processed)
-        if best_as_path is not None:
-            return best_as_path
-        else:
-            return policy_self._new_wins_tiebreaks(current_best_ann, current_best_ann_processed, new_ann, new_ann_processed)
 
-    def _new_as_path_is_better(policy_self, current_best_ann, current_best_ann_processed, new_ann, new_ann_processed):
-        if len(current_best_ann.as_path) + int(not current_best_ann_processed) < len(new_ann.as_path) + int(not new_ann_processed):
+    def _new_as_path_is_shorter(policy_self, current_best_as_path_len, current_best_ann_processed, new_as_path_len, new_ann_processed):
+        if current_best_as_path_len + int(not current_best_ann_processed) < new_as_path_len + int(not new_ann_processed):
             return False
-        elif len(current_best_ann.as_path) + int(not current_best_ann_processed) > len(new_ann.as_path) + int(not new_ann_processed):
+        elif current_best_as_path_len + int(not current_best_ann_processed) > new_as_path_len + int(not new_ann_processed):
             return True
         else:
             return None
 
-    def _new_wins_tiebreaks(policy_self, current_best_ann, current_best_ann_processed, new_ann, new_ann_processed) -> bool:
+    def _new_ann_wins_ties(policy_self, current_best_ann, current_best_ann_processed, new_ann, new_ann_processed) -> bool:
         current_best_index = min(int(current_best_ann_processed), len(current_best_ann.as_path) - 1)
         new_index = min(int(new_ann_processed), len(new_ann.as_path) - 1)
         assert current_best_ann.as_path[current_best_index] != new_ann.as_path[new_index], "Cameron says no ties lol"
