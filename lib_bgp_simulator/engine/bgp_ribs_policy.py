@@ -197,7 +197,7 @@ class BGPRIBSPolicy(BGPPolicy):
                 continue
             elif send_info.ann.prefix_path_attributes_eq(withdraw_ann):
                 send_info.ann = None
-            
+
     def _select_best_ribs_in(policy_self, self, prefix):
         """Selects best ann from ribs in. Remember, ribs in anns are NOT deep copied"""
 

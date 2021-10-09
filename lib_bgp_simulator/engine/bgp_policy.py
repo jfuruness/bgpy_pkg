@@ -137,12 +137,12 @@ class BGPPolicy:
 
     def _new_ann_is_better(policy_self,
                            self,
-                           current_best_ann,
-                           current_best_ann_processed,
-                           default_current_best_ann_recv_rel,
+                           current_ann,
+                           current_processed,
+                           default_current_recv_rel,
                            new_ann,
-                           new_ann_processed,
-                           default_new_ann_recv_rel):
+                           new_processed,
+                           default_new_recv_rel):
         """Assigns the priority to an announcement according to Gao Rexford
 
         NOTE: processed is processed for second ann"""
@@ -150,89 +150,82 @@ class BGPPolicy:
         # Can't assert this here due to passing new_ann as None now that it can be prpcessed or not
         #assert self.asn not in new_ann.as_path, "Should have been removed in ann validation func"
 
-        none_validation = policy_self._none_validation(current_best_ann, new_ann)
-        if none_validation is not None:
-            return none_validation
+        new_rel_better = policy_self._new_rel_better(current_ann,
+                                                     current_processed,
+                                                     default_current_recv_rel,
+                                                     new_ann,
+                                                     new_processed,
+                                                     default_new_recv_rel)
+        if new_rel_better is not None:
+            return new_rel_better
         else:
-            new_ann_is_better_no_tiebreaks = policy_self._new_ann_is_better_no_tiebreaks(len(current_best_ann.as_path),
-                                                                                         current_best_ann_processed,
-                                                                                         current_best_ann.recv_relationship,
-                                                                                         default_current_best_ann_recv_rel,
-                                                                                         len(new_ann.as_path),
-                                                                                         new_ann_processed,
-                                                                                         new_ann.recv_relationship,
-                                                                                         default_new_ann_recv_rel)
-            if new_ann_is_better_no_tiebreaks is not None:
-                return new_ann_is_better_no_tiebreaks
+            new_as_path_shorter = policy_self._new_as_path_shorter(current_ann,
+                                                                   current_processed,
+                                                                   new_ann,
+                                                                   new_processed)
+            if new_as_path_shorter is not None:
+                return new_as_path_shorter
             else:
-                return policy_self._new_ann_wins_ties(current_best_ann, current_best_ann_processed, new_ann, new_ann_processed)
+                return self._new_wins_ties(current_ann,
+                                           current_processed,
+                                           new_ann,
+                                           new_processed)
 
-    def _none_validation(policy_self, current_best_ann, new_ann):
-        if current_best_ann is None:
+    def _new_rel_better(policy_self,
+                        current_ann,
+                        current_processed,
+                        default_current_recv_rel,
+                        new_ann,
+                        new_processed,
+                        default_new_recv_rel):
+        if current_ann is None:
             return True
         elif new_ann is None:
             return False
         else:
-            return None
+            # Get relationship of current ann
+            if current_processed:
+                current_rel = current_ann.recv_relationship
+            else:
+                current_rel = default_current_recv_rel
 
-    def _new_ann_is_better_no_tiebreaks(policy_self,
-                                        current_best_as_path_len,
-                                        current_best_processed,
-                                        current_best_recv_relationship,
-                                        default_current_best_ann_recv_rel,
-                                        new_ann_as_path_len,
-                                        new_ann_processed,
-                                        new_ann_recv_relationship,
-                                        default_new_ann_recv_rel):
-        new_rel_is_better = policy_self._new_relationship_is_better(current_best_recv_relationship,
-                                                                    current_best_processed,
-                                                                    default_current_best_ann_recv_rel,
-                                                                    new_ann_recv_relationship,
-                                                                    new_ann_processed,
-                                                                    default_new_ann_recv_rel)
-        if new_rel_is_better is not None:
-            return new_rel_is_better
-        else:
-            return policy_self._new_as_path_is_shorter(current_best_as_path_len,
-                                                       current_best_processed,
-                                                       new_ann_as_path_len,
-                                                       new_ann_processed)
+            # Get relationship of new ann. Common case first
+            if not new_processed:
+                new_rel = default_new_recv_rel
+            else:
+                new_rel = new_ann.recv_relatinship
 
-    def _new_relationship_is_better(policy_self,
-                                    current_best_ann_recv_relationship,
-                                    current_best_processed,
-                                    default_current_best_ann_recv_rel,
-                                    new_ann_recv_relationship,
-                                    new_ann_processed,
-                                    default_new_ann_recv_rel
-                                    ):
-
-
-        current_best_rel = current_best_ann_recv_relationship if current_best_processed else default_current_best_ann_recv_rel
-        new_rel = new_ann_recv_relationship if new_ann_processed else default_new_ann_recv_rel
-
-        if current_best_rel.value > new_rel.value:
+        if current_rel.value > new_rel.value:
             return False
-        elif current_best_rel.value < new_rel.value:
+        elif current_rel.value < new_rel.value:
             return True
         else:
             return None
 
 
-    def _new_as_path_is_shorter(policy_self, current_best_as_path_len, current_best_ann_processed, new_as_path_len, new_ann_processed):
-        if current_best_as_path_len + int(not current_best_ann_processed) < new_as_path_len + int(not new_ann_processed):
+    def _new_as_path_shorter(policy_self,
+                             current_ann,
+                             current_processed,
+                             new_ann,
+                             new_processed):
+        if len(current_ann.as_path) + int(not current_processed) < len(new_ann.as_path) + int(not new_processed):
             return False
-        elif current_best_as_path_len + int(not current_best_ann_processed) > new_as_path_len + int(not new_ann_processed):
+        elif len(current_ann.as_path) + int(not current_processed) > len(new_ann.as_path) + int(not new_processed):
             return True
         else:
             return None
 
-    def _new_ann_wins_ties(policy_self, current_best_ann, current_best_ann_processed, new_ann, new_ann_processed) -> bool:
-        current_best_index = min(int(current_best_ann_processed), len(current_best_ann.as_path) - 1)
-        new_index = min(int(new_ann_processed), len(new_ann.as_path) - 1)
-        assert current_best_ann.as_path[current_best_index] != new_ann.as_path[new_index], "Cameron says no ties lol"
+    def _new_ann_wins_ties(policy_self,
+                           current_ann,
+                           current_processed,
+                           new_ann,
+                           new_processed) -> bool:
+        # Gets the indexes of the neighbors
+        current_index = min(int(current_processed), len(current_ann.as_path) - 1)
+        new_index = min(int(new_processed), len(new_ann.as_path) - 1)
+        assert current_ann.as_path[current_index] != new_ann.as_path[new_index], "Cameron says no ties lol"
 
-        return new_ann.as_path[new_index] < current_best_ann.as_path[current_best_index]
+        return new_ann.as_path[new_index] < current_ann.as_path[current_index]
 
     def _deep_copy_ann(policy_self, self, ann, recv_relationship, **extra_kwargs):
         """Deep copies ann and modifies attrs"""
