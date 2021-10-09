@@ -2,7 +2,7 @@ from .engine import BGPAS
 from .engine import BGPPolicy
 from .engine import BGPRIBSPolicy
 from .engine import LocalRib
-from .engine import RIBsIn, RibsOut
+from .engine import RIBsIn, RIBsOut
 from .engine import SendQueue, RecvQueue
 from .engine import ROVPolicy
 from .engine import SimulatorEngine

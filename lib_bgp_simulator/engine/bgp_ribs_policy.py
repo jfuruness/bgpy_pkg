@@ -3,7 +3,7 @@ from collections import defaultdict
 from lib_caida_collector import AS
 
 from .ann_containers import LocalRib
-from .ann_containers import RIBsIn, RibsOut
+from .ann_containers import RIBsIn, RIBsOut
 from .ann_containers import SendQueue, RecvQueue
 from ..enums import Relationships
 from ..announcement import Announcement as Ann
@@ -17,7 +17,7 @@ class BGPRIBSPolicy(BGPPolicy):
         self.local_rib = LocalRib()
         # Ribs in contains unprocessed anns, unchanged from previous AS
         self.ribs_in = RIBsIn()
-        self.ribs_out = RibsOut()
+        self.ribs_out = RIBsOut()
         self.recv_q = RecvQueue()
         self.send_q = SendQueue()
 
@@ -40,7 +40,7 @@ class BGPRIBSPolicy(BGPPolicy):
     def _policy_propagate(policy_self, self, propagate_to, send_rels, ann, as_obj):
         """Don't send what we've already sent"""
 
-        ribs_out_ann = policy_self.ribs_out[as_obj.asn].get(ann.prefix)
+        ribs_out_ann = policy_self.ribs_out.get_ann(as_obj.asn, ann.prefix)
         return ann.prefix_path_attributes_eq(ribs_out_ann)
 
     def _add_ann_to_q(policy_self, self, as_obj, ann, propagate_to, send_rels):
@@ -55,7 +55,7 @@ class BGPRIBSPolicy(BGPPolicy):
             neighbor_obj.policy.recv_q.add_ann(ann, prefix=prefix)
             # Update Ribs out if it's not a withdraw
             if not ann.withdraw:
-               policy_self.ribs_out[neighbor_obj.asn][prefix] = ann
+               policy_self.ribs_out.add_ann(neighbor_obj.asn, ann, prefix=prefix)
         for neighbor_obj in getattr(self, propagate_to.name.lower()):
             policy_self.send_q.reset_neighbor(neighbor_obj.asn)
 
@@ -180,11 +180,13 @@ class BGPRIBSPolicy(BGPPolicy):
         """
         assert withdraw_ann.withdraw is True
         # Check ribs_out to see where the withdrawn ann was sent
-        for send_neighbor, inner_dict in policy_self.ribs_out.items():
+        for send_neighbor in policy_self.ribs_out.neighbors():
             # If the two announcements are equal
-            if withdraw_ann.prefix_path_attributes_eq(inner_dict.get(withdraw_ann.prefix)):
+            if withdraw_ann.prefix_path_attributes_eq(
+                policy_self.ribs_out.get_ann(send_neighbor, withdraw_ann.prefix)):
+
                 # Delete ann from ribs out
-                del policy_self.ribs_out[send_neighbor][withdraw_ann.prefix]
+                policy_self.ribs_out.remove_entry(send_neighbor, withdraw_ann.prefix)
                 policy_self.send_q.add_ann(send_neighbor, withdraw_ann)
 
         # We may not have sent the ann yet, it may just be in the send queue and not ribs out
