@@ -3,7 +3,7 @@ from collections import defaultdict
 from lib_caida_collector import AS
 
 from .ann_containers import LocalRib
-from .ann_containers import RIBIn, RibsOut
+from .ann_containers import RIBsIn, RibsOut
 from .ann_containers import SendQueue, RecvQueue
 from ..enums import Relationships
 from ..announcement import Announcement as Ann
@@ -11,12 +11,12 @@ from .bgp_policy import BGPPolicy
 
 
 class BGPRIBSPolicy(BGPPolicy):
-    __slots__ = ["rib_in", "ribs_out", "recv_q", "send_q", "local_rib"]
+    __slots__ = ["ribs_in", "ribs_out", "recv_q", "send_q", "local_rib"]
 
     def __init__(self, *args, **kwargs):
         self.local_rib = LocalRib()
         # Ribs in contains unprocessed anns, unchanged from previous AS
-        self.rib_in = RIBIn()
+        self.ribs_in = RIBsIn()
         self.ribs_out = RibsOut()
         self.recv_q = RecvQueue()
         self.send_q = SendQueue()
@@ -94,17 +94,17 @@ class BGPRIBSPolicy(BGPPolicy):
                 if not ann.withdraw:
                     try:
                         err = "you should never be replacing anns. You should always withdraw first, have it be blank, then add the new one"
-                        assert policy_self.rib_in.get_unprocessed_ann_recv_rel(ann.as_path[0], prefix) is None, err
+                        assert policy_self.ribs_in.get_unprocessed_ann_recv_rel(ann.as_path[0], prefix) is None, err
                     except:
                         print("Incoming anns")
                         for ann in ann_list:
                             print(ann, ann.withdraw)
-                        __ann, rel = (policy_self.rib_in.get_unprocessed_ann(ann.as_path[0], prefix))
+                        __ann, rel = (policy_self.ribs_in.get_unprocessed_ann(ann.as_path[0], prefix))
                         print("RIBS IN", str(__ann), rel)
                         input("ERROR!!!! fix this later with better error checking")
                         raise NotImplementedError
 
-                    policy_self.rib_in.add_unprocessed_ann(ann.as_path[0], ann, recv_relationship, prefix=prefix)
+                    policy_self.ribs_in.add_unprocessed_ann(ann.as_path[0], ann, recv_relationship, prefix=prefix)
 
                 # If it's valid, process it
                 if policy_self._valid_ann(self, ann, recv_relationship):
@@ -147,12 +147,12 @@ class BGPRIBSPolicy(BGPPolicy):
         assert not ((local_rib_ann is not None) and ((ann.prefix_path_attributes_eq(local_rib_ann)) and (local_rib_ann.seed_asn is not None))), f"Trying to withdraw a seeded ann {local_rib_ann.seed_asn}"
 
 
-        current_ann_rib_in, _ = policy_self.rib_in.get_unprocessed_ann_recv_rel(neighbor, prefix)
-        err = f"Cannot withdraw ann that was never sent.\n\t Ribs in: {current_ann_rib_in}\n\t withdraw: {ann}"
-        assert ann.prefix_path_attributes_eq(current_ann_rib_in), err
+        current_ann_ribs_in, _ = policy_self.ribs_in.get_unprocessed_ann_recv_rel(neighbor, prefix)
+        err = f"Cannot withdraw ann that was never sent.\n\t Ribs in: {current_ann_ribs_in}\n\t withdraw: {ann}"
+        assert ann.prefix_path_attributes_eq(current_ann_ribs_in), err
         
         # Remove ann from Ribs in
-        policy_self.rib_in.remove_entry(neighbor, prefix)
+        policy_self.ribs_in.remove_entry(neighbor, prefix)
 
         # Remove ann from local rib
         withdraw_ann = policy_self._deep_copy_ann(self, ann, recv_relationship, withdraw=True)
@@ -161,7 +161,7 @@ class BGPRIBSPolicy(BGPPolicy):
             # Also remove from neighbors
             policy_self._withdraw_ann_from_neighbors(self, withdraw_ann)
 
-        best_ann = policy_self._select_best_rib_in(self, prefix)
+        best_ann = policy_self._select_best_ribs_in(self, prefix)
         
         # Put new ann in local rib
         if best_ann is not None:
@@ -196,13 +196,13 @@ class BGPRIBSPolicy(BGPPolicy):
             elif send_info.ann.prefix_path_attributes_eq(withdraw_ann):
                 send_info.ann = None
             
-    def _select_best_rib_in(policy_self, self, prefix):
+    def _select_best_ribs_in(policy_self, self, prefix):
         """Selects best ann from ribs in. Remember, ribs in anns are NOT deep copied"""
 
         # Get the best announcement
         best_unprocessed_ann = None
         best_recv_relationship = None
-        for new_unprocessed_ann, new_recv_relationship in policy_self.rib_in.get_ann_infos(prefix):
+        for new_unprocessed_ann, new_recv_relationship in policy_self.ribs_in.get_ann_infos(prefix):
             if policy_self._new_ann_is_better(self,
                                               best_unprocessed_ann,
                                               False,

@@ -10,7 +10,7 @@ from ...enums import Relationships
 AnnInfo = namedtuple("AnnInfo", ["unprocessed_ann", "recv_relationship"])
 
 
-class RIBIn:
+class RIBsIn:
     """Incomming announcements for a BGP AS
 
     neighbor: {prefix: (announcement, relationship)}
