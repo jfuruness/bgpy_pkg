@@ -112,13 +112,13 @@ class BGPRIBSPolicy(BGPPolicy):
                         policy_self._process_incoming_withdrawal(self, ann, ann.as_path[0], ann.prefix, recv_relationship)
 
                     else:
-                        new_ann_is_better = policy_self._new_ann_is_better(self,
-                                                                           current_best_ann,
-                                                                           current_best_ann_processed,
-                                                                           recv_relationship,
-                                                                           ann,
-                                                                           False,
-                                                                           recv_relationship)
+                        new_ann_is_better = policy_self._new_ann_better(self,
+                                                                        current_best_ann,
+                                                                        current_best_ann_processed,
+                                                                        recv_relationship,
+                                                                        ann,
+                                                                        False,
+                                                                        recv_relationship)
                         # If the new priority is higher
                         if new_ann_is_better:
                             current_best_ann = ann
@@ -205,13 +205,13 @@ class BGPRIBSPolicy(BGPPolicy):
         best_unprocessed_ann = None
         best_recv_relationship = None
         for new_unprocessed_ann, new_recv_relationship in policy_self.ribs_in.get_ann_infos(prefix):
-            if policy_self._new_ann_is_better(self,
-                                              best_unprocessed_ann,
-                                              False,
-                                              best_recv_relationship,
-                                              new_unprocessed_ann,
-                                              False,
-                                              new_recv_relationship):
+            if policy_self._new_ann_better(self,
+                                           best_unprocessed_ann,
+                                           False,
+                                           best_recv_relationship,
+                                           new_unprocessed_ann,
+                                           False,
+                                           new_recv_relationship):
                 best_unprocessed_ann = new_unprocessed_ann
                 best_recv_relationship = new_recv_relationship
 

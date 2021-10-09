@@ -100,11 +100,11 @@ class BGPPolicy:
 
         for prefix, ann_list in policy_self.recv_q.prefix_anns():
             # Get announcement currently in local rib
-            current_best_ann = policy_self.local_rib.get_ann(prefix)#get(prefix)
-            current_best_ann_processed = True
+            current_ann = policy_self.local_rib.get_ann(prefix)#get(prefix)
+            current_processed = True
 
             # Announcement will never be overriden, so continue
-            if current_best_ann is not None and current_best_ann.seed_asn is not None:
+            if current_ann is not None and current_ann.seed_asn is not None:
                 continue
 
             # For each announcement that was incoming
@@ -112,120 +112,30 @@ class BGPPolicy:
                 # Make sure there are no loops
                 # In ROV subclass also check roa validity
                 if policy_self._valid_ann(self, ann, recv_relationship):
-                    new_ann_is_better = policy_self._new_ann_is_better(self,
-                                                                       current_best_ann,
-                                                                       current_best_ann_processed,
-                                                                       recv_relationship,
-                                                                       ann,
-                                                                       False,
-                                                                       recv_relationship)
-                    if new_ann_is_better:
-                        current_best_ann = ann
-                        current_best_ann_processed = False
+                    new_ann_better = policy_self._new_ann_better(self,
+                                                                 current_ann,
+                                                                 current_processed,
+                                                                 recv_relationship,
+                                                                 ann,
+                                                                 False,
+                                                                 recv_relationship)
+                    if new_ann_better:
+                        current_ann = ann
+                        current_processed = False
 
             # This is a new best ann. Process it and add it to the local rib
-            if current_best_ann_processed is False:
-                current_best_ann = policy_self._deep_copy_ann(self, current_best_ann, recv_relationship)
+            if current_processed is False:
+                current_ann = policy_self._deep_copy_ann(self, current_ann, recv_relationship)
                 # Save to local rib
-                policy_self.local_rib.add_ann(current_best_ann, prefix=prefix)
+                policy_self.local_rib.add_ann(current_ann, prefix=prefix)
 
         policy_self._reset_q(reset_q)
 
-    def _reset_q(policy_self, reset_q):
-        if reset_q:
-            policy_self.recv_q = RecvQueue()
+    def _valid_ann(policy_self, self, ann, recv_relationship):
+        """Determine if an announcement is valid or should be dropped"""
 
-    def _new_ann_is_better(policy_self,
-                           self,
-                           current_ann,
-                           current_processed,
-                           default_current_recv_rel,
-                           new_ann,
-                           new_processed,
-                           default_new_recv_rel):
-        """Assigns the priority to an announcement according to Gao Rexford
-
-        NOTE: processed is processed for second ann"""
-
-        # Can't assert this here due to passing new_ann as None now that it can be prpcessed or not
-        #assert self.asn not in new_ann.as_path, "Should have been removed in ann validation func"
-
-        new_rel_better = policy_self._new_rel_better(current_ann,
-                                                     current_processed,
-                                                     default_current_recv_rel,
-                                                     new_ann,
-                                                     new_processed,
-                                                     default_new_recv_rel)
-        if new_rel_better is not None:
-            return new_rel_better
-        else:
-            new_as_path_shorter = policy_self._new_as_path_shorter(current_ann,
-                                                                   current_processed,
-                                                                   new_ann,
-                                                                   new_processed)
-            if new_as_path_shorter is not None:
-                return new_as_path_shorter
-            else:
-                return self._new_wins_ties(current_ann,
-                                           current_processed,
-                                           new_ann,
-                                           new_processed)
-
-    def _new_rel_better(policy_self,
-                        current_ann,
-                        current_processed,
-                        default_current_recv_rel,
-                        new_ann,
-                        new_processed,
-                        default_new_recv_rel):
-        if current_ann is None:
-            return True
-        elif new_ann is None:
-            return False
-        else:
-            # Get relationship of current ann
-            if current_processed:
-                current_rel = current_ann.recv_relationship
-            else:
-                current_rel = default_current_recv_rel
-
-            # Get relationship of new ann. Common case first
-            if not new_processed:
-                new_rel = default_new_recv_rel
-            else:
-                new_rel = new_ann.recv_relatinship
-
-        if current_rel.value > new_rel.value:
-            return False
-        elif current_rel.value < new_rel.value:
-            return True
-        else:
-            return None
-
-
-    def _new_as_path_shorter(policy_self,
-                             current_ann,
-                             current_processed,
-                             new_ann,
-                             new_processed):
-        if len(current_ann.as_path) + int(not current_processed) < len(new_ann.as_path) + int(not new_processed):
-            return False
-        elif len(current_ann.as_path) + int(not current_processed) > len(new_ann.as_path) + int(not new_processed):
-            return True
-        else:
-            return None
-
-    def _new_ann_wins_ties(policy_self,
-                           current_ann,
-                           current_processed,
-                           new_ann,
-                           new_processed) -> bool:
-        # Gets the indexes of the neighbors
-        current_index = min(int(current_processed), len(current_ann.as_path) - 1)
-        new_index = min(int(new_processed), len(new_ann.as_path) - 1)
-        assert current_ann.as_path[current_index] != new_ann.as_path[new_index], "Cameron says no ties lol"
-
-        return new_ann.as_path[new_index] < current_ann.as_path[current_index]
+        # BGP Loop Prevention Check
+        return not (self.asn in ann.as_path)
 
     def _deep_copy_ann(policy_self, self, ann, recv_relationship, **extra_kwargs):
         """Deep copies ann and modifies attrs"""
@@ -235,8 +145,13 @@ class BGPPolicy:
 
         return ann.copy(recv_relationship=recv_relationship, **kwargs)
 
-    def _valid_ann(policy_self, self, ann, recv_relationship):
-        """Determine if an announcement is valid or should be dropped"""
+    def _reset_q(policy_self, reset_q):
+        if reset_q:
+            policy_self.recv_q = RecvQueue()
 
-        # BGP Loop Prevention Check
-        return not (self.asn in ann.as_path)
+
+    from .gao_rexford import _new_ann_better
+    from .gao_rexford import _new_as_path_ties_better
+    from .gao_rexford import _new_rel_better
+    from .gao_rexford import _new_as_path_shorter
+    from .gao_rexford import _new_wins_ties
