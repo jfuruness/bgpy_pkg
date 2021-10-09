@@ -6,8 +6,7 @@ from ..enums import ASNs, Relationships, ROAValidity
 from ..announcement import Announcement
 
 from ..engine import BGPAS
-from ..engine import BGPPolicy
-from ..engine import BGPRIBSPolicy
+from ..engine import BGPRIBsAS
 from ..engine import LocalRib
 
 
@@ -32,79 +31,74 @@ class EasyAnn(Announcement):
                                       traceback_end=traceback_end)
 
 
-@pytest.mark.parametrize("Policy", [BGPPolicy, BGPRIBSPolicy])
-def test_process_incoming_anns_bgp(Policy):
+@pytest.mark.parametrize("BaseASCls", [BGPAS, BGPRIBsAS])
+def test_process_incoming_anns_bgp(BaseASCls):
     """Test basic functionality of process_incoming_anns"""
     prefix = '137.99.0.0/16'
     ann = EasyAnn(_prefix=prefix, as_path=(13796,),timestamp=0)
-    a = BGPAS(1, peers=[], providers=[], customers=[])
-    a.policy = Policy() 
-    a.policy.recv_q.add_ann(ann)
-    a.policy.process_incoming_anns(a, Relationships.CUSTOMERS)
+    a = BaseASCls(1, peers=[], providers=[], customers=[])
+    a.recv_q.add_ann(ann)
+    a.process_incoming_anns(Relationships.CUSTOMERS)
     # assert announcement was accepted to local rib
-    assert(a.policy.local_rib.get_ann(prefix).origin == ann.origin)
+    assert(a.local_rib.get_ann(prefix).origin == ann.origin)
 
-@pytest.mark.parametrize("Policy", [BGPPolicy, BGPRIBSPolicy])
-def test_process_incoming_anns_bgp_relationships(Policy):
+@pytest.mark.parametrize("BaseASCls", [BGPAS, BGPRIBsAS])
+def test_process_incoming_anns_bgp_relationships(BaseASCls):
     """Customers > Peers > Providers"""
     prefix = '137.99.0.0/16'
     ann1 = EasyAnn(_prefix=prefix, as_path=(13794,),timestamp=0)
     ann2 = EasyAnn(_prefix=prefix, as_path=(13795,),timestamp=0)
     ann3 = EasyAnn(_prefix=prefix, as_path=(13796,),timestamp=0)
-    a = BGPAS(1, peers=[], providers=[], customers=[]) 
-    a.policy = Policy()
-    a.policy.recv_q.add_ann(ann1)
-    a.policy.process_incoming_anns(a, Relationships.PROVIDERS)
-    assert(a.policy.local_rib.get_ann(prefix).origin == ann1.origin)
-    a.policy.recv_q.add_ann(ann2)
-    a.policy.process_incoming_anns(a, Relationships.PEERS)
-    assert(a.policy.local_rib.get_ann(prefix).origin == ann2.origin)
-    a.policy.recv_q.add_ann(ann3)
-    a.policy.process_incoming_anns(a, Relationships.CUSTOMERS)
-    assert(a.policy.local_rib.get_ann(prefix).origin == ann3.origin)
+    a = BaseASCls(1, peers=[], providers=[], customers=[]) 
+    a.recv_q.add_ann(ann1)
+    a.process_incoming_anns(Relationships.PROVIDERS)
+    assert(a.local_rib.get_ann(prefix).origin == ann1.origin)
+    a.recv_q.add_ann(ann2)
+    a.process_incoming_anns(Relationships.PEERS)
+    assert(a.local_rib.get_ann(prefix).origin == ann2.origin)
+    a.recv_q.add_ann(ann3)
+    a.process_incoming_anns(Relationships.CUSTOMERS)
+    assert(a.local_rib.get_ann(prefix).origin == ann3.origin)
 
-@pytest.mark.parametrize("Policy", [BGPPolicy, BGPRIBSPolicy])
-def test_process_incoming_anns_bgp_path_len(Policy):
+@pytest.mark.parametrize("BaseASCls", [BGPAS, BGPRIBsAS])
+def test_process_incoming_anns_bgp_path_len(BaseASCls):
     """Shorter path length should be preferred when relationship is equal"""
     prefix = '137.99.0.0/16'
     ann1 = EasyAnn(_prefix=prefix, as_path=(2, 3, 13794),timestamp=0)
     ann2 = EasyAnn(_prefix=prefix, as_path=(20, 13795,),timestamp=0)
     ann3 = EasyAnn(_prefix=prefix, as_path=(13796,),timestamp=0)
-    a = BGPAS(1, peers=[], providers=[], customers=[]) 
-    a.policy = Policy()
-    a.policy.recv_q.add_ann(ann1)
-    a.policy.process_incoming_anns(a, Relationships.PROVIDERS)
-    assert(a.policy.local_rib.get_ann(prefix).origin == ann1.origin)
-    a.policy.recv_q.add_ann(ann2)
-    a.policy.process_incoming_anns(a, Relationships.PROVIDERS)
-    assert(a.policy.local_rib.get_ann(prefix).origin == ann2.origin)
-    a.policy.recv_q.add_ann(ann3)
-    a.policy.process_incoming_anns(a, Relationships.PROVIDERS)
-    assert(a.policy.local_rib.get_ann(prefix).origin == ann3.origin)
+    a = BaseASCls(1, peers=[], providers=[], customers=[]) 
+    a.recv_q.add_ann(ann1)
+    a.process_incoming_anns(Relationships.PROVIDERS)
+    assert(a.local_rib.get_ann(prefix).origin == ann1.origin)
+    a.recv_q.add_ann(ann2)
+    a.process_incoming_anns(Relationships.PROVIDERS)
+    assert(a.local_rib.get_ann(prefix).origin == ann2.origin)
+    a.recv_q.add_ann(ann3)
+    a.process_incoming_anns(Relationships.PROVIDERS)
+    assert(a.local_rib.get_ann(prefix).origin == ann3.origin)
 
-@pytest.mark.parametrize("Policy", [BGPPolicy, BGPRIBSPolicy])
-def test_process_incoming_anns_bgp_seeded(Policy):
+@pytest.mark.parametrize("BaseASCls", [BGPAS, BGPRIBsAS])
+def test_process_incoming_anns_bgp_seeded(BaseASCls):
     """Any incoming announcement should never replace a seeded announcement"""
     prefix = '137.99.0.0/16'
     ann1 = EasyAnn(_prefix=prefix, as_path=(1,),timestamp=0, seed_asn=1)
     ann1.recv_relationship=Relationships.ORIGIN
     ann2 = EasyAnn(_prefix=prefix, as_path=(13795,),timestamp=0)
     ann3 = EasyAnn(_prefix=prefix, as_path=(13796,),timestamp=0)
-    a = BGPAS(1, peers=[], providers=[], customers=[]) 
-    a.policy = Policy()
-    a.policy.local_rib.add_ann(ann1, prefix=prefix)
-    assert(a.policy.local_rib.get_ann(prefix).origin == ann1.origin)
-    a.policy.recv_q.add_ann(ann2)
-    a.policy.process_incoming_anns(a, Relationships.CUSTOMERS)
-    assert(a.policy.local_rib.get_ann(prefix).origin == ann1.origin)
+    a = BaseASCls(1, peers=[], providers=[], customers=[]) 
+    a.local_rib.add_ann(ann1, prefix=prefix)
+    assert(a.local_rib.get_ann(prefix).origin == ann1.origin)
+    a.recv_q.add_ann(ann2)
+    a.process_incoming_anns(Relationships.CUSTOMERS)
+    assert(a.local_rib.get_ann(prefix).origin == ann1.origin)
 
-@pytest.mark.parametrize("Policy", [BGPPolicy, BGPRIBSPolicy])
-def test_process_incoming_anns_bgp_loop_check(Policy):
+@pytest.mark.parametrize("BaseASCls", [BGPAS, BGPRIBsAS])
+def test_process_incoming_anns_bgp_loop_check(BaseASCls):
     """An AS should never accept an incoming announcement with its own ASN on the path"""
     prefix = '137.99.0.0/16'
     ann1 = EasyAnn(_prefix=prefix, as_path=(13796, 1),timestamp=0)
-    a = BGPAS(1, peers=[], providers=[], customers=[]) 
-    a.policy = Policy()
-    a.policy.recv_q.add_ann(ann1)
-    a.policy.process_incoming_anns(a, Relationships.CUSTOMERS)
-    assert a.policy.local_rib.get_ann(prefix) is None
+    a = BaseASCls(1, peers=[], providers=[], customers=[]) 
+    a.recv_q.add_ann(ann1)
+    a.process_incoming_anns(Relationships.CUSTOMERS)
+    assert a.local_rib.get_ann(prefix) is None

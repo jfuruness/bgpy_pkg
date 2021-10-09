@@ -9,12 +9,11 @@ from ....announcement import Announcement
 from ....simulator.attacks import SubprefixHijack
 
 from ....engine import BGPAS
-from ....engine import BGPPolicy
-from ....engine import BGPRIBSPolicy
+from ....engine import BGPRIBsAS
 from ....engine import LocalRib
 
-@pytest.mark.parametrize("BasePolicyCls", [BGPPolicy, BGPRIBSPolicy])
-def test_propagate_bgp(BasePolicyCls):
+@pytest.mark.parametrize("BaseASCls", [BGPAS, BGPRIBsAS])
+def test_propagate_bgp(BaseASCls):
     r"""
     Test propagating up without multihomed support in the following test graph.
     Horizontal lines are peer relationships, vertical lines are customer-provider. 
@@ -34,7 +33,7 @@ def test_propagate_bgp(BasePolicyCls):
                           CPLink(provider_asn=2, customer_asn=4),
                           CPLink(provider_asn=3, customer_asn=7)]
     # Number identifying the type of AS class
-    as_policies = {asn: BasePolicyCls for asn in
+    as_policies = {asn: BaseASCls for asn in
                    list(range(1, 8))}
 
     # Announcements

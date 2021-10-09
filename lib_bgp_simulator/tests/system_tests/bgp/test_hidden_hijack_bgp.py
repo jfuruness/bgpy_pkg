@@ -7,12 +7,12 @@ from ..utils import run_example, HijackLocalRib
 from ....enums import ASNs, Prefixes, Timestamps, ROAValidity, Relationships
 from ....simulator.attacks import SubprefixHijack
 from ....engine import LocalRib
-from ....engine import BGPPolicy
-from ....engine import BGPRIBSPolicy
+from ....engine import BGPAS
+from ....engine import BGPRIBsAS
 from ....announcement import Announcement
 
-@pytest.mark.parametrize("BasePolicyCls", [BGPPolicy, BGPRIBSPolicy])
-def test_hidden_hijack_bgp(BasePolicyCls):
+@pytest.mark.parametrize("BaseASCls", [BGPAS, BGPRIBsAS])
+def test_hidden_hijack_bgp(BaseASCls):
     r"""Hidden hijack example with BGP
     Figure 1a in our ROV++ paper
 
@@ -30,7 +30,7 @@ def test_hidden_hijack_bgp(BasePolicyCls):
                           CPLink(provider_asn=2, customer_asn=ASNs.VICTIM.value),
                           CPLink(provider_asn=3, customer_asn=ASNs.ATTACKER.value)]
     # Number identifying the type of AS class
-    as_policies = {asn: BasePolicyCls for asn in
+    as_policies = {asn: BaseASCls for asn in
                    list(range(1, 4)) + [ASNs.VICTIM.value, ASNs.ATTACKER.value]}
 
     vic_kwargs = {"prefix": Prefixes.PREFIX.value,

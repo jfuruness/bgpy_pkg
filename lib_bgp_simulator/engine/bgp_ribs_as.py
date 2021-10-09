@@ -7,14 +7,14 @@ from .ann_containers import RIBsIn, RIBsOut
 from .ann_containers import SendQueue, RecvQueue
 from ..enums import Relationships
 from ..announcement import Announcement as Ann
-from .bgp_policy import BGPPolicy
+from .bgp_as import BGPAS
 
 
-class BGPRIBsPolicy(BGPPolicy):
-    __slots__ = ["ribs_in", "ribs_out", "send_q"]
+class BGPRIBsAS(BGPAS):
+    #__slots__ = ["ribs_in", "ribs_out", "send_q"]
 
     def __init__(self, *args, **kwargs):
-        super(BGPRIBsPolicy, self).__init__(*args, **kwargs)
+        super(BGPRIBsAS, self).__init__(*args, **kwargs)
         self.ribs_in = RIBsIn()
         self.ribs_out = RIBsOut()
         self.send_q = SendQueue()
@@ -34,7 +34,7 @@ class BGPRIBsPolicy(BGPPolicy):
 
     def _populate_send_q(self, propagate_to, send_rels):
         # Process_outgoing_ann is overriden so this just adds to send q
-        return super(BGPRIBSPolicy, self)._propagate(propagate_to, send_rels)
+        return super(BGPRIBsAS, self)._propagate(propagate_to, send_rels)
 
     def _policy_propagate(self, neighbor, ann, *args, **kwargs):
         """Don't send what we've already sent"""
@@ -51,7 +51,7 @@ class BGPRIBsPolicy(BGPPolicy):
         neighbors = getattr(self, propagate_to.name.lower())
 
         for (neighbor, prefix, ann) in self.send_q.info(neighbors):
-            neighbor.policy.recv_q.add_ann(ann)
+            neighbor.recv_q.add_ann(ann)
             # Update Ribs out if it's not a withdraw
             if not ann.withdraw:
                self.ribs_out.add_ann(neighbor.asn, ann)
@@ -76,7 +76,7 @@ class BGPRIBsPolicy(BGPPolicy):
             current_best_ann_processed = True
 
             # Announcement will never be overriden, so continue
-            if getattr(current_ann, "seed_asn", None):
+            if getattr(current_best_ann, "seed_asn", None):
                 continue
 
             # For each announcement that is incoming
@@ -102,7 +102,7 @@ class BGPRIBsPolicy(BGPPolicy):
                     self.ribs_in.add_unprocessed_ann(ann, recv_relationship)
 
                 # If it's valid, process it
-                if self._valid_ann(self, ann, recv_relationship):
+                if self._valid_ann(ann, recv_relationship):
                     if ann.withdraw:
                         self._process_incoming_withdrawal(ann, recv_relationship)
 

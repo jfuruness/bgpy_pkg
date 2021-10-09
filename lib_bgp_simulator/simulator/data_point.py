@@ -1,11 +1,11 @@
 from dataclasses import dataclass
 
-from ..engine.bgp_policy import BGPPolicy
+from ..engine.bgp_as import BGPAS
 
 @dataclass(frozen=True)
 class DataPoint:
     """Data point in a graph"""
 
     percent_adoption: float
-    PolicyCls: BGPPolicy
+    ASCls: BGPAS
     propagation_round: int
