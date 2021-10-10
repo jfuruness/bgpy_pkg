@@ -139,11 +139,12 @@ class BGPAS(AS):
         # BGP Loop Prevention Check
         return not (self.asn in ann.as_path)
 
-    def _copy_and_process(self, ann, recv_relationship):
+    def _copy_and_process(self, ann, recv_relationship, **extra_kwargs):
         """Deep copies ann and modifies attrs"""
 
         kwargs = {"as_path": (self.asn,) + ann.as_path,
                   "recv_relationship": recv_relationship}
+        kwargs.update(extra_kwargs)
 
         return ann.copy(**kwargs)
 
