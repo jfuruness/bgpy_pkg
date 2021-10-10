@@ -3,11 +3,12 @@ from ..enums import Relationships, Outcomes
 
 
 class Scenario:
-    def __init__(self, trial=None, engine=None, attack=None):
+    def __init__(self, trial=None, engine=None, attack=None, profiler=None):
         self.trial = trial
         self.engine = engine
         self.attack = attack
         self.data = dict()
+        self.profiler = profiler
 
     def run(self, subgraphs, propagation_round: int):
         # Run engine
