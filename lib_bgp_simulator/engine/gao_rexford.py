@@ -1,5 +1,4 @@
-def _new_ann_better(policy_self,
-                    self,
+def _new_ann_better(self,
                     current_ann,
                     current_processed,
                     default_current_recv_rel,
@@ -14,38 +13,38 @@ def _new_ann_better(policy_self,
     # msg = "Should have been removed in the validation func"
     #assert self.asn not in new_ann.as_path, msg
 
-    new_rel_better = policy_self._new_rel_better(current_ann,
-                                                 current_processed,
-                                                 default_current_recv_rel,
-                                                 new_ann,
-                                                 new_processed,
-                                                 default_new_recv_rel)
+    new_rel_better = self._new_rel_better(current_ann,
+                                          current_processed,
+                                          default_current_recv_rel,
+                                          new_ann,
+                                          new_processed,
+                                          default_new_recv_rel)
     if new_rel_better is not None:
         return new_rel_better
     else:
-        return policy_self._new_as_path_ties_better(current_ann,
-                                                    current_processed,
-                                                    new_ann,
-                                                    new_processed)
+        return self._new_as_path_ties_better(current_ann,
+                                             current_processed,
+                                             new_ann,
+                                             new_processed)
 
-def _new_as_path_ties_better(policy_self,
+def _new_as_path_ties_better(self,
                              current_ann,
                              current_processed,
                              new_ann,
                              new_processed):
-    new_as_path_shorter = policy_self._new_as_path_shorter(current_ann,
-                                                           current_processed,
-                                                           new_ann,
-                                                           new_processed)
+    new_as_path_shorter = self._new_as_path_shorter(current_ann,
+                                                    current_processed,
+                                                    new_ann,
+                                                    new_processed)
     if new_as_path_shorter is not None:
         return new_as_path_shorter
     else:
-        return policy_self._new_wins_ties(current_ann,
-                                          current_processed,
-                                          new_ann,
-                                          new_processed)
+        return self._new_wins_ties(current_ann,
+                                   current_processed,
+                                   new_ann,
+                                   new_processed)
 
-def _new_rel_better(policy_self,
+def _new_rel_better(self,
                     current_ann,
                     current_processed,
                     default_current_recv_rel,
@@ -77,7 +76,7 @@ def _new_rel_better(policy_self,
         return None
 
 
-def _new_as_path_shorter(policy_self,
+def _new_as_path_shorter(self,
                          current_ann,
                          current_processed,
                          new_ann,
@@ -91,7 +90,7 @@ def _new_as_path_shorter(policy_self,
     else:
         return None
 
-def _new_wins_ties(policy_self,
+def _new_wins_ties(self,
                    current_ann,
                    current_processed,
                    new_ann,

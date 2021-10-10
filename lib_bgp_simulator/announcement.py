@@ -85,9 +85,9 @@ class Announcement:
         """
 
         if propagation_round == 0:
-            assert as_dict[self.seed_asn].policy.local_rib.get_ann(self.prefix) is None, "Seeding conflict"
+            assert as_dict[self.seed_asn].local_rib.get_ann(self.prefix) is None, "Seeding conflict"
 
-            as_dict[self.seed_asn].policy.local_rib.add_ann(self)#[self.prefix] = self
+            as_dict[self.seed_asn].local_rib.add_ann(self)#[self.prefix] = self
 
     def prefix_path_attributes_eq(self, ann):
         """Checks prefix and as path equivalency"""

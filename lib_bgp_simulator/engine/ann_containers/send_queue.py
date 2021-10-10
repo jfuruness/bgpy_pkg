@@ -60,7 +60,7 @@ class SendQueue:
         else:
             return neighbor_info.get(prefix)
 
-    def neighbor_prefix_anns(self, neighbors):
+    def info(self, neighbors):
         for neighbor_obj in neighbors:
             assert isinstance(neighbor_obj, bgp_as.BGPAS)
             for prefix, send_info in self._info[neighbor_obj.asn].items():

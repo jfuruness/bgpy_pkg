@@ -54,12 +54,12 @@ def aggregate_and_write(self, graph_dir):
                     # Aggregate now into a line
                     for policy, list_of_percents in percentages.items():
                         line = None
-                        if policy == data_point.PolicyCls.name:
+                        if policy == data_point.ASCls.name:
                             line = adopting_lines[policy]
                         elif policy == "all_ases":
-                            line = all_ases_lines[f"all_ases {data_point.PolicyCls.name}"]
+                            line = all_ases_lines[f"all_ases {data_point.ASCls.name}"]
                         else:
-                            line = non_adopting_lines[f"{policy} ({data_point.PolicyCls.name} adopting)"]
+                            line = non_adopting_lines[f"{policy} ({data_point.ASCls.name} adopting)"]
                         line.x.append(data_point.percent_adoption)
                         line.y.append(mean(list_of_percents))
                         # 95% conf intervals

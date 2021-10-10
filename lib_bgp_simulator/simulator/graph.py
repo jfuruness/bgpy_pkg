@@ -10,7 +10,7 @@ from .attacks import Attack
 from .data_point import DataPoint
 from .scenario import Scenario
 
-from ..engine import BGPPolicy, BGPAS, SimulatorEngine
+from ..engine import BGPAS, SimulatorEngine
 
 class Graph:
     from .graph_writer import aggregate_and_write
@@ -18,20 +18,20 @@ class Graph:
 
     def __init__(self,
                  percent_adoptions=[1, 5, 10, 20, 30, 50, 75, 99],
-                 adopt_policies=[],
+                 adopt_as_classes=[],
                  AttackCls=None,
                  num_trials=1,
                  propagation_rounds=1,
-                 base_policy=BGPPolicy):
+                 base_as_cls=BGPAS):
         assert isinstance(percent_adoptions, list)
         self.percent_adoptions = percent_adoptions
-        self.adopt_policies = adopt_policies
+        self.adopt_as_classes = adopt_as_classes
         self.num_trials = num_trials
         # Why propagation rounds? Because some atk/def scenarios might require
         # More than one round of propagation
         self.propagation_rounds = propagation_rounds
         self.AttackCls = AttackCls
-        self.base_policy = base_policy
+        self.base_as_cls = base_as_cls
 
     def _get_mp_chunks(self, parse_cpus):
         """Not a generator since we need this for multiprocessing"""
@@ -57,7 +57,7 @@ class Graph:
 
         if debug:
             # Done just to get subgraphs, change this later
-            engine = CaidaCollector(BaseASCls=BGPAS,
+            engine = CaidaCollector(BaseASCls=self.base_as_cls,
                                     GraphCls=SimulatorEngine,
                                     _dir=_dir,
                                     _dir_exist_ok=True).run(tsv=False)
@@ -83,7 +83,7 @@ class Graph:
         print("\nGraph complete")
         if not debug:
             # Done just to get subgraphs, change this later
-            engine = CaidaCollector(BaseASCls=BGPAS,
+            engine = CaidaCollector(BaseASCls=self.base_as_cls,
                                     GraphCls=SimulatorEngine,
                                     _dir=_dir,
                                     _dir_exist_ok=True).run(tsv=False)
@@ -96,13 +96,13 @@ class Graph:
             # Engine is not picklable or dillable AT ALL, so do it here
             # Changing recursion depth does nothing
             # Making nothing a reference does nothing
-            engine = CaidaCollector(BaseASCls=BGPAS,
+            engine = CaidaCollector(BaseASCls=self.base_as_cls,
                                     GraphCls=SimulatorEngine,
                                     _dir=self._dir,
                                     _dir_exist_ok=True).run(tsv=False)
 
         if subgraphs is None:
-            self.subgraphs = self._get_subgraphs(engine) 
+            self.subgraphs = self._get_subgraphs(engine)
             self._validate_subgraphs()
 
         data_points = dict()
@@ -113,13 +113,13 @@ class Graph:
             adopting_asns = self._get_adopting_ases(percent_adopt, og_attack)
             assert len(adopting_asns) != 0
             #print("Selected adopting")
-            for PolicyCls in self.adopt_policies:
+            for ASCls in self.adopt_as_classes:
 
-                print(f"Percent adopt {percent_adopt} trial {trial} {PolicyCls.name}",
+                print(f"Percent adopt {percent_adopt} trial {trial} {ASCls.name}",
                       end=" " * 10 + "\r")
                 # In case the attack has state we deepcopy it so that it doesn't remain from policy to policy
                 attack = deepcopy(og_attack)
-                self._replace_engine_policies({x: PolicyCls for x in adopting_asns}, engine)
+                self._replace_engine_policies({x: ASCls for x in adopting_asns}, engine)
                 for propagation_round in range(self.propagation_rounds):
                     # Generate the test
                     scenario = Scenario(trial=trial, engine=engine, attack=attack)
@@ -129,7 +129,7 @@ class Graph:
                     #print("ran")
                     # Get data point - just a frozen data class
                     # Just makes it easier to access properties later
-                    dp = DataPoint(percent_adopt, PolicyCls, propagation_round)
+                    dp = DataPoint(percent_adopt, ASCls, propagation_round)
                     # Append the test to all tests for that data point
                     data_points[dp] = data_points.get(dp, [])
                     data_points[dp].append(scenario)
@@ -203,13 +203,15 @@ class Graph:
         # Return all ASes other than the attacker
         return subgraph_asns.difference([attack.attacker_asn])
 
-    def _replace_engine_policies(self, as_policy_dict, base_engine):
+    def _replace_engine_policies(self, as_cls_dict, base_engine):
         for asn, as_obj in base_engine.as_dict.items():
-            as_obj.policy = as_policy_dict.get(asn, self.base_policy)()        
+            as_obj.__class__ = as_cls_dict.get(asn, self.base_as_cls)
+            # reset_base is set to false so that we don't override AS info
+            as_obj.__init__(reset_base=False)
 
     @property
     def total_scenarios(self):
         total_scenarios = self.num_trials * len(self.percent_adoptions)
-        total_scenarios *= len(self.adopt_policies)
+        total_scenarios *= len(self.adopt_as_classes)
         total_scenarios *= self.propagation_rounds
         return total_scenarios

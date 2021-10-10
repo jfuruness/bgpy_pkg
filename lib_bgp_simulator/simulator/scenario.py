@@ -25,7 +25,7 @@ class Scenario:
     def _collect_data(self, subgraphs):
         """Collects data about the test run before engine is deleted"""
 
-        policies = set([x.policy.name for x in self.engine])
+        policies = set([x.name for x in self.engine])
         all_data = {"data": dict(), "totals": dict()}
         for k, subgraph_asns in subgraphs.items():
             all_data["data"][k] = self._get_outcomes(policies, subgraph_asns)
@@ -47,7 +47,7 @@ class Scenario:
             # Get the attack outcome
             outcome = self._get_atk_outcome(as_obj, ordered_prefixes)
             # Incriment the outcome and policy by 1
-            outcomes[outcome][as_obj.policy.name] += 1
+            outcomes[outcome][as_obj.name] += 1
         return outcomes
 
     def _get_atk_outcome(self, as_obj, ordered_prefixes):
@@ -85,7 +85,7 @@ class Scenario:
 
     def _get_most_specific_ann(self, as_obj, ordered_prefixes):
         for prefix in ordered_prefixes:
-            most_specific_prefix = as_obj.policy.local_rib.get_ann(prefix)
+            most_specific_prefix = as_obj.local_rib.get_ann(prefix)
             if most_specific_prefix is not None:
                 break
         return most_specific_prefix
@@ -95,5 +95,5 @@ class Scenario:
 
         totals = {x: 0 for x in policy_names}
         for asn in subgraph_asns.difference(self.attack.uncountable_asns):
-            totals[self.engine.as_dict[asn].policy.name] += 1
+            totals[self.engine.as_dict[asn].name] += 1
         return totals
