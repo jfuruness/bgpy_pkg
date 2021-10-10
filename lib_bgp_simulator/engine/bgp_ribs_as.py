@@ -125,11 +125,11 @@ class BGPRIBsAS(BGPAS):
                 self._withdraw_ann_from_neighbors(withdraw_ann)
                 err = "withdrawing an announcement that is identical to new ann"
                 assert not withdraw_ann.prefix_path_attributes_eq(
-                    self._deep_copy_ann(ann, recv_relationship)), err
+                    self._copy_and_process(ann, recv_relationship)), err
 
             # We have a new best!
             if current_best_ann_processed is False:
-                current_best_ann = self._deep_copy_ann(ann, recv_relationship)
+                current_best_ann = self._copy_and_process(ann, recv_relationship)
                 # Save to local rib
                 self.local_rib.add_ann(current_best_ann)
 
@@ -158,9 +158,9 @@ class BGPRIBsAS(BGPAS):
         self.ribs_in.remove_entry(neighbor, prefix)
 
         # Remove ann from local rib
-        withdraw_ann = self._deep_copy_ann(ann,
-                                           recv_relationship,
-                                           withdraw=True)
+        withdraw_ann = self._copy_and_process(ann,
+                                              recv_relationship,
+                                              withdraw=True)
         if withdraw_ann.prefix_path_attributes_eq(
             self.local_rib.get_ann(prefix)):
 
@@ -226,6 +226,6 @@ class BGPRIBsAS(BGPAS):
                 best_recv_relationship = new_recv_relationship
 
         if best_unprocessed_ann is not None:
-            return self._deep_copy_ann(best_unprocessed_ann, best_recv_relationship)
+            return self._copy_and_process(best_unprocessed_ann, best_recv_relationship)
         else:
             return None

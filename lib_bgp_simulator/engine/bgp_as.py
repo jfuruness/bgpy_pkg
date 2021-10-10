@@ -127,7 +127,7 @@ class BGPAS(AS):
 
             # This is a new best ann. Process it and add it to the local rib
             if current_processed is False:
-                current_ann = self._deep_copy_ann(current_ann, from_rel)
+                current_ann = self._copy_and_process(current_ann, from_rel)
                 # Save to local rib
                 self.local_rib.add_ann(current_ann)
 
@@ -139,13 +139,13 @@ class BGPAS(AS):
         # BGP Loop Prevention Check
         return not (self.asn in ann.as_path)
 
-    def _deep_copy_ann(self, ann, recv_relationship, **extra_kwargs):
+    def _copy_and_process(self, ann, recv_relationship):
         """Deep copies ann and modifies attrs"""
 
-        kwargs = {"as_path": (self.asn, *ann.as_path)}
-        kwargs.update(extra_kwargs)
+        kwargs = {"as_path": (self.asn,) + ann.as_path,
+                  "recv_relationship": recv_relationship}
 
-        return ann.copy(recv_relationship=recv_relationship, **kwargs)
+        return ann.copy(**kwargs)
 
     def _reset_q(self, reset_q):
         if reset_q:
