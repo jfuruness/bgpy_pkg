@@ -84,7 +84,7 @@ class Scenario:
 
     def _get_most_specific_ann(self, as_obj, ordered_prefixes):
         for prefix in ordered_prefixes:
-            most_specific_prefix = as_obj.local_rib.get_ann(prefix)
+            most_specific_prefix = as_obj._local_rib.get_ann(prefix)
             if most_specific_prefix is not None:
                 break
         return most_specific_prefix

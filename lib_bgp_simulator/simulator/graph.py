@@ -173,7 +173,7 @@ class Graph:
 
     def _get_attack(self):
         return self.AttackCls(*random.sample(self.subgraphs["stubs_and_mh"], 2))
- 
+
     def _get_adopting_ases(self, percent_adopt, attack) -> list:
         """Return a list of adopting ASNs that aren't attackers"""
 
@@ -181,7 +181,7 @@ class Graph:
         for subgraph_asns in self.subgraphs.values():
             # Get all possible ASes that could adopt
             possible_adopting_ases = self._get_possible_adopting_asns(subgraph_asns,
-                                                             attack)
+                                                                      attack)
 
             # N choose k, k is number of ASNs that will adopt
             k = len(possible_adopting_ases) * percent_adopt // 100
@@ -193,7 +193,15 @@ class Graph:
                 k -= 1
 
             asns_adopting.extend(random.sample(possible_adopting_ases, k))
+        asns_adopting += self._get_default_adopters(attack)
+        assert len(asns_adopting) == len(set(asns_adopting))
         return asns_adopting
+
+    def _get_default_adopters(self, attack):
+        return [attack.victim_asn]
+
+    def _get_default_non_adopters(self, attack):
+        return [attack.attacker_asn]
 
     def _get_possible_adopting_asns(self, subgraph_asns: set, attack: Attack):
         """Returns the set of all possible adopting ASNs
@@ -202,8 +210,11 @@ class Graph:
         from possible adopters
         """
 
+        uncountable = self._get_default_adopters(attack)
+        uncountable += self._get_default_non_adopters(attack)
+
         # Return all ASes other than the attacker
-        return subgraph_asns.difference([attack.attacker_asn])
+        return subgraph_asns.difference(set(uncountable))
 
     def _replace_engine_policies(self, as_cls_dict, base_engine):
         for asn, as_obj in base_engine.as_dict.items():
