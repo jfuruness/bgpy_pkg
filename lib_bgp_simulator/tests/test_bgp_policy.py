@@ -20,10 +20,10 @@ def test_process_incoming_anns_bgp(BaseASCls):
     prefix = '137.99.0.0/16'
     ann = EasyAnn(prefix=prefix, as_path=(13796,),timestamp=0)
     a = BaseASCls(1, peers=[], providers=[], customers=[])
-    a.recv_q.add_ann(ann)
+    a._recv_q.add_ann(ann)
     a.process_incoming_anns(Relationships.CUSTOMERS)
     # assert announcement was accepted to local rib
-    assert(a.local_rib.get_ann(prefix).origin == ann.origin)
+    assert(a._local_rib.get_ann(prefix).origin == ann.origin)
 
 @pytest.mark.parametrize("BaseASCls", [BGPAS, BGPRIBsAS])
 def test_process_incoming_anns_bgp_relationships(BaseASCls):
@@ -33,15 +33,15 @@ def test_process_incoming_anns_bgp_relationships(BaseASCls):
     ann2 = EasyAnn(prefix=prefix, as_path=(13795,),timestamp=0)
     ann3 = EasyAnn(prefix=prefix, as_path=(13796,),timestamp=0)
     a = BaseASCls(1, peers=[], providers=[], customers=[]) 
-    a.recv_q.add_ann(ann1)
+    a._recv_q.add_ann(ann1)
     a.process_incoming_anns(Relationships.PROVIDERS)
-    assert(a.local_rib.get_ann(prefix).origin == ann1.origin)
-    a.recv_q.add_ann(ann2)
+    assert(a._local_rib.get_ann(prefix).origin == ann1.origin)
+    a._recv_q.add_ann(ann2)
     a.process_incoming_anns(Relationships.PEERS)
-    assert(a.local_rib.get_ann(prefix).origin == ann2.origin)
-    a.recv_q.add_ann(ann3)
+    assert(a._local_rib.get_ann(prefix).origin == ann2.origin)
+    a._recv_q.add_ann(ann3)
     a.process_incoming_anns(Relationships.CUSTOMERS)
-    assert(a.local_rib.get_ann(prefix).origin == ann3.origin)
+    assert(a._local_rib.get_ann(prefix).origin == ann3.origin)
 
 @pytest.mark.parametrize("BaseASCls", [BGPAS, BGPRIBsAS])
 def test_process_incoming_anns_bgp_path_len(BaseASCls):
@@ -51,15 +51,15 @@ def test_process_incoming_anns_bgp_path_len(BaseASCls):
     ann2 = EasyAnn(prefix=prefix, as_path=(20, 13795,),timestamp=0)
     ann3 = EasyAnn(prefix=prefix, as_path=(13796,),timestamp=0)
     a = BaseASCls(1, peers=[], providers=[], customers=[]) 
-    a.recv_q.add_ann(ann1)
+    a._recv_q.add_ann(ann1)
     a.process_incoming_anns(Relationships.PROVIDERS)
-    assert(a.local_rib.get_ann(prefix).origin == ann1.origin)
-    a.recv_q.add_ann(ann2)
+    assert(a._local_rib.get_ann(prefix).origin == ann1.origin)
+    a._recv_q.add_ann(ann2)
     a.process_incoming_anns(Relationships.PROVIDERS)
-    assert(a.local_rib.get_ann(prefix).origin == ann2.origin)
-    a.recv_q.add_ann(ann3)
+    assert(a._local_rib.get_ann(prefix).origin == ann2.origin)
+    a._recv_q.add_ann(ann3)
     a.process_incoming_anns(Relationships.PROVIDERS)
-    assert(a.local_rib.get_ann(prefix).origin == ann3.origin)
+    assert(a._local_rib.get_ann(prefix).origin == ann3.origin)
 
 @pytest.mark.parametrize("BaseASCls", [BGPAS, BGPRIBsAS])
 def test_process_incoming_anns_bgp_seeded(BaseASCls):
@@ -70,11 +70,11 @@ def test_process_incoming_anns_bgp_seeded(BaseASCls):
     ann2 = EasyAnn(prefix=prefix, as_path=(13795,),timestamp=0)
     ann3 = EasyAnn(prefix=prefix, as_path=(13796,),timestamp=0)
     a = BaseASCls(1, peers=[], providers=[], customers=[]) 
-    a.local_rib.add_ann(ann1, prefix=prefix)
-    assert(a.local_rib.get_ann(prefix).origin == ann1.origin)
-    a.recv_q.add_ann(ann2)
+    a._local_rib.add_ann(ann1, prefix=prefix)
+    assert(a._local_rib.get_ann(prefix).origin == ann1.origin)
+    a._recv_q.add_ann(ann2)
     a.process_incoming_anns(Relationships.CUSTOMERS)
-    assert(a.local_rib.get_ann(prefix).origin == ann1.origin)
+    assert(a._local_rib.get_ann(prefix).origin == ann1.origin)
 
 @pytest.mark.parametrize("BaseASCls", [BGPAS, BGPRIBsAS])
 def test_process_incoming_anns_bgp_loop_check(BaseASCls):
@@ -82,6 +82,6 @@ def test_process_incoming_anns_bgp_loop_check(BaseASCls):
     prefix = '137.99.0.0/16'
     ann1 = EasyAnn(prefix=prefix, as_path=(13796, 1),timestamp=0)
     a = BaseASCls(1, peers=[], providers=[], customers=[]) 
-    a.recv_q.add_ann(ann1)
+    a._recv_q.add_ann(ann1)
     a.process_incoming_anns(Relationships.CUSTOMERS)
-    assert a.local_rib.get_ann(prefix) is None
+    assert a._local_rib.get_ann(prefix) is None

@@ -31,9 +31,9 @@ def run_example(peers=list(),
         for as_obj in engine:
             print("ASN:", as_obj.asn)
             print("computed local rib:")
-            for prefix, ann in as_obj.local_rib.prefix_anns():
+            for prefix, ann in as_obj._local_rib.prefix_anns():
                 print(ann)
             print("Actual local rib:")
             for prefix, ann in local_ribs[as_obj.asn].items():
                 print(ann)
-            assert as_obj.local_rib == local_ribs[as_obj.asn]
+            assert as_obj._local_rib == local_ribs[as_obj.asn]
