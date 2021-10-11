@@ -7,7 +7,7 @@ class PrefixHijack(Attack):
 
     __slots__ = ["victim_prefix", "attacker_prefix"]
 
-    def __init__(self, attacker=ASNs.ATTACKER.value, victim=ASNs.VICTIM.value):
+    def __init__(self, attacker=ASNs.ATTACKER.value, victim=ASNs.VICTIM.value, **extra_ann_kwargs):
         self.victim_prefix = Prefixes.PREFIX.value
         self.attacker_prefix = Prefixes.PREFIX.value
         anns = [self.AnnCls(prefix=self.victim_prefix,
@@ -17,7 +17,8 @@ class PrefixHijack(Attack):
                     roa_validity=ROAValidity.VALID,
                     recv_relationship=Relationships.ORIGIN,
                     withdraw=False,
-                    traceback_end=False),
+                    traceback_end=False,
+                    **extra_ann_kwargs),
                 self.AnnCls(prefix=self.attacker_prefix,
                     timestamp=Timestamps.ATTACKER.value,
                     as_path=(attacker,),
@@ -25,5 +26,6 @@ class PrefixHijack(Attack):
                     roa_validity=ROAValidity.INVALID,
                     recv_relationship=Relationships.ORIGIN,
                     withdraw=False,
-                    traceback_end=False)]
+                    traceback_end=False,
+                    **extra_ann_kwargs)]
         super(PrefixHijack, self).__init__(attacker, victim, anns)

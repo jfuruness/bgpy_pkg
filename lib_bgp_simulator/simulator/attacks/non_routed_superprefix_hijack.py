@@ -5,7 +5,7 @@ from ...announcement import Announcement as Ann
 
 class NonRoutedSuperprefixHijack(Attack):
     __slots__ = []
-    def __init__(self, attacker=ASNs.ATTACKER.value, victim=ASNs.VICTIM.value):
+    def __init__(self, attacker=ASNs.ATTACKER.value, victim=ASNs.VICTIM.value, **extra_ann_kwargs):
         anns = [self.AnnCls(prefix=Prefixes.SUPERPREFIX.value,
                             timestamp=Timestamps.ATTACKER.value,
                             as_path=(attacker,),
@@ -13,5 +13,6 @@ class NonRoutedSuperprefixHijack(Attack):
                             roa_validity=ROAValidity.UNKNOWN,
                             recv_relationship=Relationships.ORIGIN,
                             withdraw=False,
-                            traceback_end=False)]
+                            traceback_end=False,
+                            **extra_ann_kwargs)]
         super(NonRoutedSuperprefixHijack, self).__init__(attacker, victim, anns)
