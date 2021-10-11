@@ -10,6 +10,7 @@ def run_example(peers=list(),
                 as_policies=dict(),
                 announcements=list(),
                 local_ribs=dict(),
+                outcomes=dict(),
                 BaseASCls=BGPAS,
                 ):
     """Runs an example"""
@@ -37,3 +38,5 @@ def run_example(peers=list(),
             for prefix, ann in local_ribs[as_obj.asn].items():
                 print(ann)
             assert as_obj._local_rib == local_ribs[as_obj.asn]
+    if outcomes:
+        pass
