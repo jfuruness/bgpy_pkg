@@ -22,7 +22,8 @@ class Graph:
                  AttackCls=None,
                  num_trials=1,
                  propagation_rounds=1,
-                 base_as_cls=BGPAS):
+                 base_as_cls=BGPAS,
+                 profiler=None):
         assert isinstance(percent_adoptions, list)
         self.percent_adoptions = percent_adoptions
         self.adopt_as_classes = adopt_as_classes
@@ -32,6 +33,7 @@ class Graph:
         self.propagation_rounds = propagation_rounds
         self.AttackCls = AttackCls
         self.base_as_cls = base_as_cls
+        self.profiler=profiler
 
     def _get_mp_chunks(self, parse_cpus):
         """Not a generator since we need this for multiprocessing"""
@@ -122,7 +124,7 @@ class Graph:
                 self._replace_engine_policies({x: ASCls for x in adopting_asns}, engine)
                 for propagation_round in range(self.propagation_rounds):
                     # Generate the test
-                    scenario = Scenario(trial=trial, engine=engine, attack=attack)
+                    scenario = Scenario(trial=trial, engine=engine, attack=attack, profiler=self.profiler)
                     #print("about to run")
                     # Run test, remove reference to engine and return it
                     scenario.run(self.subgraphs, propagation_round)

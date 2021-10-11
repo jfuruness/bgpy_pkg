@@ -2,6 +2,8 @@ import pytest
 
 from lib_caida_collector import PeerLink, CustomerProviderLink as CPLink
 
+from ...easy_ann import EasyAnn 
+
 from ..utils import run_example, HijackLocalRib
 
 from ....enums import ASNs, Prefixes, Timestamps, ROAValidity, Relationships
@@ -46,36 +48,36 @@ def test_hidden_hijack_bgp(BaseASCls):
 
     # Local RIB data
     local_ribs = {
-        1: ({Prefixes.PREFIX.value: Announcement(as_path=(1, 2, ASNs.VICTIM.value),
+        1: ({Prefixes.PREFIX.value: EasyAnn(as_path=(1, 2, ASNs.VICTIM.value),
                                                          recv_relationship=Relationships.CUSTOMERS,
                                                          **vic_kwargs)}),
-        2: ({Prefixes.PREFIX.value: Announcement(as_path=(2, ASNs.VICTIM.value),
+        2: ({Prefixes.PREFIX.value: EasyAnn(as_path=(2, ASNs.VICTIM.value),
                                                          recv_relationship=Relationships.CUSTOMERS,
                                                          **vic_kwargs),
-                     Prefixes.SUBPREFIX.value: Announcement(as_path=(2, 3, ASNs.ATTACKER.value),
+                     Prefixes.SUBPREFIX.value: EasyAnn(as_path=(2, 3, ASNs.ATTACKER.value),
                                                          recv_relationship=Relationships.PEERS,
                                                          **atk_kwargs)}),
-        3: ({Prefixes.PREFIX.value: Announcement(as_path=(3, 2, ASNs.VICTIM.value),
+        3: ({Prefixes.PREFIX.value: EasyAnn(as_path=(3, 2, ASNs.VICTIM.value),
                                                          recv_relationship=Relationships.PEERS,
                                                          **vic_kwargs),
-                     Prefixes.SUBPREFIX.value: Announcement(as_path=(3, ASNs.ATTACKER.value),
+                     Prefixes.SUBPREFIX.value: EasyAnn(as_path=(3, ASNs.ATTACKER.value),
                                                          recv_relationship=Relationships.CUSTOMERS,
                                                          **atk_kwargs)}),
         ASNs.VICTIM.value:
-           ({Prefixes.PREFIX.value: Announcement(as_path=(ASNs.VICTIM.value,),
+           ({Prefixes.PREFIX.value: EasyAnn(as_path=(ASNs.VICTIM.value,),
                                                          recv_relationship=Relationships.ORIGIN,
                                                          **vic_kwargs),
-                     Prefixes.SUBPREFIX.value: Announcement(as_path=(ASNs.VICTIM.value,
+                     Prefixes.SUBPREFIX.value: EasyAnn(as_path=(ASNs.VICTIM.value,
                                                                     2,
                                                                     3,
                                                                     ASNs.ATTACKER.value),
                                                          recv_relationship=Relationships.PROVIDERS,
                                                          **atk_kwargs)}),
         ASNs.ATTACKER.value:
-           ({Prefixes.PREFIX.value: Announcement(as_path=(ASNs.ATTACKER.value,3, 2, ASNs.VICTIM.value),
+           ({Prefixes.PREFIX.value: EasyAnn(as_path=(ASNs.ATTACKER.value,3, 2, ASNs.VICTIM.value),
                                                          recv_relationship=Relationships.PROVIDERS,
                                                          **vic_kwargs),
-                     Prefixes.SUBPREFIX.value: Announcement(as_path=(ASNs.ATTACKER.value,),
+                     Prefixes.SUBPREFIX.value: EasyAnn(as_path=(ASNs.ATTACKER.value,),
                                                          recv_relationship=Relationships.ORIGIN,
                                                          **atk_kwargs)}),
     }

@@ -55,7 +55,21 @@ class Attack:
         else:
             return None
 
-    def _get_prefix_subprefix_dict(policy_self):
+    def seed(self, as_dict, propagation_round):
+        """Seeds announcement at the proper AS
+
+        Since this is the simulator engine, we should
+        never have to worry about overlapping announcements
+        """
+
+        if propagation_round == 0:
+            for ann in self.announcements:
+                assert as_dict[ann.seed_asn]._local_rib.get_ann(ann.prefix) is None, "Seeding conflict"
+
+                as_dict[ann.seed_asn]._local_rib.add_ann(ann)
+
+
+    def _get_prefix_subprefix_dict(self):
         prefixes = set([])
         for ann in policy_self.recv_q.announcements:
             prefixes.add(ann.prefix)

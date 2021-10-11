@@ -3,11 +3,12 @@ from ..enums import Relationships, Outcomes
 
 
 class Scenario:
-    def __init__(self, trial=None, engine=None, attack=None):
+    def __init__(self, trial=None, engine=None, attack=None, profiler=None):
         self.trial = trial
         self.engine = engine
         self.attack = attack
         self.data = dict()
+        self.profiler = profiler
 
     def run(self, subgraphs, propagation_round: int):
         # Run engine
@@ -27,14 +28,15 @@ class Scenario:
 
         policies = set([x.name for x in self.engine])
         all_data = {"data": dict(), "totals": dict()}
+        cache = dict()
         for k, subgraph_asns in subgraphs.items():
-            all_data["data"][k] = self._get_outcomes(policies, subgraph_asns)
+            all_data["data"][k] = self._get_outcomes(policies, subgraph_asns, cache)
             all_data["totals"][k] = self._get_policy_totals(policies, subgraph_asns)
         self.data = all_data
         #from pprint import pprint
         #pprint(all_data)
 
-    def _get_outcomes(self, policies, subgraph_asns):
+    def _get_outcomes(self, policies, subgraph_asns, cache):
         outcomes = {x: {y: 0 for y in policies}
                     for x in list(Outcomes)}
         # Most specific to least specific
@@ -45,32 +47,29 @@ class Scenario:
         for asn in countable_asns:
             as_obj = self.engine.as_dict[asn]
             # Get the attack outcome
-            outcome = self._get_atk_outcome(as_obj, ordered_prefixes)
+            outcome = self._get_atk_outcome(as_obj, ordered_prefixes, 0, cache)
             # Incriment the outcome and policy by 1
             outcomes[outcome][as_obj.name] += 1
         return outcomes
 
-    def _get_atk_outcome(self, as_obj, ordered_prefixes):
-        # Used to prevent looping
-        ases = set([as_obj.asn])
+    def _get_atk_outcome(self, as_obj, ordered_prefixes, path_len, cache):
+        assert path_len < 128, "Path is too long, probably looping"
 
-        attack_outcome = None
-        while attack_outcome is None:
-            # Get most specific announcement, or empty RIB
-            most_specific_ann = self._get_most_specific_ann(as_obj, ordered_prefixes)
-            # Determine the outcome of the attack
-            attack_outcome = self.attack.determine_outcome(as_obj, most_specific_ann)
-            # Must add this here or else it tries to go back 1 further than possible
-            if attack_outcome:
-                break
+        if as_obj.asn in cache:
+            return cache[as_obj.asn]
 
+        # Get most specific announcement, or empty RIB
+        most_specific_ann = self._get_most_specific_ann(as_obj, ordered_prefixes)
+        # Determine the outcome of the attack
+        attack_outcome = self.attack.determine_outcome(as_obj, most_specific_ann)
+        if not attack_outcome:
             # Continue tracing back by getting the last AS
-            as_obj = self.engine.as_dict[most_specific_ann.as_path[1]]
-            # Loop prevention
-            assert as_obj.asn not in ases, f"looping {ases}"
-            ases.add(as_obj.asn)
+            new_as_obj = self.engine.as_dict[most_specific_ann.as_path[1]]
+            attack_outcome = self._get_atk_outcome(new_as_obj, ordered_prefixes, path_len + 1, cache)
 
         assert attack_outcome is not None, "Attack should be disconnected, why is this wrong?"
+
+        cache[as_obj.asn] = attack_outcome
 
         return attack_outcome
 
