@@ -80,7 +80,7 @@ class Announcement:
     def copy(self, **extra_kwargs):
         """Creates a new ann with proper sim attrs"""
 
-        kwargs = {"seed_asn": None, "traceback_end": None}
+        kwargs = {"seed_asn": None, "traceback_end": False}
         kwargs.update(extra_kwargs)
 
         return dataclasses.replace(self, **kwargs)
