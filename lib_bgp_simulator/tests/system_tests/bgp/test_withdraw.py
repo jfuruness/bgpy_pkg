@@ -50,7 +50,7 @@ kwargs = {"prefix": prefix,
 class Test_Withdraw:
     """Tests all example graphs within our paper."""
 
-    #@pytest.mark.skip(reason="being converted")
+    @pytest.mark.skip(reason="Test passes, but it's not a withdraw test. TODO: Test needs to be re-imagined to become a withdraw test..")
     def test_simple_withdraw(self):
         r"""Simple test case for withdrawals.
 
@@ -69,26 +69,6 @@ class Test_Withdraw:
             6: {prefix: EasyAnn(as_path=(6, 4, 1, 3), recv_relationship=Rels.PROVIDERS, **kwargs)},
             7: {prefix: EasyAnn(as_path=(7,), recv_relationship=Rels.ORIGIN, **kwargs)}
         }
-        #exr_output = [{"asn": 1,
-        #               "prefix": Attack.default_prefix,
-        #               "origin": 3,
-        #               "received_from_asn": 3},
-        #              {"asn": 2,
-        #               "prefix": Attack.default_prefix,
-        #               "origin": 3,
-        #               "received_from_asn": 1},
-        #              {"asn": 3,
-        #               "prefix": Attack.default_prefix,
-        #               "origin": 3,
-        #               "received_from_asn": Conds.HIJACKED.value},
-        #              {"asn": 5,
-        #               "prefix": Attack.default_prefix,
-        #               "origin": 7,
-        #               "received_from_asn": 7},
-        #              {"asn": 7,
-        #               "prefix": Attack.default_prefix,
-        #               "origin": 7,
-        #               "received_from_asn": Conds.NOTHIJACKED.value}]
         self._withdraw_check(ROVAS, exr_output)
 
 
@@ -118,7 +98,9 @@ class Test_Withdraw:
         customer_providers = [CPLink(provider_asn=x[0], customer_asn=x[1]) for x in provider_customer_rows]
         peers = [PeerLink(x[0], x[1]) for x in peer_rows]
 
-        # TODO : Review: Do we still need this comment?
+        # TODO : This comment is no longer true. Both announcements are propagated at the same time.
+        # There this test needs to be re-imagined to cause a withdraw
+        # 
         # One problem with double-propagation is  that since the victim
         # propagates first, the victim's announcement will get withdrawn. In
         # the past, this would be done by overwriting the old announcement, but
