@@ -15,7 +15,9 @@ from .enums import Prefixes
 from .enums import ASNs
 from .simulator import PrefixHijack
 from .simulator import SubprefixHijack
-from .simulator import UnannouncedPrefixHijack
+from .simulator import NonRoutedPrefixHijack
+from .simulator import NonRoutedSuperprefixHijack
+from .simulator import SuperprefixPrefixHijack
 from .simulator import DataPoint
 from .simulator import Graph
 from .simulator import Scenario

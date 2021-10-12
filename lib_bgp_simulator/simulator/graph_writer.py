@@ -3,11 +3,14 @@ import math
 import os
 import shutil
 from statistics import mean, stdev
-
-import matplotlib
-import matplotlib.pyplot as plt
+import sys
 
 from ..enums import Outcomes
+
+if "pypy" in sys.executable:
+    import matplotlib
+    import matplotlib.pyplot as plt
+
 
 class Line:
     def __init__(self):
@@ -77,6 +80,10 @@ def aggregate_and_write(self, graph_dir):
                             graph_dir, adopting="all")
 
 def _write(self, lines, outcome, subgraph_name, propagation_round, graph_dir, adopting=None):
+    if "pypy" not in sys.executable:
+        import matplotlib
+        import matplotlib.pyplot as plt
+
     fig, ax = plt.subplots()
     plt.xlim(0, 100)
     plt.ylim(0, 100)

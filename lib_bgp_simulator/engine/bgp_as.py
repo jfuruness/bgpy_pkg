@@ -11,7 +11,7 @@ from ..announcement import Announcement as Ann
 
 class BGPAS(AS):
     # TODO: fix later? class error? Does this impact speed?
-    __slots__ = ["local_rib", "recv_q", "ribs_in", "ribs_out", "send_q"]
+    __slots__ = ["_local_rib", "_recv_q", "_ribs_in", "_ribs_out", "_send_q"]
 
     name = "BGP"
     subclass_names = []
@@ -37,8 +37,8 @@ class BGPAS(AS):
 
         if kwargs.get("reset_base", True):
             super(BGPAS, self).__init__(*args, **kwargs)
-        self.local_rib = LocalRib()
-        self.recv_q = RecvQueue()
+        self._local_rib = LocalRib()
+        self._recv_q = RecvQueue()
 
     def propagate_to_providers(self):
         """Propogates to providers"""
@@ -72,7 +72,7 @@ class BGPAS(AS):
         """
 
         for neighbor in getattr(self, propagate_to.name.lower()):
-            for prefix, ann in self.local_rib.prefix_anns():#items():
+            for prefix, ann in self._local_rib.prefix_anns():#items():
                 if ann.recv_relationship in send_rels:
                     propagate_args = [neighbor, ann, propagate_to, send_rels]
                     # Policy took care of it's own propagation for this ann
@@ -90,7 +90,10 @@ class BGPAS(AS):
         """Adds ann to the neighbors recv q"""
 
         # Add the new ann to the incoming anns for that prefix
-        neighbor.recv_q.add_ann(ann)
+        neighbor.receive_ann(ann)
+
+    def receive_ann(self, ann: Ann):
+        self._recv_q.add_ann(ann)
 
     def process_incoming_anns(self,
                               from_rel: Relationships,
@@ -101,9 +104,9 @@ class BGPAS(AS):
                               **kwargs):
         """Process all announcements that were incoming from a specific rel"""
 
-        for prefix, ann_list in self.recv_q.prefix_anns():
+        for prefix, ann_list in self._recv_q.prefix_anns():
             # Get announcement currently in local rib
-            current_ann = self.local_rib.get_ann(prefix)
+            current_ann = self._local_rib.get_ann(prefix)
             current_processed = True
 
             # Seeded Ann will never be overriden, so continue
@@ -127,9 +130,9 @@ class BGPAS(AS):
 
             # This is a new best ann. Process it and add it to the local rib
             if current_processed is False:
-                current_ann = self._deep_copy_ann(current_ann, from_rel)
+                current_ann = self._copy_and_process(current_ann, from_rel)
                 # Save to local rib
-                self.local_rib.add_ann(current_ann)
+                self._local_rib.add_ann(current_ann)
 
         self._reset_q(reset_q)
 
@@ -139,17 +142,18 @@ class BGPAS(AS):
         # BGP Loop Prevention Check
         return not (self.asn in ann.as_path)
 
-    def _deep_copy_ann(self, ann, recv_relationship, **extra_kwargs):
+    def _copy_and_process(self, ann, recv_relationship, **extra_kwargs):
         """Deep copies ann and modifies attrs"""
 
-        kwargs = {"as_path": (self.asn, *ann.as_path)}
+        kwargs = {"as_path": (self.asn,) + ann.as_path,
+                  "recv_relationship": recv_relationship}
         kwargs.update(extra_kwargs)
 
-        return ann.copy(recv_relationship=recv_relationship, **kwargs)
+        return ann.copy(**kwargs)
 
     def _reset_q(self, reset_q):
         if reset_q:
-            self.recv_q = RecvQueue()
+            self._recv_q = RecvQueue()
 
     from .gao_rexford import _new_ann_better
     from .gao_rexford import _new_as_path_ties_better

@@ -1,9 +1,11 @@
+import dataclasses
 import inspect
 from itertools import chain
 
 from .enums import Relationships, ROAValidity
 
 
+@dataclasses.dataclass
 class Announcement:
     """MRT Announcement"""
 
@@ -32,40 +34,16 @@ class Announcement:
     __slots__ = ["prefix", "timestamp", "as_path", "roa_validity",
                  "recv_relationship", "seed_asn", "withdraw", "traceback_end"]
 
-    def __init__(self,
-                 prefix=None,
-                 as_path=None,
-                 timestamp=None,
-                 seed_asn=None,
-                 # Ez requeset
-                 roa_validity=ROAValidity.UNKNOWN,
-                 recv_relationship=None,#Relationships.origin,
-                 withdraw=False,
-                 traceback_end=False):
-        self.prefix = prefix
-        self.as_path = as_path
-
-        # Simulation attributes below
-
-        self.timestamp = timestamp
-
-        self.seed_asn = seed_asn
-        # Tuples are faster
-        assert isinstance(self.as_path, tuple)
-
-        self.roa_validity = roa_validity
-        assert isinstance(roa_validity, ROAValidity)
-
-        self.recv_relationship = recv_relationship
-        assert isinstance(recv_relationship, Relationships)
-
-        self.withdraw = withdraw
-
-        self.traceback_end = traceback_end
-
-        # https://stackoverflow.com/a/427533/8903959
-        #if "__slots__" not in inspect.getsource(self.__class__):
-        #    raise Exception("Your ann class needs __slots__. See base class for ex.")
+    # NOTE: can't have defaults due to slots. Sorry man
+    # https://stackoverflow.com/a/50180784/8903959
+    prefix: str
+    as_path: tuple
+    timestamp: int
+    seed_asn: int
+    roa_validity: ROAValidity
+    recv_relationship: Relationships
+    withdraw: bool
+    traceback_end: bool
 
     def __eq__(self, other):
         if isinstance(other, Announcement):
@@ -85,9 +63,9 @@ class Announcement:
         """
 
         if propagation_round == 0:
-            assert as_dict[self.seed_asn].local_rib.get_ann(self.prefix) is None, "Seeding conflict"
+            assert as_dict[self.seed_asn]._local_rib.get_ann(self.prefix) is None, "Seeding conflict"
 
-            as_dict[self.seed_asn].local_rib.add_ann(self)#[self.prefix] = self
+            as_dict[self.seed_asn]._local_rib.add_ann(self)#[self.prefix] = self
 
     def prefix_path_attributes_eq(self, ann):
         """Checks prefix and as path equivalency"""
@@ -99,32 +77,17 @@ class Announcement:
         else:
             raise NotImplementedError
 
-    def copy(self, cls=None, **extra_kwargs):
+    def copy(self, **extra_kwargs):
         """Creates a new ann with proper sim attrs"""
 
-        kwargs = self.default_copy_kwargs
-        # This is for subclasses to have their own attrs here
+        kwargs = {"seed_asn": None, "traceback_end": False}
         kwargs.update(extra_kwargs)
 
-        prefix = kwargs.pop("prefix")
-
-        if cls is None:
-            cls = self.__class__
-
-        return cls(prefix, **kwargs)
+        return dataclasses.replace(self, **kwargs)
 
     @property
     def default_copy_kwargs(self):
-
-        # Gets all slots from parent classes and this class
-        # https://stackoverflow.com/a/6720815/8903959
-        slots = chain.from_iterable(getattr(cls, '__slots__', [])
-                                            for cls in self.__class__.__mro__)
-
-        kwargs = {attr: getattr(self, attr) for attr in slots}
-        kwargs["seed_asn"] = None
-        kwargs["traceback_end"] = False
-        return kwargs
+        return {"seed_asn": None, "traceback_end": None}
 
     @property
     def origin(self):

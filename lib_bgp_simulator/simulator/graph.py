@@ -3,6 +3,7 @@ from copy import deepcopy
 import logging
 from multiprocessing import Pool, cpu_count
 import random
+import sys
 
 from lib_caida_collector import CaidaCollector
 
@@ -11,6 +12,21 @@ from .data_point import DataPoint
 from .scenario import Scenario
 
 from ..engine import BGPAS, SimulatorEngine
+
+
+def my_decorator(func):
+    @functools.wraps(func)
+    def function_that_runs_func(*args, **kwargs):
+        # Inside the decorator
+        # Run the function
+        return func(*args, **kwargs)
+    return function_that_runs_func
+
+if "pypy" in sys.executable:
+    mp_decorator = my_decorator
+else:
+    import ray
+    mp_decorator = ray.remote
 
 class Graph:
     from .graph_writer import aggregate_and_write
@@ -22,7 +38,8 @@ class Graph:
                  AttackCls=None,
                  num_trials=1,
                  propagation_rounds=1,
-                 base_as_cls=BGPAS):
+                 base_as_cls=BGPAS,
+                 profiler=None):
         assert isinstance(percent_adoptions, list)
         self.percent_adoptions = percent_adoptions
         self.adopt_as_classes = adopt_as_classes
@@ -32,6 +49,7 @@ class Graph:
         self.propagation_rounds = propagation_rounds
         self.AttackCls = AttackCls
         self.base_as_cls = base_as_cls
+        self.profiler=profiler
 
     def _get_mp_chunks(self, parse_cpus):
         """Not a generator since we need this for multiprocessing"""
@@ -72,10 +90,19 @@ class Graph:
                         self.data_points[data_point].extend(trial_info_list)
         else:
             print("About to run pool")
-            # Pool is much faster than ProcessPoolExecutor
-            with Pool(parse_cpus) as pool:
-                for result in pool.map(self._run_mp_chunk, self._get_mp_chunks(parse_cpus)):
-                    for data_point, trial_info_list in result.items():
+            if "pypy" in sys.executable:
+                # Pool is much faster than ProcessPoolExecutor
+                with Pool(parse_cpus) as pool:
+                    for result in pool.map(self._run_mp_chunk, self._get_mp_chunks(parse_cpus)):
+                        for data_point, trial_info_list in result.items():
+                            if data_point not in self.data_points:
+                                self.data_points[data_point] = []
+                            self.data_points[data_point].extend(trial_info_list)
+            else:
+                results = [self.__class__._run_mp_chunk.remote(self, x)
+                           for x in self._get_mp_chunks(int(ray.cluster_resources()["CPU"]))]
+                for result in results:
+                    for data_point, trial_info_list in ray.get(result).items():
                         if data_point not in self.data_points:
                             self.data_points[data_point] = []
                         self.data_points[data_point].extend(trial_info_list)
@@ -91,6 +118,7 @@ class Graph:
             self.subgraphs = self._get_subgraphs(engine)
             self._validate_subgraphs()
 
+    @mp_decorator
     def _run_mp_chunk(self, chunk, engine=None, subgraphs=None):
         if engine is None:
             # Engine is not picklable or dillable AT ALL, so do it here
@@ -122,7 +150,7 @@ class Graph:
                 self._replace_engine_policies({x: ASCls for x in adopting_asns}, engine)
                 for propagation_round in range(self.propagation_rounds):
                     # Generate the test
-                    scenario = Scenario(trial=trial, engine=engine, attack=attack)
+                    scenario = Scenario(trial=trial, engine=engine, attack=attack, profiler=self.profiler)
                     #print("about to run")
                     # Run test, remove reference to engine and return it
                     scenario.run(self.subgraphs, propagation_round)
@@ -171,7 +199,7 @@ class Graph:
 
     def _get_attack(self):
         return self.AttackCls(*random.sample(self.subgraphs["stubs_and_mh"], 2))
- 
+
     def _get_adopting_ases(self, percent_adopt, attack) -> list:
         """Return a list of adopting ASNs that aren't attackers"""
 
@@ -179,7 +207,7 @@ class Graph:
         for subgraph_asns in self.subgraphs.values():
             # Get all possible ASes that could adopt
             possible_adopting_ases = self._get_possible_adopting_asns(subgraph_asns,
-                                                             attack)
+                                                                      attack)
 
             # N choose k, k is number of ASNs that will adopt
             k = len(possible_adopting_ases) * percent_adopt // 100
@@ -191,7 +219,15 @@ class Graph:
                 k -= 1
 
             asns_adopting.extend(random.sample(possible_adopting_ases, k))
+        asns_adopting += self._get_default_adopters(attack)
+        assert len(asns_adopting) == len(set(asns_adopting))
         return asns_adopting
+
+    def _get_default_adopters(self, attack):
+        return [attack.victim_asn]
+
+    def _get_default_non_adopters(self, attack):
+        return [attack.attacker_asn]
 
     def _get_possible_adopting_asns(self, subgraph_asns: set, attack: Attack):
         """Returns the set of all possible adopting ASNs
@@ -200,8 +236,11 @@ class Graph:
         from possible adopters
         """
 
+        uncountable = self._get_default_adopters(attack)
+        uncountable += self._get_default_non_adopters(attack)
+
         # Return all ASes other than the attacker
-        return subgraph_asns.difference([attack.attacker_asn])
+        return subgraph_asns.difference(set(uncountable))
 
     def _replace_engine_policies(self, as_cls_dict, base_engine):
         for asn, as_obj in base_engine.as_dict.items():

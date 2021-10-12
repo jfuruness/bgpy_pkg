@@ -10,6 +10,7 @@ def run_example(peers=list(),
                 as_policies=dict(),
                 announcements=list(),
                 local_ribs=dict(),
+                outcomes=dict(),
                 BaseASCls=BGPAS,
                 ):
     """Runs an example"""
@@ -30,6 +31,12 @@ def run_example(peers=list(),
     if local_ribs:
         for as_obj in engine:
             print("ASN:", as_obj.asn)
-            for prefix, ann in as_obj.local_rib.prefix_anns():
+            print("computed local rib:")
+            for prefix, ann in as_obj._local_rib.prefix_anns():
                 print(ann)
-            assert as_obj.local_rib == local_ribs[as_obj.asn]
+            print("Actual local rib:")
+            for prefix, ann in local_ribs[as_obj.asn].items():
+                print(ann)
+            assert as_obj._local_rib == local_ribs[as_obj.asn]
+    if outcomes:
+        pass
