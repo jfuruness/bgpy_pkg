@@ -3,6 +3,7 @@ from copy import deepcopy
 import logging
 from multiprocessing import Pool, cpu_count
 import random
+import sys
 
 from lib_caida_collector import CaidaCollector
 
@@ -11,6 +12,21 @@ from .data_point import DataPoint
 from .scenario import Scenario
 
 from ..engine import BGPAS, SimulatorEngine
+
+
+def my_decorator(func):
+    @functools.wraps(func)
+    def function_that_runs_func(*args, **kwargs):
+        # Inside the decorator
+        # Run the function
+        return func(*args, **kwargs)
+    return function_that_runs_func
+
+if "pypy" in sys.executable:
+    mp_decorator = my_decorator
+else:
+    import ray
+    mp_decorator = ray.remote
 
 class Graph:
     from .graph_writer import aggregate_and_write
@@ -74,10 +90,19 @@ class Graph:
                         self.data_points[data_point].extend(trial_info_list)
         else:
             print("About to run pool")
-            # Pool is much faster than ProcessPoolExecutor
-            with Pool(parse_cpus) as pool:
-                for result in pool.map(self._run_mp_chunk, self._get_mp_chunks(parse_cpus)):
-                    for data_point, trial_info_list in result.items():
+            if "pypy" in sys.executable:
+                # Pool is much faster than ProcessPoolExecutor
+                with Pool(parse_cpus) as pool:
+                    for result in pool.map(self._run_mp_chunk, self._get_mp_chunks(parse_cpus)):
+                        for data_point, trial_info_list in result.items():
+                            if data_point not in self.data_points:
+                                self.data_points[data_point] = []
+                            self.data_points[data_point].extend(trial_info_list)
+            else:
+                results = [self.__class__._run_mp_chunk.remote(self, x)
+                           for x in self._get_mp_chunks(int(ray.cluster_resources()["CPU"]))]
+                for result in results:
+                    for data_point, trial_info_list in ray.get(result).items():
                         if data_point not in self.data_points:
                             self.data_points[data_point] = []
                         self.data_points[data_point].extend(trial_info_list)
@@ -93,6 +118,7 @@ class Graph:
             self.subgraphs = self._get_subgraphs(engine)
             self._validate_subgraphs()
 
+    @mp_decorator
     def _run_mp_chunk(self, chunk, engine=None, subgraphs=None):
         if engine is None:
             # Engine is not picklable or dillable AT ALL, so do it here

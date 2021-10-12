@@ -36,6 +36,9 @@ setup(
     entry_points={
         'console_scripts': 'lib_bgp_simulator = lib_bgp_simulator.__main__:main'
     },
+    extras_require = { 
+        'cluster': ['ray'],
+    }, 
     setup_requires=['pytest-runner'],
     tests_require=['pytest'],
 )

@@ -25,12 +25,25 @@ class Simulator(Base):
                           num_trials=1,
                           base_as_cls=BGPAS)],
             graph_path="/tmp/graphs.tar.gz",
+            assert_pypy=False,
             ):
         """Downloads relationship data, runs simulation"""
+        assert "pypy" in sys.executable or not assert_pypy, "Not running pypy"
 
         # https://stackoverflow.com/a/51996829/8903959
         if "pypy" not in sys.executable:
-            input("Not running with pypy. Press enter to continue")
+            import ray
+            # Run with ray
+            try:
+                # https://github.com/ray-project/tutorial/issues/67
+                ray.init(address='auto',
+                         _redis_password='5241590000000000',
+                         ignore_reinit_error=True)
+            # If external cluster isn't running, run on local machine
+            except ConnectionError as e:
+                print(e)
+                ray.init(ignore_reinit_error=True)
+
 
         # Done here so that the caida files are cached
         # So that multiprocessing doesn't interfere with one another
@@ -45,5 +58,9 @@ class Simulator(Base):
         with tarfile.open(graph_path, "w:gz") as tar:
             tar.add(self._dir, arcname=os.path.basename(self._dir))
         print(f"Wrote graphs to {graph_path}")
-
+        if "pypy" not in sys.executable:
+            ray.shutdown()
         return graphs
+
+
+
