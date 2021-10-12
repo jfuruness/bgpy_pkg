@@ -7,9 +7,11 @@ import sys
 
 from ..enums import Outcomes
 
+_matplotlib = None
 if "pypy" in sys.executable:
     import matplotlib
     import matplotlib.pyplot as plt
+    _matplotlib = matplotlib
 
 
 class Line:
@@ -83,6 +85,9 @@ def _write(self, lines, outcome, subgraph_name, propagation_round, graph_dir, ad
     if "pypy" not in sys.executable:
         import matplotlib
         import matplotlib.pyplot as plt
+        global _matplotlib
+        _matplotlib = matplotlib
+    plt = _matplotlib.pyplot
 
     fig, ax = plt.subplots()
     plt.xlim(0, 100)
@@ -101,7 +106,7 @@ def _write(self, lines, outcome, subgraph_name, propagation_round, graph_dir, ad
     ax.legend(handles, labels)
     plt.tight_layout()
     plt.rcParams.update({"font.size": 14, "lines.markersize": 10})
-    matplotlib.use('Agg')
+    _matplotlib.use('Agg')
     fname = (f"{outcome.name}_round_{propagation_round}.png")
     if not os.path.exists(graph_dir):
         os.makedirs(graph_dir)
