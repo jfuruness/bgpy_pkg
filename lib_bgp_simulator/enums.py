@@ -11,13 +11,13 @@ class Relationships(Enum):
     __slots__ = []
 
     # Must start at one for the priority
-    PROVIDERS = 100
-    PEERS = 200
+    PROVIDERS = 1
+    PEERS = 2
     # Customers have highest priority
     # Economic incentives first!
-    CUSTOMERS = 300
+    CUSTOMERS = 3
     # Origin must always remain
-    ORIGIN = 400
+    ORIGIN = 4
 
 # Assert here all divisible by 100
 
