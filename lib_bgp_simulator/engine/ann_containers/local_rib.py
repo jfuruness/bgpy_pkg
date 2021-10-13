@@ -24,12 +24,10 @@ class LocalRib:
         assert isinstance(prefix, str)
         return self._info.get(prefix, default)
 
-    def add_ann(self, ann, prefix=None):
+    def add_ann(self, ann):
         assert isinstance(ann, Announcement)
-        assert isinstance(prefix, str) or prefix is None
 
-        prefix = prefix if prefix is not None else ann.prefix
-        self._info[prefix] = ann
+        self._info[ann.prefix] = ann
 
     def remove_ann(self, prefix):
         del self._info[prefix]

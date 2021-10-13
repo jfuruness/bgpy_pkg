@@ -23,14 +23,11 @@ class RIBsOut:
         assert isinstance(prefix, str)
         return self._info[neighbor].get(prefix)
 
-    def add_ann(self, neighbor_asn: int, ann: Announcement, prefix=None):
+    def add_ann(self, neighbor_asn: int, ann: Announcement):
         assert isinstance(neighbor_asn, int)
         assert isinstance(ann, Announcement)
-        assert prefix is None or isinstance(prefix, str)
 
-        prefix = prefix if prefix is not None else ann.prefix
-
-        self._info[neighbor_asn][prefix] = ann
+        self._info[neighbor_asn][ann.prefix] = ann
 
     def remove_entry(self, neighbor_asn, prefix):
         assert isinstance(neighbor_asn, int)
