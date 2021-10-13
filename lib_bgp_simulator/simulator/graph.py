@@ -30,11 +30,11 @@ else:
     mp_decorator = ray.remote
 
 class Graph:
-    from .graph_writer import aggregate_and_write
+    from .graph_writer import aggregate_and_write, get_graphs_to_write, _get_line
     from .graph_writer import _write
 
     def __init__(self,
-                 percent_adoptions=[1, 5, 10, 20, 30, 50, 75, 99],
+                 percent_adoptions=[0, 5, 10, 20, 30, 50, 75, 100],
                  adopt_as_classes=[],
                  AttackCls=None,
                  num_trials=1,
@@ -70,15 +70,16 @@ class Graph:
                 chunk_index = 0
         return chunks
 
-    def run(self, parse_cpus, _dir, debug=False):
+    def run(self, parse_cpus, _dir, caida_dir=None, debug=False):
         self.data_points = dict()
         self._dir = _dir
+        self.caida_dir = caida_dir
 
         if debug:
             # Done just to get subgraphs, change this later
             engine = CaidaCollector(BaseASCls=self.base_as_cls,
                                     GraphCls=SimulatorEngine,
-                                    _dir=_dir,
+                                    _dir=self.caida_dir,
                                     _dir_exist_ok=True).run(tsv=False)
 
             self.subgraphs = self._get_subgraphs(engine)
@@ -113,7 +114,7 @@ class Graph:
             # Done just to get subgraphs, change this later
             engine = CaidaCollector(BaseASCls=self.base_as_cls,
                                     GraphCls=SimulatorEngine,
-                                    _dir=_dir,
+                                    _dir=self.caida_dir,
                                     _dir_exist_ok=True).run(tsv=False)
 
             self.subgraphs = self._get_subgraphs(engine)
@@ -127,7 +128,7 @@ class Graph:
             # Making nothing a reference does nothing
             engine = CaidaCollector(BaseASCls=self.base_as_cls,
                                     GraphCls=SimulatorEngine,
-                                    _dir=self._dir,
+                                    _dir=self.caida_dir,
                                     _dir_exist_ok=True).run(tsv=False)
 
         if subgraphs is None:

@@ -76,7 +76,7 @@ def test_process_incoming_withdraw_ribs_out():
     # Assert ann was received
     assert(a._local_rib.get_ann(prefix).origin == ann.origin)
     # Manually add this to the ribs out
-    a._ribs_out.add_ann(2, a._local_rib.get_ann(prefix), prefix=prefix)
+    a._ribs_out.add_ann(2, a._local_rib.get_ann(prefix))
     # Withdraw it
     a._recv_q.add_ann(ann_w)
     a.process_incoming_anns(Relationships.CUSTOMERS)

@@ -1,9 +1,11 @@
+from collections import defaultdict
+
 import ipaddress
 from ..enums import Relationships, Outcomes
 
 
 class Scenario:
-    def __init__(self, trial=None, engine=None, attack=None, profiler=None):
+    def __init__(self,trial=None, engine=None, attack=None, profiler=None):
         self.trial = trial
         self.engine = engine
         self.attack = attack
@@ -27,22 +29,34 @@ class Scenario:
         """Collects data about the test run before engine is deleted"""
 
         policies = set([x.name for x in self.engine])
-        all_data = {"data": dict(), "totals": dict()}
         cache = dict()
-        for k, subgraph_asns in subgraphs.items():
-            all_data["data"][k] = self._get_outcomes(policies, subgraph_asns, cache)
-            all_data["totals"][k] = self._get_policy_totals(policies, subgraph_asns)
-        self.data = all_data
+        # {subgraph_name: {outcome: {policy: percentage}}}
+        self.outcome_policy_percentages = dict()
+        for subg_name, subgraph_asns in subgraphs.items():
+            countable_asns = subgraph_asns.difference(self.attack.uncountable_asns)
+
+            outcome_totals = self._get_outcomes(policies, countable_asns, cache)
+            total_ases = self._get_policy_totals(policies, subgraph_asns)
+
+            percentage_outcomes = defaultdict(dict)
+            for outcome in list(Outcomes):
+                for policy in policies:
+                    outcome_policy_total = outcome_totals[outcome][policy]
+
+                    policy_total = total_ases[policy]
+
+                    percentage = outcome_policy_total * 100 / policy_total
+                    percentage_outcomes[outcome][policy] = percentage
+
+            self.outcome_policy_percentages[subg_name] = percentage_outcomes
         #from pprint import pprint
         #pprint(all_data)
 
-    def _get_outcomes(self, policies, subgraph_asns, cache):
+    def _get_outcomes(self, policies, countable_asns, cache):
         outcomes = {x: {y: 0 for y in policies}
                     for x in list(Outcomes)}
         # Most specific to least specific
         ordered_prefixes = self._get_ordered_prefixes()
-
-        countable_asns = subgraph_asns.difference(self.attack.uncountable_asns)
 
         for asn in countable_asns:
             as_obj = self.engine.as_dict[asn]
@@ -89,10 +103,10 @@ class Scenario:
                 break
         return most_specific_prefix
 
-    def _get_policy_totals(self, policy_names, subgraph_asns):
+    def _get_policy_totals(self, policy_names, countable_asns):
         """Determines the total amount of ASes per policy"""
 
         totals = {x: 0 for x in policy_names}
-        for asn in subgraph_asns.difference(self.attack.uncountable_asns):
+        for asn in countable_asns:
             totals[self.engine.as_dict[asn].name] += 1
         return totals

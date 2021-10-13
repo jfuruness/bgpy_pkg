@@ -1,5 +1,6 @@
 import logging
 import os
+from pathlib import Path
 import tarfile
 import sys
 
@@ -24,11 +25,15 @@ class Simulator(Base):
                           AttackCls=SubprefixHijack,
                           num_trials=1,
                           base_as_cls=BGPAS)],
-            graph_path="/tmp/graphs.tar.gz",
+            graph_path=Path("/tmp/graphs.tar.gz"),
             assert_pypy=False,
             ):
         """Downloads relationship data, runs simulation"""
         assert "pypy" in sys.executable or not assert_pypy, "Not running pypy"
+
+        msg = (f"Change {graph_path} to Path({graph_path}) "
+                "and use: from pathlib import Path")
+        assert isinstance(graph_path, Path), msg
 
         # https://stackoverflow.com/a/51996829/8903959
         if "pypy" not in sys.executable:
@@ -47,16 +52,20 @@ class Simulator(Base):
 
         # Done here so that the caida files are cached
         # So that multiprocessing doesn't interfere with one another
-        CaidaCollector(_dir=self._dir).read_file()
+        CaidaCollector(_dir=self.base_dir).read_file()
 
         total = sum(x.total_scenarios for x in graphs)
         for graph in graphs:
-            graph.run(self.parse_cpus, self._dir, debug=self.debug)
+            graph.run(self.parse_cpus,
+                      self._dir,
+                      caida_dir=self.base_dir,
+                      debug=self.debug)
         for graph in graphs:
-            graph.aggregate_and_write(self._dir)
+            graph.aggregate_and_write(self._dir, self)
 
         with tarfile.open(graph_path, "w:gz") as tar:
-            tar.add(self._dir, arcname=os.path.basename(self._dir))
+            tar.add(str(self._dir),
+                    arcname=os.path.basename(str(self._dir)))
         print(f"Wrote graphs to {graph_path}")
         if "pypy" not in sys.executable:
             ray.shutdown()
