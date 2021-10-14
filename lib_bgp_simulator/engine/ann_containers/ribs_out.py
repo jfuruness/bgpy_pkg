@@ -1,10 +1,6 @@
-from collections import defaultdict, namedtuple
-from dataclasses import dataclass
+from collections import defaultdict
 
-from .. import bgp_as# import BGPAS
 from ...announcement import Announcement
-from ...enums import Relationships
-
 
 
 class RIBsOut:
@@ -35,4 +31,4 @@ class RIBsOut:
         del self._info[neighbor_asn][prefix]
 
     def neighbors(self):
-        return self._info.keys()        
+        return self._info.keys()

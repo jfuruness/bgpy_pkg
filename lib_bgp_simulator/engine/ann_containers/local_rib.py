@@ -1,5 +1,6 @@
 from ...announcement import Announcement
 
+
 class LocalRib:
     """Local RIB for a BGP AS
 

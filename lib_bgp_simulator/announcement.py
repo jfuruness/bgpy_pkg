@@ -1,6 +1,4 @@
 import dataclasses
-import inspect
-from itertools import chain
 
 from .enums import Relationships, ROAValidity
 
@@ -27,9 +25,12 @@ class Announcement:
     # But this was much slower, 228 seconds
     # NOTE: All of this was when we were deep copying announcements instead of
     # Creating new ones from scratch. After creating new ones from scratch,
-    # Trials were more than twice as fast, completing between 90-95s without slots
-    # With slots, around 88-89s per trial. Not much of a difference, but also less ram
-    # And it's just faster. We'd have to do larger timing tests to find out more
+    # Trials were more than twice as fast, completing between 90-95s without
+    # slots
+    # With slots, around 88-89s per trial. Not much of a difference, but also
+    # less ram
+    # And it's just faster. We'd have to do larger timing tests to find out
+    # more
     # NOTE: also add prefix_id reasoning to design_decisions
     __slots__ = ("prefix", "timestamp", "as_path", "roa_validity",
                  "recv_relationship", "seed_asn", "withdraw", "traceback_end")
@@ -63,9 +64,10 @@ class Announcement:
         """
 
         if propagation_round == 0:
-            assert as_dict[self.seed_asn]._local_rib.get_ann(self.prefix) is None, "Seeding conflict"
+            assert as_dict[self.seed_asn]._local_rib.get_ann(self.prefix) \
+                is None, "Seeding conflict"
 
-            as_dict[self.seed_asn]._local_rib.add_ann(self)#[self.prefix] = self
+            as_dict[self.seed_asn]._local_rib.add_ann(self)
 
     def prefix_path_attributes_eq(self, ann):
         """Checks prefix and as path equivalency"""

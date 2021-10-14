@@ -1,6 +1,3 @@
-from copy import deepcopy
-import functools
-
 from lib_caida_collector import AS
 
 from .ann_containers import LocalRib
@@ -25,7 +22,7 @@ class BGPAS(AS):
         assert hasattr(cls, "name"), "Policy must have a name"
         cls.subclass_names.append(cls.name)
         msg = (f"Duplicate name {cls.name} with {cls.__name__}."
-               "Please make a class attr name for the policy something different")
+               "Please make a class attr name for the policy something else")
         assert len(set(cls.subclass_names)) == len(cls.subclass_names), msg
 
     def __init__(self, *args, **kwargs):
@@ -72,7 +69,7 @@ class BGPAS(AS):
         """
 
         for neighbor in getattr(self, propagate_to.name.lower()):
-            for prefix, ann in self._local_rib.prefix_anns():#items():
+            for prefix, ann in self._local_rib.prefix_anns():
                 if ann.recv_relationship in send_rels:
                     propagate_args = [neighbor, ann, propagate_to, send_rels]
                     # Policy took care of it's own propagation for this ann

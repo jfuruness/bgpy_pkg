@@ -19,7 +19,6 @@ class Relationships(Enum):
     # Origin must always remain
     ORIGIN = 4
 
-# Assert here all divisible by 100
 
 class ROAValidity(Enum):
     """Possible values for ROA Validity
@@ -35,6 +34,7 @@ class ROAValidity(Enum):
     VALID = 0
     UNKNOWN = 1
     INVALID = 2
+
 
 class Timestamps(Enum):
     """Different timestamps to use"""
@@ -59,6 +59,7 @@ class Prefixes(Enum):
     PREFIX = "1.2.0.0/16"
     SUBPREFIX = "1.2.3.0/24"
 
+
 class ASNs(Enum):
     """Default ASNs for various ASNs"""
 
@@ -66,4 +67,3 @@ class ASNs(Enum):
 
     ATTACKER = 666
     VICTIM = 777
-

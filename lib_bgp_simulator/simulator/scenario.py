@@ -1,11 +1,11 @@
 from collections import defaultdict
 
 import ipaddress
-from ..enums import Relationships, Outcomes
+from ..enums import Outcomes
 
 
 class Scenario:
-    def __init__(self,trial=None, engine=None, attack=None, profiler=None):
+    def __init__(self, trial=None, engine=None, attack=None, profiler=None):
         self.trial = trial
         self.engine = engine
         self.attack = attack
@@ -17,12 +17,10 @@ class Scenario:
         self.engine.run(self.attack.announcements,
                         propagation_round=propagation_round,
                         attack=self.attack)
-        #print("Engine finished running")
         self._collect_data(subgraphs)
         # delete engine from attrs so that garbage collector can come
         # NOTE that if there are multiple propagation rounds, the engine
         # Will still be there
-        engine = self.engine
         del self.engine
 
     def _collect_data(self, subgraphs):
@@ -33,9 +31,12 @@ class Scenario:
         # {subgraph_name: {outcome: {policy: percentage}}}
         self.outcome_policy_percentages = dict()
         for subg_name, subgraph_asns in subgraphs.items():
-            countable_asns = subgraph_asns.difference(self.attack.uncountable_asns)
+            countable_asns = subgraph_asns.difference(
+                self.attack.uncountable_asns)
 
-            outcome_totals = self._get_outcomes(policies, countable_asns, cache)
+            outcome_totals = self._get_outcomes(policies,
+                                                countable_asns,
+                                                cache)
             total_ases = self._get_policy_totals(policies, subgraph_asns)
 
             percentage_outcomes = defaultdict(dict)
@@ -49,8 +50,6 @@ class Scenario:
                     percentage_outcomes[outcome][policy] = percentage
 
             self.outcome_policy_percentages[subg_name] = percentage_outcomes
-        #from pprint import pprint
-        #pprint(all_data)
 
     def _get_outcomes(self, policies, countable_asns, cache):
         outcomes = {x: {y: 0 for y in policies}
@@ -73,15 +72,20 @@ class Scenario:
             return cache[as_obj.asn]
 
         # Get most specific announcement, or empty RIB
-        most_specific_ann = self._get_most_specific_ann(as_obj, ordered_prefixes)
+        most_specific_ann = self._get_most_specific_ann(as_obj,
+                                                        ordered_prefixes)
         # Determine the outcome of the attack
-        attack_outcome = self.attack.determine_outcome(as_obj, most_specific_ann)
+        attack_outcome = self.attack.determine_outcome(as_obj,
+                                                       most_specific_ann)
         if not attack_outcome:
             # Continue tracing back by getting the last AS
             new_as_obj = self.engine.as_dict[most_specific_ann.as_path[1]]
-            attack_outcome = self._get_atk_outcome(new_as_obj, ordered_prefixes, path_len + 1, cache)
+            attack_outcome = self._get_atk_outcome(new_as_obj,
+                                                   ordered_prefixes,
+                                                   path_len + 1,
+                                                   cache)
 
-        assert attack_outcome is not None, "Attack should be disconnected, why is this wrong?"
+        assert attack_outcome is not None, "Attack should be disconnected?"
 
         cache[as_obj.asn] = attack_outcome
 
@@ -94,7 +98,9 @@ class Scenario:
 
         assert len(prefixes) > 0
         # Prefixes with most specific subprefix first
-        return tuple(sorted(prefixes, key=lambda x: ipaddress.ip_network(x).num_addresses))
+        return tuple(sorted(prefixes,
+                            key=lambda x: ipaddress.ip_network(x).num_addresses
+                            ))
 
     def _get_most_specific_ann(self, as_obj, ordered_prefixes):
         for prefix in ordered_prefixes:
