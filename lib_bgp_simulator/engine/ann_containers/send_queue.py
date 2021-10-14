@@ -24,7 +24,7 @@ class SendQueue:
     neighbor: {prefix: announcement_list}
     """
 
-    __slots__ = ["_info"]
+    __slots__ = "_info",
 
     def __init__(self):
         self._info = defaultdict(lambda: defaultdict(SendInfo))

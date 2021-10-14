@@ -6,7 +6,7 @@ class LocalRib:
     Done separately for easy comparisons in unit testing
     """
 
-    __slots__ = ["_info"]
+    __slots__ = "_info",
 
     def __init__(self):
         self._info = dict()

@@ -11,8 +11,7 @@ from .bgp_as import BGPAS
 
 
 class BGPRIBsAS(BGPAS):
-    __slots__ = []
-    #__slots__ = ["_local_rib", "_recv_q", "_ribs_in", "_ribs_out", "_send_q"]
+    __slots__ = tuple()
 
     def __init__(self, *args, **kwargs):
         super(BGPRIBsAS, self).__init__(*args, **kwargs)

@@ -31,8 +31,8 @@ class Announcement:
     # With slots, around 88-89s per trial. Not much of a difference, but also less ram
     # And it's just faster. We'd have to do larger timing tests to find out more
     # NOTE: also add prefix_id reasoning to design_decisions
-    __slots__ = ["prefix", "timestamp", "as_path", "roa_validity",
-                 "recv_relationship", "seed_asn", "withdraw", "traceback_end"]
+    __slots__ = ("prefix", "timestamp", "as_path", "roa_validity",
+                 "recv_relationship", "seed_asn", "withdraw", "traceback_end")
 
     # NOTE: can't have defaults due to slots. Sorry man
     # https://stackoverflow.com/a/50180784/8903959

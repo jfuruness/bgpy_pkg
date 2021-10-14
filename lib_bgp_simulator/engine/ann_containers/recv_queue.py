@@ -10,7 +10,7 @@ class RecvQueue(defaultdict):
     {neighbor: {prefix: list_of_ann}}
     """
 
-    __slots__ = ["_info"]
+    __slots__ = "_info",
 
     def __init__(self):
         self._info = defaultdict(list)

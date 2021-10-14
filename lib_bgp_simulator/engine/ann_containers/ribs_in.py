@@ -16,7 +16,7 @@ class RIBsIn:
     neighbor: {prefix: (announcement, relationship)}
     """
 
-    __slots__ = ["_info"]
+    __slots__ = "_info",
 
     def __init__(self):
         self._info = defaultdict(dict)

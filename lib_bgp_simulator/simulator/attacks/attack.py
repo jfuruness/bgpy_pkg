@@ -7,7 +7,7 @@ from ...enums import Outcomes, Relationships
 class Attack:
     """Contains information regarding an attack"""
 
-    __slots__ = ["attacker_asn", "victim_asn", "announcements", "post_run_hooks", "uncountable_asns", "prefix_subprefix_dict"]
+    __slots__ = ("attacker_asn", "victim_asn", "announcements", "post_run_hooks", "uncountable_asns", "prefix_subprefix_dict")
 
     AnnCls = Announcement
 

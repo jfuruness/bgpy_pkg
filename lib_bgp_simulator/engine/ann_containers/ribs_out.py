@@ -13,7 +13,7 @@ class RIBsOut:
     neighbor: {prefix: announcement}
     """
 
-    __slots__ = ["_info"]
+    __slots__ = "_info",
 
     def __init__(self):
         self._info = defaultdict(dict)

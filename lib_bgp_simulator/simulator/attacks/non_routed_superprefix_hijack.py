@@ -4,7 +4,7 @@ from ...announcement import Announcement as Ann
 
 
 class NonRoutedSuperprefixHijack(Attack):
-    __slots__ = []
+    __slots__ = tuple()
     def __init__(self, attacker=ASNs.ATTACKER.value, victim=ASNs.VICTIM.value, **extra_ann_kwargs):
         anns = [self.AnnCls(prefix=Prefixes.SUPERPREFIX.value,
                             timestamp=Timestamps.ATTACKER.value,

@@ -5,7 +5,7 @@ from ..announcement import Announcement as Ann
 
 
 class ROVAS(BGPAS):
-    __slots__ = []
+    __slots__ = tuple()
 
     name = "ROV"
 

@@ -7,7 +7,7 @@ from ..announcement import Announcement
 
 
 class SimulatorEngine(BGPDAG):
-    __slots__ = []
+    __slots__ = tuple()
 
     def __init__(self,
                  *args,

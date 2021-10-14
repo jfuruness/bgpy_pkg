@@ -11,7 +11,7 @@ from ..announcement import Announcement as Ann
 
 class BGPAS(AS):
     # TODO: fix later? class error? Does this impact speed?
-    __slots__ = ["_local_rib", "_recv_q", "_ribs_in", "_ribs_out", "_send_q"]
+    __slots__ = ("_local_rib", "_recv_q", "_ribs_in", "_ribs_out", "_send_q")
 
     name = "BGP"
     subclass_names = []
