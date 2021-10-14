@@ -5,18 +5,16 @@ from ..enums import Outcomes
 
 
 class Scenario:
-    def __init__(self, trial=None, engine=None, attack=None, profiler=None):
+    def __init__(self, trial=None, engine=None, engine_input=None, profiler=None):
         self.trial = trial
         self.engine = engine
-        self.attack = attack
+        self.engine_input = engine_input
         self.data = dict()
         self.profiler = profiler
 
     def run(self, subgraphs, propagation_round: int):
         # Run engine
-        self.engine.run(self.attack.announcements,
-                        propagation_round=propagation_round,
-                        attack=self.attack)
+        self.engine.run(self.engine_input)
         self._collect_data(subgraphs)
         # delete engine from attrs so that garbage collector can come
         # NOTE that if there are multiple propagation rounds, the engine
@@ -32,7 +30,7 @@ class Scenario:
         self.outcome_policy_percentages = dict()
         for subg_name, subgraph_asns in subgraphs.items():
             countable_asns = subgraph_asns.difference(
-                self.attack.uncountable_asns)
+                self.engine_input.uncountable_asns)
 
             outcome_totals = self._get_outcomes(policies,
                                                 countable_asns,
@@ -75,7 +73,7 @@ class Scenario:
         most_specific_ann = self._get_most_specific_ann(as_obj,
                                                         ordered_prefixes)
         # Determine the outcome of the attack
-        attack_outcome = self.attack.determine_outcome(as_obj,
+        attack_outcome = self.engine_input.determine_outcome(as_obj,
                                                        most_specific_ann)
         if not attack_outcome:
             # Continue tracing back by getting the last AS
@@ -93,7 +91,7 @@ class Scenario:
 
     def _get_ordered_prefixes(self):
         prefixes = set()
-        for ann in self.attack.announcements:
+        for ann in self.engine_input.announcements:
             prefixes.add(ann.prefix)
 
         assert len(prefixes) > 0

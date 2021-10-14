@@ -1,4 +1,4 @@
-from ...announcement import Announcement
+from ...announcements import Announcement
 
 
 class LocalRib:

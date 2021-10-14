@@ -23,7 +23,12 @@ from .simulator import Scenario
 from .enums import Outcomes
 from .simulator import Simulator
 
-from .announcement import Announcement
+from .announcements import Announcement
+from .announcements import generate_ann
+from .announcements import gen_prefix_ann
+from .announcements import gen_subprefix_ann
+from .announcements import gen_superprefix_ann
+
 from .enums import Relationships
 
 from .tests import run_example

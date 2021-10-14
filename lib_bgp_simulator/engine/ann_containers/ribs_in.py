@@ -1,6 +1,6 @@
 from collections import defaultdict, namedtuple
 
-from ...announcement import Announcement
+from ...announcements import Announcement
 from ...enums import Relationships
 
 

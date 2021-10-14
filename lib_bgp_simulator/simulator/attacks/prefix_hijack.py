@@ -1,4 +1,5 @@
 from .attack import Attack
+from ...announcements import gen_victim_prefix_ann, gen_attacker_prefix_ann
 from ...enums import Prefixes, Timestamps, ASNs, ROAValidity, Relationships
 
 
@@ -12,22 +13,6 @@ class PrefixHijack(Attack):
                  **extra_ann_kwargs):
         self.victim_prefix = Prefixes.PREFIX.value
         self.attacker_prefix = Prefixes.PREFIX.value
-        anns = [self.AnnCls(prefix=self.victim_prefix,
-                            timestamp=Timestamps.VICTIM.value,
-                            as_path=(victim,),
-                            seed_asn=victim,
-                            roa_validity=ROAValidity.VALID,
-                            recv_relationship=Relationships.ORIGIN,
-                            withdraw=False,
-                            traceback_end=False,
-                            **extra_ann_kwargs),
-                self.AnnCls(prefix=self.attacker_prefix,
-                            timestamp=Timestamps.ATTACKER.value,
-                            as_path=(attacker,),
-                            seed_asn=attacker,
-                            roa_validity=ROAValidity.INVALID,
-                            recv_relationship=Relationships.ORIGIN,
-                            withdraw=False,
-                            traceback_end=False,
-                            **extra_ann_kwargs)]
+        anns = [gen_victim_prefix_ann(AnnCls, victim, **extra_ann_kwargs),
+                gen_attacker_prefix_ann(AnnCls, attacker, **extra_ann_kwargs)]
         super(PrefixHijack, self).__init__(attacker, victim, anns)

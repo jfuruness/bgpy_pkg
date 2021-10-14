@@ -1,6 +1,6 @@
 from ipaddress import ip_network
 
-from ...announcement import Announcement
+from ...announcements import Announcement
 from ...enums import Outcomes, Relationships
 
 

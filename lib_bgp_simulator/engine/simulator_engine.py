@@ -1,13 +1,12 @@
 from lib_caida_collector import BGPDAG
 
-
 from .bgp_as import BGPAS
 from ..enums import Relationships
-from ..announcement import Announcement
+from ..announcements import Announcement
 
 
 class SimulatorEngine(BGPDAG):
-    __slots__ = tuple()
+    __slots__ = "setup",
 
     def __init__(self,
                  *args,
@@ -16,24 +15,25 @@ class SimulatorEngine(BGPDAG):
         super(SimulatorEngine, self).__init__(*args,
                                               BaseASCls=BaseASCls,
                                               **kwargs)
+        self.setup = False
 
-    def run(self, announcements, propagation_round=0, attack=None):
+    def setup(self, engine_input, BaseASCls, AdoptingASCls):
+        self._reset_as_classes(engine_input, BaseAsCls, AdoptingASCls)
+        engine_input.seed(self)
+        self.setup = True
+
+    def run(self, propagation_round=0, engine_input=None):
         """Propogates announcements"""
 
-        self._seed(announcements, propagation_round)
-        self._propagate(propagation_round, attack)
+        assert self.setup
+        self._propagate(propagation_round, engine_input)
 
-    def _seed(self, announcements: list, propagation_round: int):
-        """Seeds/inserts announcements into the BGP DAG"""
-
-        for ann in announcements:
-            assert isinstance(ann, Announcement)
-
-        for ann in announcements:
-            # Let the announcement do the seeding
-            # That way it's easy for anns to seed with path manipulation
-            # Simply inherit the announcement class
-            ann.seed(self.as_dict, propagation_round)
+    def _reset_as_classes(self, engine_input, BaseASCls, AdoptASCls):
+        as_cls_dict = engine_input.get_as_classes(BaseASCls, AdoptASCls)
+        for as_obj in self:
+            as_obj.__class__ = as_classes.get(asn, BaseASCls)
+            # Reset base is false to avoid overriding AS info
+            as_obj.__init__(reset_base=False)
 
     def _propagate(self, propagation_round, attack):
         """Propogates announcements"""

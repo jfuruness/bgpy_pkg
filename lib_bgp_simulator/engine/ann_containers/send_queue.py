@@ -2,7 +2,7 @@ from collections import defaultdict
 from dataclasses import dataclass
 
 from .. import bgp_as
-from ...announcement import Announcement
+from ...announcements import Announcement
 
 
 @dataclass

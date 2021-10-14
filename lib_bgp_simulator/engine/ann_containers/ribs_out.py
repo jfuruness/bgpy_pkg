@@ -1,6 +1,6 @@
 from collections import defaultdict
 
-from ...announcement import Announcement
+from ...announcements import Announcement
 
 
 class RIBsOut:

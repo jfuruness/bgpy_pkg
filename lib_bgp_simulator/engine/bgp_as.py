@@ -3,7 +3,7 @@ from lib_caida_collector import AS
 from .ann_containers import LocalRib
 from .ann_containers import RecvQueue
 from ..enums import Relationships
-from ..announcement import Announcement as Ann
+from ..announcements import Announcement as Ann
 
 
 class BGPAS(AS):
