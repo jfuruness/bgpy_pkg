@@ -11,7 +11,9 @@ class Attack:
 
     AnnCls = Announcement
 
-    y_labels = {x: f"Percent {x.name.lower()}" for x in list(Outcomes)}
+    y_labels = {Outcomes.ATTACKER_SUCCESS: "Percent Attacker Success",
+                Outcomes.VICTIM_SUCCESS: "Percent Legitimate Origin Success",
+                Outcomes.DISCONNECTED: "Percent Disconnected"}
 
     def __init__(self, attacker: int, victim: int, announcements: list, post_run_hooks=None):
         self.attacker_asn = attacker
