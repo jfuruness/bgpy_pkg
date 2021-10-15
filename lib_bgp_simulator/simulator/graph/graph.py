@@ -11,11 +11,17 @@ from lib_caida_collector import CaidaCollector
 
 
 from ..data_point import DataPoint
-from ..mp import MP
+from ..mp_method import MPMethod
 from ..scenario import Scenario
 
 from ...engine import BGPAS, SimulatorEngine
 from ...engine_input import EngineInput
+
+try:
+    import ray
+# pypy3 does not support ray
+except ModuleNotFoundError:
+    pass
 
 class Graph:
     from .graph_writer import aggregate_and_write, get_graphs_to_write
@@ -45,17 +51,17 @@ class Graph:
             parse_cpus,
             _dir,
             caida_dir=None,
-            mp_method=MP.SINGLE_PROCESS):
+            mp_method=MPMethod.SINGLE_PROCESS):
         self.data_points = defaultdict(list)
         self._dir = _dir
         self.caida_dir = caida_dir
 
-        if mp_method == MP.SINGLE_PROCESS:
+        if mp_method == MPMethod.SINGLE_PROCESS:
             results = self._get_single_process_results()
-        elif mp_method == MP.MP:
+        elif mp_method == MPMethod.MP:
             results = self._get_mp_results(parse_cpus)
             self._get_engine_and_save_subgraphs()
-        elif mp_method == MP.RAY:
+        elif mp_method == MPMethod.RAY:
             results = self._get_ray_results(parse_cpus)
             self._get_engine_and_save_subgraphs()
         else:
@@ -90,8 +96,6 @@ class Graph:
             return pool.map(self._run_chunk, self._get_chunks(parse_cpus))
 
     def _get_ray_results(self, parse_cpus):
-        assert "pypy" not in sys.executable, "Ray not compatible with pypy"
-        import ray
         results = [ray.remote(self.__class__._run_chunk).remote(self, x)
                    for x in self._get_chunks(
                    int(ray.cluster_resources()["CPU"]))]

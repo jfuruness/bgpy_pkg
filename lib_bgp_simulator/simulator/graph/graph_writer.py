@@ -4,41 +4,15 @@ import sys
 
 from lib_utils.helper_funcs import mp_call
 
+from .line import Line
+
 from ...enums import Outcomes
 
-_matplotlib = None
-if "pypy" in sys.executable:
+try:
     import matplotlib
-    import matplotlib.pyplot
-    _matplotlib = matplotlib
-
-
-class Line:
-    def __init__(self, policy, adopting, label):
-        self.x = []
-        self.y = []
-        self.yerr = []
-        self.label = label
-        self.policy = policy
-        self.adopting = adopting
-
-    def add_data(self,
-                 percent_adoption,
-                 list_of_scenarios,
-                 subg_name,
-                 outcome,
-                 policy):
-        list_of_percents = [
-            x.outcome_policy_percentages[subg_name][outcome][policy]
-            for x in list_of_scenarios]
-        self.x.append(percent_adoption)
-        self.y.append(mean(list_of_percents))
-        if len(list_of_percents) > 1:
-            yerr_num = 1.645 * 2 * stdev(list_of_percents)
-            yerr_denom = math.sqrt(len(list_of_percents))
-            self.yerr.append(yerr_num / yerr_denom)
-        else:
-            self.yerr.append(0)
+    import matplotlib.pyplot as plt
+except Exception as e:
+    print(e, "Catch this specific exception in graph_writer later")
 
 
 def aggregate_and_write(self, graph_dir, sim):
@@ -108,13 +82,6 @@ def _get_line(self, policy, lines, data_point):
 
 
 def _write(self, lines, outcome, subg_name, propagation_round, adopting):
-    if "pypy" not in sys.executable:
-        import matplotlib
-        global _matplotlib
-        import matplotlib.pyplot
-        _matplotlib = matplotlib
-    plt = _matplotlib.pyplot
-
     fig, ax = plt.subplots()
     plt.xlim(0, 100)
     plt.ylim(0, 100)
@@ -133,7 +100,7 @@ def _write(self, lines, outcome, subg_name, propagation_round, adopting):
     ax.legend(handles, labels)
     plt.tight_layout()
     plt.rcParams.update({"font.size": 14, "lines.markersize": 10})
-    _matplotlib.use('Agg')
+    matplotlib.use('Agg')
     fname = f"{outcome.name}_round_{propagation_round}.png"
 
     adopting_name = "adopting" if adopting else "non adopting"

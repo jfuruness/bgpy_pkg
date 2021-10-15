@@ -1,5 +1,5 @@
 from .data_point import DataPoint
 from .graph import Graph
-from .mp import MP
+from .mp_method import MPMethod
 from .scenario import Scenario
 from .simulator import Simulator
