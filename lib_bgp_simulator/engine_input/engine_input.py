@@ -1,3 +1,5 @@
+import random
+
 from ipaddress import ip_network
 
 from ...announcements import Announcement
@@ -19,8 +21,14 @@ class EngineInput:
     def __init__(self, subgraph_asns, engine, percent_adopt):
         self.attacker_asn = self._get_attacker_asn(subgraph_asns, engine)
         self.victim_asn = self._get_victim_asn(subgraph_asns, engine)
-        self.adopting_asns = self._get_adopting_asns(subgraph_asns, engine)
+        self.adopting_asns = self._get_adopting_asns(subgraph_asns, engine, percent_adopt)
         self.announcements = self._get_announcements()
+        # Announcement prefixes must overlap
+        # If they don't, traceback wouldn't work
+        first_prefix = ip_network(self.announcements[0].prefix)
+        for ann in self.announcements:
+            assert ip_network(ann.prefix).overlaps(first_prefix)
+
 
     def seed(self, engine):
         """Seeds announcement at the proper AS
@@ -68,14 +76,14 @@ class EngineInput:
 
     def _get_attacker_asn(self, subgraphs, engine):
         possible_attacker_asns = self._possible_attackers(subgraphs, engine)
-        return random.choice(possible_attacker_asns)
+        return random.choice(tuple(possible_attacker_asns))
 
     def _possible_attackers(self, subgraph_asns, engine):
         return subgraph_asns["stubs_and_mh"]
 
     def _get_victim_asn(self, subgraph_asns, engine):
         possible_vic_asns = self._possible_victims(subgraph_asns, engine)
-        return random.choice(possible_vic_asns.difference(self.attacker_asn))
+        return random.choice(tuple(possible_vic_asns.difference([self.attacker_asn])))
 
     def _possible_victims(self, subgraph_asns, engine):
         return subgraph_asns["stubs_and_mh"]
@@ -96,8 +104,8 @@ class EngineInput:
             elif k == len(possible_adopters):
                 k -= 1
 
-            adopting_asns.extend(random.sample(possible_adopters, k)
-        adopting_asns += self._get_default_adopters()
+            adopting_asns.extend(random.sample(possible_adopters, k))
+        adopting_asns += self._default_adopters()
         assert len(adopting_asns) == len(set(adopting_asns))
         return adopting_asns
 
@@ -112,18 +120,6 @@ class EngineInput:
         """ASNs that we do not count for statistics since they are defaults"""
 
         return self._default_adopters() + self._default_non_adopters()
-
-        self.announcements = announcements
-        # post_run_hooks is a list of functions to be called after the scenario
-        # is run and before the engine is deleted.
-        self.post_run_hooks = [] if post_run_hooks is None else post_run_hooks
-
-        # Announcement prefixes must overlap
-        # If they don't, traceback wouldn't work
-        first_prefix = ip_network(self.announcements[0].prefix)
-        for ann in self.announcements:
-            assert ip_network(ann.prefix).overlaps(first_prefix)
-
 
     def get_as_classes(self, engine, BaseASCls, AdoptingASCls):
         return {asn: AdoptingASCls for asn in self.adopting_asns}

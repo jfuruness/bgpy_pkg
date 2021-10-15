@@ -9,8 +9,9 @@ from tqdm import tqdm
 from lib_caida_collector import CaidaCollector
 from lib_utils.base_classes import Base
 
-from .attacks import SubprefixHijack
+from .engine_input import SubprefixHijack
 from .graph import Graph
+from .mp import MP
 from ..engine import BGPAS
 from ..engine import ROVAS
 from ..engine import SimulatorEngine
@@ -22,11 +23,12 @@ class Simulator(Base):
     def run(self,
             graphs=[Graph(percent_adoptions=[0, 5,10,20,30,40,60,80,100],
                           adopt_as_classes=[ROVAS],
-                          AttackCls=SubprefixHijack,
+                          EngineInputCls=SubprefixHijack,
                           num_trials=1,
-                          base_as_cls=BGPAS)],
+                          BaseASCls=BGPAS)],
             graph_path=Path("/tmp/graphs.tar.gz"),
             assert_pypy=False,
+            mp_method=MP.SINGLE_PROCESS,
             ):
         """Downloads relationship data, runs simulation"""
         assert "pypy" in sys.executable or not assert_pypy, "Not running pypy"
@@ -59,7 +61,7 @@ class Simulator(Base):
             graph.run(self.parse_cpus,
                       self._dir,
                       caida_dir=self.base_dir,
-                      debug=self.debug)
+                      mp_method=mp_method)
         for graph in graphs:
             graph.aggregate_and_write(self._dir, self)
 

@@ -1,5 +1,5 @@
 from .announcement import Announcement
 from .generate_ann import generate_ann
-from .gen_prefix_ann import gen_prefix_ann
-from .gen_subprefix_ann import gen_subprefix_ann
-from .gen_superprefix_ann import gen_superprefix_ann
+from .gen_prefix_ann import gen_victim_prefix_ann, gen_attacker_prefix_ann
+from .gen_subprefix_ann import gen_victim_subprefix_ann, gen_attacker_subprefix_ann
+from .gen_superprefix_ann import gen_victim_superprefix_ann, gen_attacker_superprefix_ann

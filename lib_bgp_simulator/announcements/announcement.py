@@ -1,6 +1,6 @@
 import dataclasses
 
-from .enums import Relationships, ROAValidity
+from ..enums import Relationships, ROAValidity
 
 
 @dataclasses.dataclass

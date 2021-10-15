@@ -1,4 +1,5 @@
 from .announcement import Announcement
+from ..enums import Relationships
 
 def generate_ann(AnnCls,
                  origin_asn,
@@ -11,6 +12,7 @@ def generate_ann(AnnCls,
               "as_path": (origin_asn,),
               "seed_asn": origin_asn,
               "roa_validity": roa_validity,
+              "recv_relationship": Relationships.ORIGIN,
               "withdraw": False,
               "traceback_end": False}
     kwargs.update(extra_kwargs)

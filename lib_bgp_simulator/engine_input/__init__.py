@@ -1,4 +1,4 @@
-from .attack import Attack
+from .engine_input import EngineInput
 from .prefix_hijack import PrefixHijack
 from .subprefix_hijack import SubprefixHijack
 from .non_routed_prefix_hijack import NonRoutedPrefixHijack

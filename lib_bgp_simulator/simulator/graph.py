@@ -1,4 +1,5 @@
 from copy import deepcopy
+from collections import defaultdict
 import functools
 from itertools import product
 import logging
@@ -8,8 +9,9 @@ import sys
 
 from lib_caida_collector import CaidaCollector
 
-from .attacks import Attack
+from .engine_input import EngineInput
 from .data_point import DataPoint
+from .mp import MP
 from .scenario import Scenario
 
 from ..engine import BGPAS, SimulatorEngine
@@ -22,10 +24,10 @@ class Graph:
     def __init__(self,
                  percent_adoptions=[0, 5, 10, 20, 30, 50, 75, 100],
                  adopt_as_classes=[],
-                 AttackCls=None,
+                 EngineInputCls=None,
                  num_trials=1,
                  propagation_rounds=1,
-                 base_as_cls=BGPAS,
+                 BaseASCls=BGPAS,
                  profiler=None):
         assert isinstance(percent_adoptions, list)
         self.percent_adoptions = percent_adoptions
@@ -34,17 +36,21 @@ class Graph:
         # Why propagation rounds? Because some atk/def scenarios might require
         # More than one round of propagation
         self.propagation_rounds = propagation_rounds
-        self.AttackCls = AttackCls
-        self.base_as_cls = base_as_cls
+        self.EngineInputCls = EngineInputCls
+        self.BaseASCls = BaseASCls
         self.profiler = profiler
 
 
-    def run(self, parse_cpus, _dir, caida_dir=None, mp_method=MP.DEBUG):
+    def run(self,
+            parse_cpus,
+            _dir,
+            caida_dir=None,
+            mp_method=MP.SINGLE_PROCESS):
         self.data_points = defaultdict(list)
         self._dir = _dir
         self.caida_dir = caida_dir
 
-        if mp_method == MP.DEBUG:
+        if mp_method == MP.SINGLE_PROCESS:
             results = self._get_single_process_results()
         elif mp_method == MP.MP:
             results = self._get_mp_results(parse_cpus)
@@ -59,13 +65,13 @@ class Graph:
             for data_point, trial_info_list in result.items():
                 self.data_points[data_point].extend(trial_info_list)
 
-        print("\nGraph complete"):
+        print("\nGraph complete")
 
 ######################################
 # Multiprocessing/clustering methods #
 ######################################
 
-    def _get_mp_chunks(self, parse_cpus):
+    def _get_chunks(self, parse_cpus):
         """Not a generator since we need this for multiprocessing"""
 
         # https://stackoverflow.com/a/34032549/8903959
@@ -95,11 +101,11 @@ class Graph:
         # Engine is not picklable or dillable AT ALL, so do it here
         # Changing recursion depth does nothing
         # Making nothing a reference does nothing
-        engine = _self._get_engine_and_save_subgraphs()
+        engine = self._get_engine_and_save_subgraphs()
 
         data_points = defaultdict(list)
 
-        for percent_adopt, trial in chunk:
+        for percent_adopt, trial in percent_adopt_trials:
             engine_input = self.EngineInputCls(self.subgraphs,
                                                engine,
                                                percent_adopt)
@@ -109,7 +115,7 @@ class Graph:
                 # Deepcopy input to make sure input is fresh
                 engine_input = deepcopy(engine_input)
                 # Change AS Classes, seed announcements before propagation
-                engine.setup(engine_input, self.BaseAsCls, ASCls)
+                engine.setup(engine_input, self.BaseASCls, ASCls)
 
                 for propagation_round in range(self.propagation_rounds):
                     # Generate the test
@@ -133,7 +139,7 @@ class Graph:
 
     def _get_engine_and_save_subgraphs(self):
         # Done just to get subgraphs, change this later
-        engine = CaidaCollector(BaseASCls=self.base_as_cls,
+        engine = CaidaCollector(BaseASCls=self.BaseASCls,
                                 GraphCls=SimulatorEngine,
                                 _dir=self.caida_dir,
                                 _dir_exist_ok=True).run(tsv=False)

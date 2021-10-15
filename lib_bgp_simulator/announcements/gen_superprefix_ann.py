@@ -1,4 +1,4 @@
-from .generate_ann import generator_ann
+from .generate_ann import generate_ann
 from ..enums import Prefixes, Timestamps, ROAValidity
 
 def gen_victim_superprefix_ann(AnnCls, origin_asn, roa_validity=None, **extra_kwargs):

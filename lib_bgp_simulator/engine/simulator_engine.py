@@ -6,7 +6,7 @@ from ..announcements import Announcement
 
 
 class SimulatorEngine(BGPDAG):
-    __slots__ = "setup",
+    __slots__ = "_setup",
 
     def __init__(self,
                  *args,
@@ -15,23 +15,25 @@ class SimulatorEngine(BGPDAG):
         super(SimulatorEngine, self).__init__(*args,
                                               BaseASCls=BaseASCls,
                                               **kwargs)
-        self.setup = False
+        self._setup = False
 
     def setup(self, engine_input, BaseASCls, AdoptingASCls):
-        self._reset_as_classes(engine_input, BaseAsCls, AdoptingASCls)
+        self._reset_as_classes(engine_input, BaseASCls, AdoptingASCls)
         engine_input.seed(self)
-        self.setup = True
+        self._setup = True
 
     def run(self, propagation_round=0, engine_input=None):
         """Propogates announcements"""
 
-        assert self.setup
+        assert self._setup
         self._propagate(propagation_round, engine_input)
 
     def _reset_as_classes(self, engine_input, BaseASCls, AdoptASCls):
-        as_cls_dict = engine_input.get_as_classes(BaseASCls, AdoptASCls)
+        as_cls_dict = engine_input.get_as_classes(self,
+                                                  BaseASCls,
+                                                  AdoptASCls)
         for as_obj in self:
-            as_obj.__class__ = as_classes.get(asn, BaseASCls)
+            as_obj.__class__ = as_cls_dict.get(as_obj.asn, BaseASCls)
             # Reset base is false to avoid overriding AS info
             as_obj.__init__(reset_base=False)
 

@@ -7,7 +7,7 @@ from .engine import ROVAS
 from .engine import SimulatorEngine
 
 
-from .simulator import Attack
+from .simulator import EngineInput
 from .enums import ROAValidity
 from .enums import Timestamps
 from .enums import Prefixes
