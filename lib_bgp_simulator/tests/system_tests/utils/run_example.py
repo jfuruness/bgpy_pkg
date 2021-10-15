@@ -2,7 +2,15 @@ from datetime import datetime
 
 from ....engine import BGPAS
 from ....engine import SimulatorEngine
+from ....engine_input import EngineInput
 
+class EngineInputEasy(EngineInput):
+    def __init__(self, announcements, as_cls_dict):
+        self.announcements = announcements
+        self.as_cls_dict = as_cls_dict
+
+    def get_as_classes(self, *args, **kwargs):
+        return self.as_cls_dict
 
 # tmp_path is a pytest fixture
 def run_example(peers=list(),
@@ -20,13 +28,12 @@ def run_example(peers=list(),
     engine = SimulatorEngine(set(customer_providers),
                              set(peers),
                              BaseASCls=BaseASCls)
-    for asn, as_policy in as_policies.items():
-        engine.as_dict[asn].__class__ = as_policy
-        engine.as_dict[asn].__init__(reset_base=False)
+    engine_input = EngineInputEasy(announcements, as_policies)
     print((start-datetime.now()).total_seconds())
     print("Running engine")
     start = datetime.now()
-    engine.run(announcements)
+    engine.setup(engine_input, BaseASCls, None)
+    engine.run(engine_input=engine_input)
     print((start-datetime.now()).total_seconds())
     if local_ribs:
         for as_obj in engine:
