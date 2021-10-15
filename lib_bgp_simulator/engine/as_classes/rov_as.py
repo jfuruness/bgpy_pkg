@@ -1,6 +1,6 @@
 from .bgp_as import BGPAS
 
-from ..enums import ROAValidity
+from ...enums import ROAValidity
 
 
 class ROVAS(BGPAS):

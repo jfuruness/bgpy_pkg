@@ -9,12 +9,13 @@ from tqdm import tqdm
 from lib_caida_collector import CaidaCollector
 from lib_utils.base_classes import Base
 
-from .engine_input import SubprefixHijack
+
 from .graph import Graph
 from .mp import MP
 from ..engine import BGPAS
 from ..engine import ROVAS
 from ..engine import SimulatorEngine
+from ..engine_input import SubprefixHijack
 
 
 class Simulator(Base):

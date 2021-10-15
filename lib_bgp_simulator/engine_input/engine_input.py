@@ -2,8 +2,8 @@ import random
 
 from ipaddress import ip_network
 
-from ...announcements import Announcement
-from ...enums import Outcomes, Relationships
+from ..announcements import Announcement
+from ..enums import Outcomes, Relationships
 
 
 class EngineInput:

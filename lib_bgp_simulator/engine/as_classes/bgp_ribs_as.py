@@ -1,7 +1,10 @@
-from .ann_containers import RIBsIn, RIBsOut
-from .ann_containers import SendQueue
-from ..enums import Relationships
 from .bgp_as import BGPAS
+
+from ..ann_containers import RIBsIn
+from ..ann_containers import RIBsOut
+from ..ann_containers import SendQueue
+
+from ...enums import Relationships
 
 
 class BGPRIBsAS(BGPAS):

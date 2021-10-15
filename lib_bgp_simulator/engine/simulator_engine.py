@@ -1,6 +1,6 @@
 from lib_caida_collector import BGPDAG
 
-from .bgp_as import BGPAS
+from .as_classes import BGPAS
 from ..enums import Relationships
 from ..announcements import Announcement
 

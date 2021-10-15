@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from ..engine.bgp_as import BGPAS
+from ..engine import BGPAS
 
 
 @dataclass(frozen=True)

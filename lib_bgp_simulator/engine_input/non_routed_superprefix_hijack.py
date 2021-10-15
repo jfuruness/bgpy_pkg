@@ -1,6 +1,6 @@
 from .engine_input import EngineInput
-from ...announcements import gen_superprefix_ann
-from ...enums import Prefixes, Timestamps, ASNs, ROAValidity, Relationships
+from ..announcements import gen_superprefix_ann
+from ..enums import Prefixes, Timestamps, ASNs, ROAValidity, Relationships
 
 
 class NonRoutedSuperprefixHijack(EngineInput):

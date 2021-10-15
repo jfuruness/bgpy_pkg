@@ -4,7 +4,7 @@ import sys
 
 from lib_utils.helper_funcs import mp_call
 
-from ..enums import Outcomes
+from ...enums import Outcomes
 
 _matplotlib = None
 if "pypy" in sys.executable:
@@ -125,7 +125,7 @@ def _write(self, lines, outcome, subg_name, propagation_round, adopting):
                     label=line.label,
                     marker="*")
 
-    ax.set_ylabel(self.AttackCls.y_labels[outcome])
+    ax.set_ylabel(self.EngineInputCls.y_labels[outcome])
     ax.set_xlabel("Percent adoption of adopted policy")
 
     # I do this because of the stupid warning that occurs if I don't
@@ -137,7 +137,7 @@ def _write(self, lines, outcome, subg_name, propagation_round, adopting):
     fname = f"{outcome.name}_round_{propagation_round}.png"
 
     adopting_name = "adopting" if adopting else "non adopting"
-    final_dir = self._dir / subg_name / self.AttackCls.__name__ / adopting_name
+    final_dir = self._dir / subg_name / self.EngineInputCls.__name__ / adopting_name
     final_dir.mkdir(parents=True, exist_ok=True)
     plt.savefig(final_dir / fname)
     # Done here so that it does not leave graphs open which accumulate memory

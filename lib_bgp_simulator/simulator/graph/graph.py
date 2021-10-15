@@ -9,13 +9,13 @@ import sys
 
 from lib_caida_collector import CaidaCollector
 
-from .engine_input import EngineInput
-from .data_point import DataPoint
-from .mp import MP
-from .scenario import Scenario
 
-from ..engine import BGPAS, SimulatorEngine
+from ..data_point import DataPoint
+from ..mp import MP
+from ..scenario import Scenario
 
+from ...engine import BGPAS, SimulatorEngine
+from ...engine_input import EngineInput
 
 class Graph:
     from .graph_writer import aggregate_and_write, get_graphs_to_write

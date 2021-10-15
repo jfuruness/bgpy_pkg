@@ -1,6 +1,6 @@
 from .engine_input import EngineInput
-from ...announcements import gen_victim_prefix_ann, gen_attacker_prefix_ann
-from ...enums import Prefixes, Timestamps, ASNs, ROAValidity, Relationships
+from ..announcements import gen_victim_prefix_ann, gen_attacker_prefix_ann
+from ..enums import Prefixes, Timestamps, ASNs, ROAValidity, Relationships
 
 
 class PrefixHijack(EngineInput):

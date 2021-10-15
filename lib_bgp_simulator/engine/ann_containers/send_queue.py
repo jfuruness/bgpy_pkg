@@ -1,7 +1,6 @@
 from collections import defaultdict
 from dataclasses import dataclass
 
-from .. import bgp_as
 from ...announcements import Announcement
 
 
@@ -63,7 +62,7 @@ class SendQueue:
 
     def info(self, neighbors):
         for neighbor_obj in neighbors:
-            assert isinstance(neighbor_obj, bgp_as.BGPAS)
+            # assert isinstance(neighbor_obj, bgp_as.BGPAS)
             for prefix, send_info in self._info[neighbor_obj.asn].items():
                 for ann in send_info.anns:
                     yield neighbor_obj, prefix, ann
