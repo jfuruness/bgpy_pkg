@@ -12,6 +12,7 @@ class BGPAS(AS):
 
     name = "BGP"
     subclass_names = []
+    subclasses = []
 
     def __init_subclass__(cls, **kwargs):
         """This method essentially creates a list of all subclasses
@@ -24,6 +25,7 @@ class BGPAS(AS):
         msg = (f"Duplicate name {cls.name} with {cls.__name__}."
                "Please make a class attr name for the policy something else")
         assert len(set(cls.subclass_names)) == len(cls.subclass_names), msg
+        cls.subclasses.append(cls)
 
     def __init__(self, *args, **kwargs):
         """Add local rib and data structures here

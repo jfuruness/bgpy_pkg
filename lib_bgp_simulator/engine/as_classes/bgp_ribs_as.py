@@ -1,9 +1,13 @@
+from typing import List, Optional
+
 from .bgp_as import BGPAS
 
 from ..ann_containers import RIBsIn
 from ..ann_containers import RIBsOut
 from ..ann_containers import SendQueue
 
+from ...announcements import Announcement as Ann
+from ...engine_input import EngineInput
 from ...enums import Relationships
 
 
@@ -16,7 +20,9 @@ class BGPRIBsAS(BGPAS):
         self._ribs_out = RIBsOut()
         self._send_q = SendQueue()
 
-    def _propagate(self, propagate_to: Relationships, send_rels: list):
+    def _propagate(self,
+                   propagate_to: Relationships,
+                   send_rels: List[Relationships]):
         """Propogates announcements to other ASes
 
         send_rels is the relationships that are acceptable to send
@@ -29,23 +35,30 @@ class BGPRIBsAS(BGPAS):
         # Send announcements/withdrawals and add to ribs out
         self._send_anns(propagate_to)
 
-    def _populate_send_q(self, propagate_to, send_rels):
+    def _populate_send_q(self,
+                         propagate_to: Relationships,
+                         send_rels: List[Relationships]):
         # Process_outgoing_ann is overriden so this just adds to send q
-        return super(BGPRIBsAS, self)._propagate(propagate_to, send_rels)
+        super(BGPRIBsAS, self)._propagate(propagate_to, send_rels)
 
-    def _policy_propagate(self, neighbor, ann, *args, **kwargs):
+    def _policy_propagate(self,
+                          neighbor: BGPAS,
+                          ann: Ann,
+                          *args,
+                          **kwargs) -> bool:
         """Don't send what we've already sent"""
 
-        ribs_out_ann = self._ribs_out.get_ann(neighbor.asn, ann.prefix)
+        ribs_out_ann: Optional[Ann] = self._ribs_out.get_ann(neighbor.asn,
+                                                             ann.prefix)
         return ann.prefix_path_attributes_eq(ribs_out_ann)
 
-    def _process_outgoing_ann(self, neighbor, ann, *args):
+    def _process_outgoing_ann(self, neighbor: BGPAS, ann: Ann, *args):
         self._send_q.add_ann(neighbor.asn, ann)
 
     def _send_anns(self, propagate_to: Relationships):
         """Sends announcements and populates ribs out"""
 
-        neighbors = getattr(self, propagate_to.name.lower())
+        neighbors: List[AS] = getattr(self, propagate_to.name.lower())
 
         for (neighbor, prefix, ann) in self._send_q.info(neighbors):
             neighbor.receive_ann(ann)
@@ -58,17 +71,17 @@ class BGPRIBsAS(BGPAS):
     def process_incoming_anns(self,
                               from_rel: Relationships,
                               *args,
-                              propagation_round=None,
+                              propagation_round: Optional[int] = None,
                               # Usually None for attack
-                              attack=None,
-                              reset_q=True,
+                              engine_input: Optional[EngineInput] = None,
+                              reset_q: bool = True,
                               **kwargs):
         """Process all announcements that were incoming from a specific rel"""
 
         for prefix, anns in self._recv_q.prefix_anns():
 
             # Get announcement currently in local rib
-            _local_rib_ann = self._local_rib.get_ann(prefix)
+            _local_rib_ann: Optional[Ann] = self._local_rib.get_ann(prefix)
             current_ann = _local_rib_ann
             current_processed = True
 
@@ -104,17 +117,17 @@ class BGPRIBsAS(BGPAS):
                         self._process_incoming_withdrawal(ann, from_rel)
 
                     else:
-                        new_ann_is_better = self._new_ann_better(
+                        new_ann_is_better: bool = self._new_ann_better(
                             current_ann, current_processed, from_rel,
                             ann, False, from_rel)
                         # If the new priority is higher
                         if new_ann_is_better:
-                            current_ann = ann
+                            current_ann: Ann = ann
                             current_processed = False
 
             if _local_rib_ann is not None and current_processed is False:
                 # Best ann has already been processed
-                withdraw_ann = _local_rib_ann.copy(withdraw=True)
+                withdraw_ann: Ann = _local_rib_ann.copy(withdraw=True)
                 self._withdraw_ann_from_neighbors(withdraw_ann)
                 err = "withdrawing announcement that is identical to new ann"
                 assert not withdraw_ann.prefix_path_attributes_eq(
@@ -122,15 +135,17 @@ class BGPRIBsAS(BGPAS):
 
             # We have a new best!
             if current_processed is False:
-                current_ann = self._copy_and_process(ann, from_rel)
+                current_ann: Ann = self._copy_and_process(ann, from_rel)
                 # Save to local rib
                 self._local_rib.add_ann(current_ann)
 
         self._reset_q(reset_q)
 
-    def _process_incoming_withdrawal(self, ann, recv_relationship):
-        prefix = ann.prefix
-        neighbor = ann.as_path[0]
+    def _process_incoming_withdrawal(self,
+                                     ann: Ann,
+                                     recv_relationship: Relationships):
+        prefix: str = ann.prefix
+        neighbor: int = ann.as_path[0]
         # Return if the current ann was seeded (for an attack)
         _local_rib_ann = self._local_rib.get_ann(prefix)
 
@@ -150,9 +165,9 @@ class BGPRIBsAS(BGPAS):
         self._ribs_in.remove_entry(neighbor, prefix)
 
         # Remove ann from local rib
-        withdraw_ann = self._copy_and_process(ann,
-                                              recv_relationship,
-                                              withdraw=True)
+        withdraw_ann: Ann = self._copy_and_process(ann,
+                                                   recv_relationship,
+                                                   withdraw=True)
         if withdraw_ann.prefix_path_attributes_eq(
                 self._local_rib.get_ann(prefix)):
 
@@ -160,7 +175,7 @@ class BGPRIBsAS(BGPAS):
             # Also remove from neighbors
             self._withdraw_ann_from_neighbors(withdraw_ann)
 
-        best_ann = self._select_best_ribs_in(prefix)
+        best_ann: Optional[Ann] = self._select_best_ribs_in(prefix)
 
         # Put new ann in local rib
         if best_ann is not None:
@@ -169,7 +184,7 @@ class BGPRIBsAS(BGPAS):
         err = "Best ann should not be identical to the one we just withdrew"
         assert not withdraw_ann.prefix_path_attributes_eq(best_ann), err
 
-    def _withdraw_ann_from_neighbors(self, withdraw_ann):
+    def _withdraw_ann_from_neighbors(self, withdraw_ann: Ann):
         """Withdraw a route from all neighbors.
 
         This function will not remove an announcement from the local rib, that
@@ -192,7 +207,7 @@ class BGPRIBsAS(BGPAS):
         # We may not have sent the ann yet, it may just be in the send queue
         # and not ribs out
         # We want to cancel out any anns in the send_queue that match the wdraw
-        for neighbor_obj in self.peers + self.customers + self.providers:
+        for neighbor_obj in self.neighbors:
             send_info = self._send_q.get_send_info(neighbor_obj,
                                                    withdraw_ann.prefix)
             if send_info is None or send_info.ann is None:
@@ -200,7 +215,7 @@ class BGPRIBsAS(BGPAS):
             elif send_info.ann.prefix_path_attributes_eq(withdraw_ann):
                 send_info.ann = None
 
-    def _select_best_ribs_in(self, prefix):
+    def _select_best_ribs_in(self, prefix: str) -> Optional[Ann]:
         """Selects best ann from ribs in
 
         Remember, ribs in anns are NOT deep copied"""
@@ -217,8 +232,8 @@ class BGPRIBsAS(BGPAS):
                                     new_unprocessed_ann,
                                     False,
                                     new_recv_relationship):
-                best_unprocessed_ann = new_unprocessed_ann
-                best_recv_relationship = new_recv_relationship
+                best_unprocessed_ann: Ann = new_unprocessed_ann
+                best_recv_relationship: Relationships = new_recv_relationship
 
         if best_unprocessed_ann is not None:
             return self._copy_and_process(best_unprocessed_ann,

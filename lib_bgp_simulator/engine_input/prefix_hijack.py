@@ -12,5 +12,5 @@ class PrefixHijack(EngineInput):
                                       self.victim_asn,
                                       **extra_ann_kwargs),
                 gen_attacker_prefix_ann(self.AnnCls,
-                                        attacker,
+                                        self.attacker_asn,
                                         **extra_ann_kwargs)]

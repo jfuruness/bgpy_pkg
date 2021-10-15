@@ -1,10 +1,17 @@
+from typing import Optional
+
+from ....announcements import Announcement as Ann
+from ....enums import Relationships
+
+opt_bool = Optional[bool]
+
 def _new_ann_better(self,
-                    current_ann,
-                    current_processed,
-                    default_current_recv_rel,
-                    new_ann,
-                    new_processed,
-                    default_new_recv_rel):
+                    current_ann: Optional[Ann],
+                    current_processed: bool,
+                    default_current_recv_rel: Relationships,
+                    new_ann: Ann,
+                    new_processed: Relationships,
+                    default_new_recv_rel: Relationships) -> opt_bool:
     """Assigns the priority to an announcement according to Gao Rexford
 
     NOTE: processed is processed for second ann"""
@@ -13,12 +20,12 @@ def _new_ann_better(self,
     # msg = "Should have been removed in the validation func"
     # assert self.asn not in new_ann.as_path, msg
 
-    new_rel_better = self._new_rel_better(current_ann,
-                                          current_processed,
-                                          default_current_recv_rel,
-                                          new_ann,
-                                          new_processed,
-                                          default_new_recv_rel)
+    new_rel_better: opt_bool = self._new_rel_better(current_ann,
+                                                    current_processed,
+                                                    default_current_recv_rel,
+                                                    new_ann,
+                                                    new_processed,
+                                                    default_new_recv_rel)
     if new_rel_better is not None:
         return new_rel_better
     else:
@@ -29,14 +36,14 @@ def _new_ann_better(self,
 
 
 def _new_as_path_ties_better(self,
-                             current_ann,
-                             current_processed,
-                             new_ann,
-                             new_processed):
-    new_as_path_shorter = self._new_as_path_shorter(current_ann,
-                                                    current_processed,
-                                                    new_ann,
-                                                    new_processed)
+                             current_ann: Optional[Ann],
+                             current_processed: bool,
+                             new_ann: Ann,
+                             new_processed: bool) -> opt_bool:
+
+    new_as_path_shorter: opt_bool = self._new_as_path_shorter(
+        current_ann, current_processed, new_ann, new_processed)
+
     if new_as_path_shorter is not None:
         return new_as_path_shorter
     else:
@@ -47,12 +54,12 @@ def _new_as_path_ties_better(self,
 
 
 def _new_rel_better(self,
-                    current_ann,
-                    current_processed,
-                    default_current_recv_rel,
-                    new_ann,
-                    new_processed,
-                    default_new_recv_rel):
+                    current_ann: Optional[Ann],
+                    current_processed: bool,
+                    default_current_recv_rel: Relationships,
+                    new_ann: Ann,
+                    new_processed: bool,
+                    default_new_recv_rel: Relationships) -> opt_bool:
     if current_ann is None:
         return True
     elif new_ann is None:
@@ -60,15 +67,15 @@ def _new_rel_better(self,
     else:
         # Get relationship of current ann
         if current_processed:
-            current_rel = current_ann.recv_relationship
+            current_rel: Relationships = current_ann.recv_relationship
         else:
-            current_rel = default_current_recv_rel
+            current_rel: Relationships = default_current_recv_rel
 
         # Get relationship of new ann. Common case first
         if not new_processed:
-            new_rel = default_new_recv_rel
+            new_rel: Relationships = default_new_recv_rel
         else:
-            new_rel = new_ann.recv_relatinship
+            new_rel: Relationships = new_ann.recv_relatinship
 
     if current_rel.value > new_rel.value:
         return False
@@ -79,12 +86,12 @@ def _new_rel_better(self,
 
 
 def _new_as_path_shorter(self,
-                         current_ann,
-                         current_processed,
-                         new_ann,
-                         new_processed):
+                         current_ann: Optional[Ann],
+                         current_processed: bool,
+                         new_ann: Ann,
+                         new_processed: bool) -> opt_bool:
     current_as_path_len = len(current_ann.as_path) + int(not current_processed)
-    new_as_path_len = len(new_ann.as_path) + int(not new_processed)
+    new_as_path_len: int = len(new_ann.as_path) + int(not new_processed)
     if current_as_path_len < new_as_path_len:
         return False
     elif current_as_path_len > new_as_path_len:

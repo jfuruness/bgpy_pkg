@@ -1,3 +1,5 @@
+from typing import List
+
 from lib_caida_collector import AS
 
 from ...ann_containers import LocalRib
@@ -28,7 +30,9 @@ def propagate_to_peers(self):
                      Relationships.CUSTOMERS])
     self._propagate(Relationships.PEERS, send_rels)
 
-def _propagate(self, propagate_to: Relationships, send_rels: list):
+def _propagate(self,
+               propagate_to: Relationships,
+               send_rels: List[Relationships]):
     """Propogates announcements from local rib to other ASes
 
     send_rels is the relationships that are acceptable to send
@@ -47,12 +51,16 @@ def _propagate(self, propagate_to: Relationships, send_rels: list):
                 else:
                     self._process_outgoing_ann(*propagate_args)
 
-def _policy_propagate(*args, **kwargs):
+def _policy_propagate(*args, **kwargs) -> bool:
     """Custom policy propagation that can be overriden"""
 
     return False
 
-def _process_outgoing_ann(self, neighbor, ann, propagate_to, send_rels):
+def _process_outgoing_ann(self,
+                          neighbor: AS,
+                          ann: Ann,
+                          propagate_to: Relationships,
+                          send_rels: List[Relationships]):
     """Adds ann to the neighbors recv q"""
 
     # Add the new ann to the incoming anns for that prefix

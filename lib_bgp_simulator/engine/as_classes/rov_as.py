@@ -1,5 +1,6 @@
 from .bgp_as import BGPAS
 
+from ...announcements import Announcement as Ann
 from ...enums import ROAValidity
 
 
@@ -8,7 +9,7 @@ class ROVAS(BGPAS):
 
     name = "ROV"
 
-    def _valid_ann(self, ann, *args, **kwargs):
+    def _valid_ann(self, ann: Ann, *args, **kwargs) -> bool:
         if ann.roa_validity == ROAValidity.INVALID:
             return False
         else:

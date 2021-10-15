@@ -1,6 +1,9 @@
+from typing import Optional
+
 from lib_caida_collector import BGPDAG
 
 from .as_classes import BGPAS
+from ..engine_input import EngineInput
 from ..enums import Relationships
 from ..announcements import Announcement
 
@@ -15,32 +18,43 @@ class SimulatorEngine(BGPDAG):
         super(SimulatorEngine, self).__init__(*args,
                                               BaseASCls=BaseASCls,
                                               **kwargs)
-        self._setup = False
+        self._setup: bool = False
 
-    def setup(self, engine_input, BaseASCls, AdoptingASCls):
+    def setup(self,
+              engine_input: EngineInput,
+              BaseASCls: BGPAS,
+              AdoptingASCls: BGPAS):
         self._reset_as_classes(engine_input, BaseASCls, AdoptingASCls)
         engine_input.seed(self)
         self._setup = True
 
-    def run(self, propagation_round=0, engine_input=None):
+    def run(self,
+            propagation_round=0,
+            engine_input=None):
         """Propogates announcements"""
 
         assert self._setup
         self._propagate(propagation_round, engine_input)
 
-    def _reset_as_classes(self, engine_input, BaseASCls, AdoptASCls):
-        as_cls_dict = engine_input.get_as_classes(self,
-                                                  BaseASCls,
-                                                  AdoptASCls)
+    def _reset_as_classes(self,
+                          engine_input: EngineInput,
+                          BaseASCls: BGPAS,
+                          AdoptASCls: BGPAS):
+        as_cls_dict: dict = engine_input.get_as_classes(self,
+                                                        BaseASCls,
+                                                        AdoptASCls)
         for as_obj in self:
             as_obj.__class__ = as_cls_dict.get(as_obj.asn, BaseASCls)
             # Reset base is false to avoid overriding AS info
             as_obj.__init__(reset_base=False)
 
-    def _propagate(self, propagation_round, attack):
+    def _propagate(self,
+                   propagation_round: Optional[int],
+                   engine_input: Optional[EngineInput]):
         """Propogates announcements"""
 
-        kwargs = {"propagation_round": propagation_round, "attack": attack}
+        kwargs = {"propagation_round": propagation_round,
+                  "engine_input": engine_input}
 
         self._propagate_to_providers(**kwargs)
         self._propagate_to_peers(**kwargs)

@@ -15,9 +15,7 @@ class RecvQueue(defaultdict):
     def __init__(self):
         self._info = defaultdict(list)
 
-    def add_ann(self, ann):
-        assert isinstance(ann, Announcement)
-
+    def add_ann(self, ann: Announcement):
         self._info[ann.prefix].append(ann)
 
     def prefix_anns(self):

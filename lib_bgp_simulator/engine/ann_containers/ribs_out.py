@@ -1,6 +1,7 @@
 from collections import defaultdict
+from typing import Optional
 
-from ...announcements import Announcement
+from ...announcements import Announcement as Ann
 
 
 class RIBsOut:
@@ -14,20 +15,13 @@ class RIBsOut:
     def __init__(self):
         self._info = defaultdict(dict)
 
-    def get_ann(self, neighbor, prefix):
-        assert isinstance(neighbor, int)
-        assert isinstance(prefix, str)
-        return self._info[neighbor].get(prefix)
+    def get_ann(self, neighbor_asn: int, prefix: str) -> Optional[Ann]:
+        return self._info[neighbor_asn].get(prefix)
 
-    def add_ann(self, neighbor_asn: int, ann: Announcement):
-        assert isinstance(neighbor_asn, int)
-        assert isinstance(ann, Announcement)
-
+    def add_ann(self, neighbor_asn: int, ann: Ann):
         self._info[neighbor_asn][ann.prefix] = ann
 
-    def remove_entry(self, neighbor_asn, prefix):
-        assert isinstance(neighbor_asn, int)
-        assert isinstance(prefix, str)
+    def remove_entry(self, neighbor_asn: int, prefix: str):
         del self._info[neighbor_asn][prefix]
 
     def neighbors(self):

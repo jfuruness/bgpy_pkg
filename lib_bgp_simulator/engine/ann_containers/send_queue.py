@@ -1,13 +1,16 @@
 from collections import defaultdict
 from dataclasses import dataclass
+from typing import List, Optional
 
-from ...announcements import Announcement
+from lib_caida_collector import AS
+
+from ...announcements import Announcement as Ann
 
 
 @dataclass
 class SendInfo:
-    withdrawal_ann: Announcement = None
-    ann: Announcement = None
+    withdrawal_ann: Ann = None
+    ann: Ann = None
 
     @property
     def anns(self):
@@ -29,9 +32,7 @@ class SendQueue:
     def __init__(self):
         self._info = defaultdict(lambda: defaultdict(SendInfo))
 
-    def add_ann(self, neighbor_asn, ann):
-        assert isinstance(neighbor_asn, int)
-        assert isinstance(ann, Announcement)
+    def add_ann(self, neighbor_asn: int, ann: Ann):
 
         # Withdraw
         if ann.withdraw:
@@ -53,19 +54,19 @@ class SendQueue:
                 send_info.withdrawal_ann), err
             self._info[neighbor_asn][ann.prefix].ann = ann
 
-    def get_send_info(self, neighbor_obj, prefix):
+    def get_send_info(self, neighbor_obj: AS, prefix: str) -> Optional[Ann]:
         neighbor_info = self._info.get(neighbor_obj.asn)
         if neighbor_info is None:
             return neighbor_info
         else:
             return neighbor_info.get(prefix)
 
-    def info(self, neighbors):
+    def info(self, neighbors: List[AS]):
         for neighbor_obj in neighbors:
             # assert isinstance(neighbor_obj, bgp_as.BGPAS)
             for prefix, send_info in self._info[neighbor_obj.asn].items():
                 for ann in send_info.anns:
                     yield neighbor_obj, prefix, ann
 
-    def reset_neighbor(self, neighbor_asn):
+    def reset_neighbor(self, neighbor_asn: int):
         self._info.pop(neighbor_asn, None)

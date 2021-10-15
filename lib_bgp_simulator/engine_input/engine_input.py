@@ -18,6 +18,16 @@ class EngineInput:
                 Outcomes.VICTIM_SUCCESS: "Percent Legitimate Origin Success",
                 Outcomes.DISCONNECTED: "Percent Disconnected"}
 
+    subclasses = []
+
+    def __init_subclass__(cls, *args, **kwargs):
+        """This method essentially creates a list of all subclasses
+        This is allows us to know all attackers that have been created
+        """
+
+        super().__init_subclass__(*args, **kwargs)
+        cls.subclasses.append(cls)
+
     def __init__(self, subgraph_asns, engine, percent_adopt):
         self.attacker_asn = self._get_attacker_asn(subgraph_asns, engine)
         self.victim_asn = self._get_victim_asn(subgraph_asns, engine)

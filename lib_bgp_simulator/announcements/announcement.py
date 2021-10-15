@@ -1,6 +1,6 @@
 import dataclasses
 
-from ..enums import Relationships, ROAValidity
+from ..enums import Prefixes, Relationships, ROAValidity
 
 
 @dataclasses.dataclass
@@ -56,19 +56,6 @@ class Announcement:
         else:
             raise NotImplementedError
 
-    def seed(self, as_dict, propagation_round):
-        """Seeds announcement at the proper AS
-
-        Since this is the simulator engine, we should
-        never have to worry about overlapping announcements
-        """
-
-        if propagation_round == 0:
-            assert as_dict[self.seed_asn]._local_rib.get_ann(self.prefix) \
-                is None, "Seeding conflict"
-
-            as_dict[self.seed_asn]._local_rib.add_ann(self)
-
     def prefix_path_attributes_eq(self, ann):
         """Checks prefix and as path equivalency"""
 
@@ -88,11 +75,7 @@ class Announcement:
         return dataclasses.replace(self, **kwargs)
 
     @property
-    def default_copy_kwargs(self):
-        return {"seed_asn": None, "traceback_end": None}
-
-    @property
-    def origin(self):
+    def origin(self) -> int:
         return self.as_path[-1]
 
     def __str__(self):

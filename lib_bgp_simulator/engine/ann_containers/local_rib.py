@@ -21,16 +21,13 @@ class LocalRib:
         else:
             raise NotImplementedError
 
-    def get_ann(self, prefix, default=None):
-        assert isinstance(prefix, str)
+    def get_ann(self, prefix: str, default=None):
         return self._info.get(prefix, default)
 
-    def add_ann(self, ann):
-        assert isinstance(ann, Announcement)
-
+    def add_ann(self, ann: Announcement):
         self._info[ann.prefix] = ann
 
-    def remove_ann(self, prefix):
+    def remove_ann(self, prefix: str):
         del self._info[prefix]
 
     def prefix_anns(self):
