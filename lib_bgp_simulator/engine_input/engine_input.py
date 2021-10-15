@@ -26,7 +26,9 @@ class EngineInput:
         """
 
         super().__init_subclass__(*args, **kwargs)
-        cls.subclasses.append(cls)
+        # Fix this later once the system test framework is updated
+        if "easy" not in str(cls).lower():
+            cls.subclasses.append(cls)
 
     def __init__(self, subgraph_asns, engine, percent_adopt):
         self.attacker_asn = self._get_attacker_asn(subgraph_asns, engine)

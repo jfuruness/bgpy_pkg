@@ -25,6 +25,7 @@ setup(
         'lib_utils @ git+ssh://git@github.com/jfuruness/lib_utils.git',
         'matplotlib',
         'pytest',
+        'pytest-xdist',
         'tqdm',
     ],
     classifiers=[

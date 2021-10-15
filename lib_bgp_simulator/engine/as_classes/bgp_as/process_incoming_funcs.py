@@ -9,7 +9,9 @@ from ....enums import Relationships
 from ....announcements import Announcement as Ann
 
 
-def receive_ann(self, ann: Ann):
+def receive_ann(self, ann: Ann, accept_withdrawals=False):
+    if ann.withdraw and not accept_withdrawals:
+        raise NotImplementedError("Policy can't handle withdrawals")
     self._recv_q.add_ann(ann)
 
 def process_incoming_anns(self,

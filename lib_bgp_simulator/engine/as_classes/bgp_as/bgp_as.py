@@ -11,8 +11,8 @@ class BGPAS(AS):
     __slots__ = ("_local_rib", "_recv_q", "_ribs_in", "_ribs_out", "_send_q")
 
     name = "BGP"
-    subclass_names = []
-    subclasses = []
+    as_class_names = []
+    as_classes = []
 
     def __init_subclass__(cls, **kwargs):
         """This method essentially creates a list of all subclasses
@@ -21,11 +21,14 @@ class BGPAS(AS):
 
         super().__init_subclass__(**kwargs)
         assert hasattr(cls, "name"), "Policy must have a name"
-        cls.subclass_names.append(cls.name)
+        cls.as_class_names.append(cls.name)
         msg = (f"Duplicate name {cls.name} with {cls.__name__}."
                "Please make a class attr name for the policy something else")
-        assert len(set(cls.subclass_names)) == len(cls.subclass_names), msg
-        cls.subclasses.append(cls)
+        assert len(set(cls.as_class_names)) == len(cls.as_class_names), msg
+        cls.as_classes.append(cls)
+        if BGPAS not in cls.as_classes:
+            cls.as_classes.append(BGPAS)
+
 
     def __init__(self, *args, **kwargs):
         """Add local rib and data structures here
