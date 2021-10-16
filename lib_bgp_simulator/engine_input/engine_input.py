@@ -30,11 +30,11 @@ class EngineInput:
         if "easy" not in str(cls).lower():
             cls.subclasses.append(cls)
 
-    def __init__(self, subgraph_asns, engine, percent_adopt):
+    def __init__(self, subgraph_asns, engine, percent_adopt, **extra_ann_kwargs):
         self.attacker_asn = self._get_attacker_asn(subgraph_asns, engine)
         self.victim_asn = self._get_victim_asn(subgraph_asns, engine)
         self.adopting_asns = self._get_adopting_asns(subgraph_asns, engine, percent_adopt)
-        self.announcements = self._get_announcements()
+        self.announcements = self._get_announcements(**extra_ann_kwargs)
         # Announcement prefixes must overlap
         # If they don't, traceback wouldn't work
         first_prefix = ip_network(self.announcements[0].prefix)

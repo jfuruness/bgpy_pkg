@@ -14,7 +14,8 @@ class Scenario:
 
     def run(self, subgraphs, propagation_round: int):
         # Run engine
-        self.engine.run(self.engine_input)
+        self.engine.run(propagation_round=propagation_round,
+                        engine_input=self.engine_input)
         self._collect_data(subgraphs)
         # delete engine from attrs so that garbage collector can come
         # NOTE that if there are multiple propagation rounds, the engine
