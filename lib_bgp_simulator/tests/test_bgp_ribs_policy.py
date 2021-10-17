@@ -141,3 +141,86 @@ def test_withdraw_seeded():
     a.process_incoming_anns(Relationships.CUSTOMERS)
     # Assert ann is still there
     assert(a._local_rib.get_ann(prefix).origin == ann.origin)
+
+def test_withdraw_sending():
+    """Test AS sending of the correct withdrawals when a better ann is received
+
+    a
+    |
+    b
+
+    """
+    prefix = '137.99.0.0/16'
+    ann1 = EasyAnn(prefix=prefix,
+                       as_path=(13794,),
+                       timestamp=0,
+                       roa_validity=ROAValidity.UNKNOWN,
+                       recv_relationship=Relationships.ORIGIN)
+
+    ann2 = EasyAnn(prefix=prefix,
+                       as_path=(13795,),
+                       timestamp=0,
+                       roa_validity=ROAValidity.UNKNOWN,
+                       recv_relationship=Relationships.ORIGIN)
+ 
+    b = BGPRIBsAS(2, peers=[], providers=[], customers=[]) 
+    a = BGPRIBsAS(1, peers=[], providers=[], customers=[b]) 
+    # round 1
+    a._recv_q.add_ann(ann1)
+    a.process_incoming_anns(Relationships.PROVIDERS)
+    a.propagate_to_customers()
+    b.process_incoming_anns(Relationships.PROVIDERS)
+    # round 2
+    a._recv_q.add_ann(ann2)
+    a.process_incoming_anns(Relationships.PEERS)
+    a.propagate_to_customers()
+    b.process_incoming_anns(Relationships.PROVIDERS)
+
+    assert(b._local_rib.get_ann(prefix).origin == ann2.origin)
+
+def test_withdraw_sending_multihop():
+    """Test propagation of withdrawals
+
+    a
+    |
+    b
+    |
+    c
+
+    """
+    prefix = '137.99.0.0/16'
+    ann1 = EasyAnn(prefix=prefix,
+                       as_path=(13794,),
+                       timestamp=0,
+                       roa_validity=ROAValidity.UNKNOWN,
+                       recv_relationship=Relationships.ORIGIN)
+
+    ann2 = EasyAnn(prefix=prefix,
+                       as_path=(13795,),
+                       timestamp=0,
+                       roa_validity=ROAValidity.UNKNOWN,
+                       recv_relationship=Relationships.ORIGIN)
+ 
+    c = BGPRIBsAS(3, peers=[], providers=[], customers=[]) 
+    b = BGPRIBsAS(2, peers=[], providers=[], customers=[c]) 
+    a = BGPRIBsAS(1, peers=[], providers=[], customers=[b]) 
+    # round 1
+    a._recv_q.add_ann(ann1)
+    a.process_incoming_anns(Relationships.PROVIDERS)
+    a.propagate_to_customers()
+    b.process_incoming_anns(Relationships.PROVIDERS)
+    b.propagate_to_customers()
+    c.process_incoming_anns(Relationships.PROVIDERS)
+
+    # round 2
+    a._recv_q.add_ann(ann2)
+    a.process_incoming_anns(Relationships.PEERS)
+    a.propagate_to_customers()
+    b.process_incoming_anns(Relationships.PROVIDERS)
+    b.propagate_to_customers()
+    print('c ribns in', c._recv_q.prefix_anns())
+    c.process_incoming_anns(Relationships.PROVIDERS)
+
+    assert(c._local_rib.get_ann(prefix).origin == ann2.origin)
+
+

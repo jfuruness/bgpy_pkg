@@ -98,7 +98,18 @@ class BGPRIBsAS(BGPAS):
                 # If it's valid, process it
                 if self._valid_ann(ann, from_rel):
                     if ann.withdraw:
-                        self._process_incoming_withdrawal(ann, from_rel)
+                        if self._process_incoming_withdrawal(ann, from_rel):
+                            # the above will return true if the local rib is changed
+                            updated_loc_rib_ann = self._local_rib.get_ann(prefix)
+                            if current_processed:
+                                current_ann = updated_loc_rib_ann
+                            else:
+                                new_ann_is_better = self._new_ann_better(
+                                    current_ann, current_processed, from_rel,
+                                    updated_loc_rib_ann, True, updated_loc_rib_ann.recv_relationship)
+                                if new_ann_is_better:
+                                    current_ann = updated_loc_rib_ann
+                                    current_processed = True
 
                     else:
                         new_ann_is_better = self._new_ann_better(
@@ -109,13 +120,14 @@ class BGPRIBsAS(BGPAS):
                             current_ann = ann
                             current_processed = False
 
-            if _local_rib_ann is not None and current_processed is False:
+            if _local_rib_ann is not None and _local_rib_ann is not current_ann:
                 # Best ann has already been processed
                 withdraw_ann = _local_rib_ann.copy(withdraw=True)
                 self._withdraw_ann_from_neighbors(withdraw_ann)
                 err = "withdrawing announcement that is identical to new ann"
-                assert not withdraw_ann.prefix_path_attributes_eq(
-                    self._copy_and_process(ann, from_rel)), err
+                if not current_processed:
+                    assert not withdraw_ann.prefix_path_attributes_eq(
+                        self._copy_and_process(ann, from_rel)), err
 
             # We have a new best!
             if current_processed is False:
@@ -143,7 +155,7 @@ class BGPRIBsAS(BGPAS):
                f"Ribs in: {current_ann_ribs_in}\n\t withdraw: {ann}")
         assert ann.prefix_path_attributes_eq(current_ann_ribs_in), err
 
-# Remove ann from Ribs in
+        # Remove ann from Ribs in
         self._ribs_in.remove_entry(neighbor, prefix)
 
         # Remove ann from local rib
@@ -157,14 +169,17 @@ class BGPRIBsAS(BGPAS):
             # Also remove from neighbors
             self._withdraw_ann_from_neighbors(withdraw_ann)
 
-        best_ann = self._select_best_ribs_in(prefix)
+            best_ann = self._select_best_ribs_in(prefix)
 
-        # Put new ann in local rib
-        if best_ann is not None:
-            self._local_rib.add_ann(best_ann)
+            # Put new ann in local rib
+            if best_ann is not None:
+                self._local_rib.add_ann(best_ann)
 
-        err = "Best ann should not be identical to the one we just withdrew"
-        assert not withdraw_ann.prefix_path_attributes_eq(best_ann), err
+            err = "Best ann should not be identical to the one we just withdrew"
+            assert not withdraw_ann.prefix_path_attributes_eq(best_ann), err
+
+            return True
+        return False
 
     def _withdraw_ann_from_neighbors(self, withdraw_ann):
         """Withdraw a route from all neighbors.
