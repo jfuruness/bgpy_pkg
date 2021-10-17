@@ -7,13 +7,21 @@ from ...enums import Outcomes, Relationships
 class Attack:
     """Contains information regarding an attack"""
 
-    __slots__ = ["attacker_asn", "victim_asn", "announcements", "post_run_hooks", "uncountable_asns", "prefix_subprefix_dict"]
+    __slots__ = ("attacker_asn", "victim_asn", "announcements",
+                 "post_run_hooks", "uncountable_asns",
+                 "prefix_subprefix_dict")
 
     AnnCls = Announcement
 
-    y_labels = {x: f"Percent {x.name.lower()}" for x in list(Outcomes)}
+    y_labels = {Outcomes.ATTACKER_SUCCESS: "Percent Attacker Success",
+                Outcomes.VICTIM_SUCCESS: "Percent Legitimate Origin Success",
+                Outcomes.DISCONNECTED: "Percent Disconnected"}
 
-    def __init__(self, attacker: int, victim: int, announcements: list, post_run_hooks=None):
+    def __init__(self,
+                 attacker: int,
+                 victim: int,
+                 announcements: list,
+                 post_run_hooks=None):
         self.attacker_asn = attacker
         self.victim_asn = victim
         self.uncountable_asns = set([attacker, victim])
@@ -33,7 +41,6 @@ class Attack:
 
     def determine_outcome(self, as_obj, ann):
         """This assumes that the as_obj is the last in the path"""
-
 
         if self.attacker_asn == as_obj.asn:
             return Outcomes.ATTACKER_SUCCESS
@@ -64,14 +71,14 @@ class Attack:
 
         if propagation_round == 0:
             for ann in self.announcements:
-                assert as_dict[ann.seed_asn]._local_rib.get_ann(ann.prefix) is None, "Seeding conflict"
+                assert as_dict[ann.seed_asn]._local_rib.get_ann(
+                    ann.prefix) is None, "Seeding conflict"
 
                 as_dict[ann.seed_asn]._local_rib.add_ann(ann)
 
-
     def _get_prefix_subprefix_dict(self):
         prefixes = set([])
-        for ann in policy_self.recv_q.announcements:
+        for ann in self.recv_q.announcements:
             prefixes.add(ann.prefix)
         # Do this here for speed
         prefixes = [ip_network(x) for x in prefixes]

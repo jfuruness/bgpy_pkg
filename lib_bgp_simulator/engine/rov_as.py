@@ -1,11 +1,10 @@
 from .bgp_as import BGPAS
 
-from ..enums import Relationships, ROAValidity
-from ..announcement import Announcement as Ann
+from ..enums import ROAValidity
 
 
 class ROVAS(BGPAS):
-    __slots__ = []
+    __slots__ = tuple()
 
     name = "ROV"
 

@@ -70,7 +70,7 @@ def test_process_incoming_anns_bgp_seeded(BaseASCls):
     ann2 = EasyAnn(prefix=prefix, as_path=(13795,),timestamp=0)
     ann3 = EasyAnn(prefix=prefix, as_path=(13796,),timestamp=0)
     a = BaseASCls(1, peers=[], providers=[], customers=[]) 
-    a._local_rib.add_ann(ann1, prefix=prefix)
+    a._local_rib.add_ann(ann1)
     assert(a._local_rib.get_ann(prefix).origin == ann1.origin)
     a._recv_q.add_ann(ann2)
     a.process_incoming_anns(Relationships.CUSTOMERS)

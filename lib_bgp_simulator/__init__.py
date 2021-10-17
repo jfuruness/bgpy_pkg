@@ -6,7 +6,6 @@ from .engine import SendQueue, RecvQueue
 from .engine import ROVAS
 from .engine import SimulatorEngine
 
-from .enums import ROAValidity
 
 from .simulator import Attack
 from .enums import ROAValidity

@@ -10,18 +10,15 @@ class RecvQueue(defaultdict):
     {neighbor: {prefix: list_of_ann}}
     """
 
-    __slots__ = ["_info"]
+    __slots__ = "_info",
 
     def __init__(self):
         self._info = defaultdict(list)
 
-    def add_ann(self, ann, prefix=None):
+    def add_ann(self, ann):
         assert isinstance(ann, Announcement)
-        assert prefix is None or isinstance(prefix, str)
 
-        prefix = prefix if prefix is not None else ann.prefix
-
-        self._info[prefix].append(ann)
+        self._info[ann.prefix].append(ann)
 
     def prefix_anns(self):
         return self._info.items()

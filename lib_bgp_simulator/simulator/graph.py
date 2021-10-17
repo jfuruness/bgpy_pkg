@@ -1,8 +1,7 @@
-from concurrent.futures import ProcessPoolExecutor
 from copy import deepcopy
 import functools
 import logging
-from multiprocessing import Pool, cpu_count
+from multiprocessing import Pool
 import random
 import sys
 
@@ -23,18 +22,20 @@ def my_decorator(func):
         return func(*args, **kwargs)
     return function_that_runs_func
 
+
 if "pypy" in sys.executable:
     mp_decorator = my_decorator
 else:
     import ray
     mp_decorator = ray.remote
 
+
 class Graph:
-    from .graph_writer import aggregate_and_write
-    from .graph_writer import _write
+    from .graph_writer import aggregate_and_write, get_graphs_to_write
+    from .graph_writer import _get_line, _write
 
     def __init__(self,
-                 percent_adoptions=[1, 5, 10, 20, 30, 50, 75, 99],
+                 percent_adoptions=[0, 5, 10, 20, 30, 50, 75, 100],
                  adopt_as_classes=[],
                  AttackCls=None,
                  num_trials=1,
@@ -50,7 +51,7 @@ class Graph:
         self.propagation_rounds = propagation_rounds
         self.AttackCls = AttackCls
         self.base_as_cls = base_as_cls
-        self.profiler=profiler
+        self.profiler = profiler
 
     def _get_mp_chunks(self, parse_cpus):
         """Not a generator since we need this for multiprocessing"""
@@ -70,38 +71,44 @@ class Graph:
                 chunk_index = 0
         return chunks
 
-    def run(self, parse_cpus, _dir, debug=False):
+    def run(self, parse_cpus, _dir, caida_dir=None, debug=False):
         self.data_points = dict()
         self._dir = _dir
+        self.caida_dir = caida_dir
 
         if debug:
             # Done just to get subgraphs, change this later
             engine = CaidaCollector(BaseASCls=self.base_as_cls,
                                     GraphCls=SimulatorEngine,
-                                    _dir=_dir,
+                                    _dir=self.caida_dir,
                                     _dir_exist_ok=True).run(tsv=False)
 
             self.subgraphs = self._get_subgraphs(engine)
             self._validate_subgraphs()
             for chunk in self._get_mp_chunks(parse_cpus):
-                result = self._run_mp_chunk(chunk, engine=engine, subgraphs=self.subgraphs)
+                result = self._run_mp_chunk(chunk,
+                                            engine=engine,
+                                            subgraphs=self.subgraphs)
                 for data_point, trial_info_list in result.items():
-                        if data_point not in self.data_points:
-                            self.data_points[data_point] = []
-                        self.data_points[data_point].extend(trial_info_list)
+                    if data_point not in self.data_points:
+                        self.data_points[data_point] = []
+                    self.data_points[data_point].extend(trial_info_list)
         else:
             print("About to run pool")
             if "pypy" in sys.executable:
                 # Pool is much faster than ProcessPoolExecutor
                 with Pool(parse_cpus) as pool:
-                    for result in pool.map(self._run_mp_chunk, self._get_mp_chunks(parse_cpus)):
+                    for result in pool.map(self._run_mp_chunk,
+                                           self._get_mp_chunks(parse_cpus)):
                         for data_point, trial_info_list in result.items():
                             if data_point not in self.data_points:
                                 self.data_points[data_point] = []
-                            self.data_points[data_point].extend(trial_info_list)
+                            self.data_points[data_point].extend(
+                                trial_info_list)
             else:
                 results = [self.__class__._run_mp_chunk.remote(self, x)
-                           for x in self._get_mp_chunks(int(ray.cluster_resources()["CPU"]))]
+                           for x in self._get_mp_chunks(
+                               int(ray.cluster_resources()["CPU"]))]
                 for result in results:
                     for data_point, trial_info_list in ray.get(result).items():
                         if data_point not in self.data_points:
@@ -113,7 +120,7 @@ class Graph:
             # Done just to get subgraphs, change this later
             engine = CaidaCollector(BaseASCls=self.base_as_cls,
                                     GraphCls=SimulatorEngine,
-                                    _dir=_dir,
+                                    _dir=self.caida_dir,
                                     _dir_exist_ok=True).run(tsv=False)
 
             self.subgraphs = self._get_subgraphs(engine)
@@ -127,7 +134,7 @@ class Graph:
             # Making nothing a reference does nothing
             engine = CaidaCollector(BaseASCls=self.base_as_cls,
                                     GraphCls=SimulatorEngine,
-                                    _dir=self._dir,
+                                    _dir=self.caida_dir,
                                     _dir_exist_ok=True).run(tsv=False)
 
         if subgraphs is None:
@@ -141,21 +148,23 @@ class Graph:
             og_attack = self._get_attack()
             adopting_asns = self._get_adopting_ases(percent_adopt, og_attack)
             assert len(adopting_asns) != 0
-            #print("Selected adopting")
             for ASCls in self.adopt_as_classes:
 
-                print(f"Percent adopt {percent_adopt} trial {trial} {ASCls.name}",
+                print(f"Adopt {percent_adopt} trial {trial} {ASCls.name}",
                       end=" " * 10 + "\r")
-                # In case the attack has state we deepcopy it so that it doesn't remain from policy to policy
+                # In case the attack has state we deepcopy it
+                # so that it doesn't remain from policy to policy
                 attack = deepcopy(og_attack)
-                self._replace_engine_policies({x: ASCls for x in adopting_asns}, engine)
+                self._replace_engine_policies({x: ASCls
+                                               for x in adopting_asns}, engine)
                 for propagation_round in range(self.propagation_rounds):
                     # Generate the test
-                    scenario = Scenario(trial=trial, engine=engine, attack=attack, profiler=self.profiler)
-                    #print("about to run")
+                    scenario = Scenario(trial=trial,
+                                        engine=engine,
+                                        attack=attack,
+                                        profiler=self.profiler)
                     # Run test, remove reference to engine and return it
                     scenario.run(self.subgraphs, propagation_round)
-                    #print("ran")
                     # Get data point - just a frozen data class
                     # Just makes it easier to access properties later
                     dp = DataPoint(percent_adopt, ASCls, propagation_round)
@@ -169,17 +178,14 @@ class Graph:
     def _get_subgraphs(self, engine):
         """Returns all the subgraphs that you want to keep track of"""
 
-        #top_level = set(x.asn for x in sorted(engine.as_dict.values(),
-        #                       key=lambda x: x.customer_cone_size,
-        #                       reverse=True)[:100])
         top_level = set(x.asn for x in engine if x.input_clique)
         stubs_and_mh = set([x.asn for x in engine if x.stub or x.multihomed])
 
         subgraphs = dict()
         # Remove sets to make keeping deterministic properties easier
-        subgraphs["etc"] =  set([x.asn for x in engine
-                                 if x.asn not in top_level
-                                 and x.asn not in stubs_and_mh])
+        subgraphs["etc"] = set([x.asn for x in engine
+                                if x.asn not in top_level
+                                and x.asn not in stubs_and_mh])
         subgraphs["input_clique"] = top_level
         subgraphs["stubs_and_mh"] = stubs_and_mh
         return subgraphs
@@ -199,7 +205,8 @@ class Graph:
         assert len(all_ases) == len(set(all_ases)), msg
 
     def _get_attack(self):
-        return self.AttackCls(*random.sample(self.subgraphs["stubs_and_mh"], 2))
+        return self.AttackCls(*random.sample(self.subgraphs["stubs_and_mh"],
+                                             2))
 
     def _get_adopting_ases(self, percent_adopt, attack) -> list:
         """Return a list of adopting ASNs that aren't attackers"""
@@ -207,13 +214,14 @@ class Graph:
         asns_adopting = list()
         for subgraph_asns in self.subgraphs.values():
             # Get all possible ASes that could adopt
-            possible_adopting_ases = self._get_possible_adopting_asns(subgraph_asns,
-                                                                      attack)
+            possible_adopting_ases = self._get_possible_adopting_asns(
+                subgraph_asns, attack)
 
             # N choose k, k is number of ASNs that will adopt
             k = len(possible_adopting_ases) * percent_adopt // 100
             if k == 0:
-                logging.debug("ASNs adopting rounded down to 0, increasing it to 1")
+                logging.debug("ASNs adopting rounded down to 0, "
+                              "increasing it to 1")
                 k = 1
             elif k == len(possible_adopting_ases):
                 logging.debug("K is 100%, changing to 100% -1")

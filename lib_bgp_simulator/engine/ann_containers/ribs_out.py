@@ -1,10 +1,6 @@
-from collections import defaultdict, namedtuple
-from dataclasses import dataclass
+from collections import defaultdict
 
-from .. import bgp_as# import BGPAS
 from ...announcement import Announcement
-from ...enums import Relationships
-
 
 
 class RIBsOut:
@@ -13,7 +9,7 @@ class RIBsOut:
     neighbor: {prefix: announcement}
     """
 
-    __slots__ = ["_info"]
+    __slots__ = "_info",
 
     def __init__(self):
         self._info = defaultdict(dict)
@@ -23,14 +19,11 @@ class RIBsOut:
         assert isinstance(prefix, str)
         return self._info[neighbor].get(prefix)
 
-    def add_ann(self, neighbor_asn: int, ann: Announcement, prefix=None):
+    def add_ann(self, neighbor_asn: int, ann: Announcement):
         assert isinstance(neighbor_asn, int)
         assert isinstance(ann, Announcement)
-        assert prefix is None or isinstance(prefix, str)
 
-        prefix = prefix if prefix is not None else ann.prefix
-
-        self._info[neighbor_asn][prefix] = ann
+        self._info[neighbor_asn][ann.prefix] = ann
 
     def remove_entry(self, neighbor_asn, prefix):
         assert isinstance(neighbor_asn, int)
@@ -38,4 +31,4 @@ class RIBsOut:
         del self._info[neighbor_asn][prefix]
 
     def neighbors(self):
-        return self._info.keys()        
+        return self._info.keys()

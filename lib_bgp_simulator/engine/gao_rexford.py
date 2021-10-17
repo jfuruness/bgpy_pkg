@@ -11,7 +11,7 @@ def _new_ann_better(self,
 
     # Can't assert this here due to passing new_ann as None
     # msg = "Should have been removed in the validation func"
-    #assert self.asn not in new_ann.as_path, msg
+    # assert self.asn not in new_ann.as_path, msg
 
     new_rel_better = self._new_rel_better(current_ann,
                                           current_processed,
@@ -26,6 +26,7 @@ def _new_ann_better(self,
                                              current_processed,
                                              new_ann,
                                              new_processed)
+
 
 def _new_as_path_ties_better(self,
                              current_ann,
@@ -43,6 +44,7 @@ def _new_as_path_ties_better(self,
                                    current_processed,
                                    new_ann,
                                    new_processed)
+
 
 def _new_rel_better(self,
                     current_ann,
@@ -89,6 +91,7 @@ def _new_as_path_shorter(self,
         return True
     else:
         return None
+
 
 def _new_wins_ties(self,
                    current_ann,
