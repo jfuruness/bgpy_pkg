@@ -68,7 +68,7 @@ def _new_rel_better(self,
         if not new_processed:
             new_rel = default_new_recv_rel
         else:
-            new_rel = new_ann.recv_relatinship
+            new_rel = new_ann.recv_relationship
 
     if current_rel.value > new_rel.value:
         return False
