@@ -98,7 +98,7 @@ class Announcement(YamlAble):
 
     def __to_yaml_dict__(self):
         """ This optional method is called when you call yaml.dump()"""
-        return dataclasses.as_dict(self)
+        return dataclasses.asdict(self)
 
     @classmethod
     def __from_yaml_dict__(cls, dct, yaml_tag):
