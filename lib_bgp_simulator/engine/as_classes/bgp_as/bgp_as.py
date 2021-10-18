@@ -1,3 +1,5 @@
+import yaml
+
 from lib_caida_collector import AS
 
 from ...ann_containers import LocalRib
@@ -30,7 +32,7 @@ class BGPAS(AS):
             cls.as_classes.append(BGPAS)
 
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, _local_rib=None, _recv_q=None, **kwargs):
         """Add local rib and data structures here
 
         This way they can be easily cleared later without having to redo
@@ -39,8 +41,8 @@ class BGPAS(AS):
 
         if kwargs.get("reset_base", True):
             super(BGPAS, self).__init__(*args, **kwargs)
-        self._local_rib = LocalRib()
-        self._recv_q = RecvQueue()
+        self._local_rib = _local_rib if _local_rib else LocalRib()
+        self._recv_q = _recv_q if _recv_q else RecvQueue()
 
     # Propagation functionality
     from .propagate_funcs import propagate_to_providers
@@ -63,3 +65,22 @@ class BGPAS(AS):
     from .gao_rexford import _new_rel_better
     from .gao_rexford import _new_as_path_shorter
     from .gao_rexford import _new_wins_ties
+
+##############
+# Yaml funcs #
+##############
+
+    def __to_yaml_dict__(self):
+        """ This optional method is called when you call yaml.dump()"""
+
+        as_dict = super(BGPAS, self).__to_yaml_dict__()
+        as_dict.update({"_local_rib": self._local_rib,
+                        "_recv_q": self._recv_q})
+        return as_dict
+
+    @classmethod
+    def __from_yaml_dict__(cls, dct, yaml_tag):
+        """ This optional method is called when you call yaml.load()"""
+
+        return cls(**dct)
+

@@ -7,7 +7,6 @@ from ..engine_input import EngineInput
 from ..enums import Relationships
 from ..announcements import Announcement
 
-
 class SimulatorEngine(BGPDAG):
     __slots__ = "_setup",
 
@@ -92,11 +91,3 @@ class SimulatorEngine(BGPDAG):
                                                  **kwargs)
             for as_obj in rank:
                 as_obj.propagate_to_customers()
-
-    def __str__(self):
-        string = ""
-        for as_obj in self:
-            string += f"{as_obj.asn}:\n"
-            for ann in as_obj.local_rib.values():
-                string += f"\t{str(ann)}\n"
-        return string

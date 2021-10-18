@@ -1,10 +1,12 @@
 import dataclasses
 
+from yamlable import YamlAble, yaml_info, yaml_info_decorate
+
 from ..enums import Prefixes, Relationships, ROAValidity
 
-
+@yaml_info(yaml_tag="Announcement")
 @dataclasses.dataclass
-class Announcement:
+class Announcement(YamlAble):
     """MRT Announcement"""
 
     # I ran tests for 50 trials for 20% adoption for ROV
@@ -46,6 +48,14 @@ class Announcement:
     withdraw: bool
     traceback_end: bool
 
+    def __init_subclass__(cls, *args, **kwargs):
+        """This method essentially creates a list of all subclasses
+        This is allows us to easily assign yaml tags
+        """
+
+        super().__init_subclass__(*args, **kwargs)
+        yaml_info_decorate(cls, yaml_tag=cls.__name__)
+
     def __eq__(self, other):
         if isinstance(other, Announcement):
             eq = True
@@ -80,3 +90,18 @@ class Announcement:
 
     def __str__(self):
         return f"{self.prefix} {self.as_path} {self.recv_relationship}"
+
+
+##############
+# Yaml funcs #
+##############
+
+    def __to_yaml_dict__(self):
+        """ This optional method is called when you call yaml.dump()"""
+        return dataclasses.as_dict(self)
+
+    @classmethod
+    def __from_yaml_dict__(cls, dct, yaml_tag):
+        """ This optional method is called when you call yaml.load()"""
+
+        return cls(**dct)

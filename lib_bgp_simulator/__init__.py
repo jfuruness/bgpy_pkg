@@ -36,4 +36,4 @@ from .announcements import gen_superprefix_ann
 
 
 
-from .tests import run_example
+#from .tests import run_example

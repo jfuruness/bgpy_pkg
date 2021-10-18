@@ -1,7 +1,11 @@
+import yaml
+from yamlable import YamlAble, yaml_info
+
 from ...announcements import Announcement
 
 
-class LocalRib:
+@yaml_info(yaml_tag="LocalRib")
+class LocalRib(YamlAble):
     """Local RIB for a BGP AS
 
     Done separately for easy comparisons in unit testing
@@ -9,8 +13,8 @@ class LocalRib:
 
     __slots__ = "_info",
 
-    def __init__(self):
-        self._info = dict()
+    def __init__(self, _info=None):
+        self._info = _info if _info is not None else dict()
 
     def __eq__(self, other):
         # Remove this after updating the system tests
@@ -33,11 +37,17 @@ class LocalRib:
     def prefix_anns(self):
         return self._info.items()
 
-    def __str__(self):
-        """String method done to turn anns into strings"""
+##############
+# Yaml funcs #
+##############
 
-        string = "{"
-        for k, v in self._info.items():
-            string += f"{k}: {v}, "
-        string += "}"
-        return string
+    def __to_yaml_dict__(self):
+        """ This optional method is called when you call yaml.dump()"""
+
+        return self._info
+
+    @classmethod
+    def __from_yaml_dict__(cls, dct, yaml_tag):
+        """ This optional method is called when you call yaml.load()"""
+
+        return cls(_info=dct)
