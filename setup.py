@@ -27,6 +27,7 @@ setup(
         'pytest',
         'pytest-xdist',
         'tqdm',
+        'yamlable',
     ],
     classifiers=[
         'Environment :: Console',

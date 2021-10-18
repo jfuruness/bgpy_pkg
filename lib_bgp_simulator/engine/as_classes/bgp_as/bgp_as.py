@@ -1,5 +1,3 @@
-import yaml
-
 from lib_caida_collector import AS
 
 from ...ann_containers import LocalRib

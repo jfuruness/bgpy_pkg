@@ -1,6 +1,5 @@
 from collections import defaultdict
 
-import yaml
 from yamlable import YamlAble, yaml_info
 
 from ...announcements import Announcement
