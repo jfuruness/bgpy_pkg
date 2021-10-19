@@ -67,7 +67,6 @@ def main():
     engine = _get_and_run_engine()
     dump_str = dump(engine)
     print(dump_str)
-    input("ready to load!")
 
     class PrettySafeLoader(SafeLoader):
         def construct_python_tuple(self, node):
