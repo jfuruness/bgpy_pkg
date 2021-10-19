@@ -7,7 +7,7 @@ from .engine import ROVAS
 from .engine import SimulatorEngine
 
 
-
+from .enums import YamlAbleEnum
 from .enums import ROAValidity
 from .enums import Timestamps
 from .enums import Prefixes

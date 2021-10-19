@@ -81,4 +81,3 @@ class BGPAS(AS):
         """ This optional method is called when you call yaml.load()"""
 
         return cls(**dct)
-

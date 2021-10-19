@@ -1,13 +1,39 @@
-from enum import Enum
+from enum import Enum, unique
 
 
-class Outcomes(Enum):
+yamlable_enums = []
+
+# Yaml must have unique keys/values
+@unique
+class YamlAbleEnum(Enum):
+
+    def __init_subclass__(cls, *args, **kwargs):
+        """This method essentially creates a list of all subclasses
+
+        This is used later in the yaml codec
+        """
+
+        super().__init_subclass__(*args, **kwargs)
+        yamlable_enums.append(cls)
+
+    @classmethod
+    def yaml_tag(cls):
+        return f"!{cls.__name__}"
+
+    @staticmethod
+    def yamlable_enums():
+        return yamlable_enums
+
+
+class Outcomes(YamlAbleEnum):
+    __slots__ = tuple()
+
     ATTACKER_SUCCESS = 0
     VICTIM_SUCCESS = 1
     DISCONNECTED = 2
 
 
-class Relationships(Enum):
+class Relationships(YamlAbleEnum):
     __slots__ = tuple()
 
     # Must start at one for the priority
@@ -20,7 +46,7 @@ class Relationships(Enum):
     ORIGIN = 4
 
 
-class ROAValidity(Enum):
+class ROAValidity(YamlAbleEnum):
     """Possible values for ROA Validity
 
     Note that we cannot differentiate between
@@ -36,7 +62,7 @@ class ROAValidity(Enum):
     INVALID = 2
 
 
-class Timestamps(Enum):
+class Timestamps(YamlAbleEnum):
     """Different timestamps to use"""
 
     __slots__ = tuple()
@@ -46,7 +72,7 @@ class Timestamps(Enum):
     ATTACKER = 1
 
 
-class Prefixes(Enum):
+class Prefixes(YamlAbleEnum):
     """Prefixes to use for attacks
 
     prefix always belongs to the victim
@@ -59,7 +85,7 @@ class Prefixes(Enum):
     PREFIX = "1.2.0.0/16"
     SUBPREFIX = "1.2.3.0/24"
 
-class ASNs(Enum):
+class ASNs(YamlAbleEnum):
     """Default ASNs for various ASNs"""
 
     __slots__ = tuple()
