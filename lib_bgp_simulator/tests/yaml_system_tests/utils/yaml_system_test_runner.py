@@ -30,6 +30,9 @@ class YamlSystemTestRunner:
 
         return self.load_engine_and_input()
 
+    def load_engine_and_input(self):
+        raise NotImplementedError
+
     def get_results(self, engine, engine_input):
         scenario = Scenario(engine=engine, engine_input=engine_input)
         subgraphs = {"all_ases": [x.asn for x in engine]}
@@ -111,93 +114,3 @@ class YamlSystemTestRunner:
     @property
     def traceback_yaml_path(self):
         return self.dir_ / "engine_traceback.yaml"
-
-
-def run_yaml_system_test(_dir, links=None, BaseASCls
-
-
-
-def _get_engine_and_subgraphs(_dir, BaseASCls):
-    # Done just to get subgraphs, change this later
-    engine = CaidaCollector(BaseASCls=BaseASCls,
-                            GraphCls=SimulatorEngine,
-                            _dir=_dir,
-                            _dir_exist_ok=True).run(tsv=False)
-    subgraphs = Graph._get_subgraphs(None, engine)
-    return engine, subgraphs
-
-
-def _get_and_run_engine(_dir, BaseASCls, engine):
-    engine_input = SubprefixHijack(subgraphs, engine, 20)
-    engine.setup(engine_input, BGPAS, ROVAS)
-    engine.run(propagation_round=0, engine_input=engine_input)
-    return engine
-
-def main():
-
-    # YAML STUFF
-    from yamlable import YamlCodec
-    from typing import Type, Any, Iterable, Tuple
-
-    # 2-way mappings between the types and the yaml tags
-    types_to_yaml_tags = {X: X.yaml_suffix() for X in YamlAbleEnum.yamlable_enums()}
-    yaml_tags_to_types = {v: k for k, v in types_to_yaml_tags.items()}
-
-    class MyCodec(YamlCodec):
-        @classmethod
-        def get_yaml_prefix(cls):
-            return "!yamlable_codec/"  # This is our root yaml tag
-
-        # ---- 
-
-        @classmethod
-        def get_known_types(cls) -> Iterable[Type[Any]]:
-            # return the list of types that we know how to encode
-            return types_to_yaml_tags.keys()
-
-        @classmethod
-        def is_yaml_tag_supported(cls, yaml_tag_suffix: str) -> bool:
-            # return True if the given yaml tag suffix is supported
-            return yaml_tag_suffix in yaml_tags_to_types.keys()
-
-        # ----
-
-        @classmethod
-        def from_yaml_dict(cls, yaml_tag_suffix: str, dct, **kwargs):
-            # Create an object corresponding to the given tag, from the decoded dict
-            typ = yaml_tags_to_types[yaml_tag_suffix]
-            if issubclass(typ, YamlAbleEnum):
-                # Don't use unessecary name
-                return typ(value=dct["value"])
-            else:
-                return typ(**dct)
-
-        @classmethod
-        def to_yaml_dict(cls, obj) -> Tuple[str, Any]:
-            if isinstance(obj, YamlAbleEnum):
-                return types_to_yaml_tags[type(obj)], {"value": obj.value, "name": obj.name}
-            else:
-                # Encode the given object and also return the tag that it should have
-                return types_to_yaml_tags[type(obj)], vars(obj)
-
-    MyCodec.register_with_pyyaml()
-    import yaml
-    from yaml import dump, load, safe_load, SafeLoader
-
-    engine = _get_and_run_engine()
-    # Turns off references in the yaml which makes it hard to read for enums
-    yaml.Dumper.ignore_aliases = lambda *args : True
-    dump_str = dump(engine)
-    print(dump_str)
-
-    class PrettySafeLoader(SafeLoader):
-        def construct_python_tuple(self, node):
-            return tuple(self.construct_sequence(node))
-
-    PrettySafeLoader.add_constructor(
-        u'tag:yaml.org,2002:python/tuple',
-        PrettySafeLoader.construct_python_tuple)
-    load(dump_str, Loader=PrettySafeLoader)
-
-if __name__ == "__main__":
-    main()
