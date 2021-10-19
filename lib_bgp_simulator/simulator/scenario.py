@@ -20,6 +20,13 @@ class Scenario:
         # delete engine from attrs so that garbage collector can come
         # NOTE that if there are multiple propagation rounds, the engine
         # Will still be there
+        """
+        import yaml
+        print(yaml.dump(self.engine))
+        print("dumped")
+        print(yaml.load(yaml.safe_dump(self.engine)))
+        input("loaded")
+        """
         del self.engine
 
     def _collect_data(self, subgraphs):

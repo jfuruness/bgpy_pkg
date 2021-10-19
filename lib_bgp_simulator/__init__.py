@@ -24,6 +24,7 @@ from .engine_input import SuperprefixPrefixHijack
 
 from .simulator import DataPoint
 from .simulator import Graph
+from .simulator import MPMethod
 from .simulator import Scenario
 from .simulator import Simulator
 

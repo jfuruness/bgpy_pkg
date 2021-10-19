@@ -1,4 +1,5 @@
 import math
+from multiprocessing import cpu_count
 from statistics import mean, stdev
 import sys
 
@@ -23,6 +24,7 @@ def aggregate_and_write(self, graph_dir, sim):
     all_subg_names = []
     all_propagation_rounds = []
     all_adopting = []
+    graph_dirs = []
 
     for subg_name, outcome, propagation_round in self.get_graphs_to_write():
         # {policy: Line}
@@ -52,13 +54,19 @@ def aggregate_and_write(self, graph_dir, sim):
             all_subg_names.append(subg_name)
             all_propagation_rounds.append(propagation_round)
             all_adopting.append(adopting)
+            adopting_name = "adopting" if adopting else "non adopting"
+            final_dir = self._dir / subg_name / self.EngineInputCls.__name__ / adopting_name
+            final_dir.mkdir(parents=True, exist_ok=True)
+            graph_dirs.append(final_dir)
+
 
     all_args = [all_lines_to_write,
                 all_outcomes,
                 all_subg_names,
                 all_propagation_rounds,
-                all_adopting]
-    mp_call(self._write, all_args, desc="Writing graphs")
+                all_adopting,
+                graph_dirs]
+    mp_call(self._write, all_args, desc="Writing graphs", cpus=cpu_count() - 1)
 
 
 def get_graphs_to_write(self):
@@ -81,7 +89,7 @@ def _get_line(self, policy, lines, data_point):
     return lines[label]
 
 
-def _write(self, lines, outcome, subg_name, propagation_round, adopting):
+def _write(self, lines, outcome, subg_name, propagation_round, adopting, final_dir):
     fig, ax = plt.subplots()
     plt.xlim(0, 100)
     plt.ylim(0, 100)
@@ -103,9 +111,6 @@ def _write(self, lines, outcome, subg_name, propagation_round, adopting):
     matplotlib.use('Agg')
     fname = f"{outcome.name}_round_{propagation_round}.png"
 
-    adopting_name = "adopting" if adopting else "non adopting"
-    final_dir = self._dir / subg_name / self.EngineInputCls.__name__ / adopting_name
-    final_dir.mkdir(parents=True, exist_ok=True)
     plt.savefig(final_dir / fname)
     # Done here so that it does not leave graphs open which accumulate memory
     # Other methods appear to be wrong here
