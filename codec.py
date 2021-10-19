@@ -22,14 +22,13 @@ def main():
     from typing import Type, Any, Iterable, Tuple
 
     # 2-way mappings between the types and the yaml tags
-    types_to_yaml_tags = {X: X.yaml_tag() for X in YamlAbleEnum.yamlable_enums()}
-    types_to_yaml_tags[tuple] = "!!python/tuple"
+    types_to_yaml_tags = {X: X.yaml_suffix() for X in YamlAbleEnum.yamlable_enums()}
     yaml_tags_to_types = {v: k for k, v in types_to_yaml_tags.items()}
 
     class MyCodec(YamlCodec):
         @classmethod
         def get_yaml_prefix(cls):
-            return "!mycodec/"  # This is our root yaml tag
+            return "!yamlable_codec/"  # This is our root yaml tag
 
         # ---- 
 
@@ -49,22 +48,26 @@ def main():
         def from_yaml_dict(cls, yaml_tag_suffix: str, dct, **kwargs):
             # Create an object corresponding to the given tag, from the decoded dict
             typ = yaml_tags_to_types[yaml_tag_suffix]
-            if typ is tuple:
-                input("asfda")
-            return typ(**dct)
+            if issubclass(typ, YamlAbleEnum):
+                # Don't use unessecary name
+                return typ(value=dct["value"])
+            else:
+                return typ(**dct)
 
         @classmethod
         def to_yaml_dict(cls, obj) -> Tuple[str, Any]:
             if isinstance(obj, YamlAbleEnum):
-                return types_to_yaml_tags[type(obj)], {"value": obj.value}
+                return types_to_yaml_tags[type(obj)], {"value": obj.value, "name": obj.name}
             else:
                 # Encode the given object and also return the tag that it should have
                 return types_to_yaml_tags[type(obj)], vars(obj)
 
     MyCodec.register_with_pyyaml()
+    import yaml
     from yaml import dump, load, safe_load, SafeLoader
 
     engine = _get_and_run_engine()
+    yaml.Dumper.ignore_aliases = lambda *args : True
     dump_str = dump(engine)
     print(dump_str)
 

@@ -17,8 +17,8 @@ class YamlAbleEnum(Enum):
         yamlable_enums.append(cls)
 
     @classmethod
-    def yaml_tag(cls):
-        return f"!{cls.__name__}"
+    def yaml_suffix(cls):
+        return cls.__name__
 
     @staticmethod
     def yamlable_enums():
