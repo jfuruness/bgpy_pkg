@@ -3,13 +3,65 @@ from lib_bgp_simulator import Simulator, Graph, ROVAS, SubprefixHijack, BGPAS, S
 from datetime import datetime
 from pathlib import Path
 
+class YamlSystemTestRunner:
 
-def _get_and_run_engine():
+    def __init__(self, dir_):
+        """dir_ should be the dir_ with the yaml"""
+        self.dir_ = dir_
+        self.codec = SimulatorCodec()
+
+    def write_empty_engine_yaml(self,
+                                customer_provider_links: set,
+                                peer_links: set,
+                                BaseASCls=None,
+                                ixps=set(),
+                                input_clique=set()
+                                adopting_as_dict={}):
+        """Writes yaml empty engine graph"""
+
+        engine = SimulatorEngine(customer_provider_links,
+                                 peer_links,
+                                 ixps,
+                                 BaseASCls=BaseASCls,
+                                 ixps=ixps,
+                                 input_clique=input_clique)
+        self.codec.dump(engine, path=self.empty_engine_yaml_path)
+
+    def write_engine_input_yaml(self,
+                                EngineInputCls,
+                                attacker_asn,
+                                victim_asn,
+                                as_classes: dict):
+        """Writes engine input yaml"""
+
+        engine_input = EngineInputCls(attacker_asn=attacker_asn,
+                                      victim_asn=victim_asn,
+                                      as_classes=as_classes)
+        self.codec.dump(engine_input, path=self.engine_input_yaml_path)
+
+    @property
+    def empty_engine_yaml_path(self):
+        return self.dir_ / "empty_engine_graph.yaml"
+
+    @property
+    def engine_input_yaml_path(self):
+        return self.dir_ / "engine_input.yaml"
+
+def run_yaml_system_test(_dir, links=None, BaseASCls
+
+
+
+def _get_engine_and_subgraphs(_dir, BaseASCls):
     # Done just to get subgraphs, change this later
-    engine = CaidaCollector(BaseASCls=BGPAS,
+    engine = CaidaCollector(BaseASCls=BaseASCls,
                             GraphCls=SimulatorEngine,
+                            _dir=_dir,
                             _dir_exist_ok=True).run(tsv=False)
     subgraphs = Graph._get_subgraphs(None, engine)
+    return engine, subgraphs
+
+
+def _get_and_run_engine(_dir, BaseASCls, engine):
     engine_input = SubprefixHijack(subgraphs, engine, 20)
     engine.setup(engine_input, BGPAS, ROVAS)
     engine.run(propagation_round=0, engine_input=engine_input)
@@ -67,6 +119,7 @@ def main():
     from yaml import dump, load, safe_load, SafeLoader
 
     engine = _get_and_run_engine()
+    # Turns off references in the yaml which makes it hard to read for enums
     yaml.Dumper.ignore_aliases = lambda *args : True
     dump_str = dump(engine)
     print(dump_str)

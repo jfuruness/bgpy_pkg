@@ -1,16 +1,19 @@
 import random
 
+from yamlable import YamlAble, yaml_info, yaml_info_decorate
+
 from ipaddress import ip_network
 
 from ..announcements import Announcement
 from ..enums import Outcomes, Relationships
 
 
-class EngineInput:
+@yaml_info(yaml_tag="EngineInput")
+class EngineInput(YamlAble):
     """Contains information regarding an attack"""
 
     __slots__ = ("attacker_asn", "victim_asn", "adopting_asns",
-                 "announcements")
+                 "announcements", "as_classes", "extra_ann_kwargs")
 
     AnnCls = Announcement
 
@@ -29,11 +32,36 @@ class EngineInput:
         # Fix this later once the system test framework is updated
         if "easy" not in str(cls).lower():
             cls.subclasses.append(cls)
+        # Add yaml tag to subclass
+        yaml_info_decorate(cls, yaml_tag=cls.__name__)
 
-    def __init__(self, subgraph_asns, engine, percent_adopt, **extra_ann_kwargs):
-        self.attacker_asn = self._get_attacker_asn(subgraph_asns, engine)
-        self.victim_asn = self._get_victim_asn(subgraph_asns, engine)
-        self.adopting_asns = self._get_adopting_asns(subgraph_asns, engine, percent_adopt)
+    def __init__(self,
+                 subgraph_asns=None,
+                 engine=None,
+                 percent_adopt=None,
+                 # These are normally set to None
+                 attacker_asn=None,
+                 victim_asn=None,
+                 as_classes=None,
+                 **extra_ann_kwargs):
+        if attacker_asn:
+            self.attacker_asn = attacker_asn
+        else:
+            self.attacker_asn = self._get_attacker_asn(subgraph_asns, engine)
+
+        if victim_asn:
+            self.victim_asn = victim_asn
+        else:
+            self.victim_asn = self._get_victim_asn(subgraph_asns, engine)
+
+        if as_classes:
+            self.adopting_asns = None
+            self.as_classes = as_classes
+        else:
+            self.adopting_asns = self._get_adopting_asns(subgraph_asns, engine, percent_adopt)
+            self.as_classes = None
+        # Used for dumping and loading yaml
+        self.extra_ann_kwargs = extra_ann_kwargs
         self.announcements = self._get_announcements(**extra_ann_kwargs)
         # Announcement prefixes must overlap
         # If they don't, traceback wouldn't work
@@ -134,7 +162,7 @@ class EngineInput:
         return self._default_adopters() + self._default_non_adopters()
 
     def get_as_classes(self, engine, BaseASCls, AdoptingASCls):
-        return {asn: AdoptingASCls for asn in self.adopting_asns}
+        return self.as_classes if self.as_classes else {asn: AdoptingASCls for asn in self.adopting_asns}
 
 ################
 # Helper Funcs #
@@ -160,3 +188,18 @@ class EngineInput:
                     subprefix_list.append(str(prefix))
         # Get rid of ip_network
         return {str(k): v for k, v in prefix_subprefix_dict.items()}
+
+##############
+# Yaml Funcs #
+##############
+
+    def __to_yaml_dict__(self):
+        """This optional method is called when you call yaml.dump()"""
+        return {"attacker_asn": self.attacker_asn,
+                "victim_asn": self.victim_asn,
+                "as_classes": self.as_classes,
+                "extra_ann_kwargs": self.extra_ann_kwargs}
+
+    def __from_yaml_dict__(cls, dct, yaml_tag):
+        """This optional method is called when you call yaml.load()"""
+        return cls(**dct)
