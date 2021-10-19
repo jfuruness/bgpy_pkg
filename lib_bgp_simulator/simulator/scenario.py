@@ -12,7 +12,9 @@ class Scenario:
         self.data = dict()
         self.profiler = profiler
 
-    def run(self, subgraphs, propagation_round: int):
+    def run(self, subgraphs, propagation_round: int, engine_setup=False):
+        if engine_setup:
+            self.engine.setup(self.engine_input)
         # Run engine
         self.engine.run(propagation_round=propagation_round,
                         engine_input=self.engine_input)
@@ -20,14 +22,9 @@ class Scenario:
         # delete engine from attrs so that garbage collector can come
         # NOTE that if there are multiple propagation rounds, the engine
         # Will still be there
-        """
-        import yaml
-        print(yaml.dump(self.engine))
-        print("dumped")
-        print(yaml.load(yaml.safe_dump(self.engine)))
-        input("loaded")
-        """
         del self.engine
+
+        return cache
 
     def _collect_data(self, subgraphs):
         """Collects data about the test run before engine is deleted"""
@@ -56,6 +53,7 @@ class Scenario:
                     percentage_outcomes[outcome][policy] = percentage
 
             self.outcome_policy_percentages[subg_name] = percentage_outcomes
+        return cache
 
     def _get_outcomes(self, policies, countable_asns, cache):
         outcomes = {x: {y: 0 for y in policies}
