@@ -42,6 +42,18 @@ class BGPAS(AS):
         self._local_rib = _local_rib if _local_rib else LocalRib()
         self._recv_q = _recv_q if _recv_q else RecvQueue()
 
+    def __eq__(self, other):
+        if isinstance(other, BGPAS):
+            for attr in self.__slots__:
+                if not hasattr(self, attr) == hasattr(other, attr):
+                    return False
+                elif hasattr(self, attr):
+                    if not getattr(self, attr) == getattr(other, attr):
+                        return False
+            return True
+        else:
+            raise NotImplementedError
+
     # Propagation functionality
     from .propagate_funcs import propagate_to_providers
     from .propagate_funcs import propagate_to_customers

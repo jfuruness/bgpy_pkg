@@ -19,6 +19,12 @@ class SimulatorEngine(BGPDAG):
                                               **kwargs)
         self._setup: bool = False
 
+    def __eq__(self, other):
+        if isinstance(other, SimulatorEngine):
+            return self.as_dict == other.as_dict
+        else:
+            raise NotImplementedError
+
     def setup(self,
               engine_input: EngineInput,
               BaseASCls: BGPAS,

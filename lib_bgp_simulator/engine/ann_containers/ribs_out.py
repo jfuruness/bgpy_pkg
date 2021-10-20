@@ -15,6 +15,15 @@ class RIBsOut:
     def __init__(self):
         self._info = defaultdict(dict)
 
+    def __eq__(self, other):
+        # Remove this after updating the system tests
+        if isinstance(other, dict):
+            return self._info == other
+        elif isinstance(other, RIBsOut):
+            return self._info == other._info
+        else:
+            raise NotImplementedError
+
     def get_ann(self, neighbor_asn: int, prefix: str) -> Optional[Ann]:
         return self._info[neighbor_asn].get(prefix)
 

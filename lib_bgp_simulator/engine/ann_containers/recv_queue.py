@@ -18,6 +18,15 @@ class RecvQueue(YamlAble):
     def __init__(self, _info=None):
         self._info = _info if _info is not None else defaultdict(list)
 
+    def __eq__(self, other):
+        # Remove this after updating the system tests
+        if isinstance(other, dict):
+            return self._info == other
+        elif isinstance(other, RecvQueue):
+            return self._info == other._info
+        else:
+            raise NotImplementedError
+
     def add_ann(self, ann: Announcement):
         self._info[ann.prefix].append(ann)
 

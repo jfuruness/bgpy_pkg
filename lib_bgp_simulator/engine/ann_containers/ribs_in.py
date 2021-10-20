@@ -18,6 +18,15 @@ class RIBsIn:
     def __init__(self):
         self._info = defaultdict(dict)
 
+    def __eq__(self, other):
+        # Remove this after updating the system tests
+        if isinstance(other, dict):
+            return self._info == other
+        elif isinstance(other, RIBsIn):
+            return self._info == other._info
+        else:
+            raise NotImplementedError
+
     def get_unprocessed_ann_recv_rel(self, neighbor_asn: int, prefix: str):
         return self._info[neighbor_asn].get(prefix)
 

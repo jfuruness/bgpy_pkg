@@ -32,6 +32,15 @@ class SendQueue:
     def __init__(self):
         self._info = defaultdict(lambda: defaultdict(SendInfo))
 
+    def __eq__(self, other):
+        # Remove this after updating the system tests
+        if isinstance(other, dict):
+            return self._info == other
+        elif isinstance(other, SendQueue):
+            return self._info == other._info
+        else:
+            raise NotImplementedError
+
     def add_ann(self, neighbor_asn: int, ann: Ann):
 
         # Withdraw

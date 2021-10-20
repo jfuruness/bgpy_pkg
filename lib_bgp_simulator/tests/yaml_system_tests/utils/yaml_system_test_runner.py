@@ -109,7 +109,7 @@ class YamlSystemTestRunner:
     def validate_scenario(self, scenario):
         pass
 
-    def validate_traceback_guess(traceback_guess):
+    def validate_traceback_guess(self, traceback_guess):
         traceback_guess = self.codec.load(self.traceback_guess_yaml_path)
         try:
             traceback_ground_truth = self.codec.load(self.traceback_truth_yaml_path)
