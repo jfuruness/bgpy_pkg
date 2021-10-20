@@ -1,15 +1,8 @@
 NEEDS DOCS
 
-Installation for dev:
+Installation for dev
 ```
-git clone git@github.com:jfuruness/lib_bgp_simulator.git
-cd lib_bgp_simulator
-pip3 install -e .
-```
-
-Installation for speed
-```
-sudo apt install -y pypy3-dev python3-venv
+sudo apt install -y pypy3-dev python3-venv graphviz
 # Higher version than in apt that supports python 3.7
 # Must install from tarball
 # https://www.pypy.org/download.html
