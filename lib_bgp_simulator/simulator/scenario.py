@@ -12,19 +12,17 @@ class Scenario:
         self.data = dict()
         self.profiler = profiler
 
-    def run(self, subgraphs, propagation_round: int, engine_setup=False):
-        if engine_setup:
-            self.engine.setup(self.engine_input)
+    def run(self, subgraphs, propagation_round: int):
         # Run engine
         self.engine.run(propagation_round=propagation_round,
                         engine_input=self.engine_input)
-        self._collect_data(subgraphs)
+        traceback_outcomes = self._collect_data(subgraphs)
         # delete engine from attrs so that garbage collector can come
         # NOTE that if there are multiple propagation rounds, the engine
         # Will still be there
         del self.engine
 
-        return cache
+        return traceback_outcomes
 
     def _collect_data(self, subgraphs):
         """Collects data about the test run before engine is deleted"""

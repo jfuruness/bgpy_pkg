@@ -203,8 +203,13 @@ class EngineInput(YamlAble):
                                for asn, ASCls in self.as_classes.items()},
                 "extra_ann_kwargs": self.extra_ann_kwargs}
 
+    @classmethod
     def __from_yaml_dict__(cls, dct, yaml_tag):
         """This optional method is called when you call yaml.load()"""
-        dct["as_classes"] = {asn: AS.name_to_subclass_dict[name]
-                             for asn, name in dct["as_classes"].items()}
-        return cls(**dct)
+        as_classes = {asn: AS.name_to_subclass_dict[name]
+                      for asn, name in dct["as_classes"].items()}
+
+        return cls(attacker_asn=dct["attacker_asn"],
+                   victim_asn=dct["victim_asn"],
+                   as_classes=as_classes,
+                   **dct["extra_ann_kwargs"])

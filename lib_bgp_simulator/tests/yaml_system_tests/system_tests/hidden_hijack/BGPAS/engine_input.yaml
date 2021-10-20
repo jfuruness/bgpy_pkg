@@ -1,0 +1,10 @@
+!yamlable/SubprefixHijack
+as_classes:
+  1: BGPAS
+  2: BGPAS
+  3: BGPAS
+  666: BGPAS
+  777: BGPAS
+attacker_asn: 666
+extra_ann_kwargs: {}
+victim_asn: 777
