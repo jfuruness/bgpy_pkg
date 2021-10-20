@@ -17,6 +17,9 @@ class Scenario:
         self.engine.run(propagation_round=propagation_round,
                         engine_input=self.engine_input)
         traceback_outcomes = self._collect_data(subgraphs)
+        # Don't count these for diagrams and such
+        for uncountable_asn in self.engine_input.uncountable_asns:
+            traceback_outcomes.pop(uncountable_asn, None)
         # delete engine from attrs so that garbage collector can come
         # NOTE that if there are multiple propagation rounds, the engine
         # Will still be there

@@ -1,0 +1,97 @@
+digraph {
+	bgcolor="purple:pink"
+	Legend [label=<<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4">
+                      <TR>
+                        <TD BGCOLOR="red:yellow">&#128520; ATTACKER SUCCESS &#128520;</TD>
+                        <TD>3</TD>
+                      </TR>
+                      <TR>
+                        <TD BGCOLOR="green:white">&#128519; VICTIM SUCCESS &#128519;</TD>
+                        <TD>0</TD>
+                      </TR>
+                      <TR>
+                        <TD BGCOLOR="grey:white">&#10041; DISCONNECTED &#10041;</TD>
+                        <TD>0</TD>
+                      </TR>
+                    </TABLE>> color=black fillcolor=white shape=plaintext style=filled]
+	1 [label=<
+                    <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4">
+                      <TR>
+                        <TD COLSPAN="3" BORDER="0">1</TD>
+                      </TR><TR>
+                    <TD COLSPAN="3">Local RIB</TD>
+                  </TR><TR>
+                        <TD>/16</TD>
+                        <TD>1, 2, 777</TD>
+                      </TR></TABLE>> color=black fillcolor="red:yellow" style=filled]
+	2 [label=<
+                    <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4">
+                      <TR>
+                        <TD COLSPAN="3" BORDER="0">2</TD>
+                      </TR><TR>
+                    <TD COLSPAN="3">Local RIB</TD>
+                  </TR><TR>
+                        <TD>/16</TD>
+                        <TD>2, 777</TD>
+                      </TR><TR>
+                        <TD>/24</TD>
+                        <TD>2, 3, 666</TD>
+                      </TR></TABLE>> color=black fillcolor="red:yellow" style=filled]
+	3 [label=<
+                    <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4">
+                      <TR>
+                        <TD COLSPAN="3" BORDER="0">3</TD>
+                      </TR><TR>
+                    <TD COLSPAN="3">Local RIB</TD>
+                  </TR><TR>
+                        <TD>/16</TD>
+                        <TD>3, 2, 777</TD>
+                      </TR><TR>
+                        <TD>/24</TD>
+                        <TD>3, 666</TD>
+                      </TR></TABLE>> color=black fillcolor="red:yellow" style=filled]
+	666 [label=<
+                    <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4">
+                      <TR>
+                        <TD COLSPAN="3" BORDER="0">&#128520;666&#128520;</TD>
+                      </TR><TR>
+                    <TD COLSPAN="3">Local RIB</TD>
+                  </TR><TR>
+                        <TD>/16</TD>
+                        <TD>666, 3, 2, 777</TD>
+                      </TR><TR>
+                        <TD>/24</TD>
+                        <TD>666</TD>
+                      </TR></TABLE>> color=black fillcolor=red style=filled]
+	777 [label=<
+                    <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4">
+                      <TR>
+                        <TD COLSPAN="3" BORDER="0">&#128519;777&#128519;</TD>
+                      </TR><TR>
+                    <TD COLSPAN="3">Local RIB</TD>
+                  </TR><TR>
+                        <TD>/16</TD>
+                        <TD>777</TD>
+                      </TR><TR>
+                        <TD>/24</TD>
+                        <TD>777, 2, 3, 666</TD>
+                      </TR></TABLE>> color=black fillcolor=green style=filled]
+	1 -> 2
+	2 -> 777
+	3 -> 666
+	3 -> 2 [dir=none]
+	subgraph Propagation_rank_0 {
+		rank=same
+		666
+		777
+	}
+	subgraph Propagation_rank_1 {
+		rank=same
+		2
+		3
+	}
+	subgraph Propagation_rank_2 {
+		rank=same
+		1
+	}
+}

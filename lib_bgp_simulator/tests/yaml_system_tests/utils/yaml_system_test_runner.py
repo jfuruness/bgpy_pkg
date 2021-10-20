@@ -4,6 +4,7 @@ from datetime import datetime
 from pathlib import Path
 import logging
 
+from .diagram import Diagram
 from .simulator_codec import SimulatorCodec
 
 class YamlSystemTestRunner:
@@ -21,6 +22,8 @@ class YamlSystemTestRunner:
         scenario, engine_output_guess = self.get_results(engine,
                                                          engine_input,
                                                          empty_engine_kwargs["BaseASCls"])
+
+        self.write_diagrams(engine, engine_output_guess, engine_input)
 
         self.write_check_results(engine, scenario, engine_output_guess)
 
@@ -50,6 +53,25 @@ class YamlSystemTestRunner:
         traceback_guess = scenario.run(subgraphs, 0)
 
         return scenario, traceback_guess
+
+    def write_diagrams(self, engine_guess, engine_output_guess, engine_input):
+        """Write diagrams for both guess and ground truth"""
+
+        # Diagram for guess
+        Diagram().generate_as_graph(engine_guess,
+                                    engine_output_guess,
+                                    engine_input,
+                                    path=self.engine_output_guess_gv_path)
+
+
+        engine_truth = self.codec.load(path=self.engine_output_truth_yaml_path)
+        traceback_truth = self.codec.load(path=self.traceback_truth_yaml_path)
+
+        # Diagram for ground truth
+        Diagram().generate_as_graph(engine_truth,
+                                    traceback_truth,
+                                    engine_input,
+                                    path=self.engine_output_truth_gv_path)
 
     def write_check_results(self, engine, scenario, traceback_guess):
         if not self.engine_output_guess_yaml_path.exists():
@@ -131,12 +153,20 @@ class YamlSystemTestRunner:
         return self.dir_ / "engine_output_ground_truth.yaml"
 
     @property
+    def engine_output_truth_gv_path(self):
+        return self.dir_ / "engine_output_ground_truth.gv"
+
+    @property
     def traceback_truth_yaml_path(self):
         return self.dir_ / "engine_traceback_ground_truth.yaml"
 
     @property
     def engine_output_guess_yaml_path(self):
         return self.dir_ / "engine_output_guess.yaml"
+
+    @property
+    def engine_output_guess_gv_path(self):
+        return self.dir_ / "engine_output_guess.gv"
 
     @property
     def traceback_guess_yaml_path(self):
