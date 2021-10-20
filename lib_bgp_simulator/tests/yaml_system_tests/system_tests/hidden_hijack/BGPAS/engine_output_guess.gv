@@ -62,7 +62,7 @@ digraph {
                       </TR><TR>
                         <TD>/24</TD>
                         <TD>666</TD>
-                      </TR></TABLE>> color=black fillcolor=red style=filled]
+                      </TR></TABLE>> color=black fillcolor=red shape=doublecircle style=filled]
 	777 [label=<
                     <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4">
                       <TR>
@@ -75,7 +75,7 @@ digraph {
                       </TR><TR>
                         <TD>/24</TD>
                         <TD>777, 2, 3, 666</TD>
-                      </TR></TABLE>> color=black fillcolor=green style=filled]
+                      </TR></TABLE>> color=black fillcolor=green shape=doublecircle style=filled]
 	1 -> 2
 	2 -> 777
 	3 -> 666

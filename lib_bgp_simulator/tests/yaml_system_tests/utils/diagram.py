@@ -150,9 +150,9 @@ class Diagram:
     def _get_kwargs(self, as_obj, engine, traceback, engine_input, *args):
         kwargs = {"color": "black", "style": "filled", "fillcolor": "white"}
         if as_obj.asn == engine_input.attacker_asn:
-            kwargs.update({"fillcolor": "red"})
+            kwargs.update({"fillcolor": "red", "shape": "doublecircle"})
         elif as_obj.asn == engine_input.victim_asn:
-            kwargs.update({"fillcolor": "green"})
+            kwargs.update({"fillcolor": "green", "shape": "doublecircle"})
         elif traceback[as_obj.asn] == Outcomes.ATTACKER_SUCCESS:
             kwargs.update({"fillcolor": "red:yellow"})
         return kwargs
