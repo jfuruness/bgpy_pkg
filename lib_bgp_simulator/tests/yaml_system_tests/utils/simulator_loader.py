@@ -6,6 +6,8 @@ from pathlib import Path
 from yamlable import YamlCodec
 from typing import Type, Any, Iterable, Tuple
 
+from yaml import SafeLoader
+
 # https://stackoverflow.com/a/39554610/8903959
 class SimulatorLoader(SafeLoader):
     def construct_python_tuple(self, node):

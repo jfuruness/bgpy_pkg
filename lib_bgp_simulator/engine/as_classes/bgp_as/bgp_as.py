@@ -14,12 +14,12 @@ class BGPAS(AS):
     as_class_names = []
     as_classes = []
 
-    def __init_subclass__(cls, **kwargs):
+    def __init_subclass__(cls, *args, **kwargs):
         """This method essentially creates a list of all subclasses
         This is allows us to know all attackers that have been created
         """
 
-        super().__init_subclass__(**kwargs)
+        super().__init_subclass__(*args, **kwargs)
         assert hasattr(cls, "name"), "Policy must have a name"
         cls.as_class_names.append(cls.name)
         msg = (f"Duplicate name {cls.name} with {cls.__name__}."

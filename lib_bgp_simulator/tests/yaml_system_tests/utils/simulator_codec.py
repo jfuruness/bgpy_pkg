@@ -8,6 +8,8 @@ from typing import Type, Any, Iterable, Tuple
 import yaml
 from yaml import dump, load, safe_load, SafeLoader
 
+from .simulator_loader import SimulatorLoader
+
 
 # 2-way mappings between the types and the yaml tags
 types_to_yaml_tags = {X: X.yaml_suffix() for X in YamlAbleEnum.yamlable_enums()}

@@ -1,5 +1,7 @@
 import random
 
+from lib_caida_collector import AS
+
 from yamlable import YamlAble, yaml_info, yaml_info_decorate
 
 from ipaddress import ip_network
@@ -197,9 +199,12 @@ class EngineInput(YamlAble):
         """This optional method is called when you call yaml.dump()"""
         return {"attacker_asn": self.attacker_asn,
                 "victim_asn": self.victim_asn,
-                "as_classes": self.as_classes,
+                "as_classes": {asn: AS.subclass_to_name_dict[ASCls]
+                               for asn, ASCls in self.as_classes.items()},
                 "extra_ann_kwargs": self.extra_ann_kwargs}
 
     def __from_yaml_dict__(cls, dct, yaml_tag):
         """This optional method is called when you call yaml.load()"""
+        dct["as_classes"] = {asn: AS.name_to_subclass_dict[name]
+                             for asn, name in dct["as_classes"].items()}
         return cls(**dct)

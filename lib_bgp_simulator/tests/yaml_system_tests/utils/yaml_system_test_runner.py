@@ -3,6 +3,8 @@ from lib_bgp_simulator import Simulator, Graph, ROVAS, SubprefixHijack, BGPAS, S
 from datetime import datetime
 from pathlib import Path
 
+from .simulator_codec import SimulatorCodec
+
 class YamlSystemTestRunner:
 
     def __init__(self, dir_):
@@ -31,7 +33,10 @@ class YamlSystemTestRunner:
         return self.load_engine_and_input()
 
     def load_engine_and_input(self):
-        raise NotImplementedError
+        engine = self.codec.load(self.empty_engine_yaml_path)
+
+        engine_input = self.codec.load(self.engine_input_yaml_path)
+        return engine, engine_input
 
     def get_results(self, engine, engine_input):
         scenario = Scenario(engine=engine, engine_input=engine_input)
@@ -43,10 +48,10 @@ class YamlSystemTestRunner:
         return scenario, traceback_guess
 
     def write_check_results(self, engine, scenario, traceback_guess):
-        if not self.engine_output_yaml_path.exists():
+        if not self.engine_output_guess_yaml_path.exists():
             self.write_engine_output_yaml(engine)
 
-        if not self.traceback_yaml_path.exists():
+        if not self.traceback_yaml_guess_path.exists():
             self.write_traceback_yaml(traceback_guess)
 
         self.validate_engine_output(engine)
@@ -54,27 +59,25 @@ class YamlSystemTestRunner:
         self.validate_traceback_guess(traceback_guess)
 
     def write_empty_engine_yaml(self,
-                                customer_provider_links: set,
-                                peer_links: set,
+                                customer_provider_links: set = None,
+                                peer_links: set = None,
                                 BaseASCls=None,
                                 ixps=set(),
-                                input_clique=set()
-                                adopting_as_dict={}):
+                                input_clique=set()):
         """Writes yaml empty engine graph"""
 
         engine = SimulatorEngine(customer_provider_links,
                                  peer_links,
-                                 ixps,
                                  BaseASCls=BaseASCls,
                                  ixps=ixps,
                                  input_clique=input_clique)
         self.codec.dump(engine, path=self.empty_engine_yaml_path)
 
     def write_engine_input_yaml(self,
-                                EngineInputCls,
-                                attacker_asn,
-                                victim_asn,
-                                as_classes: dict):
+                                EngineInputCls=None,
+                                attacker_asn=None,
+                                victim_asn=None,
+                                as_classes: dict = None):
         """Writes engine input yaml"""
 
         engine_input = EngineInputCls(attacker_asn=attacker_asn,
@@ -83,12 +86,12 @@ class YamlSystemTestRunner:
         self.codec.dump(engine_input, path=self.engine_input_yaml_path)
 
     def write_engine_output_yaml(self, engine):
-        logging.warning("Writing unverified engine output yaml")
-        self.codec.dump(engine, path=self.engine_output_yaml_path)
+        logging.warning("Writing unverified engine output yaml. Must be copied to ground truth")
+        self.codec.dump(engine, path=self.engine_output_guess_yaml_path)
 
     def write_traceback_yaml(self, traceback_output: dict):
-        logging.warning("Writing unverified traceback yaml")
-        self.codec.dump(traceback_output, path=self.traceback_yaml_path)
+        logging.warning("Writing unverified traceback yaml. Must be copied to ground truth")
+        self.codec.dump(traceback_output, path=self.traceback_guess_yaml_path)
 
     def validate_engine_output(self, engine):
         raise NotImplementedError
@@ -108,9 +111,17 @@ class YamlSystemTestRunner:
         return self.dir_ / "engine_input.yaml"
 
     @property
-    def engine_output_yaml_path(self):
-        return self.dir_ / "engine_output.yaml"
+    def engine_output_ground_truth_yaml_path(self):
+        return self.dir_ / "engine_output_ground_truth.yaml"
 
     @property
-    def traceback_yaml_path(self):
-        return self.dir_ / "engine_traceback.yaml"
+    def traceback_ground_truth_yaml_path(self):
+        return self.dir_ / "engine_traceback_ground_truth.yaml"
+
+    @property
+    def engine_output_guess_yaml_path(self):
+        return self.dir_ / "engine_output_guess.yaml"
+
+    @property
+    def traceback_guess_yaml_path(self):
+        return self.dir_ / "engine_traceback_guess.yaml"
