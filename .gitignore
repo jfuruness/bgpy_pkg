@@ -1,3 +1,7 @@
+empty_engine_graph.yaml
+engine_input.yaml
+engine_output_guess.yaml
+engine_traceback_guess.yaml
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
