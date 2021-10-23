@@ -11,7 +11,7 @@ from .....engine import BGPAS
 from .....engine import BGPRIBsAS
 
 
-@pytest.mark.parametrize("BaseASCls", [BGPAS])#, BGPRIBsAS])
+@pytest.mark.parametrize("BaseASCls", [BGPAS])
 def test_hidden_hijack_bgp(BaseASCls):
     r"""Hidden hijack example with BGP
     Figure 1a in our ROV++ paper

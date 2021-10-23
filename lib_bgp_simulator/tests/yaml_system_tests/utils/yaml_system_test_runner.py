@@ -23,9 +23,13 @@ class YamlSystemTestRunner:
                                                          engine_input,
                                                          empty_engine_kwargs["BaseASCls"])
 
-        self.write_diagrams(engine, engine_output_guess, engine_input)
+        try:
+            self.write_check_results(engine, scenario, engine_output_guess)
+            self.write_diagrams(engine, engine_output_guess, engine_input)
+        except Exception as e:
+            self.write_diagrams(engine, engine_output_guess, engine_input)
+            raise e
 
-        self.write_check_results(engine, scenario, engine_output_guess)
 
     def write_load_engine(self, empty_engine_kwargs, engine_input_kwargs):
 

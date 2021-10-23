@@ -54,6 +54,9 @@ class BGPAS(AS):
         else:
             raise NotImplementedError
 
+    # https://stackoverflow.com/a/53519136/8903959
+    __hash__ = AS.__hash__
+
     # Propagation functionality
     from .propagate_funcs import propagate_to_providers
     from .propagate_funcs import propagate_to_customers

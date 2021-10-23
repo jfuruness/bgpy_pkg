@@ -7,6 +7,3 @@
 3: !simulator_codec/Outcomes
   name: ATTACKER_SUCCESS
   value: 0
-666: !simulator_codec/Outcomes
-  name: ATTACKER_SUCCESS
-  value: 0
