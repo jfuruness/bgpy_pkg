@@ -2,17 +2,17 @@ import pytest
 
 from lib_caida_collector import PeerLink, CustomerProviderLink as CPLink
 
-from ..utils import run_example, HijackLocalRib
+from ..utils import run_example, HijackLocalRIB
 
 from ....announcements import AnnWDefaults
 from ....enums import ASNs, Relationships as Rels, ROAValidity
 from ....engine_input import SubprefixHijack
 
+from ....engine import BGPSimpleAS
 from ....engine import BGPAS
-from ....engine import BGPRIBsAS
-from ....engine import LocalRib
+from ....engine import LocalRIB
 
-@pytest.mark.parametrize("BaseASCls", [BGPAS, BGPRIBsAS])
+@pytest.mark.parametrize("BaseASCls", [BGPSimpleAS, BGPAS])
 def test_propagate_bgp(BaseASCls):
     r"""
     Test propagating up without multihomed support in the following test graph.

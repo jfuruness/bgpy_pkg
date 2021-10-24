@@ -7,12 +7,12 @@ from lib_caida_collector import PeerLink, CustomerProviderLink as CPLink
 from ..enums import ASNs, Relationships, ROAValidity
 from ..announcements import AnnWDefaults
 
+from ..engine import BGPSimpleAS
 from ..engine import BGPAS
-from ..engine import BGPRIBsAS
-from ..engine import LocalRib
+from ..engine import LocalRIB
 
 
-@pytest.mark.parametrize("BaseASCls", [BGPAS, BGPRIBsAS])
+@pytest.mark.parametrize("BaseASCls", [BGPSimpleAS, BGPAS])
 def test_process_incoming_anns_bgp(BaseASCls):
     """Test basic functionality of process_incoming_anns"""
     prefix = '137.99.0.0/16'
@@ -23,7 +23,7 @@ def test_process_incoming_anns_bgp(BaseASCls):
     # assert announcement was accepted to local rib
     assert(a._local_rib.get_ann(prefix).origin == ann.origin)
 
-@pytest.mark.parametrize("BaseASCls", [BGPAS, BGPRIBsAS])
+@pytest.mark.parametrize("BaseASCls", [BGPSimpleAS, BGPAS])
 def test_process_incoming_anns_bgp_relationships(BaseASCls):
     """Customers > Peers > Providers"""
     prefix = '137.99.0.0/16'
@@ -41,7 +41,7 @@ def test_process_incoming_anns_bgp_relationships(BaseASCls):
     a.process_incoming_anns(Relationships.CUSTOMERS)
     assert(a._local_rib.get_ann(prefix).origin == ann3.origin)
 
-@pytest.mark.parametrize("BaseASCls", [BGPAS, BGPRIBsAS])
+@pytest.mark.parametrize("BaseASCls", [BGPSimpleAS, BGPAS])
 def test_process_incoming_anns_bgp_path_len(BaseASCls):
     """Shorter path length should be preferred when relationship is equal"""
     prefix = '137.99.0.0/16'
@@ -59,7 +59,7 @@ def test_process_incoming_anns_bgp_path_len(BaseASCls):
     a.process_incoming_anns(Relationships.PROVIDERS)
     assert(a._local_rib.get_ann(prefix).origin == ann3.origin)
 
-@pytest.mark.parametrize("BaseASCls", [BGPAS, BGPRIBsAS])
+@pytest.mark.parametrize("BaseASCls", [BGPSimpleAS, BGPAS])
 def test_process_incoming_anns_bgp_seeded(BaseASCls):
     """Any incoming announcement should never replace a seeded announcement"""
     prefix = '137.99.0.0/16'
@@ -74,7 +74,7 @@ def test_process_incoming_anns_bgp_seeded(BaseASCls):
     a.process_incoming_anns(Relationships.CUSTOMERS)
     assert(a._local_rib.get_ann(prefix).origin == ann1.origin)
 
-@pytest.mark.parametrize("BaseASCls", [BGPAS, BGPRIBsAS])
+@pytest.mark.parametrize("BaseASCls", [BGPSimpleAS, BGPAS])
 def test_process_incoming_anns_bgp_loop_check(BaseASCls):
     """An AS should never accept an incoming announcement with its own ASN on the path"""
     prefix = '137.99.0.0/16'

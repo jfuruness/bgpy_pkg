@@ -1,9 +1,9 @@
 from .engine import BGPAS
-from .engine import BGPRIBsAS
-from .engine import LocalRib
+from .engine import BGPSimpleAS
+from .engine import LocalRIB
 from .engine import RIBsIn, RIBsOut
 from .engine import SendQueue, RecvQueue
-from .engine import ROVAS
+from .engine import ROVAS, ROVSimpleAS
 from .engine import SimulatorEngine
 
 
@@ -34,7 +34,3 @@ from .announcements import generate_ann
 from .announcements import gen_prefix_ann
 from .announcements import gen_subprefix_ann
 from .announcements import gen_superprefix_ann
-
-
-
-#from .tests import run_example

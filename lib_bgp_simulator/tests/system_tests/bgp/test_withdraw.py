@@ -9,16 +9,16 @@ import pytest
 
 from lib_caida_collector import PeerLink, CustomerProviderLink as CPLink
 
-from ..utils import run_example, HijackLocalRib
+from ..utils import run_example, HijackLocalRIB
 
 from ....enums import Prefixes, ASNs, Relationships as Rels, ROAValidity
 from ....announcements import AnnWDefaults
 from ....engine_input import PrefixHijack
 
-from ....engine import BGPAS
+from ....engine import BGPSimpleAS
 from ....engine import ROVAS
-from ....engine import BGPRIBsAS
-from ....engine import LocalRib
+from ....engine import BGPAS
+from ....engine import LocalRIB
 
 __author__ = "Cameron Morris"
 __credits__ = ["Cameron Morris", "Reynaldo Morillo"]
@@ -109,7 +109,7 @@ class Test_Withdraw:
         adopting_ases = [4]
         as_policies = dict()
         for bgp_as in bgp_ases:
-            as_policies[bgp_as] = BGPAS
+            as_policies[bgp_as] = BGPSimpleAS
         for adopting_as in adopting_ases:
             as_policies[adopting_as] = adopt_pol
 

@@ -3,7 +3,7 @@ from .ann_container import AnnContainer
 from ...announcements import Announcement
 
 
-class LocalRib(AnnContainer):
+class LocalRIB(AnnContainer):
     """Local RIB for a BGP AS
 
     Done separately for easy comparisons in unit testing

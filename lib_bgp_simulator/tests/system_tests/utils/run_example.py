@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from ....engine import BGPAS
+from ....engine import BGPSimpleAS
 from ....engine import SimulatorEngine
 from ....engine_input import EngineInput
 
@@ -19,7 +19,7 @@ def run_example(peers=list(),
                 announcements=list(),
                 local_ribs=dict(),
                 outcomes=dict(),
-                BaseASCls=BGPAS,
+                BaseASCls=BGPSimpleAS,
                 ):
     """Runs an example"""
 

@@ -1,8 +1,8 @@
 from typing import Optional
 
-from ....announcements import Announcement as Ann
-from ....engine_input import EngineInput
-from ....enums import Relationships
+from .....announcements import Announcement as Ann
+from .....engine_input import EngineInput
+from .....enums import Relationships
 
 
 def process_incoming_anns(self,

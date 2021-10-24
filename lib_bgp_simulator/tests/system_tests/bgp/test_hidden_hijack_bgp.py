@@ -3,17 +3,17 @@ import pytest
 from lib_caida_collector import PeerLink, CustomerProviderLink as CPLink
 
 
-from ..utils import run_example, HijackLocalRib
+from ..utils import run_example, HijackLocalRIB
 
 from ....announcements import AnnWDefaults
 from ....enums import ASNs, Prefixes, Timestamps, ROAValidity, Relationships
 from ....engine_input import SubprefixHijack
-from ....engine import LocalRib
+from ....engine import LocalRIB
+from ....engine import BGPSimpleAS
 from ....engine import BGPAS
-from ....engine import BGPRIBsAS
 
 @pytest.mark.xfail(reason="Must update subprefixhijack")
-@pytest.mark.parametrize("BaseASCls", [BGPAS, BGPRIBsAS])
+@pytest.mark.parametrize("BaseASCls", [BGPSimpleAS, BGPAS])
 def test_hidden_hijack_bgp(BaseASCls):
     r"""Hidden hijack example with BGP
     Figure 1a in our ROV++ paper

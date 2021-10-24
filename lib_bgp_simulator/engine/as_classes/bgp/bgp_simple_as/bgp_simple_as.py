@@ -1,12 +1,12 @@
 from lib_caida_collector import AS
 
-from ...ann_containers import LocalRib
-from ...ann_containers import RecvQueue
-from ....enums import Relationships
-from ....announcements import Announcement as Ann
+from ....ann_containers import LocalRIB
+from ....ann_containers import RecvQueue
+from .....enums import Relationships
+from .....announcements import Announcement as Ann
 
 
-class BGPAS(AS):
+class BGPSimpleAS(AS):
     # TODO: fix later? class error? Does this impact speed?
     __slots__ = ("_local_rib", "_recv_q", "_ribs_in", "_ribs_out", "_send_q")
 
@@ -26,8 +26,8 @@ class BGPAS(AS):
                "Please make a class attr name for the policy something else")
         assert len(set(cls.as_class_names)) == len(cls.as_class_names), msg
         cls.as_classes.append(cls)
-        if BGPAS not in cls.as_classes:
-            cls.as_classes.append(BGPAS)
+        if BGPSimpleAS not in cls.as_classes:
+            cls.as_classes.append(BGPSimpleAS)
 
 
     def __init__(self, *args, _local_rib=None, _recv_q=None, **kwargs):
@@ -38,12 +38,12 @@ class BGPAS(AS):
         """
 
         if kwargs.get("reset_base", True):
-            super(BGPAS, self).__init__(*args, **kwargs)
-        self._local_rib = _local_rib if _local_rib else LocalRib()
+            super(BGPSimpleAS, self).__init__(*args, **kwargs)
+        self._local_rib = _local_rib if _local_rib else LocalRIB()
         self._recv_q = _recv_q if _recv_q else RecvQueue()
 
     def __eq__(self, other):
-        if isinstance(other, BGPAS):
+        if isinstance(other, BGPSimpleAS):
             for attr in self.__slots__:
                 if not hasattr(self, attr) == hasattr(other, attr):
                     return False
@@ -86,7 +86,7 @@ class BGPAS(AS):
     def __to_yaml_dict__(self):
         """ This optional method is called when you call yaml.dump()"""
 
-        as_dict = super(BGPAS, self).__to_yaml_dict__()
+        as_dict = super(BGPSimpleAS, self).__to_yaml_dict__()
         as_dict.update({"_local_rib": self._local_rib,
                         "_recv_q": self._recv_q})
         return as_dict

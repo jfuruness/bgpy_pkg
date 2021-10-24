@@ -8,9 +8,6 @@ from ..enums import ASNs, Relationships, ROAValidity
 from ..announcements import AnnWDefaults
 
 from ..engine import BGPAS
-from ..engine import BGPRIBsAS
-from ..engine import LocalRib
-
 
 
 def get_prefix_ann_ann_w_a():
@@ -21,8 +18,8 @@ def get_prefix_ann_ann_w_a():
                        roa_validity=ROAValidity.UNKNOWN,
                        recv_relationship=Relationships.ORIGIN)
     ann_w = ann.copy(withdraw=True)
-    neighbor = BGPRIBsAS(2, peers=[], providers=[], customers=[])
-    a = BGPRIBsAS(1, peers=[], providers=[], customers=[neighbor])
+    neighbor = BGPAS(2, peers=[], providers=[], customers=[])
+    a = BGPAS(1, peers=[], providers=[], customers=[neighbor])
     neighbor.providers.append(a)
     return prefix, ann, ann_w, a
  
@@ -106,7 +103,7 @@ def test_withdraw_best_alternative():
                        recv_relationship=Relationships.ORIGIN)
     ann3_w = ann3.copy(withdraw=True)
  
-    a = BGPRIBsAS(1, peers=[], providers=[], customers=[]) 
+    a = BGPAS(1, peers=[], providers=[], customers=[]) 
     # Populate _ribs_in with three announcements
     a._recv_q.add_ann(ann1)
     a.process_incoming_anns(Relationships.PROVIDERS)
@@ -161,8 +158,8 @@ def test_withdraw_sending():
                        roa_validity=ROAValidity.UNKNOWN,
                        recv_relationship=Relationships.ORIGIN)
  
-    b = BGPRIBsAS(2, peers=[], providers=[], customers=[]) 
-    a = BGPRIBsAS(1, peers=[], providers=[], customers=[b]) 
+    b = BGPAS(2, peers=[], providers=[], customers=[]) 
+    a = BGPAS(1, peers=[], providers=[], customers=[b]) 
     # round 1
     a._recv_q.add_ann(ann1)
     a.process_incoming_anns(Relationships.PROVIDERS)
@@ -199,9 +196,9 @@ def test_withdraw_sending_multihop():
                        roa_validity=ROAValidity.UNKNOWN,
                        recv_relationship=Relationships.ORIGIN)
  
-    c = BGPRIBsAS(3, peers=[], providers=[], customers=[]) 
-    b = BGPRIBsAS(2, peers=[], providers=[], customers=[c]) 
-    a = BGPRIBsAS(1, peers=[], providers=[], customers=[b]) 
+    c = BGPAS(3, peers=[], providers=[], customers=[]) 
+    b = BGPAS(2, peers=[], providers=[], customers=[c]) 
+    a = BGPAS(1, peers=[], providers=[], customers=[b]) 
     # round 1
     a._recv_q.add_ann(ann1)
     a.process_incoming_anns(Relationships.PROVIDERS)

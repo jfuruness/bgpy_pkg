@@ -2,11 +2,11 @@ from typing import Optional
 
 from lib_caida_collector import AS
 
-from ...ann_containers import LocalRib
-from ...ann_containers import RecvQueue
-from ....engine_input import EngineInput
-from ....enums import Relationships
-from ....announcements import Announcement as Ann
+from ....ann_containers import LocalRIB
+from ....ann_containers import RecvQueue
+from .....engine_input import EngineInput
+from .....enums import Relationships
+from .....announcements import Announcement as Ann
 
 
 def receive_ann(self, ann: Ann, accept_withdrawals=False):

@@ -8,8 +8,8 @@ from ...utils import BaseGraphSystemTester, YamlSystemTestRunner
 
 from .....enums import ASNs
 from .....engine_input import SubprefixHijack
+from .....engine import BGPSimpleAS
 from .....engine import BGPAS
-from .....engine import BGPRIBsAS
 
 
 class BaseHiddenHijackTester(BaseGraphSystemTester):
@@ -23,7 +23,7 @@ class BaseHiddenHijackTester(BaseGraphSystemTester):
                 list(range(1, 4)) + [ASNs.VICTIM.value, ASNs.ATTACKER.value]}
 
 class TestBGPSimpleHiddenHijack(BaseHiddenHijackTester):
-    BaseASCls = BGPAS
+    BaseASCls = BGPSimpleAS
 
 class TestBGPHiddenHijack(BaseHiddenHijackTester):
-    BaseASCls = BGPRIBsAS
+    BaseASCls = BGPAS

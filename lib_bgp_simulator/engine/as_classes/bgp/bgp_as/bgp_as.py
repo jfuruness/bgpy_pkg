@@ -1,17 +1,17 @@
 from typing import List, Optional
 
-from ..bgp_as import BGPAS
+from ..bgp_simple_as import BGPSimpleAS
 
-from ...ann_containers import RIBsIn
-from ...ann_containers import RIBsOut
-from ...ann_containers import SendQueue
+from ....ann_containers import RIBsIn
+from ....ann_containers import RIBsOut
+from ....ann_containers import SendQueue
 
-from ....announcements import Announcement as Ann
-from ....engine_input import EngineInput
-from ....enums import Relationships
+from .....announcements import Announcement as Ann
+from .....engine_input import EngineInput
+from .....enums import Relationships
 
 
-class BGPRIBsAS(BGPAS):
+class BGPAS(BGPSimpleAS):
     __slots__ = tuple()
 
     def __init__(self,
@@ -20,7 +20,7 @@ class BGPRIBsAS(BGPAS):
                  _ribs_out=None,
                  _send_q=None,
                  **kwargs):
-        super(BGPRIBsAS, self).__init__(*args, **kwargs)
+        super(BGPAS, self).__init__(*args, **kwargs)
         self._ribs_in = _ribs_in if _ribs_in else RIBsIn()
         self._ribs_out = _ribs_out if _ribs_out else RIBsOut()
         self._send_q = _send_q if _send_q else SendQueue()
@@ -31,13 +31,13 @@ class BGPRIBsAS(BGPAS):
     from .propagate_funcs import _process_outgoing_ann
     from .propagate_funcs import _send_anns
 
-    # Must add this func here since it refers to BGPRIBsAS
+    # Must add this func here since it refers to BGPAS
     # Could use super but want to avoid additional func calls
     def _populate_send_q(self,
                          propagate_to: Relationships,
                          send_rels: List[Relationships]):
         # Process outging ann is oerriden so this just adds to send q
-        super(BGPRIBsAS, self)._propagate(propagate_to, send_rels)
+        super(BGPAS, self)._propagate(propagate_to, send_rels)
 
     # Process incoming funcs
     from .process_incoming_funcs import process_incoming_anns
@@ -45,15 +45,15 @@ class BGPRIBsAS(BGPAS):
     from .process_incoming_funcs import _withdraw_ann_from_neighbors
     from .process_incoming_funcs import _select_best_ribs_in
 
-    # Must be here since it referes to BGPRIBsAS
+    # Must be here since it referes to BGPAS
     # Could just use super but want to avoid the additional func calls
     def receive_ann(self, ann: Ann):
-        super(BGPRIBsAS, self).receive_ann(ann, accept_withdrawals=True)
+        super(BGPAS, self).receive_ann(ann, accept_withdrawals=True)
 
     def __to_yaml_dict__(self):
         """This optional method is called when you call yaml.dump()"""
 
-        as_dict = super(BGPRIBsAS, self).__to_yaml_dict__()
+        as_dict = super(BGPAS, self).__to_yaml_dict__()
         as_dict.update({"_ribs_in": self._ribs_in,
                         "_ribs_out": self._ribs_out,
                         "_send_q": self._send_q})

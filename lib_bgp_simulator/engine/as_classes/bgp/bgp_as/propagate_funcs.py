@@ -1,9 +1,9 @@
 from typing import List, Optional
 
-from ..bgp_as import BGPAS
+from ..bgp_simple_as import BGPSimpleAS
 
-from ....announcements import Announcement as Ann
-from ....enums import Relationships
+from .....announcements import Announcement as Ann
+from .....enums import Relationships
 
 
 def _propagate(self,
@@ -23,7 +23,7 @@ def _propagate(self,
 
 
 def _policy_propagate(self,
-                      neighbor: BGPAS,
+                      neighbor: BGPSimpleAS,
                       ann: Ann,
                       *args,
                       **kwargs) -> bool:
@@ -34,14 +34,14 @@ def _policy_propagate(self,
     return ann.prefix_path_attributes_eq(ribs_out_ann)
 
 
-def _process_outgoing_ann(self, neighbor: BGPAS, ann: Ann, *args):
+def _process_outgoing_ann(self, neighbor: BGPSimpleAS, ann: Ann, *args):
     self._send_q.add_ann(neighbor.asn, ann)
 
 
 def _send_anns(self, propagate_to: Relationships):
     """Sends announcements and populates ribs out"""
 
-    neighbors: List[BGPAS] = getattr(self, propagate_to.name.lower())
+    neighbors: List[BGPSimpleAS] = getattr(self, propagate_to.name.lower())
 
     for (neighbor, prefix, ann) in self._send_q.info(neighbors):
         neighbor.receive_ann(ann)

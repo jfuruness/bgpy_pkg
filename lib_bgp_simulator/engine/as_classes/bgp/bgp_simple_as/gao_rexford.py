@@ -1,7 +1,7 @@
 from typing import Optional
 
-from ....announcements import Announcement as Ann
-from ....enums import Relationships
+from .....announcements import Announcement as Ann
+from .....enums import Relationships
 
 opt_bool = Optional[bool]
 

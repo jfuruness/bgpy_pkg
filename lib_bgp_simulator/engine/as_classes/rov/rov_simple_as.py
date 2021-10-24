@@ -1,13 +1,13 @@
-from .bgp_as import BGPAS
+from ..bgp import BGPSimpleAS
 
-from ...announcements import Announcement as Ann
-from ...enums import ROAValidity
+from ....announcements import Announcement as Ann
+from ....enums import ROAValidity
 
 
-class ROVAS(BGPAS):
+class ROVSimpleAS(BGPSimpleAS):
     __slots__ = tuple()
 
-    name = "ROV"
+    name = "ROVSimple"
 
     def _valid_ann(self, ann: Ann, *args, **kwargs) -> bool:
         if ann.roa_validity == ROAValidity.INVALID:

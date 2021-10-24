@@ -8,9 +8,9 @@ from lib_caida_collector import PeerLink, CustomerProviderLink as CPLink
 from ..enums import ASNs, Relationships, ROAValidity
 from ..announcements import AnnWDefaults
 
+from ..engine import BGPSimpleAS
 from ..engine import BGPAS
-from ..engine import BGPRIBsAS
-from ..engine import LocalRib
+from ..engine import LocalRIB
 from ..engine_input import EngineInput
 
 from ..simulator import Graph
@@ -22,7 +22,7 @@ from ..simulator import Simulator
 # Since certain as classes might break with mp
 @pytest.mark.slow
 @pytest.mark.parametrize("AdoptASCls, EngineInputCls, mp_method",
-                         itertools.product(*[BGPAS.as_classes,
+                         itertools.product(*[BGPSimpleAS.as_classes,
                                              EngineInput.subclasses,
                                              [MPMethod.SINGLE_PROCESS, MPMethod.MP]]))
 def test_sim_inputs(AdoptASCls,
@@ -43,7 +43,7 @@ def test_sim_inputs(AdoptASCls,
                   # No need to modify BaseASCls
                   # Because we test every possibility of AdoptASCls
                   # We actually test all combos of base - adopt class
-                  BaseASCls=BGPAS)
+                  BaseASCls=BGPSimpleAS)
     sim.run(graphs=[graph],
             graph_path=tmp_dir / "graphs.tar.gz",
             mp_method=mp_method)

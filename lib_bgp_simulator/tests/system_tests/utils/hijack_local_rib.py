@@ -1,9 +1,9 @@
-from ....engine import LocalRib
+from ....engine import LocalRIB
 from ....announcements import Announcement
 from ....enums import Prefixes, Timestamps, ASNs, ROAValidity
 
 
-class HijackLocalRib(LocalRib):
+class HijackLocalRIB(LocalRIB):
     """Local Rib for Subprefix Hijack for easy test writing"""
 
     def __init__(self,
@@ -12,7 +12,7 @@ class HijackLocalRib(LocalRib):
                  superprefix_as_path=None,
                  subprefix_as_path=None,
                  other_anns=[]):
-        super(HijackLocalRib, self).__init__()
+        super(HijackLocalRIB, self).__init__()
         anns = []
         if prefix_vic_as_path:
             anns.append(Announcement(prefix=Prefixes.PREFIX.value,
