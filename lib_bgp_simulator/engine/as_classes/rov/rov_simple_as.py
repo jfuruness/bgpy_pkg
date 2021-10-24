@@ -13,4 +13,4 @@ class ROVSimpleAS(BGPSimpleAS):
         if ann.roa_validity == ROAValidity.INVALID:
             return False
         else:
-            return super(ROVAS, self)._valid_ann(ann, *args, **kwargs)
+            return super(ROVSimpleAS, self)._valid_ann(ann, *args, **kwargs)
