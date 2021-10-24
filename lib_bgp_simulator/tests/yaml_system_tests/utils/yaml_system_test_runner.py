@@ -13,6 +13,7 @@ class YamlSystemTestRunner:
 
     def __init__(self, dir_, preloaded_engine=None, preloaded_engine_input=None):
         """dir_ should be the dir_ with the yaml"""
+
         self.dir_ = dir_
         self.codec = SimulatorCodec()
         self.preloaded_engine = preloaded_engine
