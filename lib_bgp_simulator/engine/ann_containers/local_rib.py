@@ -1,28 +1,18 @@
-from yamlable import YamlAble, yaml_info
+from .ann_container import AnnContainer
 
 from ...announcements import Announcement
 
 
-@yaml_info(yaml_tag="LocalRib")
-class LocalRib(YamlAble):
+class LocalRib(AnnContainer):
     """Local RIB for a BGP AS
 
     Done separately for easy comparisons in unit testing
     """
 
-    __slots__ = "_info",
+    __slots__ = tuple()
 
     def __init__(self, _info=None):
         self._info = _info if _info is not None else dict()
-
-    def __eq__(self, other):
-        # Remove this after updating the system tests
-        if isinstance(other, dict):
-            return self._info == other
-        elif isinstance(other, LocalRib):
-            return self._info == other._info
-        else:
-            raise NotImplementedError
 
     def get_ann(self, prefix: str, default=None):
         return self._info.get(prefix, default)
@@ -35,18 +25,3 @@ class LocalRib(YamlAble):
 
     def prefix_anns(self):
         return self._info.items()
-
-##############
-# Yaml funcs #
-##############
-
-    def __to_yaml_dict__(self):
-        """ This optional method is called when you call yaml.dump()"""
-
-        return self._info
-
-    @classmethod
-    def __from_yaml_dict__(cls, dct, yaml_tag):
-        """ This optional method is called when you call yaml.load()"""
-
-        return cls(_info=dct)

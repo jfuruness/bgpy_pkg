@@ -108,7 +108,5 @@ def _new_wins_ties(self,
     # Gets the indexes of the neighbors
     current_index = min(int(current_processed), len(current_ann.as_path) - 1)
     new_index = min(int(new_processed), len(new_ann.as_path) - 1)
-    # No ties!
-    assert current_ann.as_path[current_index] != new_ann.as_path[new_index]
 
     return new_ann.as_path[new_index] < current_ann.as_path[current_index]

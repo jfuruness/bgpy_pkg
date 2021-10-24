@@ -1,31 +1,32 @@
 from collections import defaultdict, namedtuple
+import dataclasses
+
+from yamlable import YamlAble, yaml_info
+
+from .ann_container import AnnContainer
 
 from ...announcements import Announcement
 from ...enums import Relationships
 
 
-AnnInfo = namedtuple("AnnInfo", ["unprocessed_ann", "recv_relationship"])
+
+@yaml_info(yaml_tag="AnnInfo")
+@dataclasses.dataclass
+class AnnInfo(YamlAble):
+    unprocessed_ann: Announcement
+    recv_relationship: Relationships
 
 
-class RIBsIn:
+class RIBsIn(AnnContainer):
     """Incomming announcements for a BGP AS
 
     neighbor: {prefix: (announcement, relationship)}
     """
 
-    __slots__ = "_info",
+    __slots__ = tuple()
 
-    def __init__(self):
-        self._info = defaultdict(dict)
-
-    def __eq__(self, other):
-        # Remove this after updating the system tests
-        if isinstance(other, dict):
-            return self._info == other
-        elif isinstance(other, RIBsIn):
-            return self._info == other._info
-        else:
-            raise NotImplementedError
+    def __init__(self, _info=None):
+        self._info = _info if _info is not None else defaultdict(dict)
 
     def get_unprocessed_ann_recv_rel(self, neighbor_asn: int, prefix: str):
         return self._info[neighbor_asn].get(prefix)

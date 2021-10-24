@@ -3,32 +3,45 @@ from lib_bgp_simulator import Simulator, Graph, ROVAS, SubprefixHijack, BGPAS, S
 from datetime import datetime
 from pathlib import Path
 import logging
+import shutil
 
 from .diagram import Diagram
 from .simulator_codec import SimulatorCodec
+from ..conftest import PytestOptions
 
 class YamlSystemTestRunner:
 
-    def __init__(self, dir_):
+    def __init__(self, dir_, preloaded_engine=None, preloaded_engine_input=None):
         """dir_ should be the dir_ with the yaml"""
         self.dir_ = dir_
         self.codec = SimulatorCodec()
+        self.preloaded_engine = preloaded_engine
+        self.preloaded_engine_input = preloaded_engine_input
 
     def run_test(self, empty_engine_kwargs, engine_input_kwargs):
 
-        engine, engine_input = self.write_load_engine(empty_engine_kwargs,
-                                                      engine_input_kwargs)
+        preloaded = self.preloaded_engine and self.preloaded_engine_input
 
-        scenario, engine_output_guess = self.get_results(engine,
+        if preloaded:
+            engine = self.preloaded_engine
+            engine_input = self.preloaded_engine_input
+        else:
+            engine, engine_input = self.write_load_engine(empty_engine_kwargs,
+                                                          engine_input_kwargs)
+
+        scenario, engine_traceback_guess = self.get_results(engine,
                                                          engine_input,
-                                                         empty_engine_kwargs["BaseASCls"])
+                                                         empty_engine_kwargs["BaseASCls"],
+                                                         preloaded=preloaded)
 
         try:
-            self.write_check_results(engine, scenario, engine_output_guess)
-            self.write_diagrams(engine, engine_output_guess, engine_input)
+            self.write_check_results(engine, scenario, engine_traceback_guess)
+            self.write_diagrams(engine, engine_traceback_guess, engine_input)
         except Exception as e:
-            self.write_diagrams(engine, engine_output_guess, engine_input)
+            self.write_diagrams(engine, engine_traceback_guess, engine_input)
             raise e
+
+        return engine, engine_input, scenario, engine_traceback_guess
 
 
     def write_load_engine(self, empty_engine_kwargs, engine_input_kwargs):
@@ -47,8 +60,10 @@ class YamlSystemTestRunner:
         engine_input = self.codec.load(self.engine_input_yaml_path)
         return engine, engine_input
 
-    def get_results(self, engine, engine_input, BaseASCls):
-        engine.setup(engine_input, BaseASCls, None)
+    def get_results(self, engine, engine_input, BaseASCls, preloaded=False):
+
+        if not preloaded:
+            engine.setup(engine_input, BaseASCls, None)
 
         scenario = Scenario(engine=engine, engine_input=engine_input)
         subgraphs = {"all_ases": set([x.asn for x in engine])}
@@ -65,7 +80,8 @@ class YamlSystemTestRunner:
         Diagram().generate_as_graph(engine_guess,
                                     engine_output_guess,
                                     engine_input,
-                                    path=self.engine_output_guess_gv_path)
+                                    path=self.engine_output_guess_gv_path,
+                                    view=PytestOptions.view)
 
 
         engine_truth = self.codec.load(path=self.engine_output_truth_yaml_path)
@@ -75,14 +91,23 @@ class YamlSystemTestRunner:
         Diagram().generate_as_graph(engine_truth,
                                     traceback_truth,
                                     engine_input,
-                                    path=self.engine_output_truth_gv_path)
+                                    path=self.engine_output_truth_gv_path,
+                                    view=PytestOptions.view)
 
     def write_check_results(self, engine, scenario, traceback_guess):
         if not self.engine_output_guess_yaml_path.exists():
             self.write_engine_output_yaml(engine)
+            if PytestOptions.write_no_verify:
+                logging.warning("Writing engine output ground truth without verifying")
+                shutil.copy(self.engine_output_guess_yaml_path,
+                            self.engine_output_truth_yaml_path)
 
         if not self.traceback_guess_yaml_path.exists():
             self.write_traceback_yaml(traceback_guess)
+            if PytestOptions.write_no_verify:
+                logging.warning("Writing traceback ground truth without verifying")
+                shutil.copy(self.traceback_guess_yaml_path,
+                            self.traceback_truth_yaml_path)
 
         self.validate_engine_output(engine)
         self.validate_scenario(scenario)

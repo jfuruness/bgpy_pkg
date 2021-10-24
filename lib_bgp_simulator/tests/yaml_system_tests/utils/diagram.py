@@ -8,14 +8,14 @@ class Diagram:
         self.dot = Digraph(format="png")
         self.dot.attr(bgcolor='purple:pink')
 
-    def generate_as_graph(self, *args, path=None):
+    def generate_as_graph(self, *args, path=None, view=False):
         self._add_legend(*args)
         self._add_ases(*args)
         self._add_edges(*args)
         self._add_propagation_ranks(*args)
         self._add_as_types(*args)
         self._add_traceback_types(*args)
-        self.render(path=path, view=True)
+        self.render(path=path, view=view)
 
     def render(self, path=None, view=False):
         self.dot.render(path, view=view)

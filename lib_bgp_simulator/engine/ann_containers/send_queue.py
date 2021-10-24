@@ -2,13 +2,18 @@ from collections import defaultdict
 from dataclasses import dataclass
 from typing import List, Optional
 
+from yamlable import YamlAble, yaml_info
+
 from lib_caida_collector import AS
+
+
+from .ann_container import AnnContainer
 
 from ...announcements import Announcement as Ann
 
-
+@yaml_info(yaml_tag="SendInfo")
 @dataclass
-class SendInfo:
+class SendInfo(YamlAble):
     withdrawal_ann: Ann = None
     ann: Ann = None
 
@@ -21,25 +26,16 @@ class SendInfo:
         return f"send_info: ann: {self.ann}, withdrawal {self.withdrawal_ann}"
 
 
-class SendQueue:
+class SendQueue(AnnContainer):
     """Incomming announcements for a BGP AS
 
     neighbor: {prefix: announcement_list}
     """
 
-    __slots__ = "_info",
+    __slots__ = tuple()
 
-    def __init__(self):
-        self._info = defaultdict(lambda: defaultdict(SendInfo))
-
-    def __eq__(self, other):
-        # Remove this after updating the system tests
-        if isinstance(other, dict):
-            return self._info == other
-        elif isinstance(other, SendQueue):
-            return self._info == other._info
-        else:
-            raise NotImplementedError
+    def __init__(self, _info=None):
+        self._info = _info if _info is not None else defaultdict(lambda: defaultdict(SendInfo))
 
     def add_ann(self, neighbor_asn: int, ann: Ann):
 

@@ -1,28 +1,21 @@
 from collections import defaultdict
 from typing import Optional
 
+from .ann_container import AnnContainer
+
 from ...announcements import Announcement as Ann
 
 
-class RIBsOut:
+class RIBsOut(AnnContainer):
     """Incomming announcements for a BGP AS
 
     neighbor: {prefix: announcement}
     """
 
-    __slots__ = "_info",
+    __slots__ = tuple()
 
-    def __init__(self):
-        self._info = defaultdict(dict)
-
-    def __eq__(self, other):
-        # Remove this after updating the system tests
-        if isinstance(other, dict):
-            return self._info == other
-        elif isinstance(other, RIBsOut):
-            return self._info == other._info
-        else:
-            raise NotImplementedError
+    def __init__(self, _info=None):
+        self._info = _info if _info is not None else defaultdict(dict)
 
     def get_ann(self, neighbor_asn: int, prefix: str) -> Optional[Ann]:
         return self._info[neighbor_asn].get(prefix)

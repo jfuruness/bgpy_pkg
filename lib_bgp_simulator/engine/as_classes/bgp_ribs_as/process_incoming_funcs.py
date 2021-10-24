@@ -163,9 +163,9 @@ def _select_best_ribs_in(self, prefix: str) -> Optional[Ann]:
     # Get the best announcement
     best_unprocessed_ann = None
     best_recv_relationship = None
-    for (new_unprocessed_ann,
-         new_recv_relationship) in self._ribs_in.get_ann_infos(prefix):
-
+    for ann_info in self._ribs_in.get_ann_infos(prefix):
+        new_unprocessed_ann = ann_info.unprocessed_ann
+        new_recv_relationship = ann_info.recv_relationship
         if self._new_ann_better(best_unprocessed_ann,
                                 False,
                                 best_recv_relationship,
