@@ -21,6 +21,7 @@ setup(
     python_requires=">=3.7",
     packages=find_packages(),
     install_requires=[
+        'graphviz',
         'lib_caida_collector @ git+ssh://git@github.com/jfuruness/lib_caida_collector.git',
         'lib_utils @ git+ssh://git@github.com/jfuruness/lib_utils.git',
         'matplotlib',
