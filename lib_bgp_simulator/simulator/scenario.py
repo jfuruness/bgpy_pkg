@@ -5,23 +5,27 @@ from ..enums import Outcomes
 
 
 class Scenario:
-    def __init__(self, trial=None, engine=None, attack=None, profiler=None):
+    def __init__(self, trial=None, engine=None, engine_input=None, profiler=None):
         self.trial = trial
         self.engine = engine
-        self.attack = attack
+        self.engine_input = engine_input
         self.data = dict()
         self.profiler = profiler
 
     def run(self, subgraphs, propagation_round: int):
         # Run engine
-        self.engine.run(self.attack.announcements,
-                        propagation_round=propagation_round,
-                        attack=self.attack)
-        self._collect_data(subgraphs)
+        self.engine.run(propagation_round=propagation_round,
+                        engine_input=self.engine_input)
+        traceback_outcomes = self._collect_data(subgraphs)
+        # Don't count these for diagrams and such
+        for uncountable_asn in self.engine_input.uncountable_asns:
+            traceback_outcomes.pop(uncountable_asn, None)
         # delete engine from attrs so that garbage collector can come
         # NOTE that if there are multiple propagation rounds, the engine
         # Will still be there
         del self.engine
+
+        return traceback_outcomes
 
     def _collect_data(self, subgraphs):
         """Collects data about the test run before engine is deleted"""
@@ -32,7 +36,7 @@ class Scenario:
         self.outcome_policy_percentages = dict()
         for subg_name, subgraph_asns in subgraphs.items():
             countable_asns = subgraph_asns.difference(
-                self.attack.uncountable_asns)
+                self.engine_input.uncountable_asns)
 
             outcome_totals = self._get_outcomes(policies,
                                                 countable_asns,
@@ -50,6 +54,7 @@ class Scenario:
                     percentage_outcomes[outcome][policy] = percentage
 
             self.outcome_policy_percentages[subg_name] = percentage_outcomes
+        return cache
 
     def _get_outcomes(self, policies, countable_asns, cache):
         outcomes = {x: {y: 0 for y in policies}
@@ -75,7 +80,7 @@ class Scenario:
         most_specific_ann = self._get_most_specific_ann(as_obj,
                                                         ordered_prefixes)
         # Determine the outcome of the attack
-        attack_outcome = self.attack.determine_outcome(as_obj,
+        attack_outcome = self.engine_input.determine_outcome(as_obj,
                                                        most_specific_ann)
         if not attack_outcome:
             # Continue tracing back by getting the last AS
@@ -93,7 +98,7 @@ class Scenario:
 
     def _get_ordered_prefixes(self):
         prefixes = set()
-        for ann in self.attack.announcements:
+        for ann in self.engine_input.announcements:
             prefixes.add(ann.prefix)
 
         assert len(prefixes) > 0

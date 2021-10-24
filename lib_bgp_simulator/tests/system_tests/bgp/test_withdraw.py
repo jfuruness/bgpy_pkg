@@ -11,11 +11,9 @@ from lib_caida_collector import PeerLink, CustomerProviderLink as CPLink
 
 from ..utils import run_example, HijackLocalRib
 
-from ...easy_ann import EasyAnn
-
 from ....enums import Prefixes, ASNs, Relationships as Rels, ROAValidity
-from ....announcement import Announcement
-from ....simulator.attacks import PrefixHijack
+from ....announcements import AnnWDefaults
+from ....engine_input import PrefixHijack
 
 from ....engine import BGPAS
 from ....engine import ROVAS
@@ -61,13 +59,13 @@ class Test_Withdraw:
                    6   7
         """ 
         exr_output = {
-            1: {prefix: EasyAnn(as_path=(1, 3), recv_relationship=Rels.CUSTOMERS, **kwargs)},
-            2: {prefix: EasyAnn(as_path=(2, 1, 3), recv_relationship=Rels.PEERS, **kwargs)},
-            3: {prefix: EasyAnn(as_path=(3,), recv_relationship=Rels.ORIGIN, **kwargs)},
-            4: {prefix: EasyAnn(as_path=(4, 1, 3), recv_relationship=Rels.PROVIDERS, **kwargs)},
-            5: {prefix: EasyAnn(as_path=(5, 7), recv_relationship=Rels.CUSTOMERS, **kwargs)},
-            6: {prefix: EasyAnn(as_path=(6, 4, 1, 3), recv_relationship=Rels.PROVIDERS, **kwargs)},
-            7: {prefix: EasyAnn(as_path=(7,), recv_relationship=Rels.ORIGIN, **kwargs)}
+            1: {prefix: AnnWDefaults(as_path=(1, 3), recv_relationship=Rels.CUSTOMERS, **kwargs)},
+            2: {prefix: AnnWDefaults(as_path=(2, 1, 3), recv_relationship=Rels.PEERS, **kwargs)},
+            3: {prefix: AnnWDefaults(as_path=(3,), recv_relationship=Rels.ORIGIN, **kwargs)},
+            4: {prefix: AnnWDefaults(as_path=(4, 1, 3), recv_relationship=Rels.PROVIDERS, **kwargs)},
+            5: {prefix: AnnWDefaults(as_path=(5, 7), recv_relationship=Rels.CUSTOMERS, **kwargs)},
+            6: {prefix: AnnWDefaults(as_path=(6, 4, 1, 3), recv_relationship=Rels.PROVIDERS, **kwargs)},
+            7: {prefix: AnnWDefaults(as_path=(7,), recv_relationship=Rels.ORIGIN, **kwargs)}
         }
         self._withdraw_check(ROVAS, exr_output)
 
@@ -115,16 +113,16 @@ class Test_Withdraw:
         for adopting_as in adopting_ases:
             as_policies[adopting_as] = adopt_pol
 
-        announcements = [EasyAnn(prefix=prefix, as_path=(3,),timestamp=0, seed_asn=3,
+        announcements = [AnnWDefaults(prefix=prefix, as_path=(3,),timestamp=0, seed_asn=3,
                                  roa_validity=ROAValidity.UNKNOWN,
                                  recv_relationship=Rels.ORIGIN,
                                  traceback_end=True),
-                         EasyAnn(prefix=prefix, as_path=(7,),timestamp=0, seed_asn=7,
+                         AnnWDefaults(prefix=prefix, as_path=(7,),timestamp=0, seed_asn=7,
                                  roa_validity=ROAValidity.UNKNOWN,
                                  recv_relationship=Rels.ORIGIN,
                                  traceback_end=True)]
 
- 
+
         run_example(peers=peers,
                     customer_providers=customer_providers,
                     as_policies=as_policies,

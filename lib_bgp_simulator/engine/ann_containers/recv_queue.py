@@ -1,23 +1,23 @@
 from collections import defaultdict
 
-from ...announcement import Announcement
+from .ann_container import AnnContainer
+
+from ...announcements import Announcement
 
 
-class RecvQueue(defaultdict):
+class RecvQueue(AnnContainer):
     """Adj_RIBs_In for a BGP AS
 
-    Map neighbors to the announcements they sent to this AS.
-    {neighbor: {prefix: list_of_ann}}
+    Map prefixes to anns sent
+    {prefix: list_of_ann}
     """
 
-    __slots__ = "_info",
+    __slots__ = tuple()
 
-    def __init__(self):
-        self._info = defaultdict(list)
+    def __init__(self, _info=None):
+        self._info = _info if _info is not None else defaultdict(list)
 
-    def add_ann(self, ann):
-        assert isinstance(ann, Announcement)
-
+    def add_ann(self, ann: Announcement):
         self._info[ann.prefix].append(ann)
 
     def prefix_anns(self):

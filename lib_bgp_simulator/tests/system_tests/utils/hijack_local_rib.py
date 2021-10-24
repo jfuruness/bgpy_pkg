@@ -1,5 +1,5 @@
 from ....engine import LocalRib
-from ....announcement import Announcement
+from ....announcements import Announcement
 from ....enums import Prefixes, Timestamps, ASNs, ROAValidity
 
 

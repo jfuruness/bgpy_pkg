@@ -4,10 +4,8 @@ import pytest
 
 from lib_caida_collector import PeerLink, CustomerProviderLink as CPLink
 
-from .easy_ann import EasyAnn
-
 from ..enums import ASNs, Relationships, ROAValidity
-from ..announcement import Announcement
+from ..announcements import AnnWDefaults
 
 from ..engine import BGPAS
 from ..engine import BGPRIBsAS
@@ -17,7 +15,7 @@ from ..engine import LocalRib
 
 def get_prefix_ann_ann_w_a():
     prefix = '137.99.0.0/16'
-    ann = EasyAnn(prefix=prefix,
+    ann = AnnWDefaults(prefix=prefix,
                        as_path=(13796,),
                        timestamp=0,
                        roa_validity=ROAValidity.UNKNOWN,
@@ -87,21 +85,21 @@ def test_process_incoming_withdraw_ribs_out():
 def test_withdraw_best_alternative():
     """Customers > Peers > Providers"""
     prefix = '137.99.0.0/16'
-    ann1 = EasyAnn(prefix=prefix,
+    ann1 = AnnWDefaults(prefix=prefix,
                        as_path=(13794,),
                        timestamp=0,
                        roa_validity=ROAValidity.UNKNOWN,
                        recv_relationship=Relationships.ORIGIN)
     ann1_w = ann1.copy(withdraw=True)
 
-    ann2 = EasyAnn(prefix=prefix,
+    ann2 = AnnWDefaults(prefix=prefix,
                        as_path=(13795,),
                        timestamp=0,
                        roa_validity=ROAValidity.UNKNOWN,
                        recv_relationship=Relationships.ORIGIN)
     ann2_w = ann2.copy(withdraw=True)
  
-    ann3 = EasyAnn(prefix=prefix,
+    ann3 = AnnWDefaults(prefix=prefix,
                        as_path=(13796,),
                        timestamp=0,
                        roa_validity=ROAValidity.UNKNOWN,

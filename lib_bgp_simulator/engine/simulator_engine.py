@@ -1,13 +1,14 @@
+from typing import Optional
+
 from lib_caida_collector import BGPDAG
 
-
-from .bgp_as import BGPAS
+from .as_classes import BGPAS
+from ..engine_input import EngineInput
 from ..enums import Relationships
-from ..announcement import Announcement
-
+from ..announcements import Announcement
 
 class SimulatorEngine(BGPDAG):
-    __slots__ = tuple()
+    __slots__ = "_setup",
 
     def __init__(self,
                  *args,
@@ -16,29 +17,49 @@ class SimulatorEngine(BGPDAG):
         super(SimulatorEngine, self).__init__(*args,
                                               BaseASCls=BaseASCls,
                                               **kwargs)
+        self._setup: bool = False
 
-    def run(self, announcements, propagation_round=0, attack=None):
+    def __eq__(self, other):
+        if isinstance(other, SimulatorEngine):
+            return self.as_dict == other.as_dict
+        else:
+            raise NotImplementedError
+
+    def setup(self,
+              engine_input: EngineInput,
+              BaseASCls: BGPAS,
+              AdoptingASCls: BGPAS):
+        self._reset_as_classes(engine_input, BaseASCls, AdoptingASCls)
+        engine_input.seed(self)
+        self._setup = True
+
+    def run(self,
+            propagation_round=0,
+            engine_input=None):
         """Propogates announcements"""
 
-        self._seed(announcements, propagation_round)
-        self._propagate(propagation_round, attack)
+        assert self._setup
+        self._propagate(propagation_round, engine_input)
 
-    def _seed(self, announcements: list, propagation_round: int):
-        """Seeds/inserts announcements into the BGP DAG"""
+    def _reset_as_classes(self,
+                          engine_input: EngineInput,
+                          BaseASCls: BGPAS,
+                          AdoptASCls: BGPAS):
+        as_cls_dict: dict = engine_input.get_as_classes(self,
+                                                        BaseASCls,
+                                                        AdoptASCls)
+        for as_obj in self:
+            as_obj.__class__ = as_cls_dict.get(as_obj.asn, BaseASCls)
+            # Reset base is false to avoid overriding AS info
+            as_obj.__init__(reset_base=False)
 
-        for ann in announcements:
-            assert isinstance(ann, Announcement)
-
-        for ann in announcements:
-            # Let the announcement do the seeding
-            # That way it's easy for anns to seed with path manipulation
-            # Simply inherit the announcement class
-            ann.seed(self.as_dict, propagation_round)
-
-    def _propagate(self, propagation_round, attack):
+    def _propagate(self,
+                   propagation_round: Optional[int],
+                   engine_input: Optional[EngineInput]):
         """Propogates announcements"""
 
-        kwargs = {"propagation_round": propagation_round, "attack": attack}
+        kwargs = {"propagation_round": propagation_round,
+                  "engine_input": engine_input}
 
         self._propagate_to_providers(**kwargs)
         self._propagate_to_peers(**kwargs)
@@ -76,11 +97,3 @@ class SimulatorEngine(BGPDAG):
                                                  **kwargs)
             for as_obj in rank:
                 as_obj.propagate_to_customers()
-
-    def __str__(self):
-        string = ""
-        for as_obj in self:
-            string += f"{as_obj.asn}:\n"
-            for ann in as_obj.local_rib.values():
-                string += f"\t{str(ann)}\n"
-        return string

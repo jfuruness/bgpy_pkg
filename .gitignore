@@ -1,3 +1,15 @@
+# Test generates these automatically
+*engine_output_ground_truth.gv
+*engine_output_ground_truth.gv.pdf
+*engine_output_ground_truth.gv.png
+*engine_output_guess.gv
+*engine_output_guess.gv.pdf
+*engine_output_guess.gv.png
+*empty_engine_graph.yaml
+*engine_input.yaml
+*engine_output_guess.yaml
+*engine_traceback_guess.yaml
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
