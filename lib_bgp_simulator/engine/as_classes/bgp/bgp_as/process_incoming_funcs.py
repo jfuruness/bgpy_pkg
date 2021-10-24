@@ -48,19 +48,30 @@ def process_incoming_anns(self,
 
                 self._ribs_in.add_unprocessed_ann(ann, from_rel)
 
-            # If it's valid, process it
-            if self._valid_ann(ann, from_rel):
-                if ann.withdraw:
-                    self._process_incoming_withdrawal(ann, from_rel)
+            # Process withdrawals even for invalid anns in the ribs_in
+            if ann.withdraw:
+                if self._process_incoming_withdrawal(ann, from_rel):
+                    # the above will return true if the local rib is changed
+                    updated_loc_rib_ann = self._local_rib.get_ann(prefix)
+                    if current_processed:
+                        current_ann = updated_loc_rib_ann
+                    else:
+                        new_ann_is_better = self._new_ann_better(
+                            current_ann, current_processed, from_rel,
+                            updated_loc_rib_ann, True, updated_loc_rib_ann.recv_relationship)
+                        if new_ann_is_better:
+                            current_ann = updated_loc_rib_ann
+                            current_processed = True
 
-                else:
-                    new_ann_is_better: bool = self._new_ann_better(
-                        current_ann, current_processed, from_rel,
-                        ann, False, from_rel)
-                    # If the new priority is higher
-                    if new_ann_is_better:
-                        current_ann: Ann = ann
-                        current_processed = False
+            # If it's valid, process it
+            elif self._valid_ann(ann, from_rel):
+                new_ann_is_better: bool = self._new_ann_better(
+                    current_ann, current_processed, from_rel,
+                    ann, False, from_rel)
+                # If the new priority is higher
+                if new_ann_is_better:
+                    current_ann: Ann = ann
+                    current_processed = False
 
         if _local_rib_ann is not None and _local_rib_ann is not current_ann:
             # Best ann has already been processed
@@ -93,8 +104,8 @@ def _process_incoming_withdrawal(self,
                 and ((ann.prefix_path_attributes_eq(_local_rib_ann))
                 and (_local_rib_ann.seed_asn is not None))), err
 
-    current_ann_ribs_in, _ =\
-        self._ribs_in.get_unprocessed_ann_recv_rel(neighbor, prefix)
+    ann_info = self._ribs_in.get_unprocessed_ann_recv_rel(neighbor, prefix)
+    current_ann_ribs_in = ann_info.unprocessed_ann
 
     err = (f"Cannot withdraw ann that was never sent.\n\t "
            f"Ribs in: {current_ann_ribs_in}\n\t withdraw: {ann}")
