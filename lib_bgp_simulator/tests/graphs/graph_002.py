@@ -3,10 +3,10 @@ from pathlib import Path
 from lib_caida_collector import PeerLink, CustomerProviderLink as CPLink
 
 from .graph_info import GraphInfo
-from ....enums import ASNs
+from ...enums import ASNs
 
 
-class G002(GraphInfo):
+class Graph002(GraphInfo):
     r"""
     Test propagating up without multihomed support in the following test graph.
     Horizontal lines are peer relationships, vertical lines are customer-provider.
@@ -21,7 +21,7 @@ class G002(GraphInfo):
     """
 
     def __init__(self):
-        super(G002, self).__init__(
+        super(Graph002, self).__init__(
             peer_links=set([PeerLink(2, 3),
                             PeerLink(ASNs.VICTIM.value, 5)]),
             customer_provider_links=set(

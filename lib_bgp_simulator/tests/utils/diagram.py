@@ -1,7 +1,8 @@
-from lib_bgp_simulator import Outcomes
-
 from graphviz import Digraph
 import ipaddress
+
+from ...enums import Outcomes
+
 
 class Diagram:
     def __init__(self):
@@ -161,4 +162,8 @@ class Diagram:
             kwargs.update({"fillcolor": "green", "shape": "doublecircle"})
         elif traceback[as_obj.asn] == Outcomes.ATTACKER_SUCCESS:
             kwargs.update({"fillcolor": "red:yellow"})
+        elif traceback[as_obj.asn] == Outcomes.VICTIM_SUCCESS:
+            kwargs.update({"fillcolor": "green:white"})
+        elif traceback[as_obj.asn] == Outcomes.DISCONNECTED:
+            kwargs.update({"fillcolor": "grey:white"})
         return kwargs

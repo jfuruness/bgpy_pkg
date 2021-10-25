@@ -48,5 +48,5 @@ def _send_anns(self, propagate_to: Relationships):
         # Update Ribs out if it's not a withdraw
         if not ann.withdraw:
             self._ribs_out.add_ann(neighbor.asn, ann)
-    for neighbor in getattr(self, propagate_to.name.lower()):
+    for neighbor in neighbors:
         self._send_q.reset_neighbor(neighbor.asn)

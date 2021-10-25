@@ -3,17 +3,20 @@ import pytest
 
 from lib_caida_collector import PeerLink, CustomerProviderLink as CPLink
 
-from ...graphs import G001HiddenHijackGraphInfo
+from ...graphs import Graph002
 from ...utils import BaseGraphSystemTester, YamlSystemTestRunner
 
-from .....enums import ASNs
-from .....engine_input import SubprefixHijack
-from .....engine import BGPSimpleAS
-from .....engine import BGPAS
+from ....enums import ASNs
+from ....engine_input import ValidPrefix
+from ....engine import BGPSimpleAS
+from ....engine import BGPAS
+from ....engine import ROVSimpleAS
+from ....engine import ROVAS
+
 
 
 class BaseBGPPropTester(BaseGraphSystemTester):
-    GraphInfoCls = G002
+    GraphInfoCls = Graph002
     EngineInputCls = ValidPrefix
     base_dir = Path(__file__).parent
 

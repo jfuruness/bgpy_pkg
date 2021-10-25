@@ -1,5 +1,5 @@
 from lib_caida_collector import CaidaCollector
-from lib_bgp_simulator import Simulator, Graph, ROVAS, SubprefixHijack, BGPAS, SimulatorEngine, YamlAbleEnum
+
 from datetime import datetime
 from pathlib import Path
 # YAML STUFF
@@ -9,7 +9,11 @@ import yaml
 from yaml import dump, load, safe_load, SafeLoader
 
 from .simulator_loader import SimulatorLoader
-
+from ...simulator import Simulator
+from ...simulator import Graph
+from ...engine import ROVAS, BGPAS, SimulatorEngine
+from ...engine_input import SubprefixHijack
+from ...enums import YamlAbleEnum
 
 # 2-way mappings between the types and the yaml tags
 types_to_yaml_tags = {X: X.yaml_suffix() for X in YamlAbleEnum.yamlable_enums()}

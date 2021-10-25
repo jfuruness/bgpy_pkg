@@ -1,5 +1,4 @@
 from lib_caida_collector import CaidaCollector
-from lib_bgp_simulator import Simulator, Graph, ROVAS, SubprefixHijack, BGPAS, SimulatorEngine, YamlAbleEnum, Scenario
 from datetime import datetime
 from pathlib import Path
 import logging
@@ -8,6 +7,9 @@ import shutil
 from .diagram import Diagram
 from .simulator_codec import SimulatorCodec
 from ..conftest import PytestOptions
+from ...engine import SimulatorEngine
+from ...simulator import Scenario
+
 
 class YamlSystemTestRunner:
 

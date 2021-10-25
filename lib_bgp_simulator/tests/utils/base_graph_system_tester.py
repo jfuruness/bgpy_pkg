@@ -7,8 +7,8 @@ from lib_caida_collector import PeerLink, CustomerProviderLink as CPLink
 
 from .yaml_system_test_runner import YamlSystemTestRunner
 
-from ....enums import ASNs
-from ....simulator import Scenario
+from ...enums import ASNs
+from ...simulator import Scenario
 
 
 class BaseGraphSystemTester:
