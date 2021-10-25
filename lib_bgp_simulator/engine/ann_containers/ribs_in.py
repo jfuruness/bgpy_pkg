@@ -42,7 +42,7 @@ class RIBsIn(AnnContainer):
     def get_ann_infos(self, prefix: str):
         default_ann_info = AnnInfo(unprocessed_ann=None, recv_relationship=None)
         for prefix_ann_info in self._info.values():
-            
+
             yield prefix_ann_info.get(prefix, default_ann_info)
 
     def remove_entry(self, neighbor_asn: int, prefix: int):

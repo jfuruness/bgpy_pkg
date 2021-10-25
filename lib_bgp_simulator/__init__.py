@@ -21,6 +21,7 @@ from .engine_input import SubprefixHijack
 from .engine_input import NonRoutedPrefixHijack
 from .engine_input import NonRoutedSuperprefixHijack
 from .engine_input import SuperprefixPrefixHijack
+from .engine_input import ValidPrefix
 
 from .simulator import DataPoint
 from .simulator import Graph

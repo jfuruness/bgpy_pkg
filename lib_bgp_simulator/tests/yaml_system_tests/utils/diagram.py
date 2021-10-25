@@ -6,7 +6,8 @@ import ipaddress
 class Diagram:
     def __init__(self):
         self.dot = Digraph(format="png")
-        self.dot.attr(bgcolor='purple:pink')
+        # purple is cooler imo but whatever
+        # self.dot.attr(bgcolor='purple:pink')
 
     def generate_as_graph(self, *args, path=None, view=False):
         self._add_legend(*args)
@@ -118,6 +119,9 @@ class Diagram:
                     <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4">
                       <TR>
                         <TD COLSPAN="3" BORDER="0">{asn_str}</TD>
+                      </TR>
+                      <TR>
+                        <TD COLSPAN="3" BORDER="0">({as_obj.name})</TD>
                       </TR>"""
         if as_obj.asn not in engine_input.uncountable_asns and False:
             outcome = traceback[as_obj.asn]
@@ -151,6 +155,8 @@ class Diagram:
         kwargs = {"color": "black", "style": "filled", "fillcolor": "white"}
         if as_obj.asn == engine_input.attacker_asn:
             kwargs.update({"fillcolor": "red", "shape": "doublecircle"})
+            # If people complain about the red being too dark lol:
+            # kwargs.update({"fillcolor": "#ff4d4d"})
         elif as_obj.asn == engine_input.victim_asn:
             kwargs.update({"fillcolor": "green", "shape": "doublecircle"})
         elif traceback[as_obj.asn] == Outcomes.ATTACKER_SUCCESS:

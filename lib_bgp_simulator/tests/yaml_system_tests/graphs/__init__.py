@@ -1,2 +1,3 @@
 from .graph_info import GraphInfo
-from .hidden_hijack_graph_info import HiddenHijackGraphInfo
+from .g001 import G001
+from .g001 import G002

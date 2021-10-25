@@ -4,10 +4,10 @@ import pytest
 
 from lib_caida_collector import PeerLink, CustomerProviderLink as CPLink
 
-from ..enums import ASNs, Relationships, ROAValidity
-from ..announcements import AnnWDefaults
+from ...enums import ASNs, Relationships, ROAValidity
+from ...announcements import AnnWDefaults
 
-from ..engine import BGPAS
+from ...engine import BGPAS
 
 
 def get_prefix_ann_ann_w_a():
@@ -146,13 +146,13 @@ def test_withdraw_sending():
 
     """
     prefix = '137.99.0.0/16'
-    ann1 = EasyAnn(prefix=prefix,
+    ann1 = AnnWDefaults(prefix=prefix,
                        as_path=(13794,),
                        timestamp=0,
                        roa_validity=ROAValidity.UNKNOWN,
                        recv_relationship=Relationships.ORIGIN)
 
-    ann2 = EasyAnn(prefix=prefix,
+    ann2 = AnnWDefaults(prefix=prefix,
                        as_path=(13795,),
                        timestamp=0,
                        roa_validity=ROAValidity.UNKNOWN,
@@ -184,13 +184,13 @@ def test_withdraw_sending_multihop():
 
     """
     prefix = '137.99.0.0/16'
-    ann1 = EasyAnn(prefix=prefix,
+    ann1 = AnnWDefaults(prefix=prefix,
                        as_path=(13794,),
                        timestamp=0,
                        roa_validity=ROAValidity.UNKNOWN,
                        recv_relationship=Relationships.ORIGIN)
 
-    ann2 = EasyAnn(prefix=prefix,
+    ann2 = AnnWDefaults(prefix=prefix,
                        as_path=(13795,),
                        timestamp=0,
                        roa_validity=ROAValidity.UNKNOWN,

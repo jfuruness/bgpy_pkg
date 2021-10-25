@@ -4,12 +4,12 @@ import pytest
 
 from lib_caida_collector import PeerLink, CustomerProviderLink as CPLink
 
-from ..enums import ASNs, Relationships, ROAValidity
-from ..announcements import AnnWDefaults
+from ...enums import ASNs, Relationships, ROAValidity
+from ...announcements import AnnWDefaults
 
-from ..engine import BGPSimpleAS
-from ..engine import BGPAS
-from ..engine import LocalRIB
+from ...engine import BGPSimpleAS
+from ...engine import BGPAS
+from ...engine import LocalRIB
 
 
 @pytest.mark.parametrize("BaseASCls", [BGPSimpleAS, BGPAS])

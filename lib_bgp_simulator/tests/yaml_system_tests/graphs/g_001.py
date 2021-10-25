@@ -6,7 +6,7 @@ from .graph_info import GraphInfo
 from ....enums import ASNs
 
 
-class HiddenHijackGraphInfo(GraphInfo):
+class G001(GraphInfo):
     r"""Hidden hijack example with BGP
     Figure 1a in our ROV++ paper
 
@@ -18,7 +18,7 @@ class HiddenHijackGraphInfo(GraphInfo):
     """
 
     def __init__(self):
-        super(HiddenHijackGraphInfo, self).__init__(
+        super(G001, self).__init__(
             peer_links=set([PeerLink(2, 3)]),
             customer_provider_links=set(
                 [CPLink(provider_asn=1, customer_asn=2),
