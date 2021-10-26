@@ -40,6 +40,8 @@ from .announcements import gen_superprefix_ann
 from .tests import GraphInfo
 from .tests import Graph001
 from .tests import Graph002
+from .tests import Graph003
+from .tests import Graph004
 
 # System tests that may be useful elsewhere (not YAML)
 from .tests import test_sim_inputs

@@ -2,6 +2,8 @@
 from .graphs import GraphInfo
 from .graphs import Graph001
 from .graphs import Graph002
+from .graphs import Graph003
+from .graphs import Graph004
 
 # System tests that may be useful elsewhere (not YAML)
 from .system_tests import test_sim_inputs

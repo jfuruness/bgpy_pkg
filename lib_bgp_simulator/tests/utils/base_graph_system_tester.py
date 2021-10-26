@@ -7,6 +7,7 @@ from lib_caida_collector import PeerLink, CustomerProviderLink as CPLink
 
 from .yaml_system_test_runner import YamlSystemTestRunner
 
+from ...engine import ROVSimpleAS
 from ...enums import ASNs
 from ...simulator import Scenario
 
@@ -19,7 +20,10 @@ class BaseGraphSystemTester:
     victim_asn = ASNs.VICTIM.value
     propagation_rounds = 1
     adopting_asns = tuple()
+    rov_adopting_asns = tuple()
     AdoptASCls = NoAdoptCls
+    ROVASCls = ROVSimpleAS
+
 
     def __init_subclass__(cls, *args, **kwargs):
         """This method essentially creates a list of all subclasses"""
@@ -83,7 +87,12 @@ class BaseGraphSystemTester:
     @property
     def as_classes(self):
         as_classes = {asn: self.BaseASCls for asn in self.GraphInfoCls().asns}
+        all_non_base_ases = self.adopting_asns + self.rov_adopting_asns
+        assert len(all_non_base_ases) == len(set(all_non_base_ases))
         for asn in self.adopting_asns:
             assert asn in as_classes, "Adopting ASN not in the ASNs of the graph?"
             as_classes[asn] = self.AdoptASCls
+        for asn in self.rov_adopting_asns:
+            assert asn in as_classes
+            as_classes[asn] = self.ROVASCls
         return as_classes
