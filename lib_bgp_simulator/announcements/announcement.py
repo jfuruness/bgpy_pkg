@@ -58,11 +58,7 @@ class Announcement(YamlAble):
 
     def __eq__(self, other):
         if isinstance(other, Announcement):
-            eq = True
-            for attr in ["prefix", "as_path", "recv_relationship"]:
-                if getattr(self, attr) != getattr(other, attr):
-                    eq = False
-            return eq
+            return dataclasses.asdict(self) == dataclasses.asdict(other)
         else:
             raise NotImplementedError
 

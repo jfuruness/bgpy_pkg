@@ -5,10 +5,11 @@ from ....ann_containers import RecvQueue
 from .....enums import Relationships
 from .....announcements import Announcement as Ann
 
+slots = ("_local_rib", "_recv_q", "_ribs_in", "_ribs_out", "_send_q") 
 
 class BGPSimpleAS(AS):
     # TODO: fix later? class error? Does this impact speed?
-    __slots__ = ("_local_rib", "_recv_q", "_ribs_in", "_ribs_out", "_send_q")
+    __slots__ = slots
 
     name = "BGP"
     as_class_names = []
@@ -44,7 +45,7 @@ class BGPSimpleAS(AS):
 
     def __eq__(self, other):
         if isinstance(other, BGPSimpleAS):
-            for attr in self.__slots__:
+            for attr in slots:
                 if not hasattr(self, attr) == hasattr(other, attr):
                     return False
                 elif hasattr(self, attr):
@@ -52,7 +53,7 @@ class BGPSimpleAS(AS):
                         return False
             return True
         else:
-            raise NotImplementedError
+            return NotImplemented
 
     # https://stackoverflow.com/a/53519136/8903959
     __hash__ = AS.__hash__

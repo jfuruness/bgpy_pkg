@@ -110,14 +110,14 @@ class Graph:
         data_points = defaultdict(list)
 
         for percent_adopt, trial in percent_adopt_trials:
-            engine_input = self.EngineInputCls(self.subgraphs,
+            og_engine_input = self.EngineInputCls(self.subgraphs,
                                                engine,
                                                percent_adopt)
             for ASCls in self.adopt_as_classes:
                 print(f"{percent_adopt}% {ASCls.name}, #{trial}",
                       end="   " + "\r")
                 # Deepcopy input to make sure input is fresh
-                engine_input = deepcopy(engine_input)
+                engine_input = deepcopy(og_engine_input)
                 # Change AS Classes, seed announcements before propagation
                 engine.setup(engine_input, self.BaseASCls, ASCls)
 
