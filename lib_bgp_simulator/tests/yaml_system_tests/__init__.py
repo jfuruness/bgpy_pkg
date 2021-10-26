@@ -1,0 +1,3 @@
+from ._001_002_hidden_hijack import BaseHiddenHijackTester
+from ._003_006_bgp_prop import BaseBGPPropTester
+from ._007_010_fig2 import BaseFig2Tester

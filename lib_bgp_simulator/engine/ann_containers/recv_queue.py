@@ -22,3 +22,6 @@ class RecvQueue(AnnContainer):
 
     def prefix_anns(self):
         return self._info.items()
+
+    def get_ann_list(self, prefix):
+        return self._info.get(prefix, [])

@@ -10,12 +10,16 @@ from .yaml_system_test_runner import YamlSystemTestRunner
 from ...enums import ASNs
 from ...simulator import Scenario
 
+class NoAdoptCls:
+    pass
 
 class BaseGraphSystemTester:
 
     attacker_asn = ASNs.ATTACKER.value
     victim_asn = ASNs.VICTIM.value
     propagation_rounds = 1
+    adopting_asns = tuple()
+    AdoptASCls = NoAdoptCls
 
     def __init_subclass__(cls, *args, **kwargs):
         """This method essentially creates a list of all subclasses"""
@@ -45,7 +49,7 @@ class BaseGraphSystemTester:
 
         for propagation_round in range(self.propagation_rounds):
             # We need to split this dir up so that it can run over many BaseASCls
-            dir_ = self.base_dir / self.BaseASCls.__name__
+            dir_ = self.base_dir / f"{self.BaseASCls.__name__}.{self.AdoptASCls.__name__}"
             dir_ = dir_ / self.propagation_round_str(propagation_round)
             dir_.mkdir(parents=True, exist_ok=True)
 
@@ -75,3 +79,11 @@ class BaseGraphSystemTester:
 
     def propagation_round_str(self, propagation_round):
         return f"propogation_round_{propagation_round}"
+
+    @property
+    def as_classes(self):
+        as_classes = {asn: self.BaseASCls for asn in self.GraphInfoCls().asns}
+        for asn in self.adopting_asns:
+            assert asn in as_classes, "Adopting ASN not in the ASNs of the graph?"
+            as_classes[asn] = self.AdoptASCls
+        return as_classes

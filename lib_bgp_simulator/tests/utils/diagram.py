@@ -1,6 +1,7 @@
 from graphviz import Digraph
 import ipaddress
 
+from ...engine import BGPAS, BGPSimpleAS
 from ...enums import Outcomes
 
 
@@ -154,16 +155,29 @@ class Diagram:
 
     def _get_kwargs(self, as_obj, engine, traceback, engine_input, *args):
         kwargs = {"color": "black", "style": "filled", "fillcolor": "white"}
+
+        # If the as obj is the attacker
         if as_obj.asn == engine_input.attacker_asn:
             kwargs.update({"fillcolor": "red", "shape": "doublecircle"})
+            if as_obj.__class__ not in [BGPAS, BGPSimpleAS]:
+                kwargs["shape"] = "doubleoctagon"
             # If people complain about the red being too dark lol:
             # kwargs.update({"fillcolor": "#ff4d4d"})
+        # As obj is the victim
         elif as_obj.asn == engine_input.victim_asn:
             kwargs.update({"fillcolor": "green", "shape": "doublecircle"})
-        elif traceback[as_obj.asn] == Outcomes.ATTACKER_SUCCESS:
-            kwargs.update({"fillcolor": "red:yellow"})
-        elif traceback[as_obj.asn] == Outcomes.VICTIM_SUCCESS:
-            kwargs.update({"fillcolor": "green:white"})
-        elif traceback[as_obj.asn] == Outcomes.DISCONNECTED:
-            kwargs.update({"fillcolor": "grey:white"})
+            if as_obj.__class__ not in [BGPAS, BGPSimpleAS]:
+                kwargs["shape"] = "doubleoctagon"
+
+        # As obj is not attacker or victim
+        else:
+            if traceback[as_obj.asn] == Outcomes.ATTACKER_SUCCESS:
+                kwargs.update({"fillcolor": "red:yellow"})
+            elif traceback[as_obj.asn] == Outcomes.VICTIM_SUCCESS:
+                kwargs.update({"fillcolor": "green:white"})
+            elif traceback[as_obj.asn] == Outcomes.DISCONNECTED:
+                kwargs.update({"fillcolor": "grey:white"})
+
+            if as_obj.__class__ not in [BGPAS, BGPSimpleAS]:
+                kwargs["shape"] = "octagon"
         return kwargs

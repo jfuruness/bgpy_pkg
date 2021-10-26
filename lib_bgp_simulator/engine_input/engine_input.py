@@ -15,7 +15,8 @@ class EngineInput(YamlAble):
     """Contains information regarding an attack"""
 
     __slots__ = ("attacker_asn", "victim_asn", "adopting_asns",
-                 "announcements", "as_classes", "extra_ann_kwargs")
+                 "announcements", "as_classes", "extra_ann_kwargs",
+                 "prefix_subprefix_dict")
 
     AnnCls = Announcement
 
@@ -70,7 +71,7 @@ class EngineInput(YamlAble):
         first_prefix = ip_network(self.announcements[0].prefix)
         for ann in self.announcements:
             assert ip_network(ann.prefix).overlaps(first_prefix)
-
+        assert self._get_prefix_subprefix_dict() is None
 
     def seed(self, engine):
         """Seeds announcement at the proper AS
@@ -172,7 +173,7 @@ class EngineInput(YamlAble):
 
     def _get_prefix_subprefix_dict(self):
         prefixes = set([])
-        for ann in self.recv_q.announcements:
+        for ann in self.announcements:
             prefixes.add(ann.prefix)
         # Do this here for speed
         prefixes = [ip_network(x) for x in prefixes]
@@ -189,7 +190,7 @@ class EngineInput(YamlAble):
                 if prefix.subnet_of(outer_prefix):
                     subprefix_list.append(str(prefix))
         # Get rid of ip_network
-        return {str(k): v for k, v in prefix_subprefix_dict.items()}
+        self.prefix_subprefix_dict = {str(k): v for k, v in prefix_subprefix_dict.items()}
 
 ##############
 # Yaml Funcs #

@@ -8,3 +8,10 @@ class GraphInfo:
             self.customer_provider_links = set()
 
         self.peer_links = peer_links if peer_links else set()
+
+    @property
+    def asns(self):
+        asns = []
+        for link in self.customer_provider_links | self.peer_links:
+            asns.extend(link.asns)
+        return asns

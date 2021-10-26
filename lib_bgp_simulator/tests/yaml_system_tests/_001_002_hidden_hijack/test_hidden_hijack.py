@@ -17,11 +17,6 @@ class BaseHiddenHijackTester(BaseGraphSystemTester):
     EngineInputCls = SubprefixHijack
     base_dir = Path(__file__).parent
 
-    @property
-    def as_classes(self):
-        return {asn: self.BaseASCls for asn in
-                list(range(1, 4)) + [ASNs.VICTIM.value, ASNs.ATTACKER.value]}
-
 class Test001BGPSimpleHiddenHijack(BaseHiddenHijackTester):
     BaseASCls = BGPSimpleAS
 

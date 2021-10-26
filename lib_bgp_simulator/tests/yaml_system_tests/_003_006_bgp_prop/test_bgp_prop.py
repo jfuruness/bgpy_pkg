@@ -20,10 +20,6 @@ class BaseBGPPropTester(BaseGraphSystemTester):
     EngineInputCls = ValidPrefix
     base_dir = Path(__file__).parent
 
-    @property
-    def as_classes(self):
-        return {asn: self.BaseASCls for asn in
-                list(range(1, 8)) + [ASNs.VICTIM.value, ASNs.ATTACKER.value]}
 
 class Test003BGPSimpleProp(BaseBGPPropTester):
     BaseASCls = BGPSimpleAS
