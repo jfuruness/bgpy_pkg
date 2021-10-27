@@ -14,4 +14,4 @@ class GraphInfo:
         asns = []
         for link in self.customer_provider_links | self.peer_links:
             asns.extend(link.asns)
-        return asns
+        return list(sorted(set(asns)))

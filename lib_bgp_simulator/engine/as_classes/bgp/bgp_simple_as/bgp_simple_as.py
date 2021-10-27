@@ -11,7 +11,7 @@ class BGPSimpleAS(AS):
     # TODO: fix later? class error? Does this impact speed?
     __slots__ = slots
 
-    name = "BGP"
+    name = "BGP Simple"
     as_class_names = []
     as_classes = []
 

@@ -162,6 +162,7 @@ class Diagram:
             if as_obj.__class__ not in [BGPAS, BGPSimpleAS]:
                 kwargs["shape"] = "doubleoctagon"
             # If people complain about the red being too dark lol:
+            kwargs.update({"fillcolor": "#FF7F7F"})
             # kwargs.update({"fillcolor": "#ff4d4d"})
         # As obj is the victim
         elif as_obj.asn == engine_input.victim_asn:

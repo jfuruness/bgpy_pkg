@@ -14,6 +14,8 @@ from .....enums import Relationships
 class BGPAS(BGPSimpleAS):
     __slots__ = tuple()
 
+    name = "BGP"
+
     def __init__(self,
                  *args,
                  _ribs_in=None,

@@ -6,6 +6,8 @@ from .graphs import Graph001
 from .graphs import Graph002
 from .graphs import Graph003
 from .graphs import Graph004
+from .graphs import Graph005
+from .graphs import Graph006
 
 # System tests that may be useful elsewhere (not YAML)
 from .system_tests import test_sim_inputs
@@ -18,3 +20,5 @@ from .utils import YamlSystemTestRunner
 from .yaml_system_tests import BaseHiddenHijackTester
 from .yaml_system_tests import BaseBGPPropTester
 from .yaml_system_tests import BaseFig2Tester
+from .yaml_system_tests import BaseNonRoutedSuperprefixTester
+from .yaml_system_tests import BaseNonRoutedPrefixTester

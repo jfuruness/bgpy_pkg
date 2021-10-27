@@ -1,0 +1,1 @@
+from .test_non_routed_superprefix import BaseNonRoutedSuperprefixTester

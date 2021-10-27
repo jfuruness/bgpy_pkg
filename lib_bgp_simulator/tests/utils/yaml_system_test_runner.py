@@ -93,12 +93,14 @@ class YamlSystemTestRunner:
         engine_truth = self.codec.load(path=self.engine_output_truth_yaml_path)
         traceback_truth = self.codec.load(path=self.traceback_truth_yaml_path)
 
+        """
         # Diagram for ground truth
         Diagram().generate_as_graph(engine_truth,
                                     traceback_truth,
                                     engine_input,
                                     path=self.engine_output_truth_gv_path,
                                     view=self.view_arg in sys.argv)
+        """
 
     def write_check_results(self, engine, scenario, traceback_guess):
         if not self.engine_output_guess_yaml_path.exists():
