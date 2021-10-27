@@ -1,3 +1,5 @@
+from .conftest import pytest_addoption
+
 # Graphs
 from .graphs import GraphInfo
 from .graphs import Graph001

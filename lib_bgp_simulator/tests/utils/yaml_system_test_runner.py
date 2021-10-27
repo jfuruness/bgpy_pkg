@@ -3,15 +3,18 @@ from datetime import datetime
 from pathlib import Path
 import logging
 import shutil
+import sys
 
 from .diagram import Diagram
 from .simulator_codec import SimulatorCodec
-from ..conftest import PytestOptions
 from ...engine import SimulatorEngine
 from ...simulator import Scenario
 
 
 class YamlSystemTestRunner:
+
+    write_no_verify_arg = "--write_no_verify"
+    view_arg = "--view"
 
     def __init__(self, dir_, preloaded_engine=None, preloaded_engine_input=None):
         """dir_ should be the dir_ with the yaml"""
@@ -84,7 +87,7 @@ class YamlSystemTestRunner:
                                     engine_output_guess,
                                     engine_input,
                                     path=self.engine_output_guess_gv_path,
-                                    view=PytestOptions.view)
+                                    view=self.view_arg in sys.argv)
 
 
         engine_truth = self.codec.load(path=self.engine_output_truth_yaml_path)
@@ -95,19 +98,19 @@ class YamlSystemTestRunner:
                                     traceback_truth,
                                     engine_input,
                                     path=self.engine_output_truth_gv_path,
-                                    view=PytestOptions.view)
+                                    view=self.view_arg in sys.argv)
 
     def write_check_results(self, engine, scenario, traceback_guess):
         if not self.engine_output_guess_yaml_path.exists():
             self.write_engine_output_yaml(engine)
-            if PytestOptions.write_no_verify:
+            if self.write_no_verify_arg in sys.argv:
                 logging.warning("Writing engine output ground truth without verifying")
                 shutil.copy(self.engine_output_guess_yaml_path,
                             self.engine_output_truth_yaml_path)
 
         if not self.traceback_guess_yaml_path.exists():
             self.write_traceback_yaml(traceback_guess)
-            if PytestOptions.write_no_verify:
+            if self.write_no_verify_arg in sys.argv:
                 logging.warning("Writing traceback ground truth without verifying")
                 shutil.copy(self.traceback_guess_yaml_path,
                             self.traceback_truth_yaml_path)

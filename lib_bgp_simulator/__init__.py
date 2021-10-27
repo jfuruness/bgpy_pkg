@@ -36,6 +36,8 @@ from .announcements import gen_prefix_ann
 from .announcements import gen_subprefix_ann
 from .announcements import gen_superprefix_ann
 
+
+from .tests import pytest_addoption
 # Graphs
 from .tests import GraphInfo
 from .tests import Graph001

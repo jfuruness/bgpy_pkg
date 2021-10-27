@@ -87,7 +87,7 @@ class BaseGraphSystemTester:
     @property
     def as_classes(self):
         as_classes = {asn: self.BaseASCls for asn in self.GraphInfoCls().asns}
-        all_non_base_ases = self.adopting_asns + self.rov_adopting_asns
+        all_non_base_ases = list(self.adopting_asns) + list(self.rov_adopting_asns)
         assert len(all_non_base_ases) == len(set(all_non_base_ases))
         for asn in self.adopting_asns:
             assert asn in as_classes, "Adopting ASN not in the ASNs of the graph?"
