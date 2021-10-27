@@ -41,7 +41,7 @@ class Scenario:
             outcome_totals = self._get_outcomes(policies,
                                                 countable_asns,
                                                 cache)
-            total_ases = self._get_policy_totals(policies, subgraph_asns)
+            total_ases = self._get_policy_totals(policies, countable_asns)
 
             percentage_outcomes = defaultdict(dict)
             for outcome in list(Outcomes):
