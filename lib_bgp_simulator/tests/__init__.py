@@ -8,6 +8,8 @@ from .graphs import Graph003
 from .graphs import Graph004
 from .graphs import Graph005
 from .graphs import Graph006
+from .graphs import Graph007
+from .graphs import Graph008
 
 # System tests that may be useful elsewhere (not YAML)
 from .system_tests import test_sim_inputs

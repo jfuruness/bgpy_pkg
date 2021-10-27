@@ -4,7 +4,6 @@ import ipaddress
 from ...engine import BGPAS, BGPSimpleAS
 from ...enums import Outcomes
 
-
 class Diagram:
     def __init__(self):
         self.dot = Digraph(format="png")
