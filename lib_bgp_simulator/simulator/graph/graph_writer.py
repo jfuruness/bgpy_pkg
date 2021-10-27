@@ -30,7 +30,8 @@ def aggregate_and_write(self, graph_dir, sim):
         # {policy: Line}
         lines = dict()
 
-        for data_point, list_of_scenarios in self.data_points.items():
+        for data_point, list_of_scenarios in sorted(self.data_points.items(),
+                                                    key=lambda x: x[0].percent_adoption):
             if data_point.propagation_round != propagation_round:
                 continue
 
@@ -81,7 +82,7 @@ def _get_line(self, policy, lines, data_point):
         label = policy
         adopting = True
     else:
-        label = f"{policy} ({data_point.ASCls.name} adopting"
+        label = f"{policy} ({data_point.ASCls.name} adopting)"
         adopting = False
     if lines.get(label) is None:
         lines[label] = Line(policy, adopting, label)

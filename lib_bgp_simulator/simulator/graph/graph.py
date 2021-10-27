@@ -115,7 +115,7 @@ class Graph:
                                                percent_adopt)
             for ASCls in self.adopt_as_classes:
                 print(f"{percent_adopt}% {ASCls.name}, #{trial}",
-                      end="   " + "\r")
+                      end="                             " + "\r")
                 # Deepcopy input to make sure input is fresh
                 engine_input = deepcopy(og_engine_input)
                 # Change AS Classes, seed announcements before propagation

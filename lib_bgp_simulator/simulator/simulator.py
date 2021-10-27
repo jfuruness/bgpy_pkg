@@ -39,6 +39,7 @@ class Simulator(Base):
             ):
         """Downloads relationship data, runs simulation"""
 
+        assert len(graphs) == 1, "Can't do more than 1 graph at once yet"
         self._validate_inputs(graph_path, assert_pypy)
 
         if mp_method == MPMethod.RAY:
@@ -47,7 +48,6 @@ class Simulator(Base):
         # Done here so that the caida files are cached
         # So that multiprocessing doesn't interfere with one another
         CaidaCollector(_dir=self.base_dir).read_file()
-
         self._run_and_write_graphs(graphs, mp_method, graph_path)
 
         if mp_method == MPMethod.RAY:
