@@ -29,8 +29,8 @@ class BGPAS(BGPSimpleAS):
 
     # Propagation functions
     from .propagate_funcs import _propagate
-    from .propagate_funcs import _policy_propagate
     from .propagate_funcs import _process_outgoing_ann
+    from .propagate_funcs import _prev_sent
     from .propagate_funcs import _send_anns
 
     # Must add this func here since it refers to BGPAS

@@ -1,5 +1,7 @@
 from pathlib import Path
 
+import pytest
+
 from ...graphs import Graph003
 from ...utils import BaseGraphSystemTester
 

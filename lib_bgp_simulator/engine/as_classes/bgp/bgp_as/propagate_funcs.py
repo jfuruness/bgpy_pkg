@@ -17,18 +17,11 @@ def _propagate(self,
     # So that instead of propagating, announcements end up in the _send_q
     # Send q contains both announcements and withdrawals
     self._populate_send_q(propagate_to, send_rels)
-
     # Send announcements/withdrawals and add to ribs out
     self._send_anns(propagate_to)
 
-
-def _policy_propagate(self,
-                      neighbor: BGPSimpleAS,
-                      ann: Ann,
-                      *args,
-                      **kwargs) -> bool:
+def _prev_sent(self, neighbor, ann):
     """Don't send what we've already sent"""
-
     ribs_out_ann: Optional[Ann] = self._ribs_out.get_ann(neighbor.asn,
                                                          ann.prefix)
     return ann.prefix_path_attributes_eq(ribs_out_ann)

@@ -25,7 +25,6 @@ def process_incoming_anns(self,
         # Announcement will never be overriden, so continue
         if getattr(current_ann, "seed_asn", None):
             continue
-
         # For each announcement that is incoming
         for ann in anns:
             # withdrawals
@@ -44,7 +43,7 @@ def process_incoming_anns(self,
                        "You should always withdraw first, "
                        "have it be blank, then add the new one")
                 assert self._ribs_in.get_unprocessed_ann_recv_rel(
-                    ann.as_path[0], prefix) is None, err
+                    ann.as_path[0], prefix) is None, str(self.asn) +" " +  str(ann) + err
 
                 self._ribs_in.add_unprocessed_ann(ann, from_rel)
 
@@ -68,6 +67,8 @@ def process_incoming_anns(self,
                 new_ann_is_better: bool = self._new_ann_better(
                     current_ann, current_processed, from_rel,
                     ann, False, from_rel)
+
+
                 # If the new priority is higher
                 if new_ann_is_better:
                     current_ann: Ann = ann
@@ -83,8 +84,8 @@ def process_incoming_anns(self,
                     self._copy_and_process(ann, from_rel)), err
 
         # We have a new best!
-        if current_processed is False:
-            current_ann: Ann = self._copy_and_process(ann, from_rel)
+        if _local_rib_ann is not current_ann:
+            current_ann: Ann = self._copy_and_process(current_ann, from_rel)
             # Save to local rib
             self._local_rib.add_ann(current_ann)
 

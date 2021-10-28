@@ -408,8 +408,7 @@
     1.2.0.0/16: !yamlable/Announcement
       as_path: !!python/tuple
       - 4
-      - 2
-      - 5
+      - 1
       - 777
       communities: !!python/tuple []
       prefix: 1.2.0.0/16
@@ -493,8 +492,7 @@
       1.2.0.0/16: !yamlable/Announcement
         as_path: !!python/tuple
         - 4
-        - 2
-        - 5
+        - 1
         - 777
         communities: !!python/tuple []
         prefix: 1.2.0.0/16
@@ -689,8 +687,7 @@
       as_path: !!python/tuple
       - 8
       - 4
-      - 2
-      - 5
+      - 1
       - 777
       communities: !!python/tuple []
       prefix: 1.2.0.0/16
@@ -714,8 +711,7 @@
         unprocessed_ann: !yamlable/Announcement
           as_path: !!python/tuple
           - 4
-          - 2
-          - 5
+          - 1
           - 777
           communities: !!python/tuple []
           prefix: 1.2.0.0/16

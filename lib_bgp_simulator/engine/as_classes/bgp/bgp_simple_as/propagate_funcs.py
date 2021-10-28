@@ -43,7 +43,7 @@ def _propagate(self,
 
     for neighbor in getattr(self, propagate_to.name.lower()):
         for prefix, ann in self._local_rib.prefix_anns():
-            if ann.recv_relationship in send_rels:
+            if ann.recv_relationship in send_rels and not self._prev_sent(neighbor, ann):
                 propagate_args = [neighbor, ann, propagate_to, send_rels]
                 # Policy took care of it's own propagation for this ann
                 if self._policy_propagate(*propagate_args):
@@ -54,6 +54,10 @@ def _propagate(self,
 def _policy_propagate(*args, **kwargs) -> bool:
     """Custom policy propagation that can be overriden"""
 
+    return False
+
+def _prev_sent(*args, **kwargs) -> bool:
+    """Don't resend anything for BGPAS. For this class it doesn't matter"""
     return False
 
 def _process_outgoing_ann(self,

@@ -76,7 +76,7 @@ class BaseGraphSystemTester:
         scenario = Scenario(engine=preloaded_engine_copy, engine_input=preloaded_engine_input)
         subgraphs = {"all_ases": set([x.asn for x in preloaded_engine])}
 
-        traceback_guess = scenario.run(subgraphs, 0)
+        traceback_guess = scenario.run(subgraphs, 1)
 
         assert preloaded_engine == preloaded_engine_copy, "Unstable Graph"
         assert preloaded_traceback_guess == traceback_guess, "Unstable Graph"

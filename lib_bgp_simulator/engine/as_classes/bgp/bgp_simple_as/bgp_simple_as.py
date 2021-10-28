@@ -65,6 +65,8 @@ class BGPSimpleAS(AS):
     from .propagate_funcs import _propagate
     from .propagate_funcs import _policy_propagate
     from .propagate_funcs import _process_outgoing_ann
+    from .propagate_funcs import _prev_sent
+    
 
     # Process incoming announcements
     from .process_incoming_funcs import receive_ann
