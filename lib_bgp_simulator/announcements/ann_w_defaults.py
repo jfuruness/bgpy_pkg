@@ -17,3 +17,4 @@ class AnnWDefaults(Announcement):
     recv_relationship: Relationships = Relationships.CUSTOMERS
     withdraw: bool = False
     traceback_end: bool = False
+    communities: tuple = tuple()

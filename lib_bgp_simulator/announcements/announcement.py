@@ -47,6 +47,7 @@ class Announcement(YamlAble):
     recv_relationship: Relationships
     withdraw: bool
     traceback_end: bool
+    communities: tuple
 
     def __init_subclass__(cls, *args, **kwargs):
         """This method essentially creates a list of all subclasses

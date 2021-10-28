@@ -5,6 +5,7 @@
       as_path: !!python/tuple
       - 1
       - 666
+      communities: !!python/tuple []
       prefix: 1.0.0.0/8
       recv_relationship: !simulator_codec/Relationships
         name: CUSTOMERS
@@ -34,6 +35,7 @@
       - 2
       - 1
       - 666
+      communities: !!python/tuple []
       prefix: 1.0.0.0/8
       recv_relationship: !simulator_codec/Relationships
         name: PROVIDERS
@@ -64,6 +66,7 @@
       - 2
       - 1
       - 666
+      communities: !!python/tuple []
       prefix: 1.0.0.0/8
       recv_relationship: !simulator_codec/Relationships
         name: PROVIDERS
@@ -90,6 +93,7 @@
     1.0.0.0/8: !yamlable/Announcement
       as_path: !!python/tuple
       - 666
+      communities: !!python/tuple []
       prefix: 1.0.0.0/8
       recv_relationship: !simulator_codec/Relationships
         name: ORIGIN

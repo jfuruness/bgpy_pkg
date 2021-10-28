@@ -14,7 +14,8 @@ def generate_ann(AnnCls,
               "roa_validity": roa_validity,
               "recv_relationship": Relationships.ORIGIN,
               "withdraw": False,
-              "traceback_end": False}
+              "traceback_end": False,
+              "communities": tuple()}
     kwargs.update(extra_kwargs)
 
     return AnnCls(**kwargs)
