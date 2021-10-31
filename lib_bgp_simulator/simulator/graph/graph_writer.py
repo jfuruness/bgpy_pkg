@@ -110,9 +110,9 @@ def _write(self, lines, outcome, subg_name, propagation_round, adopting, final_d
     plt.tight_layout()
     plt.rcParams.update({"font.size": 14, "lines.markersize": 10})
     matplotlib.use('Agg')
-    fname = f"{outcome.name}_round_{propagation_round}.png"
+    fname = f"{outcome.name}_round_{propagation_round}.pgf"
 
-    plt.savefig(final_dir / fname)
+    plt.savefig(final_dir / fname, format='pgf')
     # Done here so that it does not leave graphs open which accumulate memory
     # Other methods appear to be wrong here
     # https://stackoverflow.com/a/33343289/8903959
