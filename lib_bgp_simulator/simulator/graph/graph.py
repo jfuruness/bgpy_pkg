@@ -49,12 +49,10 @@ class Graph:
 
     def run(self,
             parse_cpus,
-            _dir,
-            caida_dir=None,
+            caida_base_dir=None,
             mp_method=MPMethod.SINGLE_PROCESS):
         self.data_points = defaultdict(list)
-        self._dir = _dir
-        self.caida_dir = caida_dir
+        self.caida_base_dir = caida_base_dir
 
         if mp_method == MPMethod.SINGLE_PROCESS:
             results = self._get_single_process_results()
@@ -111,8 +109,8 @@ class Graph:
 
         for percent_adopt, trial in percent_adopt_trials:
             og_engine_input = self.EngineInputCls(self.subgraphs,
-                                               engine,
-                                               percent_adopt)
+                                                  engine,
+                                                  percent_adopt)
             for ASCls in self.adopt_as_classes:
                 print(f"{percent_adopt}% {ASCls.name}, #{trial}",
                       end="                             " + "\r")
@@ -145,8 +143,8 @@ class Graph:
         # Done just to get subgraphs, change this later
         engine = CaidaCollector(BaseASCls=self.BaseASCls,
                                 GraphCls=SimulatorEngine,
-                                _dir=self.caida_dir,
-                                _dir_exist_ok=True).run(tsv=False)
+                                base_dir=self.caida_base_dir,
+                                ).run(tsv=False)
         self.subgraphs = self._get_subgraphs(engine)
         self._validate_subgraphs()
 
