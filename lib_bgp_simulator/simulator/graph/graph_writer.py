@@ -56,7 +56,7 @@ def aggregate_and_write(self, graph_dir, sim):
             all_propagation_rounds.append(propagation_round)
             all_adopting.append(adopting)
             adopting_name = "adopting" if adopting else "non adopting"
-            final_dir = self._dir / subg_name / self.EngineInputCls.__name__ / adopting_name
+            final_dir = graph_dir / subg_name / self.EngineInputCls.__name__ / adopting_name
             final_dir.mkdir(parents=True, exist_ok=True)
             graph_dirs.append(final_dir)
 

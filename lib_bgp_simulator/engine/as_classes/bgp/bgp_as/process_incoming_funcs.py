@@ -84,7 +84,7 @@ def process_incoming_anns(self,
                     self._copy_and_process(ann, from_rel)), err
 
         # We have a new best!
-        if _local_rib_ann is not current_ann:
+        if current_processed is False:
             current_ann: Ann = self._copy_and_process(current_ann, from_rel)
             # Save to local rib
             self._local_rib.add_ann(current_ann)

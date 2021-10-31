@@ -47,7 +47,7 @@ class Simulator(Base):
 
         # Done here so that the caida files are cached
         # So that multiprocessing doesn't interfere with one another
-        CaidaCollector(_dir=self.base_dir).read_file()
+        CaidaCollector(base_dir=self.dir_).read_file()
         self._run_and_write_graphs(graphs, mp_method, graph_path)
 
         if mp_method == MPMethod.RAY:
@@ -82,15 +82,14 @@ class Simulator(Base):
     def _run_graphs(self, graphs, mp_method):
         for graph in graphs:
             graph.run(self.parse_cpus,
-                      self._dir,
-                      caida_dir=self.base_dir,
+                      caida_base_dir=self.dir_,
                       mp_method=mp_method)
 
     def _write_graphs(self, graphs):
         for graph in graphs:
-            graph.aggregate_and_write(self._dir, self)
+            graph.aggregate_and_write(self.dir_, self)
 
     def _tar_graphs(self, graphs, graph_path):
         with tarfile.open(graph_path, "w:gz") as tar:
-            tar.add(str(self._dir), arcname=os.path.basename(str(self._dir)))
+            tar.add(str(self.dir_), arcname=os.path.basename(str(self.dir_)))
         print(f"Wrote graphs to {graph_path}")
