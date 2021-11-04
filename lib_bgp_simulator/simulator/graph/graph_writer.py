@@ -2,6 +2,7 @@ import math
 from multiprocessing import cpu_count
 from statistics import mean, stdev
 import sys
+from tqdm import tqdm
 
 from lib_utils.helper_funcs import mp_call
 
@@ -67,7 +68,10 @@ def aggregate_and_write(self, graph_dir, sim):
                 all_propagation_rounds,
                 all_adopting,
                 graph_dirs]
-    mp_call(self._write, all_args, desc="Writing graphs", cpus=cpu_count() - 1)
+    #mp_call(self._write, all_args, desc="Writing graphs", cpus=cpu_count() - 1)
+    for x in tqdm(zip(*all_args), total=len(all_args[0]), desc='thank you justin'):
+        self._write(*x)
+
 
 
 def get_graphs_to_write(self):
