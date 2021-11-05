@@ -13,20 +13,20 @@ class Graph011(GraphInfo):
     def __init__(self):
         super(Graph011, self).__init__(
             peer_links=set([
-                PeerLink(24875, 52320),
-                PeerLink(52320, 12389)
+                PeerLink(1, 2),
+                PeerLink(2, 3)
             ]),
             customer_provider_links=set([
-                CPLink(provider_asn=174,customer_asn=213371),
-                CPLink(provider_asn=174,customer_asn=31133),
-                CPLink(provider_asn=213371,customer_asn=208673),
-                CPLink(provider_asn=31133,customer_asn=1299),
-                CPLink(provider_asn=1299,customer_asn=12389),
-                CPLink(provider_asn=2914,customer_asn=24875),
-                CPLink(provider_asn=24875,customer_asn=213371),
-                CPLink(provider_asn=52320,customer_asn=53180),
-                CPLink(provider_asn=53180,customer_asn=268337),
-                CPLink(provider_asn=268337,customer_asn=ASNs.VICTIM.value),
-                CPLink(provider_asn=12389,customer_asn=ASNs.ATTACKER.value)
+                CPLink(provider_asn=4,customer_asn=5),
+                CPLink(provider_asn=4,customer_asn=7),
+                CPLink(provider_asn=5,customer_asn=6),
+                CPLink(provider_asn=7,customer_asn=8),
+                CPLink(provider_asn=8,customer_asn=3),
+                CPLink(provider_asn=9,customer_asn=1),
+                CPLink(provider_asn=1,customer_asn=5),
+                CPLink(provider_asn=2,customer_asn=11),
+                CPLink(provider_asn=11,customer_asn=12),
+                CPLink(provider_asn=12,customer_asn=ASNs.VICTIM.value),
+                CPLink(provider_asn=3,customer_asn=ASNs.ATTACKER.value)
             ])
     )
