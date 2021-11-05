@@ -6,13 +6,13 @@ from .graph_info import GraphInfo
 from ...enums import ASNs
 
 
-class Graph015(GraphInfo):
+class Graph016(GraphInfo):
     r"""
     TODO: Add reference to image online (it's a bit much for pixel art)
     Mini internet test topology with attacker directly connected to 14.
     """
     def __init__(self):
-        super(Graph015, self).__init__(
+        super(Graph016, self).__init__(
             peer_links=set([
                 PeerLink(1, 2),
                 PeerLink(2, 4),

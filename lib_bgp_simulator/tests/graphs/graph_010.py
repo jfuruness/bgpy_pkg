@@ -14,7 +14,7 @@ class Graph010(GraphInfo):
     def __init__(self):
         super(Graph010, self).__init__(
             customer_provider_links=set([
-                CPLink(provider_asn=1, customer_asn=3)
+                CPLink(provider_asn=1, customer_asn=3),
                 CPLink(provider_asn=1, customer_asn=2),
                 CPLink(provider_asn=1, customer_asn=ASNs.VICTIM.value),
                 CPLink(provider_asn=3, customer_asn=ASNs.ATTACKER.value),
