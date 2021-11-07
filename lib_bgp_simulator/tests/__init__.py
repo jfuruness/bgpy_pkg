@@ -11,6 +11,13 @@ from .graphs import Graph006
 from .graphs import Graph007
 from .graphs import Graph008
 from .graphs import Graph009
+from .graphs import Graph010
+from .graphs import Graph011
+from .graphs import Graph012
+from .graphs import Graph013
+from .graphs import Graph014
+from .graphs import Graph015
+from .graphs import Graph016
 
 # System tests that may be useful elsewhere (not YAML)
 from .system_tests import test_sim_inputs

@@ -49,6 +49,13 @@ from .tests import Graph006
 from .tests import Graph007
 from .tests import Graph008
 from .tests import Graph009
+from .tests import Graph010
+from .tests import Graph011
+from .tests import Graph012
+from .tests import Graph013
+from .tests import Graph014
+from .tests import Graph015
+from .tests import Graph016
 
 # System tests that may be useful elsewhere (not YAML)
 from .tests import test_sim_inputs
