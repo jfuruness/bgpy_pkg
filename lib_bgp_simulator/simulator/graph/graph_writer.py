@@ -95,6 +95,20 @@ def _get_line(self, policy, lines, data_point):
 
 
 def _write(self, lines, outcome, subg_name, propagation_round, adopting, final_dir):
+    # write csv, no need to use csv library
+    csv_fname = f"{outcome.name}_round_{propagation_round}.csv"
+    with open(final_dir / csv_fname, 'w') as csvfile:
+        csvfile.write(f"x")
+        for line in lines:
+            csvfile.write(f",{line.label}")
+            csvfile.write(f",{line.label}_err")
+        csvfile.write("\n")
+        for i in range(len(lines[0].x)):
+            csvfile.write(f"{lines[0].x[i]}")
+            for j in range(len(lines)):
+                csvfile.write(f",{lines[j].y[i]}")
+                csvfile.write(f",{lines[j].yerr[i]}")
+            csvfile.write("\n")
     fig, ax = plt.subplots()
     plt.xlim(0, 100)
     plt.ylim(0, 100)
@@ -114,9 +128,11 @@ def _write(self, lines, outcome, subg_name, propagation_round, adopting, final_d
     plt.tight_layout()
     plt.rcParams.update({"font.size": 14, "lines.markersize": 10})
     matplotlib.use('Agg')
-    fname = f"{outcome.name}_round_{propagation_round}.pgf"
+    fname_pgf = f"{outcome.name}_round_{propagation_round}.pgf"
+    fname_png = f"{outcome.name}_round_{propagation_round}.png"
 
-    plt.savefig(final_dir / fname, format='pgf')
+    plt.savefig(final_dir / fname_pgf, format='pgf')
+    plt.savefig(final_dir / fname_png, format='png')
     # Done here so that it does not leave graphs open which accumulate memory
     # Other methods appear to be wrong here
     # https://stackoverflow.com/a/33343289/8903959
