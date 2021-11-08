@@ -8,7 +8,7 @@ import sys
 from .diagram import Diagram
 from .simulator_codec import SimulatorCodec
 from ...engine import SimulatorEngine
-from ...simulator import Scenario
+from ...simulator import Scenario, DataPoint
 
 
 class YamlSystemTestRunner:
@@ -24,7 +24,10 @@ class YamlSystemTestRunner:
         self.preloaded_engine = preloaded_engine
         self.preloaded_engine_input = preloaded_engine_input
 
-    def run_test(self, empty_engine_kwargs, engine_input_kwargs):
+    def run_test(self,
+                 empty_engine_kwargs,
+                 engine_input_kwargs,
+                 propagation_round):
 
         preloaded = self.preloaded_engine and self.preloaded_engine_input
 
@@ -38,6 +41,7 @@ class YamlSystemTestRunner:
         scenario, engine_traceback_guess = self.get_results(engine,
                                                          engine_input,
                                                          empty_engine_kwargs["BaseASCls"],
+                                                         propagation_round,
                                                          preloaded=preloaded)
 
         try:
@@ -66,7 +70,12 @@ class YamlSystemTestRunner:
         engine_input = self.codec.load(self.engine_input_yaml_path)
         return engine, engine_input
 
-    def get_results(self, engine, engine_input, BaseASCls, preloaded=False):
+    def get_results(self,
+                    engine,
+                    engine_input,
+                    BaseASCls,
+                    propagation_round,
+                    preloaded=False):
 
         if not preloaded:
             engine.setup(engine_input, BaseASCls, None)
@@ -75,8 +84,11 @@ class YamlSystemTestRunner:
         subgraphs = {"all_ases": set([x.asn for x in engine])}
 
         # 0 for the propagation round. Change this later
-        traceback_guess = scenario.run(subgraphs, 0)
+        traceback_guess = scenario.run(subgraphs, propagation_round)
 
+        # Run post propagation hooks for policies that have them
+        dp = DataPoint(None, None, propagation_round)
+        engine_input.post_propagation_hook(engine, dp)
         return scenario, traceback_guess
 
     def write_diagrams(self, engine_guess, engine_output_guess, engine_input):
