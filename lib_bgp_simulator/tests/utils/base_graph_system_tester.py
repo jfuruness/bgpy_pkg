@@ -65,7 +65,8 @@ class BaseGraphSystemTester:
              preloaded_engine_input,
              scenario,
              traceback_guess) = runner.run_test(empty_engine_kwargs,
-                                                 engine_input_kwargs)
+                                                 engine_input_kwargs,
+                                                 propagation_round)
 
         return preloaded_engine, preloaded_engine_input, traceback_guess
 
