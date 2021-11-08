@@ -15,6 +15,7 @@ try:
     import matplotlib.pyplot as plt
 except Exception as e:
     print(e, "Catch this specific exception in graph_writer later")
+    pass
 
 
 def aggregate_and_write(self, graph_dir, sim):
