@@ -81,7 +81,7 @@ def process_incoming_anns(self,
             err = "withdrawing announcement that is identical to new ann " + str(withdraw_ann) 
             if not current_processed:
                 assert not withdraw_ann.prefix_path_attributes_eq(
-                    self._copy_and_process(ann, from_rel)), err
+                    self._copy_and_process(current_ann, from_rel)), err
 
         # We have a new best!
         if current_processed is False:
