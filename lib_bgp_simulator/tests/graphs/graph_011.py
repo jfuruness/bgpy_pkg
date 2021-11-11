@@ -13,6 +13,7 @@ class Graph011(GraphInfo):
     def __init__(self):
         super(Graph011, self).__init__(
             peer_links=set([
+                PeerLink(9, 8)
                 PeerLink(1, 2),
                 PeerLink(2, 3)
             ]),
