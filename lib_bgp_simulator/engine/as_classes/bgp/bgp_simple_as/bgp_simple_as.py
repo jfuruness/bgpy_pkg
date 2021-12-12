@@ -2,10 +2,9 @@ from lib_caida_collector import AS
 
 from ....ann_containers import LocalRIB
 from ....ann_containers import RecvQueue
-from .....enums import Relationships
-from .....announcements import Announcement as Ann
 
-slots = ("_local_rib", "_recv_q", "_ribs_in", "_ribs_out", "_send_q") 
+slots = ("_local_rib", "_recv_q", "_ribs_in", "_ribs_out", "_send_q")
+
 
 class BGPSimpleAS(AS):
     # TODO: fix later? class error? Does this impact speed?
@@ -29,7 +28,6 @@ class BGPSimpleAS(AS):
         cls.as_classes.append(cls)
         if BGPSimpleAS not in cls.as_classes:
             cls.as_classes.append(BGPSimpleAS)
-
 
     def __init__(self, *args, _local_rib=None, _recv_q=None, **kwargs):
         """Add local rib and data structures here
@@ -66,7 +64,6 @@ class BGPSimpleAS(AS):
     from .propagate_funcs import _policy_propagate
     from .propagate_funcs import _process_outgoing_ann
     from .propagate_funcs import _prev_sent
-    
 
     # Process incoming announcements
     from .process_incoming_funcs import receive_ann

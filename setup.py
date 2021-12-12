@@ -23,12 +23,12 @@ setup(
     install_requires=[
         'graphviz',
         'lib_caida_collector @ git+ssh://git@github.com/jfuruness/lib_caida_collector.git',
-        'lib_utils @ git+ssh://git@github.com/jfuruness/lib_utils.git',
         'matplotlib',
         'pytest',
         'pytest-xdist',
         'tqdm',
         'yamlable',
+        'pytest-cov',
     ],
     classifiers=[
         'Environment :: Console',

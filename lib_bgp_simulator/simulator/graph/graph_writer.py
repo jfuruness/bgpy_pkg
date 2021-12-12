@@ -1,10 +1,4 @@
-import math
-from multiprocessing import cpu_count
-from statistics import mean, stdev
-import sys
 from tqdm import tqdm
-
-from lib_utils.helper_funcs import mp_call
 
 from .line import Line
 
@@ -31,8 +25,8 @@ def aggregate_and_write(self, graph_dir, sim):
         # {policy: Line}
         lines = dict()
 
-        for data_point, list_of_scenarios in sorted(self.data_points.items(),
-                                                    key=lambda x: x[0].percent_adoption):
+        for data_point, list_of_scenarios in sorted(
+                self.data_points.items(), key=lambda x: x[0].percent_adoption):
             if data_point.propagation_round != propagation_round:
                 continue
 
@@ -57,10 +51,11 @@ def aggregate_and_write(self, graph_dir, sim):
             all_propagation_rounds.append(propagation_round)
             all_adopting.append(adopting)
             adopting_name = "adopting" if adopting else "non adopting"
-            final_dir = graph_dir / subg_name / self.EngineInputCls.__name__ / adopting_name
+            final_dir = graph_dir / subg_name
+            final_dir = final_dir / self.EngineInputCls.__name__
+            final_dir = final_dir / adopting_name
             final_dir.mkdir(parents=True, exist_ok=True)
             graph_dirs.append(final_dir)
-
 
     all_args = [all_lines_to_write,
                 all_outcomes,
@@ -68,10 +63,10 @@ def aggregate_and_write(self, graph_dir, sim):
                 all_propagation_rounds,
                 all_adopting,
                 graph_dirs]
-    #mp_call(self._write, all_args, desc="Writing graphs", cpus=cpu_count() - 1)
-    for x in tqdm(zip(*all_args), total=len(all_args[0]), desc='thank you justin'):
+    for x in tqdm(zip(*all_args),
+                  total=len(all_args[0]),
+                  desc='thank you Cameron'):
         self._write(*x)
-
 
 
 def get_graphs_to_write(self):
@@ -94,7 +89,18 @@ def _get_line(self, policy, lines, data_point):
     return lines[label]
 
 
-def _write(self, lines, outcome, subg_name, propagation_round, adopting, final_dir):
+def _write(self,
+           lines,
+           outcome,
+           subg_name,
+           propagation_round,
+           adopting,
+           final_dir):
+
+    # Can happen when adopting and base AS are equal
+    if len(lines) == 0:
+        return
+
     # write csv, no need to use csv library
     csv_fname = f"{outcome.name}_round_{propagation_round}.csv"
     with open(final_dir / csv_fname, 'w') as csvfile:

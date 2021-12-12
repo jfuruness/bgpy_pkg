@@ -34,8 +34,7 @@ def test_sim_inputs(AdoptASCls,
     tmp_dir = tmp_path / "test_sim_inputs"
     tmp_dir.mkdir()
 
-    sim = Simulator(_dir=str(tmp_dir),
-                    parse_cpus=2)
+    sim = Simulator(parse_cpus=2)
     graph = Graph(percent_adoptions=[0, 50, 100],
                   adopt_as_classes=[AdoptASCls],
                   EngineInputCls=EngineInputCls,

@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import List
 
 from ..bgp_simple_as import BGPSimpleAS
 
@@ -7,7 +7,6 @@ from ....ann_containers import RIBsOut
 from ....ann_containers import SendQueue
 
 from .....announcements import Announcement as Ann
-from .....engine_input import EngineInput
 from .....enums import Relationships
 
 

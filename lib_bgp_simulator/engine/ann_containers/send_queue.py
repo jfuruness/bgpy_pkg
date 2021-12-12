@@ -11,6 +11,7 @@ from .ann_container import AnnContainer
 
 from ...announcements import Announcement as Ann
 
+
 @yaml_info(yaml_tag="SendInfo")
 @dataclass
 class SendInfo(YamlAble):
@@ -35,7 +36,10 @@ class SendQueue(AnnContainer):
     __slots__ = tuple()
 
     def __init__(self, _info=None):
-        self._info = _info if _info is not None else defaultdict(lambda: defaultdict(SendInfo))
+        if _info is not None:
+            self._info = _info
+        else:
+            self._info = defaultdict(lambda: defaultdict(SendInfo))
 
     def add_ann(self, neighbor_asn: int, ann: Ann):
 

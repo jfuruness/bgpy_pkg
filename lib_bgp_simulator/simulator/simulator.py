@@ -1,20 +1,17 @@
-import logging
+from multiprocessing import cpu_count
 import os
 from pathlib import Path
 import tarfile
+from tempfile import TemporaryDirectory
 import sys
 
-from tqdm import tqdm
-
 from lib_caida_collector import CaidaCollector
-from lib_utils.base_classes import Base
 
 
 from .graph import Graph
 from .mp_method import MPMethod
 from ..engine import BGPAS
 from ..engine import ROVAS
-from ..engine import SimulatorEngine
 from ..engine_input import SubprefixHijack
 
 try:
@@ -24,11 +21,14 @@ except ModuleNotFoundError:
     pass
 
 
-class Simulator(Base):
+class Simulator:
     """Runs simulations for BGP attack/defend scenarios"""
 
+    def __init__(self, parse_cpus=cpu_count()):
+        self.parse_cpus = parse_cpus
+
     def run(self,
-            graphs=[Graph(percent_adoptions=[0, 5,10,20,30,40,60,80,100],
+            graphs=[Graph(percent_adoptions=[0, 5, 10, 20, 30, 60, 80, 100],
                           adopt_as_classes=[ROVAS],
                           EngineInputCls=SubprefixHijack,
                           num_trials=1,
@@ -47,7 +47,7 @@ class Simulator(Base):
 
         # Done here so that the caida files are cached
         # So that multiprocessing doesn't interfere with one another
-        CaidaCollector(base_dir=self.dir_).read_file()
+        CaidaCollector().run()
         self._run_and_write_graphs(graphs, mp_method, graph_path)
 
         if mp_method == MPMethod.RAY:
@@ -57,7 +57,7 @@ class Simulator(Base):
         assert "pypy" in sys.executable or not assert_pypy, "Not running pypy"
 
         msg = (f"Change {graph_path} to Path({graph_path}) "
-                "and use: from pathlib import Path")
+               "and use: from pathlib import Path")
         assert isinstance(graph_path, Path), msg
 
     def _init_ray(self):
@@ -76,20 +76,22 @@ class Simulator(Base):
 
     def _run_and_write_graphs(self, graphs, mp_method, graph_path):
         self._run_graphs(graphs, mp_method)
-        self._write_graphs(graphs)
-        self._tar_graphs(graphs, graph_path)
+        with TemporaryDirectory() as tmp_dir:
+            graph_dir = Path(str(tmp_dir))
+            self._write_graphs(graphs, graph_dir)
+            self._tar_graphs(graphs, graph_dir, graph_path)
 
     def _run_graphs(self, graphs, mp_method):
         for graph in graphs:
             graph.run(self.parse_cpus,
-                      caida_base_dir=self.dir_,
                       mp_method=mp_method)
 
-    def _write_graphs(self, graphs):
+    def _write_graphs(self, graphs, graph_dir):
         for graph in graphs:
-            graph.aggregate_and_write(self.dir_, self)
+            graph.aggregate_and_write(graph_dir, self)
 
-    def _tar_graphs(self, graphs, graph_path):
+    def _tar_graphs(self, graphs, graph_dir, graph_path):
         with tarfile.open(graph_path, "w:gz") as tar:
-            tar.add(str(self.dir_), arcname=os.path.basename(str(self.dir_)))
+            tar.add(str(graph_dir),
+                    arcname=os.path.basename(str(graph_dir)))
         print(f"Wrote graphs to {graph_path}")

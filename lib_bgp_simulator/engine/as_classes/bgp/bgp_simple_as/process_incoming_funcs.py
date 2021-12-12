@@ -1,8 +1,5 @@
 from typing import Optional
 
-from lib_caida_collector import AS
-
-from ....ann_containers import LocalRIB
 from ....ann_containers import RecvQueue
 from .....engine_input import EngineInput
 from .....enums import Relationships
@@ -14,11 +11,12 @@ def receive_ann(self, ann: Ann, accept_withdrawals=False):
         raise NotImplementedError("Policy can't handle withdrawals")
     self._recv_q.add_ann(ann)
 
+
 def process_incoming_anns(self,
                           from_rel: Relationships,
                           *args,
-                          propagation_round: Optional[int] =None,
-                          engine_input: Optional[EngineInput] = None,  # Usually None
+                          propagation_round: Optional[int] = None,
+                          engine_input: Optional[EngineInput] = None,
                           reset_q: bool = True,
                           **kwargs):
     """Process all announcements that were incoming from a specific rel"""
@@ -55,11 +53,13 @@ def process_incoming_anns(self,
 
     self._reset_q(reset_q)
 
+
 def _valid_ann(self, ann: Ann, recv_relationship: Relationships) -> bool:
     """Determine if an announcement is valid or should be dropped"""
 
     # BGP Loop Prevention Check
     return not (self.asn in ann.as_path)
+
 
 def _copy_and_process(self,
                       ann: Ann,
@@ -72,6 +72,7 @@ def _copy_and_process(self,
     kwargs.update(extra_kwargs)
 
     return ann.copy(**kwargs)
+
 
 def _reset_q(self, reset_q: bool):
     if reset_q:

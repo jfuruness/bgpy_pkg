@@ -2,7 +2,8 @@ import dataclasses
 
 from yamlable import YamlAble, yaml_info, yaml_info_decorate
 
-from ..enums import Prefixes, Relationships, ROAValidity
+from ..enums import Relationships, ROAValidity
+
 
 @yaml_info(yaml_tag="Announcement")
 @dataclasses.dataclass
@@ -88,13 +89,13 @@ class Announcement(YamlAble):
     def __str__(self):
         return f"{self.prefix} {self.as_path} {self.recv_relationship}"
 
-
 ##############
 # Yaml funcs #
 ##############
 
     def __to_yaml_dict__(self):
         """ This optional method is called when you call yaml.dump()"""
+
         return dataclasses.asdict(self)
 
     @classmethod

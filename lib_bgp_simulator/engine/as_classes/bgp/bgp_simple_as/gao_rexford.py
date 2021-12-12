@@ -5,6 +5,7 @@ from .....enums import Relationships
 
 opt_bool = Optional[bool]
 
+
 def _new_ann_better(self,
                     current_ann: Optional[Ann],
                     current_processed: bool,

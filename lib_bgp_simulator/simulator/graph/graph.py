@@ -1,11 +1,7 @@
 from copy import deepcopy
 from collections import defaultdict
-import functools
 from itertools import product
-import logging
 from multiprocessing import Pool
-import random
-import sys
 
 from lib_caida_collector import CaidaCollector
 
@@ -15,13 +11,14 @@ from ..mp_method import MPMethod
 from ..scenario import Scenario
 
 from ...engine import BGPAS, SimulatorEngine
-from ...engine_input import EngineInput
+
 
 try:
     import ray
 # pypy3 does not support ray
 except ModuleNotFoundError:
     pass
+
 
 class Graph:
     from .graph_writer import aggregate_and_write, get_graphs_to_write
@@ -46,13 +43,10 @@ class Graph:
         self.BaseASCls = BaseASCls
         self.profiler = profiler
 
-
     def run(self,
             parse_cpus,
-            caida_base_dir=None,
             mp_method=MPMethod.SINGLE_PROCESS):
         self.data_points = defaultdict(list)
-        self.caida_base_dir = caida_base_dir
 
         if mp_method == MPMethod.SINGLE_PROCESS:
             results = self._get_single_process_results()
@@ -143,13 +137,11 @@ class Graph:
         # Done just to get subgraphs, change this later
         engine = CaidaCollector(BaseASCls=self.BaseASCls,
                                 GraphCls=SimulatorEngine,
-                                base_dir=self.caida_base_dir,
-                                ).run(tsv=False)
+                                ).run(tsv_path=None)
         self.subgraphs = self._get_subgraphs(engine)
-        self._validate_subgraphs()
+        self._validate_subgraphs(engine)
 
         return engine
-
 
     def _get_subgraphs(self, engine=None):
         """Returns all the subgraphs that you want to keep track of"""
@@ -166,7 +158,7 @@ class Graph:
         subgraphs["stubs_and_mh"] = stubs_and_mh
         return subgraphs
 
-    def _validate_subgraphs(self):
+    def _validate_subgraphs(self, engine):
         """Makes sure subgraphs are mutually exclusive and contain ASNs"""
 
         all_ases = []
@@ -177,8 +169,8 @@ class Graph:
         for x in all_ases:
             assert isinstance(x, int), "Subgraph doesn't contain ASNs"
 
-        msg = "subgraphs not mutually exclusive"
-        assert len(all_ases) == len(set(all_ases)), msg
+        diff = len(all_ases) - len(set(all_ases))
+        assert diff == 0, f"Subgraphs not mutually exclusive {diff}"
 
     @property
     def total_scenarios(self):

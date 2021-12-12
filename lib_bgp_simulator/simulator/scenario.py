@@ -5,7 +5,11 @@ from ..enums import Outcomes
 
 
 class Scenario:
-    def __init__(self, trial=None, engine=None, engine_input=None, profiler=None):
+    def __init__(self,
+                 trial=None,
+                 engine=None,
+                 engine_input=None,
+                 profiler=None):
         self.trial = trial
         self.engine = engine
         self.engine_input = engine_input
@@ -81,7 +85,7 @@ class Scenario:
                                                         ordered_prefixes)
         # Determine the outcome of the attack
         attack_outcome = self.engine_input.determine_outcome(as_obj,
-                                                       most_specific_ann)
+                                                             most_specific_ann)
         if not attack_outcome:
             # Continue tracing back by getting the last AS
             new_as_obj = self.engine.as_dict[most_specific_ann.as_path[1]]

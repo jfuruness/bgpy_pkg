@@ -20,6 +20,7 @@ def _propagate(self,
     # Send announcements/withdrawals and add to ribs out
     self._send_anns(propagate_to)
 
+
 def _prev_sent(self, neighbor, ann):
     """Don't send what we've already sent"""
     ribs_out_ann: Optional[Ann] = self._ribs_out.get_ann(neighbor.asn,

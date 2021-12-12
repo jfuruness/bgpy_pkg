@@ -1,6 +1,4 @@
-from yamlable import YamlAble, yaml_info, yaml_info_decorate
-
-from ...announcements import Announcement
+from yamlable import YamlAble, yaml_info_decorate
 
 
 class AnnContainer(YamlAble):

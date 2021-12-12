@@ -43,7 +43,9 @@ def process_incoming_anns(self,
                        "You should always withdraw first, "
                        "have it be blank, then add the new one")
                 assert self._ribs_in.get_unprocessed_ann_recv_rel(
-                    ann.as_path[0], prefix) is None, str(self.asn) +" " +  str(ann) + err
+                    ann.as_path[0], prefix) is None, (str(self.asn)
+                                                      + " " + str(ann)
+                                                      + err)
 
                 self._ribs_in.add_unprocessed_ann(ann, from_rel)
 
@@ -56,8 +58,12 @@ def process_incoming_anns(self,
                         current_ann = updated_loc_rib_ann
                     else:
                         new_ann_is_better = self._new_ann_better(
-                            current_ann, current_processed, from_rel,
-                            updated_loc_rib_ann, True, updated_loc_rib_ann.recv_relationship)
+                            current_ann,
+                            current_processed,
+                            from_rel,
+                            updated_loc_rib_ann,
+                            True,
+                            updated_loc_rib_ann.recv_relationship)
                         if new_ann_is_better:
                             current_ann = updated_loc_rib_ann
                             current_processed = True
@@ -67,7 +73,6 @@ def process_incoming_anns(self,
                 new_ann_is_better: bool = self._new_ann_better(
                     current_ann, current_processed, from_rel,
                     ann, False, from_rel)
-
 
                 # If the new priority is higher
                 if new_ann_is_better:

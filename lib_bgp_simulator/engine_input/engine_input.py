@@ -61,7 +61,9 @@ class EngineInput(YamlAble):
             self.adopting_asns = None
             self.as_classes = as_classes
         else:
-            self.adopting_asns = self._get_adopting_asns(subgraph_asns, engine, percent_adopt)
+            self.adopting_asns = self._get_adopting_asns(subgraph_asns,
+                                                         engine,
+                                                         percent_adopt)
             self.as_classes = None
         # Used for dumping and loading yaml
         self.extra_ann_kwargs = extra_ann_kwargs
@@ -126,7 +128,8 @@ class EngineInput(YamlAble):
 
     def _get_victim_asn(self, subgraph_asns, engine):
         possible_vic_asns = self._possible_victims(subgraph_asns, engine)
-        return random.choice(tuple(possible_vic_asns.difference([self.attacker_asn])))
+        return random.choice(tuple(
+            possible_vic_asns.difference([self.attacker_asn])))
 
     def _possible_victims(self, subgraph_asns, engine):
         return subgraph_asns["stubs_and_mh"]
@@ -165,7 +168,10 @@ class EngineInput(YamlAble):
         return self._default_adopters() + self._default_non_adopters()
 
     def get_as_classes(self, engine, BaseASCls, AdoptingASCls):
-        return self.as_classes if self.as_classes else {asn: AdoptingASCls for asn in self.adopting_asns}
+        if self.as_classes:
+            return self.as_classes
+        else:
+            return {asn: AdoptingASCls for asn in self.adopting_asns}
 
 ################
 # Helper Funcs #
@@ -190,7 +196,8 @@ class EngineInput(YamlAble):
                 if prefix.subnet_of(outer_prefix):
                     subprefix_list.append(str(prefix))
         # Get rid of ip_network
-        self.prefix_subprefix_dict = {str(k): v for k, v in prefix_subprefix_dict.items()}
+        self.prefix_subprefix_dict = {str(k): v for k, v
+                                      in prefix_subprefix_dict.items()}
 
 ##############
 # Yaml Funcs #

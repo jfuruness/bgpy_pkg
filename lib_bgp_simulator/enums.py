@@ -85,6 +85,7 @@ class Prefixes(YamlAbleEnum):
     PREFIX = "1.2.0.0/16"
     SUBPREFIX = "1.2.3.0/24"
 
+
 class ASNs(YamlAbleEnum):
     """Default ASNs for various ASNs"""
 

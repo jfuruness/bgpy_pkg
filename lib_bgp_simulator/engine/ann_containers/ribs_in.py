@@ -1,4 +1,4 @@
-from collections import defaultdict, namedtuple
+from collections import defaultdict
 import dataclasses
 
 from yamlable import YamlAble, yaml_info
@@ -7,7 +7,6 @@ from .ann_container import AnnContainer
 
 from ...announcements import Announcement
 from ...enums import Relationships
-
 
 
 @yaml_info(yaml_tag="AnnInfo")
@@ -40,7 +39,8 @@ class RIBsIn(AnnContainer):
             recv_relationship=recv_relationship)
 
     def get_ann_infos(self, prefix: str):
-        default_ann_info = AnnInfo(unprocessed_ann=None, recv_relationship=None)
+        default_ann_info = AnnInfo(unprocessed_ann=None,
+                                   recv_relationship=None)
         for prefix_ann_info in self._info.values():
 
             yield prefix_ann_info.get(prefix, default_ann_info)

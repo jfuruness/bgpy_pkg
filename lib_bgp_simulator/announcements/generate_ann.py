@@ -1,6 +1,7 @@
 from .announcement import Announcement
 from ..enums import Relationships, ROAValidity
 
+
 def generate_ann(AnnCls,
                  origin_asn: int,
                  prefix: str,
