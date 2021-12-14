@@ -30,7 +30,7 @@ class SimulatorEngine(BGPDAG):
               BaseASCls: BGPAS,
               AdoptingASCls: BGPAS):
         self._reset_as_classes(engine_input, BaseASCls, AdoptingASCls)
-        engine_input.seed(self)
+        engine_input.seed(self, AdoptingASCls)
         self._setup = True
 
     def run(self,
