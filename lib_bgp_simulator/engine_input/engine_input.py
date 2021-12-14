@@ -75,7 +75,7 @@ class EngineInput(YamlAble):
             assert ip_network(ann.prefix).overlaps(first_prefix)
         assert self._get_prefix_subprefix_dict() is None
 
-    def seed(self, engine):
+    def seed(self, engine, *args):
         """Seeds announcement at the proper AS
 
         Since this is the simulator engine, we should
