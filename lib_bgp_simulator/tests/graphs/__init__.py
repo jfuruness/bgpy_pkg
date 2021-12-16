@@ -1,10 +1,7 @@
 from .graph_info import GraphInfo
 from .graph_001 import Graph001
-
 from .graph_002 import Graph002
-
 from .graph_003 import Graph003
-
 from .graph_004 import Graph004
 from .graph_005 import Graph005
 from .graph_006 import Graph006
@@ -18,3 +15,21 @@ from .graph_013 import Graph013
 from .graph_014 import Graph014
 from .graph_015 import Graph015
 from .graph_016 import Graph016
+
+__all__ = ["GraphInfo",
+           "Graph001",
+           "Graph002",
+           "Graph003",
+           "Graph004",
+           "Graph005",
+           "Graph006",
+           "Graph007",
+           "Graph008",
+           "Graph009",
+           "Graph010",
+           "Graph011",
+           "Graph012",
+           "Graph013",
+           "Graph014",
+           "Graph015",
+           "Graph016"]

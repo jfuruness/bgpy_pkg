@@ -1,5 +1,3 @@
-from pathlib import Path
-
 from lib_caida_collector import PeerLink, CustomerProviderLink as CPLink
 
 from .graph_info import GraphInfo
@@ -9,7 +7,8 @@ from ...enums import ASNs
 class Graph002(GraphInfo):
     r"""
     Test propagating up without multihomed support in the following test graph.
-    Horizontal lines are peer relationships, vertical lines are customer-provider.
+    Horizontal lines are peer relationships, vertical lines are
+    customer-provider.
 
       1
       |

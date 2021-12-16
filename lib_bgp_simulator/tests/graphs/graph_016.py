@@ -1,5 +1,3 @@
-from pathlib import Path
-
 from lib_caida_collector import PeerLink, CustomerProviderLink as CPLink
 
 from .graph_info import GraphInfo
@@ -54,26 +52,4 @@ class Graph016(GraphInfo):
                 CPLink(provider_asn=9, customer_asn=15),
                 CPLink(provider_asn=10, customer_asn=17),
                 CPLink(provider_asn=10, customer_asn=15)
-            ])
-    )
-
-# NOTE: This code below provides partial functionality needed 
-# to allow the assignment of attacker and victim as class argument.
-# This is not complete in this class. Maybe a feature for future.
-#
-#        # Assign attaker
-#        self._replace_as(attacker_as, ASNs.ATTACKER.value)
-#        # Assign victim
-#        self._replace_as(victim_as, ASNs.VICTIM.value)
-#        # Create relationship link objects
-#        customer_provider_links = [CPLink(provider_asn=x[0], customer_asn=x[1]) for x in provider_customer_rows]
-#        peer_links = [PeerLink(x[0], x[1]) for x in peer_rows]
-#
-#        def _replace_as(as_to_replace, replacement_as, rows):
-#            """
-#            Given the rows (i.e. a list of lists which define the relationships)
-#            replace `as_to_replace` with the `replacement_as`.
-#            """
-#            for row in rows:
-#                row = [replacement_as if x == as_to_replace else x for x in row]
-#
+            ]))

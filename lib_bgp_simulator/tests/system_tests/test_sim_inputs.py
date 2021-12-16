@@ -1,16 +1,8 @@
-from dataclasses import dataclass
 import itertools
 
 import pytest
 
-from lib_caida_collector import PeerLink, CustomerProviderLink as CPLink
-
-from ...enums import ASNs, Relationships, ROAValidity
-from ...announcements import AnnWDefaults
-
 from ...engine import BGPSimpleAS
-from ...engine import BGPAS
-from ...engine import LocalRIB
 from ...engine_input import EngineInput
 
 from ...simulator import Graph
@@ -24,7 +16,8 @@ from ...simulator import Simulator
 @pytest.mark.parametrize("AdoptASCls, EngineInputCls, mp_method",
                          itertools.product(*[BGPSimpleAS.as_classes,
                                              EngineInput.subclasses,
-                                             [MPMethod.SINGLE_PROCESS, MPMethod.MP]]))
+                                             [MPMethod.SINGLE_PROCESS,
+                                              MPMethod.MP]]))
 def test_sim_inputs(AdoptASCls,
                     EngineInputCls,
                     mp_method,

@@ -3,3 +3,9 @@ from .bgp_prop import BaseBGPPropTester
 from .fig2 import BaseFig2Tester
 from .non_routed_superprefix import BaseNonRoutedSuperprefixTester
 from .non_routed_prefix import BaseNonRoutedPrefixTester
+
+__all__ = ["BaseHiddenHijackTester",
+           "BaseBGPPropTester",
+           "BaseFig2Tester",
+           "BaseNonRoutedSuperprefixTester",
+           "BaseNonRoutedPrefixTester"]

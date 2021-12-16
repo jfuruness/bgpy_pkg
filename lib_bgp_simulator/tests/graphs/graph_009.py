@@ -1,5 +1,3 @@
-from pathlib import Path
-
 from lib_caida_collector import PeerLink, CustomerProviderLink as CPLink
 
 from .graph_info import GraphInfo
@@ -9,7 +7,7 @@ from ...enums import ASNs
 class Graph009(GraphInfo):
     r"""
     This is the v1 vs v2 graph
-    It has ASNs.ATTACKER.value ASes. 
+    It has ASNs.ATTACKER.value ASes.
     """
 
     def __init__(self):

@@ -1,11 +1,8 @@
 from pathlib import Path
 
-import pytest
-
 from ...graphs import Graph003
 from ...utils import BaseGraphSystemTester
 
-from ....enums import ASNs
 from ....engine_input import SubprefixHijack
 from ....engine import BGPSimpleAS
 from ....engine import BGPAS

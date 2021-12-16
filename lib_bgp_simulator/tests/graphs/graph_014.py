@@ -1,5 +1,3 @@
-from pathlib import Path
-
 from lib_caida_collector import PeerLink, CustomerProviderLink as CPLink
 
 from .graph_info import GraphInfo
@@ -54,5 +52,4 @@ class Graph014(GraphInfo):
                 CPLink(provider_asn=9, customer_asn=15),
                 CPLink(provider_asn=10, customer_asn=17),
                 CPLink(provider_asn=10, customer_asn=15)
-            ])
-    )
+            ]))

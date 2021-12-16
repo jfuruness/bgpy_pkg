@@ -83,7 +83,7 @@ def process_incoming_anns(self,
             # Best ann has already been processed
             withdraw_ann: Ann = _local_rib_ann.copy(withdraw=True)
             self._withdraw_ann_from_neighbors(withdraw_ann)
-            err = "withdrawing announcement that is identical to new ann " + str(withdraw_ann) 
+            err = f"withdrawing ann that is same as new ann {withdraw_ann}"
             if not current_processed:
                 assert not withdraw_ann.prefix_path_attributes_eq(
                     self._copy_and_process(current_ann, from_rel)), err

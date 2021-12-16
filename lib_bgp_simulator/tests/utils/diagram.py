@@ -4,6 +4,7 @@ import ipaddress
 from ...engine import BGPAS, BGPSimpleAS
 from ...enums import Outcomes
 
+
 class Diagram:
     def __init__(self):
         self.dot = Digraph(format="png")
@@ -31,25 +32,30 @@ class Diagram:
                                        traceback,
                                        engine_input,
                                        *args)
+
     def _add_legend(self, engine, traceback, *args):
 
-        attacker_success_count = sum(1 for x in traceback.values() if x == Outcomes.ATTACKER_SUCCESS)
-        victim_success_count = sum(1 for x in traceback.values() if x == Outcomes.VICTIM_SUCCESS)
-        disconnect_count = sum(1 for x in traceback.values() if x == Outcomes.DISCONNECTED)
-        html = f'''<<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4">
-                      <TR>
-                        <TD BGCOLOR="red:yellow">&#128520; ATTACKER SUCCESS &#128520;</TD>
-                        <TD>{attacker_success_count}</TD>
-                      </TR>
-                      <TR>
-                        <TD BGCOLOR="green:white">&#128519; VICTIM SUCCESS &#128519;</TD>
-                        <TD>{victim_success_count}</TD>
-                      </TR>
-                      <TR>
-                        <TD BGCOLOR="grey:white">&#10041; DISCONNECTED &#10041;</TD>
-                        <TD>{disconnect_count}</TD>
-                      </TR>
-                    </TABLE>>'''
+        attacker_success_count = sum(1 for x in traceback.values()
+                                     if x == Outcomes.ATTACKER_SUCCESS)
+        victim_success_count = sum(1 for x in traceback.values()
+                                   if x == Outcomes.VICTIM_SUCCESS)
+        disconnect_count = sum(1 for x in traceback.values()
+                               if x == Outcomes.DISCONNECTED)
+        html = f'''
+            <<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4">
+            <TR>
+            <TD BGCOLOR="red:yellow">&#128520; ATTACKER SUCCESS &#128520;</TD>
+            <TD>{attacker_success_count}</TD>
+            </TR>
+            <TR>
+            <TD BGCOLOR="green:white">&#128519; VICTIM SUCCESS &#128519;</TD>
+            <TD>{victim_success_count}</TD>
+            </TR>
+            <TR>
+            <TD BGCOLOR="grey:white">&#10041; DISCONNECTED &#10041;</TD>
+            <TD>{disconnect_count}</TD>
+            </TR>
+            </TABLE>>'''
 
         kwargs = {"color": "black", "style": "filled", "fillcolor": "white"}
         self.dot.node("Legend", html, shape="plaintext", **kwargs)
@@ -92,7 +98,9 @@ class Diagram:
             # Only add if the largest asn is the curren as_obj to avoid dups
             for peer_obj in as_obj.peers:
                 if as_obj.asn > peer_obj.asn:
-                    self.dot.edge(str(as_obj.asn), str(peer_obj.asn), dir="none")
+                    self.dot.edge(str(as_obj.asn),
+                                  str(peer_obj.asn),
+                                  dir="none")
 
     def _add_propagation_ranks(self, engine, *args):
         for i, rank in enumerate(engine.propagation_ranks):
@@ -117,13 +125,13 @@ class Diagram:
             asn_str = "&#128520;" + asn_str + "&#128520;"
 
         html = f"""<
-                    <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4">
-                      <TR>
-                        <TD COLSPAN="3" BORDER="0">{asn_str}</TD>
-                      </TR>
-                      <TR>
-                        <TD COLSPAN="3" BORDER="0">({as_obj.name})</TD>
-                      </TR>"""
+            <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4">
+            <TR>
+            <TD COLSPAN="3" BORDER="0">{asn_str}</TD>
+            </TR>
+            <TR>
+            <TD COLSPAN="3" BORDER="0">({as_obj.name})</TD>
+            </TR>"""
         if as_obj.asn not in engine_input.uncountable_asns and False:
             outcome = traceback[as_obj.asn]
             if outcome == Outcomes.ATTACKER_SUCCESS:
@@ -139,12 +147,14 @@ class Diagram:
                     <TD COLSPAN="3">Local RIB</TD>
                   </TR>"""
         local_rib_prefixes = list(as_obj._local_rib._info.keys())
-        local_rib_prefixes = tuple(sorted(local_rib_prefixes,
-                                           key=lambda x: ipaddress.ip_network(x).num_addresses,
-                                           reverse=True))
+        local_rib_prefixes = tuple(
+            sorted(local_rib_prefixes,
+                   key=lambda x: ipaddress.ip_network(x).num_addresses,
+                   reverse=True))
         for prefix in local_rib_prefixes:
             mask = "/" + prefix.split("/")[-1]
-            path = ", ".join(str(x) for x in as_obj._local_rib._info[prefix].as_path)
+            path = ", ".join(str(x) for x in
+                             as_obj._local_rib._info[prefix].as_path)
             html += f"""<TR>
                         <TD>{mask}</TD>
                         <TD>{path}</TD>

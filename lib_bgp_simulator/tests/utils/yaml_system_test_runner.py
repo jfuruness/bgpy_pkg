@@ -1,6 +1,3 @@
-from lib_caida_collector import CaidaCollector
-from datetime import datetime
-from pathlib import Path
 import logging
 import shutil
 import sys
@@ -16,7 +13,10 @@ class YamlSystemTestRunner:
     write_no_verify_arg = "--write_no_verify"
     view_arg = "--view"
 
-    def __init__(self, dir_, preloaded_engine=None, preloaded_engine_input=None):
+    def __init__(self,
+                 dir_,
+                 preloaded_engine=None,
+                 preloaded_engine_input=None):
         """dir_ should be the dir_ with the yaml"""
 
         self.dir_ = dir_
@@ -38,11 +38,12 @@ class YamlSystemTestRunner:
             engine, engine_input = self.write_load_engine(empty_engine_kwargs,
                                                           engine_input_kwargs)
 
-        scenario, engine_traceback_guess = self.get_results(engine,
-                                                         engine_input,
-                                                         empty_engine_kwargs["BaseASCls"],
-                                                         propagation_round,
-                                                         preloaded=preloaded)
+        scenario, engine_traceback_guess = self.get_results(
+            engine,
+            engine_input,
+            empty_engine_kwargs["BaseASCls"],
+            propagation_round,
+            preloaded=preloaded)
 
         try:
             self.write_check_results(engine, scenario, engine_traceback_guess)
@@ -52,7 +53,6 @@ class YamlSystemTestRunner:
             raise e
 
         return engine, engine_input, scenario, engine_traceback_guess
-
 
     def write_load_engine(self, empty_engine_kwargs, engine_input_kwargs):
 
@@ -101,7 +101,6 @@ class YamlSystemTestRunner:
                                     path=self.engine_output_guess_gv_path,
                                     view=self.view_arg in sys.argv)
 
-
         engine_truth = self.codec.load(path=self.engine_output_truth_yaml_path)
         traceback_truth = self.codec.load(path=self.traceback_truth_yaml_path)
 
@@ -116,14 +115,16 @@ class YamlSystemTestRunner:
         if not self.engine_output_guess_yaml_path.exists():
             self.write_engine_output_yaml(engine)
             if self.write_no_verify_arg in sys.argv:
-                logging.warning("Writing engine output ground truth without verifying")
+                logging.warning("Writing engine output ground truth"
+                                " without verifying")
                 shutil.copy(self.engine_output_guess_yaml_path,
                             self.engine_output_truth_yaml_path)
 
         if not self.traceback_guess_yaml_path.exists():
             self.write_traceback_yaml(traceback_guess)
             if self.write_no_verify_arg in sys.argv:
-                logging.warning("Writing traceback ground truth without verifying")
+                logging.warning("Writing traceback ground truth "
+                                "without verifying")
                 shutil.copy(self.traceback_guess_yaml_path,
                             self.traceback_truth_yaml_path)
 
@@ -159,19 +160,23 @@ class YamlSystemTestRunner:
         self.codec.dump(engine_input, path=self.engine_input_yaml_path)
 
     def write_engine_output_yaml(self, engine):
-        logging.warning("Writing unverified engine output yaml. Must be verified and copied to ground truth")
+        logging.warning("Writing unverified engine output yaml. "
+                        "Must be verified and copied to ground truth")
         self.codec.dump(engine, path=self.engine_output_guess_yaml_path)
 
     def write_traceback_yaml(self, traceback_output: dict):
-        logging.warning("Writing unverified traceback yaml. Must be verified and copied to ground truth")
+        logging.warning("Writing unverified traceback yaml. "
+                        "Must be verified and copied to ground truth")
         self.codec.dump(traceback_output, path=self.traceback_guess_yaml_path)
 
     def validate_engine_output(self, engine):
         engine_guess = self.codec.load(self.engine_output_guess_yaml_path)
         try:
-            engine_ground_truth = self.codec.load(self.engine_output_truth_yaml_path)
+            engine_ground_truth = self.codec.load(
+                self.engine_output_truth_yaml_path)
         except FileNotFoundError:
-            raise NotImplementedError("No ground truth yaml file. Must copy guess and verify")
+            raise NotImplementedError("No ground truth yaml file. "
+                                      "Must copy guess and verify")
 
         assert engine_guess == engine_ground_truth
 
@@ -181,9 +186,11 @@ class YamlSystemTestRunner:
     def validate_traceback_guess(self, traceback_guess):
         traceback_guess = self.codec.load(self.traceback_guess_yaml_path)
         try:
-            traceback_ground_truth = self.codec.load(self.traceback_truth_yaml_path)
+            traceback_ground_truth = self.codec.load(
+                self.traceback_truth_yaml_path)
         except FileNotFoundError:
-            raise NotImplementedError("No ground truth yaml file. Must copy guess and verify")
+            raise NotImplementedError("No ground truth yaml file. "
+                                      "Must copy guess and verify")
 
         assert traceback_guess == traceback_ground_truth
 

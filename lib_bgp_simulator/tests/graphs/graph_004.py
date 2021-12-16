@@ -1,6 +1,4 @@
-from pathlib import Path
-
-from lib_caida_collector import PeerLink, CustomerProviderLink as CPLink
+from lib_caida_collector import CustomerProviderLink as CPLink
 
 from .graph_info import GraphInfo
 from ...enums import ASNs
@@ -11,13 +9,13 @@ class Graph004(GraphInfo):
 
               /1\
              / / \\attacker_asn
-            /  2 \ 
+            /  2 \
            /  /    5
           4  3    \
            | /       victim_asn
-          6    
+          6
           / \
-         7 8  
+         7 8
         """
 
     def __init__(self):
