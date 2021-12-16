@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools>=51.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.pytest.ini_options]
+python_files = ["test*.py"]
+python_classes = ["Test*"]
+python_functions = ["test*"]
+addopts = "--cov=lib_bgp_simulator -n 6"
+markers = [
+    "slow",  # All slow tests
+]
+
+[tool.mypy]
+mypy_path = "lib_bgp_simulator"
+check_untyped_defs = true
+disallow_any_generics = true
+ignore_missing_imports = true
+no_implicit_optional = true
+show_error_codes = true
+strict_equality = true
+warn_redundant_casts = true
+warn_return_any = true
+warn_unreachable = true
+warn_unused_configs = true
+no_implicit_reexport = true
