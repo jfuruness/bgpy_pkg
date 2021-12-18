@@ -8,6 +8,36 @@
       communities: !!python/tuple []
       prefix: 1.0.0.0/8
       recv_relationship: !simulator_codec/Relationships
+        name: CUSTOMERS
+        value: 3
+      roa_validity: !simulator_codec/ROAValidity
+        name: UNKNOWN
+        value: 1
+      seed_asn: null
+      timestamp: 1
+      traceback_end: false
+      withdraw: false
+  _recv_q: !yamlable/RecvQueue {}
+  asn: 1
+  customer_cone_size: 3
+  customers: !!python/tuple
+  - 2
+  - 666
+  input_clique: false
+  ixp: false
+  peers: !!python/tuple []
+  propagation_rank: 2
+  providers: !!python/tuple []
+2: !yamlable/ROVSimpleAS
+  _local_rib: !yamlable/LocalRIB
+    1.0.0.0/8: !yamlable/Announcement
+      as_path: !!python/tuple
+      - 2
+      - 1
+      - 666
+      communities: !!python/tuple []
+      prefix: 1.0.0.0/8
+      recv_relationship: !simulator_codec/Relationships
         name: PROVIDERS
         value: 1
       roa_validity: !simulator_codec/ROAValidity
@@ -18,41 +48,46 @@
       traceback_end: false
       withdraw: false
   _recv_q: !yamlable/RecvQueue {}
-  asn: 1
-  customer_cone_size: 0
-  customers: []
-  input_clique: false
-  ixp: false
-  peers: []
-  propagation_rank: 0
-  providers:
-  - 666
-  - 2
-2: !yamlable/ROVSimpleAS
-  _local_rib: !yamlable/LocalRIB {}
-  _recv_q: !yamlable/RecvQueue {}
   asn: 2
   customer_cone_size: 1
-  customers:
-  - 1
+  customers: !!python/tuple
+  - 3
   input_clique: false
   ixp: false
-  peers: []
+  peers: !!python/tuple []
   propagation_rank: 1
-  providers:
-  - 3
+  providers: !!python/tuple
+  - 1
 3: !yamlable/BGPSimpleAS
-  _local_rib: !yamlable/LocalRIB {}
+  _local_rib: !yamlable/LocalRIB
+    1.0.0.0/8: !yamlable/Announcement
+      as_path: !!python/tuple
+      - 3
+      - 2
+      - 1
+      - 666
+      communities: !!python/tuple []
+      prefix: 1.0.0.0/8
+      recv_relationship: !simulator_codec/Relationships
+        name: PROVIDERS
+        value: 1
+      roa_validity: !simulator_codec/ROAValidity
+        name: UNKNOWN
+        value: 1
+      seed_asn: null
+      timestamp: 1
+      traceback_end: false
+      withdraw: false
   _recv_q: !yamlable/RecvQueue {}
   asn: 3
   customer_cone_size: 0
-  customers:
-  - 2
+  customers: !!python/tuple []
   input_clique: false
   ixp: false
-  peers: []
-  propagation_rank: 2
-  providers: []
+  peers: !!python/tuple []
+  propagation_rank: 0
+  providers: !!python/tuple
+  - 2
 666: !yamlable/BGPSimpleAS
   _local_rib: !yamlable/LocalRIB
     1.0.0.0/8: !yamlable/Announcement
@@ -73,10 +108,10 @@
   _recv_q: !yamlable/RecvQueue {}
   asn: 666
   customer_cone_size: 0
-  customers:
-  - 1
+  customers: !!python/tuple []
   input_clique: false
   ixp: false
-  peers: []
-  propagation_rank: 1
-  providers: []
+  peers: !!python/tuple []
+  propagation_rank: 0
+  providers: !!python/tuple
+  - 1

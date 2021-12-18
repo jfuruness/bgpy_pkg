@@ -105,7 +105,7 @@ def _write(self,
     # write csv, no need to use csv library
     csv_fname = f"{outcome.name}_round_{propagation_round}.csv"
     with open(final_dir / csv_fname, 'w') as csvfile:
-        csvfile.write(f"x")
+        csvfile.write("x")
         for line in lines:
             csvfile.write(f",{line.label}")
             csvfile.write(f",{line.label}_err")

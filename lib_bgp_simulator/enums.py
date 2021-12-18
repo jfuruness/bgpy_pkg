@@ -3,6 +3,7 @@ from enum import Enum, unique
 
 yamlable_enums = []
 
+
 # Yaml must have unique keys/values
 @unique
 class YamlAbleEnum(Enum):
