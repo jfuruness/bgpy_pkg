@@ -105,7 +105,7 @@ class Diagram:
     def _add_propagation_ranks(self, engine, *args):
         for i, rank in enumerate(engine.propagation_ranks):
             g = Digraph(f"Propagation_rank_{i}")
-            g.attr(rank="same")
+            g.attr() #newrank="same")
             for as_obj in rank:
 
                 g.node(str(as_obj.asn))
