@@ -52,4 +52,5 @@ class Graph016(GraphInfo):
                 CPLink(provider_asn=9, customer_asn=15),
                 CPLink(provider_asn=10, customer_asn=17),
                 CPLink(provider_asn=10, customer_asn=15),
+                CPLink(provider_asn=100, customer_asn=150),
             ]))

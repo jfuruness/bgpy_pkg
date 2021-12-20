@@ -41,20 +41,20 @@ class Diagram:
                                    if x == Outcomes.VICTIM_SUCCESS)
         disconnect_count = sum(1 for x in traceback.values()
                                if x == Outcomes.DISCONNECTED)
-        html = f'''
-            <<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4">
-            <TR>
-            <TD BGCOLOR="red:yellow">&#128520; ATTACKER SUCCESS &#128520;</TD>
-            <TD>{attacker_success_count}</TD>
-            </TR>
-            <TR>
-            <TD BGCOLOR="green:white">&#128519; VICTIM SUCCESS &#128519;</TD>
-            <TD>{victim_success_count}</TD>
-            </TR>
-            <TR>
-            <TD BGCOLOR="grey:white">&#10041; DISCONNECTED &#10041;</TD>
-            <TD>{disconnect_count}</TD>
-            </TR>
+        html = f'''<
+              <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4">
+              <TR>
+          <TD BGCOLOR="#ff6060:white">&#128520; ATTACKER SUCCESS &#128520;</TD>
+                <TD>{attacker_success_count}</TD>
+              </TR>
+              <TR>
+         <TD BGCOLOR="lightgreen:white">&#128519; VICTIM SUCCESS &#128519;</TD>
+                <TD>{victim_success_count}</TD>
+              </TR>
+              <TR>
+                <TD BGCOLOR="grey:white">&#10041; DISCONNECTED &#10041;</TD>
+                <TD>{disconnect_count}</TD>
+              </TR>
             </TABLE>>'''
 
         kwargs = {"color": "black", "style": "filled", "fillcolor": "white"}
@@ -100,7 +100,9 @@ class Diagram:
                 if as_obj.asn > peer_obj.asn:
                     self.dot.edge(str(as_obj.asn),
                                   str(peer_obj.asn),
-                                  dir="none")
+                                  dir="none",
+                                  style="dashed",
+                                  penwidth="2")
 
     def _add_propagation_ranks(self, engine, *args):
         for i, rank in enumerate(engine.propagation_ranks):
@@ -143,31 +145,36 @@ class Diagram:
             html += f"""<TR>
                         <TD COLSPAN="3">{outcome_str}</TD>
                       </TR>"""
-        html += """<TR>
-                    <TD COLSPAN="3">Local RIB</TD>
-                  </TR>"""
         local_rib_prefixes = list(as_obj._local_rib._info.keys())
         local_rib_prefixes = tuple(
             sorted(local_rib_prefixes,
                    key=lambda x: ipaddress.ip_network(x).num_addresses,
                    reverse=True))
-        for prefix in local_rib_prefixes:
-            mask = "/" + prefix.split("/")[-1]
-            path = ", ".join(str(x) for x in
-                             as_obj._local_rib._info[prefix].as_path)
-            html += f"""<TR>
-                        <TD>{mask}</TD>
-                        <TD>{path}</TD>
+        if len(local_rib_prefixes) > 0:
+            html += """<TR>
+                        <TD COLSPAN="3">Local RIB</TD>
                       </TR>"""
+ 
+            for prefix in local_rib_prefixes:
+                mask = "/" + prefix.split("/")[-1]
+                path = ", ".join(str(x) for x in
+                                 as_obj._local_rib._info[prefix].as_path)
+                html += f"""<TR>
+                            <TD>{mask}</TD>
+                            <TD>{path}</TD>
+                          </TR>"""
         html += "</TABLE>>"
         return html
 
     def _get_kwargs(self, as_obj, engine, traceback, engine_input, *args):
-        kwargs = {"color": "black", "style": "filled", "fillcolor": "white"}
+        kwargs = {"color": "black",
+                  "style": "filled",
+                  "fillcolor": "white",
+                  "gradientangle": "270"}
 
         # If the as obj is the attacker
         if as_obj.asn == engine_input.attacker_asn:
-            kwargs.update({"fillcolor": "red", "shape": "doublecircle"})
+            kwargs.update({"fillcolor": "#ff6060", "shape": "doublecircle"})
             if as_obj.__class__ not in [BGPAS, BGPSimpleAS]:
                 kwargs["shape"] = "doubleoctagon"
             # If people complain about the red being too dark lol:
@@ -175,16 +182,16 @@ class Diagram:
             # kwargs.update({"fillcolor": "#ff4d4d"})
         # As obj is the victim
         elif as_obj.asn == engine_input.victim_asn:
-            kwargs.update({"fillcolor": "green", "shape": "doublecircle"})
+            kwargs.update({"fillcolor": "lightgreen", "shape": "doublecircle"})
             if as_obj.__class__ not in [BGPAS, BGPSimpleAS]:
                 kwargs["shape"] = "doubleoctagon"
 
         # As obj is not attacker or victim
         else:
             if traceback[as_obj.asn] == Outcomes.ATTACKER_SUCCESS:
-                kwargs.update({"fillcolor": "red:yellow"})
+                kwargs.update({"fillcolor": "#ff6060:yellow"})
             elif traceback[as_obj.asn] == Outcomes.VICTIM_SUCCESS:
-                kwargs.update({"fillcolor": "green:white"})
+                kwargs.update({"fillcolor": "lightgreen:white"})
             elif traceback[as_obj.asn] == Outcomes.DISCONNECTED:
                 kwargs.update({"fillcolor": "grey:white"})
 
