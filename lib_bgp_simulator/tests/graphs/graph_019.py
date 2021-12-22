@@ -1,4 +1,4 @@
-from lib_caida_collector import PeerLink, CustomerProviderLink as CPLink
+from lib_caida_collector import CustomerProviderLink as CPLink
 
 from .graph_info import GraphInfo
 from ...enums import ASNs

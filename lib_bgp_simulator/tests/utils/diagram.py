@@ -107,7 +107,7 @@ class Diagram:
     def _add_propagation_ranks(self, engine, *args):
         for i, rank in enumerate(engine.propagation_ranks):
             g = Digraph(f"Propagation_rank_{i}")
-            g.attr() #newrank="same")
+            g.attr()
             for as_obj in rank:
 
                 g.node(str(as_obj.asn))
@@ -154,7 +154,7 @@ class Diagram:
             html += """<TR>
                         <TD COLSPAN="3">Local RIB</TD>
                       </TR>"""
- 
+
             for prefix in local_rib_prefixes:
                 mask = "/" + prefix.split("/")[-1]
                 path = ", ".join(str(x) for x in
