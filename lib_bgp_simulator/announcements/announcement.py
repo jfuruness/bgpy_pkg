@@ -5,8 +5,17 @@ from yamlable import YamlAble, yaml_info, yaml_info_decorate
 from ..enums import Relationships, ROAValidity
 
 
+# Because of the two issues below, we MUST use
+# unsafe_hash and not frozen
+# We can't use their backports
+# Because we inherit announcements
+# So the slots in an announcement != vars
+# When python3.10 is supported by pypy3, we can
+# use Frozen properly
+# https://stackoverflow.com/q/55307017/8903959
+# https://bugs.python.org/issue45520
 @yaml_info(yaml_tag="Announcement")
-@dataclasses.dataclass
+@dataclasses.dataclass(unsafe_hash=True)
 class Announcement(YamlAble):
     """MRT Announcement"""
 
@@ -62,7 +71,7 @@ class Announcement(YamlAble):
         if isinstance(other, Announcement):
             return dataclasses.asdict(self) == dataclasses.asdict(other)
         else:
-            raise NotImplementedError
+            return NotImplemented
 
     def prefix_path_attributes_eq(self, ann):
         """Checks prefix and as path equivalency"""
