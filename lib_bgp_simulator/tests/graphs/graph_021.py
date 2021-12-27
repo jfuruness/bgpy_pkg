@@ -1,6 +1,5 @@
 
 from lib_caida_collector import CustomerProviderLink as CPLink
-from lib_caida_collector import PeerLink
 
 from .graph_info import GraphInfo
 from ...enums import ASNs
@@ -10,7 +9,7 @@ class Graph021(GraphInfo):
     r"""
     Test withdrawal propagation with route leak from AS 1.
 
-     777 
+     777
      |  \
      \   2
       \ / \
