@@ -17,17 +17,17 @@ class RouteLeakAS1(ValidPrefix):
     """Test common case for withdrawals using a route leak.
 
     Regardless of the graph used, this engine_input will always attempt to leak
-    from AS 1.
+    from AS 666.
     """
     __slots__ = ()
 
     def post_propagation_hook(self, engine: SimulatorEngine,
                               prev_data_point: DataPoint, *args, **kwargs):
-        # Route leak from AS 1 to cause withdrawals to be sent
+        # Route leak from AS 666 to cause withdrawals to be sent
         attacker_ann = None
-        attacker_ann = engine.as_dict[1]._local_rib.get_ann(Prefixes.PREFIX.value) # noqa E501
+        attacker_ann = engine.as_dict[666]._local_rib.get_ann(Prefixes.PREFIX.value) # noqa E501
         if prev_data_point.propagation_round == 0:
-            engine.as_dict[1]._local_rib.get_ann(Prefixes.PREFIX.value).recv_relationship = Relationships.CUSTOMERS # noqa E501
+            engine.as_dict[666]._local_rib.get_ann(Prefixes.PREFIX.value).recv_relationship = Relationships.CUSTOMERS # noqa E501
 
 
 class BaseBGPWithdrawBasicTester(BaseGraphSystemTester):

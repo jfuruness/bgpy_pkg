@@ -17,7 +17,7 @@ class RouteLeakAS1Poisoned(ValidPrefix):
     """Test propagation for withdrawals using a path-poisoned route leak.
 
     Regardless of the graph used, this engine_input will always attempt to leak
-    from AS 1.
+    from AS 666.
     """
     __slots__ = ()
 
@@ -25,11 +25,11 @@ class RouteLeakAS1Poisoned(ValidPrefix):
                               prev_data_point: DataPoint, *args, **kwargs):
         # Route leak from AS 1 to cause withdrawals to be sent
         attacker_ann = None
-        attacker_ann = engine.as_dict[1]._local_rib.get_ann(Prefixes.PREFIX.value) # noqa E501
+        attacker_ann = engine.as_dict[666]._local_rib.get_ann(Prefixes.PREFIX.value) # noqa E501
         if prev_data_point.propagation_round == 0:
-            engine.as_dict[1]._local_rib.get_ann(Prefixes.PREFIX.value).recv_relationship = Relationships.CUSTOMERS # noqa E501
-            as_path = engine.as_dict[1]._local_rib.get_ann(Prefixes.PREFIX.value).as_path # noqa E501
-            engine.as_dict[1]._local_rib.get_ann(Prefixes.PREFIX.value).as_path = (1, 777, 4)  # noqa E501
+            engine.as_dict[666]._local_rib.get_ann(Prefixes.PREFIX.value).recv_relationship = Relationships.CUSTOMERS # noqa E501
+            as_path = engine.as_dict[666]._local_rib.get_ann(Prefixes.PREFIX.value).as_path # noqa E501
+            engine.as_dict[666]._local_rib.get_ann(Prefixes.PREFIX.value).as_path = (666, 777, 4)  # noqa E501
 
 
 class BaseBGPWithdrawPropTester(BaseGraphSystemTester):
