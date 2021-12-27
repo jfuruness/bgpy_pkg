@@ -2,6 +2,7 @@ from collections import defaultdict
 
 import ipaddress
 from ..enums import Outcomes
+from ..engine import BGPAS
 
 
 class Scenario:
@@ -89,10 +90,17 @@ class Scenario:
         if not attack_outcome:
             # Continue tracing back by getting the last AS
             new_as_obj = self.engine.as_dict[most_specific_ann.as_path[1]]
+            if not isinstance(as_obj, BGPAS):
+                msg = ("Path manipulation not allowed for BGPSimpleAS. "
+                       "Consider inheriting from BGPAS instead")
+                assert new_as_obj in as_obj.neighbors, msg
             attack_outcome = self._get_atk_outcome(new_as_obj,
                                                    ordered_prefixes,
                                                    path_len + 1,
                                                    cache)
+            msg = "Path manipulation attack with no traceback end?"
+            assert (attack_outcome is not None
+                    or new_as_obj in as_obj.neighbors)
 
         assert attack_outcome is not None, "Attack should be disconnected?"
 
