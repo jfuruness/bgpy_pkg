@@ -3,14 +3,10 @@ from pathlib import Path
 from ...graphs import Graph022
 from ...utils import BaseGraphSystemTester
 
-from ....enums import Prefixes, Relationships
-from ....engine_input import ValidPrefix
 from ....engine import BGPSimpleAS
 from ....engine import BGPAS
 from ....engine import ROVSimpleAS
 from ....engine import ROVAS
-from ....engine import SimulatorEngine
-from ....simulator import DataPoint
 
 from ..withdraw_prop import RouteLeakAS1Poisoned
 
