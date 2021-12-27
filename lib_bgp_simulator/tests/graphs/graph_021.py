@@ -1,4 +1,3 @@
-
 from lib_caida_collector import CustomerProviderLink as CPLink
 
 from .graph_info import GraphInfo
@@ -7,7 +6,7 @@ from ...enums import ASNs
 
 class Graph021(GraphInfo):
     r"""
-    Test withdrawal propagation with route leak from AS 1.
+    Test withdrawal propagation with route leak from AS 666.
 
      777
      |  \
@@ -17,9 +16,9 @@ class Graph021(GraphInfo):
            |
            5
 
-    The leak from AS 1 is path-poisoned with AS 4, so 4 should reject the new
+    The leak from AS 666 is path-poisoned with AS 4, so 4 should reject the new
     route as invalid but still propagate the withdrawal to 5. AS 5 should have
-    no route in round 2.
+    no route in round 1.
     """
 
     def __init__(self):

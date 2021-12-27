@@ -7,7 +7,7 @@ from ...enums import ASNs
 
 class Graph020(GraphInfo):
     r"""
-    Test basic withdrawals with route leak from AS 1.
+    Test basic withdrawals with route leak from AS 666.
 
    777  6
     |   |
@@ -18,7 +18,7 @@ class Graph020(GraphInfo):
      666--3
 
     Paths in ASes 3 and 4 should be changed in round 2. 6 will have no route in
-    round 1, but it should receive the leaked route in round 2.
+    round 0, but it should receive the leaked route in round 1.
     """
 
     def __init__(self):

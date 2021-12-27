@@ -23,7 +23,7 @@ class RouteLeakAS1Poisoned(ValidPrefix):
 
     def post_propagation_hook(self, engine: SimulatorEngine,
                               prev_data_point: DataPoint, *args, **kwargs):
-        # Route leak from AS 1 to cause withdrawals to be sent
+        # Route leak from AS 666 to cause withdrawals to be sent
         attacker_ann = None
         attacker_ann = engine.as_dict[666]._local_rib.get_ann(Prefixes.PREFIX.value) # noqa E501
         if prev_data_point.propagation_round == 0:
@@ -42,12 +42,12 @@ class BaseBGPWithdrawPropTester(BaseGraphSystemTester):
 class Test001BGPWithdrawProp(BaseBGPWithdrawPropTester):
     """Test withdrawal propagation in BGP Simple AS.
 
-    This test is an expected fail. The test is here to provide an example of a
-    scenario when the experiment requires use of the BGPAS class instead of the
-    BGPSimpleAS. The BGPSimpleASes 4 and 5 in the round 1 generated graph still
-    have routes to the prefix, however, this is incorrect. Correct behavior is
-    shown by the BGPASes, which do not have routes after the path-poisoned
-    route leak by AS 1.
+    This test is expected to produce an incorrect graph. The test is here to
+    provide an example of a scenario when the experiment requires use of the
+    BGPAS class instead of the BGPSimpleAS. The BGPSimpleASes 4 and 5 in the
+    round 1 generated graph still have routes to the prefix, however, this is
+    incorrect. Correct behavior is shown by the BGPASes, which do not have
+    routes after the path-poisoned route leak by AS 666.
 
     """
     BaseASCls = BGPSimpleAS
