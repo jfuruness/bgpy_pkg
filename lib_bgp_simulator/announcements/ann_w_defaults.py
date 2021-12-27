@@ -7,7 +7,7 @@ from ..enums import ROAValidity, Relationships
 # NOTE: this is slower than the normal ann due to lack of slots
 # In python3.7, supported by pypy, dataclasses with slots can't have defaults
 # We set equal to false here so that it can inherit __eq__ from parent
-@dataclass(eq=False)
+@dataclass(eq=False, unsafe_hash=True)
 class AnnWDefaults(Announcement):
     prefix: str = None
     as_path: tuple = None

@@ -107,7 +107,6 @@ class EngineInput(YamlAble):
               or ann.traceback_end):
 
             return Outcomes.DISCONNECTED
-
         # Keep going
         else:
             return None
