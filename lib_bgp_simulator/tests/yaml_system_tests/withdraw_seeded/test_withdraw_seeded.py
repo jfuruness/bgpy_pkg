@@ -13,7 +13,7 @@ from ....engine import SimulatorEngine
 from ....simulator import DataPoint
 
 
-class RouteLeakAS1(ValidPrefix):
+class RouteLeakAS1Seeded(ValidPrefix):
     """Test seeded routes can never be withdrawn.
 
     Regardless of the graph used, this engine_input will always attempt to leak
@@ -35,7 +35,7 @@ class RouteLeakAS1(ValidPrefix):
 
 class BaseBGPWithdrawSeededTester(BaseGraphSystemTester):
     GraphInfoCls = Graph020
-    EngineInputCls = RouteLeakAS1
+    EngineInputCls = RouteLeakAS1Seeded
     propagation_rounds = 2
     base_dir = Path(__file__).parent
 
