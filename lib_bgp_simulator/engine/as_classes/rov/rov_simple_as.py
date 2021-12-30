@@ -1,7 +1,6 @@
 from ..bgp import BGPSimpleAS
 
 from ....announcements import Announcement as Ann
-from ....enums import ROAValidity
 
 
 class ROVSimpleAS(BGPSimpleAS):
