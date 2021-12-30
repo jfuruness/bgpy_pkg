@@ -10,7 +10,7 @@ class ROVSimpleAS(BGPSimpleAS):
     name = "ROVSimple"
 
     def _valid_ann(self, ann: Ann, *args, **kwargs) -> bool:
-        if ann.roa_validity == ROAValidity.INVALID:
+        if ann.invalid_by_roa:
             return False
         else:
             return super(ROVSimpleAS, self)._valid_ann(ann, *args, **kwargs)

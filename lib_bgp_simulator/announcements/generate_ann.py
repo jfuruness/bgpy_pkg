@@ -1,19 +1,21 @@
 from .announcement import Announcement
-from ..enums import Relationships, ROAValidity
+from ..enums import Relationships
 
 
 def generate_ann(AnnCls,
                  origin_asn: int,
                  prefix: str,
                  timestamp: int,
-                 roa_validity: ROAValidity,
+                 roa_valid_length: bool,
+                 roa_origin: int,
                  **extra_kwargs) -> Announcement:
     kwargs = {"prefix": prefix,
               "timestamp": timestamp,
               "as_path": (origin_asn,),
               "seed_asn": origin_asn,
-              "roa_validity": roa_validity,
               "recv_relationship": Relationships.ORIGIN,
+              "roa_valid_length": roa_valid_length,
+              "roa_origin": roa_origin,
               "withdraw": False,
               "traceback_end": False,
               "communities": tuple()}

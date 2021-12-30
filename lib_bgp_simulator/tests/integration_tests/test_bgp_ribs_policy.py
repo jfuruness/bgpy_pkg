@@ -1,4 +1,4 @@
-from ...enums import Relationships, ROAValidity
+from ...enums import Relationships
 from ...announcements import AnnWDefaults
 
 from ...engine import BGPAS
@@ -9,7 +9,6 @@ def get_prefix_ann_ann_w_a():
     ann = AnnWDefaults(prefix=prefix,
                        as_path=(13796,),
                        timestamp=0,
-                       roa_validity=ROAValidity.UNKNOWN,
                        recv_relationship=Relationships.ORIGIN)
     ann_w = ann.copy(withdraw=True)
     neighbor = BGPAS(2, peers=[], providers=[], customers=[])
@@ -85,21 +84,18 @@ def test_withdraw_best_alternative():
     ann1 = AnnWDefaults(prefix=prefix,
                         as_path=(13794,),
                         timestamp=0,
-                        roa_validity=ROAValidity.UNKNOWN,
                         recv_relationship=Relationships.ORIGIN)
     ann1.copy(withdraw=True)
 
     ann2 = AnnWDefaults(prefix=prefix,
                         as_path=(13795,),
                         timestamp=0,
-                        roa_validity=ROAValidity.UNKNOWN,
                         recv_relationship=Relationships.ORIGIN)
     ann2_w = ann2.copy(withdraw=True)
 
     ann3 = AnnWDefaults(prefix=prefix,
                         as_path=(13796,),
                         timestamp=0,
-                        roa_validity=ROAValidity.UNKNOWN,
                         recv_relationship=Relationships.ORIGIN)
     ann3_w = ann3.copy(withdraw=True)
 
@@ -150,13 +146,11 @@ def test_withdraw_sending():
     ann1 = AnnWDefaults(prefix=prefix,
                         as_path=(13794,),
                         timestamp=0,
-                        roa_validity=ROAValidity.UNKNOWN,
                         recv_relationship=Relationships.ORIGIN)
 
     ann2 = AnnWDefaults(prefix=prefix,
                         as_path=(13795,),
                         timestamp=0,
-                        roa_validity=ROAValidity.UNKNOWN,
                         recv_relationship=Relationships.ORIGIN)
 
     b = BGPAS(2, peers=[], providers=[], customers=[])
@@ -189,13 +183,11 @@ def test_withdraw_sending_multihop():
     ann1 = AnnWDefaults(prefix=prefix,
                         as_path=(13794,),
                         timestamp=0,
-                        roa_validity=ROAValidity.UNKNOWN,
                         recv_relationship=Relationships.ORIGIN)
 
     ann2 = AnnWDefaults(prefix=prefix,
                         as_path=(13795,),
                         timestamp=0,
-                        roa_validity=ROAValidity.UNKNOWN,
                         recv_relationship=Relationships.ORIGIN)
 
     c = BGPAS(3, peers=[], providers=[], customers=[])
