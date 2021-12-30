@@ -2,7 +2,7 @@ import dataclasses
 
 from yamlable import YamlAble, yaml_info, yaml_info_decorate
 
-from ..enums import Relationships, ROAValidity
+from ..enums import Relationships
 
 
 # Because of the two issues below, we MUST use
@@ -44,7 +44,8 @@ class Announcement(YamlAble):
     # And it's just faster. We'd have to do larger timing tests to find out
     # more
     # NOTE: also add prefix_id reasoning to design_decisions
-    __slots__ = ("prefix", "timestamp", "as_path", "roa_validity",
+    __slots__ = ("prefix", "timestamp", "as_path", "roa_valid_length",
+                 "roa_origin",
                  "recv_relationship", "seed_asn", "withdraw", "traceback_end")
 
     # NOTE: can't have defaults due to slots. Sorry man
@@ -53,7 +54,8 @@ class Announcement(YamlAble):
     as_path: tuple
     timestamp: int
     seed_asn: int
-    roa_validity: ROAValidity
+    roa_valid_length: bool
+    roa_origin: int
     recv_relationship: Relationships
     withdraw: bool
     traceback_end: bool
@@ -90,6 +92,40 @@ class Announcement(YamlAble):
         kwargs.update(extra_kwargs)
 
         return dataclasses.replace(self, **kwargs)
+
+    @property
+    def invalid_by_roa(self) -> bool:
+        """Returns True if Ann is invalid by ROA
+
+        False means ann is either valid or unknown
+        """
+
+        # Not covered by ROA, unknown
+        if self.roa_origin is None:
+            return False
+        else:
+            return self.origin != self.roa_origin or not self.roa_valid_length
+
+    @property
+    def valid_by_roa(self) -> bool:
+        """Returns True if Ann is valid by ROA
+
+        False means ann is either invalid or unknown
+        """
+
+        return self.origin == self.roa_origin and self.roa_valid_length
+
+    @property
+    def unknown_by_roa(self) -> bool:
+        """Returns True if ann is not covered by roa"""
+
+        return self.origin is None
+
+    @property
+    def covered_by_roa(self):
+        """Returns if an announcement has a roa"""
+
+        return not self.unknown_by_roa
 
     @property
     def origin(self) -> int:

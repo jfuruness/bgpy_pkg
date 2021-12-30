@@ -10,9 +10,8 @@
       recv_relationship: !simulator_codec/Relationships
         name: CUSTOMERS
         value: 3
-      roa_validity: !simulator_codec/ROAValidity
-        name: VALID
-        value: 0
+      roa_origin: 777
+      roa_valid_length: true
       seed_asn: null
       timestamp: 0
       traceback_end: false
@@ -26,9 +25,8 @@
       recv_relationship: !simulator_codec/Relationships
         name: CUSTOMERS
         value: 3
-      roa_validity: !simulator_codec/ROAValidity
-        name: INVALID
-        value: 2
+      roa_origin: 777
+      roa_valid_length: false
       seed_asn: null
       timestamp: 1
       traceback_end: false
@@ -37,10 +35,10 @@
   asn: 1
   customer_cone_size: 6
   customers: !!python/tuple
-  - 777
-  - 666
   - 3
   - 4
+  - 777
+  - 666
   input_clique: false
   ixp: false
   peers: !!python/tuple []
@@ -58,9 +56,8 @@
       recv_relationship: !simulator_codec/Relationships
         name: CUSTOMERS
         value: 3
-      roa_validity: !simulator_codec/ROAValidity
-        name: VALID
-        value: 0
+      roa_origin: 777
+      roa_valid_length: true
       seed_asn: null
       timestamp: 0
       traceback_end: false
@@ -88,9 +85,8 @@
       recv_relationship: !simulator_codec/Relationships
         name: PROVIDERS
         value: 1
-      roa_validity: !simulator_codec/ROAValidity
-        name: VALID
-        value: 0
+      roa_origin: 777
+      roa_valid_length: true
       seed_asn: null
       timestamp: 0
       traceback_end: false
@@ -105,9 +101,8 @@
       recv_relationship: !simulator_codec/Relationships
         name: PROVIDERS
         value: 1
-      roa_validity: !simulator_codec/ROAValidity
-        name: INVALID
-        value: 2
+      roa_origin: 777
+      roa_valid_length: false
       seed_asn: null
       timestamp: 1
       traceback_end: false
@@ -135,9 +130,8 @@
       recv_relationship: !simulator_codec/Relationships
         name: PROVIDERS
         value: 1
-      roa_validity: !simulator_codec/ROAValidity
-        name: VALID
-        value: 0
+      roa_origin: 777
+      roa_valid_length: true
       seed_asn: null
       timestamp: 0
       traceback_end: false
@@ -152,9 +146,8 @@
       recv_relationship: !simulator_codec/Relationships
         name: PROVIDERS
         value: 1
-      roa_validity: !simulator_codec/ROAValidity
-        name: INVALID
-        value: 2
+      roa_origin: 777
+      roa_valid_length: false
       seed_asn: null
       timestamp: 1
       traceback_end: false
@@ -182,9 +175,8 @@
       recv_relationship: !simulator_codec/Relationships
         name: CUSTOMERS
         value: 3
-      roa_validity: !simulator_codec/ROAValidity
-        name: VALID
-        value: 0
+      roa_origin: 777
+      roa_valid_length: true
       seed_asn: null
       timestamp: 0
       traceback_end: false
@@ -213,9 +205,8 @@
       recv_relationship: !simulator_codec/Relationships
         name: PROVIDERS
         value: 1
-      roa_validity: !simulator_codec/ROAValidity
-        name: VALID
-        value: 0
+      roa_origin: 777
+      roa_valid_length: true
       seed_asn: null
       timestamp: 0
       traceback_end: false
@@ -231,9 +222,8 @@
       recv_relationship: !simulator_codec/Relationships
         name: PROVIDERS
         value: 1
-      roa_validity: !simulator_codec/ROAValidity
-        name: INVALID
-        value: 2
+      roa_origin: 777
+      roa_valid_length: false
       seed_asn: null
       timestamp: 1
       traceback_end: false
@@ -261,9 +251,8 @@
       recv_relationship: !simulator_codec/Relationships
         name: PROVIDERS
         value: 1
-      roa_validity: !simulator_codec/ROAValidity
-        name: VALID
-        value: 0
+      roa_origin: 777
+      roa_valid_length: true
       seed_asn: null
       timestamp: 0
       traceback_end: false
@@ -279,9 +268,8 @@
       recv_relationship: !simulator_codec/Relationships
         name: PROVIDERS
         value: 1
-      roa_validity: !simulator_codec/ROAValidity
-        name: INVALID
-        value: 2
+      roa_origin: 777
+      roa_valid_length: false
       seed_asn: null
       timestamp: 1
       traceback_end: false
@@ -308,9 +296,8 @@
       recv_relationship: !simulator_codec/Relationships
         name: PROVIDERS
         value: 1
-      roa_validity: !simulator_codec/ROAValidity
-        name: VALID
-        value: 0
+      roa_origin: 777
+      roa_valid_length: true
       seed_asn: null
       timestamp: 0
       traceback_end: false
@@ -323,9 +310,8 @@
       recv_relationship: !simulator_codec/Relationships
         name: ORIGIN
         value: 4
-      roa_validity: !simulator_codec/ROAValidity
-        name: INVALID
-        value: 2
+      roa_origin: 777
+      roa_valid_length: false
       seed_asn: 666
       timestamp: 1
       traceback_end: false
@@ -350,9 +336,8 @@
       recv_relationship: !simulator_codec/Relationships
         name: ORIGIN
         value: 4
-      roa_validity: !simulator_codec/ROAValidity
-        name: VALID
-        value: 0
+      roa_origin: 777
+      roa_valid_length: true
       seed_asn: 777
       timestamp: 0
       traceback_end: false
@@ -367,9 +352,8 @@
       recv_relationship: !simulator_codec/Relationships
         name: PROVIDERS
         value: 1
-      roa_validity: !simulator_codec/ROAValidity
-        name: INVALID
-        value: 2
+      roa_origin: 777
+      roa_valid_length: false
       seed_asn: null
       timestamp: 1
       traceback_end: false

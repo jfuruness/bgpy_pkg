@@ -13,9 +13,8 @@
       recv_relationship: !simulator_codec/Relationships
         name: PEERS
         value: 2
-      roa_validity: !simulator_codec/ROAValidity
-        name: VALID
-        value: 0
+      roa_origin: 777
+      roa_valid_length: true
       seed_asn: null
       timestamp: 0
       traceback_end: false
@@ -45,9 +44,8 @@
       recv_relationship: !simulator_codec/Relationships
         name: CUSTOMERS
         value: 3
-      roa_validity: !simulator_codec/ROAValidity
-        name: VALID
-        value: 0
+      roa_origin: 777
+      roa_valid_length: true
       seed_asn: null
       timestamp: 0
       traceback_end: false
@@ -63,8 +61,8 @@
   ixp: false
   peers: !!python/tuple
   - 1
-  - 3
   - 4
+  - 3
   - 5
   propagation_rank: 3
   providers: !!python/tuple []
@@ -82,9 +80,8 @@
       recv_relationship: !simulator_codec/Relationships
         name: PEERS
         value: 2
-      roa_validity: !simulator_codec/ROAValidity
-        name: VALID
-        value: 0
+      roa_origin: 777
+      roa_valid_length: true
       seed_asn: null
       timestamp: 0
       traceback_end: false
@@ -96,9 +93,9 @@
   input_clique: false
   ixp: false
   peers: !!python/tuple
+  - 4
   - 1
   - 2
-  - 4
   propagation_rank: 0
   providers: !!python/tuple []
 4: !yamlable/BGPSimpleAS
@@ -115,9 +112,8 @@
       recv_relationship: !simulator_codec/Relationships
         name: PEERS
         value: 2
-      roa_validity: !simulator_codec/ROAValidity
-        name: VALID
-        value: 0
+      roa_origin: 777
+      roa_valid_length: true
       seed_asn: null
       timestamp: 0
       traceback_end: false
@@ -129,9 +125,9 @@
   input_clique: false
   ixp: false
   peers: !!python/tuple
-  - 1
   - 2
   - 3
+  - 1
   propagation_rank: 0
   providers: !!python/tuple []
 5: !yamlable/BGPSimpleAS
@@ -147,9 +143,8 @@
       recv_relationship: !simulator_codec/Relationships
         name: CUSTOMERS
         value: 3
-      roa_validity: !simulator_codec/ROAValidity
-        name: VALID
-        value: 0
+      roa_origin: 777
+      roa_valid_length: true
       seed_asn: null
       timestamp: 0
       traceback_end: false
@@ -158,8 +153,8 @@
   asn: 5
   customer_cone_size: 12
   customers: !!python/tuple
-  - 12
   - 6
+  - 12
   input_clique: false
   ixp: false
   peers: !!python/tuple
@@ -180,9 +175,8 @@
       recv_relationship: !simulator_codec/Relationships
         name: PEERS
         value: 2
-      roa_validity: !simulator_codec/ROAValidity
-        name: VALID
-        value: 0
+      roa_origin: 777
+      roa_valid_length: true
       seed_asn: null
       timestamp: 0
       traceback_end: false
@@ -200,8 +194,8 @@
   - 7
   propagation_rank: 2
   providers: !!python/tuple
-  - 2
   - 5
+  - 2
 7: !yamlable/BGPSimpleAS
   _local_rib: !yamlable/LocalRIB
     1.2.0.0/16: !yamlable/Announcement
@@ -216,9 +210,8 @@
       recv_relationship: !simulator_codec/Relationships
         name: PROVIDERS
         value: 1
-      roa_validity: !simulator_codec/ROAValidity
-        name: VALID
-        value: 0
+      roa_origin: 777
+      roa_valid_length: true
       seed_asn: null
       timestamp: 0
       traceback_end: false
@@ -248,9 +241,8 @@
       recv_relationship: !simulator_codec/Relationships
         name: PEERS
         value: 2
-      roa_validity: !simulator_codec/ROAValidity
-        name: VALID
-        value: 0
+      roa_origin: 777
+      roa_valid_length: true
       seed_asn: null
       timestamp: 0
       traceback_end: false
@@ -263,8 +255,8 @@
   input_clique: false
   ixp: false
   peers: !!python/tuple
-  - 9
   - 14
+  - 9
   propagation_rank: 1
   providers: !!python/tuple
   - 6
@@ -282,9 +274,8 @@
       recv_relationship: !simulator_codec/Relationships
         name: PROVIDERS
         value: 1
-      roa_validity: !simulator_codec/ROAValidity
-        name: VALID
-        value: 0
+      roa_origin: 777
+      roa_valid_length: true
       seed_asn: null
       timestamp: 0
       traceback_end: false
@@ -293,9 +284,9 @@
   asn: 9
   customer_cone_size: 4
   customers: !!python/tuple
-  - 16
-  - 18
   - 19
+  - 18
+  - 16
   - 15
   input_clique: false
   ixp: false
@@ -321,9 +312,8 @@
       recv_relationship: !simulator_codec/Relationships
         name: PROVIDERS
         value: 1
-      roa_validity: !simulator_codec/ROAValidity
-        name: VALID
-        value: 0
+      roa_origin: 777
+      roa_valid_length: true
       seed_asn: null
       timestamp: 0
       traceback_end: false
@@ -354,9 +344,8 @@
       recv_relationship: !simulator_codec/Relationships
         name: CUSTOMERS
         value: 3
-      roa_validity: !simulator_codec/ROAValidity
-        name: VALID
-        value: 0
+      roa_origin: 777
+      roa_valid_length: true
       seed_asn: null
       timestamp: 0
       traceback_end: false
@@ -385,9 +374,8 @@
       recv_relationship: !simulator_codec/Relationships
         name: CUSTOMERS
         value: 3
-      roa_validity: !simulator_codec/ROAValidity
-        name: VALID
-        value: 0
+      roa_origin: 777
+      roa_valid_length: true
       seed_asn: null
       timestamp: 0
       traceback_end: false
@@ -404,9 +392,9 @@
   - 6
   propagation_rank: 2
   providers: !!python/tuple
-  - 2
   - 11
   - 5
+  - 2
 13: !yamlable/BGPSimpleAS
   _local_rib: !yamlable/LocalRIB
     1.2.0.0/16: !yamlable/Announcement
@@ -419,9 +407,8 @@
       recv_relationship: !simulator_codec/Relationships
         name: CUSTOMERS
         value: 3
-      roa_validity: !simulator_codec/ROAValidity
-        name: VALID
-        value: 0
+      roa_origin: 777
+      roa_valid_length: true
       seed_asn: null
       timestamp: 0
       traceback_end: false
@@ -449,9 +436,8 @@
       recv_relationship: !simulator_codec/Relationships
         name: CUSTOMERS
         value: 3
-      roa_validity: !simulator_codec/ROAValidity
-        name: VALID
-        value: 0
+      roa_origin: 777
+      roa_valid_length: true
       seed_asn: null
       timestamp: 0
       traceback_end: false
@@ -460,18 +446,18 @@
   asn: 14
   customer_cone_size: 4
   customers: !!python/tuple
-  - 777
   - 666
-  - 19
   - 21
+  - 777
+  - 19
   input_clique: false
   ixp: false
   peers: !!python/tuple
   - 8
   propagation_rank: 1
   providers: !!python/tuple
-  - 12
   - 13
+  - 12
 15: !yamlable/BGPSimpleAS
   _local_rib: !yamlable/LocalRIB
     1.2.0.0/16: !yamlable/Announcement
@@ -487,9 +473,8 @@
       recv_relationship: !simulator_codec/Relationships
         name: PROVIDERS
         value: 1
-      roa_validity: !simulator_codec/ROAValidity
-        name: VALID
-        value: 0
+      roa_origin: 777
+      roa_valid_length: true
       seed_asn: null
       timestamp: 0
       traceback_end: false
@@ -520,9 +505,8 @@
       recv_relationship: !simulator_codec/Relationships
         name: PROVIDERS
         value: 1
-      roa_validity: !simulator_codec/ROAValidity
-        name: VALID
-        value: 0
+      roa_origin: 777
+      roa_valid_length: true
       seed_asn: null
       timestamp: 0
       traceback_end: false
@@ -553,9 +537,8 @@
       recv_relationship: !simulator_codec/Relationships
         name: PROVIDERS
         value: 1
-      roa_validity: !simulator_codec/ROAValidity
-        name: VALID
-        value: 0
+      roa_origin: 777
+      roa_valid_length: true
       seed_asn: null
       timestamp: 0
       traceback_end: false
@@ -585,9 +568,8 @@
       recv_relationship: !simulator_codec/Relationships
         name: PROVIDERS
         value: 1
-      roa_validity: !simulator_codec/ROAValidity
-        name: VALID
-        value: 0
+      roa_origin: 777
+      roa_valid_length: true
       seed_asn: null
       timestamp: 0
       traceback_end: false
@@ -614,9 +596,8 @@
       recv_relationship: !simulator_codec/Relationships
         name: PROVIDERS
         value: 1
-      roa_validity: !simulator_codec/ROAValidity
-        name: VALID
-        value: 0
+      roa_origin: 777
+      roa_valid_length: true
       seed_asn: null
       timestamp: 0
       traceback_end: false
@@ -630,9 +611,9 @@
   peers: !!python/tuple []
   propagation_rank: 0
   providers: !!python/tuple
+  - 14
   - 8
   - 9
-  - 14
 21: !yamlable/BGPSimpleAS
   _local_rib: !yamlable/LocalRIB
     1.2.0.0/16: !yamlable/Announcement
@@ -645,9 +626,8 @@
       recv_relationship: !simulator_codec/Relationships
         name: PROVIDERS
         value: 1
-      roa_validity: !simulator_codec/ROAValidity
-        name: VALID
-        value: 0
+      roa_origin: 777
+      roa_valid_length: true
       seed_asn: null
       timestamp: 0
       traceback_end: false
@@ -698,9 +678,8 @@
       recv_relationship: !simulator_codec/Relationships
         name: PROVIDERS
         value: 1
-      roa_validity: !simulator_codec/ROAValidity
-        name: VALID
-        value: 0
+      roa_origin: 777
+      roa_valid_length: true
       seed_asn: null
       timestamp: 0
       traceback_end: false
@@ -725,9 +704,8 @@
       recv_relationship: !simulator_codec/Relationships
         name: ORIGIN
         value: 4
-      roa_validity: !simulator_codec/ROAValidity
-        name: VALID
-        value: 0
+      roa_origin: 777
+      roa_valid_length: true
       seed_asn: 777
       timestamp: 0
       traceback_end: false

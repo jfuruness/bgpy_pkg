@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 
 from .announcement import Announcement
-from ..enums import ROAValidity, Relationships
+from ..enums import Relationships
 
 
 # NOTE: this is slower than the normal ann due to lack of slots
@@ -13,7 +13,8 @@ class AnnWDefaults(Announcement):
     as_path: tuple = None
     timestamp: int = 0
     seed_asn: int = None
-    roa_validity: ROAValidity = ROAValidity.UNKNOWN
+    roa_valid_length: bool = None
+    roa_origin: int = None
     recv_relationship: Relationships = Relationships.CUSTOMERS
     withdraw: bool = False
     traceback_end: bool = False
