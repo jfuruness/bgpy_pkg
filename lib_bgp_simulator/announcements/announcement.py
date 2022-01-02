@@ -128,6 +128,10 @@ class Announcement(YamlAble):
         return not self.unknown_by_roa
 
     @property
+    def roa_routed(self):
+        return self.roa_origin == 0
+
+    @property
     def origin(self) -> int:
         return self.as_path[-1]
 

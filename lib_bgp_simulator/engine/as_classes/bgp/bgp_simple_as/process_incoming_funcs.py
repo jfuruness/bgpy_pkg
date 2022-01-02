@@ -48,14 +48,19 @@ def process_incoming_anns(self,
 
         # This is a new best ann. Process it and add it to the local rib
         if current_processed is False:
-            current_ann: Ann = self._copy_and_process(current_ann, from_rel, **kwargs)
+            current_ann: Ann = self._copy_and_process(current_ann,
+                                                      from_rel,
+                                                      **kwargs)
             # Save to local rib
             self._local_rib.add_ann(current_ann)
 
     self._reset_q(reset_q)
 
 
-def _valid_ann(self, ann: Ann, recv_relationship: Relationships, **kwargs) -> bool:
+def _valid_ann(self,
+               ann: Ann,
+               recv_relationship: Relationships,
+               **kwargs) -> bool:
     """Determine if an announcement is valid or should be dropped"""
 
     # BGP Loop Prevention Check
