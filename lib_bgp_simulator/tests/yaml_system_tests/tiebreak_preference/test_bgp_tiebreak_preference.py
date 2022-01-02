@@ -16,17 +16,17 @@ class BaseBGPTiebreakPreferenceTester(BaseGraphSystemTester):
     base_dir = Path(__file__).parent
 
 
-class Test001BGPTiebreakPreference(BaseBGPTiebreakPreferenceTester):
+class Test023BGPTiebreakPreference(BaseBGPTiebreakPreferenceTester):
     BaseASCls = BGPSimpleAS
 
 
-class Test002BGPTiebreakPreference(BaseBGPTiebreakPreferenceTester):
+class Test024BGPTiebreakPreference(BaseBGPTiebreakPreferenceTester):
     BaseASCls = BGPAS
 
 
-class Test003BGPTiebreakPreference(BaseBGPTiebreakPreferenceTester):
+class Test025BGPTiebreakPreference(BaseBGPTiebreakPreferenceTester):
     BaseASCls = ROVSimpleAS
 
 
-class Test004BGPTiebreakPreference(BaseBGPTiebreakPreferenceTester):
+class Test026BGPTiebreakPreference(BaseBGPTiebreakPreferenceTester):
     BaseASCls = ROVAS

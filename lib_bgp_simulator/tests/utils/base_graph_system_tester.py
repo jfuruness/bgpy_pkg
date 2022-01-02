@@ -55,7 +55,9 @@ class BaseGraphSystemTester:
             runner = YamlSystemTestRunner(
                 dir_,
                 preloaded_engine=preloaded_engine,
-                preloaded_engine_input=preloaded_engine_input)
+                preloaded_engine_input=preloaded_engine_input,
+                debug_fname=self.debug_fname,
+                debug_dir=None)
 
             (preloaded_engine,
              preloaded_engine_input,
@@ -97,3 +99,7 @@ class BaseGraphSystemTester:
             assert asn in as_classes
             as_classes[asn] = self.ROVASCls
         return as_classes
+
+    @property
+    def debug_fname(self):
+        return self.__class__.__name__ + ".gv"

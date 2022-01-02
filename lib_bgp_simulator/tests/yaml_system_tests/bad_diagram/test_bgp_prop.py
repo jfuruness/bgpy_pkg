@@ -7,7 +7,7 @@ from ....engine_input import ValidPrefix
 from ....engine import BGPSimpleAS
 
 
-class TestBadDiagram(BaseGraphSystemTester):
+class Test027BadDiagram(BaseGraphSystemTester):
     GraphInfoCls = Graph016
     EngineInputCls = ValidPrefix
     base_dir = Path(__file__).parent

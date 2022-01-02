@@ -1,4 +1,5 @@
 import logging
+from pathlib import Path
 import shutil
 import sys
 
@@ -12,17 +13,30 @@ class YamlSystemTestRunner:
 
     write_no_verify_arg = "--write_no_verify"
     view_arg = "--view"
+    debug_arg = "--debug_figs"
 
     def __init__(self,
                  dir_,
                  preloaded_engine=None,
-                 preloaded_engine_input=None):
+                 preloaded_engine_input=None,
+                 debug_fname=None,
+                 debug_dir=None):
         """dir_ should be the dir_ with the yaml"""
 
         self.dir_ = dir_
         self.codec = SimulatorCodec()
         self.preloaded_engine = preloaded_engine
         self.preloaded_engine_input = preloaded_engine_input
+
+        self.debug_fname = debug_fname
+        if self.debug_arg in sys.argv:
+            self.debug_dir = Path("/tmp/sim_figs/")
+            try:
+                self.debug_dir.mkdir()
+            except FileExistsError:
+                pass
+        else:
+            self.debug_dir = debug_dir
 
     def run_test(self,
                  empty_engine_kwargs,
@@ -47,7 +61,10 @@ class YamlSystemTestRunner:
 
         try:
             self.write_check_results(engine, scenario, engine_traceback_guess)
-            self.write_diagrams(engine, engine_traceback_guess, engine_input)
+            self.write_diagrams(engine,
+                                engine_traceback_guess,
+                                engine_input,
+                                propagation_round)
         except Exception as e:
             self.write_diagrams(engine, engine_traceback_guess, engine_input)
             raise e
@@ -91,7 +108,11 @@ class YamlSystemTestRunner:
         engine_input.post_propagation_hook(engine, dp)
         return scenario, traceback_guess
 
-    def write_diagrams(self, engine_guess, engine_output_guess, engine_input):
+    def write_diagrams(self,
+                       engine_guess,
+                       engine_output_guess,
+                       engine_input,
+                       propagation_round):
         """Write diagrams for both guess and ground truth"""
 
         # Diagram for guess
@@ -100,6 +121,15 @@ class YamlSystemTestRunner:
                                     engine_input,
                                     path=self.engine_output_guess_gv_path,
                                     view=self.view_arg in sys.argv)
+
+        # Diagram for debugging
+        if self.debug_dir is not None and propagation_round == 0:
+            Diagram().generate_as_graph(engine_guess,
+                                        engine_output_guess,
+                                        engine_input,
+                                        path=self.debug_dir / self.debug_fname,
+                                        view=self.view_arg in sys.argv)
+
 
         engine_truth = self.codec.load(path=self.engine_output_truth_yaml_path)
         traceback_truth = self.codec.load(path=self.traceback_truth_yaml_path)
