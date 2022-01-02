@@ -130,7 +130,6 @@ class YamlSystemTestRunner:
                                         path=self.debug_dir / self.debug_fname,
                                         view=self.view_arg in sys.argv)
 
-
         engine_truth = self.codec.load(path=self.engine_output_truth_yaml_path)
         traceback_truth = self.codec.load(path=self.traceback_truth_yaml_path)
 

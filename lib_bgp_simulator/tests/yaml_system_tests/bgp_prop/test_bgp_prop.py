@@ -27,5 +27,6 @@ class Test004BGPProp(BaseBGPPropTester):
 class Test005BGPSimpleProp(BaseBGPPropTester):
     BaseASCls = ROVSimpleAS
 
+
 class Test006BGPProp(BaseBGPPropTester):
     BaseASCls = ROVAS
