@@ -34,27 +34,28 @@ def process_incoming_anns(self,
         for ann in ann_list:
             # Make sure there are no loops
             # In ROV subclass also check roa validity
-            if self._valid_ann(ann, from_rel):
+            if self._valid_ann(ann, from_rel, **kwargs):
                 new_ann_better: bool = self._new_ann_better(current_ann,
                                                             current_processed,
                                                             from_rel,
                                                             ann,
                                                             False,
-                                                            from_rel)
+                                                            from_rel,
+                                                            **kwargs)
                 if new_ann_better:
                     current_ann: Ann = ann
                     current_processed = False
 
         # This is a new best ann. Process it and add it to the local rib
         if current_processed is False:
-            current_ann: Ann = self._copy_and_process(current_ann, from_rel)
+            current_ann: Ann = self._copy_and_process(current_ann, from_rel, **kwargs)
             # Save to local rib
             self._local_rib.add_ann(current_ann)
 
     self._reset_q(reset_q)
 
 
-def _valid_ann(self, ann: Ann, recv_relationship: Relationships) -> bool:
+def _valid_ann(self, ann: Ann, recv_relationship: Relationships, **kwargs) -> bool:
     """Determine if an announcement is valid or should be dropped"""
 
     # BGP Loop Prevention Check
