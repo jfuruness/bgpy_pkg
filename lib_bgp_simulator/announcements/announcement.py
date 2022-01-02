@@ -129,7 +129,7 @@ class Announcement(YamlAble):
 
     @property
     def roa_routed(self):
-        return self.roa_origin == 0
+        return self.roa_origin != 0
 
     @property
     def origin(self) -> int:
