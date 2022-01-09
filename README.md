@@ -25,6 +25,8 @@ TODO
 ## Usage
 * [lib\_bgp\_simulator](#lib_bgp_simulator)
 
+Note: the simulator takes about 1-2GB per core. Make sure you don't run out of RAM!
+
 TODO
 
 ## Installation
