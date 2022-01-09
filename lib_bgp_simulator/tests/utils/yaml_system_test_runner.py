@@ -66,7 +66,11 @@ class YamlSystemTestRunner:
                                 engine_input,
                                 propagation_round)
         except Exception as e:
-            self.write_diagrams(engine, engine_traceback_guess, engine_input)
+            raise e
+            self.write_diagrams(engine,
+                                engine_traceback_guess,
+                                engine_input,
+                                propagation_round)
             raise e
 
         return engine, engine_input, scenario, engine_traceback_guess
