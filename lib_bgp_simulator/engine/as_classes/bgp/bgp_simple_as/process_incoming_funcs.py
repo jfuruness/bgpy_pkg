@@ -73,7 +73,8 @@ def _copy_and_process(self,
                       **extra_kwargs) -> Ann:
     """Deep copies ann and modifies attrs"""
 
-    extra_kwargs.pop("holes", None)
+    if "bgp" in self.name.lower():
+        extra_kwargs.pop("holes", None)
 
     kwargs = {"as_path": (self.asn,) + ann.as_path,
               "recv_relationship": recv_relationship}
