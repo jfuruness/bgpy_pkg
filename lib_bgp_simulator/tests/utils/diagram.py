@@ -51,7 +51,7 @@ class Diagram:
                 <TD>{attacker_success_count}</TD>
               </TR>
               <TR>
-         <TD BGCOLOR="lightgreen:white">&#128519; VICTIM SUCCESS &#128519;</TD>
+         <TD BGCOLOR="#90ee90:white">&#128519; VICTIM SUCCESS &#128519;</TD>
                 <TD>{victim_success_count}</TD>
               </TR>
               <TR>
@@ -198,7 +198,7 @@ class Diagram:
             # kwargs.update({"fillcolor": "#ff4d4d"})
         # As obj is the victim
         elif as_obj.asn == engine_input.victim_asn:
-            kwargs.update({"fillcolor": "lightgreen", "shape": "doublecircle"})
+            kwargs.update({"fillcolor": "#90ee90", "shape": "doublecircle"})
             if as_obj.__class__ not in [BGPAS, BGPSimpleAS]:
                 kwargs["shape"] = "doubleoctagon"
 
@@ -207,7 +207,7 @@ class Diagram:
             if traceback[as_obj.asn] == Outcomes.ATTACKER_SUCCESS:
                 kwargs.update({"fillcolor": "#ff6060:yellow"})
             elif traceback[as_obj.asn] == Outcomes.VICTIM_SUCCESS:
-                kwargs.update({"fillcolor": "lightgreen:white"})
+                kwargs.update({"fillcolor": "#90ee90:white"})
             elif traceback[as_obj.asn] == Outcomes.DISCONNECTED:
                 kwargs.update({"fillcolor": "grey:white"})
 
