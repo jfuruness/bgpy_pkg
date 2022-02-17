@@ -1,21 +1,345 @@
-1: !simulator_codec/Outcomes
+112: !simulator_codec/Outcomes
+  name: DISCONNECTED
+  value: 2
+577: !simulator_codec/Outcomes
   name: ATTACKER_SUCCESS
   value: 0
-2: !simulator_codec/Outcomes
-  name: VICTIM_SUCCESS
-  value: 1
-3: !simulator_codec/Outcomes
+1103: !simulator_codec/Outcomes
+  name: DISCONNECTED
+  value: 2
+1633: !simulator_codec/Outcomes
   name: ATTACKER_SUCCESS
   value: 0
-4: !simulator_codec/Outcomes
+2516: !simulator_codec/Outcomes
+  name: DISCONNECTED
+  value: 2
+3130: !simulator_codec/Outcomes
+  name: DISCONNECTED
+  value: 2
+3605: !simulator_codec/Outcomes
   name: ATTACKER_SUCCESS
   value: 0
-5: !simulator_codec/Outcomes
-  name: VICTIM_SUCCESS
-  value: 1
-7: !simulator_codec/Outcomes
+4538: !simulator_codec/Outcomes
   name: ATTACKER_SUCCESS
   value: 0
-8: !simulator_codec/Outcomes
+4800: !simulator_codec/Outcomes
+  name: ATTACKER_SUCCESS
+  value: 0
+4837: !simulator_codec/Outcomes
+  name: ATTACKER_SUCCESS
+  value: 0
+6079: !simulator_codec/Outcomes
+  name: DISCONNECTED
+  value: 2
+6453: !simulator_codec/Outcomes
+  name: ATTACKER_SUCCESS
+  value: 0
+6939: !simulator_codec/Outcomes
+  name: DISCONNECTED
+  value: 2
+7131: !simulator_codec/Outcomes
+  name: ATTACKER_SUCCESS
+  value: 0
+7575: !simulator_codec/Outcomes
+  name: ATTACKER_SUCCESS
+  value: 0
+7713: !simulator_codec/Outcomes
+  name: ATTACKER_SUCCESS
+  value: 0
+8359: !simulator_codec/Outcomes
+  name: ATTACKER_SUCCESS
+  value: 0
+8966: !simulator_codec/Outcomes
+  name: DISCONNECTED
+  value: 2
+9269: !simulator_codec/Outcomes
+  name: ATTACKER_SUCCESS
+  value: 0
+11976: !simulator_codec/Outcomes
+  name: DISCONNECTED
+  value: 2
+12430: !simulator_codec/Outcomes
+  name: ATTACKER_SUCCESS
+  value: 0
+13249: !simulator_codec/Outcomes
+  name: ATTACKER_SUCCESS
+  value: 0
+13335: !simulator_codec/Outcomes
+  name: ATTACKER_SUCCESS
+  value: 0
+13786: !simulator_codec/Outcomes
+  name: ATTACKER_SUCCESS
+  value: 0
+14340: !simulator_codec/Outcomes
+  name: DISCONNECTED
+  value: 2
+15412: !simulator_codec/Outcomes
+  name: ATTACKER_SUCCESS
+  value: 0
+16012: !simulator_codec/Outcomes
+  name: ATTACKER_SUCCESS
+  value: 0
+16164: !simulator_codec/Outcomes
+  name: DISCONNECTED
+  value: 2
+16591: !simulator_codec/Outcomes
+  name: ATTACKER_SUCCESS
+  value: 0
+18081: !simulator_codec/Outcomes
+  name: DISCONNECTED
+  value: 2
+18106: !simulator_codec/Outcomes
+  name: ATTACKER_SUCCESS
+  value: 0
+19151: !simulator_codec/Outcomes
+  name: DISCONNECTED
+  value: 2
+19165: !simulator_codec/Outcomes
+  name: ATTACKER_SUCCESS
+  value: 0
+19653: !simulator_codec/Outcomes
+  name: DISCONNECTED
+  value: 2
+19679: !simulator_codec/Outcomes
+  name: DISCONNECTED
+  value: 2
+20371: !simulator_codec/Outcomes
+  name: ATTACKER_SUCCESS
+  value: 0
+21158: !simulator_codec/Outcomes
+  name: DISCONNECTED
+  value: 2
+21497: !simulator_codec/Outcomes
+  name: ATTACKER_SUCCESS
+  value: 0
+21947: !simulator_codec/Outcomes
+  name: DISCONNECTED
+  value: 2
+22652: !simulator_codec/Outcomes
+  name: ATTACKER_SUCCESS
+  value: 0
+23673: !simulator_codec/Outcomes
+  name: ATTACKER_SUCCESS
+  value: 0
+23676: !simulator_codec/Outcomes
+  name: ATTACKER_SUCCESS
+  value: 0
+23953: !simulator_codec/Outcomes
+  name: DISCONNECTED
+  value: 2
+24358: !simulator_codec/Outcomes
+  name: ATTACKER_SUCCESS
+  value: 0
+24361: !simulator_codec/Outcomes
+  name: ATTACKER_SUCCESS
+  value: 0
+24482: !simulator_codec/Outcomes
+  name: ATTACKER_SUCCESS
+  value: 0
+26314: !simulator_codec/Outcomes
+  name: DISCONNECTED
+  value: 2
+26496: !simulator_codec/Outcomes
+  name: ATTACKER_SUCCESS
+  value: 0
+27275: !simulator_codec/Outcomes
+  name: ATTACKER_SUCCESS
+  value: 0
+27465: !simulator_codec/Outcomes
+  name: DISCONNECTED
+  value: 2
+29686: !simulator_codec/Outcomes
+  name: ATTACKER_SUCCESS
+  value: 0
+30081: !simulator_codec/Outcomes
+  name: ATTACKER_SUCCESS
+  value: 0
+31019: !simulator_codec/Outcomes
+  name: DISCONNECTED
+  value: 2
+32035: !simulator_codec/Outcomes
+  name: DISCONNECTED
+  value: 2
+32217: !simulator_codec/Outcomes
+  name: DISCONNECTED
+  value: 2
+32461: !simulator_codec/Outcomes
+  name: DISCONNECTED
+  value: 2
+33104: !simulator_codec/Outcomes
+  name: DISCONNECTED
+  value: 2
+34927: !simulator_codec/Outcomes
+  name: DISCONNECTED
+  value: 2
+35202: !simulator_codec/Outcomes
+  name: DISCONNECTED
+  value: 2
+35991: !simulator_codec/Outcomes
+  name: DISCONNECTED
+  value: 2
+38478: !simulator_codec/Outcomes
+  name: DISCONNECTED
+  value: 2
+38623: !simulator_codec/Outcomes
+  name: DISCONNECTED
+  value: 2
+40108: !simulator_codec/Outcomes
+  name: ATTACKER_SUCCESS
+  value: 0
+40788: !simulator_codec/Outcomes
+  name: DISCONNECTED
+  value: 2
+41135: !simulator_codec/Outcomes
+  name: DISCONNECTED
+  value: 2
+41378: !simulator_codec/Outcomes
+  name: DISCONNECTED
+  value: 2
+42038: !simulator_codec/Outcomes
+  name: ATTACKER_SUCCESS
+  value: 0
+42394: !simulator_codec/Outcomes
+  name: DISCONNECTED
+  value: 2
+42668: !simulator_codec/Outcomes
+  name: ATTACKER_SUCCESS
+  value: 0
+43833: !simulator_codec/Outcomes
+  name: ATTACKER_SUCCESS
+  value: 0
+43996: !simulator_codec/Outcomes
+  name: DISCONNECTED
+  value: 2
+44293: !simulator_codec/Outcomes
+  name: ATTACKER_SUCCESS
+  value: 0
+44444: !simulator_codec/Outcomes
+  name: DISCONNECTED
+  value: 2
+45430: !simulator_codec/Outcomes
+  name: ATTACKER_SUCCESS
+  value: 0
+45489: !simulator_codec/Outcomes
+  name: ATTACKER_SUCCESS
+  value: 0
+46055: !simulator_codec/Outcomes
+  name: DISCONNECTED
+  value: 2
+46587: !simulator_codec/Outcomes
+  name: DISCONNECTED
+  value: 2
+47787: !simulator_codec/Outcomes
+  name: DISCONNECTED
+  value: 2
+47806: !simulator_codec/Outcomes
+  name: ATTACKER_SUCCESS
+  value: 0
+48624: !simulator_codec/Outcomes
+  name: ATTACKER_SUCCESS
+  value: 0
+48768: !simulator_codec/Outcomes
+  name: ATTACKER_SUCCESS
+  value: 0
+53610: !simulator_codec/Outcomes
+  name: DISCONNECTED
+  value: 2
+53813: !simulator_codec/Outcomes
+  name: ATTACKER_SUCCESS
+  value: 0
+53828: !simulator_codec/Outcomes
+  name: ATTACKER_SUCCESS
+  value: 0
+54182: !simulator_codec/Outcomes
+  name: ATTACKER_SUCCESS
+  value: 0
+55863: !simulator_codec/Outcomes
+  name: ATTACKER_SUCCESS
+  value: 0
+57401: !simulator_codec/Outcomes
+  name: DISCONNECTED
+  value: 2
+58290: !simulator_codec/Outcomes
+  name: ATTACKER_SUCCESS
+  value: 0
+58511: !simulator_codec/Outcomes
+  name: ATTACKER_SUCCESS
+  value: 0
+59123: !simulator_codec/Outcomes
+  name: DISCONNECTED
+  value: 2
+59318: !simulator_codec/Outcomes
+  name: DISCONNECTED
+  value: 2
+62596: !simulator_codec/Outcomes
+  name: ATTACKER_SUCCESS
+  value: 0
+62668: !simulator_codec/Outcomes
+  name: DISCONNECTED
+  value: 2
+62955: !simulator_codec/Outcomes
+  name: DISCONNECTED
+  value: 2
+131578: !simulator_codec/Outcomes
+  name: ATTACKER_SUCCESS
+  value: 0
+133465: !simulator_codec/Outcomes
+  name: ATTACKER_SUCCESS
+  value: 0
+134136: !simulator_codec/Outcomes
+  name: ATTACKER_SUCCESS
+  value: 0
+134823: !simulator_codec/Outcomes
+  name: DISCONNECTED
+  value: 2
+137537: !simulator_codec/Outcomes
+  name: ATTACKER_SUCCESS
+  value: 0
+140627: !simulator_codec/Outcomes
+  name: ATTACKER_SUCCESS
+  value: 0
+198018: !simulator_codec/Outcomes
+  name: DISCONNECTED
+  value: 2
+199908: !simulator_codec/Outcomes
+  name: ATTACKER_SUCCESS
+  value: 0
+207701: !simulator_codec/Outcomes
+  name: DISCONNECTED
+  value: 2
+208056: !simulator_codec/Outcomes
+  name: DISCONNECTED
+  value: 2
+209453: !simulator_codec/Outcomes
+  name: DISCONNECTED
+  value: 2
+211244: !simulator_codec/Outcomes
+  name: DISCONNECTED
+  value: 2
+268168: !simulator_codec/Outcomes
+  name: DISCONNECTED
+  value: 2
+328336: !simulator_codec/Outcomes
+  name: DISCONNECTED
+  value: 2
+394065: !simulator_codec/Outcomes
+  name: DISCONNECTED
+  value: 2
+395400: !simulator_codec/Outcomes
+  name: ATTACKER_SUCCESS
+  value: 0
+395482: !simulator_codec/Outcomes
+  name: ATTACKER_SUCCESS
+  value: 0
+396125: !simulator_codec/Outcomes
+  name: ATTACKER_SUCCESS
+  value: 0
+397168: !simulator_codec/Outcomes
+  name: ATTACKER_SUCCESS
+  value: 0
+397186: !simulator_codec/Outcomes
+  name: DISCONNECTED
+  value: 2
+397765: !simulator_codec/Outcomes
   name: ATTACKER_SUCCESS
   value: 0
