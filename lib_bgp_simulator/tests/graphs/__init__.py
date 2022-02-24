@@ -30,6 +30,14 @@ from .graph_028 import Graph028
 from .graph_029 import Graph029
 from .graph_030 import Graph030
 from .graph_031 import Graph031
+from .graph_032 import Graph032
+from .graph_033 import Graph033
+from .graph_034 import Graph034
+from .graph_035 import Graph035
+from .graph_036 import Graph036
+from .graph_037 import Graph037
+
+
 
 __all__ = ["GraphInfo",
            "Graph001",
@@ -62,5 +70,11 @@ __all__ = ["GraphInfo",
            "Graph028",
            "Graph029",
            "Graph030",
-           "Graph031"
+           "Graph031",
+           "Graph032",
+           "Graph033",
+           "Graph034",
+           "Graph035",
+           "Graph036",
+           "Graph037"
            ]
