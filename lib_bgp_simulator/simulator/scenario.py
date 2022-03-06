@@ -29,6 +29,11 @@ class Scenario:
         # NOTE that if there are multiple propagation rounds, the engine
         # Will still be there
         del self.engine
+        # Delete the adopting_asns for the same reason.
+        # This does not cause problems for multiple rounds because the AS
+        # classes are already set.
+        if hasattr(self.engine_input, 'adopting_asns'):
+            del self.engine_input.adopting_asns
 
         return traceback_outcomes
 
