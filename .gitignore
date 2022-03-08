@@ -137,3 +137,6 @@ Sessionx.vim
 tags
 # Persistent undo
 [._]*.un~
+
+# PyCharm
+.idea/

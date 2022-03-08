@@ -73,7 +73,7 @@ class EngineInput(YamlAble):
         first_prefix = ip_network(self.announcements[0].prefix)
         for ann in self.announcements:
             assert ip_network(ann.prefix).overlaps(first_prefix)
-        assert self._get_prefix_subprefix_dict() is None
+        self._get_prefix_subprefix_dict()
 
     def seed(self, engine, *args):
         """Seeds announcement at the proper AS
@@ -183,16 +183,10 @@ class EngineInput(YamlAble):
         # Do this here for speed
         prefixes = [ip_network(x) for x in prefixes]
 
-        for prefix in prefixes:
-            # Supported in python3.7, not by pypy yet
-            def subnet_of(other):
-                return str(prefix) in [str(x) for x in other.subnets()]
-            prefix.subnet_of = subnet_of
-
         prefix_subprefix_dict = {x: [] for x in prefixes}
         for outer_prefix, subprefix_list in prefix_subprefix_dict.items():
             for prefix in prefixes:
-                if prefix.subnet_of(outer_prefix):
+                if prefix.subnet_of(outer_prefix) and prefix != outer_prefix:
                     subprefix_list.append(str(prefix))
         # Get rid of ip_network
         self.prefix_subprefix_dict = {str(k): v for k, v
