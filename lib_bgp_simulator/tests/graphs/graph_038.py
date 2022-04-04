@@ -18,7 +18,7 @@ class Graph038(GraphInfo):
                     PeerLink(7, 8),
                     PeerLink(34, ASNs.ATTACKER.value),
                     PeerLink(12, 34),
-                    PeerLink(11, 33)
+                    PeerLink(11, 33),
                 ]
             ),
             customer_provider_links=set(
@@ -32,7 +32,7 @@ class Graph038(GraphInfo):
                     CPLink(provider_asn=33, customer_asn=1),
                     CPLink(provider_asn=1, customer_asn=6),
                     CPLink(provider_asn=6, customer_asn=7),
-                    CPLink(provider_asn=6, customer_asn=8)
+                    CPLink(provider_asn=6, customer_asn=8),
                 ]
             ),
         )
