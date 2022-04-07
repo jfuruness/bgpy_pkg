@@ -472,4 +472,3 @@ class Graph021(GraphInfo):
                 ]
             ),
         )
-
