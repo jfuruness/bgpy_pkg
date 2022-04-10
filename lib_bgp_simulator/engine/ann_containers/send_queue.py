@@ -1,4 +1,3 @@
-from collections import defaultdict
 from dataclasses import dataclass
 from typing import List, Optional
 
@@ -46,7 +45,6 @@ class SendQueue(AnnContainer):
 
         send_info = self._info[neighbor_asn][ann.prefix]
 
-
         # If the announcement is a withdraw
         if ann.withdraw:
             # Ensure withdrawls aren't replaced
@@ -76,22 +74,15 @@ class SendQueue(AnnContainer):
     def get_send_info(self, neighbor_obj: AS, prefix: str) -> Optional[Ann]:
         """Returns the SendInfo for a neighbor AS and prefix"""
 
-        neighbor_info = self._info.get(neighbor_obj.asn)
-        if neighbor_info is None:
-            return neighbor_info
-        else:
-            return neighbor_info.get(prefix)
+        return self._info.get(neighbor_obj.asn, dict()).get(prefix)
 
     def info(self, neighbors: List[AS]):
         """Returns neighbor obj, prefix, announcement"""
 
         for neighbor_obj in neighbors:
-            # Used to be done by defaultdict
-            # Now done here for yamlability
-            if neighbor_obj.asn not in self._info:
-                self._info[neighbor_obj.asn] = dict()
             # assert isinstance(neighbor_obj, bgp_as.BGPAS)
-            for prefix, send_info in self._info[neighbor_obj.asn].items():
+            for prefix, send_info in self._info.get(neighbor_obj.asn,
+                                                    dict()).items():
                 for ann in send_info.anns:
                     yield neighbor_obj, prefix, ann
 

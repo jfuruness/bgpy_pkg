@@ -7,6 +7,8 @@ from .....announcements import Announcement as Ann
 
 
 def receive_ann(self, ann: Ann, accept_withdrawals=False):
+    """Function for recieving announcements, adds to recv_q"""
+
     if ann.withdraw and not accept_withdrawals:
         raise NotImplementedError("Policy can't handle withdrawals")
     self._recv_q.add_ann(ann)
@@ -21,6 +23,7 @@ def process_incoming_anns(self,
                           **kwargs):
     """Process all announcements that were incoming from a specific rel"""
 
+    # For each prefix, get all anns recieved
     for prefix, ann_list in self._recv_q.prefix_anns():
         # Get announcement currently in local rib
         current_ann: Ann = self._local_rib.get_ann(prefix)
@@ -35,6 +38,7 @@ def process_incoming_anns(self,
             # Make sure there are no loops
             # In ROV subclass also check roa validity
             if self._valid_ann(ann, from_rel, **kwargs):
+                # Determine if the new ann is better
                 new_ann_better: bool = self._new_ann_better(current_ann,
                                                             current_processed,
                                                             from_rel,
@@ -42,6 +46,7 @@ def process_incoming_anns(self,
                                                             False,
                                                             from_rel,
                                                             **kwargs)
+                # If new ann is better, replace the current_ann with it
                 if new_ann_better:
                     current_ann: Ann = ann
                     current_processed = False
@@ -71,10 +76,10 @@ def _copy_and_process(self,
                       ann: Ann,
                       recv_relationship: Relationships,
                       **extra_kwargs) -> Ann:
-    """Deep copies ann and modifies attrs"""
+    """Deep copies ann and modifies attrs
 
-    if "bgp" in self.name.lower():
-        extra_kwargs.pop("holes", None)
+    Prepends AS to AS Path and sets recv_relationship
+    """
 
     kwargs = {"as_path": (self.asn,) + ann.as_path,
               "recv_relationship": recv_relationship}
@@ -84,5 +89,7 @@ def _copy_and_process(self,
 
 
 def _reset_q(self, reset_q: bool):
+    """Resets the recieve q"""
+
     if reset_q:
         self._recv_q = RecvQueue()

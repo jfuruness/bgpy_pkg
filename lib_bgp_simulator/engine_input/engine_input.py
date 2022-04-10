@@ -18,6 +18,8 @@ class EngineInput(YamlAble):
                  "announcements", "as_classes", "extra_ann_kwargs",
                  "prefix_subprefix_dict")
 
+    # This is the base type of announcement for this class
+    # You can subclass this engine input and specify a different base ann
     AnnCls = Announcement
 
     y_labels = {Outcomes.ATTACKER_SUCCESS: "Percent Attacker Success",
@@ -32,9 +34,6 @@ class EngineInput(YamlAble):
         """
 
         super().__init_subclass__(*args, **kwargs)
-        # Fix this later once the system test framework is updated
-        if "easy" not in str(cls).lower():
-            cls.subclasses.append(cls)
         # Add yaml tag to subclass
         yaml_info_decorate(cls, yaml_tag=cls.__name__)
 
@@ -47,26 +46,46 @@ class EngineInput(YamlAble):
                  victim_asn=None,
                  as_classes=None,
                  **extra_ann_kwargs):
+        """Inits engine input, determines adopters, regens from yaml
+
+        subgraph_asns: a dict of asns, can be useful for determining adopters
+        engine: The simulator engine
+        percent_adopt: The percent adoption
+        
+        Yaml attrs (only used when regenerating from yaml)
+        attacker_asn: ASN of the attacker
+        victim_asn: ASN of the victim
+        as_classes: Dict of asn: ASCls. Non listed ASNs default to BGP
+        """
+
+        # If regenerating from yaml, save attacker asn
         if attacker_asn:
             self.attacker_asn = attacker_asn
+        # Otherwise randomly select the attacker asn
         else:
             self.attacker_asn = self._get_attacker_asn(subgraph_asns, engine)
 
+        # If regenerating from yaml, save the victim asn
         if victim_asn:
             self.victim_asn = victim_asn
+        # Otherwise rndomly select the victim asn
         else:
             self.victim_asn = self._get_victim_asn(subgraph_asns, engine)
 
+        # If regenerating from yaml
         if as_classes:
+            # Set adopting ASNs to None and save the as_classes
             self.adopting_asns = None
             self.as_classes = as_classes
         else:
+            # Get the adopting asns randomly
             self.adopting_asns = self._get_adopting_asns(subgraph_asns,
                                                          engine,
                                                          percent_adopt)
             self.as_classes = None
         # Used for dumping and loading yaml
         self.extra_ann_kwargs = extra_ann_kwargs
+        # Generate announcements now that you have attacker+victim
         self.announcements = self._get_announcements(**extra_ann_kwargs)
         # Announcement prefixes must overlap
         # If they don't, traceback wouldn't work
@@ -90,10 +109,18 @@ class EngineInput(YamlAble):
             obj_to_seed._local_rib.add_ann(ann)
 
     def determine_outcome(self, as_obj, ann):
-        """This assumes that the as_obj is the last in the path"""
+        """Determines outcome of traceback
 
+        as_obj is the AS passed in, ann is the most specific prefix ann
+
+        This assumes that the as_obj is the last in the path
+        """
+
+        # If the AS obj is the attacker, we have reached the attacker
+        # Therefore the attacker has won
         if self.attacker_asn == as_obj.asn:
             return Outcomes.ATTACKER_SUCCESS
+        # If the AS Obj is the victim, the victim has won
         elif self.victim_asn == as_obj.asn:
             return Outcomes.VICTIM_SUCCESS
         # End of traceback. Didn't reach atk/vic so it's disconnected
@@ -107,11 +134,17 @@ class EngineInput(YamlAble):
               or ann.traceback_end):
 
             return Outcomes.DISCONNECTED
-        # Keep going
+        # Keep going - we have not yet reached the end of the as path
         else:
             return None
 
     def post_propagation_hook(self, *args, **kwargs):
+        """Function called after propagation
+
+        Useful for subclasses that need to modify the simulator
+        post propagation in some manner
+        """
+
         pass
 
 ##############################
@@ -119,18 +152,27 @@ class EngineInput(YamlAble):
 ##############################
 
     def _get_attacker_asn(self, subgraphs, engine):
+        """Returns attacker ASN at random"""
+
         possible_attacker_asns = self._possible_attackers(subgraphs, engine)
         return random.choice(tuple(possible_attacker_asns))
 
     def _possible_attackers(self, subgraph_asns, engine):
+        """By default, only stubs_and_mh ases can attack"""
+
         return subgraph_asns["stubs_and_mh"]
 
     def _get_victim_asn(self, subgraph_asns, engine):
+        """Returns victim ASN at random. Attacker can't be victim"""
+
+
         possible_vic_asns = self._possible_victims(subgraph_asns, engine)
         return random.choice(tuple(
             possible_vic_asns.difference([self.attacker_asn])))
 
     def _possible_victims(self, subgraph_asns, engine):
+        """By default, only stubs or mh ASes can be victims"""
+
         return subgraph_asns["stubs_and_mh"]
 
 #######################
@@ -138,12 +180,18 @@ class EngineInput(YamlAble):
 #######################
 
     def _get_adopting_asns(self, subgraph_asns, engine, percent_adopt):
+        """Get adopting ASNs"""
+
         adopting_asns = list()
         for asns in subgraph_asns.values():
+            # Remove uncountable ASes such as victim and attacker
             possible_adopters = asns.difference(self.uncountable_asns)
             # Get how many ASes should be adopting
             k = len(possible_adopters) * percent_adopt // 100
             # Round for the start and end of the graph
+            # (if 0 ASes would be adopting, have 1 as adopt)
+            # (If all ASes would be adopting, have all -1 adopt)
+            # This feature was chosen by my professors
             if k == 0:
                 k += 1
             elif k == len(possible_adopters):
@@ -155,9 +203,13 @@ class EngineInput(YamlAble):
         return adopting_asns
 
     def _default_adopters(self):
+        """By default, victim always adopts"""
+
         return [self.victim_asn]
 
     def _default_non_adopters(self):
+        """By default, attacker always does not adopt"""
+
         return [self.attacker_asn]
 
     @property
@@ -167,6 +219,8 @@ class EngineInput(YamlAble):
         return self._default_adopters() + self._default_non_adopters()
 
     def get_as_classes(self, engine, BaseASCls, AdoptingASCls):
+        """Returns dict of asn: ASCls. If not specified, asn is BGP"""
+
         if self.as_classes:
             return self.as_classes
         else:
@@ -177,6 +231,8 @@ class EngineInput(YamlAble):
 ################
 
     def _get_prefix_subprefix_dict(self):
+        """Saves a dict of prefix to subprefixes"""
+
         prefixes = set([])
         for ann in self.announcements:
             prefixes.add(ann.prefix)

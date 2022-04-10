@@ -7,7 +7,10 @@ from .....announcements import Announcement as Ann
 
 
 def propagate_to_providers(self):
-    """Propogates to providers"""
+    """Propogates to providers
+
+    Propogate ann's that have a recv_rel of origin or customer to providers
+    """
 
     send_rels = set([Relationships.ORIGIN, Relationships.CUSTOMERS])
     self._propagate(Relationships.PROVIDERS, send_rels)
@@ -16,6 +19,7 @@ def propagate_to_providers(self):
 def propagate_to_customers(self):
     """Propogates to customers"""
 
+    # Anns that have any of these as recv_rel get propogated
     send_rels = set([Relationships.ORIGIN,
                      Relationships.CUSTOMERS,
                      Relationships.PEERS,
@@ -26,6 +30,7 @@ def propagate_to_customers(self):
 def propagate_to_peers(self):
     """Propogates to peers"""
 
+    # Anns that have any of these as recv_rel get propogated
     send_rels = set([Relationships.ORIGIN,
                      Relationships.CUSTOMERS])
     self._propagate(Relationships.PEERS, send_rels)
@@ -37,9 +42,6 @@ def _propagate(self,
     """Propogates announcements from local rib to other ASes
 
     send_rels is the relationships that are acceptable to send
-
-    Later you can change this so it's not the local rib that's
-    being sent. But this is just proof of concept.
     """
 
     for neighbor in getattr(self, propagate_to.name.lower()):

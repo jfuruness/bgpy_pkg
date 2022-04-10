@@ -37,11 +37,7 @@ class RIBsIn(AnnContainer):
         We don't use defaultdict here because that's not yamlable
         """
 
-        if neighbor_asn in self._info:
-            return self._info[neighbor_asn].get(prefix)
-        else:
-            self._info[neighbor_asn] = dict()
-            return None
+        return self._info.get(neighbor_asn, dict()).get(prefix)
 
     def add_unprocessed_ann(self,
                             unprocessed_ann: Announcement,
@@ -72,5 +68,4 @@ class RIBsIn(AnnContainer):
     def remove_entry(self, neighbor_asn: int, prefix: int):
         """Removes AnnInfo from RibsIn"""
 
-        if neighbor_asn in self._info:
-            del self._info[neighbor_asn][prefix]
+        del self._info[neighbor_asn][prefix]

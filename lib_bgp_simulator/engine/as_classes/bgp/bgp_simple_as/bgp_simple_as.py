@@ -16,7 +16,8 @@ class BGPSimpleAS(AS):
 
     def __init_subclass__(cls, *args, **kwargs):
         """This method essentially creates a list of all subclasses
-        This is allows us to know all attackers that have been created
+
+        This is allows us to know all AS types that have been created
         """
 
         super().__init_subclass__(*args, **kwargs)
@@ -34,6 +35,8 @@ class BGPSimpleAS(AS):
 
         This way they can be easily cleared later without having to redo
         the graph
+
+        This is also useful for regenerating an AS from YAML
         """
 
         if kwargs.get("reset_base", True):
@@ -43,6 +46,7 @@ class BGPSimpleAS(AS):
 
     def __eq__(self, other):
         if isinstance(other, BGPSimpleAS):
+            # Ugh this is bad
             for attr in slots:
                 if not hasattr(self, attr) == hasattr(other, attr):
                     return False
