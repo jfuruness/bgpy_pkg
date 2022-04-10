@@ -16,6 +16,17 @@ class AnnContainer(YamlAble):
         super().__init_subclass__(*args, **kwargs)
         yaml_info_decorate(cls, yaml_tag=cls.__name__)
 
+    def __init__(self, _info=None):
+        """Stores _info dict which contains local ribs
+
+        This is passed in so that we can regenerate this class from yaml
+
+        Note that we do not use a defaultdict here because that is not
+        yamlable using the yamlable library
+        """
+
+        self._info = _info if _info is not None else dict()
+
     def __eq__(self, other):
         # Remove this after updating the system tests
         if isinstance(other, self.__class__):

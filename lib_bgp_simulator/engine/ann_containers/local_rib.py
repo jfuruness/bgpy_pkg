@@ -4,24 +4,26 @@ from ...announcements import Announcement
 
 
 class LocalRIB(AnnContainer):
-    """Local RIB for a BGP AS
+    """Local RIB for a BGP AS"""
 
-    Done separately for easy comparisons in unit testing
-    """
-
-    __slots__ = tuple()
-
-    def __init__(self, _info=None):
-        self._info = _info if _info is not None else dict()
+    __slots__ = ()
 
     def get_ann(self, prefix: str, default=None):
+        """Returns announcement or none from the local rib by prefix"""
+
         return self._info.get(prefix, default)
 
     def add_ann(self, ann: Announcement):
+        """Adds an announcement to local rib with prefix as key"""
+
         self._info[ann.prefix] = ann
 
     def remove_ann(self, prefix: str):
+        """Removes announcement from local rib based on prefix"""
+
         del self._info[prefix]
 
     def prefix_anns(self):
+        """Returns all prefixes and announcements zipped"""
+
         return self._info.items()

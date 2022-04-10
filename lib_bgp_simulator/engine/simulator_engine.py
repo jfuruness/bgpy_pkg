@@ -71,7 +71,7 @@ class SimulatorEngine(BGPDAG):
         """Propogates announcements and ensures proper setup"""
 
         # Ensure that the simulator is ready to run this round
-        if self._ready_to_run_round != propogation_round:
+        if self._ready_to_run_round != propagation_round:
             raise Exception(
                 "Engine not set up to run for {propagation_round} round")
         # Propogate anns
