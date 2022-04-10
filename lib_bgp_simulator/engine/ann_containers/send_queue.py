@@ -28,42 +28,54 @@ class SendInfo(YamlAble):
 
 
 class SendQueue(AnnContainer):
-    """Incomming announcements for a BGP AS
+    """Announcements to be sent for a BGP AS
 
-    neighbor: {prefix: announcement_list}
+    {neighbor: {prefix: SendInfo}}
     """
 
-    __slots__ = tuple()
-
-    def __init__(self, _info=None):
-        if _info is not None:
-            self._info = _info
-        else:
-            self._info = defaultdict(lambda: defaultdict(SendInfo))
+    __slots__ = ()
 
     def add_ann(self, neighbor_asn: int, ann: Ann):
+        """Adds Ann to be sent"""
 
-        # Withdraw
+        # Used to be done by the defaultdict
+        if neighbor_asn not in self._info:
+            self._info[neighbor_asn] = {ann.prefix: SendInfo()}
+        if ann.prefix not in self._info[neighbor_asn]:
+            self._info[neighbor_asn][ann.prefix] = SendInfo()
+
+        send_info = self._info[neighbor_asn][ann.prefix]
+
+
+        # If the announcement is a withdraw
         if ann.withdraw:
-            send_info = self._info[neighbor_asn][ann.prefix]
+            # Ensure withdrawls aren't replaced
             msg = f"replacing withdrawal? {send_info.withdrawal_ann}"
             assert send_info.withdrawal_ann is None, msg
+
+            # If the withdrawal is equal to ann, delete both
             if (send_info.ann is not None and
                     send_info.ann.prefix_path_attributes_eq(ann)):
                 del self._info[neighbor_asn][ann.prefix]
+            # If withdrawl is not equal to Ann, add withdrawal
             else:
                 send_info.withdrawal_ann = ann
-        # Normal ann
+
+        # If the announcement is not a withdrawal
         else:
-            send_info = self._info[neighbor_asn][ann.prefix]
+            # Never replace valid Ann without a withdrawal
             assert send_info.ann is None, "Replacing valid ann?"
             err = "Can't send identical withdrawal and ann"
             err += f" {ann}, {send_info.withdrawal_ann}"
             assert not ann.prefix_path_attributes_eq(
                 send_info.withdrawal_ann), err
-            self._info[neighbor_asn][ann.prefix].ann = ann
+
+            # Add announcement
+            send_info.ann = ann
 
     def get_send_info(self, neighbor_obj: AS, prefix: str) -> Optional[Ann]:
+        """Returns the SendInfo for a neighbor AS and prefix"""
+
         neighbor_info = self._info.get(neighbor_obj.asn)
         if neighbor_info is None:
             return neighbor_info
@@ -71,11 +83,19 @@ class SendQueue(AnnContainer):
             return neighbor_info.get(prefix)
 
     def info(self, neighbors: List[AS]):
+        """Returns neighbor obj, prefix, announcement"""
+
         for neighbor_obj in neighbors:
+            # Used to be done by defaultdict
+            # Now done here for yamlability
+            if neighbor_obj.asn not in self._info:
+                self._info[neighbor_obj.asn] = dict()
             # assert isinstance(neighbor_obj, bgp_as.BGPAS)
             for prefix, send_info in self._info[neighbor_obj.asn].items():
                 for ann in send_info.anns:
                     yield neighbor_obj, prefix, ann
 
     def reset_neighbor(self, neighbor_asn: int):
+        """Resets a neighbor, removing all send info"""
+
         self._info.pop(neighbor_asn, None)
