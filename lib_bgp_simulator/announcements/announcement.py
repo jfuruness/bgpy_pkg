@@ -17,33 +17,10 @@ from ..enums import Relationships
 @yaml_info(yaml_tag="Announcement")
 @dataclasses.dataclass(unsafe_hash=True)
 class Announcement(YamlAble):
-    """MRT Announcement"""
+    """BGP Announcement"""
 
-    # I ran tests for 50 trials for 20% adoption for ROV
-    # On average, with slots and pypy, an average of 207 seconds
-    # But without slots, more RAM, but 175 seconds
-    # I ran a lot of these trials and this was very consistent
-    # extremely low standard deviation. Maybe 1s difference across trials
-    # My thought is twofold. One is that maybe object creation with slots
-    # Is slightly slower, but less RAM with faster attr access
-    # Maybe this has to do with deepcopy doing better without slots
-    # Or maybe pypy is more optimized without slots since it's more common
-    # No reason to figure out exactly why, but turning off slots for
-    # Slightly more RAM but slightly faster trials makes sense to me since
-    # We have very few prefixes per attack. If that ever changes
-    # Maybe it makes sense to add this back
-    # Additionally, without slots, I tried making it according to the RFC
-    # I added dicts for simulation attrs, path attrs, transitive, non trans
-    # But this was much slower, 228 seconds
-    # NOTE: All of this was when we were deep copying announcements instead of
-    # Creating new ones from scratch. After creating new ones from scratch,
-    # Trials were more than twice as fast, completing between 90-95s without
-    # slots
-    # With slots, around 88-89s per trial. Not much of a difference, but also
-    # less ram
-    # And it's just faster. We'd have to do larger timing tests to find out
-    # more
-    # NOTE: also add prefix_id reasoning to design_decisions
+    # MUST use slots for speed
+    # Since anns get copied across 70k ASes
     __slots__ = ("prefix", "timestamp", "as_path", "roa_valid_length",
                  "roa_origin",
                  "recv_relationship", "seed_asn", "withdraw", "traceback_end")
@@ -88,6 +65,7 @@ class Announcement(YamlAble):
     def copy(self, **extra_kwargs):
         """Creates a new ann with proper sim attrs"""
 
+        # Replace seed asn and traceback end every time by default
         kwargs = {"seed_asn": None, "traceback_end": False}
         kwargs.update(extra_kwargs)
 
@@ -129,10 +107,14 @@ class Announcement(YamlAble):
 
     @property
     def roa_routed(self):
+        """Returns bool for if announcement is routed according to ROA"""
+
         return self.roa_origin != 0
 
     @property
     def origin(self) -> int:
+        """Returns the origin of the announcement"""
+
         return self.as_path[-1]
 
     def __str__(self):

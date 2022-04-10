@@ -4,11 +4,16 @@ from .announcement import Announcement
 from ..enums import Relationships
 
 
-# NOTE: this is slower than the normal ann due to lack of slots
-# In python3.7, supported by pypy, dataclasses with slots can't have defaults
 # We set equal to false here so that it can inherit __eq__ from parent
 @dataclass(eq=False, unsafe_hash=True)
 class AnnWDefaults(Announcement):
+    """Announcement with defaults, mainly for testing
+
+    Note that this is slower than normal Ann due to no slots
+    but we need this since Pypy3.9 doesn't support dataclasses with slots
+    that have defaults.
+    """
+
     prefix: str = None
     as_path: tuple = None
     timestamp: int = 0
