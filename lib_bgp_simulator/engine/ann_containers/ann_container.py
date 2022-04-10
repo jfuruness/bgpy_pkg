@@ -25,6 +25,7 @@ class AnnContainer(YamlAble):
 
     def __str__(self):
         """Returns contents of the container as str"""
+
         # https://stackoverflow.com/a/521545/8903959
         return pprint.pformat(self._info, indent=4)
 
