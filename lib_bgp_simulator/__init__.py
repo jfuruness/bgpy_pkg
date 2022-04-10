@@ -25,7 +25,6 @@ from .engine_input import ValidPrefix
 
 from .simulator import DataPoint
 from .simulator import Graph
-from .simulator import MPMethod
 from .simulator import Scenario
 from .simulator import Simulator
 
@@ -116,7 +115,6 @@ __all__ = [
     "ValidPrefix",
     "DataPoint",
     "Graph",
-    "MPMethod",
     "Scenario",
     "Simulator",
     "Announcement",

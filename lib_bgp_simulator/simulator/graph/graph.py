@@ -7,17 +7,9 @@ from lib_caida_collector import CaidaCollector
 
 
 from ..data_point import DataPoint
-from ..mp_method import MPMethod
 from ..scenario import Scenario
 
 from ...engine import BGPAS, SimulatorEngine
-
-
-try:
-    import ray
-# pypy3 does not support ray
-except ModuleNotFoundError:
-    pass
 
 
 class Graph:
@@ -43,21 +35,14 @@ class Graph:
         self.BaseASCls = BaseASCls
         self.profiler = profiler
 
-    def run(self,
-            parse_cpus,
-            mp_method=MPMethod.SINGLE_PROCESS):
+    def run(self, parse_cpus):
         self.data_points = defaultdict(list)
 
-        if mp_method == MPMethod.SINGLE_PROCESS:
+        if parse_cpus == 1:
             results = self._get_single_process_results()
-        elif mp_method == MPMethod.MP:
+        else:
             results = self._get_mp_results(parse_cpus)
             self._get_engine_and_save_subgraphs()
-        elif mp_method == MPMethod.RAY:
-            results = self._get_ray_results(parse_cpus)
-            self._get_engine_and_save_subgraphs()
-        else:
-            raise NotImplementedError
 
         for result in results:
             for data_point, trial_info_list in result.items():
@@ -86,12 +71,6 @@ class Graph:
         # Pool is much faster than ProcessPoolExecutor
         with Pool(parse_cpus) as pool:
             return pool.map(self._run_chunk, self._get_chunks(parse_cpus))
-
-    def _get_ray_results(self, parse_cpus):
-        results = [ray.remote(self.__class__._run_chunk).remote(self, x)
-                   for x in self._get_chunks(
-                   int(ray.cluster_resources()["CPU"]))]
-        return [ray.get(x) for x in results]
 
     def _run_chunk(self, percent_adopt_trials):
         # Engine is not picklable or dillable AT ALL, so do it here
