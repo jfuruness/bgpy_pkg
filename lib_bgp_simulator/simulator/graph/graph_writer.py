@@ -4,12 +4,8 @@ from .line import Line
 
 from ...enums import Outcomes
 
-try:
-    import matplotlib
-    import matplotlib.pyplot as plt
-except Exception as e:
-    print(e, "Catch this specific exception in graph_writer later")
-    pass
+import matplotlib
+import matplotlib.pyplot as plt
 
 
 def aggregate_and_write(self, graph_dir, sim):
@@ -122,20 +118,6 @@ def _write(self,
     plt.xlim(0, 100)
     plt.ylim(0, 100)
     for line in lines:
-        fmt_kwargs = {"ls": ":", "marker": "4"}
-        if "v1" in line.label.lower():
-            fmt_kwargs["ls"] = "solid"
-            fmt_kwargs["marker"] = "."
-        elif "v2a" in line.label.lower():
-            fmt_kwargs["ls"] = "dashed"
-            fmt_kwargs["marker"] = 1
-        elif "v2" in line.label.lower():
-            fmt_kwargs["ls"] = "dotted"
-            fmt_kwargs["marker"] = "*"
-        elif "v3" in line.label.lower():
-            fmt_kwargs["ls"] = "-"
-            fmt_kwargs["marker"] = "x"
-
         ax.errorbar(line.x,
                     line.y,
                     yerr=line.yerr,

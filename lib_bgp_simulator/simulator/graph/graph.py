@@ -24,6 +24,8 @@ class Graph:
                  propagation_rounds=1,
                  BaseASCls=BGPAS,
                  profiler=None):
+        """Stores instance attributes"""
+
         assert isinstance(percent_adoptions, list)
         self.percent_adoptions = percent_adoptions
         self.adopt_as_classes = adopt_as_classes
@@ -36,12 +38,18 @@ class Graph:
         self.profiler = profiler
 
     def run(self, parse_cpus):
+        """Runs trials for graph and aggregates data"""
+
         self.data_points = defaultdict(list)
 
+        # Single process
         if parse_cpus == 1:
             results = self._get_single_process_results()
+        # Multiprocess
         else:
             results = self._get_mp_results(parse_cpus)
+            # Done to store the subgraphs, which we haven't done yet
+            # Due to multiprocessing
             self._get_engine_and_save_subgraphs()
 
         for result in results:
@@ -55,7 +63,10 @@ class Graph:
 ######################################
 
     def _get_chunks(self, parse_cpus):
-        """Not a generator since we need this for multiprocessing"""
+        """Returns chunks of trial inputs based on number of CPUs running
+
+        Not a generator since we need this for multiprocessing
+        """
 
         # https://stackoverflow.com/a/34032549/8903959
         percents_trials = list(product(self.percent_adoptions,
@@ -65,14 +76,19 @@ class Graph:
         return [percents_trials[i::parse_cpus] for i in range(parse_cpus)]
 
     def _get_single_process_results(self):
+        """Get all results when using single processing"""
         return [self._run_chunk(x) for x in self._get_chunks(1)]
 
     def _get_mp_results(self, parse_cpus):
+        """Get results from multiprocessing"""
+
         # Pool is much faster than ProcessPoolExecutor
         with Pool(parse_cpus) as pool:
             return pool.map(self._run_chunk, self._get_chunks(parse_cpus))
 
     def _run_chunk(self, percent_adopt_trials):
+        """Runs a chunk of trial inputs"""
+
         # Engine is not picklable or dillable AT ALL, so do it here
         # Changing recursion depth does nothing
         # Making nothing a reference does nothing
@@ -81,6 +97,7 @@ class Graph:
         data_points = defaultdict(list)
 
         for percent_adopt, trial in percent_adopt_trials:
+            # Create the engine input
             og_engine_input = self.EngineInputCls(self.subgraphs,
                                                   engine,
                                                   percent_adopt)
@@ -113,6 +130,8 @@ class Graph:
 ##########################
 
     def _get_engine_and_save_subgraphs(self):
+        """Return simulator engine and saves subgraphs"""
+
         # Done just to get subgraphs, change this later
         engine = CaidaCollector(BaseASCls=self.BaseASCls,
                                 GraphCls=SimulatorEngine,
@@ -153,6 +172,8 @@ class Graph:
 
     @property
     def total_scenarios(self):
+        """Total number of runs that the simulation engine will need to do"""
+
         total_scenarios = self.num_trials * len(self.percent_adoptions)
         total_scenarios *= len(self.adopt_as_classes)
         total_scenarios *= self.propagation_rounds
