@@ -42,29 +42,6 @@ class SimulatorEngine(BGPDAG):
         else:
             return NotImplemented
 
-    def setup(self,
-              engine_input: EngineInput,
-              BaseASCls: BGPAS,
-              AdoptingASCls: BGPAS):
-        """Sets up the simulator to be run
-
-        This resets the AS objects to their base state,
-        clearing all their RIB's,
-        and setting adopting ASes.
-        
-        Then it seeds the engine_input's announcments
-        """
-
-        # Reset AS objects to their base state, clears RIBs,
-        # and sets adopting ASes
-        self._reset_as_classes(engine_input, BaseASCls, AdoptingASCls)
-        # Seed the attacker and victim announcements
-        # The AdoptingASCls was added here for subclasses, such as in Ez
-        # (not located within this repo)
-        engine_input.seed(self, AdoptingASCls)
-        # Indicate that the engine is ready to run
-        self._ready_to_run_round = 0
-
     def run(self,
             propagation_round=0,
             engine_input=None):
@@ -78,33 +55,6 @@ class SimulatorEngine(BGPDAG):
         self._propagate(propagation_round, engine_input)
         # Increment the ready to run round
         self._ready_to_run_round += 1
-
-    def _reset_as_classes(self,
-                          engine_input: EngineInput,
-                          BaseASCls: BGPAS,
-                          AdoptASCls: BGPAS):
-        """Resets AS classes within the simulator engine
-
-        Gets the as_class_dict from the engine input
-        indicating the proper class for each AS
-
-        reset the AS class (which can be either back to BaseASCls,
-        or some AdoptASCls (as defined by the engine input)
-
-        Then reset all attributes back to base
-        (clears RIBs, etc, but not things like customers, peers)
-        """
-
-        # Get mapping of asn to as policy
-        as_cls_dict: dict = engine_input.get_as_classes(self,
-                                                        BaseASCls,
-                                                        AdoptASCls)
-        for as_obj in self:
-            # Set the AS class to be the proper type of AS
-            as_obj.__class__ = as_cls_dict.get(as_obj.asn, BaseASCls)
-            # Clears all RIBs, etc
-            # Reset base is false to avoid overriding Base AS info
-            as_obj.__init__(reset_base=False)
 
     def _propagate(self,
                    propagation_round: Optional[int],

@@ -18,20 +18,21 @@ class SingleAtkVicAdoptClsScenario(Scenario):
     as well as a single adopting AS Class
     """
 
-    __slots__ = ("announcements", "as_classes", "prefix_subprefix_dict")
+    __slots__ = ("attacker_asn", "victim_asn")
 
 
-    def __init__(self, *args, AdoptASCls=None, yaml_kwargs=None, **kwargs):
+    def __init__(self,
+                 *args,
+                 AdoptASCls=None,
+                 attacker_asn=None,
+                 victim_asn=None,
+                 **kwargs):
 
         assert AdoptASCls
 
         # If we are regenerating from yaml
-        if yaml_kwargs:
-            for k, v in yaml_kwargs.items()
-                setattr(self, k, v)
-        else:
-            self.attacker_asn = None
-            self.victim_asn = None
+        self.attacker_asn = attacker_asn
+        self.victim_asn = victim_asn
 
         self.AdoptASCls = AdoptASCls
 
@@ -99,8 +100,12 @@ class SingleAtkVicAdoptClsScenario(Scenario):
 # Adopting ASNs funcs #
 #######################
 
-    def _get_as_cls_dict(self, engine, percent_adoption, prev_engine_input):
+    def _get_non_default_as_cls_dict(self, engine, percent_adoption, prev_scenario):
         """Returns as class dict
+
+        non_default_as_cls_dict is a dict of asn: AdoptASCls
+        where you do __not__ include any of the BaseASCls,
+        since that is the default
 
         By default, we use the previous engine input to maintain static
         adoption across trials
@@ -108,9 +113,10 @@ class SingleAtkVicAdoptClsScenario(Scenario):
 
         # By default, use the last engine input to maintain static
         # adoption across the graph
-        if prev_engine_input:
+        if prev_scenario:
             # TODO: get as_cls_dict from previous engine input
-            raise NotImplementedError
+            return {asn: self.AdoptASCls for asn, ASCls in
+                    prev_engine_input.non_default_as_cls_dict.items()}
         else:
             return {asn: self.AdoptASCls for asn in
                     self._get_adopting_asns(engine, percent_adoption)}
@@ -173,16 +179,16 @@ class SingleAtkVicAdoptClsScenario(Scenario):
 
         return {"attacker_asn": self.attacker_asn,
                 "victim_asn": self.victim_asn,
-                "as_cls_dict": {asn: AS.subclass_to_name_dict[ASCls]
-                                 for asn, ASCls in self.as_cls_dict.items()}}
+                "non_default_as_cls_dict": {asn: AS.subclass_to_name_dict[ASCls]
+                                 for asn, ASCls in self.non_default_as_cls_dict.items()}}
 
     @classmethod
     def __from_yaml_dict__(cls, dct, yaml_tag):
         """This optional method is called when you call yaml.load()"""
 
         as_classes = {asn: AS.name_to_subclass_dict[name]
-                      for asn, name in dct["as_cls_dict"].items()}
+                      for asn, name in dct["non_default_as_cls_dict"].items()}
 
         return cls(attacker_asn=dct["attacker_asn"],
                    victim_asn=dct["victim_asn"],
-                   as_cls_dict=as_classes)
+                   non_default_as_cls_dict=as_classes)

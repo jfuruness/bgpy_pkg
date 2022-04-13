@@ -14,7 +14,7 @@ from ..enums import Outcomes, Relationships
 class Scenario(YamlAble):
     """Contains information regarding an attack"""
 
-    __slots__ = ("as_cls_dict", "prefix_subprefix_dict")
+    __slots__ = ("non_default_as_cls_dict", "prefix_subprefix_dict")
 
     # This is the base type of announcement for this class
     # You can subclass this engine input and specify a different base ann
@@ -32,30 +32,59 @@ class Scenario(YamlAble):
         # Add yaml tag to subclass
         yaml_info_decorate(cls, yaml_tag=cls.__name__)
 
-    def __init__(self, as_cls_dict=None):
+    def __init__(self, non_default_as_cls_dict=None):
+        """inits attrs
+
+        non_default_as_cls_dict is a dict of asn: AdoptASCls
+        where you do __not__ include any of the BaseASCls,
+        since that is the default
+        """
+
         self._get_prefix_subprefix_dict()
-        self.as_cls_dict = as_cls_dict if as_cls_dict else dict()
+        if non_default_as_cls_dict:
+            self.non_default_as_cls_dict = non_default_as_cls_dict
+        else:
+            self.non_default_as_cls_dict = dict()
+
+#############################
+# Engine Manipulation Funcs #
+#############################
 
     def setup_engine(self,
                      engine,
                      percent_adoption,
-                     prev_engine_input=None):
+                     prev_scenario=None):
         """Sets up engine input"""
 
-        self._set_engine_ases(engine, percent_adoption, prev_engine_input)
+        self._set_engine_ases(engine, percent_adoption, prev_scenario)
         self._seed_engine_announcements(engine,
                                         percent_adoption,
-                                        prev_engine_input)
+                                        prev_scenario)
+        engine.ready_to_run_round += 1
 
     def _set_engine_as_classes(self,
                                engine,
                                percent_adoption,
-                               prev_engine_input):
-        """Resets Engine ASes and changes their AS class"""
+                               prev_scenario):
+        """Resets Engine ASes and changes their AS class
 
-        self.as_cls_dict = self._get_as_cls_dict(engine,
-                                                 percent_adoption,
-                                                 prev_engine_input)
+        We do this here because we already seed from the scenario
+        to allow for easy overriding. If scenario controls seeding,
+        it doesn't make sense for engine to control resetting either
+        and have each do half and half
+        """
+
+        # non_default_as_cls_dict is a dict of asn: AdoptASCls
+        # where you do __not__ include any of the BaseASCls,
+        # since that is the default
+        self.non_default_as_cls_dict = self._get_as_cls_dict(engine,
+                                                             percent_adoption,
+                                                             prev_scenario=prev_scenario)
+        # Validate that this is only non_default ASes
+        # This matters, because later this entire dict may be used for the next
+        # scenario
+        for asn, ASCls in self.non_default_as_cls_dict.items():
+            assert ASCls != self.BaseASCls, "No defaults! See comment above"
 
         for as_obj in engine:
             # Set the AS class to be the proper type of AS
@@ -92,8 +121,13 @@ class Scenario(YamlAble):
         raise NotImplementedError
 
     @abstractmethod
-    def _get_as_cls_dict(self):
-        """Returns AS class dict"""
+    def _get_non_default_as_cls_dict(self, engine, percent_adoption, prev_scenario):
+        """Returns AS class dict
+
+        non_default_as_cls_dict is a dict of asn: AdoptASCls
+        where you do __not__ include any of the BaseASCls,
+        since that is the default
+        """
 
         raise NotImplementedError
 
