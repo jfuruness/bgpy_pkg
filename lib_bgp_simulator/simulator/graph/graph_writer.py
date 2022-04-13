@@ -7,6 +7,7 @@ from ...enums import Outcomes
 try:
     import matplotlib
     import matplotlib.pyplot as plt
+    matplotlib.use("Agg")
 except Exception as e:
     print(e, "Catch this specific exception in graph_writer later")
     pass
