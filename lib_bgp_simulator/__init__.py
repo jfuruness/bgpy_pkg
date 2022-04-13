@@ -21,6 +21,7 @@ from .engine_input import SubprefixHijack
 from .engine_input import NonRoutedPrefixHijack
 from .engine_input import NonRoutedSuperprefixHijack
 from .engine_input import SuperprefixPrefixHijack
+from .engine_input import NonRoutedSuperprefixPrefixHijack
 from .engine_input import ValidPrefix
 
 from .simulator import DataPoint
@@ -116,6 +117,7 @@ __all__ = [
     "NonRoutedPrefixHijack",
     "NonRoutedSuperprefixHijack",
     "SuperprefixPrefixHijack",
+    "NonRoutedSuperprefixPrefixHijack",
     "ValidPrefix",
     "DataPoint",
     "Graph",
