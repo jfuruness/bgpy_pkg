@@ -8,5 +8,5 @@ class DataPoint:
     """Data point in a graph"""
 
     percent_adoption: float
-    ASCls: BGPAS
+    GraphLabel: str
     propagation_round: int

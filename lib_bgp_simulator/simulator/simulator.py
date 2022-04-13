@@ -22,11 +22,10 @@ class Simulator:
         self.parse_cpus = parse_cpus
 
     def run(self,
-            graphs=[Graph(percent_adoptions=[0, 5, 10, 20, 30, 60, 80, 100],
-                          adopt_as_classes=[ROVAS],
-                          EngineInputCls=SubprefixHijack,
+            graphs=[Graph(percent_adoptions=[5, 10],
                           num_trials=1,
-                          BaseASCls=BGPAS)],
+                          scenarios=None,
+                          subgraphs=None)],
             graph_path=Path("/tmp/graphs.tar.gz"),
             assert_pypy=False,
             ):
@@ -38,8 +37,7 @@ class Simulator:
         mp_method: Multiprocessing method
         """
 
-        assert len(graphs) == 1, "Can't do more than 1 graph at once yet"
-        self._validate_inputs(graph_path, assert_pypy)
+        self._validate_inputs(graphs, graph_path, assert_pypy)
 
         # Done here so that the caida files are cached
         # So that multiprocessing doesn't interfere with one another
@@ -47,8 +45,13 @@ class Simulator:
         # Runs trials and writes graphs
         self._run_and_write_graphs(graphs, graph_path)
 
-    def _validate_inputs(self, graph_path, assert_pypy):
+    def _validate_inputs(self, graphs, graph_path, assert_pypy):
         """Validates inputs"""
+
+        # Ensure graph names are unique so that we can write them easily later
+        graph_names = [x.name for x in graphs]
+        msg = "Graphs need unique names to avoid overwriting each other"
+        assert len(graph_names) == len(set(graph_names)), msg
 
         assert "pypy" in sys.executable or not assert_pypy, "Not running pypy"
 

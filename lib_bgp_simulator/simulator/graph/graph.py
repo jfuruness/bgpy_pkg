@@ -17,30 +17,33 @@ class Graph:
     from .graph_writer import _get_line, _write
 
     def __init__(self,
-                 percent_adoptions=[0, 5, 10, 20, 30, 50, 75, 100],
-                 adopt_as_classes=[],
-                 EngineInputCls=None,
+                 name,
+                 percent_adoptions,
+                 scenarios=None,
                  num_trials=1,
                  propagation_rounds=1,
-                 BaseASCls=BGPAS,
-                 profiler=None):
+                 subgraphs=None):
         """Stores instance attributes"""
 
-        assert isinstance(percent_adoptions, list)
+        self.name = name
+        assert isinstance(percent_adoptions, tuple)
         self.percent_adoptions = percent_adoptions
-        self.adopt_as_classes = adopt_as_classes
+        self.scenarios = scenarios
+        # Validate that all scenarios have a unique graph label
+        # We don't assert this in the scenario subclasses
+        # Because really they only need to be unique per graph
+        graph_labels = [x.graph_label for x in self.scenarios]
+        msg = "Graph labels must be unique in Scenario subclass {graph_labels}"
+        assert len(set(graph_labels)) == len(graph_labels), msg
         self.num_trials = num_trials
         # Why propagation rounds? Because some atk/def scenarios might require
         # More than one round of propagation
         self.propagation_rounds = propagation_rounds
-        self.EngineInputCls = EngineInputCls
-        self.BaseASCls = BaseASCls
-        self.profiler = profiler
+        self.subgraphs = subgraphs
+        assert subgraphs
 
     def run(self, parse_cpus):
         """Runs trials for graph and aggregates data"""
-
-        self.data_points = defaultdict(list)
 
         # Single process
         if parse_cpus == 1:
@@ -48,13 +51,10 @@ class Graph:
         # Multiprocess
         else:
             results = self._get_mp_results(parse_cpus)
-            # Done to store the subgraphs, which we haven't done yet
-            # Due to multiprocessing
-            self._get_engine_and_save_subgraphs()
-
+ 
         for result in results:
-            for data_point, trial_info_list in result.items():
-                self.data_points[data_point].extend(trial_info_list)
+            for self_subgraph, result_subgraph in zip(self.subgraphs, result):
+                self_subgraph.add_trial_info(result_subgraph)
 
         print("\nGraph complete")
 
@@ -66,6 +66,10 @@ class Graph:
         """Returns chunks of trial inputs based on number of CPUs running
 
         Not a generator since we need this for multiprocessing
+
+        We also don't multiprocess one by one because the start up cost of
+        each process is huge (since each process must generate it's own engine
+        ) so we must divy up the work beforehand
         """
 
         # https://stackoverflow.com/a/34032549/8903959
@@ -77,6 +81,7 @@ class Graph:
 
     def _get_single_process_results(self):
         """Get all results when using single processing"""
+
         return [self._run_chunk(x) for x in self._get_chunks(1)]
 
     def _get_mp_results(self, parse_cpus):
@@ -90,91 +95,56 @@ class Graph:
         """Runs a chunk of trial inputs"""
 
         # Engine is not picklable or dillable AT ALL, so do it here
+        # (after the multiprocess process has started)
         # Changing recursion depth does nothing
         # Making nothing a reference does nothing
-        engine = self._get_engine_and_save_subgraphs()
-
-        data_points = defaultdict(list)
-
-        for percent_adopt, trial in percent_adopt_trials:
-            # Create the engine input
-            og_engine_input = self.EngineInputCls(self.subgraphs,
-                                                  engine,
-                                                  percent_adopt)
-            for ASCls in self.adopt_as_classes:
-                print(f"{percent_adopt}% {ASCls.name}, #{trial}",
-                      end="                             " + "\r")
-                # Deepcopy input to make sure input is fresh
-                engine_input = deepcopy(og_engine_input)
-                # Change AS Classes, seed announcements before propagation
-                engine.setup(engine_input, self.BaseASCls, ASCls)
-
-                for propagation_round in range(self.propagation_rounds):
-                    # Generate the test
-                    scenario = Scenario(trial=trial,
-                                        engine=engine,
-                                        engine_input=engine_input,
-                                        profiler=self.profiler)
-                    # Run test, remove reference to engine and return it
-                    scenario.run(self.subgraphs, propagation_round)
-                    # Get data point - just a frozen data class
-                    # Just makes it easier to access properties later
-                    dp = DataPoint(percent_adopt, ASCls, propagation_round)
-                    # Append the test to all tests for that data point
-                    data_points[dp].append(scenario)
-                    engine_input.post_propagation_hook(engine, dp)
-        return data_points
-
-##########################
-# Subgraph ASN functions #
-##########################
-
-    def _get_engine_and_save_subgraphs(self):
-        """Return simulator engine and saves subgraphs"""
-
-        # Done just to get subgraphs, change this later
         engine = CaidaCollector(BaseASCls=self.BaseASCls,
                                 GraphCls=SimulatorEngine,
                                 ).run(tsv_path=None)
-        self.subgraphs = self._get_subgraphs(engine)
-        self._validate_subgraphs(engine)
+        # Must deepcopy here to have the same behavior between single
+        # And multiprocessing
+        subgraphs = deepcopy(self.subgraphs)
 
-        return engine
+        prev_scenario = None
+        for scenario in self.scenarios:
+            for percent_adopt, trial in percent_adopt_trials:
+                # Deep copy scenario to ensure it's fresh
+                scenario = deepcopy(scenario)
 
-    def _get_subgraphs(self, engine=None):
-        """Returns all the subgraphs that you want to keep track of"""
+                print(f"{percent_adopt}% {scenario.graph_label}, #{trial}",
+                      end="                             " + "\r")
 
-        top_level = set(x.asn for x in engine if x.input_clique)
-        stubs_and_mh = set([x.asn for x in engine if x.stub or x.multihomed])
+                # Change AS Classes, seed announcements before propagation
+                scenario.setup_engine(engine, precent_adoption, prev_scenario)
 
-        subgraphs = dict()
-        # Remove sets to make keeping deterministic properties easier
-        subgraphs["etc"] = set([x.asn for x in engine
-                                if x.asn not in top_level
-                                and x.asn not in stubs_and_mh])
-        subgraphs["input_clique"] = top_level
-        subgraphs["stubs_and_mh"] = stubs_and_mh
-        return subgraphs
+                for propagation_round in range(self.propagation_rounds):
+                    # Run the engine
+                    engine.run(propagation_round=propagation_round,
+                               scenario=scenario)
 
-    def _validate_subgraphs(self, engine):
-        """Makes sure subgraphs are mutually exclusive and contain ASNs"""
+                    kwargs = {"engine": engine,
+                              "percent_adopt": percent_adopt,
+                              "trial": trial,
+                              "scenario": scenario,
+                              "propagation_round": propagation_round}
+                    # Save all engine run info
+                    # The reason we aggregate info right now, instead of saving
+                    # the engine and doing it later, is because doing it all
+                    # in RAM is MUCH faster, and speed is important
+                    self._aggregate_data_from_engine_run(subgraphs, **kwargs)
 
-        all_ases = []
-        for subgraph_asns in self.subgraphs.values():
-            msg = "Subgraphs must be sets for fast lookups"
-            assert isinstance(subgraph_asns, set), msg
-            all_ases.extend(subgraph_asns)
-        for x in all_ases:
-            assert isinstance(x, int), "Subgraph doesn't contain ASNs"
+                    # By default, this is a no op
+                    scenario.post_propagation_hook(**kwargs)
+        return self.subgraphs
 
-        diff = len(all_ases) - len(set(all_ases))
-        assert diff == 0, f"Subgraphs not mutually exclusive {diff}"
+    def _aggregate_engine_run_data(self, subgraphs, **kwargs):
+        """For each subgraph, aggregate data
 
-    @property
-    def total_scenarios(self):
-        """Total number of runs that the simulation engine will need to do"""
+        Some data aggregation is shared to speed up runs
+        For example, traceback might be useful across
+        Multiple subgraphs
+        """
 
-        total_scenarios = self.num_trials * len(self.percent_adoptions)
-        total_scenarios *= len(self.adopt_as_classes)
-        total_scenarios *= self.propagation_rounds
-        return total_scenarios
+        shared_data = dict()
+        for subgraph in subgraphs:
+            subgraph.aggregate_engine_run_data(shared_data, **kwargs)

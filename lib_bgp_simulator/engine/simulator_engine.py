@@ -3,7 +3,7 @@ from typing import Optional
 from lib_caida_collector import BGPDAG
 
 from .as_classes import BGPAS
-from ..engine_input import EngineInput
+from ..scenario import Scenario
 from ..enums import Relationships
 
 
@@ -17,7 +17,7 @@ class SimulatorEngine(BGPDAG):
     """
 
 
-    __slots__ = "_ready_to_run",
+    __slots__ = "ready_to_run",
 
     def __init__(self,
                  *args,
@@ -32,7 +32,7 @@ class SimulatorEngine(BGPDAG):
         # This indicates whether or not the simulator has been set up for a run
         # We use a number instead of a bool so that we can indicate for
         # each round whether it is ready to run or not
-        self._ready_to_run_round: int = -1
+        self.ready_to_run_round: int = -1
 
     def __eq__(self, other):
         """Returns if two simulators contain the same BGPDAG's"""
@@ -44,21 +44,21 @@ class SimulatorEngine(BGPDAG):
 
     def run(self,
             propagation_round=0,
-            engine_input=None):
+            scenario=None):
         """Propogates announcements and ensures proper setup"""
 
         # Ensure that the simulator is ready to run this round
-        if self._ready_to_run_round != propagation_round:
+        if self.ready_to_run_round != propagation_round:
             raise Exception(
                 "Engine not set up to run for {propagation_round} round")
         # Propogate anns
-        self._propagate(propagation_round, engine_input)
+        self._propagate(propagation_round, scenario)
         # Increment the ready to run round
-        self._ready_to_run_round += 1
+        self.ready_to_run_round += 1
 
     def _propagate(self,
                    propagation_round: Optional[int],
-                   engine_input: Optional[EngineInput]):
+                   scenario: Optional[Scenario]):
         """Propogates announcements
 
         to stick with Gao Rexford, we propagate to
@@ -68,7 +68,7 @@ class SimulatorEngine(BGPDAG):
         """
 
         kwargs = {"propagation_round": propagation_round,
-                  "engine_input": engine_input}
+                  "scenario": scenario}
 
         self._propagate_to_providers(**kwargs)
         self._propagate_to_peers(**kwargs)

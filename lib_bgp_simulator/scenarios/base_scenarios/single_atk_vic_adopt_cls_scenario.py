@@ -45,6 +45,16 @@ class SingleAtkVicAdoptClsScenario(Scenario):
 
         super(SingleAtkVicAdoptClsScenario, self).setup_engine(*args, **kwargs)
 
+    def unique_graph_label(self):
+        """Returns unique graph label that no other scenario has"""
+
+        return f"{self.AdoptASCls.name} Adopting"
+
+    def post_propagation_hook(self, engine, data_point):
+        """Useful hook for post propagation"""
+
+        pass
+
 ##################
 # Abstract Funcs #
 ##################

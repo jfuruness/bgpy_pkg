@@ -60,7 +60,7 @@ class Scenario(YamlAble):
         self._seed_engine_announcements(engine,
                                         percent_adoption,
                                         prev_scenario)
-        engine.ready_to_run_round += 1
+        engine.ready_to_run_round = 0
 
     def _set_engine_as_classes(self,
                                engine,
@@ -128,6 +128,12 @@ class Scenario(YamlAble):
         where you do __not__ include any of the BaseASCls,
         since that is the default
         """
+
+        raise NotImplementedError
+
+    @abstractmethod
+    def graph_label(self):
+        """Label that will be on the graph"""
 
         raise NotImplementedError
 
