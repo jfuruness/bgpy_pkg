@@ -1,10 +1,10 @@
-from .engine_input import EngineInput
-from ..announcements import generate_ann
-from ..enums import Prefixes
-from ..enums import Timestamps
+from ..base_scenarios import SingleAtkVicAdoptClsScenario
+from ...announcements import generate_ann
+from ...enums import Prefixes
+from ...enums import Timestamps
 
 
-class NonRoutedPrefixHijack(EngineInput):
+class NonRoutedPrefixHijack(SingleAtkVicAdoptClsScenario):
     """Non routed prefix hijack (ROA of AS 0)"""
 
     __slots__ = ()
@@ -13,7 +13,7 @@ class NonRoutedPrefixHijack(EngineInput):
         """Returns non routed prefix announcement from attacker
 
         generate_ann generates announcements with Announcement class defaults
-        (for example, withdraw=False to indicate the announcement is not 
+        (for example, withdraw=False to indicate the announcement is not
         a withdrawal)
         for subclasses of this EngineInput, you can set AnnCls equal to
         something other than Announcement, and pass in any additional

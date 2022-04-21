@@ -1,12 +1,15 @@
-from .engine_input import EngineInput
-from .prefix_hijack import PrefixHijack
-from .subprefix_hijack import SubprefixHijack
-from .non_routed_prefix_hijack import NonRoutedPrefixHijack
-from .superprefix_prefix_hijack import SuperprefixPrefixHijack
-from .non_routed_superprefix_hijack import NonRoutedSuperprefixHijack
+from .base_scenarios import Scenario
+from .base_scenarios import SingleAtkVicAdoptClsScenario
+
+from .hijack_scenarios import PrefixHijack
+from .hijack_scenarios import SubprefixHijack
+from .hijack_scenarios import NonRoutedPrefixHijack
+from .hijack_scenarios import SuperprefixPrefixHijack
+from .hijack_scenarios import NonRoutedSuperprefixHijack
 from .valid_prefix import ValidPrefix
 
-__all__ = ["EngineInput",
+__all__ = ["Scenario",
+           "SingleAtkVicAdoptClsScenario",
            "PrefixHijack",
            "SubprefixHijack",
            "NonRoutedPrefixHijack",

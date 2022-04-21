@@ -1,10 +1,10 @@
-from .engine_input import EngineInput
-from ..announcements import generate_ann
-from ..enums import Prefixes
-from ..enums import Timestamps
+from ..base_scenarios import SingleAtkVicAdoptClsScenario
+from ...announcements import generate_ann
+from ...enums import Prefixes
+from ...enums import Timestamps
 
 
-class SubprefixHijack(EngineInput):
+class SubprefixHijack(SingleAtkVicAdoptClsScenario):
     """Subprefix Hijack Engine input
 
     Subprefix hijack consists of a valid prefix by the victim with a roa

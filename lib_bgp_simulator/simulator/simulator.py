@@ -8,9 +8,16 @@ from lib_caida_collector import CaidaCollector
 
 
 from .graph import Graph
+from .subgraphs import AttackerSuccessAdoptingEtcSubgraph
+from .subgraphs import AttackerSuccessAdoptingInputCliqueSubgraph
+from .subgraphs import AttackerSuccessAdoptingStubsAndMHSubgraph
+from .subgraphs import AttackerSuccessNonAdoptingEtcSubgraph
+from .subgraphs import AttackerSuccessNonAdoptingInputCliqueSubgraph
+from .subgraphs import AttackerSuccessNonAdoptingStubsAndMHSubgraph
+
 from ..engine import BGPAS
 from ..engine import ROVAS
-from ..engine_input import SubprefixHijack
+from ..scenarios import SubprefixHijack
 
 
 class Simulator:
@@ -22,10 +29,19 @@ class Simulator:
         self.parse_cpus = parse_cpus
 
     def run(self,
-            graphs=[Graph(percent_adoptions=[5, 10],
+            graphs=[Graph(name="test_graph",
+                          percent_adoptions=(5, 10),
+                          scenarios=[SubprefixHijack(AdoptASCls=x)
+                                     for x in [ROVAS]],
+                          subgraphs=[
+                            AttackerSuccessAdoptingEtcSubgraph(),
+                            AttackerSuccessAdoptingInputCliqueSubgraph(),
+                            AttackerSuccessAdoptingStubsAndMHSubgraph(),
+                            AttackerSuccessNonAdoptingEtcSubgraph(),
+                            AttackerSuccessNonAdoptingInputCliqueSubgraph(),
+                            AttackerSuccessNonAdoptingStubsAndMHSubgraph()],
                           num_trials=1,
-                          scenarios=None,
-                          subgraphs=None)],
+                          propagation_rounds=1)],
             graph_path=Path("/tmp/graphs.tar.gz"),
             assert_pypy=False,
             ):
@@ -70,7 +86,7 @@ class Simulator:
             self._write_graphs(graphs, graph_dir)
             self._tar_graphs(graphs, graph_dir, graph_path)
 
-    def _run_graphs(self, graphs, mp_method):
+    def _run_graphs(self, graphs):
         """Get data for all graphs"""
 
         for graph in graphs:

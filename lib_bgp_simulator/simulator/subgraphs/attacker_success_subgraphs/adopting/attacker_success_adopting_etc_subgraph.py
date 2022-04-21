@@ -2,12 +2,13 @@ from abc import ABC, abstractmethod
 from collections import defaultdict
 
 import ipaddress
-from ..enums import Outcomes
-from ..engine import BGPAS
+from ..attacker_success_subgraph import AttackerSuccessSubgraph
+from .....enums import Outcomes
+from .....engine import BGPAS
 
 
-class AttackerSuccessSubgraph(Subgraph):
-    """A subgraph for data display"""
+class AttackerSuccessAdoptingEtcSubgraph(AttackerSuccessSubgraph):
+    """A graph for attacker success for etc ASes that adopt"""
 
     def aggregate_data_from_engine_run(self,
                                        shared_data,

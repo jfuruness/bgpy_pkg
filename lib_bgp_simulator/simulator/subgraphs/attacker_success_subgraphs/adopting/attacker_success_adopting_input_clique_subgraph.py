@@ -1,19 +1,15 @@
 from abc import ABC, abstractmethod
 from collections import defaultdict
 
+import ipaddress
+from ..attacker_success_subgraph import AttackerSuccessSubgraph
+from .....enums import Outcomes
+from .....engine import BGPAS
 
-class Subgraph(ABC):
-    """A subgraph for data display"""
 
-    def __init__(self):
-        """Inits data"""
+class AttackerSuccessAdoptingInputCliqueSubgraph(AttackerSuccessSubgraph):
+    """Graph with attacker success for adopting input clique ASes"""
 
-        # This is a list of all the trial info
-        # You must save info trial by trial, so that you can join
-        # After a return from multiprocessing
-        self.data = defaultdict(list)
-
-    @abstractmethod
     def aggregate_data_from_engine_run(self,
                                        shared_data,
                                        engine,

@@ -1,13 +1,11 @@
+from abc import abstractmethod
 import random
 
 from lib_caida_collector import AS
 
-from yamlable import YamlAble, yaml_info, yaml_info_decorate
+from yamlable import yaml_info
 
-from ipaddress import ip_network
-
-from ..announcements import Announcement
-from ..enums import Outcomes, Relationships
+from .scenario import Scenario
 
 
 @yaml_info(yaml_tag="SingleAtkVicAdoptClsScenario")
@@ -19,7 +17,6 @@ class SingleAtkVicAdoptClsScenario(Scenario):
     """
 
     __slots__ = ("attacker_asn", "victim_asn")
-
 
     def __init__(self,
                  *args,
@@ -38,12 +35,20 @@ class SingleAtkVicAdoptClsScenario(Scenario):
 
         super(SingleAtkVicAdoptClsScenario, self).__init__(*args, **kwargs)
 
-    def setup_engine(self, *args, **kwargs):
+    @property
+    def graph_label(self):
+        """Label that will be used on the graph"""
+
+        return f"{self.BaseASCls} ({self.AdoptASCls} adopting)"
+
+    def setup_engine(self, engine, percent_adopt, prev_scenario):
         """Sets up engine input"""
 
-        self._set_attacker_victim_pair(*args, **kwargs)
+        self._set_attacker_victim_pair(engine, percent_adopt, prev_scenario)
 
-        super(SingleAtkVicAdoptClsScenario, self).setup_engine(*args, **kwargs)
+        super(SingleAtkVicAdoptClsScenario, self).setup_engine(engine,
+                                                               percent_adopt,
+                                                               prev_scenario)
 
     def unique_graph_label(self):
         """Returns unique graph label that no other scenario has"""
@@ -59,7 +64,6 @@ class SingleAtkVicAdoptClsScenario(Scenario):
 # Abstract Funcs #
 ##################
 
-    @property
     @abstractmethod
     def _get_announcements(self):
         """Returns announcements"""
@@ -79,38 +83,47 @@ class SingleAtkVicAdoptClsScenario(Scenario):
     def _get_attacker_asn(self, *args, **kwargs):
         """Returns attacker ASN at random"""
 
-        possible_attacker_asns = self._get_possible_attackers(*args, **kwargs)
+        possible_attacker_asns = self._get_possible_attacker_asns(*args,
+                                                                  **kwargs)
         return random.choice(tuple(possible_attacker_asns))
 
-    def _get_victim_asn(self, subgraph_asns, engine):
+    def _get_victim_asn(self, *args, **kwargs):
         """Returns victim ASN at random. Attacker can't be victim"""
 
-
-        possible_vic_asns = self._get_possible_victims(*args, **kwargs)
+        possible_vic_asns = self._get_possible_victim_asns(*args, **kwargs)
         return random.choice(tuple(
             possible_vic_asns.difference([self.attacker_asn])))
 
     # For this, don't bother making a subclass with stubs_and_mh
     # Since it won't really create another class branch,
     # Since another dev would likely just subclass from the same place
-    def _get_possible_attacker_asns(self, engine, percent_adoption):
+    def _get_possible_attacker_asns(self,
+                                    engine,
+                                    percent_adoption,
+                                    prev_scenario):
         """Returns possible attacker ASNs, defaulted from stubs_and_mh"""
 
-        return set([x.asn for x in engine.stubs_and_mh])
+        return engine.stub_or_mh_asns
 
     # For this, don't bother making a subclass with stubs_and_mh
     # Since it won't really create another class branch,
     # Since another dev would likely just subclass from the same place
-    def _get_possible_victim_asns(self, engine, percent_adoption):
+    def _get_possible_victim_asns(self,
+                                  engine,
+                                  percent_adoption,
+                                  prev_scenario):
         """Returns possible victim ASNs, defaulted from stubs_and_mh"""
 
-        return set([x.asn for x in engine.stubs_and_mh])
+        return engine.stub_or_mh_asns
 
 #######################
 # Adopting ASNs funcs #
 #######################
 
-    def _get_non_default_as_cls_dict(self, engine, percent_adoption, prev_scenario):
+    def _get_non_default_as_cls_dict(self,
+                                     engine,
+                                     percent_adoption,
+                                     prev_scenario):
         """Returns as class dict
 
         non_default_as_cls_dict is a dict of asn: AdoptASCls
@@ -126,7 +139,7 @@ class SingleAtkVicAdoptClsScenario(Scenario):
         if prev_scenario:
             # TODO: get as_cls_dict from previous engine input
             return {asn: self.AdoptASCls for asn, ASCls in
-                    prev_engine_input.non_default_as_cls_dict.items()}
+                    prev_scenario.non_default_as_cls_dict.items()}
         else:
             return {asn: self.AdoptASCls for asn in
                     self._get_adopting_asns(engine, percent_adoption)}
@@ -138,26 +151,25 @@ class SingleAtkVicAdoptClsScenario(Scenario):
         subcategories"""
 
         adopting_asns = list()
-        subcategories = ("stubs_and_mh", "middle_tier", "input_clique")
+        subcategories = ("stub_or_mh_asns", "etc_asns", "input_clique_asns")
         for subcategory in subcategories:
-            for ases in getattr(engine, subcategory):
-                asns = set([x.asn for x in ases])
-                # Remove ASes that are already pre-set
-                # Ex: Attacker and victim
-                # Ex: ROV Nodes (in certain situations)
-                possible_adopters = asns.difference(self._preset_asns)
-                # Get how many ASes should be adopting
-                k = len(possible_adopters) * percent_adopt // 100
-                # Round for the start and end of the graph
-                # (if 0 ASes would be adopting, have 1 as adopt)
-                # (If all ASes would be adopting, have all -1 adopt)
-                # This feature was chosen by my professors
-                if k == 0:
-                    k += 1
-                elif k == len(possible_adopters):
-                    k -= 1
+            asns = getattr(engine, subcategory)
+            # Remove ASes that are already pre-set
+            # Ex: Attacker and victim
+            # Ex: ROV Nodes (in certain situations)
+            possible_adopters = asns.difference(self._preset_asns)
+            # Get how many ASes should be adopting
+            k = len(possible_adopters) * percent_adopt // 100
+            # Round for the start and end of the graph
+            # (if 0 ASes would be adopting, have 1 as adopt)
+            # (If all ASes would be adopting, have all -1 adopt)
+            # This feature was chosen by my professors
+            if k == 0:
+                k += 1
+            elif k == len(possible_adopters):
+                k -= 1
 
-                adopting_asns.extend(random.sample(possible_adopters, k))
+            adopting_asns.extend(random.sample(possible_adopters, k))
         adopting_asns += self._default_adopters
         assert len(adopting_asns) == len(set(adopting_asns))
         return adopting_asns
@@ -187,10 +199,12 @@ class SingleAtkVicAdoptClsScenario(Scenario):
     def __to_yaml_dict__(self):
         """This optional method is called when you call yaml.dump()"""
 
-        return {"attacker_asn": self.attacker_asn,
+        return {"announcements": self.announcements,
+                "attacker_asn": self.attacker_asn,
                 "victim_asn": self.victim_asn,
-                "non_default_as_cls_dict": {asn: AS.subclass_to_name_dict[ASCls]
-                                 for asn, ASCls in self.non_default_as_cls_dict.items()}}
+                "non_default_as_cls_dict":
+                    {asn: AS.subclass_to_name_dict[ASCls]
+                     for asn, ASCls in self.non_default_as_cls_dict.items()}}
 
     @classmethod
     def __from_yaml_dict__(cls, dct, yaml_tag):
@@ -199,6 +213,7 @@ class SingleAtkVicAdoptClsScenario(Scenario):
         as_classes = {asn: AS.name_to_subclass_dict[name]
                       for asn, name in dct["non_default_as_cls_dict"].items()}
 
-        return cls(attacker_asn=dct["attacker_asn"],
+        return cls(announcements=dct["announcements"],
+                   attacker_asn=dct["attacker_asn"],
                    victim_asn=dct["victim_asn"],
                    non_default_as_cls_dict=as_classes)

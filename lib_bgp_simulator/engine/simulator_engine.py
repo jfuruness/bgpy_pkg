@@ -3,7 +3,7 @@ from typing import Optional
 from lib_caida_collector import BGPDAG
 
 from .as_classes import BGPAS
-from ..scenario import Scenario
+from ..scenarios import Scenario
 from ..enums import Relationships
 
 

@@ -15,24 +15,23 @@ from .enums import ASNs
 from .enums import Outcomes
 from .enums import Relationships
 
-from .engine_input import EngineInput
-from .engine_input import PrefixHijack
-from .engine_input import SubprefixHijack
-from .engine_input import NonRoutedPrefixHijack
-from .engine_input import NonRoutedSuperprefixHijack
-from .engine_input import SuperprefixPrefixHijack
-from .engine_input import ValidPrefix
+from .scenarios import Scenario
+from .scenarios import SingleAtkVicAdoptClsScenario
+from .scenarios import PrefixHijack
+from .scenarios import SubprefixHijack
+from .scenarios import NonRoutedPrefixHijack
+from .scenarios import NonRoutedSuperprefixHijack
+from .scenarios import SuperprefixPrefixHijack
+from .scenarios import ValidPrefix
 
-from .simulator import DataPoint
 from .simulator import Graph
-from .simulator import Scenario
 from .simulator import Simulator
 
 from .announcements import Announcement
 from .announcements import AnnWDefaults
 from .announcements import generate_ann
 
-
+"""
 from .tests import pytest_addoption
 # Graphs
 from .tests import GraphInfo
@@ -87,8 +86,9 @@ from .tests import BaseBGPPropTester
 from .tests import BaseFig2Tester
 from .tests import BaseNonRoutedSuperprefixTester
 from .tests import BaseNonRoutedPrefixTester
-
+"""
 __all__ = [
+    "SingleAtkVicAdoptClsScenario",
     "BGPAS",
     "BGPSimpleAS",
     "LocalRIB",
@@ -113,7 +113,6 @@ __all__ = [
     "NonRoutedSuperprefixHijack",
     "SuperprefixPrefixHijack",
     "ValidPrefix",
-    "DataPoint",
     "Graph",
     "Scenario",
     "Simulator",

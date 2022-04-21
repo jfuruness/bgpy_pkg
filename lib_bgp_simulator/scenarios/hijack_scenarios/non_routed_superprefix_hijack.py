@@ -1,10 +1,10 @@
-from .engine_input import EngineInput
-from ..announcements import generate_ann
-from ..enums import Prefixes
-from ..enums import Timestamps
+from ..base_scenarios import SingleAtkVicAdoptClsScenario
+from ...announcements import generate_ann
+from ...enums import Prefixes
+from ...enums import Timestamps
 
 
-class NonRoutedSuperprefixHijack(EngineInput):
+class NonRoutedSuperprefixHijack(SingleAtkVicAdoptClsScenario):
     """Non routed superprefix hijack
 
     Attacker has a superprefix with an unknown ROA,

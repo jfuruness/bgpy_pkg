@@ -1,10 +1,10 @@
-from .engine_input import EngineInput
-from ..announcements import generate_ann
-from ..enums import Prefixes
-from ..enums import Timestamps
+from ..base_scenarios import SingleAtkVicAdoptClsScenario
+from ...announcements import generate_ann
+from ...enums import Prefixes
+from ...enums import Timestamps
 
 
-class PrefixHijack(EngineInput):
+class PrefixHijack(SingleAtkVicAdoptClsScenario):
     """Prefix hijack where both attacker and victim compete for a prefix"""
 
     __slots__ = ()

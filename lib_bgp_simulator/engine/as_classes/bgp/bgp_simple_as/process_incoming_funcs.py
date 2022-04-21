@@ -1,7 +1,6 @@
 from typing import Optional
 
 from ....ann_containers import RecvQueue
-from .....engine_input import EngineInput
 from .....enums import Relationships
 from .....announcements import Announcement as Ann
 
@@ -15,10 +14,10 @@ def receive_ann(self, ann: Ann, accept_withdrawals=False):
 
 
 def process_incoming_anns(self,
+                          *,
                           from_rel: Relationships,
-                          *args,
-                          propagation_round: Optional[int] = None,
-                          engine_input: Optional[EngineInput] = None,
+                          propagation_round,
+                          scenario,
                           reset_q: bool = True,
                           **kwargs):
     """Process all announcements that were incoming from a specific rel"""

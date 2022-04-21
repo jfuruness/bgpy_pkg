@@ -1,10 +1,10 @@
-from .engine_input import EngineInput
+from .base_scenarios import SingleAtkVicAdoptClsScenario
 from ..announcements import generate_ann
 from ..enums import Prefixes
 from ..enums import Timestamps
 
 
-class ValidPrefix(EngineInput):
+class ValidPrefix(SingleAtkVicAdoptClsScenario):
     """A valid prefix engine input, mainly for testing"""
 
     __slots__ = ()

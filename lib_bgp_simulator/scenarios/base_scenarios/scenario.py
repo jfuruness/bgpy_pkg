@@ -1,17 +1,14 @@
-import random
-
-from lib_caida_collector import AS
-
-from yamlable import YamlAble, yaml_info, yaml_info_decorate
+from abc import ABC, abstractmethod
 
 from ipaddress import ip_network
+from yamlable import YamlAble, yaml_info, yaml_info_decorate
 
-from ..announcements import Announcement
-from ..enums import Outcomes, Relationships
+from ...announcements import Announcement
+from ...engine import BGPSimpleAS
 
 
 @yaml_info(yaml_tag="Scenario")
-class Scenario(YamlAble):
+class Scenario(YamlAble, ABC):
     """Contains information regarding an attack"""
 
     __slots__ = ("non_default_as_cls_dict", "prefix_subprefix_dict")
@@ -19,7 +16,7 @@ class Scenario(YamlAble):
     # This is the base type of announcement for this class
     # You can subclass this engine input and specify a different base ann
     AnnCls = Announcement
-    BaseASCls = BGPSimple
+    BaseASCls = BGPSimpleAS
 
     subclasses = []
 
@@ -32,13 +29,20 @@ class Scenario(YamlAble):
         # Add yaml tag to subclass
         yaml_info_decorate(cls, yaml_tag=cls.__name__)
 
-    def __init__(self, non_default_as_cls_dict=None):
+    def __init__(self,
+                 announcements=None,
+                 non_default_as_cls_dict=None):
         """inits attrs
 
         non_default_as_cls_dict is a dict of asn: AdoptASCls
         where you do __not__ include any of the BaseASCls,
         since that is the default
         """
+
+        if announcements:
+            self.announcements = announcements
+        else:
+            self.announcements = self._get_announcements()
 
         self._get_prefix_subprefix_dict()
         if non_default_as_cls_dict:
@@ -56,7 +60,7 @@ class Scenario(YamlAble):
                      prev_scenario=None):
         """Sets up engine input"""
 
-        self._set_engine_ases(engine, percent_adoption, prev_scenario)
+        self._set_engine_as_classes(engine, percent_adoption, prev_scenario)
         self._seed_engine_announcements(engine,
                                         percent_adoption,
                                         prev_scenario)
@@ -77,9 +81,10 @@ class Scenario(YamlAble):
         # non_default_as_cls_dict is a dict of asn: AdoptASCls
         # where you do __not__ include any of the BaseASCls,
         # since that is the default
-        self.non_default_as_cls_dict = self._get_as_cls_dict(engine,
-                                                             percent_adoption,
-                                                             prev_scenario=prev_scenario)
+        self.non_default_as_cls_dict = self._get_non_default_as_cls_dict(
+            engine,
+            percent_adoption,
+            prev_scenario=prev_scenario)
         # Validate that this is only non_default ASes
         # This matters, because later this entire dict may be used for the next
         # scenario
@@ -88,13 +93,13 @@ class Scenario(YamlAble):
 
         for as_obj in engine:
             # Set the AS class to be the proper type of AS
-            as_obj.__class__ = self.as_cls_dict.get(as_obj.asn, self.BaseASCls)
+            as_obj.__class__ = self.non_default_as_cls_dict.get(as_obj.asn,
+                                                                self.BaseASCls)
             # Clears all RIBs, etc
             # Reset base is False to avoid overrides base AS info (peers, etc)
             as_obj.__init__(reset_base=False)
-        
 
-    def seed(self, engine, *args):
+    def _seed_engine_announcements(self, engine, *args):
         """Seeds announcement at the proper AS
 
         Since this is the simulator engine, we should
@@ -121,7 +126,10 @@ class Scenario(YamlAble):
         raise NotImplementedError
 
     @abstractmethod
-    def _get_non_default_as_cls_dict(self, engine, percent_adoption, prev_scenario):
+    def _get_non_default_as_cls_dict(self,
+                                     engine,
+                                     percent_adoption,
+                                     prev_scenario):
         """Returns AS class dict
 
         non_default_as_cls_dict is a dict of asn: AdoptASCls

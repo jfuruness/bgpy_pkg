@@ -1,16 +1,15 @@
 from typing import Optional
 
 from .....announcements import Announcement as Ann
-from .....engine_input import EngineInput
 from .....enums import Relationships
 
 
 def process_incoming_anns(self,
+                          *,
                           from_rel: Relationships,
-                          *args,
-                          propagation_round: Optional[int] = None,
+                          propagation_round,
                           # Usually None for attack
-                          engine_input: Optional[EngineInput] = None,
+                          scenario,
                           reset_q: bool = True,
                           **kwargs):
     """Process all announcements that were incoming from a specific rel"""
