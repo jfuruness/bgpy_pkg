@@ -145,21 +145,21 @@ class YamlSystemTestRunner:
                                     view=self.view_arg in sys.argv)
 
     def write_check_results(self, engine, scenario, traceback_guess):
-        if not self.engine_output_guess_yaml_path.exists():
-            self.write_engine_output_yaml(engine)
-            if self.write_no_verify_arg in sys.argv:
-                logging.warning("Writing engine output ground truth"
-                                " without verifying")
-                shutil.copy(self.engine_output_guess_yaml_path,
-                            self.engine_output_truth_yaml_path)
+        # if not self.engine_output_guess_yaml_path.exists():
+        self.write_engine_output_yaml(engine)
+        if self.write_no_verify_arg in sys.argv:
+            logging.warning("Writing engine output ground truth"
+                            " without verifying")
+            shutil.copy(self.engine_output_guess_yaml_path,
+                        self.engine_output_truth_yaml_path)
 
-        if not self.traceback_guess_yaml_path.exists():
-            self.write_traceback_yaml(traceback_guess)
-            if self.write_no_verify_arg in sys.argv:
-                logging.warning("Writing traceback ground truth "
-                                "without verifying")
-                shutil.copy(self.traceback_guess_yaml_path,
-                            self.traceback_truth_yaml_path)
+        # if not self.traceback_guess_yaml_path.exists():
+        self.write_traceback_yaml(traceback_guess)
+        if self.write_no_verify_arg in sys.argv:
+            logging.warning("Writing traceback ground truth "
+                            "without verifying")
+            shutil.copy(self.traceback_guess_yaml_path,
+                        self.traceback_truth_yaml_path)
 
         self.validate_engine_output(engine)
         self.validate_scenario(scenario)
