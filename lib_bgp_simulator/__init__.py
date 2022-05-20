@@ -81,6 +81,7 @@ from .tests import Graph040
 from .tests import Graph041
 from .tests import Graph042
 from .tests import Graph043
+from .tests import Graph044
 
 
 # System tests that may be useful elsewhere (not YAML)
@@ -180,6 +181,7 @@ __all__ = [
     "Graph041",
     "Graph042",
     "Graph043",
+    "Graph044",
     # System tests that may be useful elsewhere (not YAML)",
     "test_sim_inputs",
     # Classes to run/write tests",
