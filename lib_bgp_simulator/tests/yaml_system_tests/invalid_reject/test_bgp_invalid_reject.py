@@ -31,14 +31,14 @@ class BaseBGPInvalidRejectTester(BaseGraphSystemTester):
     def test_graph(self):
         try:
             super().test_graph(self)
-        except Exception as e:
+        except Exception:
             # This test must cause an exception, or the result should fail
             return True
         return False
 
     def test_stable(self):
         # This test doesn't make sense in this context, so override it
-        return True    
+        return True
 
 
 class Test001BGPInvalidReject(BaseBGPInvalidRejectTester):
