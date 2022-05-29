@@ -16,17 +16,17 @@ class BaseBGPPathLenPreferenceTester(BaseGraphSystemTester):
     base_dir = Path(__file__).parent
 
 
-class Test001BGPPathLenPreference(BaseBGPPathLenPreferenceTester):
+class Test015BGPPathLenPreference(BaseBGPPathLenPreferenceTester):
     BaseASCls = BGPSimpleAS
 
 
-class Test002BGPPathLenPreference(BaseBGPPathLenPreferenceTester):
+class Test016BGPPathLenPreference(BaseBGPPathLenPreferenceTester):
     BaseASCls = BGPAS
 
 
-class Test003BGPPathLenPreference(BaseBGPPathLenPreferenceTester):
+class Test017BGPPathLenPreference(BaseBGPPathLenPreferenceTester):
     BaseASCls = ROVSimpleAS
 
 
-class Test004BGPPathLenPreference(BaseBGPPathLenPreferenceTester):
+class Test018BGPPathLenPreference(BaseBGPPathLenPreferenceTester):
     BaseASCls = ROVAS

@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from ...graphs import Graph021
+from ...graphs import Graph041
 from ...utils import BaseGraphSystemTester
 
 from ....enums import Prefixes, Relationships
@@ -33,7 +33,7 @@ class RouteLeakAS1Poisoned(ValidPrefix):
 
 
 class BaseBGPWithdrawPropTester(BaseGraphSystemTester):
-    GraphInfoCls = Graph021
+    GraphInfoCls = Graph041
     EngineInputCls = RouteLeakAS1Poisoned
     propagation_rounds = 2
     base_dir = Path(__file__).parent

@@ -2,7 +2,7 @@ from graphviz import Digraph
 import ipaddress
 
 from ...engine import BGPAS, BGPSimpleAS
-from ...enums import Outcomes
+from ...enums import Outcomes, ASNs
 
 
 class Diagram:
@@ -44,11 +44,14 @@ class Diagram:
         html = f'''<
               <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4">
               <TR>
+          <TD COLSPAN="2" BORDER="0">(For most specific prefix only)</TD>
+              </TR>
+              <TR>
           <TD BGCOLOR="#ff6060:white">&#128520; ATTACKER SUCCESS &#128520;</TD>
                 <TD>{attacker_success_count}</TD>
               </TR>
               <TR>
-         <TD BGCOLOR="lightgreen:white">&#128519; VICTIM SUCCESS &#128519;</TD>
+         <TD BGCOLOR="#90ee90:white">&#128519; VICTIM SUCCESS &#128519;</TD>
                 <TD>{victim_success_count}</TD>
               </TR>
               <TR>
@@ -129,10 +132,10 @@ class Diagram:
         html = f"""<
             <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4">
             <TR>
-            <TD COLSPAN="3" BORDER="0">{asn_str}</TD>
+            <TD COLSPAN="4" BORDER="0">{asn_str}</TD>
             </TR>
             <TR>
-            <TD COLSPAN="3" BORDER="0">({as_obj.name})</TD>
+            <TD COLSPAN="4" BORDER="0">({as_obj.name})</TD>
             </TR>"""
         if as_obj.asn not in engine_input.uncountable_asns and False:
             outcome = traceback[as_obj.asn]
@@ -143,25 +146,38 @@ class Diagram:
             elif outcome == Outcomes.DISCONNECTED:
                 outcome_str = "&#10041; DISCONNECTED &#10041;"
             html += f"""<TR>
-                        <TD COLSPAN="3">{outcome_str}</TD>
+                        <TD COLSPAN="4">{outcome_str}</TD>
                       </TR>"""
-        local_rib_prefixes = list(as_obj._local_rib._info.keys())
-        local_rib_prefixes = tuple(
-            sorted(local_rib_prefixes,
-                   key=lambda x: ipaddress.ip_network(x).num_addresses,
+        local_rib_anns = list(as_obj._local_rib._info.values())
+        local_rib_anns = tuple(
+            sorted(local_rib_anns,
+                   key=lambda x: ipaddress.ip_network(x.prefix).num_addresses,
                    reverse=True))
-        if len(local_rib_prefixes) > 0:
+        if len(local_rib_anns) > 0:
             html += """<TR>
-                        <TD COLSPAN="3">Local RIB</TD>
+                        <TD COLSPAN="4">Local RIB</TD>
                       </TR>"""
 
-            for prefix in local_rib_prefixes:
-                mask = "/" + prefix.split("/")[-1]
+            for ann in local_rib_anns:
+                mask = "/" + ann.prefix.split("/")[-1]
                 path = ", ".join(str(x) for x in
-                                 as_obj._local_rib._info[prefix].as_path)
+                                 ann.as_path)
+                ann_help = ""
+                if getattr(ann, "blackhole", False):
+                    ann_help = "&#10041;"
+                elif getattr(ann, "preventive", False):
+                    ann_help = "&#128737;"
+                elif ASNs.ATTACKER.value in ann.as_path:
+                    ann_help = "&#128520;"
+                elif ann.origin == ASNs.VICTIM.value:
+                    ann_help = "&#128519;"
+                else:
+                    raise Exception("Not valid ann for rib?")
+
                 html += f"""<TR>
                             <TD>{mask}</TD>
                             <TD>{path}</TD>
+                            <TD>{ann_help}</TD>
                           </TR>"""
         html += "</TABLE>>"
         return html
@@ -182,7 +198,7 @@ class Diagram:
             # kwargs.update({"fillcolor": "#ff4d4d"})
         # As obj is the victim
         elif as_obj.asn == engine_input.victim_asn:
-            kwargs.update({"fillcolor": "lightgreen", "shape": "doublecircle"})
+            kwargs.update({"fillcolor": "#90ee90", "shape": "doublecircle"})
             if as_obj.__class__ not in [BGPAS, BGPSimpleAS]:
                 kwargs["shape"] = "doubleoctagon"
 
@@ -191,7 +207,7 @@ class Diagram:
             if traceback[as_obj.asn] == Outcomes.ATTACKER_SUCCESS:
                 kwargs.update({"fillcolor": "#ff6060:yellow"})
             elif traceback[as_obj.asn] == Outcomes.VICTIM_SUCCESS:
-                kwargs.update({"fillcolor": "lightgreen:white"})
+                kwargs.update({"fillcolor": "#90ee90:white"})
             elif traceback[as_obj.asn] == Outcomes.DISCONNECTED:
                 kwargs.update({"fillcolor": "grey:white"})
 

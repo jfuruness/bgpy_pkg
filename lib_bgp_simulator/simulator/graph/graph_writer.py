@@ -7,6 +7,7 @@ from ...enums import Outcomes
 try:
     import matplotlib
     import matplotlib.pyplot as plt
+    matplotlib.use("Agg")
 except Exception as e:
     print(e, "Catch this specific exception in graph_writer later")
     pass
@@ -23,6 +24,8 @@ def aggregate_and_write(self, graph_dir, sim):
     graph_dirs = []
 
     for subg_name, outcome, propagation_round in self.get_graphs_to_write():
+        if subg_name == "rov_asns" and not self.real_rov_adoption:
+            continue
         # {policy: Line}
         lines = dict()
 
@@ -120,11 +123,25 @@ def _write(self,
     plt.xlim(0, 100)
     plt.ylim(0, 100)
     for line in lines:
+        fmt_kwargs = {"ls": ":", "marker": "4"}
+        if "v1" in line.label.lower():
+            fmt_kwargs["ls"] = "solid"
+            fmt_kwargs["marker"] = "."
+        elif "v2a" in line.label.lower():
+            fmt_kwargs["ls"] = "dashed"
+            fmt_kwargs["marker"] = 1
+        elif "v2" in line.label.lower():
+            fmt_kwargs["ls"] = "dotted"
+            fmt_kwargs["marker"] = "*"
+        elif "v3" in line.label.lower():
+            fmt_kwargs["ls"] = "-"
+            fmt_kwargs["marker"] = "x"
+
         ax.errorbar(line.x,
                     line.y,
                     yerr=line.yerr,
                     label=line.label,
-                    marker="*")
+                    **fmt_kwargs)
 
     ax.set_ylabel(self.EngineInputCls.y_labels[outcome])
     ax.set_xlabel("Percent adoption of adopted policy")

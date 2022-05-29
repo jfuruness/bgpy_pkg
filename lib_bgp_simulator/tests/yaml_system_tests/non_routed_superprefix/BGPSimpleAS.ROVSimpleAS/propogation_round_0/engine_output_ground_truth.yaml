@@ -10,9 +10,8 @@
       recv_relationship: !simulator_codec/Relationships
         name: CUSTOMERS
         value: 3
-      roa_validity: !simulator_codec/ROAValidity
-        name: UNKNOWN
-        value: 1
+      roa_origin: null
+      roa_valid_length: null
       seed_asn: null
       timestamp: 1
       traceback_end: false
@@ -40,9 +39,8 @@
       recv_relationship: !simulator_codec/Relationships
         name: PROVIDERS
         value: 1
-      roa_validity: !simulator_codec/ROAValidity
-        name: UNKNOWN
-        value: 1
+      roa_origin: null
+      roa_valid_length: null
       seed_asn: null
       timestamp: 1
       traceback_end: false
@@ -71,9 +69,8 @@
       recv_relationship: !simulator_codec/Relationships
         name: PROVIDERS
         value: 1
-      roa_validity: !simulator_codec/ROAValidity
-        name: UNKNOWN
-        value: 1
+      roa_origin: null
+      roa_valid_length: null
       seed_asn: null
       timestamp: 1
       traceback_end: false
@@ -98,9 +95,8 @@
       recv_relationship: !simulator_codec/Relationships
         name: ORIGIN
         value: 4
-      roa_validity: !simulator_codec/ROAValidity
-        name: UNKNOWN
-        value: 1
+      roa_origin: null
+      roa_valid_length: null
       seed_asn: 666
       timestamp: 1
       traceback_end: false

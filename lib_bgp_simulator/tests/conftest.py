@@ -9,3 +9,6 @@ def pytest_addoption(parser):
     parser.addoption(YamlSystemTestRunner.view_arg,
                      action="store_true",
                      default=False)
+    parser.addoption(YamlSystemTestRunner.debug_arg,
+                     action="store_true",
+                     default=False)

@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from ...graphs import Graph022
+from ...graphs import Graph042
 from ...utils import BaseGraphSystemTester
 
 from ....engine import BGPSimpleAS
@@ -12,7 +12,7 @@ from ..withdraw_prop import RouteLeakAS1Poisoned
 
 
 class BaseBGPWithdrawNextBestTester(BaseGraphSystemTester):
-    GraphInfoCls = Graph022
+    GraphInfoCls = Graph042
     EngineInputCls = RouteLeakAS1Poisoned
     propagation_rounds = 2
     base_dir = Path(__file__).parent

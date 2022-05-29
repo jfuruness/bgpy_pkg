@@ -1,5 +1,4 @@
-from lib_caida_collector import CustomerProviderLink as CPLink
-from lib_caida_collector import PeerLink
+from lib_caida_collector import PeerLink, CustomerProviderLink as CPLink
 
 from .graph_info import GraphInfo
 from ...enums import ASNs
@@ -7,31 +6,26 @@ from ...enums import ASNs
 
 class Graph022(GraphInfo):
     r"""
-    Test next-best announcement selection after a withdrawal using a route leak
-    from AS 666.
-
-     777---1
-     |  \  |
-     \   2 3
-      \ / \|
-      666  4
-           |
-           5
-
-    The leak from AS 666 is path-poisoned with AS 4, so 4 will reject the new
-    route as invalid. This test verifies that 4 correctly chooses the longer,
-    but still valid path from AS 3.
+    Image of scenario @ this link
+    TODO: add link here
     """
 
     def __init__(self):
         super(Graph022, self).__init__(
-            peer_links=set([PeerLink(ASNs.VICTIM.value, 1)]),
+            peer_links=set([PeerLink(1, 2)]),
             customer_provider_links=set(
-                [CPLink(provider_asn=ASNs.VICTIM.value, customer_asn=666),
-                 CPLink(provider_asn=ASNs.VICTIM.value, customer_asn=2),
-                 CPLink(provider_asn=2, customer_asn=4),
-                 CPLink(provider_asn=2, customer_asn=666),
-                 CPLink(provider_asn=4, customer_asn=5),
-                 CPLink(provider_asn=1, customer_asn=3),
-                 CPLink(provider_asn=3, customer_asn=4),
-                 ]))
+                [
+                    CPLink(provider_asn=4, customer_asn=3),
+                    CPLink(provider_asn=4, customer_asn=7),
+                    CPLink(provider_asn=3, customer_asn=1),
+                    CPLink(provider_asn=3, customer_asn=2),
+                    CPLink(provider_asn=1, customer_asn=ASNs.ATTACKER.value),
+                    CPLink(provider_asn=2, customer_asn=5),
+                    CPLink(provider_asn=5, customer_asn=ASNs.VICTIM.value),
+                    CPLink(provider_asn=5, customer_asn=6),
+                    CPLink(provider_asn=6, customer_asn=7),
+                    CPLink(provider_asn=7, customer_asn=8),
+                    CPLink(provider_asn=7, customer_asn=9),
+                ]
+            ),
+        )

@@ -13,6 +13,7 @@ class SuperprefixPrefixHijack(EngineInput):
                                       **ann_kwargs),
                 gen_attacker_prefix_ann(self.AnnCls,
                                         self.attacker_asn,
+                                        self.victim_asn,
                                         **ann_kwargs),
                 gen_attacker_superprefix_ann(self.AnnCls,
                                              self.attacker_asn,

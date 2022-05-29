@@ -16,17 +16,17 @@ class BaseBGPRelationPreferenceTester(BaseGraphSystemTester):
     base_dir = Path(__file__).parent
 
 
-class Test001BGPRelationPreference(BaseBGPRelationPreferenceTester):
+class Test019BGPRelationPreference(BaseBGPRelationPreferenceTester):
     BaseASCls = BGPSimpleAS
 
 
-class Test002BGPRelationPreference(BaseBGPRelationPreferenceTester):
+class Test020BGPRelationPreference(BaseBGPRelationPreferenceTester):
     BaseASCls = BGPAS
 
 
-class Test003BGPRelationPreference(BaseBGPRelationPreferenceTester):
+class Test021BGPRelationPreference(BaseBGPRelationPreferenceTester):
     BaseASCls = ROVSimpleAS
 
 
-class Test004BGPRelationPreference(BaseBGPRelationPreferenceTester):
+class Test022BGPRelationPreference(BaseBGPRelationPreferenceTester):
     BaseASCls = ROVAS
