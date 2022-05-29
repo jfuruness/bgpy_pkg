@@ -10,9 +10,8 @@
       recv_relationship: !simulator_codec/Relationships
         name: PEERS
         value: 2
-      roa_validity: !simulator_codec/ROAValidity
-        name: VALID
-        value: 0
+      roa_origin: 777
+      roa_valid_length: true
       seed_asn: null
       timestamp: 0
       traceback_end: false
@@ -32,9 +31,8 @@
           recv_relationship: !simulator_codec/Relationships
             name: ORIGIN
             value: 4
-          roa_validity: !simulator_codec/ROAValidity
-            name: VALID
-            value: 0
+          roa_origin: 777
+          roa_valid_length: true
           seed_asn: 777
           timestamp: 0
           traceback_end: false
@@ -50,9 +48,8 @@
         recv_relationship: !simulator_codec/Relationships
           name: PEERS
           value: 2
-        roa_validity: !simulator_codec/ROAValidity
-          name: VALID
-          value: 0
+        roa_origin: 777
+        roa_valid_length: true
         seed_asn: null
         timestamp: 0
         traceback_end: false
@@ -60,14 +57,14 @@
   _send_q: !yamlable/SendQueue {}
   asn: 1
   customer_cone_size: 3
-  customers:
+  customers: !!python/tuple
   - 3
   input_clique: false
   ixp: false
-  peers:
+  peers: !!python/tuple
   - 777
   propagation_rank: 3
-  providers: []
+  providers: !!python/tuple []
 2: !yamlable/BGPAS
   _local_rib: !yamlable/LocalRIB
     1.2.0.0/16: !yamlable/Announcement
@@ -81,9 +78,8 @@
       recv_relationship: !simulator_codec/Relationships
         name: CUSTOMERS
         value: 3
-      roa_validity: !simulator_codec/ROAValidity
-        name: VALID
-        value: 0
+      roa_origin: 777
+      roa_valid_length: true
       seed_asn: null
       timestamp: 0
       traceback_end: false
@@ -105,9 +101,8 @@
           recv_relationship: !simulator_codec/Relationships
             name: CUSTOMERS
             value: 3
-          roa_validity: !simulator_codec/ROAValidity
-            name: VALID
-            value: 0
+          roa_origin: 777
+          roa_valid_length: true
           seed_asn: null
           timestamp: 0
           traceback_end: false
@@ -125,9 +120,8 @@
           recv_relationship: !simulator_codec/Relationships
             name: ORIGIN
             value: 4
-          roa_validity: !simulator_codec/ROAValidity
-            name: VALID
-            value: 0
+          roa_origin: 777
+          roa_valid_length: true
           seed_asn: 777
           timestamp: 0
           traceback_end: false
@@ -145,9 +139,8 @@
         recv_relationship: !simulator_codec/Relationships
           name: CUSTOMERS
           value: 3
-        roa_validity: !simulator_codec/ROAValidity
-          name: VALID
-          value: 0
+        roa_origin: 777
+        roa_valid_length: true
         seed_asn: null
         timestamp: 0
         traceback_end: false
@@ -164,9 +157,8 @@
         recv_relationship: !simulator_codec/Relationships
           name: CUSTOMERS
           value: 3
-        roa_validity: !simulator_codec/ROAValidity
-          name: VALID
-          value: 0
+        roa_origin: 777
+        roa_valid_length: true
         seed_asn: null
         timestamp: 0
         traceback_end: false
@@ -183,9 +175,8 @@
         recv_relationship: !simulator_codec/Relationships
           name: CUSTOMERS
           value: 3
-        roa_validity: !simulator_codec/ROAValidity
-          name: VALID
-          value: 0
+        roa_origin: 777
+        roa_valid_length: true
         seed_asn: null
         timestamp: 0
         traceback_end: false
@@ -193,14 +184,14 @@
   _send_q: !yamlable/SendQueue {}
   asn: 2
   customer_cone_size: 3
-  customers:
+  customers: !!python/tuple
   - 4
   - 666
   input_clique: false
   ixp: false
-  peers: []
+  peers: !!python/tuple []
   propagation_rank: 2
-  providers:
+  providers: !!python/tuple
   - 777
 3: !yamlable/BGPAS
   _local_rib: !yamlable/LocalRIB
@@ -214,9 +205,8 @@
       recv_relationship: !simulator_codec/Relationships
         name: PROVIDERS
         value: 1
-      roa_validity: !simulator_codec/ROAValidity
-        name: VALID
-        value: 0
+      roa_origin: 777
+      roa_valid_length: true
       seed_asn: null
       timestamp: 0
       traceback_end: false
@@ -237,9 +227,8 @@
           recv_relationship: !simulator_codec/Relationships
             name: PEERS
             value: 2
-          roa_validity: !simulator_codec/ROAValidity
-            name: VALID
-            value: 0
+          roa_origin: 777
+          roa_valid_length: true
           seed_asn: null
           timestamp: 0
           traceback_end: false
@@ -256,9 +245,8 @@
         recv_relationship: !simulator_codec/Relationships
           name: PROVIDERS
           value: 1
-        roa_validity: !simulator_codec/ROAValidity
-          name: VALID
-          value: 0
+        roa_origin: 777
+        roa_valid_length: true
         seed_asn: null
         timestamp: 0
         traceback_end: false
@@ -266,13 +254,13 @@
   _send_q: !yamlable/SendQueue {}
   asn: 3
   customer_cone_size: 2
-  customers:
+  customers: !!python/tuple
   - 4
   input_clique: false
   ixp: false
-  peers: []
+  peers: !!python/tuple []
   propagation_rank: 2
-  providers:
+  providers: !!python/tuple
   - 1
 4: !yamlable/BGPAS
   _local_rib: !yamlable/LocalRIB
@@ -287,9 +275,8 @@
       recv_relationship: !simulator_codec/Relationships
         name: PROVIDERS
         value: 1
-      roa_validity: !simulator_codec/ROAValidity
-        name: VALID
-        value: 0
+      roa_origin: 777
+      roa_valid_length: true
       seed_asn: null
       timestamp: 0
       traceback_end: false
@@ -312,9 +299,8 @@
           recv_relationship: !simulator_codec/Relationships
             name: CUSTOMERS
             value: 3
-          roa_validity: !simulator_codec/ROAValidity
-            name: VALID
-            value: 0
+          roa_origin: 777
+          roa_valid_length: true
           seed_asn: null
           timestamp: 0
           traceback_end: false
@@ -334,9 +320,8 @@
           recv_relationship: !simulator_codec/Relationships
             name: PROVIDERS
             value: 1
-          roa_validity: !simulator_codec/ROAValidity
-            name: VALID
-            value: 0
+          roa_origin: 777
+          roa_valid_length: true
           seed_asn: null
           timestamp: 0
           traceback_end: false
@@ -354,9 +339,8 @@
         recv_relationship: !simulator_codec/Relationships
           name: PROVIDERS
           value: 1
-        roa_validity: !simulator_codec/ROAValidity
-          name: VALID
-          value: 0
+        roa_origin: 777
+        roa_valid_length: true
         seed_asn: null
         timestamp: 0
         traceback_end: false
@@ -364,13 +348,13 @@
   _send_q: !yamlable/SendQueue {}
   asn: 4
   customer_cone_size: 1
-  customers:
+  customers: !!python/tuple
   - 5
   input_clique: false
   ixp: false
-  peers: []
+  peers: !!python/tuple []
   propagation_rank: 1
-  providers:
+  providers: !!python/tuple
   - 2
   - 3
 5: !yamlable/BGPAS
@@ -387,9 +371,8 @@
       recv_relationship: !simulator_codec/Relationships
         name: PROVIDERS
         value: 1
-      roa_validity: !simulator_codec/ROAValidity
-        name: VALID
-        value: 0
+      roa_origin: 777
+      roa_valid_length: true
       seed_asn: null
       timestamp: 0
       traceback_end: false
@@ -412,9 +395,8 @@
           recv_relationship: !simulator_codec/Relationships
             name: PROVIDERS
             value: 1
-          roa_validity: !simulator_codec/ROAValidity
-            name: VALID
-            value: 0
+          roa_origin: 777
+          roa_valid_length: true
           seed_asn: null
           timestamp: 0
           traceback_end: false
@@ -423,12 +405,12 @@
   _send_q: !yamlable/SendQueue {}
   asn: 5
   customer_cone_size: 0
-  customers: []
+  customers: !!python/tuple []
   input_clique: false
   ixp: false
-  peers: []
+  peers: !!python/tuple []
   propagation_rank: 0
-  providers:
+  providers: !!python/tuple
   - 4
 666: !yamlable/BGPAS
   _local_rib: !yamlable/LocalRIB
@@ -442,9 +424,8 @@
       recv_relationship: !simulator_codec/Relationships
         name: CUSTOMERS
         value: 3
-      roa_validity: !simulator_codec/ROAValidity
-        name: VALID
-        value: 0
+      roa_origin: 777
+      roa_valid_length: true
       seed_asn: null
       timestamp: 0
       traceback_end: false
@@ -467,9 +448,8 @@
           recv_relationship: !simulator_codec/Relationships
             name: CUSTOMERS
             value: 3
-          roa_validity: !simulator_codec/ROAValidity
-            name: VALID
-            value: 0
+          roa_origin: 777
+          roa_valid_length: true
           seed_asn: null
           timestamp: 0
           traceback_end: false
@@ -487,9 +467,8 @@
           recv_relationship: !simulator_codec/Relationships
             name: ORIGIN
             value: 4
-          roa_validity: !simulator_codec/ROAValidity
-            name: VALID
-            value: 0
+          roa_origin: 777
+          roa_valid_length: true
           seed_asn: 777
           timestamp: 0
           traceback_end: false
@@ -506,9 +485,8 @@
         recv_relationship: !simulator_codec/Relationships
           name: CUSTOMERS
           value: 3
-        roa_validity: !simulator_codec/ROAValidity
-          name: VALID
-          value: 0
+        roa_origin: 777
+        roa_valid_length: true
         seed_asn: null
         timestamp: 0
         traceback_end: false
@@ -524,9 +502,8 @@
         recv_relationship: !simulator_codec/Relationships
           name: CUSTOMERS
           value: 3
-        roa_validity: !simulator_codec/ROAValidity
-          name: VALID
-          value: 0
+        roa_origin: 777
+        roa_valid_length: true
         seed_asn: null
         timestamp: 0
         traceback_end: false
@@ -534,12 +511,12 @@
   _send_q: !yamlable/SendQueue {}
   asn: 666
   customer_cone_size: 0
-  customers: []
+  customers: !!python/tuple []
   input_clique: false
   ixp: false
-  peers: []
+  peers: !!python/tuple []
   propagation_rank: 0
-  providers:
+  providers: !!python/tuple
   - 777
   - 2
 777: !yamlable/BGPAS
@@ -552,9 +529,8 @@
       recv_relationship: !simulator_codec/Relationships
         name: ORIGIN
         value: 4
-      roa_validity: !simulator_codec/ROAValidity
-        name: VALID
-        value: 0
+      roa_origin: 777
+      roa_valid_length: true
       seed_asn: 777
       timestamp: 0
       traceback_end: false
@@ -571,9 +547,8 @@
         recv_relationship: !simulator_codec/Relationships
           name: ORIGIN
           value: 4
-        roa_validity: !simulator_codec/ROAValidity
-          name: VALID
-          value: 0
+        roa_origin: 777
+        roa_valid_length: true
         seed_asn: 777
         timestamp: 0
         traceback_end: false
@@ -587,9 +562,8 @@
         recv_relationship: !simulator_codec/Relationships
           name: ORIGIN
           value: 4
-        roa_validity: !simulator_codec/ROAValidity
-          name: VALID
-          value: 0
+        roa_origin: 777
+        roa_valid_length: true
         seed_asn: 777
         timestamp: 0
         traceback_end: false
@@ -603,9 +577,8 @@
         recv_relationship: !simulator_codec/Relationships
           name: ORIGIN
           value: 4
-        roa_validity: !simulator_codec/ROAValidity
-          name: VALID
-          value: 0
+        roa_origin: 777
+        roa_valid_length: true
         seed_asn: 777
         timestamp: 0
         traceback_end: false
@@ -613,12 +586,12 @@
   _send_q: !yamlable/SendQueue {}
   asn: 777
   customer_cone_size: 4
-  customers:
+  customers: !!python/tuple
   - 666
   - 2
   input_clique: false
   ixp: false
-  peers:
+  peers: !!python/tuple
   - 1
   propagation_rank: 3
-  providers: []
+  providers: !!python/tuple []

@@ -20,8 +20,8 @@
   asn: 1
   customer_cone_size: 3
   customers: !!python/tuple
-  - 666
   - 2
+  - 666
   input_clique: false
   ixp: false
   peers: !!python/tuple []
