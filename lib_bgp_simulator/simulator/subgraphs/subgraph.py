@@ -5,6 +5,8 @@ from collections import defaultdict
 class Subgraph(ABC):
     """A subgraph for data display"""
 
+    __slots__ = ("data",)
+
     def __init__(self):
         """Inits data"""
 

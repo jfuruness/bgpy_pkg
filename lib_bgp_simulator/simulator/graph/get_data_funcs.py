@@ -16,13 +16,16 @@ def run(self, parse_cpus):
 
     # Single process
     if parse_cpus == 1:
+        print("Running single proc (DELETE")
         results = self._get_single_process_results()
     # Multiprocess
     else:
+        print("Running multi proc (DELETE")
         results = self._get_mp_results(parse_cpus)
 
     for result in results:
         for self_subgraph, result_subgraph in zip(self.subgraphs, result):
+            print("Adding trial info (DELETE")
             self_subgraph.add_trial_info(result_subgraph)
 
     print("\nGraph complete")

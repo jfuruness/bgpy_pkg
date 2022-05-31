@@ -22,6 +22,7 @@ class NonRoutedPrefixHijack(SingleAtkVicAdoptClsScenario):
 
         atk_ann_attrs = {"AnnCls": self.AnnCls,
                          "origin_asn": self.attacker_asn,
+                         "seed_asn": self.attacker_asn,
                          "prefix": Prefixes.PREFIX.value,
                          "timestamp": Timestamps.ATTACKER.value,
                          "roa_valid_length": True,

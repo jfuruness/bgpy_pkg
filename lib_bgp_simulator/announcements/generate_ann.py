@@ -2,12 +2,14 @@ from .announcement import Announcement
 from ..enums import Relationships
 
 
-def generate_ann(AnnCls,
+def generate_ann(*,
+                 AnnCls,
                  origin_asn: int,
                  prefix: str,
                  timestamp: int,
                  roa_valid_length: bool,
                  roa_origin: int,
+                 seed_asn=None,
                  communities=(),
                  recv_relationship=Relationships.ORIGIN,
                  # Since generate_ann only creates an announcement
@@ -23,11 +25,13 @@ def generate_ann(AnnCls,
     Note that for subclasses of Ann, you can still use this func
     you just pass in any subclass defaults via ann_subclass_defaults
     """
+    if seed_asn is None:
+        seed_asn = origin_asn
 
     kwargs = {"prefix": prefix,
               "timestamp": timestamp,
               "as_path": (origin_asn,),
-              "seed_asn": origin_asn,
+              "seed_asn": seed_asn,
               "recv_relationship": recv_relationship,
               "roa_valid_length": roa_valid_length,
               "roa_origin": roa_origin,

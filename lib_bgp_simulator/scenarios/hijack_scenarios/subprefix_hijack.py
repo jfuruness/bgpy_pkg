@@ -26,6 +26,7 @@ class SubprefixHijack(SingleAtkVicAdoptClsScenario):
         # Victim ann attrs
         vic_ann_attrs = {"AnnCls": self.AnnCls,
                          "origin_asn": self.victim_asn,
+                         "seed_asn": self.victim_asn,
                          "prefix": Prefixes.PREFIX.value,
                          "timestamp": Timestamps.VICTIM.value,
                          "roa_valid_length": True,
@@ -34,6 +35,7 @@ class SubprefixHijack(SingleAtkVicAdoptClsScenario):
         # Attacker ann attrs
         atk_ann_attrs = {"AnnCls": self.AnnCls,
                          "origin_asn": self.attacker_asn,
+                         "seed_asn": self.attacker_asn,
                          "prefix": Prefixes.SUBPREFIX.value,
                          "timestamp": Timestamps.ATTACKER.value,
                          "roa_valid_length": False,

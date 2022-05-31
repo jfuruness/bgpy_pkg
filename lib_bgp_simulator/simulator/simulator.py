@@ -57,6 +57,7 @@ class Simulator:
 
         # Done here so that the caida files are cached
         # So that multiprocessing doesn't interfere with one another
+        print("running caida (DELETE)")
         CaidaCollector().run()
         # Runs trials and writes graphs
         self._run_and_write_graphs(graphs, graph_path)

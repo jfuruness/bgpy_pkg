@@ -23,6 +23,7 @@ class ValidPrefix(SingleAtkVicAdoptClsScenario):
         # Victim ann attrs
         vic_ann_attrs = {"AnnCls": self.AnnCls,
                          "origin_asn": self.victim_asn,
+                         "seed_asn": self.victim_asn,
                          "prefix": Prefixes.PREFIX.value,
                          "timestamp": Timestamps.VICTIM.value,
                          "roa_valid_length": True,

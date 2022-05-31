@@ -29,6 +29,7 @@ class SuperprefixPrefixHijack(SingleAtkVicAdoptClsScenario):
         # Victim ann attrs
         vic_ann_attrs = {"AnnCls": self.AnnCls,
                          "origin_asn": self.victim_asn,
+                         "seed_asn": self.victim_asn,
                          "prefix": Prefixes.PREFIX.value,
                          "timestamp": Timestamps.VICTIM.value,
                          "roa_valid_length": True,
@@ -37,6 +38,7 @@ class SuperprefixPrefixHijack(SingleAtkVicAdoptClsScenario):
         # Attacker ann attrs
         atk_prefix_ann_attrs = {"AnnCls": self.AnnCls,
                                 "origin_asn": self.attacker_asn,
+                                "seed_asn": self.attacker_asn,
                                 "prefix": Prefixes.PREFIX.value,
                                 "timestamp": Timestamps.ATTACKER.value,
                                 "roa_valid_length": True,
@@ -45,6 +47,7 @@ class SuperprefixPrefixHijack(SingleAtkVicAdoptClsScenario):
         # Attacker superprefix ann attrs
         atk_superprefix_ann_attrs = {"AnnCls": self.AnnCls,
                                      "origin_asn": self.attacker_asn,
+                                     "seed_asn": self.attacker_asn,
                                      "prefix": Prefixes.SUPERPREFIX.value,
                                      "timestamp": Timestamps.ATTACKER.value,
                                      "roa_valid_length": None,
