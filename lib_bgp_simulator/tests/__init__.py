@@ -43,6 +43,7 @@ from .graphs import Graph041
 from .graphs import Graph042
 from .graphs import Graph043
 from .graphs import Graph044
+from .graphs import Graph045
 
 # System tests that may be useful elsewhere (not YAML)
 from .system_tests import test_sim_inputs
@@ -102,6 +103,7 @@ __all__ = ["pytest_addoption",
            "Graph042",
            "Graph043",
            "Graph044",
+           "Graph045",
            # System tests that may be useful elsewhere (not YAML)",
            "test_sim_inputs",
            # Classes to run/write tests",
