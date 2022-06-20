@@ -1,6 +1,6 @@
 from typing import Optional
 
-from .....announcements import Announcement as Ann
+from .....announcement import Announcement as Ann
 from .....enums import Relationships
 
 

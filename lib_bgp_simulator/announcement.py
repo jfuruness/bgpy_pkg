@@ -2,7 +2,10 @@ from itertools import chain
 
 from yamlable import YamlAble, yaml_info, yaml_info_decorate
 
-from ..enums import Relationships
+from .enums import Relationships
+
+
+_all_slots = dict()
 
 
 @yaml_info(yaml_tag="Announcement")
@@ -66,7 +69,7 @@ class Announcement(YamlAble):
     def copy(self, overwrite_default_kwargs=None):
         """Creates a new ann with proper sim attrs"""
 
-        if overwrite_default_kwargs = None:
+        if overwrite_default_kwargs is None:
             overwrite_default_kwargs = dict()
 
         kwargs = self._get_vars()
@@ -130,20 +133,24 @@ class Announcement(YamlAble):
     def all_slots(self):
         """Returns all slots including of parent classes"""
 
+        global _all_slots
+        cls_slots = _all_slots.get(self.__class__)
+
         # singleton for speed
-        if getattr(self.__class__, "all_slots", None) is None:
+        if not cls_slots:
             # https://stackoverflow.com/a/6720815/8903959
-            all_slots = chain.from_iterable(getattr(cls, '__slots__', [])
+            cls_slots = chain.from_iterable(getattr(cls, '__slots__', [])
                                             for cls in self.__class__.__mro__)
-            self.__class__.all_slots = all_slots
-        return self.__class__.all_slots
+            cls_slots = tuple(list(cls_slots))
+            _all_slots[self.__class__] = cls_slots
+        return cls_slots
 
     def _get_vars(self):
         """Returns class as a dict
 
         (Can't use normal vars due to slots)"""
 
-        return {x: getattr(x) for x in self.__class__.all_slots}
+        return {x: getattr(self, x) for x in self.all_slots}
 
 ##############
 # Yaml funcs #

@@ -45,7 +45,9 @@ class SingleAtkVicAdoptClsScenario(Scenario):
         """Sets up engine input"""
 
         self._set_attacker_victim_pair(engine, percent_adopt, prev_scenario)
-
+        # Must call this here due to atk/vic pair being different
+        # TODO: Fix
+        super().__init__()
         super(SingleAtkVicAdoptClsScenario, self).setup_engine(engine,
                                                                percent_adopt,
                                                                prev_scenario)

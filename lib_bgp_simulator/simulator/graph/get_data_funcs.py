@@ -103,7 +103,7 @@ def _run_chunk(self, percent_adopt_trials):
                 # The reason we aggregate info right now, instead of saving
                 # the engine and doing it later, is because doing it all
                 # in RAM is MUCH faster, and speed is important
-                self._aggregate_data_from_engine_run(subgraphs, **kwargs)
+                self._aggregate_engine_run_data(subgraphs, **kwargs)
 
                 # By default, this is a no op
                 scenario.post_propagation_hook(**kwargs)

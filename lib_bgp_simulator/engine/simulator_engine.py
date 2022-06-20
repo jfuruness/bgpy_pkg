@@ -16,7 +16,6 @@ class SimulatorEngine(BGPDAG):
     Then the run function can be called, and propagation occurs
     """
 
-
     __slots__ = "ready_to_run",
 
     def __init__(self,
@@ -67,14 +66,11 @@ class SimulatorEngine(BGPDAG):
         3. customers
         """
 
-        kwargs = {"propagation_round": propagation_round,
-                  "scenario": scenario}
+        self._propagate_to_providers(propagation_round, scenario)
+        self._propagate_to_peers(propagation_round, scenario)
+        self._propagate_to_customers(propagation_round, scenario)
 
-        self._propagate_to_providers(**kwargs)
-        self._propagate_to_peers(**kwargs)
-        self._propagate_to_customers(**kwargs)
-
-    def _propagate_to_providers(self, **kwargs):
+    def _propagate_to_providers(self, propagation_round, scenario):
         """Propogate to providers"""
 
         # Propogation ranks go from stubs to input_clique in ascending order
@@ -84,13 +80,15 @@ class SimulatorEngine(BGPDAG):
             if i > 0:
                 # Process first because maybe it recv from lower ranks
                 for as_obj in rank:
-                    as_obj.process_incoming_anns(Relationships.CUSTOMERS,
-                                                 **kwargs)
+                    as_obj.process_incoming_anns(
+                        from_rel=Relationships.CUSTOMERS,
+                        propagation_round=propagation_round,
+                        scenario=scenario)
             # Send to the higher ranks
             for as_obj in rank:
                 as_obj.propagate_to_providers()
 
-    def _propagate_to_peers(self, **kwargs):
+    def _propagate_to_peers(self, propagation_round, scenario):
         """Propagate to peers"""
 
         # The reason you must separate this for loop here
@@ -101,9 +99,11 @@ class SimulatorEngine(BGPDAG):
         for as_obj in self:
             as_obj.propagate_to_peers()
         for as_obj in self:
-            as_obj.process_incoming_anns(Relationships.PEERS, **kwargs)
+            as_obj.process_incoming_anns(from_rel=Relationships.PEERS,
+                                         propagation_round=propagation_round,
+                                         scenario=scenario)
 
-    def _propagate_to_customers(self, **kwargs):
+    def _propagate_to_customers(self, propagation_round, scenario):
         """Propagate to customers"""
 
         # Propogation ranks go from stubs to input_clique in ascending order
@@ -113,7 +113,9 @@ class SimulatorEngine(BGPDAG):
             # There are no incomming Anns at the top
             if i > 0:
                 for as_obj in rank:
-                    as_obj.process_incoming_anns(Relationships.PROVIDERS,
-                                                 **kwargs)
+                    as_obj.process_incoming_anns(
+                        from_rel=Relationships.PROVIDERS,
+                        propagation_round=propagation_round,
+                        scenario=scenario)
             for as_obj in rank:
                 as_obj.propagate_to_customers()

@@ -10,14 +10,14 @@ from .....engine import BGPAS
 class AttackerSuccessAdoptingEtcSubgraph(AttackerSuccessSubgraph):
     """A graph for attacker success for etc ASes that adopt"""
 
-    def aggregate_data_from_engine_run(self,
-                                       shared_data,
-                                       engine,
-                                       *,
-                                       percent_adopt,
-                                       trial,
-                                       scenario,
-                                       propagation_round):
+    def aggregate_engine_run_data(self,
+                                  shared_data,
+                                  engine,
+                                  *,
+                                  percent_adopt,
+                                  trial,
+                                  scenario,
+                                  propagation_round):
         """Aggregates data after a single engine run
 
         Shared data is passed between subgraph classes and is

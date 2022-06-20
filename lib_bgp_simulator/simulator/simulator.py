@@ -16,7 +16,7 @@ from .subgraphs import AttackerSuccessNonAdoptingInputCliqueSubgraph
 from .subgraphs import AttackerSuccessNonAdoptingStubsAndMHSubgraph
 
 from ..engine import BGPAS
-from ..engine import ROVAS
+from ..engine import ROVSimpleAS
 from ..scenarios import SubprefixHijack
 
 
@@ -32,7 +32,7 @@ class Simulator:
             graphs=[Graph(name="test_graph",
                           percent_adoptions=(5, 10),
                           scenarios=[SubprefixHijack(AdoptASCls=x)
-                                     for x in [ROVAS]],
+                                     for x in [ROVSimpleAS]],
                           subgraphs=[
                             AttackerSuccessAdoptingEtcSubgraph(),
                             AttackerSuccessAdoptingInputCliqueSubgraph(),

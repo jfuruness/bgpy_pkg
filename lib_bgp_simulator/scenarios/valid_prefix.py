@@ -1,6 +1,6 @@
 from .base_scenarios import SingleAtkVicAdoptClsScenario
-from ..announcements import generate_ann
 from ..enums import Prefixes
+from ..enums import Relationships
 from ..enums import Timestamps
 
 

@@ -3,7 +3,7 @@ from abc import ABC, abstractmethod
 from ipaddress import ip_network
 from yamlable import YamlAble, yaml_info, yaml_info_decorate
 
-from ...announcements import Announcement
+from ...announcement import Announcement
 from ...engine import BGPSimpleAS
 
 

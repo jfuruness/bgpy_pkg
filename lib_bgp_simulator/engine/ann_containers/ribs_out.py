@@ -2,7 +2,7 @@ from typing import Optional
 
 from .ann_container import AnnContainer
 
-from ...announcements import Announcement as Ann
+from ...announcement import Announcement as Ann
 
 
 class RIBsOut(AnnContainer):

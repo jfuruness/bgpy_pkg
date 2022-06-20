@@ -22,7 +22,7 @@ class SubprefixHijack(SingleAtkVicAdoptClsScenario):
         vic_ann = self.AnnCls(prefix=Prefixes.PREFIX.value,
                               as_path=(self.victim_asn,),
                               timestamp=Timestamps.VICTIM.value,
-                              seed_asn=(self.victim_asn,),
+                              seed_asn=self.victim_asn,
                               roa_valid_length=True,
                               roa_origin=self.victim_asn,
                               recv_relationship=Relationships.ORIGIN)
@@ -30,7 +30,7 @@ class SubprefixHijack(SingleAtkVicAdoptClsScenario):
         atk_ann = self.AnnCls(prefix=Prefixes.PREFIX.value,
                               as_path=(self.attacker_asn,),
                               timestamp=Timestamps.ATTACKER.value,
-                              seed_asn=(self.attacker_asn,),
+                              seed_asn=self.attacker_asn,
                               roa_valid_length=True,
                               roa_origin=self.victim_asn,
                               recv_relationship=Relationships.ORIGIN)

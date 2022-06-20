@@ -1,6 +1,6 @@
 from ..bgp import BGPSimpleAS
 
-from ....announcements import Announcement as Ann
+from ....announcement import Announcement as Ann
 
 
 class ROVSimpleAS(BGPSimpleAS):

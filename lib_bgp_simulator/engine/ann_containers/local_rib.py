@@ -1,6 +1,6 @@
 from .ann_container import AnnContainer
 
-from ...announcements import Announcement
+from ...announcement import Announcement
 
 
 class LocalRIB(AnnContainer):
