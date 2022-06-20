@@ -20,7 +20,7 @@ def _new_ann_better(self,
                     new_processed: Relationships,
                     # Default recv rel if new ann is unprocessed
                     default_new_recv_rel: Relationships,
-                    **kwargs) -> opt_bool:
+                    ) -> opt_bool:
     """Determines if the new ann > current ann by Gao Rexford
 
     current_ann: Announcement we are checking against
@@ -45,8 +45,7 @@ def _new_ann_better(self,
                                                     default_current_recv_rel,
                                                     new_ann,
                                                     new_processed,
-                                                    default_new_recv_rel,
-                                                    **kwargs)
+                                                    default_new_recv_rel)
     # If new rel better is True or False, return it
     if new_rel_better is not None:
         return new_rel_better
@@ -55,16 +54,15 @@ def _new_ann_better(self,
         return self._new_as_path_ties_better(current_ann,
                                              current_processed,
                                              new_ann,
-                                             new_processed,
-                                             **kwargs)
+                                             new_processed)
 
 
 def _new_as_path_ties_better(self,
                              current_ann: Optional[Ann],
                              current_processed: bool,
                              new_ann: Ann,
-                             new_processed: bool,
-                             **kwargs) -> opt_bool:
+                             new_processed: bool
+                             ) -> opt_bool:
     """Returns bool if new_ann > current_ann by gao rexford
 
     Specifically relating to as path and tie breaks
@@ -84,8 +82,7 @@ def _new_as_path_ties_better(self,
         current_ann,
         current_processed,
         new_ann,
-        new_processed,
-        **kwargs)
+        new_processed)
 
     # If new_as_path_shorter is True or False, return it
     if new_as_path_shorter is not None:
@@ -95,8 +92,7 @@ def _new_as_path_ties_better(self,
         return self._new_wins_ties(current_ann,
                                    current_processed,
                                    new_ann,
-                                   new_processed,
-                                   **kwargs)
+                                   new_processed)
 
 
 def _new_rel_better(self,
@@ -106,7 +102,7 @@ def _new_rel_better(self,
                     new_ann: Ann,
                     new_processed: bool,
                     default_new_recv_rel: Relationships,
-                    **kwargs) -> opt_bool:
+                    ) -> opt_bool:
     """Determines if the new ann > current ann by Gao Rexford/relationship
 
     current_ann: Announcement we are checking against
@@ -151,7 +147,7 @@ def _new_as_path_shorter(self,
                          current_processed: bool,
                          new_ann: Ann,
                          new_processed: bool,
-                         **kwargs) -> opt_bool:
+                         ) -> opt_bool:
     """Determines if the new ann > current ann by Gao Rexford for AS Path
 
     current_ann: Announcement we are checking against
@@ -181,7 +177,7 @@ def _new_wins_ties(self,
                    current_processed,
                    new_ann,
                    new_processed,
-                   **kwargs) -> bool:
+                   ) -> bool:
     """Determines if the new ann > current ann by Gao Rexford for ties
 
     This breaks ties by lowest asn

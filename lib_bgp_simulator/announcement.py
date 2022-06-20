@@ -1,21 +1,11 @@
-import dataclasses
+from itertools import chain
 
 from yamlable import YamlAble, yaml_info, yaml_info_decorate
 
 from ..enums import Relationships
 
 
-# Because of the two issues below, we MUST use
-# unsafe_hash and not frozen
-# We can't use their backports
-# Because we inherit announcements
-# So the slots in an announcement != vars
-# When python3.10 is supported by pypy3, we can
-# use Frozen properly
-# https://stackoverflow.com/q/55307017/8903959
-# https://bugs.python.org/issue45520
 @yaml_info(yaml_tag="Announcement")
-@dataclasses.dataclass(unsafe_hash=True)
 class Announcement(YamlAble):
     """BGP Announcement"""
 
@@ -25,18 +15,28 @@ class Announcement(YamlAble):
                  "roa_origin",
                  "recv_relationship", "seed_asn", "withdraw", "traceback_end")
 
-    # NOTE: can't have defaults due to slots. Sorry man
-    # https://stackoverflow.com/a/50180784/8903959
-    prefix: str
-    as_path: tuple
-    timestamp: int
-    seed_asn: int
-    roa_valid_length: bool
-    roa_origin: int
-    recv_relationship: Relationships
-    withdraw: bool
-    traceback_end: bool
-    communities: tuple
+    def __init__(self,
+                 *,
+                 prefix: str,
+                 as_path: tuple,
+                 timestamp: int,
+                 seed_asn: int,
+                 roa_valid_length: bool,
+                 roa_origin: int,
+                 recv_relationship: Relationships,
+                 withdraw: bool = False,
+                 traceback_end: bool = False,
+                 communities: tuple = ()):
+        self.prefix: str = prefix
+        self.as_path: tuple = as_path
+        self.timestamp: int = timestamp
+        self.seed_asn: int = seed_asn
+        self.roa_valid_length: bool = roa_valid_length
+        self.roa_origin: int = roa_origin
+        self.recv_relationship: Relationships = recv_relationship
+        self.withdraw: bool = withdraw
+        self.traceback_end: bool = traceback_end
+        self.communities: tuple = communities
 
     def __init_subclass__(cls, *args, **kwargs):
         """This method essentially creates a list of all subclasses
@@ -44,11 +44,12 @@ class Announcement(YamlAble):
         """
 
         super().__init_subclass__(*args, **kwargs)
+
         yaml_info_decorate(cls, yaml_tag=cls.__name__)
 
     def __eq__(self, other):
         if isinstance(other, Announcement):
-            return dataclasses.asdict(self) == dataclasses.asdict(other)
+            return self._get_vars() == other._get_vars()
         else:
             return NotImplemented
 
@@ -62,14 +63,19 @@ class Announcement(YamlAble):
         else:
             raise NotImplementedError
 
-    def copy(self, **extra_kwargs):
+    def copy(self, overwrite_default_kwargs=None):
         """Creates a new ann with proper sim attrs"""
 
-        # Replace seed asn and traceback end every time by default
-        kwargs = {"seed_asn": None, "traceback_end": False}
-        kwargs.update(extra_kwargs)
+        if overwrite_default_kwargs = None:
+            overwrite_default_kwargs = dict()
 
-        return dataclasses.replace(self, **kwargs)
+        kwargs = self._get_vars()
+        # Replace seed asn and traceback end every time by default
+        kwargs["seed_asn"] = None
+        kwargs["traceback_end"] = False
+        kwargs.update(overwrite_default_kwargs)
+
+        return self.__class__(**kwargs)
 
     @property
     def invalid_by_roa(self) -> bool:
@@ -120,6 +126,25 @@ class Announcement(YamlAble):
     def __str__(self):
         return f"{self.prefix} {self.as_path} {self.recv_relationship}"
 
+    @property
+    def all_slots(self):
+        """Returns all slots including of parent classes"""
+
+        # singleton for speed
+        if getattr(self.__class__, "all_slots", None) is None:
+            # https://stackoverflow.com/a/6720815/8903959
+            all_slots = chain.from_iterable(getattr(cls, '__slots__', [])
+                                            for cls in self.__class__.__mro__)
+            self.__class__.all_slots = all_slots
+        return self.__class__.all_slots
+
+    def _get_vars(self):
+        """Returns class as a dict
+
+        (Can't use normal vars due to slots)"""
+
+        return {x: getattr(x) for x in self.__class__.all_slots}
+
 ##############
 # Yaml funcs #
 ##############
@@ -127,7 +152,7 @@ class Announcement(YamlAble):
     def __to_yaml_dict__(self):
         """ This optional method is called when you call yaml.dump()"""
 
-        return dataclasses.asdict(self)
+        return self._get_vars()
 
     @classmethod
     def __from_yaml_dict__(cls, dct, yaml_tag):

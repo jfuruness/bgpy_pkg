@@ -28,7 +28,7 @@ def _prev_sent(self, neighbor, ann):
     return ann.prefix_path_attributes_eq(ribs_out_ann)
 
 
-def _process_outgoing_ann(self, neighbor: BGPSimpleAS, ann: Ann, *args):
+def _process_outgoing_ann(self, neighbor: BGPSimpleAS, ann: Ann):
     self._send_q.add_ann(neighbor.asn, ann)
 
 

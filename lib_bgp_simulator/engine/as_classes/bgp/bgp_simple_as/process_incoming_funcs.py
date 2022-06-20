@@ -1,5 +1,3 @@
-from typing import Optional
-
 from ....ann_containers import RecvQueue
 from .....enums import Relationships
 from .....announcements import Announcement as Ann
@@ -18,8 +16,7 @@ def process_incoming_anns(self,
                           from_rel: Relationships,
                           propagation_round,
                           scenario,
-                          reset_q: bool = True,
-                          **kwargs):
+                          reset_q: bool = True):
     """Process all announcements that were incoming from a specific rel"""
 
     # For each prefix, get all anns recieved
@@ -36,15 +33,14 @@ def process_incoming_anns(self,
         for ann in ann_list:
             # Make sure there are no loops
             # In ROV subclass also check roa validity
-            if self._valid_ann(ann, from_rel, **kwargs):
+            if self._valid_ann(ann, from_rel):
                 # Determine if the new ann is better
                 new_ann_better: bool = self._new_ann_better(current_ann,
                                                             current_processed,
                                                             from_rel,
                                                             ann,
                                                             False,
-                                                            from_rel,
-                                                            **kwargs)
+                                                            from_rel)
                 # If new ann is better, replace the current_ann with it
                 if new_ann_better:
                     current_ann: Ann = ann
@@ -53,8 +49,7 @@ def process_incoming_anns(self,
         # This is a new best ann. Process it and add it to the local rib
         if current_processed is False:
             current_ann: Ann = self._copy_and_process(current_ann,
-                                                      from_rel,
-                                                      **kwargs)
+                                                      from_rel)
             # Save to local rib
             self._local_rib.add_ann(current_ann)
 
@@ -63,8 +58,8 @@ def process_incoming_anns(self,
 
 def _valid_ann(self,
                ann: Ann,
-               recv_relationship: Relationships,
-               **kwargs) -> bool:
+               recv_relationship: Relationships
+               ) -> bool:
     """Determine if an announcement is valid or should be dropped"""
 
     # BGP Loop Prevention Check
@@ -73,8 +68,8 @@ def _valid_ann(self,
 
 def _copy_and_process(self,
                       ann: Ann,
-                      recv_relationship: Relationships,
-                      **extra_kwargs) -> Ann:
+                      recv_relationship: Relationships
+                      ) -> Ann:
     """Deep copies ann and modifies attrs
 
     Prepends AS to AS Path and sets recv_relationship
@@ -82,9 +77,9 @@ def _copy_and_process(self,
 
     kwargs = {"as_path": (self.asn,) + ann.as_path,
               "recv_relationship": recv_relationship}
-    kwargs.update(extra_kwargs)
 
-    return ann.copy(**kwargs)
+    # Don't use a dict comp here for speed
+    return ann.copy(overwrite_default_kwargs=kwargs)
 
 
 def _reset_q(self, reset_q: bool):
