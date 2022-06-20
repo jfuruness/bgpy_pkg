@@ -49,3 +49,30 @@ class Subgraph(ABC):
         """
 
         raise NotImplementedError
+
+    def _add_traceback_to_shared_data(self, shared_data):
+        """Adds traceback info to shared data"""
+
+        outcomes = self._get_engine_outcomes()
+
+    def _get_engine_outcomes(self):
+        """Gets the outcomes of all ASes"""
+
+        # {ASN: outcome}
+        outcomes = dict()
+        for as_obj in self.engine.as_dict.values():
+            outcome[as_obj] = self._get_as_outcome(as_obj, outcomes
+
+    # NOTE for next time:
+    # Copy most of the existing functionality to the subgraph
+    # Esp because subgraph decides how to aggregate data
+    # Not a specific scenario
+    # That is the sole purpose of the subgraph
+    # After you get the traceback function coded, add logic so that
+    # It doesn't repeat itself between each subgraph
+    # Then add logic to add the info the self.data
+    # Then go back into the graph func and aggregate self.data
+    # Then add logic to graph
+    # Then run it
+    # Then start working on refactoring the tests to ensure they work,
+    # considering things like how to add the exr to this
