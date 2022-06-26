@@ -24,8 +24,7 @@ from .scenarios import NonRoutedSuperprefixHijack
 from .scenarios import SuperprefixPrefixHijack
 from .scenarios import ValidPrefix
 
-from .simulator import Graph
-from .simulator import Simulator
+from .simulation import Simulation
 
 from .announcement import Announcement
 

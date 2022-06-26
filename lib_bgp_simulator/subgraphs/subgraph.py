@@ -1,14 +1,32 @@
 from abc import ABC, abstractmethod
 from collections import defaultdict
 
-from ...enums import ASTypes
-from ...enums import Outcomes
+import matplotlib
+import matplotlib.pyplot as plt
+
+from .line import Line
+from ..enums import ASTypes
+from ..enums import Outcomes
 
 
 class Subgraph(ABC):
     """A subgraph for data display"""
 
     __slots__ = ("data",)
+
+    name = None
+
+    subclasses = []
+
+    def __init_subclass__(cls, *args, **kwargs):
+        """This method essentially creates a list of all subclasses
+        This is allows us to know all attackers that have been created
+        """
+
+        super().__init_subclass__(*args, **kwargs)
+        cls.subclasses.append(cls)
+        names = [x.name for x in cls.subclasses if x.name]
+        assert len(set(names)) == len(names), "Duplicate subgraph class names"
 
     def __init__(self):
         """Inits data"""
@@ -18,6 +36,60 @@ class Subgraph(ABC):
         # After a return from multiprocessing
         # {scenario_label: {percent_adopt: [percentages]}}
         self.data = defaultdict(lambda: defaultdict(list))
+
+###############
+# Graph funcs #
+###############
+
+    def write_graph(self, graph_dir):
+        """Writes graph into the graph directory"""
+
+        lines = self._get_lines()
+        fig, ax = plt.subplots()
+        # Set X and Y axis size
+        plt.xlim(0, 100)
+        plt.ylim(0, 100)
+        # Add the data from the lines
+        for line in lines:
+            ax.errorbar(line.xs,
+                        line.ys,
+                        yerr=line.yerrs,
+                        label=line.label)
+        # Set labels
+        ax.set_ylabel(self.y_axis_label)
+        ax.set_xlabel(self.x_axis_label)
+
+        # This is to avoid warnings
+        handles, labels = ax.get_legend_handles_labels()
+        ax.legend(handles, labels)
+        plt.tight_layout()
+        plt.rcParams.update({"font.size": 14, "lines.markersize": 10})
+        matplotlib.use("Agg")
+        plt.savefig(graph_dir / f"{self.name}.png")
+        # https://stackoverflow.com/a/33343289/8903959
+        plt.close(fig)
+
+    def _get_lines(self):
+        """Returns lines for matplotlib graph"""
+
+        return [Line(k, v) for k, v in self.data.items()]
+
+    @abstractmethod
+    @property
+    def y_axis_label(self):
+        """Returns Y axis label"""
+
+        raise NotImplementedError
+
+    @property
+    def x_axis_label(self):
+        """Returns X axis label"""
+
+        return "Percent adoption of the adopted class"
+
+##############
+# Data funcs #
+##############
 
     def add_trial_info(self, other_subgraph):
         """Merges other subgraph into this one and combines the data"""

@@ -7,7 +7,7 @@ from ..scenarios import Scenario
 from ..enums import Relationships
 
 
-class SimulatorEngine(BGPDAG):
+class SimulationEngine(BGPDAG):
     """BGPDAG subclass that supports announcement propogation
 
     This class must be first setup with the _setup function

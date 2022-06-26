@@ -1,10 +1,12 @@
 from ..attacker_success_subgraph import AttackerSuccessSubgraph
-from .....enums import ASTypes
-from .....enums import Outcomes
+from ....enums import ASTypes
+from ....enums import Outcomes
 
 
 class AttackerSuccessNonAdoptingEtcSubgraph(AttackerSuccessSubgraph):
     """A graph for attacker success for etc ASes that don't adopt"""
+
+    name = "attacker_success_non_adopting_etc"
 
     def _get_subgraph_key(self, scenario, *args):
         """Returns the key to be used in shared_data on the subgraph"""
