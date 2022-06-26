@@ -33,12 +33,7 @@ def run(self, parse_cpus):
             # Merges the trial subgraph into this subgraph
             self_subgraph.add_trial_info(result_subgraph)
 
-    print("\nGraph complete")
-    from pprint import pprint
-    for subgraph in self.subgraphs:
-        pprint(subgraph.data)
-        input("test")
-    raise NotImplementedError("Write graphs")
+    raise NotImplementedError("Write graphs and run tests")
 
 ######################################
 # Multiprocessing/clustering methods #
@@ -64,7 +59,7 @@ def _get_chunks(self, parse_cpus):
 def _get_single_process_results(self):
     """Get all results when using single processing"""
 
-    return [self._run_chunk(x) for x in self._get_chunks(1)]
+    return [self._run_chunk(x, single_proc=True) for x in self._get_chunks(1)]
 
 def _get_mp_results(self, parse_cpus):
     """Get results from multiprocessing"""
@@ -73,7 +68,7 @@ def _get_mp_results(self, parse_cpus):
     with Pool(parse_cpus) as pool:
         return pool.map(self._run_chunk, self._get_chunks(parse_cpus))
 
-def _run_chunk(self, percent_adopt_trials):
+def _run_chunk(self, percent_adopt_trials, single_proc=False):
     """Runs a chunk of trial inputs"""
 
     # Engine is not picklable or dillable AT ALL, so do it here
@@ -85,7 +80,10 @@ def _run_chunk(self, percent_adopt_trials):
                             ).run(tsv_path=None)
     # Must deepcopy here to have the same behavior between single
     # And multiprocessing
-    subgraphs = deepcopy(self.subgraphs)
+    if single_proc:
+        subgraphs = deepcopy(self.subgraphs)
+    else:
+        subgraphs = self.subgraphs
 
     prev_scenario = None
     for scenario in self.scenarios:
@@ -117,7 +115,7 @@ def _run_chunk(self, percent_adopt_trials):
 
                 # By default, this is a no op
                 scenario.post_propagation_hook(**kwargs)
-    return self.subgraphs
+    return subgraphs
 
 def _aggregate_engine_run_data(self, subgraphs, **kwargs):
     """For each subgraph, aggregate data

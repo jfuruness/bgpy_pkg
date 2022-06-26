@@ -41,7 +41,7 @@ class SingleAtkVicAdoptClsScenario(Scenario):
     def graph_label(self):
         """Label that will be used on the graph"""
 
-        return f"{self.BaseASCls} ({self.AdoptASCls} adopting)"
+        return f"{self.BaseASCls.name} ({self.AdoptASCls.name} adopting)"
 
     def setup_engine(self, engine, percent_adopt, prev_scenario):
         """Sets up engine input"""
@@ -58,11 +58,6 @@ class SingleAtkVicAdoptClsScenario(Scenario):
         """Returns unique graph label that no other scenario has"""
 
         return f"{self.AdoptASCls.name} Adopting"
-
-    def post_propagation_hook(self, engine, data_point):
-        """Useful hook for post propagation"""
-
-        pass
 
 ##################
 # Abstract Funcs #

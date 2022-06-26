@@ -115,6 +115,11 @@ class Scenario(YamlAble, ABC):
             # Seed by placing in the local rib
             obj_to_seed._local_rib.add_ann(ann)
 
+    def post_propagation_hook(self, *args, **kwargs):
+        """Useful hook for post propagation"""
+
+        pass
+
 ##################
 # Abstract Funcs #
 ##################

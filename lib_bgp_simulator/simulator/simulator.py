@@ -40,7 +40,7 @@ class Simulator:
                             AttackerSuccessNonAdoptingEtcSubgraph(),
                             AttackerSuccessNonAdoptingInputCliqueSubgraph(),
                             AttackerSuccessNonAdoptingStubsAndMHSubgraph()],
-                          num_trials=1,
+                          num_trials=2,
                           propagation_rounds=1)],
             graph_path=Path("/tmp/graphs.tar.gz"),
             assert_pypy=False,
