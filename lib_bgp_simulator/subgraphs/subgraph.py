@@ -170,6 +170,7 @@ class Subgraph(ABC):
             # Set the new percent
             shared[as_type_pol_outcome_perc_k] = (
                 shared[as_type_pol_outcome_k] * 100 / shared[as_type_pol_k])
+
         shared["set"] = True
 
     def _get_as_type(self, as_obj):

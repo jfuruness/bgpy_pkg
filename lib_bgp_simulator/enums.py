@@ -104,4 +104,5 @@ class ASTypes(YamlAbleEnum):
 
     STUBS_OR_MH = "stubs_or_mh"
     INPUT_CLIQUE = "input_clique"
+    # Not stubs, multihomed, or input clique
     ETC = "etc"
