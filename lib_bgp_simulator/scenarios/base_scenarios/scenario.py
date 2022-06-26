@@ -44,7 +44,7 @@ class Scenario(YamlAble, ABC):
         else:
             self.announcements = self._get_announcements()
 
-        self._get_prefix_subprefix_dict()
+        self._get_ordered_prefix_subprefix_dict()
         if non_default_as_cls_dict:
             self.non_default_as_cls_dict = non_default_as_cls_dict
         else:
@@ -140,6 +140,16 @@ class Scenario(YamlAble, ABC):
         raise NotImplementedError
 
     @abstractmethod
+    def determine_as_outcome(self, as_obj, most_specific_ann):
+        """Determines the outcome at an AS
+
+        most_specific_ann is the most specific prefix announcement
+        that exists at that AS
+        """
+
+        raise NotImplementedError
+
+    @abstractmethod
     def graph_label(self):
         """Label that will be on the graph"""
 
@@ -162,7 +172,7 @@ class Scenario(YamlAble, ABC):
 # Helper Funcs #
 ################
 
-    def _get_prefix_subprefix_dict(self):
+    def _get_ordered_prefix_subprefix_dict(self):
         """Saves a dict of prefix to subprefixes"""
 
         prefixes = set([])
@@ -170,6 +180,10 @@ class Scenario(YamlAble, ABC):
             prefixes.add(ann.prefix)
         # Do this here for speed
         prefixes = [ip_network(x) for x in prefixes]
+        # Sort prefixes with most specific prefix first
+        # Note that this must be sorted for the traceback to get the
+        # most specific prefix first
+        prefixes = list(sorted(prefixes, key=lambda x: x.num_addresses))
 
         prefix_subprefix_dict = {x: [] for x in prefixes}
         for outer_prefix, subprefix_list in prefix_subprefix_dict.items():
@@ -177,5 +191,5 @@ class Scenario(YamlAble, ABC):
                 if prefix.subnet_of(outer_prefix) and prefix != outer_prefix:
                     subprefix_list.append(str(prefix))
         # Get rid of ip_network
-        self.prefix_subprefix_dict = {str(k): v for k, v
-                                      in prefix_subprefix_dict.items()}
+        self.ordered_prefix_subprefix_dict = {str(k): v for k, v
+                                              in prefix_subprefix_dict.items()}

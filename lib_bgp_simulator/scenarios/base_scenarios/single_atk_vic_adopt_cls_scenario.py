@@ -6,6 +6,7 @@ from lib_caida_collector import AS
 from yamlable import yaml_info
 
 from .scenario import Scenario
+from ...enums import Outcomes
 
 
 @yaml_info(yaml_tag="SingleAtkVicAdoptClsScenario")
@@ -193,6 +194,26 @@ class SingleAtkVicAdoptClsScenario(Scenario):
         """ASNs that have a preset adoption policy"""
 
         return set(self._default_adopters + self._default_non_adopters)
+
+    def determine_as_outcome(self, as_obj, most_specific_ann):
+        """Determines the outcome at an AS
+
+        most_specific_ann is the most specific prefix announcement
+        that exists at that AS
+        """
+
+        if self.attacker_asn == as_obj.asn:
+            return Outcomes.ATTACKER_SUCCESS
+        elif self.victim_asn == as_obj.asn:
+            return Outcomes.VICTIM_SUCCESS
+        # End of traceback
+        elif (most_specific_ann is None
+              or len(as_path) == 1
+              or ann.recv_relationship == Relationships.ORIGIN
+              or ann.traceback_end):
+            return Outcomes.DISCONNECTED
+        else:
+            return Outcomes.UNDETERMINED
 
 ##############
 # Yaml Funcs #

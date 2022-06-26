@@ -17,18 +17,28 @@ def run(self, parse_cpus):
     # Single process
     if parse_cpus == 1:
         print("Running single proc (DELETE")
+        # Results are a list of lists of subgraphs
         results = self._get_single_process_results()
     # Multiprocess
     else:
         print("Running multi proc (DELETE")
+        # Results are a list of lists of subgraphs
         results = self._get_mp_results(parse_cpus)
 
-    for result in results:
-        for self_subgraph, result_subgraph in zip(self.subgraphs, result):
+    # Results is a list of lists of subgraphs
+    for result_subgraphs in results:
+        for self_subgraph, result_subgraph in zip(self.subgraphs,
+                                                  result_subgraphs):
             print("Adding trial info (DELETE")
+            # Merges the trial subgraph into this subgraph
             self_subgraph.add_trial_info(result_subgraph)
 
     print("\nGraph complete")
+    from pprint import pprint
+    for subgraph in self.subgraphs:
+        pprint(subgraph.data)
+        input("test")
+    raise NotImplementedError("Write graphs")
 
 ######################################
 # Multiprocessing/clustering methods #

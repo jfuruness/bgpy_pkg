@@ -11,19 +11,8 @@ from ....engine import BGPAS
 class AttackerSuccessSubgraph(Subgraph):
     """A subgraph for data display"""
 
-    def aggregate_engine_run_data(self,
-                                  shared_data,
-                                  engine,
-                                  *,
-                                  percent_adopt,
-                                  trial,
-                                  scenario,
-                                  propagation_round):
-        """Aggregates data after a single engine run
-
-        Shared data is passed between subgraph classes and is
-        mutable. This is done to speed up data aggregation, even
-        though it is at the cost of immutability
-        """
+    @abstractmethod
+    def _get_subgraph_key(self, *args):
+        """Returns the key to be used in shared_data on the subgraph"""
 
         raise NotImplementedError
