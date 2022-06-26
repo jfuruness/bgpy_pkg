@@ -7,6 +7,7 @@ from yamlable import yaml_info
 
 from .scenario import Scenario
 from ...enums import Outcomes
+from ...enums import Relationships
 
 
 @yaml_info(yaml_tag="SingleAtkVicAdoptClsScenario")
@@ -195,10 +196,10 @@ class SingleAtkVicAdoptClsScenario(Scenario):
 
         return set(self._default_adopters + self._default_non_adopters)
 
-    def determine_as_outcome(self, as_obj, most_specific_ann):
+    def determine_as_outcome(self, as_obj, ann):
         """Determines the outcome at an AS
 
-        most_specific_ann is the most specific prefix announcement
+        ann is most_specific_ann is the most specific prefix announcement
         that exists at that AS
         """
 
@@ -207,8 +208,8 @@ class SingleAtkVicAdoptClsScenario(Scenario):
         elif self.victim_asn == as_obj.asn:
             return Outcomes.VICTIM_SUCCESS
         # End of traceback
-        elif (most_specific_ann is None
-              or len(as_path) == 1
+        elif (ann is None
+              or len(ann.as_path) == 1
               or ann.recv_relationship == Relationships.ORIGIN
               or ann.traceback_end):
             return Outcomes.DISCONNECTED

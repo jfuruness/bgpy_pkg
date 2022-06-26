@@ -1,11 +1,6 @@
-from abc import ABC, abstractmethod
-from collections import defaultdict
-
-import ipaddress
-
 from ..attacker_success_subgraph import AttackerSuccessSubgraph
+from .....enums import ASTypes
 from .....enums import Outcomes
-from .....engine import BGPAS
 
 
 class AttackerSuccessNonAdoptingEtcSubgraph(AttackerSuccessSubgraph):

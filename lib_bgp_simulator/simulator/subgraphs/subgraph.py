@@ -2,6 +2,7 @@ from abc import ABC, abstractmethod
 from collections import defaultdict
 
 from ...enums import ASTypes
+from ...enums import Outcomes
 
 
 class Subgraph(ABC):
@@ -58,11 +59,11 @@ class Subgraph(ABC):
         {scenario_label: {percent_adopt: [percents]}}
         """
 
-        if not shared.get("set"):
+        if not shared_data.get("set"):
             self._add_traceback_to_shared_data(shared_data, engine, scenario)
         key = self._get_subgraph_key(scenario)
-        self.data[scenario.__class__.__name__][percent_adopt].append(
-            shared_data[key])
+        self.data[scenario.graph_label][percent_adopt].append(
+            shared_data.get(key, 0))
 
     @abstractmethod
     def _get_subgraph_key(self, scenario):
@@ -80,16 +81,16 @@ class Subgraph(ABC):
         # {as_obj: outcome}
         outcomes = self._get_engine_outcomes(engine, scenario)
         for as_obj, outcome in outcomes.items():
-            as_type = self._get_as_type(as_obj) 
+            as_type = self._get_as_type(as_obj)
 
             # TODO: refactor this ridiculousness into a class
             # Add to the AS type and policy, as well as the outcome
-            as_type_pol_k = self._get_as_type_pol_k(as_type, as_obj.name)
+            as_type_pol_k = self._get_as_type_pol_k(as_type, as_obj.__class__)
             as_type_pol_outcome_k = self._get_as_type_pol_outcome_k(
-                as_type, as_obj.name, outcome)
+                as_type, as_obj.__class__, outcome)
             # as type + policy + outcome as a percentage
             as_type_pol_outcome_perc_k = self._get_as_type_pol_outcome_perc_k(
-                as_type, as_obj.name, outcome)
+                as_type, as_obj.__class__, outcome)
             # Add to the totals:
             for k in [as_type_pol_k, as_type_pol_outcome_k]:
                 shared[k] = shared.get(k, 0) + 1
@@ -97,7 +98,6 @@ class Subgraph(ABC):
             shared[as_type_pol_outcome_perc_k] = (shared[as_type_pol_outcome_k]
                                                   / shared[as_type_pol_k])
         shared["set"] = True
-
 
     def _get_as_type(self, as_obj):
         """Returns the type of AS (stub_or_mh, input_clique, or etc)"""
@@ -109,26 +109,26 @@ class Subgraph(ABC):
         else:
             return ASTypes.ETC
 
-    def _get_as_type_pol_k(self, as_type, policy_name):
+    def _get_as_type_pol_k(self, as_type, ASCls):
         """Returns AS type+policy key"""
 
-        return f"{as_type.value}_{policy_name}"
+        return f"{as_type.value}_{ASCls.name}"
 
     def _get_as_type_pol_outcome_k(self,
                                    as_type,
-                                   pol_name,
+                                   ASCls,
                                    outcome):
         """returns as type+policy+outcome key"""
 
-        return f"{self._get_as_type_pol_k(as_type, pol_name)}_{outcome.name}"
+        return f"{self._get_as_type_pol_k(as_type, ASCls)}_{outcome.name}"
 
     def _get_as_type_pol_outcome_perc_k(self,
                                         as_type,
-                                        pol_name,
+                                        ASCls,
                                         outcome):
         """returns as type+policy+outcome key as a percent"""
 
-        x = self._get_as_type_pol_outcome_k(as_type, pol_name, outcome)
+        x = self._get_as_type_pol_outcome_k(as_type, ASCls, outcome)
         return f"{x}_percent"
 
 ###################
@@ -161,19 +161,20 @@ class Subgraph(ABC):
             # Because only the scenario knows attacker/victim
             # And it's possible for scenario's to have multiple attackers
             # or multiple victims or different ways of determining outcomes
-            outcome = scenario._determine_outcome(as_obj, most_specific_ann)
+            outcome = scenario.determine_as_outcome(as_obj, most_specific_ann)
             # We haven't traced back all the way on the AS path
             if outcome == Outcomes.UNDETERMINED:
                 # next as in the AS path to traceback to
                 next_as = engine.as_dict[most_specific_ann.as_path[1]]
                 outcome = self._get_as_outcome(next_as,
                                                outcomes,
+                                               engine,
                                                scenario)
             assert outcome != Outcomes.UNDETERMINED, "Shouldn't be possible"
 
             outcomes[as_obj] = outcome
             return outcome
-            
+
     def _get_most_specific_ann(self, as_obj, ordered_prefixes):
         """Returns the most specific announcement that exists in a rib
 

@@ -1,11 +1,5 @@
-from abc import ABC, abstractmethod
-from collections import defaultdict
-
-import ipaddress
-
+from abc import abstractmethod
 from ..subgraph import Subgraph
-from ....enums import Outcomes
-from ....engine import BGPAS
 
 
 class AttackerSuccessSubgraph(Subgraph):
