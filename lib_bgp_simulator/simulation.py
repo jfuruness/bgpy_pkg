@@ -1,7 +1,6 @@
 from copy import deepcopy
 from itertools import product
 import json
-from multiprocessing import cpu_count
 from multiprocessing import Pool
 from pathlib import Path
 from shutil import make_archive
@@ -26,7 +25,7 @@ class Simulation:
 
     def __init__(
             self,
-            percent_adoptions=(5, 10),
+            percent_adoptions=(5, 10, 30, 50, 80),
             scenarios=[SubprefixHijack(AdoptASCls=x)
                        for x in [ROVSimpleAS]],
             subgraphs=[
@@ -36,10 +35,10 @@ class Simulation:
               AttackerSuccessNonAdoptingEtcSubgraph(),
               AttackerSuccessNonAdoptingInputCliqueSubgraph(),
               AttackerSuccessNonAdoptingStubsAndMHSubgraph()],
-            num_trials=2,
+            num_trials=3,
             propagation_rounds=1,
-            compressed_path=Path("/tmp/graphs.zip"),
-            parse_cpus=cpu_count() - 1
+            output_path=Path("/tmp/graphs"),
+            parse_cpus=1
             ):
         """Downloads relationship data, runs simulation
 
@@ -49,14 +48,12 @@ class Simulation:
         mp_method: Multiprocessing method
         """
 
-        assert str(compressed_path).endswith(".tar.gz")
-
         self.percent_adoptions = percent_adoptions
         self.scenarios = scenarios
         self.subgraphs = subgraphs
         self.num_trials = num_trials
         self.propagation_rounds = propagation_rounds
-        self.compressed_path = compressed_path
+        self.output_path = output_path
         self.parse_cpus = parse_cpus
 
         # All scenarios must have a unique graph label
@@ -84,12 +81,12 @@ class Simulation:
                 subgraph.write_graph(Path(tmp_dir))
                 json_data[subgraph.name] = subgraph.data
             # Save the JSON
-            with (Path(tmp_dir) / "results.json") as f:
+            with (Path(tmp_dir) / "results.json").open("w") as f:
                 json.dump(json_data, f, indent=4)
 
             # Zip the data
-            make_archive(self.compressed_path, "zip", tmp_dir)
-            print(f"Wrote graphs to {self.compressed_path}")
+            make_archive(self.output_path, "zip", tmp_dir)
+            print(f"\nWrote graphs to {self.output_path}.zip")
 
     def _get_data(self):
         """Runs trials for graph and aggregates data"""

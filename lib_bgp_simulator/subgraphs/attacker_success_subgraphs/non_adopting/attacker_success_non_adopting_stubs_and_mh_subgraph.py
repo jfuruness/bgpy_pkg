@@ -13,3 +13,9 @@ class AttackerSuccessNonAdoptingStubsAndMHSubgraph(AttackerSuccessSubgraph):
 
         return self._get_as_type_pol_outcome_perc_k(
             ASTypes.STUBS_OR_MH, scenario.BaseASCls, Outcomes.ATTACKER_SUCCESS)
+
+    @property
+    def y_axis_label(self):
+        """returns y axis label"""
+
+        return Outcomes.ATTACKER_SUCCESS.name

@@ -1,9 +1,14 @@
+from math import sqrt
+from statistics import mean
+from statistics import stdev
+
+
 class Line:
     """Formats raw data for matplotlib graph"""
 
     def __init__(self, scenario_label, percent_adopt_dict):
         """Stores info aobut a line in a graph"""
-    
+
         # {percent_adopt: [percentages]}
         self.percent_adopt_dict = percent_adopt_dict
         self.label = scenario_label
@@ -31,7 +36,7 @@ class Line:
 
         if len(list_of_vals) > 1:
             yerr_num = 1.645 * 2 * stdev(list_of_vals)
-            yerr_denom = sqrt(len(list_of_percents))
+            yerr_denom = sqrt(len(list_of_vals))
             return yerr_num / yerr_denom
         else:
             return 0

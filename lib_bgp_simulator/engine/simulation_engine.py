@@ -25,9 +25,9 @@ class SimulationEngine(BGPDAG):
                  **kwargs):
         """Saves read_to_run_rund attr and inits superclass"""
 
-        super(SimulatorEngine, self).__init__(*args,
-                                              BaseASCls=BaseASCls,
-                                              **kwargs)
+        super(SimulationEngine, self).__init__(*args,
+                                               BaseASCls=BaseASCls,
+                                               **kwargs)
         # This indicates whether or not the simulator has been set up for a run
         # We use a number instead of a bool so that we can indicate for
         # each round whether it is ready to run or not
@@ -36,7 +36,7 @@ class SimulationEngine(BGPDAG):
     def __eq__(self, other):
         """Returns if two simulators contain the same BGPDAG's"""
 
-        if isinstance(other, SimulatorEngine):
+        if isinstance(other, SimulationEngine):
             return self.as_dict == other.as_dict
         else:
             return NotImplemented

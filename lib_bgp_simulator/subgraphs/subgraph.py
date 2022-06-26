@@ -45,6 +45,8 @@ class Subgraph(ABC):
         """Writes graph into the graph directory"""
 
         lines = self._get_lines()
+
+        matplotlib.use("Agg")
         fig, ax = plt.subplots()
         # Set X and Y axis size
         plt.xlim(0, 100)
@@ -64,7 +66,6 @@ class Subgraph(ABC):
         ax.legend(handles, labels)
         plt.tight_layout()
         plt.rcParams.update({"font.size": 14, "lines.markersize": 10})
-        matplotlib.use("Agg")
         plt.savefig(graph_dir / f"{self.name}.png")
         # https://stackoverflow.com/a/33343289/8903959
         plt.close(fig)
@@ -74,10 +75,10 @@ class Subgraph(ABC):
 
         return [Line(k, v) for k, v in self.data.items()]
 
-    @abstractmethod
     @property
+    @abstractmethod
     def y_axis_label(self):
-        """Returns Y axis label"""
+        """returns y axis label"""
 
         raise NotImplementedError
 
@@ -167,8 +168,8 @@ class Subgraph(ABC):
             for k in [as_type_pol_k, as_type_pol_outcome_k]:
                 shared[k] = shared.get(k, 0) + 1
             # Set the new percent
-            shared[as_type_pol_outcome_perc_k] = (shared[as_type_pol_outcome_k]
-                                                  / shared[as_type_pol_k])
+            shared[as_type_pol_outcome_perc_k] = (
+                shared[as_type_pol_outcome_k] * 100 / shared[as_type_pol_k])
         shared["set"] = True
 
     def _get_as_type(self, as_obj):

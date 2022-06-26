@@ -4,7 +4,7 @@ from .engine import LocalRIB
 from .engine import RIBsIn, RIBsOut
 from .engine import SendQueue, RecvQueue
 from .engine import ROVAS, ROVSimpleAS
-from .engine import SimulatorEngine
+from .engine import SimulationEngine
 
 
 from .enums import YamlAbleEnum

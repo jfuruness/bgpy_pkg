@@ -10,3 +10,10 @@ class AttackerSuccessSubgraph(Subgraph):
         """Returns the key to be used in shared_data on the subgraph"""
 
         raise NotImplementedError
+
+    @property
+    @abstractmethod
+    def y_axis_label(self):
+        """returns y axis label"""
+
+        raise NotImplementedError

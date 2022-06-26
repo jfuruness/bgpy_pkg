@@ -1,10 +1,10 @@
-from .simulator import Simulator
+from .simulation import Simulation
 
 
 def main():
     """Runs the defaults"""
 
-    Simulator().run()
+    Simulation().run()
 
 
 if __name__ == "__main__":
