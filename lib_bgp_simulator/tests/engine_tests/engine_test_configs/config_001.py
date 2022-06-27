@@ -14,7 +14,7 @@ class Config001(EngineTestConfig):
     scenario = SubprefixHijack(attacker_asn=ASNs.ATTACKER.value,
                                victim_asn=ASNs.VICTIM.value,
                                AdoptASCls=None)
-    graph = Graph001
+    graph = Graph001()
     non_default_as_cls_dict = dict()
     BaseASCls = BGPSimpleAS
     propagation_rounds = 1

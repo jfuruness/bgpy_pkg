@@ -11,15 +11,15 @@ class EngineTester:
 
     def __init__(self,
                  base_dir,
-                 test_conf,
+                 conf,
                  codec=SimulatorCodec()):
-        self.test_conf = test_conf
+        self.conf = conf
         self.codec = codec
         # Needed to aggregate all diagrams
         self.base_dir = base_dir
         self.base_dir.mkdir(parents=True, exist_ok=True)
         # Creates directory for this specific test
-        self.test_dir = self.base_dir / self.test_conf.name
+        self.test_dir = self.base_dir / self.conf.name
         self.test_dir.mkdir(exist_ok=True)
 
     def test_engine(self):
@@ -36,16 +36,16 @@ class EngineTester:
         """
 
         # Get's an engine that has been set up
-        engine = self._get_engine(test_conf.scenario,
-                                  test_conf.graph,
-                                  test_conf.non_default_as_cls_dict,
-                                  test_conf.BaseASCls)
+        engine = self._get_engine(self.conf.scenario,
+                                  self.conf.graph,
+                                  self.conf.non_default_as_cls_dict,
+                                  self.conf.BaseASCls)
         # Run engine
-        for propagation_round in range(test_conf.propagation_rounds):
+        for propagation_round in range(self.conf.propagation_rounds):
             engine.run(propagation_round=propagation_round,
-                       scenario=deepcopy(test_conf.scenario))
+                       scenario=deepcopy(self.conf.scenario))
         # Get traceback results {AS: Outcome}
-        outcomes = Subgraph()._get_engine_outcomes(engine, test_conf.scenario)
+        outcomes = Subgraph()._get_engine_outcomes(engine, self.conf.scenario)
         # Convert this to just be {ASN: Outcome} (Not the AS object)
         outcomes = {as_obj.asn: result for as_obj, result in outcomes.items()}
         # Store engine and traceback YAML
@@ -58,10 +58,9 @@ class EngineTester:
     def _get_engine(self, scenario, graph, non_default_as_cls_dict, BaseASCls):
         """Creates and engine and sets it up for runs"""
 
-        engine = SimulationEngine(
-            BaseASCls=BaseASCls,
-            peer_links=graph.peer_links,
-            customer_provider_links=graph.customer_provider_links)
+        engine = SimulationEngine(BaseASCls=BaseASCls,
+                                  peer_links=graph.peer_links,
+                                  cp_links=graph.customer_provider_links)
         prev_scenario = deepcopy(scenario)
         prev_scenario.non_default_as_cls_dict = non_default_as_cls_dict
         scenario.setup_engine(engine, 0, prev_scenario)
@@ -77,12 +76,12 @@ class EngineTester:
         self.codec.dump(engine, path=self.engine_guess_path)
         # Save engine as ground truth if ground truth doesn't exist
         if not self.engine_ground_truth_path.exists():
-            self.codec.dump(engine, path=self.engine_gt_path)
+            self.codec.dump(engine, path=self.engine_ground_truth_path)
         # Save outcomes
         self.codec.dump(outcomes, path=self.outcomes_guess_path)
         # Save outcomes as ground truth if ground truth doesn't exist
         if not self.outcomes_ground_truth_path.exists():
-            self.codec.dump(outcomes, path=self.outcomes_gt_path)
+            self.codec.dump(outcomes, path=self.outcomes_ground_truth_path)
 
     def _generate_diagrams(self):
         """Generates diagrams"""
@@ -97,11 +96,11 @@ class EngineTester:
 
         # Compare Engine
         engine_guess = self.codec.load(self.engine_guess_path)
-        engine_gt = self.codec.load(self.engine_gt_path)
+        engine_gt = self.codec.load(self.engine_ground_truth_path)
         assert engine_guess == engine_gt
         # Compare outcomes
         outcomes_guess = self.codec.load(self.outcomes_guess_path)
-        outcomes_gt = self.codec.load(self.outcomes_gt_path)
+        outcomes_gt = self.codec.load(self.outcomes_ground_truth_path)
         assert outcomes_guess == outcomes_gt
 
 #########
@@ -120,6 +119,7 @@ class EngineTester:
 
         return self.test_dir / "engine_guess.yaml"
 
+    @property
     def outcomes_ground_truth_path(self) -> Path:
         """Returns the path to the outcomes ground truth YAML"""
 
