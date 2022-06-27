@@ -2,8 +2,8 @@ from copy import deepcopy
 from pathlib import Path
 
 from .simulator_codec import SimulatorCodec
-from ...engine import SimulationEngine
-from ...subgraphs import Subgraph
+from ....engine import SimulationEngine
+from ....subgraphs import Subgraph
 
 
 class EngineTester:

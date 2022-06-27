@@ -2,7 +2,7 @@ class EngineTestConfig:
 
     subclasses = list()
 
-    def __init_subclass__(self, cls, *args, **kwargs):
+    def __init_subclass__(cls, *args, **kwargs):
         """Ensures subclass has proper attrs
 
         Doing it this way instead of abstract class
@@ -18,9 +18,9 @@ class EngineTestConfig:
                      "non_default_as_cls_dict",
                      "BaseASCls",
                      "propagation_rounds"):
-            assert getattr(cls, attr, None) is not None
+            assert getattr(cls, attr, None) is not None, attr
 
-        subclasses.append(cls)
+        cls.subclasses.append(cls)
 
-        names = [x.name for x in subclasses]
+        names = [x.name for x in cls.subclasses]
         assert len(set(names)) == len(names), "Duplicate test config names"

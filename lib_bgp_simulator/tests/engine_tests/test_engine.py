@@ -1,3 +1,5 @@
+from pathlib import Path
+
 import pytest
 
 from .utils import EngineTester
@@ -10,15 +12,15 @@ class TestEngine:
     See README for in depth details
     """
 
-    @pytest.mark.parametrize("config",
+    @pytest.mark.parametrize("conf",
                              [Cls() for Cls in EngineTestConfig.subclasses])
-    def test_engine(config: EngineTestConfig):
+    def test_engine(self, conf: EngineTestConfig):
         """Performs a system test on the engine
 
         See README for in depth details
         """
 
-        EngineTester(base_dir=self.base_dir, test_conf=config).test_engine()
+        EngineTester(base_dir=self.base_dir, test_conf=conf).test_engine()
 
     @property
     def base_dir(self) -> Path:

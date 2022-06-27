@@ -1,6 +1,9 @@
 from ..graphs import Graph001
-from ...scenarios import SubprefixHijack
-from ...engine import BGPSimpleAS
+from ..utils import EngineTestConfig
+
+from ....engine import BGPSimpleAS
+from ....enums import ASNs
+from ....scenarios import SubprefixHijack
 
 
 class Config001(EngineTestConfig):
@@ -13,5 +16,5 @@ class Config001(EngineTestConfig):
                                AdoptASCls=None)
     graph = Graph001
     non_default_as_cls_dict = dict()
-    BaseASClsi = BGPSimpleAS
+    BaseASCls = BGPSimpleAS
     propagation_rounds = 1

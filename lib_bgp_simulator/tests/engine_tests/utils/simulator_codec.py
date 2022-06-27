@@ -4,7 +4,7 @@ from typing import Type, Any, Iterable, Tuple
 import yaml
 
 from .simulator_loader import SimulatorLoader
-from ...enums import YamlAbleEnum
+from ....enums import YamlAbleEnum
 
 # 2-way mappings between the types and the yaml tags
 types_to_yaml_tags = {X: X.yaml_suffix()

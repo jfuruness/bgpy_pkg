@@ -3,14 +3,11 @@ import random
 
 from lib_caida_collector import AS
 
-from yamlable import yaml_info
-
 from .scenario import Scenario
 from ...enums import Outcomes
 from ...enums import Relationships
 
 
-@yaml_info(yaml_tag="SingleAtkVicAdoptClsScenario")
 class SingleAtkVicAdoptClsScenario(Scenario):
     """Contains information regarding an attack
 
@@ -26,8 +23,6 @@ class SingleAtkVicAdoptClsScenario(Scenario):
                  attacker_asn=None,
                  victim_asn=None,
                  **kwargs):
-
-        assert AdoptASCls
 
         # If we are regenerating from yaml
         self.attacker_asn = attacker_asn
@@ -53,11 +48,6 @@ class SingleAtkVicAdoptClsScenario(Scenario):
         super(SingleAtkVicAdoptClsScenario, self).setup_engine(engine,
                                                                percent_adopt,
                                                                prev_scenario)
-
-    def unique_graph_label(self):
-        """Returns unique graph label that no other scenario has"""
-
-        return f"{self.AdoptASCls.name} Adopting"
 
 ##################
 # Abstract Funcs #
