@@ -1,14 +1,12 @@
 from abc import ABC, abstractmethod
 
 from ipaddress import ip_network
-from yamlable import YamlAble, yaml_info, yaml_info_decorate
 
 from ...announcement import Announcement
 from ...engine import BGPSimpleAS
 
 
-@yaml_info(yaml_tag="Scenario")
-class Scenario(YamlAble, ABC):
+class Scenario(ABC):
     """Contains information regarding an attack"""
 
     __slots__ = ("non_default_as_cls_dict", "prefix_subprefix_dict")
@@ -18,20 +16,7 @@ class Scenario(YamlAble, ABC):
     AnnCls = Announcement
     BaseASCls = BGPSimpleAS
 
-    subclasses = []
-
-    def __init_subclass__(cls, *args, **kwargs):
-        """This method essentially creates a list of all subclasses
-        This is allows us to know all attackers that have been created
-        """
-
-        super().__init_subclass__(*args, **kwargs)
-        # Add yaml tag to subclass
-        yaml_info_decorate(cls, yaml_tag=cls.__name__)
-
-    def __init__(self,
-                 announcements=None,
-                 non_default_as_cls_dict=None):
+    def __init__(self):
         """inits attrs
 
         non_default_as_cls_dict is a dict of asn: AdoptASCls
@@ -39,16 +24,8 @@ class Scenario(YamlAble, ABC):
         since that is the default
         """
 
-        if announcements:
-            self.announcements = announcements
-        else:
-            self.announcements = self._get_announcements()
-
+        self.announcements = self._get_announcements()
         self._get_ordered_prefix_subprefix_dict()
-        if non_default_as_cls_dict:
-            self.non_default_as_cls_dict = non_default_as_cls_dict
-        else:
-            self.non_default_as_cls_dict = dict()
 
 #############################
 # Engine Manipulation Funcs #
@@ -81,6 +58,7 @@ class Scenario(YamlAble, ABC):
         # non_default_as_cls_dict is a dict of asn: AdoptASCls
         # where you do __not__ include any of the BaseASCls,
         # since that is the default
+        # Only regenerate this if it's not already set (like with YAML)
         self.non_default_as_cls_dict = self._get_non_default_as_cls_dict(
             engine,
             percent_adoption,
@@ -157,19 +135,6 @@ class Scenario(YamlAble, ABC):
     @abstractmethod
     def graph_label(self):
         """Label that will be on the graph"""
-
-        raise NotImplementedError
-
-    @abstractmethod
-    def __to_yaml_dict__(self):
-        """This optional method is called when you call yaml.dump()"""
-
-        raise NotImplementedError
-
-    @classmethod
-    @abstractmethod
-    def __from_yaml_dict__(cls, dct, yaml_tag):
-        """This optional method is called when you call yaml.load()"""
 
         raise NotImplementedError
 

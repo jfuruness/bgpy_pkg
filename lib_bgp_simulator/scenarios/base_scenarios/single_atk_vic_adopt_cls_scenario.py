@@ -48,8 +48,8 @@ class SingleAtkVicAdoptClsScenario(Scenario):
 
         self._set_attacker_victim_pair(engine, percent_adopt, prev_scenario)
         # Must call this here due to atk/vic pair being different
-        # TODO: Fix
-        super().__init__()
+        self.announcement = self._get_announcements()
+        self._get_ordered_prefix_subprefix_dict()
         super(SingleAtkVicAdoptClsScenario, self).setup_engine(engine,
                                                                percent_adopt,
                                                                prev_scenario)
@@ -82,16 +82,24 @@ class SingleAtkVicAdoptClsScenario(Scenario):
     def _get_attacker_asn(self, *args, **kwargs):
         """Returns attacker ASN at random"""
 
-        possible_attacker_asns = self._get_possible_attacker_asns(*args,
-                                                                  **kwargs)
-        return random.choice(tuple(possible_attacker_asns))
+        # Only run if we did not regenerate from YAML
+        if self.attacker_asn is None:
+            possible_attacker_asns = self._get_possible_attacker_asns(*args,
+                                                                      **kwargs)
+            return random.choice(tuple(possible_attacker_asns))
+        else:
+            return self.attacker_asn
 
     def _get_victim_asn(self, *args, **kwargs):
         """Returns victim ASN at random. Attacker can't be victim"""
 
-        possible_vic_asns = self._get_possible_victim_asns(*args, **kwargs)
-        return random.choice(tuple(
-            possible_vic_asns.difference([self.attacker_asn])))
+        # Only run if we did not regenerate from YAML
+        if self.victim_asn is None:
+            possible_vic_asns = self._get_possible_victim_asns(*args, **kwargs)
+            return random.choice(tuple(
+                possible_vic_asns.difference([self.attacker_asn])))
+        else:
+            return self.victim_asn
 
     # For this, don't bother making a subclass with stubs_and_mh
     # Since it won't really create another class branch,

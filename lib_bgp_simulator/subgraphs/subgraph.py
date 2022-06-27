@@ -76,7 +76,6 @@ class Subgraph(ABC):
         return [Line(k, v) for k, v in self.data.items()]
 
     @property
-    @abstractmethod
     def y_axis_label(self):
         """returns y axis label"""
 
@@ -138,7 +137,6 @@ class Subgraph(ABC):
         self.data[scenario.graph_label][percent_adopt].append(
             shared_data.get(key, 0))
 
-    @abstractmethod
     def _get_subgraph_key(self, scenario):
         """Returns the key to be used in shared_data on the subgraph"""
 

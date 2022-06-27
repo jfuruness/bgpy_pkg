@@ -61,7 +61,7 @@ class SimulationEngine(BGPDAG):
         """Propogates announcements
 
         to stick with Gao Rexford, we propagate to
-        1. providers
+        0. providers
         2. peers
         3. customers
         """
