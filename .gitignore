@@ -1,6 +1,6 @@
 # Test generates these automatically
 *.gv
-*.gv.pdf
+*.pdf
 *.gv.png
 *guess.yaml
 
