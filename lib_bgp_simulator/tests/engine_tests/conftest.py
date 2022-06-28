@@ -23,6 +23,12 @@ def open_pdf(view):
 def view(pytestconfig):
     return pytestconfig.getoption("view")
 
+@pytest.fixture(scope="session")
+def overwrite(pytestconfig):
+    return pytestconfig.getoption("overwrite")
+
+
 # https://stackoverflow.com/a/66597438/8903959
 def pytest_addoption(parser):
     parser.addoption("--view", action="store_true", default=False)
+    parser.addoption("--overwrite", action="store_true", default=False)

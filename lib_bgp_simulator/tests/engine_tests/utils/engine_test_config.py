@@ -16,7 +16,6 @@ class EngineTestConfig:
                      "scenario",
                      "graph",
                      "non_default_as_cls_dict",
-                     "BaseASCls",
                      "propagation_rounds"):
             assert getattr(cls, attr, None) is not None, attr
 

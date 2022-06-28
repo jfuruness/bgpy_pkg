@@ -16,8 +16,10 @@ class EngineTester:
     def __init__(self,
                  base_dir,
                  conf,
+                 overwrite=False,
                  codec=SimulatorCodec()):
         self.conf = conf
+        self.overwrite = overwrite
         self.codec = codec
         # Needed to aggregate all diagrams
         self.base_dir = base_dir
@@ -40,14 +42,13 @@ class EngineTester:
         """
 
         # Get's an engine that has been set up
-        engine = self._get_engine(self.conf.scenario,
-                                  self.conf.graph,
-                                  self.conf.non_default_as_cls_dict,
-                                  self.conf.BaseASCls)
+        engine = self._get_engine()
         # Run engine
         for propagation_round in range(self.conf.propagation_rounds):
             engine.run(propagation_round=propagation_round,
                        scenario=deepcopy(self.conf.scenario))
+
+
         # Get traceback results {AS: Outcome}
         outcomes = Subgraph()._get_engine_outcomes(engine, self.conf.scenario)
         # Convert this to just be {ASN: Outcome} (Not the AS object)
@@ -59,15 +60,18 @@ class EngineTester:
         # Compare the YAML's together
         self._compare_yaml()
 
-    def _get_engine(self, scenario, graph, non_default_as_cls_dict, BaseASCls):
+    def _get_engine(self):
         """Creates and engine and sets it up for runs"""
 
-        engine = SimulationEngine(BaseASCls=BaseASCls,
-                                  peer_links=graph.peer_links,
-                                  cp_links=graph.customer_provider_links)
-        prev_scenario = deepcopy(scenario)
-        prev_scenario.non_default_as_cls_dict = non_default_as_cls_dict
-        scenario.setup_engine(engine, 0, prev_scenario)
+        engine = SimulationEngine(
+            BaseASCls=self.conf.scenario.BaseASCls,
+            peer_links=self.conf.graph.peer_links,
+            cp_links=self.conf.graph.customer_provider_links)
+
+        prev_scenario = deepcopy(self.conf.scenario)
+        prev_scenario.non_default_as_cls_dict =\
+            self.conf.non_default_as_cls_dict
+        self.conf.scenario.setup_engine(engine, 0, prev_scenario)
         return engine
 
     def _store_yaml(self, engine, outcomes):
@@ -79,12 +83,12 @@ class EngineTester:
         # Save engine
         self.codec.dump(engine, path=self.engine_guess_path)
         # Save engine as ground truth if ground truth doesn't exist
-        if not self.engine_ground_truth_path.exists():
+        if not self.engine_ground_truth_path.exists() or self.overwrite:
             self.codec.dump(engine, path=self.engine_ground_truth_path)
         # Save outcomes
         self.codec.dump(outcomes, path=self.outcomes_guess_path)
         # Save outcomes as ground truth if ground truth doesn't exist
-        if not self.outcomes_ground_truth_path.exists():
+        if not self.outcomes_ground_truth_path.exists() or self.overwrite:
             self.codec.dump(outcomes, path=self.outcomes_ground_truth_path)
 
     def _generate_diagrams(self):

@@ -14,9 +14,8 @@ class Scenario(ABC):
     # This is the base type of announcement for this class
     # You can subclass this engine input and specify a different base ann
     AnnCls = Announcement
-    BaseASCls = BGPSimpleAS
 
-    def __init__(self):
+    def __init__(self, BaseASCls=BGPSimpleAS):
         """inits attrs
 
         non_default_as_cls_dict is a dict of asn: AdoptASCls
@@ -24,6 +23,7 @@ class Scenario(ABC):
         since that is the default
         """
 
+        self.BaseASCls = BaseASCls
         self.announcements = self._get_announcements()
         self._get_ordered_prefix_subprefix_dict()
 
