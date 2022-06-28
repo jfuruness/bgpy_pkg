@@ -1,6 +1,10 @@
 from copy import deepcopy
 from pathlib import Path
+from typing import List
 
+from PIL import Image
+
+from .diagram import Diagram
 from .simulator_codec import SimulatorCodec
 from ....engine import SimulationEngine
 from ....subgraphs import Subgraph
@@ -86,10 +90,55 @@ class EngineTester:
     def _generate_diagrams(self):
         """Generates diagrams"""
 
-        # TODO
-        # First write the diagrams to the test_dir
-        # Then recreate the aggregation in the base_dir
-        pass
+        # Load engines
+        engine_guess = self.codec.load(self.engine_guess_path)
+        engine_gt = self.codec.load(self.engine_ground_truth_path)
+        # Load outcomes
+        outcomes_guess = self.codec.load(self.outcomes_guess_path)
+        outcomes_gt = self.codec.load(self.outcomes_ground_truth_path)
+
+        # Write guess graph
+        Diagram().generate_as_graph(
+            engine_guess,
+            self.conf.scenario,
+            outcomes_guess,
+            f"({self.conf.name} Guess)\n{self.conf.desc}",
+            path=self.test_dir / "guess.gv",
+            view=False)
+        # Write ground truth graph
+        Diagram().generate_as_graph(
+            engine_gt,
+            self.conf.scenario,
+            outcomes_gt,
+            f"({self.conf.name} Ground Truth)\n{self.conf.desc}",
+            path=self.test_dir / "ground_truth.gv",
+            view=False)
+        # Aggregate all tests
+        self._aggregate_diagrams()
+
+    def _aggregate_diagrams(self):
+        """Aggregates all test diagrams for readability into a PDF"""
+
+        # Because we have too many tests, we need to aggregate them for
+        # readability
+        # https://stackoverflow.com/a/47283224/8903959
+        images = [Image.open(x) for x in self.image_paths]
+        converted_images = list()
+        for img in images:
+            if img.mode == "RGBA":
+                converted_images.append(img.convert("RGB"))
+                img.close()
+            else:
+                converted_images.append(img)
+
+        # Aggregate all images into a PDF
+        converted_images[0].save(self.aggregated_diagrams_path,
+                                 "PDF",
+                                 resolution=100.0,
+                                 save_all=True,
+                                 append_images=converted_images[1:])
+        for img in converted_images:
+            img.close()
 
     def _compare_yaml(self):
         """Compares YAML for ground truth vs guess for engine and outcomes"""
@@ -130,3 +179,15 @@ class EngineTester:
         """Returns the path to the outcomes guess YAML"""
 
         return self.test_dir / "outcomes_guess.yaml"
+
+    @property
+    def aggregated_diagrams_path(self) -> Path:
+        """Returns the path to the aggregated diagrams PDF"""
+
+        return self.base_dir / "aggregated_diagrams.pdf"
+
+    @property
+    def image_paths(self) -> List[Path]:
+        """Returns paths as strings for all images"""
+
+        return list(sorted(self.base_dir.glob("*/*png")))

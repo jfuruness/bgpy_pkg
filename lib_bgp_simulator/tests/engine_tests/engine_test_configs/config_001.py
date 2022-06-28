@@ -10,7 +10,7 @@ class Config001(EngineTestConfig):
     """Contains config options to run a test"""
 
     name = "001"
-    desc = "TODO"
+    desc = "TODO - insert description/caption here"
     scenario = SubprefixHijack(attacker_asn=ASNs.ATTACKER.value,
                                victim_asn=ASNs.VICTIM.value,
                                AdoptASCls=None)
