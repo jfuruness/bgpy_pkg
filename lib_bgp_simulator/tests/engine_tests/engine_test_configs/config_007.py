@@ -19,13 +19,6 @@ class Config007(EngineTestConfig):
                                )
 
     graph = Graph003()
-    non_default_as_cls_dict = dict()
+    non_default_as_cls_dict = {3: BGPSimpleAS,
+                               4: BGPSimpleAS}
     propagation_rounds = 1
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(self, *args, **kwargs)
-        # override the adopting ASNs to only be 3 and 4
-        scenario._get_adopting_asns = self._get_adopting_asns
-
-    def _get_adopting_asns(self, engine, percent_adopt):
-        return [3, 4]
