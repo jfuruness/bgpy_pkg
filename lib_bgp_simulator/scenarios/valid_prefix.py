@@ -23,3 +23,7 @@ class ValidPrefix(SingleAtkVicAdoptClsScenario):
                               roa_origin=self.victim_asn,
                               recv_relationship=Relationships.ORIGIN)
         return (vic_ann,)
+
+
+    def _get_attacker_asn(self, *args, **kwargs):
+        return None
