@@ -8,6 +8,7 @@ from .engine_test_configs import Config003
 from .engine_test_configs import Config004
 from .engine_test_configs import Config005
 from .engine_test_configs import Config006
+from .engine_test_configs import Config007
 from .utils import EngineTester
 from .utils import EngineTestConfig
 
@@ -20,7 +21,7 @@ class TestEngine:
 
     @pytest.mark.parametrize("conf",
     #                         [Cls() for Cls in EngineTestConfig.subclasses])
-                             [Config001, Config002, Config003, Config004, Config005, Config006])
+                             [Config001, Config002, Config003, Config004, Config005, Config006, Config007])
     def test_engine(self, conf: EngineTestConfig, overwrite: bool):
         """Performs a system test on the engine
 
