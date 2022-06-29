@@ -16,7 +16,7 @@ class SimulationEngine(BGPDAG):
     Then the run function can be called, and propagation occurs
     """
 
-    __slots__ = "ready_to_run",
+    #__slots__ = "ready_to_run",
 
     def __init__(self,
                  *args,
