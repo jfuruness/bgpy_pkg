@@ -12,6 +12,10 @@ from .config_019 import Config019
 from .config_020 import Config020
 from .config_021 import Config021
 from .config_022 import Config022
+from .config_023 import Config023
+from .config_024 import Config024
+from .config_025 import Config025
+from .config_026 import Config026
 
 __all__ = ["Config001",
            "Config002",
@@ -26,4 +30,8 @@ __all__ = ["Config001",
            "Config019",
            "Config020",
            "Config021",
-           "Config022"]
+           "Config022",
+           "Config023",
+           "Config024",
+           "Config025",
+           "Config026"]
