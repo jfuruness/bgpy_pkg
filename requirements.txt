@@ -1,8 +1,8 @@
 git+https://github.com/jfuruness/lib_caida_collector.git#65daee2120c6165a90914e1fe9c17930b6ca0477
-graphviz==0.19.2
+graphviz
 pil
-matplotlib==3.5.1
-pytest==7.1.1
-PyYAML==6.0
-tqdm==4.64.0
-yamlable==1.0.4
+matplotlib
+pytest
+PyYAML
+tqdm
+yamlable
