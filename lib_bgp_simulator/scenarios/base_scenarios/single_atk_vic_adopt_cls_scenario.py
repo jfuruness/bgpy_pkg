@@ -15,7 +15,7 @@ class SingleAtkVicAdoptClsScenario(Scenario):
     as well as a single adopting AS Class
     """
 
-    __slots__ = ("attacker_asn", "victim_asn")
+    __slots__ = ("attacker_asn", "victim_asn", "AdoptASCls")
 
     def __init__(self,
                  *args,
@@ -43,7 +43,7 @@ class SingleAtkVicAdoptClsScenario(Scenario):
 
         self._set_attacker_victim_pair(engine, percent_adopt, prev_scenario)
         # Must call this here due to atk/vic pair being different
-        self.announcement = self._get_announcements()
+        self.announcements = self._get_announcements()
         self._get_ordered_prefix_subprefix_dict()
         super(SingleAtkVicAdoptClsScenario, self).setup_engine(engine,
                                                                percent_adopt,

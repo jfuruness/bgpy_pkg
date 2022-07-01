@@ -1,24 +1,24 @@
 from ..graphs import Graph003
 from ..utils import EngineTestConfig
 
-from ....engine import ROVSimpleAS
-from ....engine import BGPSimpleAS
+from ....engine import ROVAS
+from ....engine import BGPAS
 from ....enums import ASNs
 from ....scenarios import SubprefixHijack
 
 
-class Config007(EngineTestConfig):
+class Config008(EngineTestConfig):
     """Contains config options to run a test"""
 
-    name = "007"
+    name = "008"
     desc = "Fig 2 (ROVSimpleAS)"
     scenario = SubprefixHijack(attacker_asn=ASNs.ATTACKER.value,
                                victim_asn=ASNs.VICTIM.value,
-                               AdoptASCls=ROVSimpleAS,
-                               BaseASCls=BGPSimpleAS,
+                               AdoptASCls=ROVAS,
+                               BaseASCls=BGPAS,
                                )
 
     graph = Graph003()
-    non_default_as_cls_dict = {3: ROVSimpleAS,
-                               4: ROVSimpleAS}
+    non_default_as_cls_dict = {3: ROVAS,
+                               4: ROVAS}
     propagation_rounds = 1

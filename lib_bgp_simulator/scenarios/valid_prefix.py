@@ -7,7 +7,7 @@ from ..enums import Timestamps
 class ValidPrefix(SingleAtkVicAdoptClsScenario):
     """A valid prefix engine input, mainly for testing"""
 
-    #__slots__ = ()
+    __slots__ = ()
 
     def _get_announcements(self):
         """Returns a valid prefix announcement
