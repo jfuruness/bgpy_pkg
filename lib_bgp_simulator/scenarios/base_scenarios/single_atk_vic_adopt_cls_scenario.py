@@ -47,7 +47,9 @@ class SingleAtkVicAdoptClsScenario(Scenario):
             self.victim_asn = prev_scenario.victim_asn
         # This is the first time, randomly select attacker/victim
         else:
-            self._set_attacker_victim_pair(engine, percent_adopt, prev_scenario)
+            self._set_attacker_victim_pair(engine,
+                                           percent_adopt,
+                                           prev_scenario)
         # Must call this here due to atk/vic pair being different
         self.announcements = self._get_announcements()
         self._get_ordered_prefix_subprefix_dict()
@@ -136,7 +138,6 @@ class SingleAtkVicAdoptClsScenario(Scenario):
         By default, we use the previous engine input to maintain static
         adoption across trials
         """
-
 
         # No adopting ASes
         if not self.AdoptASCls:

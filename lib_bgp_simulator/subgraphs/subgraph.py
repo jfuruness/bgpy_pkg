@@ -1,4 +1,4 @@
-from abc import ABC, abstractmethod
+from abc import ABC
 from collections import defaultdict
 
 import matplotlib
@@ -151,7 +151,11 @@ class Subgraph(ABC):
 # Shared data funcs #
 #####################
 
-    def _add_traceback_to_shared_data(self, shared, engine, scenario, outcomes):
+    def _add_traceback_to_shared_data(self,
+                                      shared,
+                                      engine,
+                                      scenario,
+                                      outcomes):
         """Adds traceback info to shared data"""
 
         for as_obj, outcome in outcomes.items():

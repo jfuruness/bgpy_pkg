@@ -7,6 +7,8 @@ from ...enums import Timestamps
 class NonRoutedPrefixHijack(SingleAtkVicAdoptClsScenario):
     """Non routed prefix hijack (ROA of AS 0)"""
 
+    __slots__ = ()
+
     def _get_announcements(self):
         """Returns non routed prefix announcement from attacker
 

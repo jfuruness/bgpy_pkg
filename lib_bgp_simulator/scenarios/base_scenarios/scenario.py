@@ -9,7 +9,7 @@ from ...engine import BGPSimpleAS
 class Scenario(ABC):
     """Contains information regarding an attack"""
 
-    __slots__ = ("non_default_as_cls_dict", "prefix_subprefix_dict", 
+    __slots__ = ("non_default_as_cls_dict", "prefix_subprefix_dict",
                  "BaseASCls", "announcements", "ordered_prefix_subprefix_dict")
 
     # This is the base type of announcement for this class

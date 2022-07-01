@@ -12,6 +12,8 @@ class SubprefixHijack(SingleAtkVicAdoptClsScenario):
     invalid by roa by length and origin
     """
 
+    __slots__ = ()
+
     def _get_announcements(self):
         """Returns victim and attacker anns for subprefix hijack
 

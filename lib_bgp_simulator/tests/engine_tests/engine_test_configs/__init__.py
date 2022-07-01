@@ -24,7 +24,6 @@ from .config_025 import Config025
 from .config_026 import Config026
 
 
-
 __all__ = ["Config001",
            "Config002",
            "Config003",

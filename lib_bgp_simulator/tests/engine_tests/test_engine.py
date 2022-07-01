@@ -25,13 +25,29 @@ class TestEngine:
     """
 
     @pytest.mark.parametrize("conf",
-    #                         [Cls() for Cls in EngineTestConfig.subclasses])
-                             [Config001, Config002, Config003, Config004, Config005, Config006, Config007,
-                              Config011, Config012,
-                              Config013, Config014, Config015, Config016,
-                              Config017, Config018, Config019, Config020,
-                              Config021, Config022, Config023, Config024,
-                              Config025, Config026])
+                             [Config001,
+                              Config002,
+                              Config003,
+                              Config004,
+                              Config005,
+                              Config006,
+                              Config007,
+                              Config011,
+                              Config012,
+                              Config013,
+                              Config014,
+                              Config015,
+                              Config016,
+                              Config017,
+                              Config018,
+                              Config019,
+                              Config020,
+                              Config021,
+                              Config022,
+                              Config023,
+                              Config024,
+                              Config025,
+                              Config026])
     def test_engine(self, conf: EngineTestConfig, overwrite: bool):
         """Performs a system test on the engine
 

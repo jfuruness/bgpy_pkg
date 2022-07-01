@@ -11,6 +11,8 @@ class NonRoutedSuperprefixHijack(SingleAtkVicAdoptClsScenario):
     hijacking a non routed prefix that has a non routed ROA
     """
 
+    __slots__ = ()
+
     def _get_announcements(self):
         """Returns a superprefix announcement for this engine input
 
