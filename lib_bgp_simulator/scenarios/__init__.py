@@ -6,7 +6,7 @@ from .hijack_scenarios import SubprefixHijack
 from .hijack_scenarios import NonRoutedPrefixHijack
 from .hijack_scenarios import SuperprefixPrefixHijack
 from .hijack_scenarios import NonRoutedSuperprefixHijack
-from .valid_prefix import ValidPrefix
+from .valid_prefix import ValidPrefix, MultiValidPrefix
 
 __all__ = ["Scenario",
            "SingleAtkVicAdoptClsScenario",

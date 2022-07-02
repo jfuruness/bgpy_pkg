@@ -9,18 +9,6 @@ from ...engine import BGPAS
 
 
 @pytest.mark.parametrize("BaseASCls", [BGPSimpleAS, BGPAS])
-def test_process_incoming_anns_bgp(BaseASCls):
-    """Test basic functionality of process_incoming_anns"""
-    prefix = '137.99.0.0/16'
-    ann = AnnWDefaults(prefix=prefix, as_path=(13796,), timestamp=0)
-    a = BaseASCls(1, peers=[], providers=[], customers=[])
-    a._recv_q.add_ann(ann)
-    a.process_incoming_anns(Relationships.CUSTOMERS)
-    # assert announcement was accepted to local rib
-    assert(a._local_rib.get_ann(prefix).origin == ann.origin)
-
-
-@pytest.mark.parametrize("BaseASCls", [BGPSimpleAS, BGPAS])
 def test_process_incoming_anns_bgp_relationships(BaseASCls):
     """Customers > Peers > Providers"""
     prefix = '137.99.0.0/16'
