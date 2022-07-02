@@ -6,14 +6,14 @@ from ....enums import ASNs
 from ....scenarios import MultiValidPrefix
 
 
-class Config027(EngineTestConfig):
+class Config028(EngineTestConfig):
     """Contains config options to run a test"""
 
-    name = "027"
-    desc = "Test of customer preference"
+    name = "028"
+    desc = "Test of peer preference"
     scenario = MultiValidPrefix(attacker_asn=ASNs.ATTACKER.value,
-                           victim_asn=4, # the correct destination
-                           victim_asns=[2, 3, 4],
+                           victim_asn=3, # the correct destination
+                           victim_asns=[2, 3],
                            AdoptASCls=None,
                            BaseASCls=BGPSimpleAS)
     graph = Graph040()

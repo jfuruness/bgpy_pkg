@@ -18,6 +18,8 @@ from .engine_test_configs import Config015, Config016, Config017, Config018
 from .engine_test_configs import Config019, Config020, Config021, Config022
 from .engine_test_configs import Config023, Config024, Config025, Config026
 from .engine_test_configs import Config027
+from .engine_test_configs import Config028
+from .engine_test_configs import Config029
 from .utils import EngineTester
 from .utils import EngineTestConfig
 
@@ -37,7 +39,7 @@ class TestEngine:
                              # Config017, Config018, Config019, Config020,
                              # Config021, Config022, Config023, Config024,
                              # Config025, Config026, 
-                              [Config027])
+                              [Config027, Config028, Config029])
     def test_engine(self, conf: EngineTestConfig, overwrite: bool):
         """Performs a system test on the engine
 
