@@ -48,7 +48,6 @@ class EngineTester:
             engine.run(propagation_round=propagation_round,
                        scenario=deepcopy(self.conf.scenario))
 
-
         # Get traceback results {AS: Outcome}
         outcomes = Subgraph()._get_engine_outcomes(engine, self.conf.scenario)
         # Convert this to just be {ASN: Outcome} (Not the AS object)

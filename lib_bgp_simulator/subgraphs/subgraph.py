@@ -1,4 +1,4 @@
-from abc import ABC, abstractmethod
+from abc import ABC
 from collections import defaultdict
 
 import matplotlib
@@ -132,7 +132,12 @@ class Subgraph(ABC):
         """
 
         if not shared_data.get("set"):
-            self._add_traceback_to_shared_data(shared_data, engine, scenario)
+            # {as_obj: outcome}
+            outcomes = self._get_engine_outcomes(engine, scenario)
+            self._add_traceback_to_shared_data(shared_data,
+                                               engine,
+                                               scenario,
+                                               outcomes)
         key = self._get_subgraph_key(scenario)
         self.data[scenario.graph_label][percent_adopt].append(
             shared_data.get(key, 0))
@@ -146,11 +151,13 @@ class Subgraph(ABC):
 # Shared data funcs #
 #####################
 
-    def _add_traceback_to_shared_data(self, shared, engine, scenario):
+    def _add_traceback_to_shared_data(self,
+                                      shared,
+                                      engine,
+                                      scenario,
+                                      outcomes):
         """Adds traceback info to shared data"""
 
-        # {as_obj: outcome}
-        outcomes = self._get_engine_outcomes(engine, scenario)
         for as_obj, outcome in outcomes.items():
             as_type = self._get_as_type(as_obj)
 

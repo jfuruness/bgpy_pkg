@@ -41,7 +41,15 @@ class SingleAtkVicAdoptClsScenario(Scenario):
     def setup_engine(self, engine, percent_adopt, prev_scenario):
         """Sets up engine input"""
 
-        self._set_attacker_victim_pair(engine, percent_adopt, prev_scenario)
+        # Use the same attacker victim pair that was used previously
+        if prev_scenario:
+            self.attacker_asn = prev_scenario.attacker_asn
+            self.victim_asn = prev_scenario.victim_asn
+        # This is the first time, randomly select attacker/victim
+        else:
+            self._set_attacker_victim_pair(engine,
+                                           percent_adopt,
+                                           prev_scenario)
         # Must call this here due to atk/vic pair being different
         self.announcements = self._get_announcements()
         self._get_ordered_prefix_subprefix_dict()
@@ -131,9 +139,12 @@ class SingleAtkVicAdoptClsScenario(Scenario):
         adoption across trials
         """
 
+        # No adopting ASes
+        if not self.AdoptASCls:
+            return dict()
         # By default, use the last engine input to maintain static
         # adoption across the graph
-        if prev_scenario:
+        elif prev_scenario:
             # TODO: get as_cls_dict from previous engine input
             return {asn: self.AdoptASCls for asn, ASCls in
                     prev_scenario.non_default_as_cls_dict.items()}

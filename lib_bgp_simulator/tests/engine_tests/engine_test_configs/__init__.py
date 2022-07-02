@@ -30,7 +30,6 @@ from .config_029 import Config029
 from .config_030 import Config030
 from .config_031 import Config031
 
-
 __all__ = ["Config001",
            "Config002",
            "Config003",

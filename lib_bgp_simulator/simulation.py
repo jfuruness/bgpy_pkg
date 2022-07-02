@@ -164,8 +164,10 @@ class Simulation:
             subgraphs = self.subgraphs
 
         prev_scenario = None
-        for scenario in self.scenarios:
-            for percent_adopt, trial in percent_adopt_trials:
+
+        for percent_adopt, trial in percent_adopt_trials:
+            for scenario in self.scenarios:
+
                 # Deep copy scenario to ensure it's fresh
                 scenario = deepcopy(scenario)
 
@@ -193,6 +195,8 @@ class Simulation:
 
                     # By default, this is a no op
                     scenario.post_propagation_hook(**kwargs)
+            # Reset scenario for next round of trials
+            prev_scenario = None
         return subgraphs
 
     def _aggregate_engine_run_data(self, subgraphs, **kwargs):
