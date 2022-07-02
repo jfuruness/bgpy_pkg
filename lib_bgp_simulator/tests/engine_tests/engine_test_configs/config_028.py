@@ -12,10 +12,10 @@ class Config028(EngineTestConfig):
     name = "028"
     desc = "Test of peer preference"
     scenario = MultiValidPrefix(attacker_asn=ASNs.ATTACKER.value,
-                           victim_asn=3, # the correct destination
-                           victim_asns=[2, 3],
-                           AdoptASCls=None,
-                           BaseASCls=BGPSimpleAS)
+                                victim_asn=3,  # the correct destination
+                                victim_asns=[2, 3],
+                                AdoptASCls=None,
+                                BaseASCls=BGPSimpleAS)
     graph = Graph040()
     non_default_as_cls_dict = dict()
     propagation_rounds = 1

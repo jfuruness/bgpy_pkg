@@ -1,14 +1,13 @@
 from lib_caida_collector import PeerLink, CustomerProviderLink as CPLink
 
 from .graph_info import GraphInfo
-from ....enums import ASNs
 
 
 class Graph040(GraphInfo):
     r"""Graph to test relationship preference
 
           2
-         / 
+         /
     5 - 1 - 3
          \
           4
