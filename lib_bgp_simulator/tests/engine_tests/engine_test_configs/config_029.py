@@ -14,21 +14,14 @@ class Custom29MultiValidPrefix(MultiValidPrefix):
 
     def _get_announcements(self):
         """Returns several valid prefix announcements"""
-        if self.victim_asns is None:
+        vic_anns = super()._get_announcements()
+        if vic_anns is None:
             return None
-        vic_anns = []
-        for victim_asn in self.victim_asns:
-            vic_anns.append(self.AnnCls(
-                prefix=Prefixes.PREFIX.value,
-                as_path=(victim_asn,),
-                timestamp=Timestamps.VICTIM.value,
-                seed_asn=victim_asn,
-                roa_valid_length=True,
-                roa_origin=victim_asn,
-                recv_relationship=Relationships.ORIGIN))
-            if victim_asn == 5:
-                # longer path to test path length preference
-                vic_anns[-1].as_path = (victim_asn, victim_asn)
+
+        for i in range(len(vic_anns)):
+            if vic_anns[i].origin == 5:
+                # longer path for AS 5 to test path length preference
+                vic_anns[i].as_path = (vic_anns[i].origin, vic_anns[i].origin)
         return vic_anns
 
 

@@ -13,18 +13,9 @@ class Custom31ValidPrefix(ValidPrefix):
     __slots__ = ()
 
     def _get_announcements(self):
-        """Returns a valid prefix announcement
-
-        for subclasses of this EngineInput, you can set AnnCls equal to
-        something other than Announcement
-        """
-        vic_ann = self.AnnCls(prefix=Prefixes.PREFIX.value,
-                              as_path=(self.victim_asn, 1, self.victim_asn),
-                              timestamp=Timestamps.VICTIM.value,
-                              seed_asn=self.victim_asn,
-                              roa_valid_length=True,
-                              roa_origin=self.victim_asn,
-                              recv_relationship=Relationships.ORIGIN)
+        vic_ann = super()._get_announcements()[0]
+        # Add 1 to the path so AS 1 rejects this
+        vic_ann.as_path = (self.victim_asn, 1, self.victim_asn)
         return (vic_ann,)
 
 
