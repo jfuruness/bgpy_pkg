@@ -126,7 +126,7 @@ class Diagram:
                 elif ann.origin == scenario.victim_asn:
                     ann_help = "&#128519;"
                 # Commented out for multiple victim support
-                #else:
+                # else:
                 #    raise Exception("Not valid ann for rib?")
 
                 html += f"""<TR>

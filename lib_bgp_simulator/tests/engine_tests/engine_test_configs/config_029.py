@@ -3,7 +3,7 @@ from ..utils import EngineTestConfig
 
 
 from ....engine import BGPSimpleAS
-from ....enums import ASNs, Prefixes, Timestamps, Relationships
+from ....enums import ASNs
 from ....scenarios import MultiValidPrefix
 
 
@@ -39,4 +39,3 @@ class Config029(EngineTestConfig):
     graph = Graph040()
     non_default_as_cls_dict = dict()
     propagation_rounds = 1
-

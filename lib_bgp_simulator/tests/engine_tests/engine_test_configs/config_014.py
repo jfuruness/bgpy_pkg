@@ -16,7 +16,5 @@ class Config014(EngineTestConfig):
                                           AdoptASCls=ROVAS,
                                           BaseASCls=BGPSimpleAS)
     graph = Graph006()
-    non_default_as_cls_dict = {
-        2: ROVAS
-    }
+    non_default_as_cls_dict = {2: ROVAS}
     propagation_rounds = 1

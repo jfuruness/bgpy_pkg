@@ -3,7 +3,7 @@ from ..utils import EngineTestConfig
 
 
 from ....engine import BGPSimpleAS
-from ....enums import ASNs, Prefixes, Timestamps, Relationships
+from ....enums import ASNs
 from ....scenarios import MultiValidPrefix
 
 
@@ -21,7 +21,9 @@ class Custom30MultiValidPrefix(MultiValidPrefix):
         for i in range(len(vic_anns)):
             if vic_anns[i].origin == 1:
                 # longer path for AS 1
-                vic_anns[i].as_path = (vic_anns[i].origin, vic_anns[i].origin, vic_anns[i].origin)
+                vic_anns[i].as_path = (vic_anns[i].origin,
+                                       vic_anns[i].origin,
+                                       vic_anns[i].origin)
         return vic_anns
 
 
@@ -39,4 +41,3 @@ class Config030(EngineTestConfig):
     graph = Graph040()
     non_default_as_cls_dict = dict()
     propagation_rounds = 1
-

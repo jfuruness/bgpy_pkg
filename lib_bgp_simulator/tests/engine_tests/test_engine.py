@@ -33,7 +33,6 @@ class TestEngine:
     """
 
     @pytest.mark.parametrize("conf",
-    #                         [Cls() for Cls in EngineTestConfig.subclasses])
                              [Config001,
                               Config002,
                               Config003,

@@ -16,7 +16,5 @@ class Config013(EngineTestConfig):
                                           AdoptASCls=ROVSimpleAS,
                                           BaseASCls=BGPSimpleAS)
     graph = Graph006()
-    non_default_as_cls_dict = {
-        2: ROVSimpleAS
-    }
+    non_default_as_cls_dict = {2: ROVSimpleAS}
     propagation_rounds = 1
