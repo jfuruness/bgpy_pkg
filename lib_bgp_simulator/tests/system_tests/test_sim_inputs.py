@@ -1,40 +1,50 @@
-# import itertools
+from itertools import product
 
 import pytest
 
-# from ...engine import BGPSimpleAS
-# from ...engine_input import EngineInput
+from ...engine import BGPSimpleAS
+from ...engine import BGPAS
+from ...engine import ROVAS
+from ...engine import ROVSimpleAS
 
-# from ...simulator import Graph
-# from ...simulator import Simulator
+from ...scenarios import NonRoutedPrefixHijack
+from ...scenarios import NonRoutedSuperprefixHijack
+from ...scenarios import PrefixHijack
+from ...scenarios import SubprefixHijack
+from ...scenarios import SuperprefixPrefixHijack
+
+from ...simulation import Simulation
+
+AS_CLASSES = (BGPSimpleAS, BGPAS, ROVAS, ROVSimpleAS)
+SCENARIOS = (NonRoutedPrefixHijack,
+             NonRoutedSuperprefixHijack,
+             PrefixHijack,
+             SubprefixHijack,
+             SuperprefixPrefixHijack)
+PARSE_CPUS = (1, 2)
 
 
 # Really does need all these combos
 # Since certain as classes might break with mp
 @pytest.mark.slow
-@pytest.mark.skip
-# @pytest.mark.parametrize("AdoptASCls, EngineInputCls, parse_cpus",
-#                          itertools.product(*[BGPSimpleAS.as_classes,
-#                                             EngineInput.subclasses,
-#                                             [1, 2]]))
+@pytest.mark.parametrize("AdoptASCls, BaseASCls, ScenarioCls, parse_cpus",
+                         [x for x in product(*[AS_CLASSES,
+                                               AS_CLASSES,
+                                               SCENARIOS,
+                                               PARSE_CPUS])
+                          # Where BaseASCls != AdoptASCls
+                          if x[0] != x[1]])
 def test_sim_inputs(AdoptASCls,
-                    EngineInputCls,
+                    BaseASCls,
+                    ScenarioCls,
                     parse_cpus,
                     tmp_path):
     """Test basic functionality of process_incoming_anns"""
 
-    tmp_dir = tmp_path / "test_sim_inputs"
-    tmp_dir.mkdir()
-    Simulator = 0
-    Graph = 0
-    BGPSimpleAS = 0
-    sim = Simulator(parse_cpus=parse_cpus)
-    graph = Graph(percent_adoptions=[0, 50, 100],
-                  adopt_as_classes=[AdoptASCls],
-                  EngineInputCls=EngineInputCls,
-                  num_trials=1,
-                  # No need to modify BaseASCls
-                  # Because we test every possibility of AdoptASCls
-                  # We actually test all combos of base - adopt class
-                  BaseASCls=BGPSimpleAS)
-    sim.run(graphs=[graph], graph_path=tmp_dir / "graphs.tar.gz")
+    sim = Simulation(percent_adoptions=(0, 50, 100),
+                     scenarios=[ScenarioCls(AdoptASCls=AdoptASCls,
+                                            BaseASCls=BaseASCls)],
+                     num_trials=2,
+                     output_path=tmp_path / "test_sim_inputs",
+                     parse_cpus=parse_cpus)
+    sim.run()

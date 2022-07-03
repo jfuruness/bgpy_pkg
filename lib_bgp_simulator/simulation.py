@@ -35,7 +35,7 @@ class Simulation:
               AttackerSuccessNonAdoptingEtcSubgraph(),
               AttackerSuccessNonAdoptingInputCliqueSubgraph(),
               AttackerSuccessNonAdoptingStubsAndMHSubgraph()],
-            num_trials=3,
+            num_trials=1,
             propagation_rounds=1,
             output_path=Path("/tmp/graphs"),
             parse_cpus=1
