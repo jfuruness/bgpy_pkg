@@ -32,6 +32,7 @@ class Outcomes(YamlAbleEnum):
     ATTACKER_SUCCESS = 0
     VICTIM_SUCCESS = 1
     DISCONNECTED = 2
+    UNDETERMINED = 3
 
 
 class Relationships(YamlAbleEnum):
@@ -94,3 +95,14 @@ class ASNs(YamlAbleEnum):
 
     ATTACKER = 666
     VICTIM = 777
+
+
+class ASTypes(YamlAbleEnum):
+    """AS Types"""
+
+    __slots__ = ()
+
+    STUBS_OR_MH = "stubs_or_mh"
+    INPUT_CLIQUE = "input_clique"
+    # Not stubs, multihomed, or input clique
+    ETC = "etc"

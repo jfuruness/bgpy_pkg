@@ -4,6 +4,8 @@ from ..bgp import BGPAS
 
 
 class ROVAS(ROVSimpleAS, BGPAS):
-    __slots__ = tuple()
+    """An AS that deploys ROV and has withdrawals, ribs in and out"""
+
+    __slots__ = ()
 
     name = "ROV"

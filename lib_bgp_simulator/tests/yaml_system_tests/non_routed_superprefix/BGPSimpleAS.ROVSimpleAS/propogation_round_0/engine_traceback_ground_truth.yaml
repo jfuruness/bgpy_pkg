@@ -1,9 +1,0 @@
-1: !simulator_codec/Outcomes
-  name: ATTACKER_SUCCESS
-  value: 0
-2: !simulator_codec/Outcomes
-  name: ATTACKER_SUCCESS
-  value: 0
-3: !simulator_codec/Outcomes
-  name: ATTACKER_SUCCESS
-  value: 0

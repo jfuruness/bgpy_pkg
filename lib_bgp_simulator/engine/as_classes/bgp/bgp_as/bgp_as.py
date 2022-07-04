@@ -6,7 +6,7 @@ from ....ann_containers import RIBsIn
 from ....ann_containers import RIBsOut
 from ....ann_containers import SendQueue
 
-from .....announcements import Announcement as Ann
+from .....announcement import Announcement as Ann
 from .....enums import Relationships
 
 

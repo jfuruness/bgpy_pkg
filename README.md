@@ -90,6 +90,8 @@ tox
 
 ## History
 * [lib\_bgp\_simulator](#lib_bgp_simulator)
+
+* 0.0.4 Major refactor
 * 0.0.2 Fixed dependencies so that they weren't relying off ssh, since github doesn't support pip installs with ssh and github actions failed
 * 0.0.1 Refactored package. Semi working version
 

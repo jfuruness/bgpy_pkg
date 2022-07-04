@@ -1,4 +1,7 @@
-from .conftest import pytest_addoption
+from .engine_tests import TestEngine
+
+# Test configs
+from .engine_tests import Config001
 
 # Graphs
 from .graphs import GraphInfo
@@ -45,73 +48,48 @@ from .graphs import Graph043
 from .graphs import Graph044
 from .graphs import Graph045
 
-# System tests that may be useful elsewhere (not YAML)
-from .system_tests import test_sim_inputs
 
-# Classes to run/write tests
-from .utils import BaseGraphSystemTester
-from .utils import YamlSystemTestRunner
-
-# Yaml system tests that can be used again elsewhere
-from .yaml_system_tests import BaseHiddenHijackTester
-from .yaml_system_tests import BaseBGPPropTester
-from .yaml_system_tests import BaseFig2Tester
-from .yaml_system_tests import BaseNonRoutedSuperprefixTester
-from .yaml_system_tests import BaseNonRoutedPrefixTester
-
-__all__ = ["pytest_addoption",
-           # Graphs",
-           "GraphInfo",
-           "Graph001",
-           "Graph002",
-           "Graph003",
-           "Graph004",
-           "Graph005",
-           "Graph006",
-           "Graph007",
-           "Graph008",
-           "Graph009",
-           "Graph010",
-           "Graph011",
-           "Graph012",
-           "Graph013",
-           "Graph014",
-           "Graph015",
-           "Graph016",
-           "Graph020",
-           "Graph021",
-           "Graph022",
-           "Graph023",
-           "Graph024",
-           "Graph025",
-           "Graph026",
-           "Graph027",
-           "Graph028",
-           "Graph029",
-           "Graph030",
-           "Graph031",
-           "Graph032",
-           "Graph033",
-           "Graph034",
-           "Graph035",
-           "Graph036",
-           "Graph037",
-           "Graph038",
-           "Graph039",
-           "Graph040",
-           "Graph041",
-           "Graph042",
-           "Graph043",
-           "Graph044",
-           "Graph045",
-           # System tests that may be useful elsewhere (not YAML)",
-           "test_sim_inputs",
-           # Classes to run/write tests",
-           "BaseGraphSystemTester",
-           "YamlSystemTestRunner",
-           # Yaml system tests that can be used again elsewhere",
-           "BaseHiddenHijackTester",
-           "BaseBGPPropTester",
-           "BaseFig2Tester",
-           "BaseNonRoutedSuperprefixTester",
-           "BaseNonRoutedPrefixTester"]
+__all__ = [
+    "TestEngine",
+    "Config001",
+    "GraphInfo",
+    "Graph001",
+    "Graph002",
+    "Graph003",
+    "Graph004",
+    "Graph005",
+    "Graph006",
+    "Graph007",
+    "Graph008",
+    "Graph009",
+    "Graph010",
+    "Graph011",
+    "Graph012",
+    "Graph013",
+    "Graph014",
+    "Graph015",
+    "Graph016",
+    "Graph017",
+    "Graph018",
+    "Graph019",
+    "Graph020",
+    "Graph021",
+    "Graph022",
+    "Graph023",
+    "Graph024",
+    "Graph025",
+    "Graph026",
+    "Graph027",
+    "Graph028",
+    "Graph029",
+    "Graph030",
+    "Graph031",
+    "Graph032",
+    "Graph033",
+    "Graph034",
+    "Graph035",
+    "Graph036",
+    "Graph037",
+    "Graph038",
+    "Graph039",
+]

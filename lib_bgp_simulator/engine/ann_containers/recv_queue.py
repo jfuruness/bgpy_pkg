@@ -1,8 +1,6 @@
-from collections import defaultdict
-
 from .ann_container import AnnContainer
 
-from ...announcements import Announcement
+from ...announcement import Announcement
 
 
 class RecvQueue(AnnContainer):
@@ -12,16 +10,22 @@ class RecvQueue(AnnContainer):
     {prefix: list_of_ann}
     """
 
-    __slots__ = tuple()
-
-    def __init__(self, _info=None):
-        self._info = _info if _info is not None else defaultdict(list)
+    __slots__ = ()
 
     def add_ann(self, ann: Announcement):
-        self._info[ann.prefix].append(ann)
+        """Appends ann to the list of recieved ann for that prefix
+
+        We don't use defaultdict here because those are not yamlable
+        """
+
+        self._info[ann.prefix] = self._info.get(ann.prefix, list()) + [ann]
 
     def prefix_anns(self):
+        """Returns all prefixes and announcement lists zipped"""
+
         return self._info.items()
 
     def get_ann_list(self, prefix):
+        """Returns recevied ann list for a given prefix"""
+
         return self._info.get(prefix, [])

@@ -10,6 +10,9 @@ python_functions = ["test*"]
 markers = [
     "slow",  # All slow tests
 ]
+filterwarnings = [
+    "ignore::DeprecationWarning:yamlable",
+]
 
 [tool.mypy]
 mypy_path = "lib_bgp_simulator"

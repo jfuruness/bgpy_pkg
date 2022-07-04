@@ -1,18 +1,16 @@
 from typing import Optional
 
-from .....announcements import Announcement as Ann
-from .....engine_input import EngineInput
+from .....announcement import Announcement as Ann
 from .....enums import Relationships
 
 
 def process_incoming_anns(self,
+                          *,
                           from_rel: Relationships,
-                          *args,
-                          propagation_round: Optional[int] = None,
+                          propagation_round,
                           # Usually None for attack
-                          engine_input: Optional[EngineInput] = None,
-                          reset_q: bool = True,
-                          **kwargs):
+                          scenario,
+                          reset_q: bool = True):
     """Process all announcements that were incoming from a specific rel"""
 
     for prefix, anns in self._recv_q.prefix_anns():
@@ -50,7 +48,7 @@ def process_incoming_anns(self,
                 self._ribs_in.add_unprocessed_ann(ann, from_rel)
             # Process withdrawals even for invalid anns in the ribs_in
             if ann.withdraw:
-                if self._process_incoming_withdrawal(ann, from_rel, **kwargs):
+                if self._process_incoming_withdrawal(ann, from_rel):
                     # the above will return true if the local rib is changed
                     updated_loc_rib_ann = self._local_rib.get_ann(prefix)
                     if current_processed:
@@ -62,17 +60,16 @@ def process_incoming_anns(self,
                             from_rel,
                             updated_loc_rib_ann,
                             True,
-                            updated_loc_rib_ann.recv_relationship,
-                            **kwargs)
+                            updated_loc_rib_ann.recv_relationship)
                         if new_ann_is_better:
                             current_ann = updated_loc_rib_ann
                             current_processed = True
 
             # If it's valid, process it
-            elif self._valid_ann(ann, from_rel, **kwargs):
+            elif self._valid_ann(ann, from_rel):
                 new_ann_is_better: bool = self._new_ann_better(
                     current_ann, current_processed, from_rel,
-                    ann, False, from_rel, **kwargs)
+                    ann, False, from_rel)
 
                 # If the new priority is higher
                 if new_ann_is_better:
@@ -87,14 +84,12 @@ def process_incoming_anns(self,
             if not current_processed:
                 assert not withdraw_ann.prefix_path_attributes_eq(
                     self._copy_and_process(current_ann,
-                                           from_rel,
-                                           **kwargs)), err
+                                           from_rel)), err
 
         # We have a new best!
         if current_processed is False:
             current_ann: Ann = self._copy_and_process(current_ann,
-                                                      from_rel,
-                                                      **kwargs)
+                                                      from_rel)
             # Save to local rib
             self._local_rib.add_ann(current_ann)
 
@@ -103,8 +98,7 @@ def process_incoming_anns(self,
 
 def _process_incoming_withdrawal(self,
                                  ann: Ann,
-                                 recv_relationship: Relationships,
-                                 **kwargs):
+                                 recv_relationship: Relationships):
     prefix: str = ann.prefix
     neighbor: int = ann.as_path[0]
     # Return if the current ann was seeded (for an attack)
@@ -128,8 +122,7 @@ def _process_incoming_withdrawal(self,
     # Remove ann from local rib
     withdraw_ann: Ann = self._copy_and_process(ann,
                                                recv_relationship,
-                                               withdraw=True,
-                                               **kwargs)
+                                               withdraw=True)
     if withdraw_ann.prefix_path_attributes_eq(
             self._local_rib.get_ann(prefix)):
 
@@ -137,7 +130,7 @@ def _process_incoming_withdrawal(self,
         # Also remove from neighbors
         self._withdraw_ann_from_neighbors(withdraw_ann)
 
-        best_ann: Optional[Ann] = self._select_best_ribs_in(prefix, **kwargs)
+        best_ann: Optional[Ann] = self._select_best_ribs_in(prefix)
 
         # Put new ann in local rib
         if best_ann is not None:
@@ -181,7 +174,7 @@ def _withdraw_ann_from_neighbors(self, withdraw_ann: Ann):
             send_info.ann = None
 
 
-def _select_best_ribs_in(self, prefix: str, **kwargs) -> Optional[Ann]:
+def _select_best_ribs_in(self, prefix: str) -> Optional[Ann]:
     """Selects best ann from ribs in
 
     Remember, ribs in anns are NOT deep copied"""
@@ -197,14 +190,12 @@ def _select_best_ribs_in(self, prefix: str, **kwargs) -> Optional[Ann]:
                                 best_recv_relationship,
                                 new_unprocessed_ann,
                                 False,
-                                new_recv_relationship,
-                                **kwargs):
+                                new_recv_relationship):
             best_unprocessed_ann: Ann = new_unprocessed_ann
             best_recv_relationship: Relationships = new_recv_relationship
 
     if best_unprocessed_ann is not None:
         return self._copy_and_process(best_unprocessed_ann,
-                                      best_recv_relationship,
-                                      **kwargs)
+                                      best_recv_relationship)
     else:
         return None

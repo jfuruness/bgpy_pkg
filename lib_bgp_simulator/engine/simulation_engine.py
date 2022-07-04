@@ -1,0 +1,121 @@
+from typing import Optional
+
+from lib_caida_collector import BGPDAG
+
+from .as_classes import BGPAS
+from ..scenarios import Scenario
+from ..enums import Relationships
+
+
+class SimulationEngine(BGPDAG):
+    """BGPDAG subclass that supports announcement propogation
+
+    This class must be first setup with the _setup function
+    This resets all the ASes to their base state, and changes
+    the classes to be adopting specific defensive policies
+    Then the run function can be called, and propagation occurs
+    """
+
+    __slots__ = "ready_to_run_round",
+
+    def __init__(self,
+                 *args,
+                 # Default AS class in the BGPDAG
+                 BaseASCls=BGPAS,
+                 **kwargs):
+        """Saves read_to_run_rund attr and inits superclass"""
+
+        super(SimulationEngine, self).__init__(*args,
+                                               BaseASCls=BaseASCls,
+                                               **kwargs)
+        # This indicates whether or not the simulator has been set up for a run
+        # We use a number instead of a bool so that we can indicate for
+        # each round whether it is ready to run or not
+        self.ready_to_run_round: int = -1
+
+    def __eq__(self, other):
+        """Returns if two simulators contain the same BGPDAG's"""
+
+        if isinstance(other, SimulationEngine):
+            return self.as_dict == other.as_dict
+        else:
+            return NotImplemented
+
+    def run(self,
+            propagation_round=0,
+            scenario=None):
+        """Propogates announcements and ensures proper setup"""
+
+        # Ensure that the simulator is ready to run this round
+        if self.ready_to_run_round != propagation_round:
+            raise Exception(
+                "Engine not set up to run for {propagation_round} round")
+        # Propogate anns
+        self._propagate(propagation_round, scenario)
+        # Increment the ready to run round
+        self.ready_to_run_round += 1
+
+    def _propagate(self,
+                   propagation_round: Optional[int],
+                   scenario: Optional[Scenario]):
+        """Propogates announcements
+
+        to stick with Gao Rexford, we propagate to
+        0. providers
+        2. peers
+        3. customers
+        """
+
+        self._propagate_to_providers(propagation_round, scenario)
+        self._propagate_to_peers(propagation_round, scenario)
+        self._propagate_to_customers(propagation_round, scenario)
+
+    def _propagate_to_providers(self, propagation_round, scenario):
+        """Propogate to providers"""
+
+        # Propogation ranks go from stubs to input_clique in ascending order
+        # By customer provider pairs (peers are ignored for the ranks)
+        for i, rank in enumerate(self.propagation_ranks):
+            # Nothing to process at the start
+            if i > 0:
+                # Process first because maybe it recv from lower ranks
+                for as_obj in rank:
+                    as_obj.process_incoming_anns(
+                        from_rel=Relationships.CUSTOMERS,
+                        propagation_round=propagation_round,
+                        scenario=scenario)
+            # Send to the higher ranks
+            for as_obj in rank:
+                as_obj.propagate_to_providers()
+
+    def _propagate_to_peers(self, propagation_round, scenario):
+        """Propagate to peers"""
+
+        # The reason you must separate this for loop here
+        # is because propagation ranks do not take into account peering
+        # It'd be impossible to take into account peering
+        # since different customers peer to different ranks
+        # So first do customer to provider propagation, then peer propagation
+        for as_obj in self:
+            as_obj.propagate_to_peers()
+        for as_obj in self:
+            as_obj.process_incoming_anns(from_rel=Relationships.PEERS,
+                                         propagation_round=propagation_round,
+                                         scenario=scenario)
+
+    def _propagate_to_customers(self, propagation_round, scenario):
+        """Propagate to customers"""
+
+        # Propogation ranks go from stubs to input_clique in ascending order
+        # By customer provider pairs (peers are ignored for the ranks)
+        # So here we start at the highest rank(input_clique) and propagate down
+        for i, rank in enumerate(reversed(self.propagation_ranks)):
+            # There are no incomming Anns at the top
+            if i > 0:
+                for as_obj in rank:
+                    as_obj.process_incoming_anns(
+                        from_rel=Relationships.PROVIDERS,
+                        propagation_round=propagation_round,
+                        scenario=scenario)
+            for as_obj in rank:
+                as_obj.propagate_to_customers()

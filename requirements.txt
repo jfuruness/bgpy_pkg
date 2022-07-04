@@ -1,8 +1,8 @@
-# https for github actions, and I believe github no longer supports ssh with pip
 git+https://github.com/jfuruness/lib_caida_collector.git#65daee2120c6165a90914e1fe9c17930b6ca0477
-graphviz==0.19.1
-matplotlib==3.5.1
-pytest==6.2.5
-PyYAML==6.0
-tqdm==4.62.3
-yamlable==1.0.4
+graphviz
+pil
+matplotlib
+pytest
+PyYAML
+tqdm
+yamlable
