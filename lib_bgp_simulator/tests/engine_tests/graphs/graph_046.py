@@ -2,17 +2,17 @@ from lib_caida_collector import CustomerProviderLink as CPLink
 
 
 from .graph_info import GraphInfo
-from ...enums import ASNs
+from lib_bgp_simulator.enums import ASNs
 
 
-class Graph040(GraphInfo):
+class Graph046(GraphInfo):
     r"""
     Image of scenario @ this link
     TODO: add link here
     """
 
     def __init__(self):
-        super(Graph040, self).__init__(
+        super(Graph046, self).__init__(
             peer_links=set([]),
             customer_provider_links=set(
                 [

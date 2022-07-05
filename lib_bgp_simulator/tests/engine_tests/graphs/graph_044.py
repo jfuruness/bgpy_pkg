@@ -3,7 +3,7 @@ from lib_caida_collector import PeerLink
 
 
 from .graph_info import GraphInfo
-from ...enums import ASNs
+from lib_bgp_simulator.enums import ASNs
 
 
 class Graph044(GraphInfo):
