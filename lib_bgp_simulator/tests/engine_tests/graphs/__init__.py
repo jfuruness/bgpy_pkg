@@ -47,7 +47,6 @@ from .graph_045 import Graph045
 from .graph_046 import Graph046
 
 
-
 __all__ = [
     "GraphInfo",
     "Graph001",

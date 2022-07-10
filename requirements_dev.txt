@@ -1,4 +1,4 @@
-git+https://github.com/jfuruness/lib_caida_collector.git#65daee2120c6165a90914e1fe9c17930b6ca0477
+git+https://github.com/jfuruness/lib_caida_collector.git#38a6d6e3594c7b78372b670811f88fa2c5a698ad
 graphviz
 pillow
 matplotlib
