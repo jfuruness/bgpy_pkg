@@ -89,9 +89,9 @@ class Diagram:
 
     def _get_html(self, as_obj, engine, scenario):
         asn_str = str(as_obj.asn)
-        if as_obj.asn == scenario.victim_asn:
+        if as_obj.asn in scenario.victim_asns:
             asn_str = "&#128519;" + asn_str + "&#128519;"
-        elif as_obj.asn == scenario.attacker_asn:
+        elif as_obj.asn in scenario.attacker_asns:
             asn_str = "&#128520;" + asn_str + "&#128520;"
 
         html = f"""<
@@ -121,13 +121,12 @@ class Diagram:
                     ann_help = "&#10041;"
                 elif getattr(ann, "preventive", False):
                     ann_help = "&#128737;"
-                elif scenario.attacker_asn in ann.as_path:
+                elif any(x in ann.as_path for x in scenario.attacker_asns):
                     ann_help = "&#128520;"
-                elif ann.origin == scenario.victim_asn:
+                elif any(x == ann.origin for x in scenario.victim_asns:
                     ann_help = "&#128519;"
-                # Commented out for multiple victim support
-                # else:
-                #    raise Exception("Not valid ann for rib?")
+                else:
+                    raise Exception("Not valid ann for rib?")
 
                 html += f"""<TR>
                             <TD>{mask}</TD>
@@ -144,7 +143,7 @@ class Diagram:
                   "gradientangle": "270"}
 
         # If the as obj is the attacker
-        if as_obj.asn == scenario.attacker_asn:
+        if as_obj.asn in scenario.attacker_asns:
             kwargs.update({"fillcolor": "#ff6060", "shape": "doublecircle"})
             if as_obj.__class__ not in (BGPAS, BGPSimpleAS):
                 kwargs["shape"] = "doubleoctagon"
@@ -152,7 +151,7 @@ class Diagram:
             kwargs.update({"fillcolor": "#FF7F7F"})
             # kwargs.update({"fillcolor": "#ff4d4d"})
         # As obj is the victim
-        elif as_obj.asn == scenario.victim_asn:
+        elif as_obj.asn in scenario.victim_asns:
             kwargs.update({"fillcolor": "#90ee90", "shape": "doublecircle"})
             if as_obj.__class__ not in (BGPAS, BGPSimpleAS):
                 kwargs["shape"] = "doubleoctagon"

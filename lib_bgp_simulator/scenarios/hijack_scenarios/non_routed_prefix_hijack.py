@@ -16,11 +16,13 @@ class NonRoutedPrefixHijack(SingleAtkVicAdoptClsScenario):
         something other than Announcement
         """
 
-        ann = self.AnnCls(prefix=Prefixes.PREFIX.value,
-                          as_path=(self.attacker_asn,),
-                          timestamp=Timestamps.ATTACKER.value,
-                          seed_asn=self.attacker_asn,
-                          roa_valid_length=True,
-                          roa_origin=0,
-                          recv_relationship=Relationships.ORIGIN)
-        return (ann,)
+        anns = list()
+        for attacker_asn in self.attacker_asns:
+            anns.append(self.AnnCls(prefix=Prefixes.PREFIX.value,
+                                    as_path=(attacker_asn,),
+                                    timestamp=Timestamps.ATTACKER.value,
+                                    seed_asn=attacker_asn,
+                                    roa_valid_length=True,
+                                    roa_origin=0,
+                                    recv_relationship=Relationships.ORIGIN)
+        return tuple(anns)

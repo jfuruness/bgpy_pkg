@@ -15,18 +15,24 @@ class SingleAtkVicAdoptClsScenario(Scenario):
     as well as a single adopting AS Class
     """
 
-    __slots__ = ("attacker_asn", "victim_asn", "AdoptASCls")
+    __slots__ = ("num_attackers", "num_victims", "attacker_asns",
+                 "victim_asns", "AdoptASCls")
 
     def __init__(self,
                  *args,
+                 num_attackers=1,
+                 num_victims=1,
                  AdoptASCls=None,
-                 attacker_asn=None,
-                 victim_asn=None,
+                 attacker_asns=None,
+                 victim_asns=None,
                  **kwargs):
 
+        self.num_attackers = num_attackers
+        self.num_victims = num_victims
+
         # If we are regenerating from yaml
-        self.attacker_asn = attacker_asn
-        self.victim_asn = victim_asn
+        self.attacker_asns = attacker_asns
+        self.victim_asns = victim_asns
 
         self.AdoptASCls = AdoptASCls
 
@@ -43,13 +49,13 @@ class SingleAtkVicAdoptClsScenario(Scenario):
 
         # Use the same attacker victim pair that was used previously
         if prev_scenario:
-            self.attacker_asn = prev_scenario.attacker_asn
-            self.victim_asn = prev_scenario.victim_asn
+            self.attacker_asns = prev_scenario.attacker_asns
+            self.victim_asns = prev_scenario.victim_asns
         # This is the first time, randomly select attacker/victim
         else:
-            self._set_attacker_victim_pair(engine,
-                                           percent_adopt,
-                                           prev_scenario)
+            self._set_attackers_victims(engine,
+                                        percent_adopt,
+                                        prev_scenario)
         # Must call this here due to atk/vic pair being different
         self.announcements = self._get_announcements()
         self._get_ordered_prefix_subprefix_dict()
@@ -71,33 +77,35 @@ class SingleAtkVicAdoptClsScenario(Scenario):
 # Select Attacker and victim #
 ##############################
 
-    def _set_attacker_victim_pair(self, *args, **kwargs):
+    def _set_attackers_victims(self, *args, **kwargs):
         """Sets attacker victim pair"""
 
-        self.attacker_asn = self._get_attacker_asn(*args, **kwargs)
-        self.victim_asn = self._get_victim_asn(*args, **kwargs)
+        self.attacker_asns = self._get_attacker_asns(*args, **kwargs)
+        self.victim_asns = self._get_victim_asns(*args, **kwargs)
 
-    def _get_attacker_asn(self, *args, **kwargs):
+    def _get_attacker_asns(self, *args, **kwargs):
         """Returns attacker ASN at random"""
 
         # Only run if we did not regenerate from YAML
-        if self.attacker_asn is None:
+        if self.attacker_asns is None:
             possible_attacker_asns = self._get_possible_attacker_asns(*args,
                                                                       **kwargs)
-            return random.choice(tuple(possible_attacker_asns))
+            return set(random.sample(possible_attacker_asns,
+                                     self.num_attackers))
         else:
-            return self.attacker_asn
+            return self.attacker_asns
 
-    def _get_victim_asn(self, *args, **kwargs):
+    def _get_victim_asns(self, *args, **kwargs):
         """Returns victim ASN at random. Attacker can't be victim"""
 
         # Only run if we did not regenerate from YAML
-        if self.victim_asn is None:
+        if self.victim_asns is None:
             possible_vic_asns = self._get_possible_victim_asns(*args, **kwargs)
-            return random.choice(tuple(
-                possible_vic_asns.difference([self.attacker_asn])))
+            return set(random.sample(
+                possible_vic_asns.difference(self.attacker_asns),
+                self.num_victims))
         else:
-            return self.victim_asn
+            return self.victim_asns
 
     # For this, don't bother making a subclass with stubs_and_mh
     # Since it won't really create another class branch,
@@ -145,18 +153,25 @@ class SingleAtkVicAdoptClsScenario(Scenario):
         # By default, use the last engine input to maintain static
         # adoption across the graph
         elif prev_scenario:
-            # TODO: get as_cls_dict from previous engine input
-            return {asn: self.AdoptASCls for asn, ASCls in
-                    prev_scenario.non_default_as_cls_dict.items()}
-        else:
-            return {asn: self.AdoptASCls for asn in
-                    self._get_adopting_asns(engine, percent_adoption)}
+            non_default_as_cls_dict = dict()
+            for asn, OldASCls in prev_scenario.non_default_as_cls_dict.items():
+                # If the ASN was of the adopting class of the last scenario,
 
-    def _get_adopting_asns(self, engine, percent_adopt):
+                if OldASCls == prev_scenario.AdoptASCls:
+                    non_default_as_cls_dict[asn] = self.AdoptASCls
+                # Otherwise keep the AS class as it was
+                # This is useful for things like ROV, etc...
+                else:
+                    non_default_as_cls_dict[asn] = OldASCls
+        else:
+            return self._get_adopting_asns_dict(engine, percent_adoption)
+
+    def _get_adopting_asns_dict(self, engine, percent_adopt):
         """Get adopting ASNs
 
         By default, to get even adoption, adopt in each of the three
-        subcategories"""
+        subcategories
+        """
 
         adopting_asns = list()
         subcategories = ("stub_or_mh_asns", "etc_asns", "input_clique_asns")
@@ -180,19 +195,19 @@ class SingleAtkVicAdoptClsScenario(Scenario):
             adopting_asns.extend(random.sample(possible_adopters, k))
         adopting_asns += self._default_adopters
         assert len(adopting_asns) == len(set(adopting_asns))
-        return adopting_asns
+        return {asn: self.AdoptASCls for asn in adopting_asns}
 
     @property
     def _default_adopters(self):
         """By default, victim always adopts"""
 
-        return [self.victim_asn]
+        return self.victim_asns
 
     @property
     def _default_non_adopters(self):
         """By default, attacker always does not adopt"""
 
-        return [self.attacker_asn]
+        return self.attacker_asns
 
     @property
     def _preset_asns(self):
@@ -207,9 +222,9 @@ class SingleAtkVicAdoptClsScenario(Scenario):
         that exists at that AS
         """
 
-        if self.attacker_asn == as_obj.asn:
+        if as_obj.asn in self.attacker_asns:
             return Outcomes.ATTACKER_SUCCESS
-        elif self.victim_asn == as_obj.asn:
+        elif as_obj.asns in self.victim_asns:
             return Outcomes.VICTIM_SUCCESS
         # End of traceback
         elif (ann is None
@@ -228,8 +243,10 @@ class SingleAtkVicAdoptClsScenario(Scenario):
         """This optional method is called when you call yaml.dump()"""
 
         return {"announcements": self.announcements,
-                "attacker_asn": self.attacker_asn,
-                "victim_asn": self.victim_asn,
+                "attacker_asns": self.attacker_asns,
+                "victim_asns": self.victim_asns,
+                "num_victims": self.num_victims,
+                "num_attackers": self.num_attackers,
                 "non_default_as_cls_dict":
                     {asn: AS.subclass_to_name_dict[ASCls]
                      for asn, ASCls in self.non_default_as_cls_dict.items()}}
@@ -242,6 +259,8 @@ class SingleAtkVicAdoptClsScenario(Scenario):
                       for asn, name in dct["non_default_as_cls_dict"].items()}
 
         return cls(announcements=dct["announcements"],
-                   attacker_asn=dct["attacker_asn"],
-                   victim_asn=dct["victim_asn"],
+                   attacker_asns=dct["attacker_asns"],
+                   victim_asns=dct["victim_asns"],
+                   num_victims=dct["num_victims"],
+                   num_attackers=dct["num_attackers"],
                    non_default_as_cls_dict=as_classes)

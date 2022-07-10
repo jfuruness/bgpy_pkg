@@ -22,26 +22,33 @@ class SuperprefixPrefixHijack(SingleAtkVicAdoptClsScenario):
         something other than Announcement
         """
 
-        vic_ann = self.AnnCls(prefix=Prefixes.PREFIX.value,
-                              as_path=(self.victim_asn,),
-                              timestamp=Timestamps.VICTIM.value,
-                              seed_asn=self.victim_asn,
-                              roa_valid_length=True,
-                              roa_origin=self.victim_asn,
-                              recv_relationship=Relationships.ORIGIN)
+        anns = list()
+        for victim_asn in self.victim_asns:
+            anns.append(self.AnnCls(prefix=Prefixes.PREFIX.value,
+                                    as_path=(victim_asn,),
+                                    timestamp=Timestamps.VICTIM.value,
+                                    seed_asn=victim_asn,
+                                    roa_valid_length=True,
+                                    roa_origin=victim_asn,
+                                    recv_relationship=Relationships.ORIGIN)
 
-        atk_ann = self.AnnCls(prefix=Prefixes.PREFIX.value,
-                              as_path=(self.attacker_asn,),
-                              timestamp=Timestamps.ATTACKER.value,
-                              seed_asn=self.attacker_asn,
-                              roa_valid_length=True,
-                              roa_origin=self.victim_asn,
-                              recv_relationship=Relationships.ORIGIN)
-        atk_superprefix = self.AnnCls(prefix=Prefixes.SUPERPREFIX.value,
-                                      as_path=(self.attacker_asn,),
-                                      timestamp=Timestamps.ATTACKER.value,
-                                      seed_asn=self.attacker_asn,
-                                      roa_valid_length=None,
-                                      roa_origin=None,
-                                      recv_relationship=Relationships.ORIGIN)
-        return vic_ann, atk_ann, atk_superprefix
+        for attacker_asn in self.attacker_asns:
+            anns.append(self.AnnCls(prefix=Prefixes.PREFIX.value,
+                                    as_path=(attacker_asn,),
+                                    timestamp=Timestamps.ATTACKER.value,
+                                    seed_asn=attacker_asn,
+                                    roa_valid_length=True,
+                                    roa_origin=self.victim_asns[0],
+                                    recv_relationship=Relationships.ORIGIN)
+            anns.append(self.AnnCls(prefix=Prefixes.SUPERPREFIX.value,
+                                    as_path=(attacker_asn,),
+                                    timestamp=Timestamps.ATTACKER.value,
+                                    seed_asn=attacker_asn,
+                                    roa_valid_length=None,
+                                    roa_origin=None,
+                                    recv_relationship=Relationships.ORIGIN)
+
+        err = "Fix the roa_origins of the announcements for multiple victims"
+        assert len(self.victim_asns) == 0, err
+
+        return tuple(anns)

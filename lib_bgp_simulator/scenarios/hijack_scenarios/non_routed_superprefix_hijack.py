@@ -20,12 +20,14 @@ class NonRoutedSuperprefixHijack(SingleAtkVicAdoptClsScenario):
         something other than Announcement
         """
 
-        ann = self.AnnCls(prefix=Prefixes.SUPERPREFIX.value,
-                          as_path=(self.attacker_asn,),
-                          timestamp=Timestamps.ATTACKER.value,
-                          seed_asn=self.attacker_asn,
-                          roa_valid_length=None,
-                          roa_origin=None,
-                          recv_relationship=Relationships.ORIGIN)
+        anns = list()
+        for attacker_asn in self.attacker_asns:
+           anns.append(self.AnnCls(prefix=Prefixes.SUPERPREFIX.value,
+                                   as_path=(attacker_asn,),
+                                   timestamp=Timestamps.ATTACKER.value,
+                                   seed_asn=attacker_asn,
+                                   roa_valid_length=None,
+                                   roa_origin=None,
+                                   recv_relationship=Relationships.ORIGIN)
 
-        return (ann,)
+        return tuple(anns)
