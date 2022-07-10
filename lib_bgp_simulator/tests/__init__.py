@@ -21,9 +21,6 @@ from .engine_tests import Graph013
 from .engine_tests import Graph014
 from .engine_tests import Graph015
 from .engine_tests import Graph016
-from .engine_tests import Graph017
-from .engine_tests import Graph018
-from .engine_tests import Graph019
 from .engine_tests import Graph020
 from .engine_tests import Graph021
 from .engine_tests import Graph022
@@ -44,6 +41,13 @@ from .engine_tests import Graph036
 from .engine_tests import Graph037
 from .engine_tests import Graph038
 from .engine_tests import Graph039
+from .engine_tests import Graph040
+from .engine_tests import Graph041
+from .engine_tests import Graph042
+from .engine_tests import Graph043
+from .engine_tests import Graph044
+from .engine_tests import Graph045
+from .engine_tests import Graph046
 
 
 __all__ = [
@@ -89,4 +93,11 @@ __all__ = [
     "Graph037",
     "Graph038",
     "Graph039",
+    "Graph040",
+    "Graph041",
+    "Graph042",
+    "Graph043",
+    "Graph044",
+    "Graph045",
+    "Graph046"
 ]
