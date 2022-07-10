@@ -36,7 +36,8 @@ TODO
 Install python and pip if you have not already. Then run:
 
 ```bash
-sudo apt-get install -y graphviz # libjpeg-dev zlib1g-dev
+# Needed for graphviz and Pillow
+sudo apt-get install -y graphviz libjpeg-dev zlib1g-dev
 pip3 install pip --upgrade
 pip3 install wheel
 ```
