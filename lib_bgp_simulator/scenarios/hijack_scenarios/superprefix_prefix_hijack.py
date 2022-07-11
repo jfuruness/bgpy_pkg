@@ -1,10 +1,10 @@
-from ..base_scenarios import SingleAtkVicAdoptClsScenario
+from ..scenario import Scenario
 from ...enums import Prefixes
 from ...enums import Relationships
 from ...enums import Timestamps
 
 
-class SuperprefixPrefixHijack(SingleAtkVicAdoptClsScenario):
+class SuperprefixPrefixHijack(Scenario):
     """Superprefix prefix attack
 
     This is an attack where the attacker
@@ -30,7 +30,7 @@ class SuperprefixPrefixHijack(SingleAtkVicAdoptClsScenario):
                                     seed_asn=victim_asn,
                                     roa_valid_length=True,
                                     roa_origin=victim_asn,
-                                    recv_relationship=Relationships.ORIGIN)
+                                    recv_relationship=Relationships.ORIGIN))
 
         for attacker_asn in self.attacker_asns:
             anns.append(self.AnnCls(prefix=Prefixes.PREFIX.value,
@@ -39,14 +39,14 @@ class SuperprefixPrefixHijack(SingleAtkVicAdoptClsScenario):
                                     seed_asn=attacker_asn,
                                     roa_valid_length=True,
                                     roa_origin=self.victim_asns[0],
-                                    recv_relationship=Relationships.ORIGIN)
+                                    recv_relationship=Relationships.ORIGIN))
             anns.append(self.AnnCls(prefix=Prefixes.SUPERPREFIX.value,
                                     as_path=(attacker_asn,),
                                     timestamp=Timestamps.ATTACKER.value,
                                     seed_asn=attacker_asn,
                                     roa_valid_length=None,
                                     roa_origin=None,
-                                    recv_relationship=Relationships.ORIGIN)
+                                    recv_relationship=Relationships.ORIGIN))
 
         err = "Fix the roa_origins of the announcements for multiple victims"
         assert len(self.victim_asns) == 0, err

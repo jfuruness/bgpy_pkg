@@ -123,7 +123,7 @@ class Diagram:
                     ann_help = "&#128737;"
                 elif any(x in ann.as_path for x in scenario.attacker_asns):
                     ann_help = "&#128520;"
-                elif any(x == ann.origin for x in scenario.victim_asns:
+                elif any(x == ann.origin for x in scenario.victim_asns):
                     ann_help = "&#128519;"
                 else:
                     raise Exception("Not valid ann for rib?")

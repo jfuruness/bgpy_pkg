@@ -1,10 +1,10 @@
-from ..base_scenarios import SingleAtkVicAdoptClsScenario
-from ...enums import Prefixes
-from ...enums import Relationships
-from ...enums import Timestamps
+from .scenario import Scenario
+from ..enums import Prefixes
+from ..enums import Relationships
+from ..enums import Timestamps
 
 
-class ValidPrefix(SingleAtkVicAdoptClsScenario):
+class ValidPrefix(Scenario):
     """A valid prefix engine input, mainly for testing"""
 
     __slots__ = ()

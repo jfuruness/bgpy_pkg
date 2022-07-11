@@ -19,7 +19,6 @@ from .enums import Outcomes
 from .enums import Relationships
 
 from .scenarios import Scenario
-from .scenarios import SingleAtkVicAdoptClsScenario
 from .scenarios import PrefixHijack
 from .scenarios import SubprefixHijack
 from .scenarios import NonRoutedPrefixHijack
@@ -50,7 +49,6 @@ __all__ = ["BGPAS",
            "Outcomes",
            "Relationships",
            "Scenario",
-           "SingleAtkVicAdoptClsScenario",
            "PrefixHijack",
            "SubprefixHijack",
            "NonRoutedPrefixHijack",
