@@ -9,15 +9,15 @@ from tempfile import TemporaryDirectory
 from lib_caida_collector import CaidaCollector
 
 from .scenarios import SubprefixHijack
-from .simulation_engine import BGPSimpleAS
-from .simulation_engine import SimulationEngine
-from .simulation_engine import ROVSimpleAS
 from .subgraphs import AttackerSuccessAdoptingEtcSubgraph
 from .subgraphs import AttackerSuccessAdoptingInputCliqueSubgraph
 from .subgraphs import AttackerSuccessAdoptingStubsAndMHSubgraph
 from .subgraphs import AttackerSuccessNonAdoptingEtcSubgraph
 from .subgraphs import AttackerSuccessNonAdoptingInputCliqueSubgraph
 from .subgraphs import AttackerSuccessNonAdoptingStubsAndMHSubgraph
+from ..simulation_engine import BGPSimpleAS
+from ..simulation_engine import SimulationEngine
+from ..simulation_engine import ROVSimpleAS
 
 
 class Simulation:

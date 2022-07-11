@@ -1,7 +1,7 @@
 from ..scenario import Scenario
-from ...enums import Prefixes
-from ...enums import Relationships
-from ...enums import Timestamps
+from ....enums import Prefixes
+from ....enums import Relationships
+from ....enums import Timestamps
 
 
 class SuperprefixPrefixHijack(Scenario):

@@ -5,8 +5,8 @@ import matplotlib
 import matplotlib.pyplot as plt
 
 from .line import Line
-from ..enums import ASTypes
-from ..enums import Outcomes
+from ...enums import ASTypes
+from ...enums import Outcomes
 
 
 class Subgraph(ABC):

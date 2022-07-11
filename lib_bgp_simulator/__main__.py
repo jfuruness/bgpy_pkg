@@ -1,4 +1,4 @@
-from .simulation import Simulation
+from .simulation_framework import Simulation
 
 
 def main():

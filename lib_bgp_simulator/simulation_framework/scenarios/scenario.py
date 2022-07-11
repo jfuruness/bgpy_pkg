@@ -4,10 +4,10 @@ from ipaddress import ip_network
 
 from lib_caida_collector import AS
 
-from ..enums import Outcomes
-from ..enums import Relationships
-from ..simulation_engine import Announcement
-from ..simulation_engine import BGPSimpleAS
+from ...enums import Outcomes
+from ...enums import Relationships
+from ...simulation_engine import Announcement
+from ...simulation_engine import BGPSimpleAS
 
 
 class Scenario(ABC):

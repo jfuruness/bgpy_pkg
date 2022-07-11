@@ -1,10 +1,14 @@
-from typing import Optional
+from typing import Optional, TYPE_CHECKING
 
 from lib_caida_collector import BGPDAG
 
-from .as_classes import BGPAS
-from ..scenarios import Scenario
+from .as_classes import BGPSimpleAS
 from ..enums import Relationships
+
+
+# https://stackoverflow.com/a/57005931/8903959
+if TYPE_CHECKING:
+    from ..simulation_framework import Scenario
 
 
 class SimulationEngine(BGPDAG):
@@ -21,7 +25,7 @@ class SimulationEngine(BGPDAG):
     def __init__(self,
                  *args,
                  # Default AS class in the BGPDAG
-                 BaseASCls=BGPAS,
+                 BaseASCls=BGPSimpleAS,
                  **kwargs):
         """Saves read_to_run_rund attr and inits superclass"""
 
@@ -57,7 +61,7 @@ class SimulationEngine(BGPDAG):
 
     def _propagate(self,
                    propagation_round: Optional[int],
-                   scenario: Optional[Scenario]):
+                   scenario: Optional["Scenario"]):
         """Propogates announcements
 
         to stick with Gao Rexford, we propagate to
