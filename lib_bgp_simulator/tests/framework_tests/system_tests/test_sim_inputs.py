@@ -2,18 +2,18 @@ from itertools import product
 
 import pytest
 
-from ...simulation_engine import BGPSimpleAS
-from ...simulation_engine import BGPAS
-from ...simulation_engine import ROVAS
-from ...simulation_engine import ROVSimpleAS
+from ....simulation_engine import BGPSimpleAS
+from ....simulation_engine import BGPAS
+from ....simulation_engine import ROVAS
+from ....simulation_engine import ROVSimpleAS
 
-from ...simulation_framework import NonRoutedPrefixHijack
-from ...simulation_framework import NonRoutedSuperprefixHijack
-from ...simulation_framework import PrefixHijack
-from ...simulation_framework import SubprefixHijack
-from ...simulation_framework import SuperprefixPrefixHijack
+from ....simulation_framework import NonRoutedPrefixHijack
+from ....simulation_framework import NonRoutedSuperprefixHijack
+from ....simulation_framework import PrefixHijack
+from ....simulation_framework import SubprefixHijack
+from ....simulation_framework import SuperprefixPrefixHijack
 
-from ...simulation_framework import Simulation
+from ....simulation_framework import Simulation
 
 AS_CLASSES = (BGPSimpleAS, BGPAS, ROVAS, ROVSimpleAS)
 SCENARIOS = (NonRoutedPrefixHijack,

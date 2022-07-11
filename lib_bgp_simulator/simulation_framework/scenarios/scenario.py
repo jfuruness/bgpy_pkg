@@ -105,7 +105,8 @@ class Scenario(ABC):
 
         possible_attacker_asns = self._get_possible_attacker_asns(*args,
                                                                       **kwargs)
-        return set(random.sample(possible_attacker_asns,
+        # https://stackoverflow.com/a/15837796/8903959
+        return set(random.sample(tuple(possible_attacker_asns),
                                  self.num_attackers))
 
     def _get_victim_asns(self, *args, **kwargs):
@@ -113,7 +114,8 @@ class Scenario(ABC):
 
         possible_vic_asns = self._get_possible_victim_asns(*args, **kwargs)
         return set(random.sample(
-            possible_vic_asns.difference(self.attacker_asns),
+            # https://stackoverflow.com/a/15837796/8903959
+            tuple(possible_vic_asns.difference(self.attacker_asns)),
             self.num_victims))
 
     # For this, don't bother making a subclass with stubs_and_mh
@@ -208,6 +210,8 @@ class Scenario(ABC):
             elif k == len(possible_adopters):
                 k -= 1
 
+            # https://stackoverflow.com/a/15837796/8903959
+            possible_adopters = tuple(possible_adopters)
             adopting_asns.extend(random.sample(possible_adopters, k))
         adopting_asns += self._default_adopters
         assert len(adopting_asns) == len(set(adopting_asns))

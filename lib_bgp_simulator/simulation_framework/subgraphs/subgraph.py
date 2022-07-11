@@ -9,6 +9,11 @@ from ...enums import ASTypes
 from ...enums import Outcomes
 
 
+# Must be module level in order to be picklable
+# https://stackoverflow.com/a/16439720/8903959
+def default_dict_func():
+    return defaultdict(list)
+
 class Subgraph(ABC):
     """A subgraph for data display"""
 
@@ -35,7 +40,7 @@ class Subgraph(ABC):
         # You must save info trial by trial, so that you can join
         # After a return from multiprocessing
         # {scenario_label: {percent_adopt: [percentages]}}
-        self.data = defaultdict(lambda: defaultdict(list))
+        self.data = defaultdict(default_dict_func)
 
 ###############
 # Graph funcs #
