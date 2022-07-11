@@ -51,7 +51,11 @@ class Scenario(ABC):
 
         # If we are regenerating from yaml
         self.attacker_asns = attacker_asns
+        assert (self.attacker_asns is None
+                or len(self.attacker_asns) == num_attackers)
         self.victim_asns = victim_asns
+        assert (self.victim_asns is None
+                or len(self.victim_asns) == num_victims)
 
     @property
     def graph_label(self):

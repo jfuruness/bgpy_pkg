@@ -11,8 +11,8 @@ class Config014(EngineTestConfig):
 
     name = "014"
     desc = "NonRouted Superprefix Hijack"
-    scenario = NonRoutedSuperprefixHijack(attacker_asn=ASNs.ATTACKER.value,
-                                          victim_asn=ASNs.VICTIM.value,
+    scenario = NonRoutedSuperprefixHijack(attacker_asns={ASNs.ATTACKER.value},
+                                          victim_asns={ASNs.VICTIM.value},
                                           AdoptASCls=ROVAS,
                                           BaseASCls=BGPSimpleAS)
     graph = Graph006()

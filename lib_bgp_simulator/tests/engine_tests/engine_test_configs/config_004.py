@@ -11,7 +11,7 @@ class Config004(EngineTestConfig):
 
     name = "004"
     desc = "Basic BGP Propagation (with full BGP AS)"
-    scenario = ValidPrefix(victim_asn=ASNs.VICTIM.value,
+    scenario = ValidPrefix(victim_asns={ASNs.VICTIM.value},
                            AdoptASCls=None,
                            BaseASCls=BGPAS)
     graph = Graph002()

@@ -12,8 +12,8 @@ class Config008(EngineTestConfig):
 
     name = "008"
     desc = "Fig 2 (ROVSimpleAS)"
-    scenario = SubprefixHijack(attacker_asn=ASNs.ATTACKER.value,
-                               victim_asn=ASNs.VICTIM.value,
+    scenario = SubprefixHijack(attacker_asns={ASNs.ATTACKER.value},
+                               victim_asns={ASNs.VICTIM.value},
                                AdoptASCls=ROVAS,
                                BaseASCls=BGPAS,
                                )

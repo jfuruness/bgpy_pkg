@@ -3,7 +3,6 @@ from ..utils import EngineTestConfig
 
 
 from ....simulation_engine import BGPSimpleAS
-from ....enums import ASNs
 from ....simulation_framework import MultiValidPrefix
 
 
@@ -30,12 +29,10 @@ class Config029(EngineTestConfig):
 
     name = "029"
     desc = "Test of path length preference"
-    scenario = Custom29MultiValidPrefix(
-        attacker_asn=ASNs.ATTACKER.value,
-        victim_asn=3,  # the correct destination
-        victim_asns=[3, 5],
-        AdoptASCls=None,
-        BaseASCls=BGPSimpleAS)
+    scenario = Custom29MultiValidPrefix(victim_asns={3, 5},
+                                        num_victims=2,
+                                        AdoptASCls=None,
+                                        BaseASCls=BGPSimpleAS)
     graph = Graph040()
     non_default_as_cls_dict = dict()
     propagation_rounds = 1

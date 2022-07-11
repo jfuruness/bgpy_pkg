@@ -3,7 +3,6 @@ from ..utils import EngineTestConfig
 
 
 from ....simulation_engine import BGPSimpleAS
-from ....enums import ASNs
 from ....simulation_framework import MultiValidPrefix
 
 
@@ -32,12 +31,9 @@ class Config030(EngineTestConfig):
 
     name = "030"
     desc = "Test seeded announcement should never be replaced"
-    scenario = Custom30MultiValidPrefix(
-        attacker_asn=ASNs.ATTACKER.value,
-        victim_asn=4,  # the correct destination
-        victim_asns=[1, 4, 3, 5],
-        AdoptASCls=None,
-        BaseASCls=BGPSimpleAS)
+    scenario = Custom30MultiValidPrefix(victim_asns={1, 4, 3, 5},
+                                        AdoptASCls=None,
+                                        BaseASCls=BGPSimpleAS)
     graph = Graph040()
     non_default_as_cls_dict = dict()
     propagation_rounds = 1

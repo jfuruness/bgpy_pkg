@@ -3,7 +3,6 @@ from ..utils import EngineTestConfig
 
 
 from ....simulation_engine import BGPSimpleAS
-from ....enums import ASNs
 from ....simulation_framework import ValidPrefix
 
 
@@ -24,11 +23,9 @@ class Config031(EngineTestConfig):
 
     name = "031"
     desc = "Test loop prevention mechanism"
-    scenario = Custom31ValidPrefix(
-        attacker_asn=ASNs.ATTACKER.value,
-        victim_asn=4,
-        AdoptASCls=None,
-        BaseASCls=BGPSimpleAS)
+    scenario = Custom31ValidPrefix(victim_asns={4},
+                                   AdoptASCls=None,
+                                   BaseASCls=BGPSimpleAS)
     graph = Graph040()
     non_default_as_cls_dict = dict()
     propagation_rounds = 1

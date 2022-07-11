@@ -11,8 +11,8 @@ class Config011(EngineTestConfig):
 
     name = "011"
     desc = "NonRouted Prefix Hijack"
-    scenario = NonRoutedPrefixHijack(attacker_asn=ASNs.ATTACKER.value,
-                                     victim_asn=ASNs.VICTIM.value,
+    scenario = NonRoutedPrefixHijack(attacker_asns={ASNs.ATTACKER.value},
+                                     victim_asns={ASNs.VICTIM.value},
                                      AdoptASCls=ROVSimpleAS,
                                      BaseASCls=BGPSimpleAS)
     graph = Graph006()

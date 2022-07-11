@@ -11,8 +11,8 @@ class Config023(EngineTestConfig):
 
     name = "023"
     desc = "Test of tiebreak preference"
-    scenario = ValidPrefix(attacker_asn=ASNs.ATTACKER.value,
-                           victim_asn=ASNs.VICTIM.value,
+    scenario = ValidPrefix(attacker_asns={ASNs.ATTACKER.value},
+                           victim_asns={ASNs.VICTIM.value},
                            AdoptASCls=None,
                            BaseASCls=BGPSimpleAS)
     graph = Graph019()

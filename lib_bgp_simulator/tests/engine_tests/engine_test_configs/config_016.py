@@ -11,8 +11,8 @@ class Config016(EngineTestConfig):
 
     name = "016"
     desc = "Test of path length preference"
-    scenario = ValidPrefix(attacker_asn=ASNs.ATTACKER.value,
-                           victim_asn=ASNs.VICTIM.value,
+    scenario = ValidPrefix(attacker_asns={ASNs.ATTACKER.value},
+                           victim_asns={ASNs.VICTIM.value},
                            AdoptASCls=None,
                            BaseASCls=BGPAS)
     graph = Graph018()
