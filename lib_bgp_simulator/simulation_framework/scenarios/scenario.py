@@ -20,6 +20,7 @@ class Scenario(ABC):
                  "num_victims",
                  "attacker_asns",
                  "victim_asns",
+                 "attacker_victim_asns_preset",
                  "non_default_as_cls_dict",
                  "ordered_prefix_subprefix_dict",
                  "announcements",
@@ -50,12 +51,17 @@ class Scenario(ABC):
         self.num_victims = num_victims
 
         # If we are regenerating from yaml
-        self.attacker_asns = attacker_asns
-        assert (self.attacker_asns is None
-                or len(self.attacker_asns) == num_attackers)
-        self.victim_asns = victim_asns
-        assert (self.victim_asns is None
-                or len(self.victim_asns) == num_victims)
+        self.attacker_asns = attacker_asns if attacker_asns else set()
+        assert (attacker_asns is None
+                or len(attacker_asns) == num_attackers)
+        self.victim_asns = victim_asns if victim_asns else set()
+        assert (victim_asns is None
+                or len(victim_asns) == num_victims)
+
+        if (victim_asns, attacker_asns) != (None, None):
+            self.attacker_victim_asns_preset = True
+        else:
+            self.attacker_victim_asns_preset = False
 
     @property
     def graph_label(self):
@@ -89,32 +95,26 @@ class Scenario(ABC):
     def _set_attackers_victims(self, *args, **kwargs):
         """Sets attacker victim pair"""
 
-        self.attacker_asns = self._get_attacker_asns(*args, **kwargs)
-        self.victim_asns = self._get_victim_asns(*args, **kwargs)
+        # Only run if attacker and victims aren't already set
+        if not self.attacker_victim_asns_preset:
+            self.attacker_asns = self._get_attacker_asns(*args, **kwargs)
+            self.victim_asns = self._get_victim_asns(*args, **kwargs)
 
     def _get_attacker_asns(self, *args, **kwargs):
         """Returns attacker ASN at random"""
 
-        # Only run if we did not regenerate from YAML
-        if self.attacker_asns is None:
-            possible_attacker_asns = self._get_possible_attacker_asns(*args,
+        possible_attacker_asns = self._get_possible_attacker_asns(*args,
                                                                       **kwargs)
-            return set(random.sample(possible_attacker_asns,
-                                     self.num_attackers))
-        else:
-            return self.attacker_asns
+        return set(random.sample(possible_attacker_asns,
+                                 self.num_attackers))
 
     def _get_victim_asns(self, *args, **kwargs):
         """Returns victim ASN at random. Attacker can't be victim"""
 
-        # Only run if we did not regenerate from YAML
-        if self.victim_asns is None:
-            possible_vic_asns = self._get_possible_victim_asns(*args, **kwargs)
-            return set(random.sample(
-                possible_vic_asns.difference(self.attacker_asns),
-                self.num_victims))
-        else:
-            return self.victim_asns
+        possible_vic_asns = self._get_possible_victim_asns(*args, **kwargs)
+        return set(random.sample(
+            possible_vic_asns.difference(self.attacker_asns),
+            self.num_victims))
 
     # For this, don't bother making a subclass with stubs_and_mh
     # Since it won't really create another class branch,

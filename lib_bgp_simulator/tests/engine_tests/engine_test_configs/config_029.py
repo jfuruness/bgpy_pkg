@@ -3,10 +3,10 @@ from ..utils import EngineTestConfig
 
 
 from ....simulation_engine import BGPSimpleAS
-from ....simulation_framework import MultiValidPrefix
+from ....simulation_framework import ValidPrefix
 
 
-class Custom29MultiValidPrefix(MultiValidPrefix):
+class Custom29MultiValidPrefix(ValidPrefix):
     """A valid prefix engine input with multiple victims"""
 
     __slots__ = ()

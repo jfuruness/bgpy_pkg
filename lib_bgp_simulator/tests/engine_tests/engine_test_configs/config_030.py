@@ -3,10 +3,10 @@ from ..utils import EngineTestConfig
 
 
 from ....simulation_engine import BGPSimpleAS
-from ....simulation_framework import MultiValidPrefix
+from ....simulation_framework import ValidPrefix
 
 
-class Custom30MultiValidPrefix(MultiValidPrefix):
+class Custom30MultiValidPrefix(ValidPrefix):
     """A valid prefix engine input with multiple victims"""
 
     __slots__ = ()
@@ -32,6 +32,7 @@ class Config030(EngineTestConfig):
     name = "030"
     desc = "Test seeded announcement should never be replaced"
     scenario = Custom30MultiValidPrefix(victim_asns={1, 4, 3, 5},
+                                        num_victims=4,
                                         AdoptASCls=None,
                                         BaseASCls=BGPSimpleAS)
     graph = Graph040()

@@ -7,7 +7,7 @@ from PIL import Image
 from .diagram import Diagram
 from .simulator_codec import SimulatorCodec
 from ....simulation_engine import SimulationEngine
-from ....subgraphs import Subgraph
+from ....simulation_framework import Subgraph
 
 
 class EngineTester:
