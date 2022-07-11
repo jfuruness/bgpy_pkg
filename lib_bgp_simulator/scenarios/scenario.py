@@ -223,7 +223,8 @@ class Scenario(ABC):
     def _preset_asns(self):
         """ASNs that have a preset adoption policy"""
 
-        return set(self._default_adopters + self._default_non_adopters)
+        # Returns the union of default adopters and non adopters
+        return self._default_adopters | self._default_non_adopters
 
     def determine_as_outcome(self, as_obj, ann):
         """Determines the outcome at an AS
@@ -234,7 +235,7 @@ class Scenario(ABC):
 
         if as_obj.asn in self.attacker_asns:
             return Outcomes.ATTACKER_SUCCESS
-        elif as_obj.asns in self.victim_asns:
+        elif as_obj.asn in self.victim_asns:
             return Outcomes.VICTIM_SUCCESS
         # End of traceback
         elif (ann is None

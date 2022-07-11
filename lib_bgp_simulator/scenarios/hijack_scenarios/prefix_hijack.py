@@ -28,16 +28,20 @@ class PrefixHijack(Scenario):
                                     roa_valid_length=True,
                                     roa_origin=victim_asn,
                                     recv_relationship=Relationships.ORIGIN))
+
+        err = "Fix the roa_origins of the announcements for multiple victims"
+        assert len(self.victim_asns) == 1, err
+
+        roa_origin = next(iter(self.victim_asns))
+
         for attacker_asn in self.attacker_asns:
             anns.append(self.AnnCls(prefix=Prefixes.PREFIX.value,
                                     as_path=(attacker_asn,),
                                     timestamp=Timestamps.ATTACKER.value,
                                     seed_asn=attacker_asn,
                                     roa_valid_length=True,
-                                    roa_origin=self.victim_asns[0],
+                                    roa_origin=roa_origin,
                                     recv_relationship=Relationships.ORIGIN))
 
-        err = "Fix the roa_origins of the announcements for multiple victims"
-        assert len(self.victim_asns) == 0, err
 
         return tuple(anns)
