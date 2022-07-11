@@ -69,14 +69,12 @@ class Announcement(YamlAble):
     def copy(self, overwrite_default_kwargs=None):
         """Creates a new ann with proper sim attrs"""
 
-        if overwrite_default_kwargs is None:
-            overwrite_default_kwargs = dict()
-
         kwargs = self._get_vars()
         # Replace seed asn and traceback end every time by default
         kwargs["seed_asn"] = None
         kwargs["traceback_end"] = False
-        kwargs.update(overwrite_default_kwargs)
+        if overwrite_default_kwargs:
+            kwargs.update(overwrite_default_kwargs)
 
         return self.__class__(**kwargs)
 

@@ -301,10 +301,12 @@ class Scenario(ABC):
         for asn, ASCls in self.non_default_as_cls_dict.items():
             assert ASCls != self.BaseASCls, "No defaults! See comment above"
 
+        # Done here to save as much time  as possible
+        BaseASCls = self.BaseASCls
         for as_obj in engine:
             # Set the AS class to be the proper type of AS
             as_obj.__class__ = self.non_default_as_cls_dict.get(as_obj.asn,
-                                                                self.BaseASCls)
+                                                                BaseASCls)
             # Clears all RIBs, etc
             # Reset base is False to avoid overrides base AS info (peers, etc)
             as_obj.__init__(reset_base=False)
