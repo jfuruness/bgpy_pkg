@@ -11,5 +11,5 @@
   name: VICTIM_SUCCESS
   value: 1
 5: !simulator_codec/Outcomes
-  name: DISCONNECTED
-  value: 2
+  name: VICTIM_SUCCESS
+  value: 1

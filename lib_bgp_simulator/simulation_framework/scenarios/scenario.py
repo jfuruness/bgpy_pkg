@@ -178,6 +178,7 @@ class Scenario(ABC):
                 # This is useful for things like ROV, etc...
                 else:
                     non_default_as_cls_dict[asn] = OldASCls
+            return non_default_as_cls_dict
         else:
             return self._get_adopting_asns_dict(engine, percent_adoption)
 

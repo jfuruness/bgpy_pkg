@@ -14,7 +14,7 @@ class Custom31ValidPrefix(ValidPrefix):
     def _get_announcements(self):
         vic_ann = super()._get_announcements()[0]
         # Add 1 to the path so AS 1 rejects this
-        vic_ann.as_path = (self.victim_asn, 1, self.victim_asn)
+        vic_ann.as_path = (vic_ann.origin, 1, vic_ann.origin)
         return (vic_ann,)
 
 
