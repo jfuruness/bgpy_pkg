@@ -4,9 +4,9 @@ def create_test_config(graph, name, comment):
 from ..graphs import {graph}
 from ..utils import EngineTestConfig
 
-from ....engine import BGPSimpleAS
+from ....simulation_engine import BGPSimpleAS
 from ....enums import ASNs
-from ....scenarios import SubprefixHijack
+from ....simulation_framework import SubprefixHijack
 
 
 class Config{name}(EngineTestConfig):

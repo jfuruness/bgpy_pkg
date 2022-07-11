@@ -1,6 +1,6 @@
+from ....announcement import Announcement as Ann
 from ....ann_containers import RecvQueue
 from .....enums import Relationships
-from .....announcement import Announcement as Ann
 
 
 def receive_ann(self, ann: Ann, accept_withdrawals=False):

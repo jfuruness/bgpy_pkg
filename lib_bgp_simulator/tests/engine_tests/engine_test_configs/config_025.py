@@ -1,9 +1,9 @@
 from ..graphs import Graph019
 from ..utils import EngineTestConfig
 
-from ....engine import ROVSimpleAS
+from ....simulation_engine import ROVSimpleAS
 from ....enums import ASNs
-from ....scenarios import ValidPrefix
+from ....simulation_framework import ValidPrefix
 
 
 class Config025(EngineTestConfig):

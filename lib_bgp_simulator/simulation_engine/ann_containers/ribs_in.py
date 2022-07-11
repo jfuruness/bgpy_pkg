@@ -4,7 +4,7 @@ from yamlable import YamlAble, yaml_info
 
 from .ann_container import AnnContainer
 
-from ...announcement import Announcement
+from ..announcement import Announcement
 from ...enums import Relationships
 
 

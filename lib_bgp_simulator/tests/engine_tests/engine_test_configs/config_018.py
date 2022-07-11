@@ -1,9 +1,9 @@
 from ..graphs import Graph018
 from ..utils import EngineTestConfig
 
-from ....engine import ROVAS
+from ....simulation_engine import ROVAS
 from ....enums import ASNs
-from ....scenarios import ValidPrefix
+from ....simulation_framework import ValidPrefix
 
 
 class Config018(EngineTestConfig):

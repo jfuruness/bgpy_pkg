@@ -1,9 +1,9 @@
 from ..graphs import Graph002
 from ..utils import EngineTestConfig
 
-from ....engine import BGPSimpleAS
+from ....simulation_engine import BGPSimpleAS
 from ....enums import ASNs
-from ....scenarios import ValidPrefix
+from ....simulation_framework import ValidPrefix
 
 
 class Config003(EngineTestConfig):

@@ -1,9 +1,9 @@
 from ..graphs import Graph003
 from ..utils import EngineTestConfig
 
-from ....engine import BGPAS
+from ....simulation_engine import BGPAS
 from ....enums import ASNs
-from ....scenarios import SubprefixHijack
+from ....simulation_framework import SubprefixHijack
 
 
 class Config009(EngineTestConfig):

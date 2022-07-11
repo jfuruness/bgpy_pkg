@@ -1,10 +1,10 @@
 from ..graphs import Graph003
 from ..utils import EngineTestConfig
 
-from ....engine import ROVSimpleAS
-from ....engine import BGPSimpleAS
+from ....simulation_engine import ROVSimpleAS
+from ....simulation_engine import BGPSimpleAS
 from ....enums import ASNs
-from ....scenarios import SubprefixHijack
+from ....simulation_framework import SubprefixHijack
 
 
 class Config007(EngineTestConfig):

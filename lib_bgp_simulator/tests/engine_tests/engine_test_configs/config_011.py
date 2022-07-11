@@ -1,9 +1,9 @@
 from ..graphs import Graph006
 from ..utils import EngineTestConfig
 
-from ....engine import BGPSimpleAS, ROVSimpleAS
+from ....simulation_engine import BGPSimpleAS, ROVSimpleAS
 from ....enums import ASNs
-from ....scenarios import NonRoutedPrefixHijack
+from ....simulation_framework import NonRoutedPrefixHijack
 
 
 class Config011(EngineTestConfig):

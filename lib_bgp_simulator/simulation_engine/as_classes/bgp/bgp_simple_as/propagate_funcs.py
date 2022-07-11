@@ -2,8 +2,8 @@ from typing import List
 
 from lib_caida_collector import AS
 
+from ....announcement import Announcement as Ann
 from .....enums import Relationships
-from .....announcement import Announcement as Ann
 
 
 def propagate_to_providers(self):

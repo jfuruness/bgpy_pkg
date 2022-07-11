@@ -2,7 +2,7 @@ from typing import List, Optional
 
 from ..bgp_simple_as import BGPSimpleAS
 
-from .....announcement import Announcement as Ann
+from ....announcement import Announcement as Ann
 from .....enums import Relationships
 
 

@@ -2,9 +2,9 @@ from ..graphs import Graph040
 from ..utils import EngineTestConfig
 
 
-from ....engine import BGPSimpleAS
+from ....simulation_engine import BGPSimpleAS
 from ....enums import ASNs
-from ....scenarios import MultiValidPrefix
+from ....simulation_framework import MultiValidPrefix
 
 
 class Custom29MultiValidPrefix(MultiValidPrefix):

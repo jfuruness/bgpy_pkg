@@ -8,10 +8,10 @@ from tempfile import TemporaryDirectory
 
 from lib_caida_collector import CaidaCollector
 
-from .engine import BGPSimpleAS
-from .engine import SimulationEngine
-from .engine import ROVSimpleAS
 from .scenarios import SubprefixHijack
+from .simulation_engine import BGPSimpleAS
+from .simulation_engine import SimulationEngine
+from .simulation_engine import ROVSimpleAS
 from .subgraphs import AttackerSuccessAdoptingEtcSubgraph
 from .subgraphs import AttackerSuccessAdoptingInputCliqueSubgraph
 from .subgraphs import AttackerSuccessAdoptingStubsAndMHSubgraph

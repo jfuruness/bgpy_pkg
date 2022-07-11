@@ -2,7 +2,7 @@ from itertools import chain
 
 from yamlable import YamlAble, yaml_info, yaml_info_decorate
 
-from .enums import Relationships
+from ..enums import Relationships
 
 
 _all_slots = dict()

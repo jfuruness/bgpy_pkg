@@ -6,7 +6,7 @@ from PIL import Image
 
 from .diagram import Diagram
 from .simulator_codec import SimulatorCodec
-from ....engine import SimulationEngine
+from ....simulation_engine import SimulationEngine
 from ....subgraphs import Subgraph
 
 
