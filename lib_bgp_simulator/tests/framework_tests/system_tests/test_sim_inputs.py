@@ -30,13 +30,13 @@ PARSE_CPUS = (1, 2)
 @pytest.mark.slow
 @pytest.mark.parametrize(
     "AdoptASCls, BaseASCls, ScenarioCls, num_attackers, parse_cpus",
-     [x for x in product(*[AS_CLASSES,
-                           AS_CLASSES,
-                           SCENARIOS,
-                           NUM_ATTACKERS,
-                           PARSE_CPUS])
-      # Where BaseASCls != AdoptASCls
-      if x[0] != x[1]])
+    [x for x in product(*[AS_CLASSES,
+                          AS_CLASSES,
+                          SCENARIOS,
+                          NUM_ATTACKERS,
+                          PARSE_CPUS])
+     # Where BaseASCls != AdoptASCls
+     if x[0] != x[1]])
 def test_sim_inputs(AdoptASCls,
                     BaseASCls,
                     ScenarioCls,

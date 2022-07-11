@@ -104,7 +104,7 @@ class Scenario(ABC):
         """Returns attacker ASN at random"""
 
         possible_attacker_asns = self._get_possible_attacker_asns(*args,
-                                                                      **kwargs)
+                                                                  **kwargs)
         # https://stackoverflow.com/a/15837796/8903959
         return set(random.sample(tuple(possible_attacker_asns),
                                  self.num_attackers))

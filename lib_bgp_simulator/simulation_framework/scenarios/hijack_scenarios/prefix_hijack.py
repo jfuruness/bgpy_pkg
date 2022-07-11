@@ -43,5 +43,4 @@ class PrefixHijack(Scenario):
                                     roa_origin=roa_origin,
                                     recv_relationship=Relationships.ORIGIN))
 
-
         return tuple(anns)

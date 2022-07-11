@@ -14,6 +14,7 @@ from ...enums import Outcomes
 def default_dict_func():
     return defaultdict(list)
 
+
 class Subgraph(ABC):
     """A subgraph for data display"""
 
