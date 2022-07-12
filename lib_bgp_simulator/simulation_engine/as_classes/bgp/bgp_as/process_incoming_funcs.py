@@ -78,7 +78,7 @@ def process_incoming_anns(self,
 
         if _local_rib_ann is not None and _local_rib_ann is not current_ann:
             # Best ann has already been processed
-            withdraw_ann: Ann = _local_rib_ann.copy(withdraw=True)
+            withdraw_ann: Ann = _local_rib_ann.copy(overwrite_default_kwargs={'withdraw': True})
             self._withdraw_ann_from_neighbors(withdraw_ann)
             err = f"withdrawing ann that is same as new ann {withdraw_ann}"
             if not current_processed:
@@ -122,7 +122,7 @@ def _process_incoming_withdrawal(self,
     # Remove ann from local rib
     withdraw_ann: Ann = self._copy_and_process(ann,
                                                recv_relationship,
-                                               withdraw=True)
+                                               overwrite_default_kwargs={'withdraw': True})
     if withdraw_ann.prefix_path_attributes_eq(
             self._local_rib.get_ann(prefix)):
 

@@ -68,7 +68,8 @@ def _valid_ann(self,
 
 def _copy_and_process(self,
                       ann: Ann,
-                      recv_relationship: Relationships
+                      recv_relationship: Relationships,
+                      overwrite_default_kwargs=None
                       ) -> Ann:
     """Deep copies ann and modifies attrs
 
@@ -77,7 +78,8 @@ def _copy_and_process(self,
 
     kwargs = {"as_path": (self.asn,) + ann.as_path,
               "recv_relationship": recv_relationship}
-
+    if overwrite_default_kwargs:
+        kwargs.update(overwrite_default_kwargs)
     # Don't use a dict comp here for speed
     return ann.copy(overwrite_default_kwargs=kwargs)
 

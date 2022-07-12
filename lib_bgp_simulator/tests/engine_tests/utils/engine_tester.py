@@ -41,12 +41,19 @@ class EngineTester:
             to the ground truth
         """
 
+        # Get a fresh copy of the scenario
+        scenario = deepcopy(self.conf.scenario)
         # Get's an engine that has been set up
         engine = self._get_engine()
         # Run engine
         for propagation_round in range(self.conf.propagation_rounds):
             engine.run(propagation_round=propagation_round,
-                       scenario=deepcopy(self.conf.scenario))
+                       scenario=scenario)
+            kwargs = {"engine": engine,
+                      "scenario": scenario,
+                      "propagation_round": propagation_round}
+            # By default, this is a no op
+            scenario.post_propagation_hook(**kwargs)
 
         # Get traceback results {AS: Outcome}
         outcomes = Subgraph()._get_engine_outcomes(engine, self.conf.scenario)
