@@ -164,12 +164,9 @@ class Scenario(ABC):
         adoption across trials
         """
 
-        # No adopting ASes
-        if not self.AdoptASCls:
-            return dict()
         # By default, use the last engine input to maintain static
         # adoption across the graph
-        elif prev_scenario:
+        if prev_scenario:
             non_default_as_cls_dict = dict()
             for asn, OldASCls in prev_scenario.non_default_as_cls_dict.items():
                 # If the ASN was of the adopting class of the last scenario,
@@ -181,6 +178,10 @@ class Scenario(ABC):
                 else:
                     non_default_as_cls_dict[asn] = OldASCls
             return non_default_as_cls_dict
+        # No adopting ASes, return a dict
+        elif not self.AdoptASCls:
+            return dict()
+        # Randomly get adopting ases
         else:
             return self._get_adopting_asns_dict(engine, percent_adoption)
 
