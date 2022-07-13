@@ -2,6 +2,8 @@ import pytest
 
 
 @pytest.mark.skip(reason="Templating out for later")
+@pytest.mark.framework
+@pytest.mark.unit_tests
 class TestScenario:
     def test_init(self):
         """Tests the validation checks in the init

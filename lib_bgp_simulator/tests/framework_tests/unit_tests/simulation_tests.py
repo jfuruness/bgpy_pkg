@@ -2,6 +2,8 @@ import pytest
 
 
 @pytest.mark.skip(reason="Templating out all tests first")
+@pytest.mark.framework
+@pytest.mark.unit_tests
 class TestSimulation:
     def test_init(self):
         """Tests init func

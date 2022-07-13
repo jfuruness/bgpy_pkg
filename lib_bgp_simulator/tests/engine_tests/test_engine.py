@@ -37,6 +37,7 @@ from .utils import EngineTester
 from .utils import EngineTestConfig
 
 
+@pytest.mark.engine
 class TestEngine:
     """Performs a system test on the engine
 

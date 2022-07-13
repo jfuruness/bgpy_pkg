@@ -2,6 +2,8 @@ import pytest
 
 
 @pytest.mark.skip(Reason="Templating out unit tests first")
+@pytest.mark.framework
+@pytest.mark.unit_tests
 class TestSubgraphs:
 
     def test_write_graph(self):
