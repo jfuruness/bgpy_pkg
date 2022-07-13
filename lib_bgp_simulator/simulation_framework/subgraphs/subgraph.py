@@ -98,7 +98,11 @@ class Subgraph(ABC):
 ##############
 
     def add_trial_info(self, other_subgraph):
-        """Merges other subgraph into this one and combines the data"""
+        """Merges other subgraph into this one and combines the data
+
+        This gets called when we need to merge all the subgraphs
+        from the various processes that were spawned
+        """
 
         for scenario_label, percent_dict in other_subgraph.data.items():
             for percent_adopt, trial_results in percent_dict.items():
