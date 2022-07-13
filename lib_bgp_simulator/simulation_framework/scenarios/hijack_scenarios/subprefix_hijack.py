@@ -37,7 +37,7 @@ class SubprefixHijack(Scenario):
         roa_origin = next(iter(self.victim_asns))
 
         for attacker_asn in self.attacker_asns:
-            anns.append(self.AnnCls(prefix=Prefixes.PREFIX.value,
+            anns.append(self.AnnCls(prefix=Prefixes.SUBPREFIX.value,
                                     as_path=(attacker_asn,),
                                     timestamp=Timestamps.ATTACKER.value,
                                     seed_asn=attacker_asn,

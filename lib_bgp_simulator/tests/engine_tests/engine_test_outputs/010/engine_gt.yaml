@@ -4,8 +4,22 @@
     1.2.0.0/16: !yamlable/Announcement
       as_path: !!python/tuple
       - 1
-      - 666
+      - 777
       prefix: 1.2.0.0/16
+      recv_relationship: !simulator_codec/Relationships
+        name: CUSTOMERS
+        value: 3
+      roa_origin: 777
+      roa_valid_length: true
+      seed_asn: null
+      timestamp: 0
+      traceback_end: false
+      withdraw: false
+    1.2.3.0/24: !yamlable/Announcement
+      as_path: !!python/tuple
+      - 1
+      - 666
+      prefix: 1.2.3.0/24
       recv_relationship: !simulator_codec/Relationships
         name: CUSTOMERS
         value: 3
@@ -62,8 +76,23 @@
       as_path: !!python/tuple
       - 3
       - 1
-      - 666
+      - 777
       prefix: 1.2.0.0/16
+      recv_relationship: !simulator_codec/Relationships
+        name: PROVIDERS
+        value: 1
+      roa_origin: 777
+      roa_valid_length: true
+      seed_asn: null
+      timestamp: 0
+      traceback_end: false
+      withdraw: false
+    1.2.3.0/24: !yamlable/Announcement
+      as_path: !!python/tuple
+      - 3
+      - 1
+      - 666
+      prefix: 1.2.3.0/24
       recv_relationship: !simulator_codec/Relationships
         name: PROVIDERS
         value: 1
@@ -90,8 +119,23 @@
       as_path: !!python/tuple
       - 4
       - 1
-      - 666
+      - 777
       prefix: 1.2.0.0/16
+      recv_relationship: !simulator_codec/Relationships
+        name: PROVIDERS
+        value: 1
+      roa_origin: 777
+      roa_valid_length: true
+      seed_asn: null
+      timestamp: 0
+      traceback_end: false
+      withdraw: false
+    1.2.3.0/24: !yamlable/Announcement
+      as_path: !!python/tuple
+      - 4
+      - 1
+      - 666
+      prefix: 1.2.3.0/24
       recv_relationship: !simulator_codec/Relationships
         name: PROVIDERS
         value: 1
@@ -147,8 +191,24 @@
       - 7
       - 3
       - 1
-      - 666
+      - 777
       prefix: 1.2.0.0/16
+      recv_relationship: !simulator_codec/Relationships
+        name: PROVIDERS
+        value: 1
+      roa_origin: 777
+      roa_valid_length: true
+      seed_asn: null
+      timestamp: 0
+      traceback_end: false
+      withdraw: false
+    1.2.3.0/24: !yamlable/Announcement
+      as_path: !!python/tuple
+      - 7
+      - 3
+      - 1
+      - 666
+      prefix: 1.2.3.0/24
       recv_relationship: !simulator_codec/Relationships
         name: PROVIDERS
         value: 1
@@ -175,8 +235,24 @@
       - 8
       - 4
       - 1
-      - 666
+      - 777
       prefix: 1.2.0.0/16
+      recv_relationship: !simulator_codec/Relationships
+        name: PROVIDERS
+        value: 1
+      roa_origin: 777
+      roa_valid_length: true
+      seed_asn: null
+      timestamp: 0
+      traceback_end: false
+      withdraw: false
+    1.2.3.0/24: !yamlable/Announcement
+      as_path: !!python/tuple
+      - 8
+      - 4
+      - 1
+      - 666
+      prefix: 1.2.3.0/24
       recv_relationship: !simulator_codec/Relationships
         name: PROVIDERS
         value: 1
@@ -201,7 +277,22 @@
     1.2.0.0/16: !yamlable/Announcement
       as_path: !!python/tuple
       - 666
+      - 1
+      - 777
       prefix: 1.2.0.0/16
+      recv_relationship: !simulator_codec/Relationships
+        name: PROVIDERS
+        value: 1
+      roa_origin: 777
+      roa_valid_length: true
+      seed_asn: null
+      timestamp: 0
+      traceback_end: false
+      withdraw: false
+    1.2.3.0/24: !yamlable/Announcement
+      as_path: !!python/tuple
+      - 666
+      prefix: 1.2.3.0/24
       recv_relationship: !simulator_codec/Relationships
         name: ORIGIN
         value: 4
@@ -234,6 +325,21 @@
       roa_valid_length: true
       seed_asn: 777
       timestamp: 0
+      traceback_end: false
+      withdraw: false
+    1.2.3.0/24: !yamlable/Announcement
+      as_path: !!python/tuple
+      - 777
+      - 1
+      - 666
+      prefix: 1.2.3.0/24
+      recv_relationship: !simulator_codec/Relationships
+        name: PROVIDERS
+        value: 1
+      roa_origin: 777
+      roa_valid_length: true
+      seed_asn: null
+      timestamp: 1
       traceback_end: false
       withdraw: false
   _recv_q: !yamlable/RecvQueue {}

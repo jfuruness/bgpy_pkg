@@ -214,23 +214,21 @@ class TestScenario:
 
         raise NotImplementedError
 
-    @pytest.mark.skip(reason="Templating out for later")
     def test_default_adopters(self):
         """Ensures that the default adopters returns the victims"""
 
-        raise NotImplementedError
+        assert SubprefixHijack(victim_asns={1})._default_adopters == {1}
 
-    @pytest.mark.skip(reason="Templating out for later")
     def test_default_non_adopters(self):
         """Tests that the attacker does not adopt"""
 
-        raise NotImplementedError
+        assert SubprefixHijack(attacker_asns={1})._default_non_adopters == {1}
 
-    @pytest.mark.skip(reason="Templating out for later")
     def test_preset_asns(self):
         """Tests that the preset ASNs is the union of default ASNs"""
 
-        raise NotImplementedError
+        assert SubprefixHijack(attacker_asns={1},
+                               victim_asns={2})._preset_asns == {1, 2}
 
     @pytest.mark.skip(reason="Templating out for later")
     def test_determine_as_outcome(self):
@@ -277,11 +275,10 @@ class TestScenario:
 
         raise NotImplementedError
 
-    @pytest.mark.skip(reason="Templating out for later")
     def test_post_propagation_hook(self):
         """Test that the post_propagation_hook doesn't error"""
 
-        raise NotImplementedError
+        SubprefixHijack().post_propagation_hook()
 
 ################
 # Helper Funcs #
