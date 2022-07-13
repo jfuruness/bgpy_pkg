@@ -1,25 +1,72 @@
 import pytest
 
+from ....simulation_framework import SubprefixHijack
+from ....simulation_engine import Announcement
+from ....simulation_engine import BGPSimpleAS
 
-@pytest.mark.skip(reason="Templating out for later")
+
 @pytest.mark.framework
 @pytest.mark.unit_tests
 class TestScenario:
-    def test_init(self):
-        """Tests the validation checks in the init
+    @pytest.mark.parametrize("num_attackers, num_victims", ((1, 1),
+                                                            (1, 2),
+                                                            (2, 1),
+                                                            (2, 2)))
+    def test_init_valid(self, num_attackers, num_victims):
+        """Tests the initialization works when valid"""
 
-        1. Ensures that the number of attackers are == attacker_asns if set
-        2. Same as 1, but for victim asns
-        3. Ensures the attacker_victim_asns_preset is correct
-        4. Checks for the AdoptASCls to be correct (even if None)
-        """
+        SubprefixHijack(AnnCls=Announcement,
+                        BaseASCls=BGPSimpleAS,
+                        AdoptASCls=None,
+                        num_attackers=num_attackers,
+                        num_victims=num_victims,
+                        attacker_asns=list(range(num_attackers)),
+                        victim_asns=list(range(num_victims)))
 
-        raise NotImplementedError
+    def test_init_invalid_attackers(self):
+        """Tests the len(attacker_asns) == num_attackers"""
+
+        with pytest.raises(AssertionError):
+            SubprefixHijack(num_attackers=1,
+                            attacker_asns={1, 2})
+
+    def test_init_invalid_victims(self):
+        """Tests the len(victim_asns) == num_victims"""
+
+        with pytest.raises(AssertionError):
+            SubprefixHijack(num_victims=1,
+                            victim_asns={1, 2})
+
+    @pytest.mark.parametrize("attacker, victim", ((True, True),
+                                                  (True, False),
+                                                  (False, False),
+                                                  (False, True)))
+    def test_init_attacker_victim_asns_preset(self, attacker, victim):
+        """Tests the attacker_victim_asns_preset is correct"""
+
+        kwargs = dict()
+        if attacker:
+            kwargs["attacker_asns"] = {1}
+        elif victim:
+            kwargs["victim_asns"] = {2}
+
+        hijack = SubprefixHijack(**kwargs)
+        if attacker or victim:
+            assert hijack.attacker_victim_asns_preset
+        else:
+            assert hijack.attacker_victim_asns_preset is False
+
+    def test_init_adopt_as_cls(self):
+        """Tests the AdoptASCls is never None, and is the pseudo BaseAS"""
+
+        hijack = SubprefixHijack()
+        assert issubclass(hijack.AdoptASCls, hijack.BaseASCls)
 
 ##############################################
 # Set Attacker/Victim and Announcement Funcs #
 ##############################################
 
+    @pytest.mark.skip(reason="Templating out for later")
     def test_set_attackers_victims_anns_w_prev_scenario(self):
         """Tests the set_attackers_victims_anns with prev_scenario
 
@@ -29,6 +76,7 @@ class TestScenario:
 
         raise NotImplementedError
 
+    @pytest.mark.skip(reason="Templating out for later")
     def test_set_attackers_victims_anns_wout_prev_scenario(self):
         """Tests the set_attackers_victims_anns without prev_scenario
 
@@ -37,6 +85,7 @@ class TestScenario:
 
         raise NotImplementedError
 
+    @pytest.mark.skip(reason="Templating out for later")
     def test_set_attackers_victims(self):
         """Tests that the attackers/victims don't change if they were preset
 
@@ -47,6 +96,7 @@ class TestScenario:
 
         raise NotImplementedError
 
+    @pytest.mark.skip(reason="Templating out for later")
     def test_get_attacker_asns(self):
         """Tests that get_attacker_asns
 
@@ -58,6 +108,7 @@ class TestScenario:
 
         raise NotImplementedError
 
+    @pytest.mark.skip(reason="Templating out for later")
     def test_get_victim_asns(self):
         """Tests that get_victim_asns
 
@@ -70,6 +121,7 @@ class TestScenario:
 
         raise NotImplementedError
 
+    @pytest.mark.skip(reason="Templating out for later")
     def test_get_possible_attacker_asns(self):
         """Tests the possible attacker asns
 
@@ -78,11 +130,13 @@ class TestScenario:
 
         raise NotImplementedError
 
+    @pytest.mark.skip(reason="Templating out for later")
     def test_get_possible_victim_asns(self):
         """Tests that a set is returned with at least a few ases"""
 
         raise NotImplementedError
 
+    @pytest.mark.skip(reason="Templating out for later")
     def test_get_announcements(self):
         """Tests the get_announcements of a subclass of scenario
 
@@ -95,6 +149,7 @@ class TestScenario:
 # Adopting ASNs funcs #
 #######################
 
+    @pytest.mark.skip(reason="Templating out for later")
     def test_get_non_default_as_cls_dict_prev_scenario_adopt(self):
         """Tests that the non default as cls dict is set properly
 
@@ -107,6 +162,7 @@ class TestScenario:
 
         raise NotImplementedError
 
+    @pytest.mark.skip(reason="Templating out for later")
     def test_get_non_default_as_cls_dict_prev_scenario_no_adopt(self):
         """Tests that the non default as cls dict is set properly
 
@@ -118,6 +174,7 @@ class TestScenario:
 
         raise NotImplementedError
 
+    @pytest.mark.skip(reason="Templating out for later")
     def test_get_non_default_as_cls_dict_no_prev_scenario_no_adopt(self):
         """Tests that the non default as cls dict is set properly
 
@@ -127,6 +184,7 @@ class TestScenario:
 
         raise NotImplementedError
 
+    @pytest.mark.skip(reason="Templating out for later")
     def test_get_non_default_as_cls_dict_no_adoption_sequence(self):
         """Tests the Pseudo AdoptASCls
 
@@ -141,6 +199,7 @@ class TestScenario:
 
         raise NotImplementedError
 
+    @pytest.mark.skip(reason="Templating out for later")
     def test_get_adopting_asns_dict(self):
         """Tests the get adopting asns function
 
@@ -155,21 +214,25 @@ class TestScenario:
 
         raise NotImplementedError
 
+    @pytest.mark.skip(reason="Templating out for later")
     def test_default_adopters(self):
         """Ensures that the default adopters returns the victims"""
 
         raise NotImplementedError
 
+    @pytest.mark.skip(reason="Templating out for later")
     def test_default_non_adopters(self):
         """Tests that the attacker does not adopt"""
 
         raise NotImplementedError
 
+    @pytest.mark.skip(reason="Templating out for later")
     def test_preset_asns(self):
         """Tests that the preset ASNs is the union of default ASNs"""
 
         raise NotImplementedError
 
+    @pytest.mark.skip(reason="Templating out for later")
     def test_determine_as_outcome(self):
         """Tests every possible condition for AS outcomes
 
@@ -182,6 +245,7 @@ class TestScenario:
 # Engine Manipulation Funcs #
 #############################
 
+    @pytest.mark.skip(reason="Templating out for later")
     def test_setup_engine(self):
         """Tests setup_engine func
 
@@ -192,6 +256,7 @@ class TestScenario:
 
         raise NotImplementedError
 
+    @pytest.mark.skip(reason="Templating out for later")
     def test_set_engine_as_classes(self):
         """Tests that the engine as classes are set properly
 
@@ -202,6 +267,7 @@ class TestScenario:
 
         raise NotImplementedError
 
+    @pytest.mark.skip(reason="Templating out for later")
     def test_seed_engine_announcements(self):
         """Tests the seeding of engine announcements
 
@@ -211,6 +277,7 @@ class TestScenario:
 
         raise NotImplementedError
 
+    @pytest.mark.skip(reason="Templating out for later")
     def test_post_propagation_hook(self):
         """Test that the post_propagation_hook doesn't error"""
 
@@ -220,6 +287,7 @@ class TestScenario:
 # Helper Funcs #
 ################
 
+    @pytest.mark.skip(reason="Templating out for later")
     def test_get_ordered_prefix_subprefix_dict(self):
         """Tests that the get_ordered_prefix_subprefix_dict works"""
 

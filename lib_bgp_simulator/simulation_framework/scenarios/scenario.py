@@ -60,8 +60,8 @@ class Scenario(ABC):
             global pseudo_base_cls_dict
             AdoptASCls = pseudo_base_cls_dict.get(self.BaseASCls)
             if not AdoptASCls:
-                class PseudoBaseCls(self.BaseASCls):
-                    name = f"Psuedo {self.BaseASCls.name}"
+                name = f"Psuedo {self.BaseASCls.name}".replace(" ", "")
+                PseudoBaseCls = type(name, (self.BaseASCls,), {"name": name})
                 pseudo_base_cls_dict[self.BaseASCls] = PseudoBaseCls
                 AdoptASCls = PseudoBaseCls
             self.AdoptASCls = AdoptASCls
