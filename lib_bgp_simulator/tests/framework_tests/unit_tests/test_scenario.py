@@ -3,6 +3,7 @@ import pytest
 from ....simulation_framework import SubprefixHijack
 from ....simulation_engine import Announcement
 from ....simulation_engine import BGPSimpleAS
+from ....simulation_engine import SimulationEngine
 
 
 @pytest.mark.framework
@@ -66,49 +67,91 @@ class TestScenario:
 # Set Attacker/Victim and Announcement Funcs #
 ##############################################
 
-    @pytest.mark.skip(reason="Templating out for later")
-    def test_set_attackers_victims_anns_w_prev_scenario(self):
+    def test_set_attackers_victims_anns_w_prev_scenario(self, engine):
         """Tests the set_attackers_victims_anns with prev_scenario
 
         Ensures that attackers and victims are the same as the last
         scenario that was run
         """
 
-        raise NotImplementedError
+        prev_scenario = SubprefixHijack(attacker_asns={1},
+                                        victim_asns={2})
+        scenario = SubprefixHijack()
+        scenario._set_attackers_victims_anns(engine,
+                                             0,
+                                             prev_scenario)
+        for attr in ("attacker_asns", "victim_asns"):
+            assert getattr(scenario, attr) == getattr(prev_scenario, attr)
 
-    @pytest.mark.skip(reason="Templating out for later")
-    def test_set_attackers_victims_anns_wout_prev_scenario(self):
+    def test_set_attackers_victims_anns_wout_prev_scenario(self, engine):
         """Tests the set_attackers_victims_anns without prev_scenario
 
         Ensures that attackers and victims are randomly chosen
         """
 
-        raise NotImplementedError
+        # Seed randomness to ensure deterministic
+        random.seed(0)
+        scenario = SubprefixHijack()
+        scenario._set_attackers_victims_asns(engine,
+                                             percent_adoption=0,
+                                             prev_scenario=None)  # type: ignore
+        random.seed(1)
+        scenario_2 = SubprefixHijack()
+        scenario_2._set_attackers_victims_asns(engine,
+                                               percent_adoption=0,
+                                               prev_scenario=None)  # type: ignore
 
-    @pytest.mark.skip(reason="Templating out for later")
-    def test_set_attackers_victims(self):
+        for attr in ("attacker_asns", "victim_asns"):
+            assert getattr(scenario, attr) != getattr(scenario_2, attr)
+
+    def test_set_attackers_victims_preset(self, engine):
         """Tests that the attackers/victims don't change if they were preset
 
         and tests that they do change if they weren't preset
-
-        Note for dev: parameterize this!
         """
 
-        raise NotImplementedError
+        kwargs = {"attacker_asns": {1}, "victim_asns": {2}}
+        # First check if they were preset that they don't change
+        scenario = SubprefixHijack(**kwargs)
+        scenario._set_attackers_victims(engine,
+                                        percent_adoption,
+                                        prev_scenario=None)
+        for attr, val in kwargs.items():
+            assert getattr(scenario, attr) == val
 
-    @pytest.mark.skip(reason="Templating out for later")
-    def test_get_attacker_asns(self):
+    def test_set_attackers_victims_not_preset(self):
+        """Tests that the attackers/victims change when not preset"""
+
+        # No preset attacker and victim asns
+        scenario = SubprefixHijack()
+        # This should randomly select attackers and victims
+        scenario._set_attackers_victims()
+        for attr in ("attacker_asns", "victim_asns"):
+            # Ensure that these are filled
+            assert getattr(scenario, attr)
+
+    def test_get_attacker_asns(self, engine):
         """Tests that get_attacker_asns
 
         1. chooses attacker(s)
         2. That the number of attackers are equal to number of num_attackers
         3. That the selection is random
         4. That the selection is without replacement
+           * Note: Part 4 is checked by default because it's a set
+           * So if this failed, number 2 would fail
         """
 
-        raise NotImplementedError
+        num_attacker = 2
+        scenario = SubprefixHijack(num_attackers=num_attackers)
+        attacker_asns = scenario._get_attacker_asns(engine, 0, None)
+        # Check for #1
+        assert attacker_asns
+        # Check for #2 (and therefore #4 as well)
+        assert len(attacker_asns) == num_attackers
+        # Check for number 3
+        attacker_asns_2 = scenario._get_attacker_asns(engine, 0, None)
+        assert attacker_asns != attacker_asns_2
 
-    @pytest.mark.skip(reason="Templating out for later")
     def test_get_victim_asns(self):
         """Tests that get_victim_asns
 
@@ -116,41 +159,78 @@ class TestScenario:
         2. That the number of victims are equal to number of num_victims
         3. That the selection is random
         4. That the selection is without replacement
+             * Note: This check is done by default
+             * Since these are sets, and the sets must match
+               the number of victims (#2)
         5. That no victims are attackers!!
         """
 
-        raise NotImplementedError
+        num_victim = 2
+        scenario = SubprefixHijack(num_victims=num_victims)
+        # Set attacker and victim asns
+        scenario._set_attackers_victims_anns(engine, 0, None)
+        victim_asns = scenario._get_victim_asns(engine, 0, None)
+        # Check for #1
+        assert victim_asns
+        # Check for #2 (and therefore #4 as well)
+        assert len(victim_asns) == num_victims
+        # Check for number 3
+        victim_asns_2 = scenario._get_victim_asns(engine, 0, None)
+        assert victim_asns != victim_asns_2
+        # Check for #5 TODO: make this better by checking for __all__
+        for attacker_asn in scenario.attacker_asns:
+            assert attacker_asn not in victim_asns
+            assert attacker_asn not in victim_asns_2
 
-    @pytest.mark.skip(reason="Templating out for later")
     def test_get_possible_attacker_asns(self):
         """Tests the possible attacker asns
 
         Ensures that a set is returned filled with at least a few ases
         """
 
-        raise NotImplementedError
+        engine = CaidaCollector(BaseASCls=BGPSimpleAS,
+                                GraphCls=SimulationEngine,
+                                ).run(tsv_path=None)
 
-    @pytest.mark.skip(reason="Templating out for later")
-    def test_get_possible_victim_asns(self):
+        assert SubprefixHijack()._get_possible_attacker_asns(
+            engine, 0, prev_scenario=None)
+
+
+    def test_get_possible_victim_asns(self, engine):
         """Tests that a set is returned with at least a few ases"""
 
-        raise NotImplementedError
+        engine = CaidaCollector(BaseASCls=BGPSimpleAS,
+                                GraphCls=SimulationEngine,
+                                ).run(tsv_path=None)
 
-    @pytest.mark.skip(reason="Templating out for later")
-    def test_get_announcements(self):
+        assert SubprefixHijack()._get_possible_victim_asns(engine,
+                                                           0,
+                                                           prev_scenario=None)
+
+    def test_get_announcements(self, engine):
         """Tests the get_announcements of a subclass of scenario
 
         Ensures that announcements are returned and returned properly
         """
 
-        raise NotImplementedError
+        scenario = SubprefixHijack()
+        scenario._set_attackers_victims_anns(engine, 0, None)
+        # Victim prefix, subprefix attacker
+        assert len(scenario.announcements) == 2
+        for victim_asns in scenario.victim_asns:
+            for victim_asn in victim_asns:
+                assert any(victim_asn == x.seed_asn
+                           for x in scenario.announcements)
+        for attacker_asns in scenario.attacker_asns:
+            for attacker_asn in attacker_asns:
+                assert any(attacker_asn == x.seed_asn
+                           for x in scenario.announcements)
 
 #######################
 # Adopting ASNs funcs #
 #######################
 
-    @pytest.mark.skip(reason="Templating out for later")
-    def test_get_non_default_as_cls_dict_prev_scenario_adopt(self):
+    def test_get_non_default_as_cls_dict_prev_scenario_adopt(self, engine):
         """Tests that the non default as cls dict is set properly
 
         Old scenario must have mixed deployment to test that feature as well
@@ -160,10 +240,22 @@ class TestScenario:
         AdoptASCls
         """
 
-        raise NotImplementedError
+        prev_scenario = SubprefixHijack(AdoptASCls=ROVSimpleAS,
+                                        BaseASCls=BGPSimpleAS)
+        prev_scenario.non_default_as_cls_dict = {1: prev_scenario.BaseASCls,
+                                                 2: ROVAS,
+                                                 3: ROVSimpleAS}
+        scenario = SubprefixHijack(AdoptASCls=BGPAS,
+                                   BaseASCls=BGPSimpleAS)
+        non_default_as_cls_dict = scenario._get_non_default_as_cls_dict(
+            engine, 0, prev_scenario)
 
-    @pytest.mark.skip(reason="Templating out for later")
-    def test_get_non_default_as_cls_dict_prev_scenario_no_adopt(self):
+        gt = {1: prev_scenario.BaseASCls,
+              2: ROVAS,
+              3: BGPAS}
+        assert non_default_as_cls_dict == gt
+
+    def test_get_non_default_as_cls_dict_prev_scenario_no_adopt(self, engine):
         """Tests that the non default as cls dict is set properly
 
         Old scenario must have mixed deployment but no adopting ASes!
@@ -172,9 +264,21 @@ class TestScenario:
         DefaultASCls
         """
 
-        raise NotImplementedError
+        prev_scenario = SubprefixHijack(AdoptASCls=None,
+                                        BaseASCls=BGPSimpleAS)
+        prev_scenario.non_default_as_cls_dict = {1: prev_scenario.BaseASCls,
+                                                 2: ROVAS,
+                                                 3: prev_scenario.BaseASCls}
+        scenario = SubprefixHijack(AdoptASCls=BGPAS,
+                                   BaseASCls=BGPSimpleAS)
+        non_default_as_cls_dict = scenario._get_non_default_as_cls_dict(
+            engine, 0, prev_scenario)
 
-    @pytest.mark.skip(reason="Templating out for later")
+        gt = {1: prev_scenario.BaseASCls,
+              2: ROVAS,
+              3: prev_scenario.BaseASCls}
+        assert non_default_as_cls_dict == gt
+
     def test_get_non_default_as_cls_dict_no_prev_scenario_no_adopt(self):
         """Tests that the non default as cls dict is set properly
 
@@ -182,9 +286,15 @@ class TestScenario:
         get_adopting_asns_dict
         """
 
-        raise NotImplementedError
+        scenario = SubprefixHijack(AdoptASCls=ROVSimpleAS,
+                                   BaseASCls=BGPSimpleAS)
+        non_default_as_cls_dict = scenario._get_non_default_as_cls_dict(
+            engine, 50, None)
 
-    @pytest.mark.skip(reason="Templating out for later")
+        assert ROVSimpleAS in list(non_default_as_cls_dict.values())
+        assert BGPSimpleAS in list(non_default_as_cls_dict.values())
+
+    @pytest.mark.skip(reason="Covered by other unit tests")
     def test_get_non_default_as_cls_dict_no_adoption_sequence(self):
         """Tests the Pseudo AdoptASCls
 
@@ -199,7 +309,7 @@ class TestScenario:
 
         raise NotImplementedError
 
-    @pytest.mark.skip(reason="Templating out for later")
+    @pytest.mark.skip(reason="Low priority, clearly working through graphs")
     def test_get_adopting_asns_dict(self):
         """Tests the get adopting asns function
 
@@ -230,7 +340,7 @@ class TestScenario:
         assert SubprefixHijack(attacker_asns={1},
                                victim_asns={2})._preset_asns == {1, 2}
 
-    @pytest.mark.skip(reason="Templating out for later")
+    @pytest.mark.skip(reason="Covered by vast amount of system tests")
     def test_determine_as_outcome(self):
         """Tests every possible condition for AS outcomes
 
@@ -243,7 +353,7 @@ class TestScenario:
 # Engine Manipulation Funcs #
 #############################
 
-    @pytest.mark.skip(reason="Templating out for later")
+    @pytest.mark.skip(reason="Covered by vast amount of system tests")
     def test_setup_engine(self):
         """Tests setup_engine func
 
@@ -254,7 +364,7 @@ class TestScenario:
 
         raise NotImplementedError
 
-    @pytest.mark.skip(reason="Templating out for later")
+    @pytest.mark.skip(reason="Covered by vast amount of system tests")
     def test_set_engine_as_classes(self):
         """Tests that the engine as classes are set properly
 
@@ -265,7 +375,7 @@ class TestScenario:
 
         raise NotImplementedError
 
-    @pytest.mark.skip(reason="Templating out for later")
+    @pytest.mark.skip(reason="Covered by vast amount of system tests")
     def test_seed_engine_announcements(self):
         """Tests the seeding of engine announcements
 
@@ -284,8 +394,11 @@ class TestScenario:
 # Helper Funcs #
 ################
 
-    @pytest.mark.skip(reason="Templating out for later")
     def test_get_ordered_prefix_subprefix_dict(self):
         """Tests that the get_ordered_prefix_subprefix_dict works"""
 
-        raise NotImplementedError
+        scenario = SubprefixHijack()
+        scenario._set_attacker_victim_anns(engine, 50, None)
+        gt = {Prefixes.PREFIX.value: [Prefixes.SUBPREFIX.value],
+              Prefixes.SUBPREFIX.value: []}
+        assert scenario.ordered_prefix_subperfix_dict == gt
