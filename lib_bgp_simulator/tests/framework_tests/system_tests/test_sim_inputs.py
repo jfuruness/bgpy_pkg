@@ -28,6 +28,7 @@ PARSE_CPUS = (1, 2)
 # Really does need all these combos
 # Since certain as classes might break with mp
 @pytest.mark.slow
+@pytest.mark.framework
 @pytest.mark.parametrize(
     "AdoptASCls, BaseASCls, ScenarioCls, num_attackers, parse_cpus",
     [x for x in product(*[AS_CLASSES,

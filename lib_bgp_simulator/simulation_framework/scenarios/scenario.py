@@ -9,6 +9,8 @@ from ...enums import Relationships
 from ...simulation_engine import Announcement
 from ...simulation_engine import BGPSimpleAS
 
+pseudo_base_cls_dict = dict()
+
 
 class Scenario(ABC):
     """Contains information regarding an attack"""
@@ -46,6 +48,23 @@ class Scenario(ABC):
         self.AnnCls = Announcement
         self.BaseASCls = BaseASCls
         self.AdoptASCls = AdoptASCls
+
+        # This is done to fix the following:
+        # Scenario 1 has 3 BGP ASes and 1 AdoptCls
+        # Scenario 2 has no adopt classes, so 4 BGP
+        # Scenario 3 we want to run ROV++, but what were the adopting ASes from
+        # scenario 1? We don't know anymore.
+        # Instead for scenario 2, we have 3 BGP ASes and 1 Psuedo BGP AS
+        # Then scenario 3 will still work as expected
+        if self.AdoptASCls is None:
+            global pseudo_base_cls_dict
+            AdoptASCls = pseudo_base_cls_dict.get(self.BaseASCls)
+            if not AdoptASCls:
+                name = f"Psuedo {self.BaseASCls.name}".replace(" ", "")
+                PseudoBaseCls = type(name, (self.BaseASCls,), {"name": name})
+                pseudo_base_cls_dict[self.BaseASCls] = PseudoBaseCls
+                AdoptASCls = PseudoBaseCls
+            self.AdoptASCls = AdoptASCls
 
         self.num_attackers = num_attackers
         self.num_victims = num_victims
@@ -164,16 +183,12 @@ class Scenario(ABC):
         adoption across trials
         """
 
-        # No adopting ASes
-        if not self.AdoptASCls:
-            return dict()
         # By default, use the last engine input to maintain static
         # adoption across the graph
-        elif prev_scenario:
+        if prev_scenario:
             non_default_as_cls_dict = dict()
             for asn, OldASCls in prev_scenario.non_default_as_cls_dict.items():
                 # If the ASN was of the adopting class of the last scenario,
-
                 if OldASCls == prev_scenario.AdoptASCls:
                     non_default_as_cls_dict[asn] = self.AdoptASCls
                 # Otherwise keep the AS class as it was
@@ -181,6 +196,7 @@ class Scenario(ABC):
                 else:
                     non_default_as_cls_dict[asn] = OldASCls
             return non_default_as_cls_dict
+        # Randomly get adopting ases
         else:
             return self._get_adopting_asns_dict(engine, percent_adoption)
 
@@ -204,10 +220,11 @@ class Scenario(ABC):
             # Round for the start and end of the graph
             # (if 0 ASes would be adopting, have 1 as adopt)
             # (If all ASes would be adopting, have all -1 adopt)
-            # This feature was chosen by my professors
-            if k == 0:
-                k += 1
-            elif k == len(possible_adopters):
+            # This feature was chosen by my professors, and is not
+            # supported by this simulator
+            if percent_adopt == -1:
+                k = 1
+            elif percent_adopt == 101:
                 k -= 1
 
             # https://stackoverflow.com/a/15837796/8903959

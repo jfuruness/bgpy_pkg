@@ -27,3 +27,6 @@ class LocalRIB(AnnContainer):
         """Returns all prefixes and announcements zipped"""
 
         return self._info.items()
+
+    def __str__(self) -> str:
+        return str({k: str(v) for k, v in self._info.items()})
