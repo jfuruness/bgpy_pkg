@@ -1,4 +1,5 @@
 import dataclasses
+from typing import Optional
 
 from yamlable import YamlAble, yaml_info
 
@@ -19,8 +20,8 @@ class AnnInfo(YamlAble):
     from the last AS and has not yet been updated)
     """
 
-    unprocessed_ann: Announcement
-    recv_relationship: Relationships
+    unprocessed_ann: Optional[Announcement]
+    recv_relationship: Optional[Relationships]
 
 
 class RIBsIn(AnnContainer):
@@ -60,8 +61,8 @@ class RIBsIn(AnnContainer):
     def get_ann_infos(self, prefix: str):
         """Returns AnnInfos for a given prefix"""
 
-        default_ann_info = AnnInfo(unprocessed_ann=None,
-                                   recv_relationship=None)
+        default_ann_info: AnnInfo = AnnInfo(unprocessed_ann=None,
+                                            recv_relationship=None)
         for prefix_ann_info in self._info.values():
             yield prefix_ann_info.get(prefix, default_ann_info)
 

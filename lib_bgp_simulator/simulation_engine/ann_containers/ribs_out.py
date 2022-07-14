@@ -11,14 +11,14 @@ class RIBsOut(AnnContainer):
     neighbor: {prefix: announcement}
     """
 
-    __slots__ = ()
+    __slots__ = ()  # type: ignore
 
     def get_ann(self, neighbor_asn: int, prefix: str) -> Optional[Ann]:
         """Returns Ann for a given neighbor asn and prefix"""
 
         return self._info.get(neighbor_asn, dict()).get(prefix)
 
-    def add_ann(self, neighbor_asn: int, ann: Ann):
+    def add_ann(self, neighbor_asn: int, ann: Ann) -> None:
         """Adds announcement to the ribs out"""
 
         if neighbor_asn in self._info:
@@ -26,7 +26,7 @@ class RIBsOut(AnnContainer):
         else:
             self._info[neighbor_asn] = {ann.prefix: ann}
 
-    def remove_entry(self, neighbor_asn: int, prefix: str):
+    def remove_entry(self, neighbor_asn: int, prefix: str) -> None:
         """Removes ann from ribs out"""
 
         del self._info[neighbor_asn][prefix]

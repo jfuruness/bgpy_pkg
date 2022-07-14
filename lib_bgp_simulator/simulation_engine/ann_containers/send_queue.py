@@ -14,8 +14,8 @@ from ..announcement import Announcement as Ann
 @yaml_info(yaml_tag="SendInfo")
 @dataclass
 class SendInfo(YamlAble):
-    withdrawal_ann: Ann = None
-    ann: Ann = None
+    withdrawal_ann: Optional[Ann] = None
+    ann: Optional[Ann] = None
 
     @property
     def anns(self):
@@ -32,7 +32,7 @@ class SendQueue(AnnContainer):
     {neighbor: {prefix: SendInfo}}
     """
 
-    __slots__ = ()
+    __slots__ = ()  # type: ignore
 
     def add_ann(self, neighbor_asn: int, ann: Ann):
         """Adds Ann to be sent"""
@@ -48,7 +48,7 @@ class SendQueue(AnnContainer):
         # If the announcement is a withdraw
         if ann.withdraw:
             # Ensure withdrawls aren't replaced
-            msg = f"replacing withdrawal? {send_info.withdrawal_ann}"
+            msg: str = f"replacing withdrawal? {send_info.withdrawal_ann}"
             assert send_info.withdrawal_ann is None, msg
 
             # If the withdrawal is equal to ann, delete both
