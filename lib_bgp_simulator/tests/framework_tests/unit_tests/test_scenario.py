@@ -1,8 +1,17 @@
+import random
+
 import pytest
 
+from lib_caida_collector import CaidaCollector
+
+from ....enums import Prefixes
 from ....simulation_framework import SubprefixHijack
+from ....simulation_framework import NonRoutedPrefixHijack
 from ....simulation_engine import Announcement
 from ....simulation_engine import BGPSimpleAS
+from ....simulation_engine import BGPAS
+from ....simulation_engine import ROVSimpleAS
+from ....simulation_engine import ROVAS
 from ....simulation_engine import SimulationEngine
 
 
@@ -92,14 +101,16 @@ class TestScenario:
         # Seed randomness to ensure deterministic
         random.seed(0)
         scenario = SubprefixHijack()
-        scenario._set_attackers_victims_asns(engine,
-                                             percent_adoption=0,
-                                             prev_scenario=None)  # type: ignore
+        scenario._set_attackers_victims_anns(
+            engine,
+            percent_adoption=0,
+            prev_scenario=None)  # type: ignore
         random.seed(1)
         scenario_2 = SubprefixHijack()
-        scenario_2._set_attackers_victims_asns(engine,
-                                               percent_adoption=0,
-                                               prev_scenario=None)  # type: ignore
+        scenario_2._set_attackers_victims_anns(
+            engine,
+            percent_adoption=0,
+            prev_scenario=None)  # type: ignore
 
         for attr in ("attacker_asns", "victim_asns"):
             assert getattr(scenario, attr) != getattr(scenario_2, attr)
@@ -114,18 +125,20 @@ class TestScenario:
         # First check if they were preset that they don't change
         scenario = SubprefixHijack(**kwargs)
         scenario._set_attackers_victims(engine,
-                                        percent_adoption,
+                                        percent_adoption=0,
                                         prev_scenario=None)
         for attr, val in kwargs.items():
             assert getattr(scenario, attr) == val
 
-    def test_set_attackers_victims_not_preset(self):
+    def test_set_attackers_victims_not_preset(self, engine):
         """Tests that the attackers/victims change when not preset"""
 
         # No preset attacker and victim asns
         scenario = SubprefixHijack()
         # This should randomly select attackers and victims
-        scenario._set_attackers_victims()
+        scenario._set_attackers_victims(engine,
+                                        percent_adoption=0,
+                                        prev_scenario=None)
         for attr in ("attacker_asns", "victim_asns"):
             # Ensure that these are filled
             assert getattr(scenario, attr)
@@ -141,7 +154,7 @@ class TestScenario:
            * So if this failed, number 2 would fail
         """
 
-        num_attacker = 2
+        num_attackers = 2
         scenario = SubprefixHijack(num_attackers=num_attackers)
         attacker_asns = scenario._get_attacker_asns(engine, 0, None)
         # Check for #1
@@ -152,7 +165,7 @@ class TestScenario:
         attacker_asns_2 = scenario._get_attacker_asns(engine, 0, None)
         assert attacker_asns != attacker_asns_2
 
-    def test_get_victim_asns(self):
+    def test_get_victim_asns(self, engine):
         """Tests that get_victim_asns
 
         1. chooses victim(s)
@@ -165,8 +178,8 @@ class TestScenario:
         5. That no victims are attackers!!
         """
 
-        num_victim = 2
-        scenario = SubprefixHijack(num_victims=num_victims)
+        num_victims = 2
+        scenario = NonRoutedPrefixHijack(num_victims=num_victims)
         # Set attacker and victim asns
         scenario._set_attackers_victims_anns(engine, 0, None)
         victim_asns = scenario._get_victim_asns(engine, 0, None)
@@ -195,7 +208,6 @@ class TestScenario:
         assert SubprefixHijack()._get_possible_attacker_asns(
             engine, 0, prev_scenario=None)
 
-
     def test_get_possible_victim_asns(self, engine):
         """Tests that a set is returned with at least a few ases"""
 
@@ -217,14 +229,12 @@ class TestScenario:
         scenario._set_attackers_victims_anns(engine, 0, None)
         # Victim prefix, subprefix attacker
         assert len(scenario.announcements) == 2
-        for victim_asns in scenario.victim_asns:
-            for victim_asn in victim_asns:
-                assert any(victim_asn == x.seed_asn
-                           for x in scenario.announcements)
-        for attacker_asns in scenario.attacker_asns:
-            for attacker_asn in attacker_asns:
-                assert any(attacker_asn == x.seed_asn
-                           for x in scenario.announcements)
+        for victim_asn in scenario.victim_asns:
+            assert any(victim_asn == x.seed_asn
+                       for x in scenario.announcements)
+        for attacker_asn in scenario.attacker_asns:
+            assert any(attacker_asn == x.seed_asn
+                       for x in scenario.announcements)
 
 #######################
 # Adopting ASNs funcs #
@@ -279,7 +289,8 @@ class TestScenario:
               3: prev_scenario.BaseASCls}
         assert non_default_as_cls_dict == gt
 
-    def test_get_non_default_as_cls_dict_no_prev_scenario_no_adopt(self):
+    def test_get_non_default_as_cls_dict_no_prev_scenario_no_adopt(self,
+                                                                   engine):
         """Tests that the non default as cls dict is set properly
 
         No prev_scenario and no adopt AS Cls - should be the result of the
@@ -292,7 +303,7 @@ class TestScenario:
             engine, 50, None)
 
         assert ROVSimpleAS in list(non_default_as_cls_dict.values())
-        assert BGPSimpleAS in list(non_default_as_cls_dict.values())
+        assert BGPSimpleAS not in list(non_default_as_cls_dict.values())
 
     @pytest.mark.skip(reason="Covered by other unit tests")
     def test_get_non_default_as_cls_dict_no_adoption_sequence(self):
@@ -394,11 +405,11 @@ class TestScenario:
 # Helper Funcs #
 ################
 
-    def test_get_ordered_prefix_subprefix_dict(self):
+    def test_get_ordered_prefix_subprefix_dict(self, engine):
         """Tests that the get_ordered_prefix_subprefix_dict works"""
 
         scenario = SubprefixHijack()
-        scenario._set_attacker_victim_anns(engine, 50, None)
+        scenario._set_attackers_victims_anns(engine, 50, None)
         gt = {Prefixes.PREFIX.value: [Prefixes.SUBPREFIX.value],
               Prefixes.SUBPREFIX.value: []}
-        assert scenario.ordered_prefix_subperfix_dict == gt
+        assert scenario.ordered_prefix_subprefix_dict == gt
