@@ -2,11 +2,11 @@ import pytest
 
 from lib_caida_collector import CaidaCollector
 
-from ...simulation_engine import BGPSimpleAS
-from ...simulation_engine import SimulationEngine
+from ....simulation_engine import BGPSimpleAS
+from ....simulation_engine import SimulationEngine
 
 
-@pytest.fixture(scope="function")
+@pytest.fixture(scope="session")
 def engine():
     # Engine is not picklable or dillable AT ALL, so do it here
     # (after the multiprocess process has started)
