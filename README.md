@@ -102,7 +102,9 @@ tox
 
 Thanks to Cameron Morris for helping with extending the BGP policy to include withdrawals, RIBsIn, RIBsOut
 
-Thanks to Reynaldo for filling in some system test graphs
+Thanks to Cameron and Reynaldo for helping out with the refactor
+
+Thanks to Reynaldo for helping out with lots of type hinting
 
 Thanks to Dr. Herzberg and Dr. Wang for employing me and allowing this project to be open source
 
