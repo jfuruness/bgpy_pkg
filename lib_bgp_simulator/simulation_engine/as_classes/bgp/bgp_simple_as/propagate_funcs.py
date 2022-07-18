@@ -12,7 +12,7 @@ def propagate_to_providers(self):
     Propogate ann's that have a recv_rel of origin or customer to providers
     """
 
-    send_rels = set([Relationships.ORIGIN, Relationships.CUSTOMERS])
+    send_rels: set = set([Relationships.ORIGIN, Relationships.CUSTOMERS])
     self._propagate(Relationships.PROVIDERS, send_rels)
 
 
@@ -20,10 +20,10 @@ def propagate_to_customers(self):
     """Propogates to customers"""
 
     # Anns that have any of these as recv_rel get propogated
-    send_rels = set([Relationships.ORIGIN,
-                     Relationships.CUSTOMERS,
-                     Relationships.PEERS,
-                     Relationships.PROVIDERS])
+    send_rels: set = set([Relationships.ORIGIN,
+                          Relationships.CUSTOMERS,
+                          Relationships.PEERS,
+                          Relationships.PROVIDERS])
     self._propagate(Relationships.CUSTOMERS, send_rels)
 
 
@@ -31,8 +31,8 @@ def propagate_to_peers(self):
     """Propogates to peers"""
 
     # Anns that have any of these as recv_rel get propogated
-    send_rels = set([Relationships.ORIGIN,
-                     Relationships.CUSTOMERS])
+    send_rels: set = set([Relationships.ORIGIN,
+                          Relationships.CUSTOMERS])
     self._propagate(Relationships.PEERS, send_rels)
 
 
