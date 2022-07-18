@@ -6,6 +6,6 @@ from ..bgp import BGPAS
 class ROVAS(ROVSimpleAS, BGPAS):
     """An AS that deploys ROV and has withdrawals, ribs in and out"""
 
-    __slots__ = ()
+    __slots__ = ()  # type: ignore
 
-    name = "ROV"
+    name: str = "ROV"
