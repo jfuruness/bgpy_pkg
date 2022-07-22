@@ -38,8 +38,8 @@ class Scenario(ABC):
                  AdoptASCls = None,
                  num_attackers: int = 1,
                  num_victims: int = 1,
-                 attacker_asns: Optional[set[int]] =None,
-                 victim_asns: Optional[set[int]]=None):
+                 attacker_asns: Optional[set] = None,
+                 victim_asns: Optional[set] = None):
         """inits attrs
 
         non_default_as_cls_dict is a dict of asn: AdoptASCls
