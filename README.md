@@ -85,10 +85,12 @@ tox
 
 1. Fork it!
 2. Create your feature branch: `git checkout -b my-new-feature`
-3. Commit your changes: `git commit -am 'Add some feature'`
-4. Push to the branch: `git push origin my-new-feature`
-5. Run tox
-6. Email me at jfuruness@gmail.com
+3. Add an engine test if you've made a change in the simulation_engine, or a system/unit test if the simulation_framework was modified
+5. Run tox (for faster iterations: flake8, mypy, and pytest can be helpful)
+6. Commit your changes: `git commit -am 'Add some feature'`
+7. Push to the branch: `git push origin my-new-feature`
+8. Ensure github actions are passing tests
+9. Email me at jfuruness@gmail.com
 
 ## History
 * [lib\_bgp\_simulator](#lib_bgp_simulator)
@@ -102,7 +104,9 @@ tox
 
 Thanks to Cameron Morris for helping with extending the BGP policy to include withdrawals, RIBsIn, RIBsOut
 
-Thanks to Reynaldo for filling in some system test graphs
+Thanks to Cameron and Reynaldo for helping out with the refactor
+
+Thanks to Reynaldo for helping out with lots of type hinting
 
 Thanks to Dr. Herzberg and Dr. Wang for employing me and allowing this project to be open source
 

@@ -80,6 +80,21 @@
       timestamp: 0
       traceback_end: false
       withdraw: false
+    1.2.3.0/24: !yamlable/Announcement
+      as_path: !!python/tuple
+      - 2
+      - 3
+      - 666
+      prefix: 1.2.3.0/24
+      recv_relationship: !simulator_codec/Relationships
+        name: PEERS
+        value: 2
+      roa_origin: 777
+      roa_valid_length: true
+      seed_asn: null
+      timestamp: 1
+      traceback_end: false
+      withdraw: false
   _recv_q: !yamlable/RecvQueue {}
   _ribs_in: !yamlable/RIBsIn
     1:
@@ -103,7 +118,7 @@
           traceback_end: false
           withdraw: false
     3:
-      1.2.0.0/16: !yamlable/AnnInfo
+      1.2.3.0/24: !yamlable/AnnInfo
         recv_relationship: !simulator_codec/Relationships
           name: PEERS
           value: 2
@@ -111,7 +126,7 @@
           as_path: !!python/tuple
           - 3
           - 666
-          prefix: 1.2.0.0/16
+          prefix: 1.2.3.0/24
           recv_relationship: !simulator_codec/Relationships
             name: CUSTOMERS
             value: 3
@@ -185,6 +200,21 @@
         timestamp: 0
         traceback_end: false
         withdraw: false
+      1.2.3.0/24: !yamlable/Announcement
+        as_path: !!python/tuple
+        - 2
+        - 3
+        - 666
+        prefix: 1.2.3.0/24
+        recv_relationship: !simulator_codec/Relationships
+          name: PEERS
+          value: 2
+        roa_origin: 777
+        roa_valid_length: true
+        seed_asn: null
+        timestamp: 1
+        traceback_end: false
+        withdraw: false
   _send_q: !yamlable/SendQueue {}
   asn: 2
   customer_cone_size: 1
@@ -202,8 +232,23 @@
     1.2.0.0/16: !yamlable/Announcement
       as_path: !!python/tuple
       - 3
-      - 666
+      - 2
+      - 777
       prefix: 1.2.0.0/16
+      recv_relationship: !simulator_codec/Relationships
+        name: PEERS
+        value: 2
+      roa_origin: 777
+      roa_valid_length: true
+      seed_asn: null
+      timestamp: 0
+      traceback_end: false
+      withdraw: false
+    1.2.3.0/24: !yamlable/Announcement
+      as_path: !!python/tuple
+      - 3
+      - 666
+      prefix: 1.2.3.0/24
       recv_relationship: !simulator_codec/Relationships
         name: CUSTOMERS
         value: 3
@@ -235,14 +280,14 @@
           traceback_end: false
           withdraw: false
     666:
-      1.2.0.0/16: !yamlable/AnnInfo
+      1.2.3.0/24: !yamlable/AnnInfo
         recv_relationship: !simulator_codec/Relationships
           name: CUSTOMERS
           value: 3
         unprocessed_ann: !yamlable/Announcement
           as_path: !!python/tuple
           - 666
-          prefix: 1.2.0.0/16
+          prefix: 1.2.3.0/24
           recv_relationship: !simulator_codec/Relationships
             name: ORIGIN
             value: 4
@@ -254,11 +299,11 @@
           withdraw: false
   _ribs_out: !yamlable/RIBsOut
     2:
-      1.2.0.0/16: !yamlable/Announcement
+      1.2.3.0/24: !yamlable/Announcement
         as_path: !!python/tuple
         - 3
         - 666
-        prefix: 1.2.0.0/16
+        prefix: 1.2.3.0/24
         recv_relationship: !simulator_codec/Relationships
           name: CUSTOMERS
           value: 3
@@ -272,8 +317,23 @@
       1.2.0.0/16: !yamlable/Announcement
         as_path: !!python/tuple
         - 3
-        - 666
+        - 2
+        - 777
         prefix: 1.2.0.0/16
+        recv_relationship: !simulator_codec/Relationships
+          name: PEERS
+          value: 2
+        roa_origin: 777
+        roa_valid_length: true
+        seed_asn: null
+        timestamp: 0
+        traceback_end: false
+        withdraw: false
+      1.2.3.0/24: !yamlable/Announcement
+        as_path: !!python/tuple
+        - 3
+        - 666
+        prefix: 1.2.3.0/24
         recv_relationship: !simulator_codec/Relationships
           name: CUSTOMERS
           value: 3
@@ -299,7 +359,23 @@
     1.2.0.0/16: !yamlable/Announcement
       as_path: !!python/tuple
       - 666
+      - 3
+      - 2
+      - 777
       prefix: 1.2.0.0/16
+      recv_relationship: !simulator_codec/Relationships
+        name: PROVIDERS
+        value: 1
+      roa_origin: 777
+      roa_valid_length: true
+      seed_asn: null
+      timestamp: 0
+      traceback_end: false
+      withdraw: false
+    1.2.3.0/24: !yamlable/Announcement
+      as_path: !!python/tuple
+      - 666
+      prefix: 1.2.3.0/24
       recv_relationship: !simulator_codec/Relationships
         name: ORIGIN
         value: 4
@@ -310,13 +386,33 @@
       traceback_end: false
       withdraw: false
   _recv_q: !yamlable/RecvQueue {}
-  _ribs_in: !yamlable/RIBsIn {}
+  _ribs_in: !yamlable/RIBsIn
+    3:
+      1.2.0.0/16: !yamlable/AnnInfo
+        recv_relationship: !simulator_codec/Relationships
+          name: PROVIDERS
+          value: 1
+        unprocessed_ann: !yamlable/Announcement
+          as_path: !!python/tuple
+          - 3
+          - 2
+          - 777
+          prefix: 1.2.0.0/16
+          recv_relationship: !simulator_codec/Relationships
+            name: PEERS
+            value: 2
+          roa_origin: 777
+          roa_valid_length: true
+          seed_asn: null
+          timestamp: 0
+          traceback_end: false
+          withdraw: false
   _ribs_out: !yamlable/RIBsOut
     3:
-      1.2.0.0/16: !yamlable/Announcement
+      1.2.3.0/24: !yamlable/Announcement
         as_path: !!python/tuple
         - 666
-        prefix: 1.2.0.0/16
+        prefix: 1.2.3.0/24
         recv_relationship: !simulator_codec/Relationships
           name: ORIGIN
           value: 4
@@ -351,8 +447,44 @@
       timestamp: 0
       traceback_end: false
       withdraw: false
+    1.2.3.0/24: !yamlable/Announcement
+      as_path: !!python/tuple
+      - 777
+      - 2
+      - 3
+      - 666
+      prefix: 1.2.3.0/24
+      recv_relationship: !simulator_codec/Relationships
+        name: PROVIDERS
+        value: 1
+      roa_origin: 777
+      roa_valid_length: true
+      seed_asn: null
+      timestamp: 1
+      traceback_end: false
+      withdraw: false
   _recv_q: !yamlable/RecvQueue {}
-  _ribs_in: !yamlable/RIBsIn {}
+  _ribs_in: !yamlable/RIBsIn
+    2:
+      1.2.3.0/24: !yamlable/AnnInfo
+        recv_relationship: !simulator_codec/Relationships
+          name: PROVIDERS
+          value: 1
+        unprocessed_ann: !yamlable/Announcement
+          as_path: !!python/tuple
+          - 2
+          - 3
+          - 666
+          prefix: 1.2.3.0/24
+          recv_relationship: !simulator_codec/Relationships
+            name: PEERS
+            value: 2
+          roa_origin: 777
+          roa_valid_length: true
+          seed_asn: null
+          timestamp: 1
+          traceback_end: false
+          withdraw: false
   _ribs_out: !yamlable/RIBsOut
     2:
       1.2.0.0/16: !yamlable/Announcement

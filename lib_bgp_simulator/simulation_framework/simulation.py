@@ -173,6 +173,7 @@ class Simulation:
             for scenario in self.scenarios:
 
                 # Deep copy scenario to ensure it's fresh
+                # Since certain things like announcements change round to round
                 scenario = deepcopy(scenario)
 
                 print(f"{percent_adopt}% {scenario.graph_label}, #{trial}",
