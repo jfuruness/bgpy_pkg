@@ -12,21 +12,21 @@ class Line:
         # {percent_adopt: [percentages]}
         self.percent_adopt_dict: dict = percent_adopt_dict
         self.label: str = scenario_label
-        self.xs: list[float] = self._get_xs()
-        self.ys: list[float] = self._get_ys()
-        self.yerrs: list[float] = self._get_yerrs()
+        self.xs: list = self._get_xs()
+        self.ys: list = self._get_ys()
+        self.yerrs: list = self._get_yerrs()
 
-    def _get_xs(self) -> list[float]:
+    def _get_xs(self) -> list:
         """"Gets X axis makers"""
 
         return list(self.percent_adopt_dict)
 
-    def _get_ys(self) -> list[float]:
+    def _get_ys(self) -> list:
         """Gets Y axis markers"""
 
         return [mean(x) for x in self.percent_adopt_dict.values()]
 
-    def _get_yerrs(self) -> list[float]:
+    def _get_yerrs(self) -> list:
         """Gets Yerr for each data point"""
 
         return [self._get_yerr(x) for x in self.percent_adopt_dict.values()]
