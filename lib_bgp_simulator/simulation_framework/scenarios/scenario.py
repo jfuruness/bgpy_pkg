@@ -33,7 +33,7 @@ class Scenario(ABC):
                  # You can specify a different base ann
                  AnnCls=Announcement,
                  BaseASCls=BGPSimpleAS,
-                 AdoptASCls: Optional[AS] = None,
+                 AdoptASCls = None,
                  num_attackers: int = 1,
                  num_victims: int = 1,
                  attacker_asns: Optional[set[int]] =None,

@@ -1,5 +1,6 @@
 from abc import ABC
 from collections import defaultdict
+from typing import Optional
 
 import matplotlib
 import matplotlib.pyplot as plt
@@ -7,22 +8,27 @@ import matplotlib.pyplot as plt
 from .line import Line
 from ...enums import ASTypes
 from ...enums import Outcomes
+from ...simulation_engine import SimulationEngine
+from ..scenarios import Scenario
+from ...simulation_engine.announcement import Announcement as Ann
 
+
+from lib_caida_collector import AS
 
 # Must be module level in order to be picklable
 # https://stackoverflow.com/a/16439720/8903959
-def default_dict_func():
+def default_dict_func() -> defaultdict:
     return defaultdict(list)
 
 
 class Subgraph(ABC):
     """A subgraph for data display"""
 
-    __slots__ = ("data",)
+    __slots__ = ("data",)  # type: ignore
 
-    name = None
+    name: Optional[str] = None
 
-    subclasses = []
+    subclasses: list = []
 
     def __init_subclass__(cls, *args, **kwargs):
         """This method essentially creates a list of all subclasses
@@ -31,7 +37,7 @@ class Subgraph(ABC):
 
         super().__init_subclass__(*args, **kwargs)
         cls.subclasses.append(cls)
-        names = [x.name for x in cls.subclasses if x.name]
+        names: list = [x.name for x in cls.subclasses if x.name]
         assert len(set(names)) == len(names), "Duplicate subgraph class names"
 
     def __init__(self):
@@ -41,7 +47,7 @@ class Subgraph(ABC):
         # You must save info trial by trial, so that you can join
         # After a return from multiprocessing
         # {scenario_label: {percent_adopt: [percentages]}}
-        self.data = defaultdict(default_dict_func)
+        self.data: defaultdict = defaultdict(default_dict_func)
 
 ###############
 # Graph funcs #
@@ -50,7 +56,7 @@ class Subgraph(ABC):
     def write_graph(self, graph_dir):
         """Writes graph into the graph directory"""
 
-        lines = self._get_lines()
+        lines: list = self._get_lines()
 
         matplotlib.use("Agg")
         fig, ax = plt.subplots()
@@ -76,7 +82,7 @@ class Subgraph(ABC):
         # https://stackoverflow.com/a/33343289/8903959
         plt.close(fig)
 
-    def _get_lines(self):
+    def _get_lines(self) -> list:
         """Returns lines for matplotlib graph"""
 
         return [Line(k, v) for k, v in self.data.items()]
@@ -88,7 +94,7 @@ class Subgraph(ABC):
         raise NotImplementedError
 
     @property
-    def x_axis_label(self):
+    def x_axis_label(self) -> str:
         """Returns X axis label"""
 
         return "Percent adoption of the adopted class"
@@ -97,7 +103,7 @@ class Subgraph(ABC):
 # Data funcs #
 ##############
 
-    def add_trial_info(self, other_subgraph):
+    def add_trial_info(self, other_subgraph: "Subgraph"):
         """Merges other subgraph into this one and combines the data"""
 
         for scenario_label, percent_dict in other_subgraph.data.items():
@@ -105,13 +111,13 @@ class Subgraph(ABC):
                 self.data[scenario_label][percent_adopt].extend(trial_results)
 
     def aggregate_engine_run_data(self,
-                                  shared_data,
-                                  engine,
+                                  shared_data: dict,
+                                  engine: SimulationEngine,
                                   *,
-                                  percent_adopt,
+                                  percent_adopt: float,
                                   trial,
-                                  scenario,
-                                  propagation_round):
+                                  scenario: Scenario,
+                                  propagation_round: int):
         """Aggregates data after a single engine run
 
         Shared data is passed between subgraph classes and is
@@ -158,10 +164,10 @@ class Subgraph(ABC):
 #####################
 
     def _add_traceback_to_shared_data(self,
-                                      shared,
-                                      engine,
-                                      scenario,
-                                      outcomes):
+                                      shared: dict,
+                                      engine: SimulationEngine,
+                                      scenario: Scenario,
+                                      outcomes: dict):
         """Adds traceback info to shared data"""
 
         for as_obj, outcome in outcomes.items():
@@ -184,7 +190,7 @@ class Subgraph(ABC):
 
         shared["set"] = True
 
-    def _get_as_type(self, as_obj):
+    def _get_as_type(self, as_obj: AS) -> ASTypes:
         """Returns the type of AS (stub_or_mh, input_clique, or etc)"""
 
         if as_obj.stub or as_obj.multihomed:
@@ -194,23 +200,23 @@ class Subgraph(ABC):
         else:
             return ASTypes.ETC
 
-    def _get_as_type_pol_k(self, as_type, ASCls):
+    def _get_as_type_pol_k(self, as_type: ASTypes, ASCls: AS) -> str:
         """Returns AS type+policy key"""
 
         return f"{as_type.value}_{ASCls.name}"
 
     def _get_as_type_pol_outcome_k(self,
-                                   as_type,
-                                   ASCls,
-                                   outcome):
+                                   as_type: ASTypes,
+                                   ASCls: AS,
+                                   outcome: Outcomes) -> str:
         """returns as type+policy+outcome key"""
 
         return f"{self._get_as_type_pol_k(as_type, ASCls)}_{outcome.name}"
 
     def _get_as_type_pol_outcome_perc_k(self,
-                                        as_type,
-                                        ASCls,
-                                        outcome):
+                                        as_type: ASTypes,
+                                        ASCls: AS,
+                                        outcome: Outcomes) -> str:
         """returns as type+policy+outcome key as a percent"""
 
         x = self._get_as_type_pol_outcome_k(as_type, ASCls, outcome)
@@ -220,11 +226,11 @@ class Subgraph(ABC):
 # Traceback funcs #
 ###################
 
-    def _get_engine_outcomes(self, engine, scenario):
+    def _get_engine_outcomes(self, engine: SimulationEngine, scenario: Scenario) -> dict[int, Optional[Outcomes]]:
         """Gets the outcomes of all ASes"""
 
         # {ASN: outcome}
-        outcomes = dict()
+        outcomes: dict[int, Optional[Outcomes]] = dict()
         for as_obj in engine.as_dict.values():
             # Gets AS outcome and stores it in the outcomes dict
             self._get_as_outcome(as_obj,
@@ -233,8 +239,11 @@ class Subgraph(ABC):
                                  scenario)
         return outcomes
 
-    def _get_as_outcome(self, as_obj, outcomes, engine, scenario):
-        """Returns the as outcome"""
+    def _get_as_outcome(self, as_obj: AS,
+                        outcomes: dict[int, Optional[Outcomes]],
+                        engine: SimulationEngine,
+                        scenario: Scenario) -> Optional[Outcomes]:
+        """Recursively returns the as outcome"""
 
         if as_obj in outcomes:
             return outcomes[as_obj]
@@ -250,7 +259,7 @@ class Subgraph(ABC):
             # We haven't traced back all the way on the AS path
             if outcome == Outcomes.UNDETERMINED:
                 # next as in the AS path to traceback to
-                next_as = engine.as_dict[most_specific_ann.as_path[1]]
+                next_as = engine.as_dict[most_specific_ann.as_path[1]]  # type: ignore
                 outcome = self._get_as_outcome(next_as,
                                                outcomes,
                                                engine,
@@ -260,7 +269,7 @@ class Subgraph(ABC):
             outcomes[as_obj] = outcome
             return outcome
 
-    def _get_most_specific_ann(self, as_obj, ordered_prefixes):
+    def _get_most_specific_ann(self, as_obj: AS, ordered_prefixes: dict) -> Optional[Ann]:
         """Returns the most specific announcement that exists in a rib
 
         as_obj is the as
@@ -271,3 +280,4 @@ class Subgraph(ABC):
             most_specific_ann = as_obj._local_rib.get_ann(prefix)
             if most_specific_ann:
                 return most_specific_ann
+        return None
