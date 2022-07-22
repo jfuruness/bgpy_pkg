@@ -11,7 +11,7 @@ from ...simulation_engine import Announcement
 from ...simulation_engine import BGPSimpleAS
 from ...simulation_engine import SimulationEngine
 
-pseudo_base_cls_dict = dict()
+pseudo_base_cls_dict: dict = dict()
 
 
 class Scenario(ABC):
@@ -62,7 +62,7 @@ class Scenario(ABC):
             global pseudo_base_cls_dict
             AdoptASCls = pseudo_base_cls_dict.get(self.BaseASCls)
             if not AdoptASCls:
-                name = f"Psuedo {self.BaseASCls.name}".replace(" ", "")
+                name: str = f"Psuedo {self.BaseASCls.name}".replace(" ", "")
                 PseudoBaseCls = type(name, (self.BaseASCls,), {"name": name})
                 pseudo_base_cls_dict[self.BaseASCls] = PseudoBaseCls
                 AdoptASCls = PseudoBaseCls
