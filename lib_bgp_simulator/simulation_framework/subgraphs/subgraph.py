@@ -230,11 +230,11 @@ class Subgraph(ABC):
 # Traceback funcs #
 ###################
 
-    def _get_engine_outcomes(self, engine: SimulationEngine, scenario: Scenario) -> dict[int, Optional[Outcomes]]:
+    def _get_engine_outcomes(self, engine: SimulationEngine, scenario: Scenario) -> dict:
         """Gets the outcomes of all ASes"""
 
         # {ASN: outcome}
-        outcomes: dict[int, Optional[Outcomes]] = dict()
+        outcomes: dict = dict()
         for as_obj in engine.as_dict.values():
             # Gets AS outcome and stores it in the outcomes dict
             self._get_as_outcome(as_obj,
@@ -244,7 +244,7 @@ class Subgraph(ABC):
         return outcomes
 
     def _get_as_outcome(self, as_obj: AS,
-                        outcomes: dict[int, Optional[Outcomes]],
+                        outcomes: dict,
                         engine: SimulationEngine,
                         scenario: Scenario) -> Optional[Outcomes]:
         """Recursively returns the as outcome"""
