@@ -74,7 +74,7 @@ class SimulationEngine(BGPDAG):
         self._propagate_to_peers(propagation_round, scenario)
         self._propagate_to_customers(propagation_round, scenario)
 
-    def _propagate_to_providers(self, propagation_round: Optional[int], scenario: Optional[Scenario]):
+    def _propagate_to_providers(self, propagation_round: Optional[int], scenario: Optional["Scenario"]):
         """Propogate to providers"""
 
         # Propogation ranks go from stubs to input_clique in ascending order
@@ -92,7 +92,7 @@ class SimulationEngine(BGPDAG):
             for as_obj in rank:
                 as_obj.propagate_to_providers()
 
-    def _propagate_to_peers(self, propagation_round: Optional[int], scenario: Optional[Scenario]):
+    def _propagate_to_peers(self, propagation_round: Optional[int], scenario: Optional["Scenario"]):
         """Propagate to peers"""
 
         # The reason you must separate this for loop here
@@ -107,7 +107,7 @@ class SimulationEngine(BGPDAG):
                                          propagation_round=propagation_round,
                                          scenario=scenario)
 
-    def _propagate_to_customers(self, propagation_round: Optional[int], scenario: Optional[Scenario]):
+    def _propagate_to_customers(self, propagation_round: Optional[int], scenario: Optional["Scenario"]):
         """Propagate to customers"""
 
         # Propogation ranks go from stubs to input_clique in ascending order

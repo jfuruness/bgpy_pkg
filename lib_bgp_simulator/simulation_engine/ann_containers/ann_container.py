@@ -46,7 +46,7 @@ class AnnContainer(YamlAble):
         return self._info
 
     @classmethod
-    def __from_yaml_dict__(cls, dct, yaml_tag) -> AnnContainer:
+    def __from_yaml_dict__(cls, dct, yaml_tag) -> "AnnContainer":
         """ This optional method is called when you call yaml.load()"""
 
         return cls(_info=dct)
