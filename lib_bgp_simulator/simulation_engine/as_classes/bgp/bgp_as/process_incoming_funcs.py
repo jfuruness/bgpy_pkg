@@ -4,6 +4,7 @@ from ....announcement import Announcement as Ann
 from .....enums import Relationships
 from ....ann_containers import AnnInfo, SendInfo
 
+
 def process_incoming_anns(self,
                           *,
                           from_rel: Relationships,
@@ -91,8 +92,7 @@ def process_incoming_anns(self,
 
         # We have a new best!
         if current_processed is False:
-            current_ann = self._copy_and_process(current_ann,
-                                                      from_rel)
+            current_ann = self._copy_and_process(current_ann, from_rel)
             # Save to local rib
             self._local_rib.add_ann(current_ann)
 
@@ -112,7 +112,8 @@ def _process_incoming_withdrawal(self,
                 and ((ann.prefix_path_attributes_eq(_local_rib_ann))
                 and (_local_rib_ann.seed_asn is not None))), err
 
-    ann_info: Optional[AnnInfo] = self._ribs_in.get_unprocessed_ann_recv_rel(neighbor, prefix)
+    ann_info: Optional[AnnInfo] = \
+        self._ribs_in.get_unprocessed_ann_recv_rel(neighbor, prefix)
     current_ann_ribs_in = ann_info.unprocessed_ann  # type: ignore
 
     err = (f"Cannot withdraw ann that was never sent.\n\t "
@@ -170,8 +171,8 @@ def _withdraw_ann_from_neighbors(self, withdraw_ann: Ann):
     # and not ribs out
     # We want to cancel out any anns in the send_queue that match the wdraw
     for neighbor_obj in self.neighbors:
-        send_info: Optional[SendInfo] = self._send_q.get_send_info(neighbor_obj,
-                                               withdraw_ann.prefix)
+        send_info: Optional[SendInfo] = \
+            self._send_q.get_send_info(neighbor_obj, withdraw_ann.prefix)
         if send_info is None or send_info.ann is None:
             continue
         elif send_info.ann.prefix_path_attributes_eq(withdraw_ann):

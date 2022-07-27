@@ -1,19 +1,18 @@
-import cProfile
-import pstats
-import io
+# import cProfile
+# import pstats
+# import io
 
 from pyinstrument import Profiler
 
-#from lib_bgp_simulator import AttackerSuccessAdoptingEtcSubgraph
-#from lib_bgp_simulator import AttackerSuccessAdoptingInputCliqueSubgraph
-#from lib_bgp_simulator import AttackerSuccessAdoptingStubsAndMHSubgraph
-#from lib_bgp_simulator import AttackerSuccessNonAdoptingEtcSubgraph
-#from lib_bgp_simulator import AttackerSuccessNonAdoptingInputCliqueSubgraph
-#from lib_bgp_simulator import AttackerSuccessNonAdoptingStubsAndMHSubgraph
+# from lib_bgp_simulator import AttackerSuccessAdoptingEtcSubgraph
+# from lib_bgp_simulator import AttackerSuccessAdoptingInputCliqueSubgraph
+# from lib_bgp_simulator import AttackerSuccessAdoptingStubsAndMHSubgraph
+# from lib_bgp_simulator import AttackerSuccessNonAdoptingEtcSubgraph
+# from lib_bgp_simulator import AttackerSuccessNonAdoptingInputCliqueSubgraph
+# from lib_bgp_simulator import AttackerSuccessNonAdoptingStubsAndMHSubgraph
 from lib_bgp_simulator import ROVSimpleAS
 from lib_bgp_simulator import Simulation
 from lib_bgp_simulator import SubprefixHijack
-
 
 long_run = False
 
@@ -26,14 +25,17 @@ else:
 
 sim = Simulation(num_trials=num_trials,
                  scenarios=[SubprefixHijack(AdoptASCls=ROVSimpleAS)],
+                 propagation_rounds=1,
+                 parse_cpus=1)
+
+# Return this commented out parameter inside the init call when needed
 #                 subgraphs=[AttackerSuccessAdoptingEtcSubgraph(),
 #                            AttackerSuccessAdoptingInputCliqueSubgraph(),
 #                            AttackerSuccessAdoptingStubsAndMHSubgraph(),
 #                            AttackerSuccessNonAdoptingEtcSubgraph(),
 #                            AttackerSuccessNonAdoptingInputCliqueSubgraph(),
 #                            AttackerSuccessNonAdoptingStubsAndMHSubgraph()],
-                 propagation_rounds=1,
-                 parse_cpus=1)
+
 
 profiler = Profiler()
 profiler.start()

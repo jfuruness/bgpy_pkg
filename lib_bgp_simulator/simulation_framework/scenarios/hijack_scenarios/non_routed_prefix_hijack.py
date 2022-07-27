@@ -2,7 +2,7 @@ from ..scenario import Scenario
 from ....enums import Prefixes
 from ....enums import Relationships
 from ....enums import Timestamps
-from ....simulation_engine import Announcement as Ann
+
 
 class NonRoutedPrefixHijack(Scenario):
     """Non routed prefix hijack (ROA of AS 0)"""

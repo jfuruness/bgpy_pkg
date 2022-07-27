@@ -35,7 +35,7 @@ class Scenario(ABC):
                  # You can specify a different base ann
                  AnnCls=Announcement,
                  BaseASCls=BGPSimpleAS,
-                 AdoptASCls = None,
+                 AdoptASCls=None,
                  num_attackers: int = 1,
                  num_victims: int = 1,
                  attacker_asns: Optional[set] = None,
@@ -92,9 +92,9 @@ class Scenario(ABC):
         else:
             return f"{self.BaseASCls.name} (None adopting)"
 
-##############################################
-# Set Attacker/Victim and Announcement Funcs #
-##############################################
+    ##############################################
+    # Set Attacker/Victim and Announcement Funcs #
+    ##############################################
 
     def _set_attackers_victims_anns(self,
                                     engine: SimulationEngine,
@@ -126,8 +126,8 @@ class Scenario(ABC):
     def _get_attacker_asns(self, *args, **kwargs) -> set:
         """Returns attacker ASN at random"""
 
-        possible_attacker_asns: set = self._get_possible_attacker_asns(*args,
-                                                                  **kwargs)
+        possible_attacker_asns: set = \
+            self._get_possible_attacker_asns(*args, **kwargs)
         # https://stackoverflow.com/a/15837796/8903959
         return set(random.sample(tuple(possible_attacker_asns),
                                  self.num_attackers))
@@ -147,7 +147,8 @@ class Scenario(ABC):
     def _get_possible_attacker_asns(self,
                                     engine: SimulationEngine,
                                     percent_adoption: float,
-                                    prev_scenario: Optional["Scenario"]) -> set:
+                                    prev_scenario: Optional["Scenario"]
+                                    ) -> set:
         """Returns possible attacker ASNs, defaulted from stubs_and_mh"""
 
         return engine.stub_or_mh_asns
@@ -169,14 +170,15 @@ class Scenario(ABC):
 
         raise NotImplementedError
 
-#######################
-# Adopting ASNs funcs #
-#######################
+    #######################
+    # Adopting ASNs funcs #
+    #######################
 
     def _get_non_default_as_cls_dict(self,
                                      engine: SimulationEngine,
                                      percent_adoption: float,
-                                     prev_scenario: Optional["Scenario"]) -> dict:
+                                     prev_scenario: Optional["Scenario"]
+                                     ) -> dict:
         """Returns as class dict
 
         non_default_as_cls_dict is a dict of asn: AdoptASCls
@@ -235,7 +237,9 @@ class Scenario(ABC):
 
             # https://stackoverflow.com/a/15837796/8903959
             possible_adopters = tuple(possible_adopters)
-            adopting_asns.extend(random.sample(possible_adopters, k))  # type: ignore
+            adopting_asns.extend(
+                random.sample(possible_adopters, k)
+            )  # type: ignore
         adopting_asns += self._default_adopters
         assert len(adopting_asns) == len(set(adopting_asns))
         return {asn: self.AdoptASCls for asn in adopting_asns}
@@ -279,9 +283,9 @@ class Scenario(ABC):
         else:
             return Outcomes.UNDETERMINED
 
-#############################
-# Engine Manipulation Funcs #
-#############################
+    #############################
+    # Engine Manipulation Funcs #
+    #############################
 
     def setup_engine(self,
                      engine: SimulationEngine,
@@ -355,9 +359,9 @@ class Scenario(ABC):
 
         pass
 
-################
-# Helper Funcs #
-################
+    ################
+    # Helper Funcs #
+    ################
 
     def _get_ordered_prefix_subprefix_dict(self):
         """Saves a dict of prefix to subprefixes"""
@@ -381,9 +385,9 @@ class Scenario(ABC):
         self.ordered_prefix_subprefix_dict = {str(k): v for k, v
                                               in prefix_subprefix_dict.items()}
 
-##############
-# Yaml Funcs #
-##############
+    ##############
+    # Yaml Funcs #
+    ##############
 
     def __to_yaml_dict__(self) -> dict:
         """This optional method is called when you call yaml.dump()"""

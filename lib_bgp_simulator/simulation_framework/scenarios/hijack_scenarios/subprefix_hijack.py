@@ -31,7 +31,8 @@ class SubprefixHijack(Scenario):
                                     roa_origin=victim_asn,
                                     recv_relationship=Relationships.ORIGIN))
 
-        err: str = "Fix the roa_origins of the announcements for multiple victims"
+        err: str = "Fix the roa_origins of the " \
+                   "announcements for multiple victims"
         assert len(self.victim_asns) == 1, err
 
         roa_origin: int = next(iter(self.victim_asns))

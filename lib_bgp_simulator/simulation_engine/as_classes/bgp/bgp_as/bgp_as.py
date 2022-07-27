@@ -42,8 +42,10 @@ class BGPAS(BGPSimpleAS):
 
     # Process incoming funcs
     from .process_incoming_funcs import process_incoming_anns  # type: ignore
-    from .process_incoming_funcs import _process_incoming_withdrawal  # type: ignore
-    from .process_incoming_funcs import _withdraw_ann_from_neighbors  # type: ignore
+    from .process_incoming_funcs import \
+        _process_incoming_withdrawal  # type: ignore
+    from .process_incoming_funcs import \
+        _withdraw_ann_from_neighbors  # type: ignore
     from .process_incoming_funcs import _select_best_ribs_in  # type: ignore
 
     # Must be here since it referes to BGPAS

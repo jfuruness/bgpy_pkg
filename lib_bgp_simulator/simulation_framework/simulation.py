@@ -150,7 +150,9 @@ class Simulation:
 # Data Aggregation Methods #
 ############################
 
-    def _run_chunk(self, percent_adopt_trials, single_proc=False) -> Iterator[Subgraph]:
+    def _run_chunk(self,
+                   percent_adopt_trials,
+                   single_proc=False) -> Iterator[Subgraph]:
         """Runs a chunk of trial inputs"""
 
         # Engine is not picklable or dillable AT ALL, so do it here
@@ -204,7 +206,9 @@ class Simulation:
             prev_scenario = None
         return subgraphs
 
-    def _aggregate_engine_run_data(self, subgraphs: Iterator[Subgraph], **kwargs) -> None:
+    def _aggregate_engine_run_data(self,
+                                   subgraphs: Iterator[Subgraph],
+                                   **kwargs) -> None:
         """For each subgraph, aggregate data
 
         Some data aggregation is shared to speed up runs

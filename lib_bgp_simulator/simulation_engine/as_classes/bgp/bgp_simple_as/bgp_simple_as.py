@@ -25,7 +25,8 @@ class BGPSimpleAS(AS):
         assert hasattr(cls, "name"), "Policy must have a name"
         cls.as_class_names.append(cls.name)
         msg: str = (f"Duplicate name {cls.name} with {cls.__name__}."
-                    "Please make a class attr name for the policy something else")
+                    "Please make a class attr "
+                    "name for the policy something else")
         assert len(set(cls.as_class_names)) == len(cls.as_class_names), msg
         cls.as_classes.append(cls)
         if BGPSimpleAS not in cls.as_classes:

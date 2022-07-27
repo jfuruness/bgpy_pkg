@@ -1,5 +1,4 @@
 from enum import Enum, unique
-from typing import Iterator
 
 yamlable_enums = []
 

@@ -12,8 +12,8 @@ from ...simulation_engine import SimulationEngine
 from ..scenarios import Scenario
 from ...simulation_engine.announcement import Announcement as Ann
 
-
 from lib_caida_collector import AS
+
 
 # Must be module level in order to be picklable
 # https://stackoverflow.com/a/16439720/8903959
@@ -49,9 +49,9 @@ class Subgraph(ABC):
         # {scenario_label: {percent_adopt: [percentages]}}
         self.data: defaultdict = defaultdict(default_dict_func)
 
-###############
-# Graph funcs #
-###############
+    ###############
+    # Graph funcs #
+    ###############
 
     def write_graph(self, graph_dir):
         """Writes graph into the graph directory"""
@@ -99,9 +99,9 @@ class Subgraph(ABC):
 
         return "Percent adoption of the adopted class"
 
-##############
-# Data funcs #
-##############
+    ##############
+    # Data funcs #
+    ##############
 
     def add_trial_info(self, other_subgraph: "Subgraph"):
         """Merges other subgraph into this one and combines the data
@@ -163,9 +163,9 @@ class Subgraph(ABC):
 
         raise NotImplementedError
 
-#####################
-# Shared data funcs #
-#####################
+    #####################
+    # Shared data funcs #
+    #####################
 
     def _add_traceback_to_shared_data(self,
                                       shared: dict,
@@ -190,7 +190,9 @@ class Subgraph(ABC):
                 shared[k] = shared.get(k, 0) + 1
             # Set the new percent
             shared[as_type_pol_outcome_perc_k] = (
-                shared[as_type_pol_outcome_k] * 100 / shared[as_type_pol_k])
+                    shared[as_type_pol_outcome_k] *
+                    100 / shared[as_type_pol_k]
+            )
 
         shared["set"] = True
 
@@ -226,11 +228,13 @@ class Subgraph(ABC):
         x = self._get_as_type_pol_outcome_k(as_type, ASCls, outcome)
         return f"{x}_percent"
 
-###################
-# Traceback funcs #
-###################
+    ###################
+    # Traceback funcs #
+    ###################
 
-    def _get_engine_outcomes(self, engine: SimulationEngine, scenario: Scenario) -> dict:
+    def _get_engine_outcomes(self,
+                             engine: SimulationEngine,
+                             scenario: Scenario) -> dict:
         """Gets the outcomes of all ASes"""
 
         # {ASN: outcome}
@@ -263,7 +267,9 @@ class Subgraph(ABC):
             # We haven't traced back all the way on the AS path
             if outcome == Outcomes.UNDETERMINED:
                 # next as in the AS path to traceback to
-                next_as = engine.as_dict[most_specific_ann.as_path[1]]  # type: ignore
+                next_as = engine.as_dict[
+                    most_specific_ann.as_path[1]
+                ]  # type: ignore
                 outcome = self._get_as_outcome(next_as,
                                                outcomes,
                                                engine,
@@ -273,7 +279,9 @@ class Subgraph(ABC):
             outcomes[as_obj] = outcome
             return outcome
 
-    def _get_most_specific_ann(self, as_obj: AS, ordered_prefixes: dict) -> Optional[Ann]:
+    def _get_most_specific_ann(self,
+                               as_obj: AS,
+                               ordered_prefixes: dict) -> Optional[Ann]:
         """Returns the most specific announcement that exists in a rib
 
         as_obj is the as

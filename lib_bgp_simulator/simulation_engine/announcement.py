@@ -1,5 +1,5 @@
 from itertools import chain
-from typing import Iterator, Optional
+from typing import Optional
 
 from yamlable import YamlAble, yaml_info, yaml_info_decorate
 
