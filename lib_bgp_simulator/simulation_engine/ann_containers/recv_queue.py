@@ -1,5 +1,5 @@
 from .ann_container import AnnContainer
-
+from ...enums import Prefixes
 from ..announcement import Announcement
 
 
@@ -25,7 +25,7 @@ class RecvQueue(AnnContainer):
 
         return self._info.items()
 
-    def get_ann_list(self, prefix):
+    def get_ann_list(self, prefix: Prefixes):
         """Returns recevied ann list for a given prefix"""
 
         return self._info.get(prefix, [])

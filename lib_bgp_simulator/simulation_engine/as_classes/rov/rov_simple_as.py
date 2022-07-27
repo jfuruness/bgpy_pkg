@@ -6,9 +6,9 @@ from ...announcement import Announcement as Ann
 class ROVSimpleAS(BGPSimpleAS):
     """An AS that deploys ROV"""
 
-    __slots__ = ()
+    __slots__ = ()  # type: ignore
 
-    name = "ROVSimple"
+    name: str = "ROVSimple"
 
     def _valid_ann(self, ann: Ann, *args, **kwargs) -> bool:
         """Returns announcement validity

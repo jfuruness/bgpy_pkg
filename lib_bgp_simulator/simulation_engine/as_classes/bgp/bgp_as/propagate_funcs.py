@@ -1,5 +1,7 @@
 from typing import List, Optional
 
+from lib_caida_collector.graph.base_as import AS
+
 from ..bgp_simple_as import BGPSimpleAS
 
 from ....announcement import Announcement as Ann
@@ -21,7 +23,7 @@ def _propagate(self,
     self._send_anns(propagate_to)
 
 
-def _prev_sent(self, neighbor, ann):
+def _prev_sent(self, neighbor: AS, ann: Ann) -> bool:
     """Don't send what we've already sent"""
     ribs_out_ann: Optional[Ann] = self._ribs_out.get_ann(neighbor.asn,
                                                          ann.prefix)

@@ -12,16 +12,16 @@ class SubprefixHijack(Scenario):
     invalid by roa by length and origin
     """
 
-    __slots__ = ()
+    __slots__ = ()  # type: ignore
 
-    def _get_announcements(self):
+    def _get_announcements(self) -> tuple:
         """Returns victim and attacker anns for subprefix hijack
 
         for subclasses of this EngineInput, you can set AnnCls equal to
         something other than Announcement
         """
 
-        anns = list()
+        anns: list = list()
         for victim_asn in self.victim_asns:
             anns.append(self.AnnCls(prefix=Prefixes.PREFIX.value,
                                     as_path=(victim_asn,),
@@ -31,10 +31,11 @@ class SubprefixHijack(Scenario):
                                     roa_origin=victim_asn,
                                     recv_relationship=Relationships.ORIGIN))
 
-        err = "Fix the roa_origins of the announcements for multiple victims"
+        err: str = "Fix the roa_origins of the " \
+                   "announcements for multiple victims"
         assert len(self.victim_asns) == 1, err
 
-        roa_origin = next(iter(self.victim_asns))
+        roa_origin: int = next(iter(self.victim_asns))
 
         for attacker_asn in self.attacker_asns:
             anns.append(self.AnnCls(prefix=Prefixes.SUBPREFIX.value,

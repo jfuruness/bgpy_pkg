@@ -6,7 +6,7 @@ from yamlable import YamlAble, yaml_info_decorate
 class AnnContainer(YamlAble):
     """Container for announcement that has slots and equality"""
 
-    __slots__ = "_info",
+    __slots__ = "_info",  # type: ignore
 
     def __init_subclass__(cls, *args, **kwargs):
         """This method essentially creates a list of all subclasses
@@ -25,28 +25,28 @@ class AnnContainer(YamlAble):
         yamlable using the yamlable library
         """
 
-        self._info = _info if _info is not None else dict()
+        self._info: dict = _info if _info is not None else dict()
 
-    def __eq__(self, other):
+    def __eq__(self, other) -> bool:
         # Remove this after updating the system tests
         if isinstance(other, self.__class__):
             return self._info == other._info
         else:
             return NotImplemented
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Returns contents of the container as str"""
 
         # https://stackoverflow.com/a/521545/8903959
         return pprint.pformat(self._info, indent=4)
 
-    def __to_yaml_dict__(self):
+    def __to_yaml_dict__(self) -> dict:
         """ This optional method is called when you call yaml.dump()"""
 
         return self._info
 
     @classmethod
-    def __from_yaml_dict__(cls, dct, yaml_tag):
+    def __from_yaml_dict__(cls, dct, yaml_tag) -> "AnnContainer":
         """ This optional method is called when you call yaml.load()"""
 
         return cls(_info=dct)

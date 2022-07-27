@@ -31,13 +31,13 @@ class SimulationEngine(BGPDAG):
 
         super(SimulationEngine, self).__init__(*args,
                                                BaseASCls=BaseASCls,
-                                               **kwargs)
+                                               **kwargs)  # type: ignore
         # This indicates whether or not the simulator has been set up for a run
         # We use a number instead of a bool so that we can indicate for
         # each round whether it is ready to run or not
         self.ready_to_run_round: int = -1
 
-    def __eq__(self, other):
+    def __eq__(self, other) -> bool:
         """Returns if two simulators contain the same BGPDAG's"""
 
         if isinstance(other, SimulationEngine):
@@ -74,7 +74,9 @@ class SimulationEngine(BGPDAG):
         self._propagate_to_peers(propagation_round, scenario)
         self._propagate_to_customers(propagation_round, scenario)
 
-    def _propagate_to_providers(self, propagation_round, scenario):
+    def _propagate_to_providers(self,
+                                propagation_round: Optional[int],
+                                scenario: Optional["Scenario"]):
         """Propogate to providers"""
 
         # Propogation ranks go from stubs to input_clique in ascending order
@@ -92,7 +94,9 @@ class SimulationEngine(BGPDAG):
             for as_obj in rank:
                 as_obj.propagate_to_providers()
 
-    def _propagate_to_peers(self, propagation_round, scenario):
+    def _propagate_to_peers(self,
+                            propagation_round: Optional[int],
+                            scenario: Optional["Scenario"]):
         """Propagate to peers"""
 
         # The reason you must separate this for loop here
@@ -107,7 +111,9 @@ class SimulationEngine(BGPDAG):
                                          propagation_round=propagation_round,
                                          scenario=scenario)
 
-    def _propagate_to_customers(self, propagation_round, scenario):
+    def _propagate_to_customers(self,
+                                propagation_round: Optional[int],
+                                scenario: Optional["Scenario"]):
         """Propagate to customers"""
 
         # Propogation ranks go from stubs to input_clique in ascending order

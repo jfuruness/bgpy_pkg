@@ -1,6 +1,5 @@
 from enum import Enum, unique
 
-
 yamlable_enums = []
 
 
@@ -27,25 +26,25 @@ class YamlAbleEnum(Enum):
 
 
 class Outcomes(YamlAbleEnum):
-    __slots__ = tuple()
+    __slots__ = tuple()  # type: ignore
 
-    ATTACKER_SUCCESS = 0
-    VICTIM_SUCCESS = 1
-    DISCONNECTED = 2
-    UNDETERMINED = 3
+    ATTACKER_SUCCESS: int = 0
+    VICTIM_SUCCESS: int = 1
+    DISCONNECTED: int = 2
+    UNDETERMINED: int = 3
 
 
 class Relationships(YamlAbleEnum):
-    __slots__ = tuple()
+    __slots__ = tuple()  # type: ignore
 
     # Must start at one for the priority
-    PROVIDERS = 1
-    PEERS = 2
+    PROVIDERS: int = 1
+    PEERS: int = 2
     # Customers have highest priority
     # Economic incentives first!
-    CUSTOMERS = 3
+    CUSTOMERS: int = 3
     # Origin must always remain
-    ORIGIN = 4
+    ORIGIN: int = 4
 
 
 class ROAValidity(YamlAbleEnum):
@@ -57,21 +56,21 @@ class ROAValidity(YamlAbleEnum):
     and invalid by max length for another roa
     """
 
-    __slots__ = tuple()
+    __slots__ = tuple()  # type: ignore
 
-    VALID = 0
-    UNKNOWN = 1
-    INVALID = 2
+    VALID: int = 0
+    UNKNOWN: int = 1
+    INVALID: int = 2
 
 
 class Timestamps(YamlAbleEnum):
     """Different timestamps to use"""
 
-    __slots__ = tuple()
+    __slots__ = tuple()  # type: ignore
 
     # Victim is always first
-    VICTIM = 0
-    ATTACKER = 1
+    VICTIM: int = 0
+    ATTACKER: int = 1
 
 
 class Prefixes(YamlAbleEnum):
@@ -80,29 +79,29 @@ class Prefixes(YamlAbleEnum):
     prefix always belongs to the victim
     """
 
-    __slots__ = tuple()
+    __slots__ = tuple()  # type: ignore
 
-    SUPERPREFIX = "1.0.0.0/8"
+    SUPERPREFIX: str = "1.0.0.0/8"
     # Prefix always belongs to victim
-    PREFIX = "1.2.0.0/16"
-    SUBPREFIX = "1.2.3.0/24"
+    PREFIX: str = "1.2.0.0/16"
+    SUBPREFIX: str = "1.2.3.0/24"
 
 
 class ASNs(YamlAbleEnum):
     """Default ASNs for various ASNs"""
 
-    __slots__ = tuple()
+    __slots__ = tuple()  # type: ignore
 
-    ATTACKER = 666
-    VICTIM = 777
+    ATTACKER: int = 666
+    VICTIM: int = 777
 
 
 class ASTypes(YamlAbleEnum):
     """AS Types"""
 
-    __slots__ = ()
+    __slots__ = ()  # type: ignore
 
-    STUBS_OR_MH = "stubs_or_mh"
-    INPUT_CLIQUE = "input_clique"
+    STUBS_OR_MH: str = "stubs_or_mh"
+    INPUT_CLIQUE: str = "input_clique"
     # Not stubs, multihomed, or input clique
-    ETC = "etc"
+    ETC: str = "etc"

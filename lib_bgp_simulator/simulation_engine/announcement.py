@@ -1,11 +1,12 @@
 from itertools import chain
+from typing import Optional
 
 from yamlable import YamlAble, yaml_info, yaml_info_decorate
 
 from ..enums import Relationships
 
 
-_all_slots = dict()
+_all_slots: dict = dict()
 
 
 @yaml_info(yaml_tag="Announcement")
@@ -24,8 +25,8 @@ class Announcement(YamlAble):
                  as_path: tuple,
                  timestamp: int,
                  seed_asn: int,
-                 roa_valid_length: bool,
-                 roa_origin: int,
+                 roa_valid_length: Optional[bool],
+                 roa_origin: Optional[int],
                  recv_relationship: Relationships,
                  withdraw: bool = False,
                  traceback_end: bool = False,
@@ -50,13 +51,13 @@ class Announcement(YamlAble):
 
         yaml_info_decorate(cls, yaml_tag=cls.__name__)
 
-    def __eq__(self, other):
+    def __eq__(self, other) -> bool:
         if isinstance(other, Announcement):
             return self._get_vars() == other._get_vars()
         else:
             return NotImplemented
 
-    def prefix_path_attributes_eq(self, ann):
+    def prefix_path_attributes_eq(self, ann) -> bool:
         """Checks prefix and as path equivalency"""
 
         if ann is None:
@@ -107,13 +108,13 @@ class Announcement(YamlAble):
         return self.origin is None
 
     @property
-    def covered_by_roa(self):
+    def covered_by_roa(self) -> bool:
         """Returns if an announcement has a roa"""
 
         return not self.unknown_by_roa
 
     @property
-    def roa_routed(self):
+    def roa_routed(self) -> bool:
         """Returns bool for if announcement is routed according to ROA"""
 
         return self.roa_origin != 0
@@ -124,7 +125,7 @@ class Announcement(YamlAble):
 
         return self.as_path[-1]
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"{self.prefix} {self.as_path} {self.recv_relationship}"
 
     @property
@@ -143,7 +144,7 @@ class Announcement(YamlAble):
             _all_slots[self.__class__] = cls_slots
         return cls_slots
 
-    def _get_vars(self):
+    def _get_vars(self) -> dict:
         """Returns class as a dict
 
         (Can't use normal vars due to slots)"""
@@ -154,7 +155,7 @@ class Announcement(YamlAble):
 # Yaml funcs #
 ##############
 
-    def __to_yaml_dict__(self):
+    def __to_yaml_dict__(self) -> dict:
         """ This optional method is called when you call yaml.dump()"""
 
         return self._get_vars()

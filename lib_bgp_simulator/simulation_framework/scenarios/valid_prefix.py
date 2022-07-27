@@ -7,16 +7,16 @@ from ...enums import Timestamps
 class ValidPrefix(Scenario):
     """A valid prefix engine input, mainly for testing"""
 
-    __slots__ = ()
+    __slots__ = ()  # type: ignore
 
-    def _get_announcements(self):
+    def _get_announcements(self) -> tuple:
         """Returns a valid prefix announcement
 
         for subclasses of this EngineInput, you can set AnnCls equal to
         something other than Announcement
         """
 
-        anns = list()
+        anns: list = list()
         for victim_asn in self.victim_asns:
             anns.append(self.AnnCls(prefix=Prefixes.PREFIX.value,
                                     as_path=(victim_asn,),

@@ -3,7 +3,7 @@ from ....ann_containers import RecvQueue
 from .....enums import Relationships
 
 
-def receive_ann(self, ann: Ann, accept_withdrawals=False):
+def receive_ann(self, ann: Ann, accept_withdrawals: bool = False):
     """Function for recieving announcements, adds to recv_q"""
 
     if ann.withdraw and not accept_withdrawals:
@@ -23,7 +23,7 @@ def process_incoming_anns(self,
     for prefix, ann_list in self._recv_q.prefix_anns():
         # Get announcement currently in local rib
         current_ann: Ann = self._local_rib.get_ann(prefix)
-        current_processed = True
+        current_processed: bool = True
 
         # Seeded Ann will never be overriden, so continue
         if getattr(current_ann, "seed_asn", None) is not None:
@@ -43,13 +43,13 @@ def process_incoming_anns(self,
                                                             from_rel)
                 # If new ann is better, replace the current_ann with it
                 if new_ann_better:
-                    current_ann: Ann = ann
+                    current_ann = ann
                     current_processed = False
 
         # This is a new best ann. Process it and add it to the local rib
         if current_processed is False:
-            current_ann: Ann = self._copy_and_process(current_ann,
-                                                      from_rel)
+            current_ann = self._copy_and_process(current_ann,
+                                                 from_rel)
             # Save to local rib
             self._local_rib.add_ann(current_ann)
 
@@ -76,8 +76,9 @@ def _copy_and_process(self,
     Prepends AS to AS Path and sets recv_relationship
     """
 
-    kwargs = {"as_path": (self.asn,) + ann.as_path,
-              "recv_relationship": recv_relationship}
+    kwargs: dict = {"as_path": (self.asn,) + ann.as_path,
+                    "recv_relationship": recv_relationship}
+
     if overwrite_default_kwargs:
         kwargs.update(overwrite_default_kwargs)
     # Don't use a dict comp here for speed

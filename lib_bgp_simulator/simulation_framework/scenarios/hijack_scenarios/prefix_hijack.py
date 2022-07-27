@@ -7,9 +7,9 @@ from ....enums import Timestamps
 class PrefixHijack(Scenario):
     """Prefix hijack where both attacker and victim compete for a prefix"""
 
-    __slots__ = ()
+    __slots__ = ()  # type: ignore
 
-    def _get_announcements(self):
+    def _get_announcements(self) -> tuple:
         """Returns the two announcements seeded for this engine input
 
         This engine input is for a prefix hijack,
@@ -19,7 +19,7 @@ class PrefixHijack(Scenario):
         something other than Announcement
         """
 
-        anns = list()
+        anns: list = list()
         for victim_asn in self.victim_asns:
             anns.append(self.AnnCls(prefix=Prefixes.PREFIX.value,
                                     as_path=(victim_asn,),
@@ -29,10 +29,11 @@ class PrefixHijack(Scenario):
                                     roa_origin=victim_asn,
                                     recv_relationship=Relationships.ORIGIN))
 
-        err = "Fix the roa_origins of the announcements for multiple victims"
+        err: str = "Fix the roa_origins of the " \
+                   "announcements for multiple victims"
         assert len(self.victim_asns) == 1, err
 
-        roa_origin = next(iter(self.victim_asns))
+        roa_origin: int = next(iter(self.victim_asns))
 
         for attacker_asn in self.attacker_asns:
             anns.append(self.AnnCls(prefix=Prefixes.PREFIX.value,

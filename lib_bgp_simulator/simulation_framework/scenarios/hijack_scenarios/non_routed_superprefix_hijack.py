@@ -11,16 +11,16 @@ class NonRoutedSuperprefixHijack(Scenario):
     hijacking a non routed prefix that has a non routed ROA
     """
 
-    __slots__ = ()
+    __slots__ = ()  # type: ignore
 
-    def _get_announcements(self):
+    def _get_announcements(self) -> tuple:
         """Returns a superprefix announcement for this engine input
 
         for subclasses of this EngineInput, you can set AnnCls equal to
         something other than Announcement
         """
 
-        anns = list()
+        anns: list = list()
         for attacker_asn in self.attacker_asns:
             anns.append(self.AnnCls(prefix=Prefixes.SUPERPREFIX.value,
                                     as_path=(attacker_asn,),

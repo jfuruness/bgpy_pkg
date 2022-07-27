@@ -126,13 +126,13 @@ def _new_rel_better(self,
         if current_processed:
             current_rel: Relationships = current_ann.recv_relationship
         else:
-            current_rel: Relationships = default_current_recv_rel
+            current_rel = default_current_recv_rel
 
         # Get relationship of new ann. Common case first
         if not new_processed:
             new_rel: Relationships = default_new_recv_rel
         else:
-            new_rel: Relationships = new_ann.recv_relationship
+            new_rel = new_ann.recv_relationship
 
     if current_rel.value > new_rel.value:
         return False
@@ -143,7 +143,7 @@ def _new_rel_better(self,
 
 
 def _new_as_path_shorter(self,
-                         current_ann: Optional[Ann],
+                         current_ann: Ann,
                          current_processed: bool,
                          new_ann: Ann,
                          new_processed: bool,
