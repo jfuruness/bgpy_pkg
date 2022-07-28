@@ -1,7 +1,7 @@
 # YAML STUFF
 from yamlable import YamlCodec
 from typing import Type, Any, Iterable, Tuple
-import yaml
+import yaml 
 
 from .simulator_loader import SimulatorLoader
 from .....enums import YamlAbleEnum
@@ -57,7 +57,7 @@ class SimulatorCodec(YamlCodec):
     def dump(self, obj, path=None):
         # https://stackoverflow.com/a/30682604/8903959
         # Ignores references for more readable output
-        yaml.Dumper.ignore_aliases = lambda *args: True
+        yaml.Dumper.ignore_aliases = lambda *args: True  # type: ignore
         if path is None:
             yaml.dump(obj)
         else:

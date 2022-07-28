@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 import random
 from ipaddress import ip_network
-from typing import Optional
+from typing import Optional, Set
 
 from lib_caida_collector import AS
 
@@ -38,8 +38,8 @@ class Scenario(ABC):
                  AdoptASCls=None,
                  num_attackers: int = 1,
                  num_victims: int = 1,
-                 attacker_asns: Optional[set] = None,
-                 victim_asns: Optional[set] = None):
+                 attacker_asns: Optional[Set[int]] = None,
+                 victim_asns: Optional[Set[int]] = None):
         """inits attrs
 
         non_default_as_cls_dict is a dict of asn: AdoptASCls

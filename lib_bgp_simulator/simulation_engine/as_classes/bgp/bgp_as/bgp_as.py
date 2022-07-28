@@ -1,5 +1,15 @@
 from typing import List, Optional
 
+from .propagate_funcs import _propagate
+from .propagate_funcs import _process_outgoing_ann
+from .propagate_funcs import _prev_sent
+from .propagate_funcs import _send_anns
+
+from .process_incoming_funcs import process_incoming_anns
+from .process_incoming_funcs import _process_incoming_withdrawal
+from .process_incoming_funcs import _withdraw_ann_from_neighbors
+from .process_incoming_funcs import _select_best_ribs_in
+
 from ..bgp_simple_as import BGPSimpleAS
 
 from ....ann_containers import RIBsIn
@@ -27,10 +37,10 @@ class BGPAS(BGPSimpleAS):
         self._send_q = _send_q if _send_q else SendQueue()
 
     # Propagation functions
-    from .propagate_funcs import _propagate  # type: ignore
-    from .propagate_funcs import _process_outgoing_ann  # type: ignore
-    from .propagate_funcs import _prev_sent  # type: ignore
-    from .propagate_funcs import _send_anns  # type: ignore
+    _propagate = _propagate
+    _process_outgoing_ann = _process_outgoing_ann
+    _prev_sent = _prev_sent
+    _send_anns = _send_anns
 
     # Must add this func here since it refers to BGPAS
     # Could use super but want to avoid additional func calls
@@ -41,12 +51,10 @@ class BGPAS(BGPSimpleAS):
         super(BGPAS, self)._propagate(propagate_to, send_rels)
 
     # Process incoming funcs
-    from .process_incoming_funcs import process_incoming_anns  # type: ignore
-    from .process_incoming_funcs import \
-        _process_incoming_withdrawal  # type: ignore
-    from .process_incoming_funcs import \
-        _withdraw_ann_from_neighbors  # type: ignore
-    from .process_incoming_funcs import _select_best_ribs_in  # type: ignore
+    process_incoming_anns = process_incoming_anns
+    _process_incoming_withdrawal = _process_incoming_withdrawal
+    _withdraw_ann_from_neighbors = _withdraw_ann_from_neighbors
+    _select_best_ribs_in = _select_best_ribs_in
 
     # Must be here since it referes to BGPAS
     # Could just use super but want to avoid the additional func calls

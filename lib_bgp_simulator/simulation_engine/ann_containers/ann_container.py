@@ -1,4 +1,5 @@
 import pprint
+from typing import Any, Dict, Optional
 
 from yamlable import YamlAble, yaml_info_decorate
 
@@ -16,7 +17,7 @@ class AnnContainer(YamlAble):
         super().__init_subclass__(*args, **kwargs)
         yaml_info_decorate(cls, yaml_tag=cls.__name__)
 
-    def __init__(self, _info=None):
+    def __init__(self, _info: Optional[Dict[Any, Any]] = None):
         """Stores _info dict which contains local ribs
 
         This is passed in so that we can regenerate this class from yaml
@@ -25,7 +26,7 @@ class AnnContainer(YamlAble):
         yamlable using the yamlable library
         """
 
-        self._info: dict = _info if _info is not None else dict()
+        self._info: Dict[Any, Any] = _info if _info is not None else dict()
 
     def __eq__(self, other) -> bool:
         # Remove this after updating the system tests
@@ -40,7 +41,7 @@ class AnnContainer(YamlAble):
         # https://stackoverflow.com/a/521545/8903959
         return pprint.pformat(self._info, indent=4)
 
-    def __to_yaml_dict__(self) -> dict:
+    def __to_yaml_dict__(self) -> Dict[Any, Any]:
         """ This optional method is called when you call yaml.dump()"""
 
         return self._info

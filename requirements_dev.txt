@@ -7,6 +7,7 @@ PyYAML
 tqdm
 yamlable
 types-requests
+types-PyYAML
 pytest-cov
 mypy
 flake8

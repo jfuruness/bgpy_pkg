@@ -1,5 +1,5 @@
 from lib_caida_collector import AS
-from typing import Optional
+from typing import List, Optional, Type
 
 from ....ann_containers import LocalRIB
 from ....ann_containers import RecvQueue
@@ -12,8 +12,8 @@ class BGPSimpleAS(AS):
     __slots__ = slots  # type: ignore
 
     name: str = "BGP Simple"
-    as_class_names: list = []
-    as_classes: list = []
+    as_class_names: List[str] = []
+    as_classes: List[Type[AS]] = []
 
     def __init_subclass__(cls, *args, **kwargs):
         """This method essentially creates a list of all subclasses

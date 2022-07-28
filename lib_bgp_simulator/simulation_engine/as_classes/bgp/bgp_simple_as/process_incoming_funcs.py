@@ -1,3 +1,5 @@
+from typing import Any, Dict
+
 from ....announcement import Announcement as Ann
 from ....ann_containers import RecvQueue
 from .....enums import Relationships
@@ -76,8 +78,8 @@ def _copy_and_process(self,
     Prepends AS to AS Path and sets recv_relationship
     """
 
-    kwargs: dict = {"as_path": (self.asn,) + ann.as_path,
-                    "recv_relationship": recv_relationship}
+    kwargs: Dict[str, Any] = {"as_path": (self.asn,) + ann.as_path,
+                              "recv_relationship": recv_relationship}
 
     if overwrite_default_kwargs:
         kwargs.update(overwrite_default_kwargs)

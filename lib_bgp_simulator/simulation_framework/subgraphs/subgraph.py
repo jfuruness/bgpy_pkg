@@ -2,8 +2,8 @@ from abc import ABC
 from collections import defaultdict
 from typing import Optional
 
-import matplotlib
-import matplotlib.pyplot as plt
+import matplotlib  # type: ignore
+import matplotlib.pyplot as plt  # type: ignore
 
 from .line import Line
 from ...enums import ASTypes

@@ -1,12 +1,12 @@
 from itertools import chain
-from typing import Optional
+from typing import Any, Dict, Optional, Tuple, Type
 
 from yamlable import YamlAble, yaml_info, yaml_info_decorate
 
 from ..enums import Relationships
 
 
-_all_slots: dict = dict()
+_all_slots: Dict[Type["Announcement"], Tuple[str, ...]] = dict()
 
 
 @yaml_info(yaml_tag="Announcement")
@@ -22,7 +22,7 @@ class Announcement(YamlAble):
     def __init__(self,
                  *,
                  prefix: str,
-                 as_path: tuple,
+                 as_path: Tuple[int, ...],
                  timestamp: int,
                  seed_asn: int,
                  roa_valid_length: Optional[bool],
@@ -30,17 +30,17 @@ class Announcement(YamlAble):
                  recv_relationship: Relationships,
                  withdraw: bool = False,
                  traceback_end: bool = False,
-                 communities: tuple = ()):
+                 communities: Tuple[str, ...] = ()):
         self.prefix: str = prefix
-        self.as_path: tuple = as_path
+        self.as_path: Tuple[int, ...] = as_path
         self.timestamp: int = timestamp
         self.seed_asn: int = seed_asn
-        self.roa_valid_length: bool = roa_valid_length
-        self.roa_origin: int = roa_origin
+        self.roa_valid_length: Optional[bool] = roa_valid_length
+        self.roa_origin: Optional[int] = roa_origin
         self.recv_relationship: Relationships = recv_relationship
         self.withdraw: bool = withdraw
         self.traceback_end: bool = traceback_end
-        self.communities: tuple = communities
+        self.communities: Tuple[str, ...] = communities
 
     def __init_subclass__(cls, *args, **kwargs):
         """This method essentially creates a list of all subclasses
@@ -67,7 +67,7 @@ class Announcement(YamlAble):
         else:
             raise NotImplementedError
 
-    def copy(self, overwrite_default_kwargs=None):
+    def copy(self, overwrite_default_kwargs=None) -> "Announcement":
         """Creates a new ann with proper sim attrs"""
 
         kwargs = self._get_vars()
@@ -99,7 +99,8 @@ class Announcement(YamlAble):
         False means ann is either invalid or unknown
         """
 
-        return self.origin == self.roa_origin and self.roa_valid_length
+        # Need the bool here for mypy, ugh
+        return bool(self.origin == self.roa_origin and self.roa_valid_length)
 
     @property
     def unknown_by_roa(self) -> bool:
@@ -129,22 +130,22 @@ class Announcement(YamlAble):
         return f"{self.prefix} {self.as_path} {self.recv_relationship}"
 
     @property
-    def all_slots(self):
+    def all_slots(self) -> Tuple[str, ...]:
         """Returns all slots including of parent classes"""
 
         global _all_slots
-        cls_slots = _all_slots.get(self.__class__)
+        cls_slots_tpl = _all_slots.get(self.__class__)
 
         # singleton for speed
-        if not cls_slots:
+        if not cls_slots_tpl:
             # https://stackoverflow.com/a/6720815/8903959
             cls_slots = chain.from_iterable(getattr(cls, '__slots__', [])
                                             for cls in self.__class__.__mro__)
-            cls_slots = tuple(list(cls_slots))
-            _all_slots[self.__class__] = cls_slots
-        return cls_slots
+            cls_slots_tpl = tuple(list(cls_slots))
+            _all_slots[self.__class__] = cls_slots_tpl
+        return cls_slots_tpl
 
-    def _get_vars(self) -> dict:
+    def _get_vars(self) -> Dict[str, Any]:
         """Returns class as a dict
 
         (Can't use normal vars due to slots)"""
@@ -155,13 +156,16 @@ class Announcement(YamlAble):
 # Yaml funcs #
 ##############
 
-    def __to_yaml_dict__(self) -> dict:
+    def __to_yaml_dict__(self) -> Dict[str, Any]:
         """ This optional method is called when you call yaml.dump()"""
 
         return self._get_vars()
 
     @classmethod
-    def __from_yaml_dict__(cls, dct, yaml_tag):
+    def __from_yaml_dict__(cls: Type["Announcement"],
+                           dct: Dict[str, Any],
+                           yaml_tag: Any
+                           ) -> "Announcement":
         """ This optional method is called when you call yaml.load()"""
 
         return cls(**dct)

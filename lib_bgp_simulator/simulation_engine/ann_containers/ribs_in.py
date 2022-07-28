@@ -1,5 +1,5 @@
 import dataclasses
-from typing import Optional
+from typing import Dict, Iterator, Optional
 
 from yamlable import YamlAble, yaml_info
 
@@ -32,7 +32,24 @@ class RIBsIn(AnnContainer):
 
     __slots__ = ()
 
-    def get_unprocessed_ann_recv_rel(self, neighbor_asn: int, prefix: str):
+    def __init__(self, _info: Optional[Dict[int, Dict[str, AnnInfo]]] = None):
+        """Stores _info dict which contains ribs in
+
+        This is passed in so that we can regenerate this class from yaml
+
+        Note that we do not use a defaultdict here because that is not
+        yamlable using the yamlable library
+        """
+
+        # {neighbor: {prefix: (announcement, relationship)}}
+        self._info: Dict[int,
+                         Dict[str, AnnInfo]
+                         ] = _info if _info is not None else dict()
+
+    def get_unprocessed_ann_recv_rel(self,
+                                     neighbor_asn: int,
+                                     prefix: str
+                                     ) -> Optional[AnnInfo]:
         """Returns AnnInfo for a neighbor ASN and prefix
 
         We don't use defaultdict here because that's not yamlable
@@ -58,7 +75,7 @@ class RIBsIn(AnnContainer):
                 unprocessed_ann=unprocessed_ann,
                 recv_relationship=recv_relationship)
 
-    def get_ann_infos(self, prefix: str):
+    def get_ann_infos(self, prefix: str) -> Iterator[AnnInfo]:
         """Returns AnnInfos for a given prefix"""
 
         default_ann_info: AnnInfo = AnnInfo(unprocessed_ann=None,
@@ -66,7 +83,7 @@ class RIBsIn(AnnContainer):
         for prefix_ann_info in self._info.values():
             yield prefix_ann_info.get(prefix, default_ann_info)
 
-    def remove_entry(self, neighbor_asn: int, prefix: int):
+    def remove_entry(self, neighbor_asn: int, prefix: str):
         """Removes AnnInfo from RibsIn"""
 
         del self._info[neighbor_asn][prefix]

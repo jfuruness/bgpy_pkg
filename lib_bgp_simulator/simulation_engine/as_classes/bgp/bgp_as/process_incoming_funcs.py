@@ -200,7 +200,8 @@ def _select_best_ribs_in(self, prefix: str) -> Optional[Ann]:
             best_recv_relationship = new_recv_relationship
 
     if best_unprocessed_ann is not None:
-        return self._copy_and_process(best_unprocessed_ann,
+        # mypy having trouble dealing with this
+        return self._copy_and_process(best_unprocessed_ann,  # type: ignore
                                       best_recv_relationship)
     else:
         return None

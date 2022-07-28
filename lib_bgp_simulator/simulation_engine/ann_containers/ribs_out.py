@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Dict, Iterator, Optional
 
 from .ann_container import AnnContainer
 
@@ -12,6 +12,20 @@ class RIBsOut(AnnContainer):
     """
 
     __slots__ = ()  # type: ignore
+
+    def __init__(self, _info: Optional[Dict[int, Dict[str, Ann]]] = None):
+        """Stores _info dict which contains ribs in
+
+        This is passed in so that we can regenerate this class from yaml
+
+        Note that we do not use a defaultdict here because that is not
+        yamlable using the yamlable library
+        """
+
+        # {neighbor: {prefix: announcement}}
+        self._info: Dict[int,
+                         Dict[str, Ann]
+                         ] = _info if _info is not None else dict()
 
     def get_ann(self, neighbor_asn: int, prefix: str) -> Optional[Ann]:
         """Returns Ann for a given neighbor asn and prefix"""
@@ -31,7 +45,7 @@ class RIBsOut(AnnContainer):
 
         del self._info[neighbor_asn][prefix]
 
-    def neighbors(self):
+    def neighbors(self) -> Iterator[int]:
         """Return all neighbors from the ribs out"""
 
-        return self._info.keys()
+        return self._info.keys()  # type: ignore

@@ -3,8 +3,6 @@ from typing import Optional
 from ....announcement import Announcement as Ann
 from .....enums import Relationships
 
-opt_bool = Optional[bool]
-
 
 def _new_ann_better(self,
                     # Current announcement to check against
@@ -20,7 +18,7 @@ def _new_ann_better(self,
                     new_processed: Relationships,
                     # Default recv rel if new ann is unprocessed
                     default_new_recv_rel: Relationships,
-                    ) -> opt_bool:
+                    ) -> bool:
     """Determines if the new ann > current ann by Gao Rexford
 
     current_ann: Announcement we are checking against
@@ -40,7 +38,7 @@ def _new_ann_better(self,
     # assert self.asn not in new_ann.as_path, msg
 
     # First check if new relationship is better
-    new_rel_better: opt_bool = self._new_rel_better(current_ann,
+    new_rel_better: Optional[bool] = self._new_rel_better(current_ann,
                                                     current_processed,
                                                     default_current_recv_rel,
                                                     new_ann,
@@ -51,7 +49,8 @@ def _new_ann_better(self,
         return new_rel_better
     else:
         # Return the outcome of as path and tiebreaks
-        return self._new_as_path_ties_better(current_ann,
+        # mypy doesn't recognize that this is always a bool
+        return self._new_as_path_ties_better(current_ann,  # type: ignore
                                              current_processed,
                                              new_ann,
                                              new_processed)
@@ -62,7 +61,7 @@ def _new_as_path_ties_better(self,
                              current_processed: bool,
                              new_ann: Ann,
                              new_processed: bool
-                             ) -> opt_bool:
+                             ) -> bool:
     """Returns bool if new_ann > current_ann by gao rexford
 
     Specifically relating to as path and tie breaks
@@ -78,7 +77,7 @@ def _new_as_path_ties_better(self,
     """
 
     # Determine if the new as path is shorter
-    new_as_path_shorter: opt_bool = self._new_as_path_shorter(
+    new_as_path_shorter: Optional[bool] = self._new_as_path_shorter(
         current_ann,
         current_processed,
         new_ann,
@@ -89,7 +88,8 @@ def _new_as_path_ties_better(self,
         return new_as_path_shorter
     # Otherwise it's a tie and we must tiebreak
     else:
-        return self._new_wins_ties(current_ann,
+        # Ignore type since mypy doesn't recognize that this is bool
+        return self._new_wins_ties(current_ann,  # type: ignore
                                    current_processed,
                                    new_ann,
                                    new_processed)
@@ -102,7 +102,7 @@ def _new_rel_better(self,
                     new_ann: Ann,
                     new_processed: bool,
                     default_new_recv_rel: Relationships,
-                    ) -> opt_bool:
+                    ) -> Optional[bool]:
     """Determines if the new ann > current ann by Gao Rexford/relationship
 
     current_ann: Announcement we are checking against
@@ -117,10 +117,14 @@ def _new_rel_better(self,
     default_new_recv_rel: Relationship for if the ann is unprocessed
     """
 
-    if current_ann is None:
+    # mypy says statement is unreachable, but this isn't true for subclasses
+    # In other repos
+    if current_ann is None:  # type: ignore
         return True
     elif new_ann is None:
-        return False
+        # mypy says statement is unreachable, but this isn't true for subclasses
+        # In other repos
+        return False  # type: ignore
     else:
         # Get relationship of current ann
         if current_processed:
@@ -147,7 +151,7 @@ def _new_as_path_shorter(self,
                          current_processed: bool,
                          new_ann: Ann,
                          new_processed: bool,
-                         ) -> opt_bool:
+                         ) -> Optional[bool]:
     """Determines if the new ann > current ann by Gao Rexford for AS Path
 
     current_ann: Announcement we are checking against
@@ -196,7 +200,8 @@ def _new_wins_ties(self,
     # AS Path, so we need to account for that
 
     # Gets the indexes of the neighbors
-    current_index = min(int(current_processed), len(current_ann.as_path) - 1)
+    cur_index = min(int(current_processed), len(current_ann.as_path) - 1)
     new_index = min(int(new_processed), len(new_ann.as_path) - 1)
 
-    return new_ann.as_path[new_index] < current_ann.as_path[current_index]
+    # mypy needs the bool wrapper
+    return bool(new_ann.as_path[new_index] < current_ann.as_path[cur_index])

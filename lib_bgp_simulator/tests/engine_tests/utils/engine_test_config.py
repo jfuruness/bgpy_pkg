@@ -1,6 +1,9 @@
+from typing import List, Type
+
+
 class EngineTestConfig:
 
-    subclasses = list()
+    subclasses: List[Type[EngineTestConfig]] = list() 
 
     def __init_subclass__(cls, *args, **kwargs):
         """Ensures subclass has proper attrs
@@ -21,5 +24,7 @@ class EngineTestConfig:
 
         cls.subclasses.append(cls)
 
-        names = [x.name for x in cls.subclasses]
+        # Ignore type since all subclasses must have names
+        # Mypy doesn't recognize that this class is not a subclass
+        names = [x.name for x in cls.subclasses]  # type: ignore
         assert len(set(names)) == len(names), "Duplicate test config names"
