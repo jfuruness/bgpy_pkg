@@ -29,7 +29,7 @@ class Simulation:
 
     def __init__(
             self,
-            percent_adoptions=(5, 10, 30, 50, 80),
+            percent_adoptions=(.05, .1, .3, .5, .8),
             scenarios=[SubprefixHijack(AdoptASCls=x)  # type: ignore
                        for x in [ROVSimpleAS]],
             subgraphs=[

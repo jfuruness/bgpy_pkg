@@ -19,7 +19,8 @@ class Line:
     def _get_xs(self) -> list:
         """"Gets X axis makers"""
 
-        return list(self.percent_adopt_dict)
+        # Convert decimals to whole numbers
+        return [x * 100 for x in self.percent_adopt_dict]
 
     def _get_ys(self) -> list:
         """Gets Y axis markers"""

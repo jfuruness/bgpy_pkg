@@ -224,7 +224,7 @@ class Scenario(ABC):
             # Ex: ROV Nodes (in certain situations)
             possible_adopters = asns.difference(self._preset_asns)
             # Get how many ASes should be adopting
-            k = len(possible_adopters) * percent_adopt // 100
+            k = int(len(possible_adopters) * percent_adopt)
             # Round for the start and end of the graph
             # (if 0 ASes would be adopting, have 1 as adopt)
             # (If all ASes would be adopting, have all -1 adopt)
