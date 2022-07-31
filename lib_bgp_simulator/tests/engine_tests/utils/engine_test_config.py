@@ -4,7 +4,7 @@ from typing import List, Type
 
 class EngineTestConfig:
 
-    subclasses: List[Type["EngineTestConfig"]] = list() 
+    subclasses: List[Type["EngineTestConfig"]] = list()
 
     def __init_subclass__(cls, *args, **kwargs):
         """Ensures subclass has proper attrs
