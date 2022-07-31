@@ -40,6 +40,7 @@ from .simulation_framework import AttackerSuccessNonAdoptingInputCliqueSubgraph
 from .simulation_framework import AttackerSuccessNonAdoptingStubsAndMHSubgraph
 from .simulation_framework import Subgraph
 from .simulation_framework import AttackerSuccessSubgraph
+from .simulation_framework import AttackerSuccessAllSubgraph
 
 
 __all__ = ["BGPAS",
@@ -74,6 +75,7 @@ __all__ = ["BGPAS",
            "AttackerSuccessNonAdoptingEtcSubgraph",
            "AttackerSuccessNonAdoptingInputCliqueSubgraph",
            "AttackerSuccessNonAdoptingStubsAndMHSubgraph",
+           "AttackerSuccessAllSubgraph",
            "AttackerSuccessSubgraph",
            "Subgraph",
            ]

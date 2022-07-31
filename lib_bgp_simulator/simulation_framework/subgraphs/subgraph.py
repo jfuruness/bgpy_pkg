@@ -128,8 +128,8 @@ class Subgraph(ABC):
 
     def aggregate_engine_run_data(self,
                                   shared_data: dict,
-                                  engine: SimulationEngine,
                                   *,
+                                  engine: SimulationEngine,
                                   percent_adopt: float,
                                   trial,
                                   scenario: Scenario,
