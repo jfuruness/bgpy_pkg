@@ -16,6 +16,7 @@ from .subgraphs import AttackerSuccessNonAdoptingEtcSubgraph
 from .subgraphs import AttackerSuccessNonAdoptingInputCliqueSubgraph
 from .subgraphs import AttackerSuccessNonAdoptingStubsAndMHSubgraph
 from .subgraphs import AttackerSuccessSubgraph
+from .subgraphs import AttackerSuccessAllSubgraph
 from .subgraphs import Subgraph
 
 
@@ -34,4 +35,5 @@ __all__ = ["Scenario",
            "AttackerSuccessNonAdoptingInputCliqueSubgraph",
            "AttackerSuccessNonAdoptingStubsAndMHSubgraph",
            "AttackerSuccessSubgraph",
+           "AttackerSuccessAllSubgraph",
            "Subgraph"]

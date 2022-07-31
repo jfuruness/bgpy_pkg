@@ -179,12 +179,17 @@ class Subgraph(ABC):
 
             # TODO: refactor this ridiculousness into a class
             # Add to the AS type and policy, as well as the outcome
+
+            # THESE ARE JUST KEYS, JUST GETTING KEYS/Strings HERE
+            ##################################################################
             as_type_pol_k = self._get_as_type_pol_k(as_type, as_obj.__class__)
             as_type_pol_outcome_k = self._get_as_type_pol_outcome_k(
                 as_type, as_obj.__class__, outcome)
             # as type + policy + outcome as a percentage
             as_type_pol_outcome_perc_k = self._get_as_type_pol_outcome_perc_k(
                 as_type, as_obj.__class__, outcome)
+            ##################################################################
+
             # Add to the totals:
             for k in [as_type_pol_k, as_type_pol_outcome_k]:
                 shared[k] = shared.get(k, 0) + 1
@@ -193,6 +198,18 @@ class Subgraph(ABC):
                     shared[as_type_pol_outcome_k] *
                     100 / shared[as_type_pol_k]
             )
+
+            ############################
+            # Track stats for all ASes #
+            ############################
+
+            # Keep track of totals for all ASes
+            name = outcome.name
+            total = shared.get(f"all_{name}", 0) + 1
+            shared[f"all_{name}"] = total
+
+            # Keep track of percentages for all ASes
+            shared[f"all_{name}_perc"] = total * 100 / len(outcomes)
 
         shared["set"] = True
 
