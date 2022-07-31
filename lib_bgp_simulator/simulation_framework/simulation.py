@@ -19,6 +19,7 @@ from .subgraphs import AttackerSuccessAdoptingStubsAndMHSubgraph
 from .subgraphs import AttackerSuccessNonAdoptingEtcSubgraph
 from .subgraphs import AttackerSuccessNonAdoptingInputCliqueSubgraph
 from .subgraphs import AttackerSuccessNonAdoptingStubsAndMHSubgraph
+from .subgraphs import AttackerSuccessAllSubgraph
 from ..simulation_engine import BGPSimpleAS
 from ..simulation_engine import SimulationEngine
 from ..simulation_engine import ROVSimpleAS
@@ -38,7 +39,8 @@ class Simulation:
               AttackerSuccessAdoptingStubsAndMHSubgraph(),
               AttackerSuccessNonAdoptingEtcSubgraph(),
               AttackerSuccessNonAdoptingInputCliqueSubgraph(),
-              AttackerSuccessNonAdoptingStubsAndMHSubgraph()],
+              AttackerSuccessNonAdoptingStubsAndMHSubgraph(),
+              AttackerSuccessAllSubgraph()],
             num_trials: int = 1,
             propagation_rounds: int = 1,
             output_path: Path = Path("/tmp/graphs"),

@@ -5,10 +5,13 @@ from .non_adopting import AttackerSuccessNonAdoptingEtcSubgraph
 from .non_adopting import AttackerSuccessNonAdoptingInputCliqueSubgraph
 from .non_adopting import AttackerSuccessNonAdoptingStubsAndMHSubgraph
 
+from .attacker_success_all_subgraph import AttackerSuccessAllSubgraph
+
 
 __all__ = ["AttackerSuccessAdoptingEtcSubgraph",
            "AttackerSuccessAdoptingInputCliqueSubgraph",
            "AttackerSuccessAdoptingStubsAndMHSubgraph",
            "AttackerSuccessNonAdoptingEtcSubgraph",
            "AttackerSuccessNonAdoptingInputCliqueSubgraph",
-           "AttackerSuccessNonAdoptingStubsAndMHSubgraph"]
+           "AttackerSuccessNonAdoptingStubsAndMHSubgraph",
+           "AttackerSuccessAllSubgraph"]

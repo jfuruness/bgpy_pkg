@@ -11,6 +11,7 @@ from .attacker_success_subgraphs import\
     AttackerSuccessNonAdoptingInputCliqueSubgraph
 from .attacker_success_subgraphs import\
     AttackerSuccessNonAdoptingStubsAndMHSubgraph
+from .attacker_success_subgraphs import AttackerSuccessAllSubgraph
 
 from .subgraph import Subgraph
 
@@ -21,4 +22,5 @@ __all__ = ["AttackerSuccessAdoptingEtcSubgraph",
            "AttackerSuccessNonAdoptingEtcSubgraph",
            "AttackerSuccessNonAdoptingInputCliqueSubgraph",
            "AttackerSuccessNonAdoptingStubsAndMHSubgraph",
+           "AttackerSuccessAllSubgraph",
            "Subgraph"]
