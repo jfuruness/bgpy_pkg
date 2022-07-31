@@ -180,8 +180,9 @@ class Simulation:
                 # Since certain things like announcements change round to round
                 scenario = deepcopy(scenario)
 
-                print(f"{percent_adopt}% {scenario.graph_label}, #{trial}",
-                      end="                             " + "\r")
+                print(
+                    f"{percent_adopt * 100}% {scenario.graph_label}, #{trial}",
+                    end="                             " + "\r")
 
                 # Change AS Classes, seed announcements before propagation
                 scenario.setup_engine(engine, percent_adopt, prev_scenario)

@@ -1,6 +1,6 @@
-from ..attacker_success_subgraph import AttackerSuccessSubgraph
-from .....enums import Outcomes
-from ....scenarios import Scenario
+from .attacker_success_subgraph import AttackerSuccessSubgraph
+from ....enums import Outcomes
+from ...scenarios import Scenario
 
 
 class AttackerSuccessAllSubgraph(AttackerSuccessSubgraph):
