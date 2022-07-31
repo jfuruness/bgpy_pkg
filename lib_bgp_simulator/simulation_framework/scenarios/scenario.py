@@ -47,7 +47,7 @@ class Scenario(ABC):
         since that is the default
         """
 
-        self.AnnCls = Announcement
+        self.AnnCls = AnnCls
         self.BaseASCls = BaseASCls
         self.AdoptASCls = AdoptASCls
 
