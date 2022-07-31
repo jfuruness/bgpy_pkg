@@ -17,8 +17,12 @@ from lib_caida_collector import AS
 
 # Must be module level in order to be picklable
 # https://stackoverflow.com/a/16439720/8903959
-def default_dict_func() -> defaultdict:
+def default_dict_inner_func() -> defaultdict:
     return defaultdict(list)
+
+
+def default_dict_func() -> defaultdict:
+    return defaultdict(default_dict_inner_func)
 
 
 class Subgraph(ABC):
@@ -46,17 +50,23 @@ class Subgraph(ABC):
         # This is a list of all the trial info
         # You must save info trial by trial, so that you can join
         # After a return from multiprocessing
-        # {scenario_label: {percent_adopt: [percentages]}}
+        # {propagation_round: {scenario_label: {percent_adopt: [percentages]}}}
         self.data: defaultdict = defaultdict(default_dict_func)
 
     ###############
     # Graph funcs #
     ###############
 
-    def write_graph(self, graph_dir):
+    def write_graphs(self, graph_dir):
+        """Writes all graphs into the graph dir"""
+
+        for prop_round in self.data:
+            self.write_graph(prop_round, graph_dir)
+
+    def write_graph(self, prop_round, graph_dir):
         """Writes graph into the graph directory"""
 
-        lines: list = self._get_lines()
+        lines: list = self._get_lines(prop_round)
 
         matplotlib.use("Agg")
         fig, ax = plt.subplots()
@@ -82,10 +92,10 @@ class Subgraph(ABC):
         # https://stackoverflow.com/a/33343289/8903959
         plt.close(fig)
 
-    def _get_lines(self) -> list:
+    def _get_lines(self, prop_round) -> list:
         """Returns lines for matplotlib graph"""
 
-        return [Line(k, v) for k, v in self.data.items()]
+        return [Line(k, v) for k, v in self.data[prop_round].items()]
 
     @property
     def y_axis_label(self):
@@ -110,9 +120,11 @@ class Subgraph(ABC):
         from the various processes that were spawned
         """
 
-        for scenario_label, percent_dict in other_subgraph.data.items():
-            for percent_adopt, trial_results in percent_dict.items():
-                self.data[scenario_label][percent_adopt].extend(trial_results)
+        for scenario_label, prop_dict in other_subgraph.data.items():
+            for prop_round, percent_dict in prop_dict.items():
+                for percent_adopt, trial_results in percent_dict.items():
+                    self.data[prop_round][scenario_label][percent_adopt
+                        ].extend(trial_results)  # noqa
 
     def aggregate_engine_run_data(self,
                                   shared_data: dict,
@@ -155,8 +167,8 @@ class Subgraph(ABC):
                                                scenario,
                                                outcomes)
         key = self._get_subgraph_key(scenario)
-        self.data[scenario.graph_label][percent_adopt].append(
-            shared_data.get(key, 0))
+        self.data[propagation_round][scenario.graph_label][percent_adopt
+            ].append(shared_data.get(key, 0))  # noqa
 
     def _get_subgraph_key(self, scenario):
         """Returns the key to be used in shared_data on the subgraph"""

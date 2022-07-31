@@ -84,7 +84,7 @@ class Simulation:
         with TemporaryDirectory() as tmp_dir:
             # Write subgraph and add data to the JSON
             for subgraph in self.subgraphs:
-                subgraph.write_graph(Path(tmp_dir))
+                subgraph.write_graphs(Path(tmp_dir))
                 json_data[subgraph.name] = subgraph.data
             # Save the JSON
             with (Path(tmp_dir) / "results.json").open("w") as f:
