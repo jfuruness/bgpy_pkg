@@ -10,6 +10,9 @@ from .simulation_engine import ROVSimpleAS
 from .simulation_engine import SimulationEngine
 from .simulation_engine import Announcement
 
+from .tests import EngineTester
+from .tests import EngineTestConfig
+from .tests import GraphInfo
 
 from .enums import YamlAbleEnum
 from .enums import ROAValidity

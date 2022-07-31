@@ -1,4 +1,6 @@
 from .test_engine import TestEngine
+from .utils import EngineTestConfig
+from .utils import EngineTester
 
 # Test configs
 from .engine_test_configs import Config001
