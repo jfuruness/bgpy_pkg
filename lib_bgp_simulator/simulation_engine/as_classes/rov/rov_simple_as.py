@@ -6,7 +6,7 @@ from ...announcement import Announcement as Ann
 class ROVSimpleAS(BGPSimpleAS):
     """An AS that deploys ROV"""
 
-    __slots__ = ()  # type: ignore
+    __slots__ = ()
 
     name: str = "ROVSimple"
 

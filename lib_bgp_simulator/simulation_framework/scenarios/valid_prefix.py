@@ -1,7 +1,14 @@
+from __future__ import annotations
+from typing import Tuple, TYPE_CHECKING
+
 from .scenario import Scenario
 from ...enums import Prefixes
 from ...enums import Relationships
 from ...enums import Timestamps
+
+
+if TYPE_CHECKING:
+    from ...simulation_engine import Announcement
 
 
 class ValidPrefix(Scenario):
@@ -9,7 +16,7 @@ class ValidPrefix(Scenario):
 
     __slots__ = ()  # type: ignore
 
-    def _get_announcements(self) -> tuple:
+    def _get_announcements(self) -> Tuple["Announcement"]:
         """Returns a valid prefix announcement
 
         for subclasses of this EngineInput, you can set AnnCls equal to

@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 import random
 from ipaddress import ip_network
-from typing import Optional, Set
+from typing import Any, Dict, Optional, Set, Type
 
 from lib_caida_collector import AS
 
@@ -28,14 +28,14 @@ class Scenario(ABC):
                  "non_default_as_cls_dict",
                  "ordered_prefix_subprefix_dict",
                  "announcements",
-                 "non_default_as_cls_dict")  # type: ignore
+                 "non_default_as_cls_dict")
 
     def __init__(self,
                  # This is the base type of announcement for this class
                  # You can specify a different base ann
-                 AnnCls=Announcement,
-                 BaseASCls=BGPSimpleAS,
-                 AdoptASCls=None,
+                 AnnCls: Type[Announcement] = Announcement,
+                 BaseASCls: Type[AS] = BGPSimpleAS,
+                 AdoptASCls: Optional[Type[AS]] = None,
                  num_attackers: int = 1,
                  num_victims: int = 1,
                  attacker_asns: Optional[Set[int]] = None,
@@ -47,9 +47,9 @@ class Scenario(ABC):
         since that is the default
         """
 
-        self.AnnCls = AnnCls
-        self.BaseASCls = BaseASCls
-        self.AdoptASCls = AdoptASCls
+        self.AnnCls: Type[Announcement] = AnnCls
+        self.BaseASCls: Type[AS] = BaseASCls
+        self.AdoptASCls: Type[AS] = AdoptASCls
 
         # This is done to fix the following:
         # Scenario 1 has 3 BGP ASes and 1 AdoptCls
@@ -123,7 +123,7 @@ class Scenario(ABC):
             self.attacker_asns = self._get_attacker_asns(*args, **kwargs)
             self.victim_asns = self._get_victim_asns(*args, **kwargs)
 
-    def _get_attacker_asns(self, *args, **kwargs) -> set:
+    def _get_attacker_asns(self, *args, **kwargs) -> Set[AS]:
         """Returns attacker ASN at random"""
 
         possible_attacker_asns: set = \
@@ -132,7 +132,7 @@ class Scenario(ABC):
         return set(random.sample(tuple(possible_attacker_asns),
                                  self.num_attackers))
 
-    def _get_victim_asns(self, *args, **kwargs) -> set:
+    def _get_victim_asns(self, *args, **kwargs) -> Set[AS]:
         """Returns victim ASN at random. Attacker can't be victim"""
 
         possible_vic_asns = self._get_possible_victim_asns(*args, **kwargs)
@@ -148,7 +148,7 @@ class Scenario(ABC):
                                     engine: SimulationEngine,
                                     percent_adoption: float,
                                     prev_scenario: Optional["Scenario"]
-                                    ) -> set:
+                                    ) -> Set[AS]:
         """Returns possible attacker ASNs, defaulted from stubs_and_mh"""
 
         return engine.stub_or_mh_asns
@@ -159,7 +159,8 @@ class Scenario(ABC):
     def _get_possible_victim_asns(self,
                                   engine: SimulationEngine,
                                   percent_adoption: float,
-                                  prev_scenario: Optional["Scenario"]) -> set:
+                                  prev_scenario: Optional["Scenario"]
+                                  ) -> Set[AS]:
         """Returns possible victim ASNs, defaulted from stubs_and_mh"""
 
         return engine.stub_or_mh_asns
@@ -178,7 +179,7 @@ class Scenario(ABC):
                                      engine: SimulationEngine,
                                      percent_adoption: float,
                                      prev_scenario: Optional["Scenario"]
-                                     ) -> dict:
+                                     ) -> Dict[int, Type[AS]]:
         """Returns as class dict
 
         non_default_as_cls_dict is a dict of asn: AdoptASCls
@@ -208,7 +209,7 @@ class Scenario(ABC):
 
     def _get_adopting_asns_dict(self,
                                 engine: SimulationEngine,
-                                percent_adopt: float) -> dict:
+                                percent_adopt: float) -> Dict[int, Type[AS]]:
         """Get adopting ASNs
 
         By default, to get even adoption, adopt in each of the three
@@ -245,25 +246,28 @@ class Scenario(ABC):
         return {asn: self.AdoptASCls for asn in adopting_asns}
 
     @property
-    def _default_adopters(self) -> set:
+    def _default_adopters(self) -> Set[int]:
         """By default, victim always adopts"""
 
         return self.victim_asns
 
     @property
-    def _default_non_adopters(self) -> set:
+    def _default_non_adopters(self) -> Set[int]:
         """By default, attacker always does not adopt"""
 
         return self.attacker_asns
 
     @property
-    def _preset_asns(self) -> set:
+    def _preset_asns(self) -> Set[int]:
         """ASNs that have a preset adoption policy"""
 
         # Returns the union of default adopters and non adopters
         return self._default_adopters | self._default_non_adopters
 
-    def determine_as_outcome(self, as_obj, ann) -> Optional[Outcomes]:
+    def determine_as_outcome(self,
+                             as_obj: AS,
+                             ann: Announcement
+                             ) -> Outcomes:
         """Determines the outcome at an AS
 
         ann is most_specific_ann is the most specific prefix announcement
@@ -389,7 +393,7 @@ class Scenario(ABC):
     # Yaml Funcs #
     ##############
 
-    def __to_yaml_dict__(self) -> dict:
+    def __to_yaml_dict__(self) -> Dict[Any, Any]:
         """This optional method is called when you call yaml.dump()"""
 
         return {"announcements": self.announcements,

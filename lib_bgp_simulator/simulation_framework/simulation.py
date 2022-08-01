@@ -5,7 +5,7 @@ from multiprocessing import Pool
 from pathlib import Path
 from shutil import make_archive
 from tempfile import TemporaryDirectory
-from typing import Iterator
+from typing import List, Tuple
 
 
 from lib_caida_collector import CaidaCollector
@@ -28,24 +28,22 @@ from ..simulation_engine import ROVSimpleAS
 class Simulation:
     """Runs simulations for BGP attack/defend scenarios"""
 
-    def __init__(
-            self,
-            percent_adoptions=(.05, .1, .3, .5, .8),
-            scenarios=[SubprefixHijack(AdoptASCls=x)  # type: ignore
-                       for x in [ROVSimpleAS]],
-            subgraphs=[
-              AttackerSuccessAdoptingEtcSubgraph(),
-              AttackerSuccessAdoptingInputCliqueSubgraph(),
-              AttackerSuccessAdoptingStubsAndMHSubgraph(),
-              AttackerSuccessNonAdoptingEtcSubgraph(),
-              AttackerSuccessNonAdoptingInputCliqueSubgraph(),
-              AttackerSuccessNonAdoptingStubsAndMHSubgraph(),
-              AttackerSuccessAllSubgraph()],
-            num_trials: int = 1,
-            propagation_rounds: int = 1,
-            output_path: Path = Path("/tmp/graphs"),
-            parse_cpus: int = 1
-            ):
+    def __init__(self,
+                 percent_adoptions: Tuple[float] = (.05, .1, .3, .5, .8),
+                 scenarios: Tuple[Scenario] = tuple(
+                    [SubprefixHijack(AdoptASCls=x) for x in [ROVSimpleAS]]),
+                 subgraphs: Tuple[Subgraph] = (
+                     AttackerSuccessAdoptingEtcSubgraph(),
+                     AttackerSuccessAdoptingInputCliqueSubgraph(),
+                     AttackerSuccessAdoptingStubsAndMHSubgraph(),
+                     AttackerSuccessNonAdoptingEtcSubgraph(),
+                     AttackerSuccessNonAdoptingInputCliqueSubgraph(),
+                     AttackerSuccessNonAdoptingStubsAndMHSubgraph(),
+                     AttackerSuccessAllSubgraph()),
+                 num_trials: int = 1,
+                 propagation_rounds: int = 1,
+                 output_path: Path = Path("/tmp/graphs"),
+                 parse_cpus: int = 1):
         """Downloads relationship data, runs simulation
 
         Graphs -> A list of graph classes
@@ -54,9 +52,9 @@ class Simulation:
         mp_method: Multiprocessing method
         """
 
-        self.percent_adoptions: Iterator[int] = percent_adoptions
-        self.scenarios: Iterator[Scenario] = scenarios
-        self.subgraphs: Iterator[Subgraph] = subgraphs
+        self.percent_adoptions: Tuple[int] = percent_adoptions
+        self.scenarios: Tuple[Scenario] = scenarios
+        self.subgraphs: Tuple[Subgraph] = subgraphs
         self.num_trials: int = num_trials
         self.propagation_rounds: int = propagation_rounds
         self.output_path: Path = output_path
@@ -70,13 +68,13 @@ class Simulation:
         # So that multiprocessing doesn't interfere with one another
         CaidaCollector().run()
 
-    def run(self) -> None:
+    def run(self):
         """Runs the simulation and write the data"""
 
         self._get_data()
         self._write_data()
 
-    def _write_data(self) -> None:
+    def _write_data(self):
         """Writes subgraphs in graph_dir"""
 
         # init JSON and temporary directory
@@ -94,7 +92,7 @@ class Simulation:
             make_archive(self.output_path, "zip", tmp_dir)  # type: ignore
             print(f"\nWrote graphs to {self.output_path}.zip")
 
-    def _get_data(self) -> None:
+    def _get_data(self):
         """Runs trials for graph and aggregates data"""
 
         # Single process
@@ -118,7 +116,7 @@ class Simulation:
 # Multiprocessing Methods #
 ###########################
 
-    def _get_chunks(self, parse_cpus: int):
+    def _get_chunks(self, parse_cpus: int) -> List[Tuple[float, int]]:
         """Returns chunks of trial inputs based on number of CPUs running
 
         Not a generator since we need this for multiprocessing
@@ -135,13 +133,13 @@ class Simulation:
         # https://stackoverflow.com/a/2136090/8903959
         return [percents_trials[i::parse_cpus] for i in range(parse_cpus)]
 
-    def _get_single_process_results(self):
+    def _get_single_process_results(self) -> List[Tuple[Subgraph, ...]]:
         """Get all results when using single processing"""
 
         return [self._run_chunk(x, single_proc=True)
                 for x in self._get_chunks(1)]
 
-    def _get_mp_results(self, parse_cpus: int):
+    def _get_mp_results(self, parse_cpus: int) -> List[Tuple[Subgraph, ...]]:
         """Get results from multiprocessing"""
 
         # Pool is much faster than ProcessPoolExecutor
@@ -153,8 +151,9 @@ class Simulation:
 ############################
 
     def _run_chunk(self,
-                   percent_adopt_trials,
-                   single_proc=False) -> Iterator[Subgraph]:
+                   percent_adopt_trials: List[Tuple[float, int]],
+                   single_proc: bool = False
+                   ) -> Tuple[Subgraph, ...]:
         """Runs a chunk of trial inputs"""
 
         # Engine is not picklable or dillable AT ALL, so do it here
@@ -210,8 +209,8 @@ class Simulation:
         return subgraphs
 
     def _aggregate_engine_run_data(self,
-                                   subgraphs: Iterator[Subgraph],
-                                   **kwargs) -> None:
+                                   subgraphs: Tuple[Subgraph],
+                                   **kwargs):
         """For each subgraph, aggregate data
 
         Some data aggregation is shared to speed up runs

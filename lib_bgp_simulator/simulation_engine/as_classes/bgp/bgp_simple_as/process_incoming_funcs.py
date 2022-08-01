@@ -1,8 +1,12 @@
-from typing import Any, Dict
+from __future__ import annotations
+from typing import Any, Dict, Optional, TYPE_CHECKING
 
 from ....announcement import Announcement as Ann
 from ....ann_containers import RecvQueue
 from .....enums import Relationships
+
+if TYPE_CHECKING:
+    from ....simulation_framework import Scenario
 
 
 def receive_ann(self, ann: Ann, accept_withdrawals: bool = False):
@@ -16,8 +20,8 @@ def receive_ann(self, ann: Ann, accept_withdrawals: bool = False):
 def process_incoming_anns(self,
                           *,
                           from_rel: Relationships,
-                          propagation_round,
-                          scenario,
+                          propagation_round: int,
+                          scenario: "Scenario",
                           reset_q: bool = True):
     """Process all announcements that were incoming from a specific rel"""
 
@@ -71,7 +75,7 @@ def _valid_ann(self,
 def _copy_and_process(self,
                       ann: Ann,
                       recv_relationship: Relationships,
-                      overwrite_default_kwargs=None
+                      overwrite_default_kwargs: Optional[Dict[Any, Any]] = None
                       ) -> Ann:
     """Deep copies ann and modifies attrs
 

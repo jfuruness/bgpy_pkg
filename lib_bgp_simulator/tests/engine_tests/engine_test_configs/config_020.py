@@ -1,3 +1,7 @@
+from typing import Dict, Type
+
+from lib_caida_collector import AS
+
 from ..graphs import Graph017
 from ..utils import EngineTestConfig
 
@@ -16,5 +20,5 @@ class Config020(EngineTestConfig):
                            AdoptASCls=None,
                            BaseASCls=BGPAS)
     graph = Graph017()
-    non_default_as_cls_dict = dict()
+    non_default_as_cls_dict: Dict[int, Type[AS]] = dict()
     propagation_rounds = 1

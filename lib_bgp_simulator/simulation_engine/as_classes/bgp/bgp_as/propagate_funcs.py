@@ -34,7 +34,7 @@ def _process_outgoing_ann(self,
                           neighbor: BGPSimpleAS,
                           ann: Ann,
                           propagate_to,
-                          send_rels):
+                          send_rels: List[Relationships]):
     self._send_q.add_ann(neighbor.asn, ann)
 
 

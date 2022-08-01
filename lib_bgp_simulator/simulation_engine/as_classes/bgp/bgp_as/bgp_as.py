@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import Any, Dict, List, Optional
 
 from .propagate_funcs import _propagate
 from .propagate_funcs import _process_outgoing_ann
@@ -32,9 +32,9 @@ class BGPAS(BGPSimpleAS):
                  _send_q: Optional[SendQueue] = None,
                  **kwargs):
         super(BGPAS, self).__init__(*args, **kwargs)
-        self._ribs_in = _ribs_in if _ribs_in else RIBsIn()
-        self._ribs_out = _ribs_out if _ribs_out else RIBsOut()
-        self._send_q = _send_q if _send_q else SendQueue()
+        self._ribs_in: RIBsIn = _ribs_in if _ribs_in else RIBsIn()
+        self._ribs_out: RIBsOut = _ribs_out if _ribs_out else RIBsOut()
+        self._send_q: SendQueue = _send_q if _send_q else SendQueue()
 
     # Propagation functions
     _propagate = _propagate
@@ -61,7 +61,7 @@ class BGPAS(BGPSimpleAS):
     def receive_ann(self, ann: Ann) -> None:
         super(BGPAS, self).receive_ann(ann, accept_withdrawals=True)
 
-    def __to_yaml_dict__(self) -> dict:
+    def __to_yaml_dict__(self) -> Dict[Any, Any]:
         """This optional method is called when you call yaml.dump()"""
 
         as_dict = super(BGPAS, self).__to_yaml_dict__()

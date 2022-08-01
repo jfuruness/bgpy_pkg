@@ -1,6 +1,7 @@
-from typing import Optional, TYPE_CHECKING
+from __future__ import annotations
+from typing import Optional, Type, TYPE_CHECKING
 
-from lib_caida_collector import BGPDAG
+from lib_caida_collector import BGPDAG, AS
 
 from .as_classes import BGPSimpleAS
 from ..enums import Relationships
@@ -25,7 +26,7 @@ class SimulationEngine(BGPDAG):
     def __init__(self,
                  *args,
                  # Default AS class in the BGPDAG
-                 BaseASCls=BGPSimpleAS,
+                 BaseASCls: Type[AS] = BGPSimpleAS,
                  **kwargs):
         """Saves read_to_run_rund attr and inits superclass"""
 
@@ -46,14 +47,14 @@ class SimulationEngine(BGPDAG):
             return NotImplemented
 
     def run(self,
-            propagation_round=0,
-            scenario=None):
+            propagation_round: int = 0,
+            scenario: Optional["Scenario"] = None):
         """Propogates announcements and ensures proper setup"""
 
         # Ensure that the simulator is ready to run this round
         if self.ready_to_run_round != propagation_round:
             raise Exception(
-                "Engine not set up to run for {propagation_round} round")
+                f"Engine not set up to run for {propagation_round} round")
         # Propogate anns
         self._propagate(propagation_round, scenario)
         # Increment the ready to run round

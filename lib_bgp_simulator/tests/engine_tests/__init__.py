@@ -56,6 +56,8 @@ from .graphs import Graph046
 
 
 __all__ = [
+    "EngineTestConfig",
+    "EngineTester",
     "TestEngine",
     "Config001",
     "GraphInfo",

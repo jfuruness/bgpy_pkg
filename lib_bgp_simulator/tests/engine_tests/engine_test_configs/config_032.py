@@ -1,3 +1,7 @@
+from typing import Dict, Type
+
+from lib_caida_collector import AS
+
 from copy import deepcopy
 
 from ..graphs import Graph040
@@ -37,5 +41,5 @@ class Config032(EngineTestConfig):
         AdoptASCls=None,
         BaseASCls=BGPAS)
     graph = Graph040()
-    non_default_as_cls_dict = dict()
+    non_default_as_cls_dict: Dict[int, Type[AS]] = dict()
     propagation_rounds = 3

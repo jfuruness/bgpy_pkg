@@ -38,12 +38,13 @@ def _new_ann_better(self,
     # assert self.asn not in new_ann.as_path, msg
 
     # First check if new relationship is better
-    new_rel_better: Optional[bool] = self._new_rel_better(current_ann,
-                                                    current_processed,
-                                                    default_current_recv_rel,
-                                                    new_ann,
-                                                    new_processed,
-                                                    default_new_recv_rel)
+    new_rel_better: Optional[bool] = self._new_rel_better(
+        current_ann,
+        current_processed,
+        default_current_recv_rel,
+        new_ann,
+        new_processed,
+        default_new_recv_rel)
     # If new rel better is True or False, return it
     if new_rel_better is not None:
         return new_rel_better
@@ -122,7 +123,7 @@ def _new_rel_better(self,
     if current_ann is None:  # type: ignore
         return True
     elif new_ann is None:
-        # mypy says statement is unreachable, but this isn't true for subclasses
+        # mypy says statement is unreachable but this isn't true for subclasses
         # In other repos
         return False  # type: ignore
     else:

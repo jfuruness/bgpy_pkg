@@ -78,4 +78,7 @@ __all__ = ["BGPAS",
            "AttackerSuccessAllSubgraph",
            "AttackerSuccessSubgraph",
            "Subgraph",
+           "EngineTester",
+           "EngineTestConfig",
+           "GraphInfo",
            ]

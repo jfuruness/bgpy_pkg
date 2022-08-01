@@ -1,6 +1,30 @@
 from lib_caida_collector import AS
 from typing import List, Optional, Type
 
+# Propagation functionality
+from .propagate_funcs import propagate_to_providers
+from .propagate_funcs import propagate_to_customers
+from .propagate_funcs import propagate_to_peers
+from .propagate_funcs import _propagate
+from .propagate_funcs import _policy_propagate
+from .propagate_funcs import _process_outgoing_ann
+from .propagate_funcs import _prev_sent
+
+# Process incoming announcements
+from .process_incoming_funcs import receive_ann
+from .process_incoming_funcs import process_incoming_anns
+from .process_incoming_funcs import _valid_ann
+from .process_incoming_funcs import _copy_and_process
+from .process_incoming_funcs import _reset_q
+
+# Gao rexford functions
+from .gao_rexford import _new_ann_better
+from .gao_rexford import _new_as_path_ties_better
+from .gao_rexford import _new_rel_better
+from .gao_rexford import _new_as_path_shorter
+from .gao_rexford import _new_wins_ties
+
+
 from ....ann_containers import LocalRIB
 from ....ann_containers import RecvQueue
 
@@ -8,8 +32,7 @@ slots = ("_local_rib", "_recv_q", "_ribs_in", "_ribs_out", "_send_q")
 
 
 class BGPSimpleAS(AS):
-    # TODO: fix later? class error? Does this impact speed?
-    __slots__ = slots  # type: ignore
+    __slots__ = slots
 
     name: str = "BGP Simple"
     as_class_names: List[str] = []
@@ -32,8 +55,11 @@ class BGPSimpleAS(AS):
         if BGPSimpleAS not in cls.as_classes:
             cls.as_classes.append(BGPSimpleAS)
 
-    def __init__(self, *args, _local_rib: Optional[LocalRIB] = None,
-                 _recv_q: Optional[RecvQueue] = None, **kwargs):
+    def __init__(self,
+                 *args,
+                 _local_rib: Optional[LocalRIB] = None,
+                 _recv_q: Optional[RecvQueue] = None,
+                 **kwargs):
         """Add local rib and data structures here
 
         This way they can be easily cleared later without having to redo
@@ -64,27 +90,27 @@ class BGPSimpleAS(AS):
     __hash__ = AS.__hash__
 
     # Propagation functionality
-    from .propagate_funcs import propagate_to_providers  # type: ignore
-    from .propagate_funcs import propagate_to_customers  # type: ignore
-    from .propagate_funcs import propagate_to_peers  # type: ignore
-    from .propagate_funcs import _propagate  # type: ignore
-    from .propagate_funcs import _policy_propagate  # type: ignore
-    from .propagate_funcs import _process_outgoing_ann  # type: ignore
-    from .propagate_funcs import _prev_sent  # type: ignore
+    propagate_to_providers = propagate_to_providers
+    propagate_to_customers = propagate_to_customers
+    propagate_to_peers = propagate_to_peers
+    _propagate = _propagate
+    _policy_propagate = _policy_propagate
+    _process_outgoing_ann = _process_outgoing_ann
+    _prev_sent = _prev_sent
 
     # Process incoming announcements
-    from .process_incoming_funcs import receive_ann  # type: ignore
-    from .process_incoming_funcs import process_incoming_anns  # type: ignore
-    from .process_incoming_funcs import _valid_ann  # type: ignore
-    from .process_incoming_funcs import _copy_and_process  # type: ignore
-    from .process_incoming_funcs import _reset_q  # type: ignore
+    receive_ann = receive_ann
+    process_incoming_anns = process_incoming_anns
+    _valid_ann = _valid_ann
+    _copy_and_process = _copy_and_process
+    _reset_q = _reset_q
 
     # Gao rexford functions
-    from .gao_rexford import _new_ann_better  # type: ignore
-    from .gao_rexford import _new_as_path_ties_better  # type: ignore
-    from .gao_rexford import _new_rel_better  # type: ignore
-    from .gao_rexford import _new_as_path_shorter  # type: ignore
-    from .gao_rexford import _new_wins_ties  # type: ignore
+    _new_ann_better = _new_ann_better
+    _new_as_path_ties_better = _new_as_path_ties_better
+    _new_rel_better = _new_rel_better
+    _new_as_path_shorter = _new_as_path_shorter
+    _new_wins_ties = _new_wins_ties
 
 ##############
 # Yaml funcs #

@@ -1,16 +1,20 @@
-from typing import Optional
+from typing import Optional, TYPE_CHECKING
 
 from ....announcement import Announcement as Ann
 from .....enums import Relationships
 from ....ann_containers import AnnInfo, SendInfo
 
 
+if TYPE_CHECKING:
+    from ....simulation_framework import Scenario
+
+
 def process_incoming_anns(self,
                           *,
                           from_rel: Relationships,
-                          propagation_round,
+                          propagation_round: int,
                           # Usually None for attack
-                          scenario,
+                          scenario: "Scenario",
                           reset_q: bool = True):
     """Process all announcements that were incoming from a specific rel"""
 

@@ -57,7 +57,7 @@ class Announcement(YamlAble):
         else:
             return NotImplemented
 
-    def prefix_path_attributes_eq(self, ann) -> bool:
+    def prefix_path_attributes_eq(self, ann: "Announcement") -> bool:
         """Checks prefix and as path equivalency"""
 
         if ann is None:
@@ -67,7 +67,9 @@ class Announcement(YamlAble):
         else:
             raise NotImplementedError
 
-    def copy(self, overwrite_default_kwargs=None) -> "Announcement":
+    def copy(self,
+             overwrite_default_kwargs: Optional[Dict[Any, Any]] = None
+             ) -> "Announcement":
         """Creates a new ann with proper sim attrs"""
 
         kwargs = self._get_vars()

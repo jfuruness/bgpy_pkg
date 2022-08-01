@@ -1,6 +1,7 @@
 from abc import ABC
 from collections import defaultdict
-from typing import Optional
+from pathlib import Path
+from typing import Any, Dict, List, Optional
 
 import matplotlib  # type: ignore
 import matplotlib.pyplot as plt  # type: ignore
@@ -57,13 +58,13 @@ class Subgraph(ABC):
     # Graph funcs #
     ###############
 
-    def write_graphs(self, graph_dir):
+    def write_graphs(self, graph_dir: Path):
         """Writes all graphs into the graph dir"""
 
         for prop_round in self.data:
             self.write_graph(prop_round, graph_dir)
 
-    def write_graph(self, prop_round, graph_dir):
+    def write_graph(self, prop_round: int, graph_dir: Path):
         """Writes graph into the graph directory"""
 
         lines: list = self._get_lines(prop_round)
@@ -92,13 +93,13 @@ class Subgraph(ABC):
         # https://stackoverflow.com/a/33343289/8903959
         plt.close(fig)
 
-    def _get_lines(self, prop_round) -> list:
+    def _get_lines(self, prop_round: int) -> List[Line]:
         """Returns lines for matplotlib graph"""
 
         return [Line(k, v) for k, v in self.data[prop_round].items()]
 
     @property
-    def y_axis_label(self):
+    def y_axis_label(self) -> str:
         """returns y axis label"""
 
         raise NotImplementedError
@@ -127,11 +128,11 @@ class Subgraph(ABC):
                         ].extend(trial_results)  # noqa
 
     def aggregate_engine_run_data(self,
-                                  shared_data: dict,
+                                  shared_data: Dict[Any, Any],
                                   *,
                                   engine: SimulationEngine,
                                   percent_adopt: float,
-                                  trial,
+                                  trial: int,
                                   scenario: Scenario,
                                   propagation_round: int):
         """Aggregates data after a single engine run
@@ -170,7 +171,7 @@ class Subgraph(ABC):
         self.data[propagation_round][scenario.graph_label][percent_adopt
             ].append(shared_data.get(key, 0))  # noqa
 
-    def _get_subgraph_key(self, scenario):
+    def _get_subgraph_key(self, scenario: Scenario) -> str:
         """Returns the key to be used in shared_data on the subgraph"""
 
         raise NotImplementedError
@@ -180,10 +181,10 @@ class Subgraph(ABC):
     #####################
 
     def _add_traceback_to_shared_data(self,
-                                      shared: dict,
+                                      shared: Dict[Any, Any],
                                       engine: SimulationEngine,
                                       scenario: Scenario,
-                                      outcomes: dict):
+                                      outcomes: Dict[int, Outcomes]):
         """Adds traceback info to shared data"""
 
         for as_obj, outcome in outcomes.items():
@@ -263,7 +264,8 @@ class Subgraph(ABC):
 
     def _get_engine_outcomes(self,
                              engine: SimulationEngine,
-                             scenario: Scenario) -> dict:
+                             scenario: Scenario
+                             ) -> Dict[int, Outcomes]:
         """Gets the outcomes of all ASes"""
 
         # {ASN: outcome}
@@ -276,10 +278,12 @@ class Subgraph(ABC):
                                  scenario)
         return outcomes
 
-    def _get_as_outcome(self, as_obj: AS,
-                        outcomes: dict,
+    def _get_as_outcome(self,
+                        as_obj: AS,
+                        outcomes: Dict[int, Outcomes],
                         engine: SimulationEngine,
-                        scenario: Scenario) -> Optional[Outcomes]:
+                        scenario: Scenario
+                        ) -> Outcomes:
         """Recursively returns the as outcome"""
 
         if as_obj in outcomes:
@@ -310,7 +314,8 @@ class Subgraph(ABC):
 
     def _get_most_specific_ann(self,
                                as_obj: AS,
-                               ordered_prefixes: dict) -> Optional[Ann]:
+                               ordered_prefixes: Dict[str, List[str]]
+                               ) -> Optional[Ann]:
         """Returns the most specific announcement that exists in a rib
 
         as_obj is the as
