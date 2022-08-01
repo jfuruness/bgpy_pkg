@@ -39,7 +39,7 @@ class BGPAS(BGPSimpleAS):
     # Propagation functions
     _propagate = _propagate
     _process_outgoing_ann = _process_outgoing_ann
-    _prev_sent = _prev_sent
+    _prev_sent = _prev_sent  # type: ignore
     _send_anns = _send_anns
 
     # Must add this func here since it refers to BGPAS
@@ -58,10 +58,14 @@ class BGPAS(BGPSimpleAS):
 
     # Must be here since it referes to BGPAS
     # Could just use super but want to avoid the additional func calls
-    def receive_ann(self, ann: Ann) -> None:
+    # mypy doesn't understand the func definition
+    def receive_ann(self,  # type: ignore
+                    ann: Ann,
+                    accept_withdrawals: bool
+                    ) -> None:
         super(BGPAS, self).receive_ann(ann, accept_withdrawals=True)
 
-    def __to_yaml_dict__(self) -> Dict[Any, Any]:
+    def __to_yaml_dict__(self):
         """This optional method is called when you call yaml.dump()"""
 
         as_dict = super(BGPAS, self).__to_yaml_dict__()

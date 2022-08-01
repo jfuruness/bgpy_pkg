@@ -1,7 +1,9 @@
 from abc import ABC, abstractmethod
 import random
 from ipaddress import ip_network
-from typing import Any, Dict, Optional, Set, Type
+from ipaddress import IPv4Network
+from ipaddress import IPv6Network
+from typing import Any, Dict, List, Optional, Set, Tuple, Type, Union
 
 from lib_caida_collector import AS
 
@@ -11,7 +13,7 @@ from ...simulation_engine import Announcement
 from ...simulation_engine import BGPSimpleAS
 from ...simulation_engine import SimulationEngine
 
-pseudo_base_cls_dict: dict = dict()
+pseudo_base_cls_dict: Dict[Type[AS], Type[AS]] = dict()
 
 
 class Scenario(ABC):
@@ -39,7 +41,11 @@ class Scenario(ABC):
                  num_attackers: int = 1,
                  num_victims: int = 1,
                  attacker_asns: Optional[Set[int]] = None,
-                 victim_asns: Optional[Set[int]] = None):
+                 victim_asns: Optional[Set[int]] = None,
+                 # Purely for rebuilding from YAML
+                 non_default_as_cls_dict: Optional[Dict[int, Type[AS]]] = None,
+                 announcements: Tuple[Announcement, ...] = ()
+                 ):
         """inits attrs
 
         non_default_as_cls_dict is a dict of asn: AdoptASCls
@@ -49,7 +55,7 @@ class Scenario(ABC):
 
         self.AnnCls: Type[Announcement] = AnnCls
         self.BaseASCls: Type[AS] = BaseASCls
-        self.AdoptASCls: Type[AS] = AdoptASCls
+
 
         # This is done to fix the following:
         # Scenario 1 has 3 BGP ASes and 1 AdoptCls
@@ -58,14 +64,17 @@ class Scenario(ABC):
         # scenario 1? We don't know anymore.
         # Instead for scenario 2, we have 3 BGP ASes and 1 Psuedo BGP AS
         # Then scenario 3 will still work as expected
-        if self.AdoptASCls is None:
-            global pseudo_base_cls_dict
+        if AdoptASCls is None:
+            # mypy says this is unreachable, which is wrong
+            global pseudo_base_cls_dict  # type: ignore
             AdoptASCls = pseudo_base_cls_dict.get(self.BaseASCls)
             if not AdoptASCls:
                 name: str = f"Psuedo {self.BaseASCls.name}".replace(" ", "")
                 PseudoBaseCls = type(name, (self.BaseASCls,), {"name": name})
                 pseudo_base_cls_dict[self.BaseASCls] = PseudoBaseCls
                 AdoptASCls = PseudoBaseCls
+            self.AdoptASCls: Type[AS] = AdoptASCls
+        else:
             self.AdoptASCls = AdoptASCls
 
         self.num_attackers: int = num_attackers
@@ -83,6 +92,14 @@ class Scenario(ABC):
             self.attacker_victim_asns_preset: bool = True
         else:
             self.attacker_victim_asns_preset = False
+
+        # Purely for yaml #################################################
+        if non_default_as_cls_dict:
+            self.non_default_as_cls_dict: Dict[int,
+                                               Type[AS]
+                                               ] = non_default_as_cls_dict
+        if announcements:
+            self.announcements: Tuple["Announcement", ...] = announcements
 
     @property
     def graph_label(self) -> str:
@@ -123,16 +140,16 @@ class Scenario(ABC):
             self.attacker_asns = self._get_attacker_asns(*args, **kwargs)
             self.victim_asns = self._get_victim_asns(*args, **kwargs)
 
-    def _get_attacker_asns(self, *args, **kwargs) -> Set[AS]:
+    def _get_attacker_asns(self, *args, **kwargs) -> Set[int]:
         """Returns attacker ASN at random"""
 
-        possible_attacker_asns: set = \
+        possible_attacker_asns = \
             self._get_possible_attacker_asns(*args, **kwargs)
         # https://stackoverflow.com/a/15837796/8903959
         return set(random.sample(tuple(possible_attacker_asns),
                                  self.num_attackers))
 
-    def _get_victim_asns(self, *args, **kwargs) -> Set[AS]:
+    def _get_victim_asns(self, *args, **kwargs) -> Set[int]:
         """Returns victim ASN at random. Attacker can't be victim"""
 
         possible_vic_asns = self._get_possible_victim_asns(*args, **kwargs)
@@ -148,7 +165,7 @@ class Scenario(ABC):
                                     engine: SimulationEngine,
                                     percent_adoption: float,
                                     prev_scenario: Optional["Scenario"]
-                                    ) -> Set[AS]:
+                                    ) -> Set[int]:
         """Returns possible attacker ASNs, defaulted from stubs_and_mh"""
 
         return engine.stub_or_mh_asns
@@ -160,7 +177,7 @@ class Scenario(ABC):
                                   engine: SimulationEngine,
                                   percent_adoption: float,
                                   prev_scenario: Optional["Scenario"]
-                                  ) -> Set[AS]:
+                                  ) -> Set[int]:
         """Returns possible victim ASNs, defaulted from stubs_and_mh"""
 
         return engine.stub_or_mh_asns
@@ -368,26 +385,33 @@ class Scenario(ABC):
     ################
 
     def _get_ordered_prefix_subprefix_dict(self):
-        """Saves a dict of prefix to subprefixes"""
+        """Saves a dict of prefix to subprefixes
 
-        prefixes: set = set([])
+        mypy was having a lot of trouble with this section
+        thus the type ignores
+        """
+
+        prefixes = set([])
         for ann in self.announcements:
             prefixes.add(ann.prefix)
         # Do this here for speed
-        prefixes: list = [ip_network(x) for x in prefixes]
+        prefixes: List[Union[IPv4Network, IPv6Network]] = [  # type: ignore
+            ip_network(x) for x in prefixes]
         # Sort prefixes with most specific prefix first
         # Note that this must be sorted for the traceback to get the
         # most specific prefix first
-        prefixes = list(sorted(prefixes, key=lambda x: x.num_addresses))
+        prefixes = list(sorted(prefixes,
+                               key=lambda x: x.num_addresses))  # type: ignore
 
-        prefix_subprefix_dict: dict = {x: [] for x in prefixes}
+        prefix_subprefix_dict = {x: [] for x in prefixes}  # type: ignore
         for outer_prefix, subprefix_list in prefix_subprefix_dict.items():
             for prefix in prefixes:
-                if prefix.subnet_of(outer_prefix) and prefix != outer_prefix:
+                if (prefix.subnet_of(outer_prefix)  # type: ignore
+                        and prefix != outer_prefix):
                     subprefix_list.append(str(prefix))
         # Get rid of ip_network
-        self.ordered_prefix_subprefix_dict = {str(k): v for k, v
-                                              in prefix_subprefix_dict.items()}
+        self.ordered_prefix_subprefix_dict: Dict[str, List[str]] = {
+            str(k): v for k, v in prefix_subprefix_dict.items()}
 
     ##############
     # Yaml Funcs #

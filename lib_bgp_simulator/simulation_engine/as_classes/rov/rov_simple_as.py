@@ -10,7 +10,8 @@ class ROVSimpleAS(BGPSimpleAS):
 
     name: str = "ROVSimple"
 
-    def _valid_ann(self, ann: Ann, *args, **kwargs) -> bool:
+    # mypy doesn't understand that this func is valid
+    def _valid_ann(self, ann: Ann, *args, **kwargs) -> bool:  # type: ignore
         """Returns announcement validity
 
         Returns false if invalid by roa,
@@ -23,4 +24,6 @@ class ROVSimpleAS(BGPSimpleAS):
             return False
         # Use standard BGP to determine if the announcement is valid
         else:
-            return super(ROVSimpleAS, self)._valid_ann(ann, *args, **kwargs)
+            # Mypy doesn't map superclasses properly
+            return super(ROVSimpleAS,  # type: ignore
+                         self)._valid_ann(ann, *args, **kwargs)

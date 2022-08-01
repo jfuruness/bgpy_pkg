@@ -1,4 +1,3 @@
-from __future__ import annotations
 from typing import Tuple, TYPE_CHECKING
 
 from .scenario import Scenario
@@ -14,16 +13,16 @@ if TYPE_CHECKING:
 class ValidPrefix(Scenario):
     """A valid prefix engine input, mainly for testing"""
 
-    __slots__ = ()  # type: ignore
+    __slots__ = ()
 
-    def _get_announcements(self) -> Tuple["Announcement"]:
+    def _get_announcements(self) -> Tuple["Announcement", ...]:
         """Returns a valid prefix announcement
 
         for subclasses of this EngineInput, you can set AnnCls equal to
         something other than Announcement
         """
 
-        anns: list = list()
+        anns = list()
         for victim_asn in self.victim_asns:
             anns.append(self.AnnCls(prefix=Prefixes.PREFIX.value,
                                     as_path=(victim_asn,),

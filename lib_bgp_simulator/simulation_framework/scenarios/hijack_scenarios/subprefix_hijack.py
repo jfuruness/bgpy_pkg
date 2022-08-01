@@ -1,7 +1,13 @@
+from typing import Tuple, TYPE_CHECKING
+
 from ..scenario import Scenario
 from ....enums import Prefixes
 from ....enums import Relationships
 from ....enums import Timestamps
+
+
+if TYPE_CHECKING:
+    from ....simulation_engine import Announcement
 
 
 class SubprefixHijack(Scenario):
@@ -12,16 +18,16 @@ class SubprefixHijack(Scenario):
     invalid by roa by length and origin
     """
 
-    __slots__ = ()  # type: ignore
+    __slots__ = ()
 
-    def _get_announcements(self) -> tuple:
+    def _get_announcements(self) -> Tuple["Announcement", ...]:
         """Returns victim and attacker anns for subprefix hijack
 
         for subclasses of this EngineInput, you can set AnnCls equal to
         something other than Announcement
         """
 
-        anns: list = list()
+        anns = list()
         for victim_asn in self.victim_asns:
             anns.append(self.AnnCls(prefix=Prefixes.PREFIX.value,
                                     as_path=(victim_asn,),

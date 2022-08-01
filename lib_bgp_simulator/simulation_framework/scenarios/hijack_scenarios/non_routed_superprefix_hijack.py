@@ -1,7 +1,13 @@
+from typing import Tuple, TYPE_CHECKING
+
 from ..scenario import Scenario
 from ....enums import Prefixes
 from ....enums import Relationships
 from ....enums import Timestamps
+
+
+if TYPE_CHECKING:
+    from ....simulation_engine import Announcement
 
 
 class NonRoutedSuperprefixHijack(Scenario):
@@ -13,14 +19,14 @@ class NonRoutedSuperprefixHijack(Scenario):
 
     __slots__ = ()  # type: ignore
 
-    def _get_announcements(self) -> tuple:
+    def _get_announcements(self) -> Tuple["Announcement", ...]:
         """Returns a superprefix announcement for this engine input
 
         for subclasses of this EngineInput, you can set AnnCls equal to
         something other than Announcement
         """
 
-        anns: list = list()
+        anns = list()
         for attacker_asn in self.attacker_asns:
             anns.append(self.AnnCls(prefix=Prefixes.SUPERPREFIX.value,
                                     as_path=(attacker_asn,),

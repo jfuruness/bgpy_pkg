@@ -57,7 +57,7 @@ class Announcement(YamlAble):
         else:
             return NotImplemented
 
-    def prefix_path_attributes_eq(self, ann: "Announcement") -> bool:
+    def prefix_path_attributes_eq(self, ann: Optional["Announcement"]) -> bool:
         """Checks prefix and as path equivalency"""
 
         if ann is None:
