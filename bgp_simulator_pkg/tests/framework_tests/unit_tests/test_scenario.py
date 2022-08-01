@@ -2,7 +2,7 @@ import random
 
 import pytest
 
-from lib_caida_collector import CaidaCollector
+from caida_collector_pkg import CaidaCollector
 
 from ....enums import Prefixes
 from ....simulation_framework import SubprefixHijack

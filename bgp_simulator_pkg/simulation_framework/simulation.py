@@ -8,7 +8,7 @@ from tempfile import TemporaryDirectory
 from typing import Any, Dict, List, Tuple
 
 
-from lib_caida_collector import CaidaCollector
+from caida_collector_pkg import CaidaCollector
 
 from .scenarios import Scenario
 from .scenarios import SubprefixHijack

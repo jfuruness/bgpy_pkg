@@ -1,4 +1,4 @@
-from lib_caida_collector import CustomerProviderLink as CPLink
+from caida_collector_pkg import CustomerProviderLink as CPLink
 
 
 from .graph_info import GraphInfo

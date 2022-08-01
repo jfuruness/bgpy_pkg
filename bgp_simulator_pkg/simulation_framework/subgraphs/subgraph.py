@@ -13,7 +13,7 @@ from ...simulation_engine import SimulationEngine
 from ..scenarios import Scenario
 from ...simulation_engine.announcement import Announcement as Ann
 
-from lib_caida_collector import AS
+from caida_collector_pkg import AS
 
 
 # Must be module level in order to be picklable

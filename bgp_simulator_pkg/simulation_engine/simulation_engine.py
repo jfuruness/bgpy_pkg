@@ -1,7 +1,7 @@
 from __future__ import annotations
 from typing import Optional, Type, TYPE_CHECKING
 
-from lib_caida_collector import BGPDAG, AS
+from caida_collector_pkg import BGPDAG, AS
 
 from .as_classes import BGPSimpleAS
 from ..enums import Relationships

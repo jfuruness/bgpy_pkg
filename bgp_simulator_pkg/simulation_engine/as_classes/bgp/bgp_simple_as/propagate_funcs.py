@@ -1,6 +1,6 @@
 from typing import List, Set
 
-from lib_caida_collector import AS
+from caida_collector_pkg import AS
 
 from ....announcement import Announcement as Ann
 from .....enums import Relationships

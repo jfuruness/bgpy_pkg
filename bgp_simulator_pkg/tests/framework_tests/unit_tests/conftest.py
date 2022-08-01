@@ -1,6 +1,6 @@
 import pytest
 
-from lib_caida_collector import CaidaCollector
+from caida_collector_pkg import CaidaCollector
 
 from ....simulation_engine import BGPSimpleAS
 from ....simulation_engine import SimulationEngine

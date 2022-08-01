@@ -5,7 +5,7 @@ from ipaddress import IPv4Network
 from ipaddress import IPv6Network
 from typing import Any, Dict, List, Optional, Set, Tuple, Type, Union
 
-from lib_caida_collector import AS
+from caida_collector_pkg import AS
 
 from ...enums import Outcomes
 from ...enums import Relationships

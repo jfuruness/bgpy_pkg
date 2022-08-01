@@ -1,4 +1,4 @@
-from lib_caida_collector import AS
+from caida_collector_pkg import AS
 from typing import List, Optional, Type
 
 # Propagation functionality

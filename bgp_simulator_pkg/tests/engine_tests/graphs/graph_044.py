@@ -1,5 +1,5 @@
-from lib_caida_collector import CustomerProviderLink as CPLink
-from lib_caida_collector import PeerLink
+from caida_collector_pkg import CustomerProviderLink as CPLink
+from caida_collector_pkg import PeerLink
 
 
 from .graph_info import GraphInfo

@@ -1,6 +1,6 @@
 import random
 
-from lib_caida_collector import CaidaCollector
+from caida_collector_pkg import CaidaCollector
 
 bgp_dag = CaidaCollector().run()
 base = None

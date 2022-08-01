@@ -1,7 +1,7 @@
 from copy import deepcopy
 from typing import Dict, Type
 
-from lib_caida_collector import AS
+from caida_collector_pkg import AS
 
 
 from ..graphs import Graph047
