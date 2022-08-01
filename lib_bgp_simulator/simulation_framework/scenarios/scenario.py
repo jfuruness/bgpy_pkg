@@ -56,7 +56,6 @@ class Scenario(ABC):
         self.AnnCls: Type[Announcement] = AnnCls
         self.BaseASCls: Type[AS] = BaseASCls
 
-
         # This is done to fix the following:
         # Scenario 1 has 3 BGP ASes and 1 AdoptCls
         # Scenario 2 has no adopt classes, so 4 BGP
