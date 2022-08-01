@@ -1,8 +1,8 @@
-git+https://github.com/jfuruness/caida_collector_pkg.git#38a6d6e3594c7b78372b670811f88fa2c5a698ad
-graphviz
-pil
-matplotlib
-pytest
-PyYAML
-tqdm
-yamlable
+git+https://github.com/jfuruness/caida_collector_pkg.git#4f170afe845ae2550fa0ca58e9b6e4209c4a585a
+graphviz==0.20
+pillow==9.2.0
+matplotlib==3.5.2
+pytest==7.1.2
+PyYAML==6.0
+tqdm==4.64.0
+yamlable==1.1.1
