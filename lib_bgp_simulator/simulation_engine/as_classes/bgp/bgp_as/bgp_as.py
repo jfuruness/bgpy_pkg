@@ -61,7 +61,7 @@ class BGPAS(BGPSimpleAS):
     # mypy doesn't understand the func definition
     def receive_ann(self,  # type: ignore
                     ann: Ann,
-                    accept_withdrawals: bool
+                    accept_withdrawals: bool = True
                     ) -> None:
         super(BGPAS, self).receive_ann(ann, accept_withdrawals=True)
 

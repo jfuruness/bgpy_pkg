@@ -302,7 +302,7 @@ class TestScenario:
         scenario = SubprefixHijack(AdoptASCls=ROVSimpleAS,
                                    BaseASCls=BGPSimpleAS)
         non_default_as_cls_dict = scenario._get_non_default_as_cls_dict(
-            engine, 50, None)
+            engine, .5, None)
 
         assert ROVSimpleAS in list(non_default_as_cls_dict.values())
         assert BGPSimpleAS not in list(non_default_as_cls_dict.values())
@@ -411,7 +411,7 @@ class TestScenario:
         """Tests that the get_ordered_prefix_subprefix_dict works"""
 
         scenario = SubprefixHijack()
-        scenario._set_attackers_victims_anns(engine, 50, None)
+        scenario._set_attackers_victims_anns(engine, .5, None)
         gt = {Prefixes.PREFIX.value: [Prefixes.SUBPREFIX.value],
               Prefixes.SUBPREFIX.value: []}
         assert scenario.ordered_prefix_subprefix_dict == gt
