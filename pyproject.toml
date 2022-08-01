@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta"
 python_files = ["test*.py"]
 python_classes = ["Test*"]
 python_functions = ["test*"]
-#addopts = "--cov=lib_bgp_simulator -n 6"
+#addopts = "--cov=bgp_simulator_pkg -n 6"
 markers = [
     "slow",  # All slow tests
     "framework",  # All framework tests
@@ -18,7 +18,7 @@ filterwarnings = [
 ]
 
 [tool.mypy]
-mypy_path = "lib_bgp_simulator"
+mypy_path = "bgp_simulator_pkg"
 check_untyped_defs = true
 disallow_any_generics = true
 ignore_missing_imports = true

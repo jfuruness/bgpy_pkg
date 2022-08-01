@@ -4,15 +4,15 @@
 
 from pyinstrument import Profiler
 
-# from lib_bgp_simulator import AttackerSuccessAdoptingEtcSubgraph
-# from lib_bgp_simulator import AttackerSuccessAdoptingInputCliqueSubgraph
-# from lib_bgp_simulator import AttackerSuccessAdoptingStubsAndMHSubgraph
-# from lib_bgp_simulator import AttackerSuccessNonAdoptingEtcSubgraph
-# from lib_bgp_simulator import AttackerSuccessNonAdoptingInputCliqueSubgraph
-# from lib_bgp_simulator import AttackerSuccessNonAdoptingStubsAndMHSubgraph
-from lib_bgp_simulator import ROVSimpleAS
-from lib_bgp_simulator import Simulation
-from lib_bgp_simulator import SubprefixHijack
+# from bgp_simulator_pkg import AttackerSuccessAdoptingEtcSubgraph
+# from bgp_simulator_pkg import AttackerSuccessAdoptingInputCliqueSubgraph
+# from bgp_simulator_pkg import AttackerSuccessAdoptingStubsAndMHSubgraph
+# from bgp_simulator_pkg import AttackerSuccessNonAdoptingEtcSubgraph
+# from bgp_simulator_pkg import AttackerSuccessNonAdoptingInputCliqueSubgraph
+# from bgp_simulator_pkg import AttackerSuccessNonAdoptingStubsAndMHSubgraph
+from bgp_simulator_pkg import ROVSimpleAS
+from bgp_simulator_pkg import Simulation
+from bgp_simulator_pkg import SubprefixHijack
 
 long_run = False
 

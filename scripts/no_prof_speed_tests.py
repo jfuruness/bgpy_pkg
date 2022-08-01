@@ -1,6 +1,6 @@
-from lib_bgp_simulator import ROVSimpleAS
-from lib_bgp_simulator import Simulation
-from lib_bgp_simulator import SubprefixHijack
+from bgp_simulator_pkg import ROVSimpleAS
+from bgp_simulator_pkg import Simulation
+from bgp_simulator_pkg import SubprefixHijack
 
 
 long_run = True
