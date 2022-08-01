@@ -30,8 +30,8 @@ class TestScenario:
                         AdoptASCls=None,
                         num_attackers=num_attackers,
                         num_victims=num_victims,
-                        attacker_asns=list(range(num_attackers)),
-                        victim_asns=list(range(num_victims)))
+                        attacker_asns=set(range(num_attackers)),
+                        victim_asns=set(range(num_victims)))
 
     def test_init_invalid_attackers(self):
         """Tests the len(attacker_asns) == num_attackers"""
@@ -60,7 +60,8 @@ class TestScenario:
         elif victim:
             kwargs["victim_asns"] = {2}
 
-        hijack = SubprefixHijack(**kwargs)
+        # Mypy can't handle kwargs
+        hijack = SubprefixHijack(**kwargs)  # type: ignore
         if attacker or victim:
             assert hijack.attacker_victim_asns_preset
         else:
@@ -123,7 +124,8 @@ class TestScenario:
 
         kwargs = {"attacker_asns": {1}, "victim_asns": {2}}
         # First check if they were preset that they don't change
-        scenario = SubprefixHijack(**kwargs)
+        # limitation of mypy, can't handle kwargs
+        scenario = SubprefixHijack(**kwargs)  # type: ignore
         scenario._set_attackers_victims(engine,
                                         percent_adoption=0,
                                         prev_scenario=None)

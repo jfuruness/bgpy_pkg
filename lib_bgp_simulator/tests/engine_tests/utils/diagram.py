@@ -74,11 +74,11 @@ class Diagram:
                                traceback,
                                scenario):
         kwargs = dict()
-        if False:
-            kwargs = {"style": "filled,dashed",
-                      "shape": "box",
-                      "color": "black",
-                      "fillcolor": "lightgray"}
+        # if False:
+        #     kwargs = {"style": "filled,dashed",
+        #               "shape": "box",
+        #               "color": "black",
+        #               "fillcolor": "lightgray"}
         html = self._get_html(as_obj, engine, scenario)
 
         kwargs = self._get_kwargs(as_obj,
@@ -103,7 +103,7 @@ class Diagram:
             <TR>
             <TD COLSPAN="4" BORDER="0">({as_obj.name})</TD>
             </TR>"""
-        local_rib_anns = list(as_obj._local_rib._info.values())
+        local_rib_anns = tuple(list(as_obj._local_rib._info.values()))
         local_rib_anns = tuple(
             sorted(local_rib_anns,
                    key=lambda x: ipaddress.ip_network(x.prefix).num_addresses,

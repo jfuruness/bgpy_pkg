@@ -266,7 +266,7 @@ class Scenario(ABC):
 
     def determine_as_outcome(self,
                              as_obj: AS,
-                             ann: Announcement
+                             ann: Optional[Announcement]
                              ) -> Outcomes:
         """Determines the outcome at an AS
 

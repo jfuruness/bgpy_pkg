@@ -1,7 +1,7 @@
 from abc import ABC
 from collections import defaultdict
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, DefaultDict, Dict, List, Optional, Type
 
 import matplotlib  # type: ignore
 import matplotlib.pyplot as plt  # type: ignore
@@ -18,11 +18,11 @@ from lib_caida_collector import AS
 
 # Must be module level in order to be picklable
 # https://stackoverflow.com/a/16439720/8903959
-def default_dict_inner_func() -> defaultdict:
+def default_dict_inner_func():
     return defaultdict(list)
 
 
-def default_dict_func() -> defaultdict:
+def default_dict_func():
     return defaultdict(default_dict_inner_func)
 
 
@@ -33,7 +33,7 @@ class Subgraph(ABC):
 
     name: Optional[str] = None
 
-    subclasses: list = []
+    subclasses: List[Type["Subgraph"]] = []
 
     def __init_subclass__(cls, *args, **kwargs):
         """This method essentially creates a list of all subclasses
@@ -42,7 +42,7 @@ class Subgraph(ABC):
 
         super().__init_subclass__(*args, **kwargs)
         cls.subclasses.append(cls)
-        names: list = [x.name for x in cls.subclasses if x.name]
+        names = [x.name for x in cls.subclasses if x.name]
         assert len(set(names)) == len(names), "Duplicate subgraph class names"
 
     def __init__(self):
@@ -52,7 +52,11 @@ class Subgraph(ABC):
         # You must save info trial by trial, so that you can join
         # After a return from multiprocessing
         # {propagation_round: {scenario_label: {percent_adopt: [percentages]}}}
-        self.data: defaultdict = defaultdict(default_dict_func)
+        self.data: DefaultDict[int,
+                               DefaultDict[str,
+                                           DefaultDict[float,
+                                                       List[float]]]] =\
+            defaultdict(default_dict_func)
 
     ###############
     # Graph funcs #
@@ -67,7 +71,7 @@ class Subgraph(ABC):
     def write_graph(self, prop_round: int, graph_dir: Path):
         """Writes graph into the graph directory"""
 
-        lines: list = self._get_lines(prop_round)
+        lines: List[Line] = self._get_lines(prop_round)
 
         matplotlib.use("Agg")
         fig, ax = plt.subplots()
@@ -121,8 +125,8 @@ class Subgraph(ABC):
         from the various processes that were spawned
         """
 
-        for scenario_label, prop_dict in other_subgraph.data.items():
-            for prop_round, percent_dict in prop_dict.items():
+        for prop_round, scenario_dict in other_subgraph.data.items():
+            for scenario_label, percent_dict in scenario_dict.items():
                 for percent_adopt, trial_results in percent_dict.items():
                     self.data[prop_round][scenario_label][percent_adopt
                         ].extend(trial_results)  # noqa
@@ -171,7 +175,7 @@ class Subgraph(ABC):
         self.data[propagation_round][scenario.graph_label][percent_adopt
             ].append(shared_data.get(key, 0))  # noqa
 
-    def _get_subgraph_key(self, scenario: Scenario) -> str:
+    def _get_subgraph_key(self, scenario: Scenario, *args: Any) -> str:
         """Returns the key to be used in shared_data on the subgraph"""
 
         raise NotImplementedError
@@ -184,7 +188,7 @@ class Subgraph(ABC):
                                       shared: Dict[Any, Any],
                                       engine: SimulationEngine,
                                       scenario: Scenario,
-                                      outcomes: Dict[int, Outcomes]):
+                                      outcomes: Dict[AS, Outcomes]):
         """Adds traceback info to shared data"""
 
         for as_obj, outcome in outcomes.items():
@@ -236,14 +240,17 @@ class Subgraph(ABC):
         else:
             return ASTypes.ETC
 
-    def _get_as_type_pol_k(self, as_type: ASTypes, ASCls: AS) -> str:
+    def _get_as_type_pol_k(self,
+                           as_type: ASTypes,
+                           ASCls: Type[AS]
+                           ) -> str:
         """Returns AS type+policy key"""
 
         return f"{as_type.value}_{ASCls.name}"
 
     def _get_as_type_pol_outcome_k(self,
                                    as_type: ASTypes,
-                                   ASCls: AS,
+                                   ASCls: Type[AS],
                                    outcome: Outcomes) -> str:
         """returns as type+policy+outcome key"""
 
@@ -251,7 +258,7 @@ class Subgraph(ABC):
 
     def _get_as_type_pol_outcome_perc_k(self,
                                         as_type: ASTypes,
-                                        ASCls: AS,
+                                        ASCls: Type[AS],
                                         outcome: Outcomes) -> str:
         """returns as type+policy+outcome key as a percent"""
 
@@ -265,11 +272,11 @@ class Subgraph(ABC):
     def _get_engine_outcomes(self,
                              engine: SimulationEngine,
                              scenario: Scenario
-                             ) -> Dict[int, Outcomes]:
+                             ) -> Dict[AS, Outcomes]:
         """Gets the outcomes of all ASes"""
 
         # {ASN: outcome}
-        outcomes: dict = dict()
+        outcomes: Dict[AS, Outcomes] = dict()
         for as_obj in engine.as_dict.values():
             # Gets AS outcome and stores it in the outcomes dict
             self._get_as_outcome(as_obj,
@@ -280,7 +287,7 @@ class Subgraph(ABC):
 
     def _get_as_outcome(self,
                         as_obj: AS,
-                        outcomes: Dict[int, Outcomes],
+                        outcomes: Dict[AS, Outcomes],
                         engine: SimulationEngine,
                         scenario: Scenario
                         ) -> Outcomes:
@@ -300,8 +307,10 @@ class Subgraph(ABC):
             # We haven't traced back all the way on the AS path
             if outcome == Outcomes.UNDETERMINED:
                 # next as in the AS path to traceback to
+                # Ignore type because only way for this to be here
+                # Is if the most specific Ann was NOT None.
                 next_as = engine.as_dict[
-                    most_specific_ann.as_path[1]
+                    most_specific_ann.as_path[1]  # type: ignore
                 ]  # type: ignore
                 outcome = self._get_as_outcome(next_as,
                                                outcomes,
@@ -325,5 +334,6 @@ class Subgraph(ABC):
         for prefix in ordered_prefixes:
             most_specific_ann = as_obj._local_rib.get_ann(prefix)
             if most_specific_ann:
-                return most_specific_ann
+                # Mypy doesn't recognize that this is always an annoucnement
+                return most_specific_ann  # type: ignore
         return None

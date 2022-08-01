@@ -5,7 +5,7 @@ from multiprocessing import Pool
 from pathlib import Path
 from shutil import make_archive
 from tempfile import TemporaryDirectory
-from typing import List, Tuple
+from typing import Any, Dict, List, Tuple
 
 
 from lib_caida_collector import CaidaCollector
@@ -29,10 +29,12 @@ class Simulation:
     """Runs simulations for BGP attack/defend scenarios"""
 
     def __init__(self,
-                 percent_adoptions: Tuple[float] = (.05, .1, .3, .5, .8),
-                 scenarios: Tuple[Scenario] = tuple(
-                    [SubprefixHijack(AdoptASCls=x) for x in [ROVSimpleAS]]),
-                 subgraphs: Tuple[Subgraph] = (
+                 percent_adoptions: Tuple[float, ...] = (.05, .1, .3, .5, .8),
+                 scenarios: Tuple[Scenario, ...] = tuple(
+                    [SubprefixHijack(AdoptASCls=x)  # type: ignore
+                     for x in [ROVSimpleAS]]
+                    ),
+                 subgraphs: Tuple[Subgraph, ...] = (
                      AttackerSuccessAdoptingEtcSubgraph(),
                      AttackerSuccessAdoptingInputCliqueSubgraph(),
                      AttackerSuccessAdoptingStubsAndMHSubgraph(),
@@ -52,9 +54,9 @@ class Simulation:
         mp_method: Multiprocessing method
         """
 
-        self.percent_adoptions: Tuple[int] = percent_adoptions
-        self.scenarios: Tuple[Scenario] = scenarios
-        self.subgraphs: Tuple[Subgraph] = subgraphs
+        self.percent_adoptions: Tuple[float, ...] = percent_adoptions
+        self.scenarios: Tuple[Scenario, ...] = scenarios
+        self.subgraphs: Tuple[Subgraph, ...] = subgraphs
         self.num_trials: int = num_trials
         self.propagation_rounds: int = propagation_rounds
         self.output_path: Path = output_path
@@ -78,7 +80,7 @@ class Simulation:
         """Writes subgraphs in graph_dir"""
 
         # init JSON and temporary directory
-        json_data: dict = dict()
+        json_data = dict()
         with TemporaryDirectory() as tmp_dir:
             # Write subgraph and add data to the JSON
             for subgraph in self.subgraphs:
@@ -116,7 +118,7 @@ class Simulation:
 # Multiprocessing Methods #
 ###########################
 
-    def _get_chunks(self, parse_cpus: int) -> List[Tuple[float, int]]:
+    def _get_chunks(self, parse_cpus: int) -> List[List[Tuple[float, int]]]:
         """Returns chunks of trial inputs based on number of CPUs running
 
         Not a generator since we need this for multiprocessing
@@ -127,11 +129,14 @@ class Simulation:
         """
 
         # https://stackoverflow.com/a/34032549/8903959
-        percents_trials = list(product(self.percent_adoptions,
-                                       list(range(self.num_trials))))
+        percents_trials = [tuple(x) for x in
+                           product(self.percent_adoptions,
+                                   list(range(self.num_trials)))]
 
         # https://stackoverflow.com/a/2136090/8903959
-        return [percents_trials[i::parse_cpus] for i in range(parse_cpus)]
+        # mypy can't seem to handle these types?
+        return [percents_trials[i::parse_cpus]  # type: ignore
+                for i in range(parse_cpus)]
 
     def _get_single_process_results(self) -> List[Tuple[Subgraph, ...]]:
         """Get all results when using single processing"""
@@ -144,7 +149,8 @@ class Simulation:
 
         # Pool is much faster than ProcessPoolExecutor
         with Pool(parse_cpus) as pool:
-            return pool.map(self._run_chunk, self._get_chunks(parse_cpus))
+            return pool.map(self._run_chunk,  # type: ignore
+                            self._get_chunks(parse_cpus))
 
 ############################
 # Data Aggregation Methods #
@@ -152,6 +158,8 @@ class Simulation:
 
     def _run_chunk(self,
                    percent_adopt_trials: List[Tuple[float, int]],
+                   # MUST leave as false. _get_mp_results depends on this
+                   # This should be fixed and this comment deleted
                    single_proc: bool = False
                    ) -> Tuple[Subgraph, ...]:
         """Runs a chunk of trial inputs"""
@@ -209,7 +217,7 @@ class Simulation:
         return subgraphs
 
     def _aggregate_engine_run_data(self,
-                                   subgraphs: Tuple[Subgraph],
+                                   subgraphs: Tuple[Subgraph, ...],
                                    **kwargs):
         """For each subgraph, aggregate data
 
@@ -218,6 +226,6 @@ class Simulation:
         Multiple subgraphs
         """
 
-        shared_data: dict = dict()
+        shared_data: Dict[Any, Any] = dict()
         for subgraph in subgraphs:
             subgraph.aggregate_engine_run_data(shared_data, **kwargs)

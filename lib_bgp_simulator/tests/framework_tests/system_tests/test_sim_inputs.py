@@ -46,10 +46,10 @@ def test_sim_inputs(AdoptASCls,
                     tmp_path):
     """Test basic functionality of process_incoming_anns"""
 
-    sim = Simulation(percent_adoptions=(0, 50, 100),
-                     scenarios=[ScenarioCls(AdoptASCls=AdoptASCls,
+    sim = Simulation(percent_adoptions=(0, .5, 1),
+                     scenarios=(ScenarioCls(AdoptASCls=AdoptASCls,
                                             BaseASCls=BaseASCls,
-                                            num_attackers=num_attackers)],
+                                            num_attackers=num_attackers)),
                      num_trials=2,
                      output_path=tmp_path / "test_sim_inputs",
                      parse_cpus=parse_cpus)

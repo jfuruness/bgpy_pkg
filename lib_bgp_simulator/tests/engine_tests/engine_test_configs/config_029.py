@@ -17,9 +17,8 @@ class Custom29MultiValidPrefix(ValidPrefix):
 
     def _get_announcements(self):
         """Returns several valid prefix announcements"""
+
         vic_anns = super()._get_announcements()
-        if vic_anns is None:
-            return None
 
         for i in range(len(vic_anns)):
             if vic_anns[i].origin == 5:

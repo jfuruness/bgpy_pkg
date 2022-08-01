@@ -1,3 +1,6 @@
+# type: ignore
+# This should be made compatible with mypy, but I have no time
+
 from copy import deepcopy
 from pathlib import Path
 from typing import List
@@ -5,6 +8,7 @@ from typing import List
 from PIL import Image
 
 from .diagram import Diagram
+from .engine_test_config import EngineTestConfig
 from .simulator_codec import SimulatorCodec
 from ....simulation_engine import SimulationEngine
 from ....simulation_framework import Subgraph
@@ -14,18 +18,18 @@ class EngineTester:
     """Tests an engine run"""
 
     def __init__(self,
-                 base_dir,
-                 conf,
-                 overwrite=False,
-                 codec=SimulatorCodec()):
+                 base_dir: Path,
+                 conf: EngineTestConfig,
+                 overwrite: bool = False,
+                 codec: SimulatorCodec = SimulatorCodec()):
         self.conf = conf
         self.overwrite = overwrite
         self.codec = codec
         # Needed to aggregate all diagrams
-        self.base_dir = base_dir
+        self.base_dir: Path = base_dir
         self.base_dir.mkdir(parents=True, exist_ok=True)
         # Creates directory for this specific test
-        self.test_dir = self.base_dir / self.conf.name
+        self.test_dir: Path = self.base_dir / self.conf.name
         self.test_dir.mkdir(exist_ok=True)
 
     def test_engine(self):
