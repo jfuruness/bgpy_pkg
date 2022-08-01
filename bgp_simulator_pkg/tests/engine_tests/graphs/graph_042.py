@@ -2,7 +2,7 @@ from caida_collector_pkg import CustomerProviderLink as CPLink
 
 
 from .graph_info import GraphInfo
-from lib_bgp_simulator.enums import ASNs
+from bgp_simulator_pkg.enums import ASNs
 
 
 class Graph042(GraphInfo):
