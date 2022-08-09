@@ -95,7 +95,8 @@ tox
 ## History
 * [bgp\_simulator\_pkg](#bgp_simulator_pkg)
 
-* 0.1.01 Added optional gao rexford kwargs to allow easier subclassing
+* 0.1.02 Removed slots from ASes since it does not increase speed, and now ASes with different slots can be interchanged
+* 0.1.01 Added optional gao rexford kwargs to allow easier subclassing (I undid this)
 * 0.1.0 Major refactor and name change. I believe this version will be stable. Deps saved.
 * 0.0.4 Major refactor
 * 0.0.2 Fixed dependencies so that they weren't relying off ssh, since github doesn't support pip installs with ssh and github actions failed

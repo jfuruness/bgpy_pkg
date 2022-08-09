@@ -32,7 +32,6 @@ slots = ("_local_rib", "_recv_q", "_ribs_in", "_ribs_out", "_send_q")
 
 
 class BGPSimpleAS(AS):
-    __slots__ = slots
 
     name: str = "BGP Simple"
     as_class_names: List[str] = []

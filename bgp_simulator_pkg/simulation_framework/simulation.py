@@ -42,7 +42,7 @@ class Simulation:
                      AttackerSuccessNonAdoptingInputCliqueSubgraph(),
                      AttackerSuccessNonAdoptingStubsAndMHSubgraph(),
                      AttackerSuccessAllSubgraph()),
-                 num_trials: int = 1,
+                 num_trials: int = 10,
                  propagation_rounds: int = 1,
                  output_path: Path = Path("/tmp/graphs"),
                  parse_cpus: int = 1):

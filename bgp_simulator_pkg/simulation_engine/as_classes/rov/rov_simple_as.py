@@ -6,8 +6,6 @@ from ...announcement import Announcement as Ann
 class ROVSimpleAS(BGPSimpleAS):
     """An AS that deploys ROV"""
 
-    __slots__ = ()
-
     name: str = "ROVSimple"
 
     # mypy doesn't understand that this func is valid

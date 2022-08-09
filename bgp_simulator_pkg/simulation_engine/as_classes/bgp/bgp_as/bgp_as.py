@@ -21,7 +21,6 @@ from .....enums import Relationships
 
 
 class BGPAS(BGPSimpleAS):
-    __slots__ = tuple()  # type: ignore
 
     name = "BGP"
 
