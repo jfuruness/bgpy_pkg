@@ -28,7 +28,8 @@ class Simulation:
                      for x in [ROVSimpleAS]]
                     ),
                  subgraphs: Tuple[Subgraph, ...] = tuple([
-                    Cls() for Cls in Subgraph.subclasses if Cls.name]),
+                    Cls() for Cls in  # type: ignore
+                    Subgraph.subclasses if Cls.name]),  # type: ignore
                  num_trials: int = 10,
                  propagation_rounds: int = 1,
                  output_path: Path = Path("/tmp/graphs"),
