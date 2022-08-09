@@ -13,13 +13,6 @@ from caida_collector_pkg import CaidaCollector
 from .scenarios import Scenario
 from .scenarios import SubprefixHijack
 from .subgraphs import Subgraph
-from .subgraphs import AttackerSuccessAdoptingEtcSubgraph
-from .subgraphs import AttackerSuccessAdoptingInputCliqueSubgraph
-from .subgraphs import AttackerSuccessAdoptingStubsAndMHSubgraph
-from .subgraphs import AttackerSuccessNonAdoptingEtcSubgraph
-from .subgraphs import AttackerSuccessNonAdoptingInputCliqueSubgraph
-from .subgraphs import AttackerSuccessNonAdoptingStubsAndMHSubgraph
-from .subgraphs import AttackerSuccessAllSubgraph
 from ..simulation_engine import BGPSimpleAS
 from ..simulation_engine import SimulationEngine
 from ..simulation_engine import ROVSimpleAS
@@ -34,14 +27,8 @@ class Simulation:
                     [SubprefixHijack(AdoptASCls=x)  # type: ignore
                      for x in [ROVSimpleAS]]
                     ),
-                 subgraphs: Tuple[Subgraph, ...] = (
-                     AttackerSuccessAdoptingEtcSubgraph(),
-                     AttackerSuccessAdoptingInputCliqueSubgraph(),
-                     AttackerSuccessAdoptingStubsAndMHSubgraph(),
-                     AttackerSuccessNonAdoptingEtcSubgraph(),
-                     AttackerSuccessNonAdoptingInputCliqueSubgraph(),
-                     AttackerSuccessNonAdoptingStubsAndMHSubgraph(),
-                     AttackerSuccessAllSubgraph()),
+                 subgraphs: Tuple[Subgraph, ...] = tuple([
+                    Cls() for Cls in Subgraph.subclasses if Cls.name]),
                  num_trials: int = 10,
                  propagation_rounds: int = 1,
                  output_path: Path = Path("/tmp/graphs"),

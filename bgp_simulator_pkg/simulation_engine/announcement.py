@@ -154,6 +154,10 @@ class Announcement(YamlAble):
 
         return {x: getattr(self, x) for x in self.all_slots}
 
+    def __hash__(self):
+        """Hash func. Needed for ROV++"""
+        return hash(str(self))
+
 ##############
 # Yaml funcs #
 ##############
