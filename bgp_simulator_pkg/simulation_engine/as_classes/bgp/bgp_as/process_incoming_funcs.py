@@ -1,4 +1,4 @@
-from typing import Optional, TYPE_CHECKING
+from typing import Any, Dict, Optional, TYPE_CHECKING
 
 from ....announcement import Announcement as Ann
 from .....enums import Relationships
@@ -15,7 +15,10 @@ def process_incoming_anns(self,
                           propagation_round: int,
                           # Usually None for attack
                           scenario: "Scenario",
-                          reset_q: bool = True):
+                          reset_q: bool = True,
+                          # Mostly used for subclasses to pass extra args
+                          # To gao rexford func
+                          gao_rexford_kwargs: Optional[Dict[Any, Any]] = None):
     """Process all announcements that were incoming from a specific rel"""
 
     for prefix, anns in self._recv_q.prefix_anns():
@@ -53,7 +56,9 @@ def process_incoming_anns(self,
                 self._ribs_in.add_unprocessed_ann(ann, from_rel)
             # Process withdrawals even for invalid anns in the ribs_in
             if ann.withdraw:
-                if self._process_incoming_withdrawal(ann, from_rel):
+                if self._process_incoming_withdrawal(ann,
+                                                     from_rel,
+                                                     gao_rexford_kwargs):
                     # the above will return true if the local rib is changed
                     updated_loc_rib_ann: Ann = self._local_rib.get_ann(prefix)
                     if current_processed:
@@ -65,7 +70,8 @@ def process_incoming_anns(self,
                             from_rel,
                             updated_loc_rib_ann,
                             True,
-                            updated_loc_rib_ann.recv_relationship)
+                            updated_loc_rib_ann.recv_relationship,
+                            gao_rexford_kwargs)
                         if new_ann_is_better:
                             current_ann = updated_loc_rib_ann
                             current_processed = True
@@ -74,7 +80,7 @@ def process_incoming_anns(self,
             elif self._valid_ann(ann, from_rel):
                 new_ann_is_better = self._new_ann_better(
                     current_ann, current_processed, from_rel,
-                    ann, False, from_rel)
+                    ann, False, from_rel, gao_rexford_kwargs)
 
                 # If the new priority is higher
                 if new_ann_is_better:
@@ -105,7 +111,9 @@ def process_incoming_anns(self,
 
 def _process_incoming_withdrawal(self,
                                  ann: Ann,
-                                 recv_relationship: Relationships) -> bool:
+                                 recv_relationship: Relationships,
+                                 gao_rexford_kwargs: Optional[Dict[Any, Any]]
+                                 ) -> bool:
     prefix: str = ann.prefix
     neighbor: int = ann.as_path[0]
     # Return if the current ann was seeded (for an attack)
@@ -139,7 +147,8 @@ def _process_incoming_withdrawal(self,
         # Also remove from neighbors
         self._withdraw_ann_from_neighbors(withdraw_ann)
 
-        best_ann: Optional[Ann] = self._select_best_ribs_in(prefix)
+        best_ann: Optional[Ann] = self._select_best_ribs_in(prefix,
+                                                            gao_rexford_kwargs)
 
         # Put new ann in local rib
         if best_ann is not None:
@@ -183,7 +192,10 @@ def _withdraw_ann_from_neighbors(self, withdraw_ann: Ann):
             send_info.ann = None
 
 
-def _select_best_ribs_in(self, prefix: str) -> Optional[Ann]:
+def _select_best_ribs_in(self,
+                         prefix: str,
+                         gao_rexford_kwargs: Optional[Dict[Any, Any]]
+                         ) -> Optional[Ann]:
     """Selects best ann from ribs in
 
     Remember, ribs in anns are NOT deep copied"""
@@ -199,7 +211,8 @@ def _select_best_ribs_in(self, prefix: str) -> Optional[Ann]:
                                 best_recv_relationship,
                                 new_unprocessed_ann,
                                 False,
-                                new_recv_relationship):
+                                new_recv_relationship,
+                                gao_rexford_kwargs):
             best_unprocessed_ann = new_unprocessed_ann
             best_recv_relationship = new_recv_relationship
 

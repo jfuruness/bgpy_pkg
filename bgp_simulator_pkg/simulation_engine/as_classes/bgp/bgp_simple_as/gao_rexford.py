@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Any, Dict, Optional
 
 from ....announcement import Announcement as Ann
 from .....enums import Relationships
@@ -18,6 +18,8 @@ def _new_ann_better(self,
                     new_processed: Relationships,
                     # Default recv rel if new ann is unprocessed
                     default_new_recv_rel: Relationships,
+                    # No op for default ASes
+                    gao_rexford_kwargs: Dict[Any, Any]
                     ) -> bool:
     """Determines if the new ann > current ann by Gao Rexford
 

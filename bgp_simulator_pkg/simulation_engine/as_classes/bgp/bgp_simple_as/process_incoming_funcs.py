@@ -22,8 +22,13 @@ def process_incoming_anns(self,
                           from_rel: Relationships,
                           propagation_round: int,
                           scenario: "Scenario",
-                          reset_q: bool = True):
+                          reset_q: bool = True,
+                          # Mainly used for subclasses, does nothing normally
+                          gao_rexford_kwargs: Optional[Dict[Any, Any]] = None):
     """Process all announcements that were incoming from a specific rel"""
+
+    if not gao_rexford_kwargs:
+        gao_rexford_kwargs = dict()
 
     # For each prefix, get all anns recieved
     for prefix, ann_list in self._recv_q.prefix_anns():
@@ -46,7 +51,8 @@ def process_incoming_anns(self,
                                                             from_rel,
                                                             ann,
                                                             False,
-                                                            from_rel)
+                                                            from_rel,
+                                                            gao_rexford_kwargs)
                 # If new ann is better, replace the current_ann with it
                 if new_ann_better:
                     current_ann = ann
