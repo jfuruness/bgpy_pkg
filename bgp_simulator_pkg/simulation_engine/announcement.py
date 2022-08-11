@@ -24,7 +24,7 @@ class Announcement(YamlAble):
                  prefix: str,
                  as_path: Tuple[int, ...],
                  timestamp: int,
-                 seed_asn: int,
+                 seed_asn: Optional[int],
                  roa_valid_length: Optional[bool],
                  roa_origin: Optional[int],
                  recv_relationship: Relationships,
@@ -34,7 +34,7 @@ class Announcement(YamlAble):
         self.prefix: str = prefix
         self.as_path: Tuple[int, ...] = as_path
         self.timestamp: int = timestamp
-        self.seed_asn: int = seed_asn
+        self.seed_asn: Optional[int] = seed_asn
         self.roa_valid_length: Optional[bool] = roa_valid_length
         self.roa_origin: Optional[int] = roa_origin
         self.recv_relationship: Relationships = recv_relationship
