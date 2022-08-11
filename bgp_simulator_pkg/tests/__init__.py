@@ -1,3 +1,5 @@
+from .conftest import pytest_addoption
+
 from .engine_tests import TestEngine
 from .engine_tests import EngineTester
 from .engine_tests import EngineTestConfig
@@ -53,6 +55,7 @@ from .engine_tests import Graph046
 
 
 __all__ = [
+    "pytest_addoption",
     "EngineTester",
     "EngineTestConfig",
     "TestEngine",

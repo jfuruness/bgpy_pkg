@@ -13,6 +13,8 @@ from .simulation_engine import Announcement
 from .tests import EngineTester
 from .tests import EngineTestConfig
 from .tests import GraphInfo
+from .tests import pytest_addoption
+from .tests.engine_tests import graphs
 
 from .enums import YamlAbleEnum
 from .enums import ROAValidity
@@ -81,4 +83,6 @@ __all__ = ["BGPAS",
            "EngineTester",
            "EngineTestConfig",
            "GraphInfo",
+           "pytest_addoption",
+           "graphs"
            ]
