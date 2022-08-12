@@ -108,7 +108,7 @@ class Announcement(YamlAble):
     def unknown_by_roa(self) -> bool:
         """Returns True if ann is not covered by roa"""
 
-        return self.origin is None
+        return not self.invalid_by_roa and not self.valid_by_roa
 
     @property
     def covered_by_roa(self) -> bool:
