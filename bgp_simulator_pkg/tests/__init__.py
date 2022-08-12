@@ -51,6 +51,43 @@ from .engine_tests import Graph044
 from .engine_tests import Graph045
 from .engine_tests import Graph046
 
+# Test configs
+from .engine_tests import Config001
+from .engine_tests import Config002
+from .engine_tests import Config003
+from .engine_tests import Config004
+from .engine_tests import Config005
+from .engine_tests import Config006
+from .engine_tests import Config007
+from .engine_tests import Config008
+from .engine_tests import Config009
+from .engine_tests import Config010
+from .engine_tests import Config011
+from .engine_tests import Config012
+from .engine_tests import Config013
+from .engine_tests import Config014
+from .engine_tests import Config015
+from .engine_tests import Config016
+from .engine_tests import Config017
+from .engine_tests import Config018
+from .engine_tests import Config019
+from .engine_tests import Config020
+from .engine_tests import Config021
+from .engine_tests import Config022
+from .engine_tests import Config023
+from .engine_tests import Config024
+from .engine_tests import Config025
+from .engine_tests import Config026
+from .engine_tests import Config027
+from .engine_tests import Config028
+from .engine_tests import Config029
+from .engine_tests import Config030
+from .engine_tests import Config031
+from .engine_tests import Config032
+from .engine_tests import Config033
+from .engine_tests import Config034
+
+
 
 __all__ = [
     "EngineTester",

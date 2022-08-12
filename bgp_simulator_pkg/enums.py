@@ -45,6 +45,8 @@ class Relationships(YamlAbleEnum):
     CUSTOMERS: int = 3
     # Origin must always remain
     ORIGIN: int = 4
+    # Unknown for external programs like extrapoaltor
+    UNKNOWN: int = 5
 
 
 class ROAValidity(YamlAbleEnum):

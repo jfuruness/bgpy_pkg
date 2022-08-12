@@ -42,6 +42,43 @@ from .simulation_framework import Subgraph
 from .simulation_framework import AttackerSuccessSubgraph
 from .simulation_framework import AttackerSuccessAllSubgraph
 
+# Test configs
+from .tests import Config001
+from .tests import Config002
+from .tests import Config003
+from .tests import Config004
+from .tests import Config005
+from .tests import Config006
+from .tests import Config007
+from .tests import Config008
+from .tests import Config009
+from .tests import Config010
+from .tests import Config011
+from .tests import Config012
+from .tests import Config013
+from .tests import Config014
+from .tests import Config015
+from .tests import Config016
+from .tests import Config017
+from .tests import Config018
+from .tests import Config019
+from .tests import Config020
+from .tests import Config021
+from .tests import Config022
+from .tests import Config023
+from .tests import Config024
+from .tests import Config025
+from .tests import Config026
+from .tests import Config027
+from .tests import Config028
+from .tests import Config029
+from .tests import Config030
+from .tests import Config031
+from .tests import Config032
+from .tests import Config033
+from .tests import Config034
+
+
 
 __all__ = ["BGPAS",
            "BGPSimpleAS",
