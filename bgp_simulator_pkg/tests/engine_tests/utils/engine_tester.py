@@ -82,6 +82,7 @@ class EngineTester:
         prev_scenario.non_default_as_cls_dict =\
             self.conf.non_default_as_cls_dict
         self.conf.scenario.setup_engine(engine, 0, prev_scenario)
+        print("SET UP ENGINE!")
         return engine
 
     def _store_yaml(self, engine, outcomes):
