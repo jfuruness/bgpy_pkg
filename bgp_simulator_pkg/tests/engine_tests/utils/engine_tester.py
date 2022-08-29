@@ -48,7 +48,7 @@ class EngineTester:
         # Get a fresh copy of the scenario
         scenario = deepcopy(self.conf.scenario)
         # Get's an engine that has been set up
-        engine = self._get_engine()
+        engine = self._get_engine(scenario)
         # Run engine
         for propagation_round in range(self.conf.propagation_rounds):
             engine.run(propagation_round=propagation_round,
@@ -60,7 +60,7 @@ class EngineTester:
             scenario.post_propagation_hook(**kwargs)
 
         # Get traceback results {AS: Outcome}
-        outcomes = Subgraph()._get_engine_outcomes(engine, self.conf.scenario)
+        outcomes = Subgraph()._get_engine_outcomes(engine, scenario)
         # Convert this to just be {ASN: Outcome} (Not the AS object)
         outcomes = {as_obj.asn: result for as_obj, result in outcomes.items()}
         # Store engine and traceback YAML
@@ -70,19 +70,18 @@ class EngineTester:
         # Compare the YAML's together
         self._compare_yaml()
 
-    def _get_engine(self):
+    def _get_engine(self, scenario):
         """Creates and engine and sets it up for runs"""
 
         engine = SimulationEngine(
-            BaseASCls=self.conf.scenario.BaseASCls,
+            BaseASCls=scenario.BaseASCls,
             peer_links=self.conf.graph.peer_links,
             cp_links=self.conf.graph.customer_provider_links)
 
-        prev_scenario = deepcopy(self.conf.scenario)
+        prev_scenario = deepcopy(scenario)
         prev_scenario.non_default_as_cls_dict =\
             self.conf.non_default_as_cls_dict
-        self.conf.scenario.setup_engine(engine, 0, prev_scenario)
-        print("SET UP ENGINE!")
+        scenario.setup_engine(engine, 0, prev_scenario)
         return engine
 
     def _store_yaml(self, engine, outcomes):
