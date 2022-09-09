@@ -48,7 +48,7 @@ class SubprefixHijack(Scenario):
                                     as_path=(attacker_asn,),
                                     timestamp=Timestamps.ATTACKER.value,
                                     seed_asn=attacker_asn,
-                                    roa_valid_length=True,
+                                    roa_valid_length=False,
                                     roa_origin=roa_origin,
                                     recv_relationship=Relationships.ORIGIN))
 
