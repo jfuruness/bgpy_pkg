@@ -88,7 +88,11 @@ from .graphs import Graph043
 from .graphs import Graph044
 from .graphs import Graph045
 from .graphs import Graph046
-
+from .graphs import Graph047
+from .graphs import Graph048
+from .graphs import Graph049
+from .graphs import Graph050
+from .graphs import Graph051
 
 __all__ = [
     "EngineTestConfig",
@@ -141,5 +145,10 @@ __all__ = [
     "Graph043",
     "Graph044",
     "Graph045",
-    "Graph046"
+    "Graph046",
+    "Graph047",
+    "Graph048",
+    "Graph049",
+    "Graph050",
+    "Graph051",
 ]
