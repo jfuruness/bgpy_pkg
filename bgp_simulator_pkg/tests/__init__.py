@@ -52,6 +52,11 @@ from .engine_tests import Graph043
 from .engine_tests import Graph044
 from .engine_tests import Graph045
 from .engine_tests import Graph046
+from .engine_tests import Graph047
+from .engine_tests import Graph048
+from .engine_tests import Graph049
+from .engine_tests import Graph050
+from .engine_tests import Graph051
 
 # Test configs
 from .engine_tests import Config001
@@ -143,5 +148,10 @@ __all__ = [
     "Graph043",
     "Graph044",
     "Graph045",
-    "Graph046"
+    "Graph046",
+    "Graph047",
+    "Graph048",
+    "Graph049",
+    "Graph050",
+    "Graph051"
 ]
