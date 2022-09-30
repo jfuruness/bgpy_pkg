@@ -13,7 +13,8 @@ class Line:
         """Stores info aobut a line in a graph"""
 
         # {percent_adopt: [percentages]}
-        self.percent_adopt_dict: Dict[float, List[float]] = percent_adopt_dict
+        self.percent_adopt_dict: Dict[float, List[float]] = {
+            k: v for k, v in sorted(percent_adopt_dict.items())}
         self.label: str = scenario_label
         self.xs: List[float] = self._get_xs()
         self.ys: List[float] = self._get_ys()

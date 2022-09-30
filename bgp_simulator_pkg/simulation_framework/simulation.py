@@ -30,10 +30,10 @@ class Simulation:
                  subgraphs: Tuple[Subgraph, ...] = tuple([
                     Cls() for Cls in  # type: ignore
                     Subgraph.subclasses if Cls.name]),  # type: ignore
-                 num_trials: int = 10,
+                 num_trials: int = 2,
                  propagation_rounds: int = 1,
                  output_path: Path = Path("/tmp/graphs"),
-                 parse_cpus: int = 1):
+                 parse_cpus: int = 8):
         """Downloads relationship data, runs simulation
 
         Graphs -> A list of graph classes
