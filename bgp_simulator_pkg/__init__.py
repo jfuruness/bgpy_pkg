@@ -29,6 +29,7 @@ from .simulation_framework import PrefixHijack
 from .simulation_framework import SubprefixHijack
 from .simulation_framework import NonRoutedPrefixHijack
 from .simulation_framework import NonRoutedSuperprefixHijack
+from .simulation_framework import NonRoutedSuperprefixPrefixHijack
 from .simulation_framework import SuperprefixPrefixHijack
 from .simulation_framework import ValidPrefix
 
@@ -103,6 +104,7 @@ __all__ = ["BGPAS",
            "SubprefixHijack",
            "NonRoutedPrefixHijack",
            "NonRoutedSuperprefixHijack",
+           "NonRoutedSuperprefixPrefixHijack",
            "SuperprefixPrefixHijack",
            "ValidPrefix",
            "Simulation",

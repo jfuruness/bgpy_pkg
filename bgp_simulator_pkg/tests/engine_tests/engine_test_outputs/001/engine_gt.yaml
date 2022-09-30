@@ -52,7 +52,7 @@
         name: PEERS
         value: 2
       roa_origin: 777
-      roa_valid_length: true
+      roa_valid_length: false
       seed_asn: null
       timestamp: 1
       traceback_end: false
@@ -95,7 +95,7 @@
         name: CUSTOMERS
         value: 3
       roa_origin: 777
-      roa_valid_length: true
+      roa_valid_length: false
       seed_asn: null
       timestamp: 1
       traceback_end: false
@@ -137,7 +137,7 @@
         name: ORIGIN
         value: 4
       roa_origin: 777
-      roa_valid_length: true
+      roa_valid_length: false
       seed_asn: 666
       timestamp: 1
       traceback_end: false
@@ -178,7 +178,7 @@
         name: PROVIDERS
         value: 1
       roa_origin: 777
-      roa_valid_length: true
+      roa_valid_length: false
       seed_asn: null
       timestamp: 1
       traceback_end: false
