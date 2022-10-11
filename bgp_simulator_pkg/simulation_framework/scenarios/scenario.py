@@ -4,6 +4,7 @@ from ipaddress import ip_network
 from ipaddress import IPv4Network
 from ipaddress import IPv6Network
 from typing import Any, Dict, List, Optional, Set, Tuple, Type, Union
+from warnings import warn
 
 from caida_collector_pkg import AS
 
@@ -128,10 +129,16 @@ class Scenario(ABC):
                                         percent_adoption,
                                         prev_scenario)
         # Must call this here due to atk/vic pair being different
-        self.announcements = self._get_announcements(
-            engine=engine,
-            percent_adoption=percent_adoption,
-            prev_scenario=prev_scenario)
+        try:
+            self.announcements = self._get_announcements(
+                engine=engine,
+                percent_adoption=percent_adoption,
+                prev_scenario=prev_scenario)
+        except TypeError:
+            self.announcements = self._get_announcements()
+            warn("Add *args and **kwargs to your _get_announcements func",
+                 DeprecationWarning,
+                 stacklevel=2)
         self._get_ordered_prefix_subprefix_dict()
 
     def _set_attackers_victims(self, *args, **kwargs):
