@@ -136,7 +136,8 @@ class Scenario(ABC):
                 prev_scenario=prev_scenario)
         except TypeError:
             self.announcements = self._get_announcements()
-            warn("Add *args and **kwargs to your _get_announcements func",
+            warn("Add *args and **kwargs to your _get_announcements func"
+                 ", this will break in November",
                  DeprecationWarning,
                  stacklevel=2)
         self._get_ordered_prefix_subprefix_dict()
