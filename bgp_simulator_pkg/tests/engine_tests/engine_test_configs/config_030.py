@@ -16,7 +16,7 @@ class Custom30MultiValidPrefix(ValidPrefix):
 
     __slots__ = ()
 
-    def _get_announcements(self):
+    def _get_announcements(self, *args, **kwargs):
         """Returns several valid prefix announcements"""
 
         vic_anns = super()._get_announcements()
