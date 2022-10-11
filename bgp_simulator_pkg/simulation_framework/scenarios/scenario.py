@@ -128,7 +128,10 @@ class Scenario(ABC):
                                         percent_adoption,
                                         prev_scenario)
         # Must call this here due to atk/vic pair being different
-        self.announcements = self._get_announcements()
+        self.announcements = self._get_announcements(
+            engine=engine,
+            percent_adoption=percent_adoption,
+            prev_scenario=prev_scenario)
         self._get_ordered_prefix_subprefix_dict()
 
     def _set_attackers_victims(self, *args, **kwargs):
@@ -182,7 +185,7 @@ class Scenario(ABC):
         return engine.stub_or_mh_asns
 
     @abstractmethod
-    def _get_announcements(self):
+    def _get_announcements(self, *args, **kwargs):
         """Returns announcements"""
 
         raise NotImplementedError

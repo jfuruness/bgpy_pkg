@@ -19,7 +19,7 @@ class NonRoutedSuperprefixHijack(Scenario):
 
     __slots__ = ()  # type: ignore
 
-    def _get_announcements(self) -> Tuple["Announcement", ...]:
+    def _get_announcements(self, *args, **kwargs) -> Tuple["Announcement", ...]:
         """Returns a superprefix announcement for this engine input
 
         for subclasses of this EngineInput, you can set AnnCls equal to

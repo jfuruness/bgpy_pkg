@@ -34,7 +34,6 @@ def process_incoming_anns(self,
         # Seeded Ann will never be overriden, so continue
         if getattr(current_ann, "seed_asn", None) is not None:
             continue
-
         # For each announcement that was incoming
         for ann in ann_list:
             # Make sure there are no loops
