@@ -4,9 +4,6 @@ from .engine_tests import TestEngine
 from .engine_tests import EngineTester
 from .engine_tests import EngineTestConfig
 
-# Test configs
-from .engine_tests import Config001
-
 # Graphs
 from .engine_tests import GraphInfo
 from .engine_tests import Graph001
@@ -95,13 +92,45 @@ from .engine_tests import Config033
 from .engine_tests import Config034
 
 
-
 __all__ = [
     "pytest_addoption",
     "EngineTester",
     "EngineTestConfig",
     "TestEngine",
     "Config001",
+    "Config002",
+    "Config003",
+    "Config004",
+    "Config005",
+    "Config006",
+    "Config007",
+    "Config008",
+    "Config009",
+    "Config010",
+    "Config011",
+    "Config012",
+    "Config013",
+    "Config014",
+    "Config015",
+    "Config016",
+    "Config017",
+    "Config018",
+    "Config019",
+    "Config020",
+    "Config021",
+    "Config022",
+    "Config023",
+    "Config024",
+    "Config025",
+    "Config026",
+    "Config027",
+    "Config028",
+    "Config029",
+    "Config030",
+    "Config031",
+    "Config032",
+    "Config033",
+    "Config034",
     "GraphInfo",
     "Graph001",
     "Graph002",

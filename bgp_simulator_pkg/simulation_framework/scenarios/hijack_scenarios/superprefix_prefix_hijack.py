@@ -21,7 +21,10 @@ class SuperprefixPrefixHijack(Scenario):
 
     __slots__ = ()
 
-    def _get_announcements(self, *args, **kwargs) -> Tuple["Announcement", ...]:
+    def _get_announcements(self,
+                           *args,
+                           **kwargs
+                           ) -> Tuple["Announcement", ...]:
         """Returns victim+attacker prefix ann, attacker superprefix ann
 
         for subclasses of this EngineInput, you can set AnnCls equal to

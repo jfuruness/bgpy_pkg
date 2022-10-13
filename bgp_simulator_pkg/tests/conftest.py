@@ -3,25 +3,27 @@ import subprocess
 
 import pytest
 
-
-# https://stackoverflow.com/a/40673918/8903959
-@pytest.fixture(scope="session", autouse=True)
-def open_pdf(view):
-    """Runs at the end of all tests"""
-
-    # Setup stuff
-    yield
-    # Teardown stuff (open PDF for viewing)
-    if view:
-        # https://stackoverflow.com/q/19453338/8903959
-        dir_ = Path(__file__).parent / "engine_tests"
-        path = dir_ / "engine_test_outputs" / "aggregated_diagrams.pdf"
-        subprocess.call(["xdg-open", str(path)])
+from .engine_tests import DiagramAggregator
 
 
-@pytest.fixture(scope="session")
-def view(pytestconfig):
-    return pytestconfig.getoption("view")
+DIAGRAM_PATH = Path(__file__).parent / "engine_tests" / "engine_test_outputs"
+
+
+def pytest_sessionfinish(session, exitstatus):
+    """Runs when all tests are done, once per session, even with xdist
+
+    https://github.com/pytest-dev/pytest-xdist/issues/271#issuecomment-826396320  # noqa
+    """
+
+    # Only run in master thread after all other threads/tests have finished
+    # Also runs when xdist isn't running
+    if not hasattr(session.config, "workerinput"):
+        DiagramAggregator(DIAGRAM_PATH).aggregate_diagrams()
+        # Teardown stuff (open PDF for viewing)
+        if session.config.getoption("view"):
+            # https://stackoverflow.com/q/19453338/8903959
+            agg_path = DiagramAggregator(DIAGRAM_PATH).aggregated_diagrams_path
+            subprocess.call(["xdg-open", str(agg_path)])
 
 
 @pytest.fixture(scope="session")

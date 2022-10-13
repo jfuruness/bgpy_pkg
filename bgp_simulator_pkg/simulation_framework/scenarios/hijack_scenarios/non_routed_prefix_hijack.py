@@ -16,7 +16,10 @@ class NonRoutedPrefixHijack(Scenario):
 
     __slots__ = ()
 
-    def _get_announcements(self, *args, **kwargs) -> Tuple["Announcement", ...]:
+    def _get_announcements(self,
+                           *args,
+                           **kwargs
+                           ) -> Tuple["Announcement", ...]:
         """Returns non routed prefix announcement from attacker
 
         for subclasses of this EngineInput, you can set AnnCls equal to

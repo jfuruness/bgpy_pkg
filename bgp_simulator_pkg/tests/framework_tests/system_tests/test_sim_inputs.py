@@ -9,7 +9,9 @@ from ....simulation_engine import ROVSimpleAS
 
 from ....simulation_framework import NonRoutedPrefixHijack
 from ....simulation_framework import NonRoutedSuperprefixHijack
+from ....simulation_framework import NonRoutedSuperprefixPrefixHijack
 from ....simulation_framework import PrefixHijack
+from ....simulation_framework import ValidPrefix
 from ....simulation_framework import SubprefixHijack
 from ....simulation_framework import SuperprefixPrefixHijack
 
@@ -18,9 +20,12 @@ from ....simulation_framework import Simulation
 AS_CLASSES = (BGPSimpleAS, BGPAS, ROVAS, ROVSimpleAS)
 SCENARIOS = (NonRoutedPrefixHijack,
              NonRoutedSuperprefixHijack,
+             NonRoutedSuperprefixPrefixHijack,
              PrefixHijack,
              SubprefixHijack,
-             SuperprefixPrefixHijack)
+             SuperprefixPrefixHijack,
+             ValidPrefix,
+             )
 NUM_ATTACKERS = (1, 2)
 PARSE_CPUS = (1, 2)
 

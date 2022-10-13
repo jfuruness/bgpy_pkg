@@ -15,7 +15,10 @@ class ValidPrefix(Scenario):
 
     __slots__ = ()
 
-    def _get_announcements(self, *args, **kwargs) -> Tuple["Announcement", ...]:
+    def _get_announcements(self,
+                           *args,
+                           **kwargs
+                           ) -> Tuple["Announcement", ...]:
         """Returns a valid prefix announcement
 
         for subclasses of this EngineInput, you can set AnnCls equal to

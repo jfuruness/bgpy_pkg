@@ -377,8 +377,10 @@ class Scenario(ABC):
         """
 
         for ann in self.announcements:
+            assert ann.seed_asn is not None
             # Get the AS object to seed at
-            obj_to_seed = engine.as_dict[ann.seed_asn]
+            # Must ignore type because it doesn't see assert above
+            obj_to_seed = engine.as_dict[ann.seed_asn]  # type: ignore
             # Ensure we aren't replacing anything
             err = "Seeding conflict"
             assert obj_to_seed._local_rib.get_ann(ann.prefix) is None, err

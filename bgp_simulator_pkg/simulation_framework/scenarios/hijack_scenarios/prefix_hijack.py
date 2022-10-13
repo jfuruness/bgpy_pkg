@@ -15,7 +15,10 @@ class PrefixHijack(Scenario):
 
     __slots__ = ()
 
-    def _get_announcements(self, *args, **kwargs) -> Tuple["Announcement", ...]:
+    def _get_announcements(self,
+                           *args,
+                           **kwargs
+                           ) -> Tuple["Announcement", ...]:
         """Returns the two announcements seeded for this engine input
 
         This engine input is for a prefix hijack,

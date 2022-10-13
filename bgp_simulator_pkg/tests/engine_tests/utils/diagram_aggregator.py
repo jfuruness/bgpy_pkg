@@ -1,0 +1,52 @@
+
+# This should be made compatible with mypy, but I have no time
+
+from pathlib import Path
+from typing import List
+
+from PIL import Image
+
+
+class DiagramAggregator:
+    """Aggregates diagrams"""
+
+    def __init__(self, base_dir: Path):
+        # Needed to aggregate all diagrams
+        self.base_dir: Path = base_dir
+        self.base_dir.mkdir(parents=True, exist_ok=True)
+
+    def aggregate_diagrams(self):
+        """Aggregates all test diagrams for readability into a PDF"""
+
+        # Because we have too many tests, we need to aggregate them for
+        # readability
+        # https://stackoverflow.com/a/47283224/8903959
+        images = [Image.open(x) for x in self.image_paths]
+        converted_images = list()
+        for img in images:
+            if img.mode == "RGBA":
+                converted_images.append(img.convert("RGB"))
+                img.close()
+            else:
+                converted_images.append(img)
+
+        # Aggregate all images into a PDF
+        converted_images[0].save(self.aggregated_diagrams_path,
+                                 "PDF",
+                                 resolution=100.0,
+                                 save_all=True,
+                                 append_images=converted_images[1:])
+        for img in converted_images:
+            img.close()
+
+    @property
+    def aggregated_diagrams_path(self) -> Path:
+        """Returns the path to the aggregated diagrams PDF"""
+
+        return self.base_dir / "aggregated_diagrams.pdf"
+
+    @property
+    def image_paths(self) -> List[Path]:
+        """Returns paths as strings for all images"""
+
+        return list(sorted(self.base_dir.glob("*/*png")))

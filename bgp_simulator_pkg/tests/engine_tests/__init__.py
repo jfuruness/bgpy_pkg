@@ -1,4 +1,5 @@
 from .test_engine import TestEngine
+from .utils import DiagramAggregator
 from .utils import EngineTestConfig
 from .utils import EngineTester
 
@@ -37,7 +38,6 @@ from .engine_test_configs import Config031
 from .engine_test_configs import Config032
 from .engine_test_configs import Config033
 from .engine_test_configs import Config034
-
 
 
 # Graphs
@@ -95,10 +95,44 @@ from .graphs import Graph050
 from .graphs import Graph051
 
 __all__ = [
+    "DiagramAggregator",
     "EngineTestConfig",
     "EngineTester",
     "TestEngine",
     "Config001",
+    "Config002",
+    "Config003",
+    "Config004",
+    "Config005",
+    "Config006",
+    "Config007",
+    "Config008",
+    "Config009",
+    "Config010",
+    "Config011",
+    "Config012",
+    "Config013",
+    "Config014",
+    "Config015",
+    "Config016",
+    "Config017",
+    "Config018",
+    "Config019",
+    "Config020",
+    "Config021",
+    "Config022",
+    "Config023",
+    "Config024",
+    "Config025",
+    "Config026",
+    "Config027",
+    "Config028",
+    "Config029",
+    "Config030",
+    "Config031",
+    "Config032",
+    "Config033",
+    "Config034",
     "GraphInfo",
     "Graph001",
     "Graph002",

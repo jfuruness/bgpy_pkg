@@ -1,11 +1,8 @@
-# type: ignore
+
 # This should be made compatible with mypy, but I have no time
 
 from copy import deepcopy
 from pathlib import Path
-from typing import List
-
-from PIL import Image
 
 from .diagram import Diagram
 from .engine_test_config import EngineTestConfig
@@ -29,7 +26,7 @@ class EngineTester:
         self.base_dir: Path = base_dir
         self.base_dir.mkdir(parents=True, exist_ok=True)
         # Creates directory for this specific test
-        self.test_dir: Path = self.base_dir / self.conf.name
+        self.test_dir: Path = self.base_dir / self.conf.name  # type: ignore
         self.test_dir.mkdir(exist_ok=True)
 
     def test_engine(self):
@@ -46,11 +43,12 @@ class EngineTester:
         """
 
         # Get a fresh copy of the scenario
-        scenario = deepcopy(self.conf.scenario)
+        scenario = deepcopy(self.conf.scenario)  # type: ignore
         # Get's an engine that has been set up
         engine = self._get_engine(scenario)
         # Run engine
-        for propagation_round in range(self.conf.propagation_rounds):
+        for propagation_round in range(
+                self.conf.propagation_rounds):  # type: ignore
             engine.run(propagation_round=propagation_round,
                        scenario=scenario)
             kwargs = {"engine": engine,
@@ -62,9 +60,10 @@ class EngineTester:
         # Get traceback results {AS: Outcome}
         outcomes = Subgraph()._get_engine_outcomes(engine, scenario)
         # Convert this to just be {ASN: Outcome} (Not the AS object)
-        outcomes = {as_obj.asn: result for as_obj, result in outcomes.items()}
+        outcomes_yaml = {as_obj.asn: result for as_obj, result
+                         in outcomes.items()}
         # Store engine and traceback YAML
-        self._store_yaml(engine, outcomes)
+        self._store_yaml(engine, outcomes_yaml)
         # Create diagrams before the test can fail
         self._generate_diagrams()
         # Compare the YAML's together
@@ -75,12 +74,12 @@ class EngineTester:
 
         engine = SimulationEngine(
             BaseASCls=scenario.BaseASCls,
-            peer_links=self.conf.graph.peer_links,
-            cp_links=self.conf.graph.customer_provider_links)
+            peer_links=self.conf.graph.peer_links,  # type: ignore
+            cp_links=self.conf.graph.customer_provider_links)  # type: ignore
 
         prev_scenario = deepcopy(scenario)
         prev_scenario.non_default_as_cls_dict =\
-            self.conf.non_default_as_cls_dict
+            self.conf.non_default_as_cls_dict  # type: ignore
         scenario.setup_engine(engine, 0, prev_scenario)
         return engine
 
@@ -114,45 +113,20 @@ class EngineTester:
         # Write guess graph
         Diagram().generate_as_graph(
             engine_guess,
-            self.conf.scenario,
+            self.conf.scenario,  # type: ignore
             outcomes_guess,
-            f"({self.conf.name} Guess)\n{self.conf.desc}",
+            f"({self.conf.name} Guess)\n{self.conf.desc}",  # type: ignore
             path=self.test_dir / "guess.gv",
             view=False)
         # Write ground truth graph
         Diagram().generate_as_graph(
             engine_gt,
-            self.conf.scenario,
+            self.conf.scenario,  # type: ignore
             outcomes_gt,
-            f"({self.conf.name} Ground Truth)\n{self.conf.desc}",
+            f"({self.conf.name} Ground Truth)\n"  # type: ignore
+            f"{self.conf.desc}",  # type: ignore
             path=self.test_dir / "ground_truth.gv",
             view=False)
-        # Aggregate all tests
-        self._aggregate_diagrams()
-
-    def _aggregate_diagrams(self):
-        """Aggregates all test diagrams for readability into a PDF"""
-
-        # Because we have too many tests, we need to aggregate them for
-        # readability
-        # https://stackoverflow.com/a/47283224/8903959
-        images = [Image.open(x) for x in self.image_paths]
-        converted_images = list()
-        for img in images:
-            if img.mode == "RGBA":
-                converted_images.append(img.convert("RGB"))
-                img.close()
-            else:
-                converted_images.append(img)
-
-        # Aggregate all images into a PDF
-        converted_images[0].save(self.aggregated_diagrams_path,
-                                 "PDF",
-                                 resolution=100.0,
-                                 save_all=True,
-                                 append_images=converted_images[1:])
-        for img in converted_images:
-            img.close()
 
     def _compare_yaml(self):
         """Compares YAML for ground truth vs guess for engine and outcomes"""
@@ -193,15 +167,3 @@ class EngineTester:
         """Returns the path to the outcomes guess YAML"""
 
         return self.test_dir / "outcomes_guess.yaml"
-
-    @property
-    def aggregated_diagrams_path(self) -> Path:
-        """Returns the path to the aggregated diagrams PDF"""
-
-        return self.base_dir / "aggregated_diagrams.pdf"
-
-    @property
-    def image_paths(self) -> List[Path]:
-        """Returns paths as strings for all images"""
-
-        return list(sorted(self.base_dir.glob("*/*png")))
