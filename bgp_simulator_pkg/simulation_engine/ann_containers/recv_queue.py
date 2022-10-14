@@ -39,7 +39,7 @@ class RecvQueue(AnnContainer):
 
         return self._info.items()
 
-    def get_ann_list(self, prefix: Prefixes) -> List[Ann]:
+    def get_ann_list(self, prefix: str) -> List[Ann]:
         """Returns recevied ann list for a given prefix"""
 
         # mypy can't handle this, just ignore
