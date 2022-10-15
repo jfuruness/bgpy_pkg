@@ -2,6 +2,19 @@ from __future__ import annotations
 from typing import List, Type
 
 
+def unique_names_msg(names) -> str:
+    """Returns which names are not unique"""
+
+    bad_names = set()
+    single_name_set = set()
+    for name in names:
+        if name in single_name_set:
+            bad_names.add(name)
+        else:
+            single_name_set.add(name)
+    return f'{", ".join(bad_names)} not unique config names'
+
+
 class EngineTestConfig:
 
     subclasses: List[Type["EngineTestConfig"]] = list()
@@ -28,4 +41,4 @@ class EngineTestConfig:
         # Ignore type since all subclasses must have names
         # Mypy doesn't recognize that this class is not a subclass
         names = [x.name for x in cls.subclasses]  # type: ignore
-        assert len(set(names)) == len(names), "Duplicate test config names"
+        assert len(set(names)) == len(names), unique_names_msg(names)
