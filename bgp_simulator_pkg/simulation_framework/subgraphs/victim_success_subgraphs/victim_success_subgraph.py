@@ -8,7 +8,7 @@ if TYPE_CHECKING:
     from ...scenarios import Scenario
 
 
-class DisconnectedSubgraph(Subgraph):
+class VictimSuccessSubgraph(Subgraph):
     """A subgraph for data display"""
 
     @abstractmethod

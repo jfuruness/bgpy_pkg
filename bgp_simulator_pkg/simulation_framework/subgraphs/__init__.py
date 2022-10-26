@@ -31,6 +31,21 @@ from .disconnected_subgraphs import\
     DisconnectedNonAdoptingStubsAndMHSubgraph
 from .disconnected_subgraphs import DisconnectedAllSubgraph
 
+from .victim_success_subgraphs import\
+    VictimSuccessSubgraph
+from .victim_success_subgraphs import\
+    VictimSuccessAdoptingEtcSubgraph
+from .victim_success_subgraphs import\
+    VictimSuccessAdoptingInputCliqueSubgraph
+from .victim_success_subgraphs import\
+    VictimSuccessAdoptingStubsAndMHSubgraph
+from .victim_success_subgraphs import\
+    VictimSuccessNonAdoptingEtcSubgraph
+from .victim_success_subgraphs import\
+    VictimSuccessNonAdoptingInputCliqueSubgraph
+from .victim_success_subgraphs import\
+    VictimSuccessNonAdoptingStubsAndMHSubgraph
+from .victim_success_subgraphs import VictimSuccessAllSubgraph
 
 from .subgraph import Subgraph
 
@@ -51,4 +66,12 @@ __all__ = ["AttackerSuccessAdoptingEtcSubgraph",
            "DisconnectedNonAdoptingStubsAndMHSubgraph",
            "DisconnectedSubgraph",
            "DisconnectedAllSubgraph",
+           "VictimSuccessAdoptingEtcSubgraph",
+           "VictimSuccessAdoptingInputCliqueSubgraph",
+           "VictimSuccessAdoptingStubsAndMHSubgraph",
+           "VictimSuccessNonAdoptingEtcSubgraph",
+           "VictimSuccessNonAdoptingInputCliqueSubgraph",
+           "VictimSuccessNonAdoptingStubsAndMHSubgraph",
+           "VictimSuccessSubgraph",
+           "VictimSuccessAllSubgraph",
            "Subgraph"]

@@ -1,13 +1,13 @@
-from ..disconnected_subgraph import DisconnectedSubgraph
+from ..victim_success_subgraph import VictimSuccessSubgraph
 from .....enums import ASTypes
 from .....enums import Outcomes
 from ....scenarios import Scenario
 
 
-class DisconnectedAdoptingInputCliqueSubgraph(DisconnectedSubgraph):
+class VictimSuccessAdoptingInputCliqueSubgraph(VictimSuccessSubgraph):
     """Graph with attacker success for adopting input clique ASes"""
 
-    name: str = "disconnected_adopting_input_clique"
+    name: str = "victim_success_adopting_input_clique"
 
     def _get_subgraph_key(self,
                           scenario: Scenario,
@@ -16,10 +16,10 @@ class DisconnectedAdoptingInputCliqueSubgraph(DisconnectedSubgraph):
 
         return self._get_as_type_pol_outcome_perc_k(ASTypes.INPUT_CLIQUE,
                                                     scenario.AdoptASCls,
-                                                    Outcomes.DISCONNECTED)
+                                                    Outcomes.VICTIM_SUCCESS)
 
     @property
     def y_axis_label(self) -> str:
         """returns y axis label"""
 
-        return Outcomes.DISCONNECTED.name
+        return Outcomes.VICTIM_SUCCESS.name

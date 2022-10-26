@@ -27,6 +27,16 @@ from .subgraphs import DisconnectedNonAdoptingStubsAndMHSubgraph
 from .subgraphs import DisconnectedSubgraph
 from .subgraphs import DisconnectedAllSubgraph
 
+from .subgraphs import VictimSuccessAdoptingEtcSubgraph
+from .subgraphs import VictimSuccessAdoptingInputCliqueSubgraph
+from .subgraphs import VictimSuccessAdoptingStubsAndMHSubgraph
+from .subgraphs import VictimSuccessNonAdoptingEtcSubgraph
+from .subgraphs import VictimSuccessNonAdoptingInputCliqueSubgraph
+from .subgraphs import VictimSuccessNonAdoptingStubsAndMHSubgraph
+from .subgraphs import VictimSuccessSubgraph
+from .subgraphs import VictimSuccessAllSubgraph
+
+
 from .subgraphs import Subgraph
 
 
@@ -55,4 +65,12 @@ __all__ = ["Scenario",
            "DisconnectedNonAdoptingStubsAndMHSubgraph",
            "DisconnectedSubgraph",
            "DisconnectedAllSubgraph",
+           "VictimSuccessAdoptingEtcSubgraph",
+           "VictimSuccessAdoptingInputCliqueSubgraph",
+           "VictimSuccessAdoptingStubsAndMHSubgraph",
+           "VictimSuccessNonAdoptingEtcSubgraph",
+           "VictimSuccessNonAdoptingInputCliqueSubgraph",
+           "VictimSuccessNonAdoptingStubsAndMHSubgraph",
+           "VictimSuccessSubgraph",
+           "VictimSuccessAllSubgraph",
            "Subgraph"]

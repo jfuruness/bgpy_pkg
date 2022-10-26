@@ -55,6 +55,15 @@ from .simulation_framework import DisconnectedNonAdoptingStubsAndMHSubgraph
 from .simulation_framework import DisconnectedSubgraph
 from .simulation_framework import DisconnectedAllSubgraph
 
+from .simulation_framework import VictimSuccessAdoptingEtcSubgraph
+from .simulation_framework import VictimSuccessAdoptingInputCliqueSubgraph
+from .simulation_framework import VictimSuccessAdoptingStubsAndMHSubgraph
+from .simulation_framework import VictimSuccessNonAdoptingEtcSubgraph
+from .simulation_framework import VictimSuccessNonAdoptingInputCliqueSubgraph
+from .simulation_framework import VictimSuccessNonAdoptingStubsAndMHSubgraph
+from .simulation_framework import VictimSuccessSubgraph
+from .simulation_framework import VictimSuccessAllSubgraph
+
 
 # Test configs
 from .tests import Config001
@@ -136,6 +145,14 @@ __all__ = ["BGPAS",
            "DisconnectedNonAdoptingStubsAndMHSubgraph",
            "DisconnectedSubgraph",
            "DisconnectedAllSubgraph",
+           "VictimSuccessAdoptingEtcSubgraph",
+           "VictimSuccessAdoptingInputCliqueSubgraph",
+           "VictimSuccessAdoptingStubsAndMHSubgraph",
+           "VictimSuccessNonAdoptingEtcSubgraph",
+           "VictimSuccessNonAdoptingInputCliqueSubgraph",
+           "VictimSuccessNonAdoptingStubsAndMHSubgraph",
+           "VictimSuccessSubgraph",
+           "VictimSuccessAllSubgraph",
            "Subgraph",
            "DiagramAggregator",
            "EngineTester",

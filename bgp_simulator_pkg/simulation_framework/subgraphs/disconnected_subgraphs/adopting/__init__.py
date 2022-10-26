@@ -1,11 +1,11 @@
 from .disconnected_adopting_etc_subgraph import\
-    AttackerSuccessAdoptingEtcSubgraph
+    DisconnectedAdoptingEtcSubgraph
 from .disconnected_adopting_input_clique_subgraph import\
-    AttackerSuccessAdoptingInputCliqueSubgraph
+    DisconnectedAdoptingInputCliqueSubgraph
 from .disconnected_adopting_stubs_and_mh_subgraph import\
-    AttackerSuccessAdoptingStubsAndMHSubgraph
+    DisconnectedAdoptingStubsAndMHSubgraph
 
 
-__all__ = ["AttackerSuccessAdoptingEtcSubgraph",
-           "AttackerSuccessAdoptingInputCliqueSubgraph",
-           "AttackerSuccessAdoptingStubsAndMHSubgraph"]
+__all__ = ["DisconnectedAdoptingEtcSubgraph",
+           "DisconnectedAdoptingInputCliqueSubgraph",
+           "DisconnectedAdoptingStubsAndMHSubgraph"]
