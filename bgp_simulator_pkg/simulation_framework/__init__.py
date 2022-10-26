@@ -18,6 +18,15 @@ from .subgraphs import AttackerSuccessNonAdoptingInputCliqueSubgraph
 from .subgraphs import AttackerSuccessNonAdoptingStubsAndMHSubgraph
 from .subgraphs import AttackerSuccessSubgraph
 from .subgraphs import AttackerSuccessAllSubgraph
+from .subgraphs import DisconnectedAdoptingEtcSubgraph
+from .subgraphs import DisconnectedAdoptingInputCliqueSubgraph
+from .subgraphs import DisconnectedAdoptingStubsAndMHSubgraph
+from .subgraphs import DisconnectedNonAdoptingEtcSubgraph
+from .subgraphs import DisconnectedNonAdoptingInputCliqueSubgraph
+from .subgraphs import DisconnectedNonAdoptingStubsAndMHSubgraph
+from .subgraphs import DisconnectedSubgraph
+from .subgraphs import DisconnectedAllSubgraph
+
 from .subgraphs import Subgraph
 
 
@@ -38,4 +47,12 @@ __all__ = ["Scenario",
            "AttackerSuccessNonAdoptingStubsAndMHSubgraph",
            "AttackerSuccessSubgraph",
            "AttackerSuccessAllSubgraph",
+           "DisconnectedAdoptingEtcSubgraph",
+           "DisconnectedAdoptingInputCliqueSubgraph",
+           "DisconnectedAdoptingStubsAndMHSubgraph",
+           "DisconnectedNonAdoptingEtcSubgraph",
+           "DisconnectedNonAdoptingInputCliqueSubgraph",
+           "DisconnectedNonAdoptingStubsAndMHSubgraph",
+           "DisconnectedSubgraph",
+           "DisconnectedAllSubgraph",
            "Subgraph"]
