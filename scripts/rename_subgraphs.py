@@ -14,11 +14,13 @@ for old_path, new_path in all_paths:
     if old_path.is_dir():
         all_dirs.append((old_path, new_path))
     else:
-        with old_path.open() as old_f, new_path.open("w") as new_f:
+        with old_path.open() as old_f:
             new_text = old_f.read().replace("attacker_success", "disconnected")
             new_text = new_text.replace("ATTACKER_SUCCESS", "DISCONNECTED")
-            new_f.write(new_text)
         old_path.unlink()
+        with new_path.open("w") as new_f:
+            new_f.write(new_text)
+
 
 for old_dir, new_dir in all_dirs:
     old_dir.rename(new_dir)
