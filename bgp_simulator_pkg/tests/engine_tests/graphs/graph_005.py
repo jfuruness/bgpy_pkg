@@ -1,4 +1,5 @@
 from caida_collector_pkg import CustomerProviderLink as CPLink
+from caida_collector_pkg import PeerLink
 
 from .graph_info import GraphInfo
 from ....enums import ASNs
@@ -41,7 +42,8 @@ class Graph005(GraphInfo):
                  CPLink(provider_asn=11, customer_asn=15),
                  CPLink(provider_asn=12, customer_asn=14),
                  CPLink(provider_asn=14, customer_asn=6),
-                 CPLink(provider_asn=16, customer_asn=1),
-                 CPLink(provider_asn=17, customer_asn=1),
+                 CPLink(provider_asn=16, customer_asn=ASNs.ATTACKER.value),
+                 CPLink(provider_asn=17, customer_asn=ASNs.ATTACKER.value),
                  CPLink(provider_asn=18, customer_asn=16),
-                 CPLink(provider_asn=18, customer_asn=17)]))
+                 CPLink(provider_asn=18, customer_asn=17),
+                 PeerLink(18, 3)]))
