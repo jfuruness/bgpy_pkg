@@ -47,5 +47,5 @@ class Graph005(GraphInfo):
                  CPLink(provider_asn=18, customer_asn=16),
                  CPLink(provider_asn=18, customer_asn=17),
                  ]),
-            peer_links=set(PeerLink(18, 3))
+            peer_links=set([PeerLink(18, 3)])
             )
