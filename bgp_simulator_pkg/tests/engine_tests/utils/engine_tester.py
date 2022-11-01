@@ -151,6 +151,10 @@ class EngineTester:
         outcomes_guess = self.codec.load(self.outcomes_guess_path)
         outcomes_gt = self.codec.load(self.outcomes_ground_truth_path)
         assert outcomes_guess == outcomes_gt
+        # Compare shared_data
+        shared_data_guess = self.codec.load(self.shared_data_guess_path)
+        shared_data_gt = self.codec.load(self.shared_data_ground_truth_path)
+        assert shared_data_guess == shared_data_gt
 
 #########
 # Paths #
