@@ -1,6 +1,8 @@
 from __future__ import annotations
 from typing import List, Type
 
+from ....simulation_framework import Subgraph
+
 
 def unique_names_msg(names) -> str:
     """Returns which names are not unique"""
@@ -18,6 +20,7 @@ def unique_names_msg(names) -> str:
 class EngineTestConfig:
 
     subclasses: List[Type["EngineTestConfig"]] = list()
+    SubgraphCls: Type[Subgraph] = Subgraph
 
     def __init_subclass__(cls, *args, **kwargs):
         """Ensures subclass has proper attrs
