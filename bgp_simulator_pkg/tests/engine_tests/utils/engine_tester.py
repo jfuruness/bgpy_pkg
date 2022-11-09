@@ -3,12 +3,12 @@
 
 from copy import deepcopy
 from pathlib import Path
+from typing import Dict, Any
 
 from .diagram import Diagram
 from .engine_test_config import EngineTestConfig
 from .simulator_codec import SimulatorCodec
 from ....simulation_engine import SimulationEngine
-from ....simulation_framework import Subgraph
 
 
 class EngineTester:
@@ -58,12 +58,19 @@ class EngineTester:
             scenario.post_propagation_hook(**kwargs)
 
         # Get traceback results {AS: Outcome}
-        outcomes = Subgraph()._get_engine_outcomes(engine, scenario)
+        outcomes = self.conf.SubgraphCls()._get_engine_outcomes(engine,
+                                                                scenario)
         # Convert this to just be {ASN: Outcome} (Not the AS object)
         outcomes_yaml = {as_obj.asn: result for as_obj, result
                          in outcomes.items()}
+        # Get shared_data
+        shared_data: Dict[Any, Any] = dict()
+        self.conf.SubgraphCls()._add_traceback_to_shared_data(shared_data,
+                                                              engine,
+                                                              scenario,
+                                                              outcomes)
         # Store engine and traceback YAML
-        self._store_yaml(engine, outcomes_yaml)
+        self._store_yaml(engine, outcomes_yaml, shared_data)
         # Create diagrams before the test can fail
         self._generate_diagrams()
         # Compare the YAML's together
@@ -83,8 +90,8 @@ class EngineTester:
         scenario.setup_engine(engine, 0, prev_scenario)
         return engine
 
-    def _store_yaml(self, engine, outcomes):
-        """Stores YAML for the engine and outcomes
+    def _store_yaml(self, engine, outcomes, shared_data):
+        """Stores YAML for the engine, outcomes, and shared_data.
 
         If ground truth doesn't exist, create it
         """
@@ -99,6 +106,11 @@ class EngineTester:
         # Save outcomes as ground truth if ground truth doesn't exist
         if not self.outcomes_ground_truth_path.exists() or self.overwrite:
             self.codec.dump(outcomes, path=self.outcomes_ground_truth_path)
+        self.codec.dump(shared_data, path=self.shared_data_guess_path)
+        # Save shared_data as ground truth if ground truth doesn't exist
+        if not self.shared_data_ground_truth_path.exists() or self.overwrite:
+            self.codec.dump(shared_data,
+                            path=self.shared_data_ground_truth_path)
 
     def _generate_diagrams(self):
         """Generates diagrams"""
@@ -139,6 +151,10 @@ class EngineTester:
         outcomes_guess = self.codec.load(self.outcomes_guess_path)
         outcomes_gt = self.codec.load(self.outcomes_ground_truth_path)
         assert outcomes_guess == outcomes_gt
+        # Compare shared_data
+        shared_data_guess = self.codec.load(self.shared_data_guess_path)
+        shared_data_gt = self.codec.load(self.shared_data_ground_truth_path)
+        assert shared_data_guess == shared_data_gt
 
 #########
 # Paths #
@@ -167,3 +183,15 @@ class EngineTester:
         """Returns the path to the outcomes guess YAML"""
 
         return self.test_dir / "outcomes_guess.yaml"
+
+    @property
+    def shared_data_ground_truth_path(self) -> Path:
+        """Returns the path to the shared_data ground truth YAML"""
+
+        return self.test_dir / "shared_data_gt.yaml"
+
+    @property
+    def shared_data_guess_path(self) -> Path:
+        """Returns the path to the shared_data guess YAML"""
+
+        return self.test_dir / "shared_data_guess.yaml"
