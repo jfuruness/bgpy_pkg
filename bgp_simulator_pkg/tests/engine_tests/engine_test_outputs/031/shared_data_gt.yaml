@@ -1,0 +1,13 @@
+all_DISCONNECTED: 4
+all_DISCONNECTED_perc: 80.0
+all_VICTIM_SUCCESS: 1
+all_VICTIM_SUCCESS_perc: 20.0
+etc_BGP Simple: 1
+etc_BGP Simple_DISCONNECTED: 1
+etc_BGP Simple_DISCONNECTED_percent: 100.0
+set: true
+stubs_or_mh_BGP Simple: 4
+stubs_or_mh_BGP Simple_DISCONNECTED: 3
+stubs_or_mh_BGP Simple_DISCONNECTED_percent: 75.0
+stubs_or_mh_BGP Simple_VICTIM_SUCCESS: 1
+stubs_or_mh_BGP Simple_VICTIM_SUCCESS_percent: 33.333333333333336

@@ -1,0 +1,9 @@
+all_VICTIM_SUCCESS: 6
+all_VICTIM_SUCCESS_perc: 100.0
+etc_BGP: 5
+etc_BGP_VICTIM_SUCCESS: 5
+etc_BGP_VICTIM_SUCCESS_percent: 100.0
+set: true
+stubs_or_mh_BGP: 1
+stubs_or_mh_BGP_VICTIM_SUCCESS: 1
+stubs_or_mh_BGP_VICTIM_SUCCESS_percent: 100.0

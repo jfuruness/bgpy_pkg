@@ -249,14 +249,17 @@ class Scenario(ABC):
         """
 
         asn_cls_dict = dict()
-        subcategories = ("stub_or_mh_asns", "etc_asns", "input_clique_asns")
+        subcategories = ("stub_or_mh_ases", "etc_ases", "input_clique_ases")
         for subcategory in subcategories:
             ases = getattr(engine, subcategory)
             real_rov_ases = set()
-            for as_ in ases:
-                if as_.rov_confidence >= self.rov_confidence:
-                    asn_cls_dict[as_.asn] = RealROVSimpleAS
-                    real_rov_ases.add(as_)
+            # If we are including ROV nodes
+            # Don't always run this to save on time
+            if self.rov_confidence <= 1:
+                for as_ in ases:
+                    if as_.rov_confidence >= self.rov_confidence:
+                        asn_cls_dict[as_.asn] = RealROVSimpleAS
+                        real_rov_ases.add(as_)
             # Remove ASes that are already pre-set
             # Ex: Attacker and victim
             # Ex: ROV Nodes (in certain situations)
