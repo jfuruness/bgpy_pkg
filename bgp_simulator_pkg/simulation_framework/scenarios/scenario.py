@@ -256,8 +256,7 @@ class Scenario(ABC):
             # Round for the start and end of the graph
             # (if 0 ASes would be adopting, have 1 as adopt)
             # (If all ASes would be adopting, have all -1 adopt)
-            # This feature was chosen by my professors, and is not
-            # supported by this simulator
+            # This was a feature request, but it's not supported
             if percent_adopt == -1:
                 k = 1
             elif percent_adopt == 101:
