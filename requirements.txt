@@ -1,4 +1,4 @@
-git+https://github.com/jfuruness/caida_collector_pkg.git#4f170afe845ae2550fa0ca58e9b6e4209c4a585a
+git+https://github.com/jfuruness/caida_collector_pkg.git
 graphviz==0.20
 pillow==9.2.0
 matplotlib==3.5.2

@@ -12,6 +12,7 @@ from ...enums import Outcomes
 from ...enums import Relationships
 from ...simulation_engine import Announcement
 from ...simulation_engine import BGPSimpleAS
+from ...simulation_engine import RealROVSimpleAS
 from ...simulation_engine import SimulationEngine
 
 pseudo_base_cls_dict: Dict[Type[AS], Type[AS]] = dict()
@@ -31,7 +32,8 @@ class Scenario(ABC):
                  "non_default_as_cls_dict",
                  "ordered_prefix_subprefix_dict",
                  "announcements",
-                 "non_default_as_cls_dict")
+                 "non_default_as_cls_dict",
+                 "rov_confidence")
 
     def __init__(self,
                  # This is the base type of announcement for this class
@@ -43,6 +45,7 @@ class Scenario(ABC):
                  num_victims: int = 1,
                  attacker_asns: Optional[Set[int]] = None,
                  victim_asns: Optional[Set[int]] = None,
+                 rov_confidence: float = 1000,
                  # Purely for rebuilding from YAML
                  non_default_as_cls_dict: Optional[Dict[int, Type[AS]]] = None,
                  announcements: Tuple[Announcement, ...] = ()
@@ -92,6 +95,8 @@ class Scenario(ABC):
             self.attacker_victim_asns_preset: bool = True
         else:
             self.attacker_victim_asns_preset = False
+
+        self.rov_confidence: float = rov_confidence
 
         # Purely for yaml #################################################
         if non_default_as_cls_dict:
@@ -243,14 +248,20 @@ class Scenario(ABC):
         subcategories
         """
 
-        adopting_asns = list()
+        asn_cls_dict = dict()
         subcategories = ("stub_or_mh_asns", "etc_asns", "input_clique_asns")
         for subcategory in subcategories:
-            asns = getattr(engine, subcategory)
+            ases = getattr(engine, subcategory)
+            real_rov_ases = set()
+            for as_ in ases:
+                if as_.rov_confidence >= self.rov_confidence:
+                    asn_cls_dict[as_.asn] = RealROVSimpleAS
+                    real_rov_ases.add(as_)
             # Remove ASes that are already pre-set
             # Ex: Attacker and victim
             # Ex: ROV Nodes (in certain situations)
-            possible_adopters = asns.difference(self._preset_asns)
+            possible_adopters = ases.difference(self._preset_asns)
+            possible_adopters = possible_adopters.difference(real_rov_ases)
             # Get how many ASes should be adopting
             k = int(len(possible_adopters) * percent_adopt)
             # Round for the start and end of the graph
@@ -264,12 +275,11 @@ class Scenario(ABC):
 
             # https://stackoverflow.com/a/15837796/8903959
             possible_adopters = tuple(possible_adopters)
-            adopting_asns.extend(
-                random.sample(possible_adopters, k)
-            )  # type: ignore
-        adopting_asns += self._default_adopters
-        assert len(adopting_asns) == len(set(adopting_asns))
-        return {asn: self.AdoptASCls for asn in adopting_asns}
+            for as_ in random.sample(possible_adopters, k):
+                asn_cls_dict[as_.asn] = self.AdoptASCls
+            for asn in self._default_adopters:
+                asn_cls_dict[asn] = self.AdoptASCls
+        return asn_cls_dict
 
     @property
     def _default_adopters(self) -> Set[int]:
@@ -436,6 +446,7 @@ class Scenario(ABC):
                 "victim_asns": self.victim_asns,
                 "num_victims": self.num_victims,
                 "num_attackers": self.num_attackers,
+                "rov_confidence": self.rov_confidence,
                 "non_default_as_cls_dict":
                     {asn: AS.subclass_to_name_dict[ASCls]
                      for asn, ASCls in self.non_default_as_cls_dict.items()}}
@@ -452,4 +463,5 @@ class Scenario(ABC):
                    victim_asns=dct["victim_asns"],
                    num_victims=dct["num_victims"],
                    num_attackers=dct["num_attackers"],
+                   rov_confidence=dct["rov_confidence"],
                    non_default_as_cls_dict=as_classes)
