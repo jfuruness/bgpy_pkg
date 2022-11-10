@@ -33,7 +33,7 @@ class Scenario(ABC):
                  "ordered_prefix_subprefix_dict",
                  "announcements",
                  "non_default_as_cls_dict",
-                 "rov_confidence")
+                 "min_rov_confidence")
 
     def __init__(self,
                  # This is the base type of announcement for this class
@@ -45,7 +45,7 @@ class Scenario(ABC):
                  num_victims: int = 1,
                  attacker_asns: Optional[Set[int]] = None,
                  victim_asns: Optional[Set[int]] = None,
-                 rov_confidence: float = 1000,
+                 min_rov_confidence: float = 1000,
                  # Purely for rebuilding from YAML
                  non_default_as_cls_dict: Optional[Dict[int, Type[AS]]] = None,
                  announcements: Tuple[Announcement, ...] = ()
@@ -96,7 +96,7 @@ class Scenario(ABC):
         else:
             self.attacker_victim_asns_preset = False
 
-        self.rov_confidence: float = rov_confidence
+        self.min_rov_confidence: float = min_rov_confidence
 
         # Purely for yaml #################################################
         if non_default_as_cls_dict:
@@ -255,9 +255,9 @@ class Scenario(ABC):
             real_rov_ases = set()
             # If we are including ROV nodes
             # Don't always run this to save on time
-            if self.rov_confidence <= 1:
+            if self.min_rov_confidence <= 1:
                 for as_ in ases:
-                    if as_.rov_confidence >= self.rov_confidence:
+                    if as_.rov_confidence >= self.min_rov_confidence:
                         asn_cls_dict[as_.asn] = RealROVSimpleAS
                         real_rov_ases.add(as_)
             # Remove ASes that are already pre-set
@@ -449,7 +449,7 @@ class Scenario(ABC):
                 "victim_asns": self.victim_asns,
                 "num_victims": self.num_victims,
                 "num_attackers": self.num_attackers,
-                "rov_confidence": self.rov_confidence,
+                "min_rov_confidence": self.min_rov_confidence,
                 "non_default_as_cls_dict":
                     {asn: AS.subclass_to_name_dict[ASCls]
                      for asn, ASCls in self.non_default_as_cls_dict.items()}}
@@ -466,5 +466,5 @@ class Scenario(ABC):
                    victim_asns=dct["victim_asns"],
                    num_victims=dct["num_victims"],
                    num_attackers=dct["num_attackers"],
-                   rov_confidence=dct["rov_confidence"],
+                   min_rov_confidence=dct["min_rov_confidence"],
                    non_default_as_cls_dict=as_classes)
