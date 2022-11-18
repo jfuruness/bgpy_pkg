@@ -95,6 +95,7 @@ tox
 ## History
 * [bgp\_simulator\_pkg](#bgp_simulator_pkg)
 
+* 0.1.03 Fixed subgraph bug that resulted in incorrect graphs
 * 0.1.02 Removed slots from ASes since it does not increase speed, and now ASes with different slots can be interchanged
 * 0.1.01 Added optional gao rexford kwargs to allow easier subclassing (I undid this)
 * 0.1.0 Major refactor and name change. I believe this version will be stable. Deps saved.
