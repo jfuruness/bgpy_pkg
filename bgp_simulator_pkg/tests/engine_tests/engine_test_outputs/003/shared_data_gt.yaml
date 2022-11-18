@@ -2,7 +2,6 @@ all_VICTIM_SUCCESS: 7
 all_VICTIM_SUCCESS_perc: 100.0
 etc_BGP Simple: 2
 etc_BGP Simple_VICTIM_SUCCESS: 2
-etc_BGP Simple_VICTIM_SUCCESS_percent: 100.0
 set: true
 stubs_or_mh_BGP Simple: 5
 stubs_or_mh_BGP Simple_VICTIM_SUCCESS: 5

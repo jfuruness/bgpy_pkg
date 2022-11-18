@@ -2,7 +2,6 @@ all_VICTIM_SUCCESS: 7
 all_VICTIM_SUCCESS_perc: 100.0
 etc_ROVSimple: 2
 etc_ROVSimple_VICTIM_SUCCESS: 2
-etc_ROVSimple_VICTIM_SUCCESS_percent: 100.0
 set: true
 stubs_or_mh_ROVSimple: 5
 stubs_or_mh_ROVSimple_VICTIM_SUCCESS: 5

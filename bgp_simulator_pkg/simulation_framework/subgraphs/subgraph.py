@@ -210,11 +210,7 @@ class Subgraph(ABC):
             # Add to the totals:
             for k in [as_type_pol_k, as_type_pol_outcome_k]:
                 shared[k] = shared.get(k, 0) + 1
-            # Set the new percent
-            shared[as_type_pol_outcome_perc_k] = (
-                    shared[as_type_pol_outcome_k] *
-                    100 / shared[as_type_pol_k]
-            )
+
 
             ############################
             # Track stats for all ASes #
@@ -225,6 +221,17 @@ class Subgraph(ABC):
             total = shared.get(f"all_{name}", 0) + 1
             shared[f"all_{name}"] = total
 
+        # Must calculate percentages at the end
+        # NOTE: this double for loop should realy be avoided
+        # Only O(2n) but bad for runtime
+        for as_obj, outcome in outcomes.items():
+             # Set the new percent
+            shared[as_type_pol_outcome_perc_k] = (
+                    shared[as_type_pol_outcome_k] *
+                    100 / shared[as_type_pol_k]
+            )
+            name = outcome.name
+            total = shared[f"all_{name}"]
             # Keep track of percentages for all ASes
             shared[f"all_{name}_perc"] = total * 100 / len(outcomes)
 

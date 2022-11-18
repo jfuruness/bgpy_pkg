@@ -6,4 +6,3 @@ etc_ROVSimple_VICTIM_SUCCESS_percent: 100.0
 set: true
 stubs_or_mh_ROVSimple: 1
 stubs_or_mh_ROVSimple_VICTIM_SUCCESS: 1
-stubs_or_mh_ROVSimple_VICTIM_SUCCESS_percent: 100.0
