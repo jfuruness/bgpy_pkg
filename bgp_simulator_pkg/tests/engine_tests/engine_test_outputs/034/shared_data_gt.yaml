@@ -4,8 +4,10 @@ all_VICTIM_SUCCESS: 3
 all_VICTIM_SUCCESS_perc: 60.0
 etc_BGP: 1
 etc_BGP_VICTIM_SUCCESS: 1
+etc_BGP_VICTIM_SUCCESS_percent: 100.0
 set: true
 stubs_or_mh_BGP: 4
 stubs_or_mh_BGP_DISCONNECTED: 2
 stubs_or_mh_BGP_DISCONNECTED_percent: 50.0
 stubs_or_mh_BGP_VICTIM_SUCCESS: 2
+stubs_or_mh_BGP_VICTIM_SUCCESS_percent: 50.0

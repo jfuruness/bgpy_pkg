@@ -225,11 +225,19 @@ class Subgraph(ABC):
         # NOTE: this double for loop should realy be avoided
         # Only O(2n) but bad for runtime
         for as_obj, outcome in outcomes.items():
-             # Set the new percent
-            shared[as_type_pol_outcome_perc_k] = (
-                    shared[as_type_pol_outcome_k] *
-                    100 / shared[as_type_pol_k]
-            )
+            as_type = self._get_as_type(as_obj)
+            as_type_pol_k = self._get_as_type_pol_k(as_type, as_obj.__class__)
+            as_type_pol_outcome_k = self._get_as_type_pol_outcome_k(
+                as_type, as_obj.__class__, outcome)
+            # as type + policy + outcome as a percentage
+            as_type_pol_outcome_perc_k = self._get_as_type_pol_outcome_perc_k(
+                as_type, as_obj.__class__, outcome)
+            # Set the new percent
+            if shared.get(as_type_pol_outcome_k) is not None:
+                shared[as_type_pol_outcome_perc_k] = (
+                        shared[as_type_pol_outcome_k] *
+                        100 / shared[as_type_pol_k]
+                )
             name = outcome.name
             total = shared[f"all_{name}"]
             # Keep track of percentages for all ASes

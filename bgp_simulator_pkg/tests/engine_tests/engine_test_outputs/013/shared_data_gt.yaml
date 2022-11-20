@@ -2,8 +2,10 @@ all_ATTACKER_SUCCESS: 4
 all_ATTACKER_SUCCESS_perc: 100.0
 etc_BGP Simple: 1
 etc_BGP Simple_ATTACKER_SUCCESS: 1
+etc_BGP Simple_ATTACKER_SUCCESS_percent: 100.0
 etc_ROVSimple: 1
 etc_ROVSimple_ATTACKER_SUCCESS: 1
+etc_ROVSimple_ATTACKER_SUCCESS_percent: 100.0
 set: true
 stubs_or_mh_BGP Simple: 2
 stubs_or_mh_BGP Simple_ATTACKER_SUCCESS: 2
