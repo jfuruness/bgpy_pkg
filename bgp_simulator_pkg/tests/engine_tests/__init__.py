@@ -1,4 +1,5 @@
 from .test_engine import TestEngine
+from .utils import Diagram
 from .utils import DiagramAggregator
 from .utils import EngineTestConfig
 from .utils import EngineTester
@@ -95,6 +96,7 @@ from .graphs import Graph050
 from .graphs import Graph051
 
 __all__ = [
+    "Diagram",
     "DiagramAggregator",
     "EngineTestConfig",
     "EngineTester",

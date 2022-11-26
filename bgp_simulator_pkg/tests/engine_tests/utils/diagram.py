@@ -17,6 +17,7 @@ class Diagram:
                           scenario,
                           traceback,
                           description,
+                          shared_data,
                           path=None,
                           view=False):
         self._add_legend(traceback)

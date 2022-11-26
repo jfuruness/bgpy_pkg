@@ -11,6 +11,7 @@ from .simulation_engine import RealROVSimpleAS
 from .simulation_engine import SimulationEngine
 from .simulation_engine import Announcement
 
+from .tests import Diagram
 from .tests import DiagramAggregator
 from .tests import EngineTester
 from .tests import EngineTestConfig
@@ -156,6 +157,7 @@ __all__ = ["BGPAS",
            "VictimSuccessSubgraph",
            "VictimSuccessAllSubgraph",
            "Subgraph",
+           "Diagram",
            "DiagramAggregator",
            "EngineTester",
            "EngineTestConfig",
