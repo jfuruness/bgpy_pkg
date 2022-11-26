@@ -127,7 +127,7 @@ class EngineTester:
             engine_guess,
             self.conf.scenario,  # type: ignore
             outcomes_guess,
-            f"({self.conf.name} Guess)\n{self.conf.desc}",  # type: ignore,
+            f"({self.conf.name} Guess)\n{self.conf.desc}",  # type: ignore
             shared_data,
             path=self.test_dir / "guess.gv",
             view=False)
@@ -137,7 +137,7 @@ class EngineTester:
             self.conf.scenario,  # type: ignore
             outcomes_gt,
             f"({self.conf.name} Ground Truth)\n"  # type: ignore
-            f"{self.conf.desc}",  # type: ignore,
+            f"{self.conf.desc}",  # type: ignore
             shared_data,
             path=self.test_dir / "ground_truth.gv",
             view=False)

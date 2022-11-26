@@ -73,7 +73,7 @@ class BGPSimpleAS(AS):
     def __eq__(self, other) -> bool:
         if isinstance(other, BGPSimpleAS):
             # Ugh this is bad
-            for attr in self.__dict__:
+            for attr in [x for x in self.__dict__ if x not in self.base_slots]:
                 if not hasattr(self, attr) == hasattr(other, attr):
                     return False
                 elif hasattr(self, attr):
