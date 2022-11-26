@@ -28,8 +28,6 @@ from .gao_rexford import _new_wins_ties
 from ....ann_containers import LocalRIB
 from ....ann_containers import RecvQueue
 
-slots = ("_local_rib", "_recv_q", "_ribs_in", "_ribs_out", "_send_q")
-
 
 class BGPSimpleAS(AS):
 
@@ -75,7 +73,7 @@ class BGPSimpleAS(AS):
     def __eq__(self, other) -> bool:
         if isinstance(other, BGPSimpleAS):
             # Ugh this is bad
-            for attr in slots:
+            for attr in self.__dict__:
                 if not hasattr(self, attr) == hasattr(other, attr):
                     return False
                 elif hasattr(self, attr):
