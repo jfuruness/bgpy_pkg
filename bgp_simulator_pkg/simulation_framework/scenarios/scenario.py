@@ -274,7 +274,7 @@ class Scenario(ABC):
             if percent_adopt == -1:
                 k = 1
             elif percent_adopt == 101:
-                k -= 1
+                k = len(possible_adopters) - 1
 
             # https://stackoverflow.com/a/15837796/8903959
             possible_adopters = tuple(possible_adopters)
