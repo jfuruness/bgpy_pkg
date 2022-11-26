@@ -278,8 +278,12 @@ class Scenario(ABC):
 
             # https://stackoverflow.com/a/15837796/8903959
             possible_adopters = tuple(possible_adopters)
-            for as_ in random.sample(possible_adopters, k):
-                asn_cls_dict[as_.asn] = self.AdoptASCls
+            try:
+                for as_ in random.sample(possible_adopters, k):
+                    asn_cls_dict[as_.asn] = self.AdoptASCls
+            except ValueError:
+                raise ValueError(
+                    f"{k} can't be sampled from {len(possible_adopters)}")
             for asn in self._default_adopters:
                 asn_cls_dict[asn] = self.AdoptASCls
         return asn_cls_dict
