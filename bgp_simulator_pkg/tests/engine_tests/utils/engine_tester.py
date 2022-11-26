@@ -72,7 +72,7 @@ class EngineTester:
         # Store engine and traceback YAML
         self._store_yaml(engine, outcomes_yaml, shared_data)
         # Create diagrams before the test can fail
-        self._generate_diagrams()
+        self._generate_diagrams(shared_data)
         # Compare the YAML's together
         self._compare_yaml()
 
@@ -112,7 +112,7 @@ class EngineTester:
             self.codec.dump(shared_data,
                             path=self.shared_data_ground_truth_path)
 
-    def _generate_diagrams(self):
+    def _generate_diagrams(self, shared_data):
         """Generates diagrams"""
 
         # Load engines
@@ -127,7 +127,8 @@ class EngineTester:
             engine_guess,
             self.conf.scenario,  # type: ignore
             outcomes_guess,
-            f"({self.conf.name} Guess)\n{self.conf.desc}",  # type: ignore
+            f"({self.conf.name} Guess)\n{self.conf.desc}",  # type: ignore,
+            shared_data,
             path=self.test_dir / "guess.gv",
             view=False)
         # Write ground truth graph
@@ -136,7 +137,8 @@ class EngineTester:
             self.conf.scenario,  # type: ignore
             outcomes_gt,
             f"({self.conf.name} Ground Truth)\n"  # type: ignore
-            f"{self.conf.desc}",  # type: ignore
+            f"{self.conf.desc}",  # type: ignore,
+            shared_data,
             path=self.test_dir / "ground_truth.gv",
             view=False)
 
