@@ -183,6 +183,9 @@ class Scenario(ABC):
                                     ) -> Set[int]:
         """Returns possible attacker ASNs, defaulted from stubs_and_mh"""
 
+        err = "Make mypy happy"
+        assert all(isinstance(x, int) for x in engine.stub_or_mh_asns), err
+        assert isinstance(engine.stub_or_mh_asns, set), err
         return engine.stub_or_mh_asns
 
     # For this, don't bother making a subclass with stubs_and_mh
@@ -195,6 +198,9 @@ class Scenario(ABC):
                                   ) -> Set[int]:
         """Returns possible victim ASNs, defaulted from stubs_and_mh"""
 
+        err = "Make mypy happy"
+        assert all(isinstance(x, int) for x in engine.stub_or_mh_asns), err
+        assert isinstance(engine.stub_or_mh_asns, set), err
         return engine.stub_or_mh_asns
 
     @abstractmethod

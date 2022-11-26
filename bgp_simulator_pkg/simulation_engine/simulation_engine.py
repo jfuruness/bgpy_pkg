@@ -40,7 +40,9 @@ class SimulationEngine(BGPDAG):
         """Returns if two simulators contain the same BGPDAG's"""
 
         if isinstance(other, SimulationEngine):
-            return self.as_dict == other.as_dict
+            rv = self.as_dict == other.as_dict
+            assert isinstance(rv, bool), "Make mypy happy"
+            return rv
         else:
             return NotImplemented
 

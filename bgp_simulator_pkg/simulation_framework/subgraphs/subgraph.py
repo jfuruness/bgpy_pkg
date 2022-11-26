@@ -211,7 +211,6 @@ class Subgraph(ABC):
             for k in [as_type_pol_k, as_type_pol_outcome_k]:
                 shared[k] = shared.get(k, 0) + 1
 
-
             ############################
             # Track stats for all ASes #
             ############################
