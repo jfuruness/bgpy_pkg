@@ -131,6 +131,8 @@ class Subgraph(ABC):
         for prop_round, scenario_dict in other_subgraph.data.items():
             for scenario_label, percent_dict in scenario_dict.items():
                 for percent_adopt, trial_results in percent_dict.items():
+                    if isinstance(percent_adopt, SpecialPercentAdoptions):
+                        percent_adopt = percent_adopt.value
                     self.data[prop_round][scenario_label][percent_adopt
                         ].extend(trial_results)  # noqa
 
@@ -175,6 +177,8 @@ class Subgraph(ABC):
                                                scenario,
                                                outcomes)
         key = self._get_subgraph_key(scenario)
+        if isinstance(percent_adopt, SpecialPercentAdoptions):
+            percent_adopt = percent_adopt.value
         self.data[propagation_round][scenario.graph_label][percent_adopt
             ].append(shared_data.get(key, 0))  # noqa
 
