@@ -1,7 +1,7 @@
 from abc import ABC
 from collections import defaultdict
 from pathlib import Path
-from typing import Any, DefaultDict, Dict, List, Optional, Type
+from typing import Any, DefaultDict, Dict, List, Optional, Type, Union
 
 import matplotlib  # type: ignore
 import matplotlib.pyplot as plt  # type: ignore
@@ -9,6 +9,7 @@ import matplotlib.pyplot as plt  # type: ignore
 from .line import Line
 from ...enums import ASTypes
 from ...enums import Outcomes
+from ...enums import SpecialPercentAdoptions
 from ...simulation_engine import SimulationEngine
 from ..scenarios import Scenario
 from ...simulation_engine.announcement import Announcement as Ann
@@ -54,8 +55,10 @@ class Subgraph(ABC):
         # {propagation_round: {scenario_label: {percent_adopt: [percentages]}}}
         self.data: DefaultDict[int,
                                DefaultDict[str,
-                                           DefaultDict[float,
-                                                       List[float]]]] =\
+                                           DefaultDict[
+                                               Union[float,
+                                                     SpecialPercentAdoptions],
+                                               List[float]]]] =\
             defaultdict(default_dict_func)
 
     ###############

@@ -1,7 +1,9 @@
 from math import sqrt
 from statistics import mean
 from statistics import stdev
-from typing import Dict, List
+from typing import Dict, List, Union
+
+from ...enums import SpecialPercentAdoptions
 
 
 class Line:
@@ -9,12 +11,22 @@ class Line:
 
     def __init__(self,
                  scenario_label: str,
-                 percent_adopt_dict: Dict[float, List[float]]):
+                 percent_adopt_dict: Dict[Union[float,
+                                                SpecialPercentAdoptions],
+                                          List[float]]
+                 ) -> None:
         """Stores info aobut a line in a graph"""
 
         # {percent_adopt: [percentages]}
-        self.percent_adopt_dict: Dict[float, List[float]] = {
-            k: v for k, v in sorted(percent_adopt_dict.items())}
+        self.percent_adopt_dict: Dict[float, List[float]] = dict()
+
+        for k, v in percent_adopt_dict.items():
+            key = k.value if isinstance(k, SpecialPercentAdoptions) else k
+            self.percent_adopt_dict[key] = v
+
+        self.percent_adopt_dict = {k: v for k, v in
+                                   sorted(self.percent_adopt_dict.items())}
+
         self.label: str = scenario_label
         self.xs: List[float] = self._get_xs()
         self.ys: List[float] = self._get_ys()

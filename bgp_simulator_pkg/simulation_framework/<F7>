@@ -154,8 +154,7 @@ class Simulation:
 
     def _run_chunk(self,
                    percent_adopt_trials: List[Tuple[Union[float,
-                                                    SpecialPercentAdoptions],
-                                                    int]],
+                       SpecialPercentAdoptions], int]],
                    # MUST leave as false. _get_mp_results depends on this
                    # This should be fixed and this comment deleted
                    single_proc: bool = False
@@ -185,18 +184,9 @@ class Simulation:
                 # Since certain things like announcements change round to round
                 scenario = deepcopy(scenario)
 
-                if isinstance(percent_adopt, float):
-                    print(f"{percent_adopt * 100}% "
-                          f"{scenario.graph_label}, "
-                          f"#{trial}",
-                          end="                             " + "\r")
-                elif isinstance(percent_adopt, SpecialPercentAdoptions):
-                    print(f"{percent_adopt.value * 100}% "
-                          f"{scenario.graph_label}, "
-                          f"#{trial}",
-                          end="                             " + "\r")
-                else:
-                    raise NotImplementedError
+                print(
+                    f"{percent_adopt * 100}% {scenario.graph_label}, #{trial}",
+                    end="                             " + "\r")
 
                 # Change AS Classes, seed announcements before propagation
                 scenario.setup_engine(engine, percent_adopt, prev_scenario)

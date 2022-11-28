@@ -26,6 +26,7 @@ from .enums import Prefixes
 from .enums import ASNs
 from .enums import Outcomes
 from .enums import Relationships
+from .enums import SpecialPercentAdoptions
 
 from .simulation_framework import Scenario
 from .simulation_framework import PrefixHijack
@@ -122,6 +123,7 @@ __all__ = ["BGPAS",
            "ASNs",
            "Outcomes",
            "Relationships",
+           "SpecialPercentAdoptions",
            "Scenario",
            "PrefixHijack",
            "SubprefixHijack",

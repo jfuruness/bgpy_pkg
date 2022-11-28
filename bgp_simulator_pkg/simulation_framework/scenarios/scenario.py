@@ -10,6 +10,7 @@ from caida_collector_pkg import AS
 
 from ...enums import Outcomes
 from ...enums import Relationships
+from ...enums import SpecialPercentAdoptions
 from ...simulation_engine import Announcement
 from ...simulation_engine import BGPSimpleAS
 from ...simulation_engine import RealROVSimpleAS
@@ -118,10 +119,11 @@ class Scenario(ABC):
     # Set Attacker/Victim and Announcement Funcs #
     ##############################################
 
-    def _set_attackers_victims_anns(self,
-                                    engine: SimulationEngine,
-                                    percent_adoption: float,
-                                    prev_scenario: Optional["Scenario"]):
+    def _set_attackers_victims_anns(
+            self,
+            engine: SimulationEngine,
+            percent_adoption: Union[float, SpecialPercentAdoptions],
+            prev_scenario: Optional["Scenario"]):
         """Sets attackers, victims. announcements instance vars"""
 
         # Use the same attacker victim pair that was used previously
@@ -176,11 +178,12 @@ class Scenario(ABC):
     # For this, don't bother making a subclass with stubs_and_mh
     # Since it won't really create another class branch,
     # Since another dev would likely just subclass from the same place
-    def _get_possible_attacker_asns(self,
-                                    engine: SimulationEngine,
-                                    percent_adoption: float,
-                                    prev_scenario: Optional["Scenario"]
-                                    ) -> Set[int]:
+    def _get_possible_attacker_asns(
+            self,
+            engine: SimulationEngine,
+            percent_adoption: Union[float, SpecialPercentAdoptions],
+            prev_scenario: Optional["Scenario"]
+            ) -> Set[int]:
         """Returns possible attacker ASNs, defaulted from stubs_and_mh"""
 
         err = "Make mypy happy"
@@ -191,11 +194,12 @@ class Scenario(ABC):
     # For this, don't bother making a subclass with stubs_and_mh
     # Since it won't really create another class branch,
     # Since another dev would likely just subclass from the same place
-    def _get_possible_victim_asns(self,
-                                  engine: SimulationEngine,
-                                  percent_adoption: float,
-                                  prev_scenario: Optional["Scenario"]
-                                  ) -> Set[int]:
+    def _get_possible_victim_asns(
+            self,
+            engine: SimulationEngine,
+            percent_adoption: Union[float, SpecialPercentAdoptions],
+            prev_scenario: Optional["Scenario"]
+            ) -> Set[int]:
         """Returns possible victim ASNs, defaulted from stubs_and_mh"""
 
         err = "Make mypy happy"
@@ -213,11 +217,12 @@ class Scenario(ABC):
     # Adopting ASNs funcs #
     #######################
 
-    def _get_non_default_as_cls_dict(self,
-                                     engine: SimulationEngine,
-                                     percent_adoption: float,
-                                     prev_scenario: Optional["Scenario"]
-                                     ) -> Dict[int, Type[AS]]:
+    def _get_non_default_as_cls_dict(
+            self,
+            engine: SimulationEngine,
+            percent_adoption: Union[float, SpecialPercentAdoptions],
+            prev_scenario: Optional["Scenario"]
+            ) -> Dict[int, Type[AS]]:
         """Returns as class dict
 
         non_default_as_cls_dict is a dict of asn: AdoptASCls
@@ -245,9 +250,11 @@ class Scenario(ABC):
         else:
             return self._get_adopting_asns_dict(engine, percent_adoption)
 
-    def _get_adopting_asns_dict(self,
-                                engine: SimulationEngine,
-                                percent_adopt: float) -> Dict[int, Type[AS]]:
+    def _get_adopting_asns_dict(
+            self,
+            engine: SimulationEngine,
+            percent_adopt: Union[float, SpecialPercentAdoptions]
+            ) -> Dict[int, Type[AS]]:
         """Get adopting ASNs
 
         By default, to get even adoption, adopt in each of the three
@@ -271,16 +278,20 @@ class Scenario(ABC):
             # Ex: ROV Nodes (in certain situations)
             possible_adopters = ases.difference(self._preset_asns)
             possible_adopters = possible_adopters.difference(real_rov_ases)
+
             # Get how many ASes should be adopting
-            k = int(len(possible_adopters) * percent_adopt)
+
             # Round for the start and end of the graph
             # (if 0 ASes would be adopting, have 1 as adopt)
             # (If all ASes would be adopting, have all -1 adopt)
             # This was a feature request, but it's not supported
-            if percent_adopt == -1:
+            if percent_adopt == SpecialPercentAdoptions.ONLY_ONE:
                 k = 1
-            elif percent_adopt == 101:
+            elif percent_adopt == SpecialPercentAdoptions.ALL_BUT_ONE:
                 k = len(possible_adopters) - 1
+            else:
+                assert isinstance(percent_adopt, float), "Make mypy happy"
+                k = int(len(possible_adopters) * percent_adopt)
 
             # https://stackoverflow.com/a/15837796/8903959
             possible_adopters = tuple(possible_adopters)
@@ -342,7 +353,7 @@ class Scenario(ABC):
 
     def setup_engine(self,
                      engine: SimulationEngine,
-                     percent_adoption: float,
+                     percent_adoption: Union[float, SpecialPercentAdoptions],
                      prev_scenario: Optional["Scenario"] = None):
         """Sets up engine input"""
 
@@ -355,10 +366,11 @@ class Scenario(ABC):
                                         prev_scenario)
         engine.ready_to_run_round = 0
 
-    def _set_engine_as_classes(self,
-                               engine: SimulationEngine,
-                               percent_adoption: float,
-                               prev_scenario: Optional["Scenario"]):
+    def _set_engine_as_classes(
+            self,
+            engine: SimulationEngine,
+            percent_adoption: Union[float, SpecialPercentAdoptions],
+            prev_scenario: Optional["Scenario"]):
         """Resets Engine ASes and changes their AS class
 
         We do this here because we already seed from the scenario

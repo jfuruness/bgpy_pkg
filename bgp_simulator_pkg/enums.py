@@ -107,3 +107,8 @@ class ASTypes(YamlAbleEnum):
     INPUT_CLIQUE: str = "input_clique"
     # Not stubs, multihomed, or input clique
     ETC: str = "etc"
+
+
+class SpecialPercentAdoptions(Enum):
+    ALL_BUT_ONE = 100
+    ONLY_ONE = 0
