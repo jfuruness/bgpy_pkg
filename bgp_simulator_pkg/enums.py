@@ -110,5 +110,5 @@ class ASTypes(YamlAbleEnum):
 
 
 class SpecialPercentAdoptions(Enum):
-    ALL_BUT_ONE = 100
+    ALL_BUT_ONE = 1
     ONLY_ONE = 0

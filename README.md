@@ -95,6 +95,7 @@ tox
 ## History
 * [bgp\_simulator\_pkg](#bgp_simulator_pkg)
 
+* 0.2.0 Fixed subgraph issues. Changed the -1 and 101% cases to be SpecialPercentAdoptions
 * 0.1.03 Fixed subgraph bug that resulted in incorrect graphs
 * 0.1.02 Removed slots from ASes since it does not increase speed, and now ASes with different slots can be interchanged
 * 0.1.01 Added optional gao rexford kwargs to allow easier subclassing (I undid this)
