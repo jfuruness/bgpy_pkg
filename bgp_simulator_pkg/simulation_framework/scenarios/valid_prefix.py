@@ -37,4 +37,4 @@ class ValidPrefix(Scenario):
         return tuple(anns)
 
     def _get_attacker_asns(self, *args, **kwargs):
-        return None
+        return set()
