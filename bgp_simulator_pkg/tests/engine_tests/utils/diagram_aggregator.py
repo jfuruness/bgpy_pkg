@@ -4,7 +4,7 @@
 from pathlib import Path
 from typing import List
 
-from PIL import Image
+from PIL import Image, ImageFile
 
 
 class DiagramAggregator:
@@ -14,6 +14,9 @@ class DiagramAggregator:
         # Needed to aggregate all diagrams
         self.base_dir: Path = base_dir
         self.base_dir.mkdir(parents=True, exist_ok=True)
+        # Fix to allow loading of truncated images
+        # https://stackoverflow.com/questions/60584155/oserror-image-file-is-truncated
+        ImageFile.LOAD_TRUNCATED_IMAGES = True
 
     def aggregate_diagrams(self):
         """Aggregates all test diagrams for readability into a PDF"""
