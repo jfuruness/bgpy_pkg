@@ -44,9 +44,9 @@ class Simulation:
         """
 
         if subgraphs is None:
-            subgraphs = tuple([
+            subgraphs = tuple([ # type: ignore
                 Cls() for Cls in  # type: ignore
-                Subgraph.subclasses if Cls.name])
+                Subgraph.subclasses if Cls.name]) # type: ignore
         self.percent_adoptions: Tuple[Union[float,
                                             SpecialPercentAdoptions],
                                       ...] = percent_adoptions
