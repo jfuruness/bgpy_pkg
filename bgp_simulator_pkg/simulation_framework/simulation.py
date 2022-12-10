@@ -30,9 +30,7 @@ class Simulation:
                     [SubprefixHijack(AdoptASCls=x)  # type: ignore
                      for x in [ROVSimpleAS]]
                     ),
-                 subgraphs: Tuple[Subgraph, ...] = tuple([
-                    Cls() for Cls in  # type: ignore
-                    Subgraph.subclasses if Cls.name]),  # type: ignore
+                 subgraphs: Tuple[Subgraph, ...] = None,  # type: ignore
                  num_trials: int = 2,
                  propagation_rounds: int = 1,
                  output_path: Path = Path("/tmp/graphs"),
@@ -45,6 +43,10 @@ class Simulation:
         mp_method: Multiprocessing method
         """
 
+        if subgraphs is None:
+            subgraphs = tuple([
+                Cls() for Cls in  # type: ignore
+                Subgraph.subclasses if Cls.name])
         self.percent_adoptions: Tuple[Union[float,
                                             SpecialPercentAdoptions],
                                       ...] = percent_adoptions
