@@ -5,7 +5,7 @@ from multiprocessing import Pool
 from pathlib import Path
 from shutil import make_archive
 from tempfile import TemporaryDirectory
-from typing import Any, Dict, List, Tuple, Union
+from typing import Any, Dict, List, Optional, Tuple, Union
 
 
 from caida_collector_pkg import CaidaCollector
@@ -30,7 +30,7 @@ class Simulation:
                     [SubprefixHijack(AdoptASCls=x)  # type: ignore
                      for x in [ROVSimpleAS]]
                     ),
-                 subgraphs: Tuple[Subgraph, ...] = None,  # type: ignore
+                 subgraphs: Optional[Tuple[Subgraph, ...]] = None,
                  num_trials: int = 2,
                  propagation_rounds: int = 1,
                  output_path: Path = Path("/tmp/graphs"),
@@ -43,20 +43,21 @@ class Simulation:
         mp_method: Multiprocessing method
         """
 
-        if subgraphs is None:
-            subgraphs = tuple([  # type: ignore
-                Cls() for Cls in  # type: ignore
-                Subgraph.subclasses if Cls.name])  # type: ignore
+        if subgraphs:
+            self.subgraphs: Tuple[Subgraph, ...] = subgraphs
+        else:
+            self.subgraphs = tuple([
+                Cls() for Cls in
+                Subgraph.subclasses if Cls.name])
+
         self.percent_adoptions: Tuple[Union[float,
                                             SpecialPercentAdoptions],
                                       ...] = percent_adoptions
-        self.scenarios: Tuple[Scenario, ...] = scenarios
-        self.subgraphs: Tuple[Subgraph, ...] = subgraphs
         self.num_trials: int = num_trials
         self.propagation_rounds: int = propagation_rounds
         self.output_path: Path = output_path
         self.parse_cpus: int = parse_cpus
-
+        self.scenarios: Tuple[Scenario, ...] = scenarios
         # All scenarios must have a uni que graph label
         labels = [x.graph_label for x in self.scenarios]
         assert len(labels) == len(set(labels)), "Scenario labels not unique"

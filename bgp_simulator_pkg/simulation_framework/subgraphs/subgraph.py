@@ -198,7 +198,12 @@ class Subgraph(ABC):
                                       outcomes: Dict[AS, Outcomes]):
         """Adds traceback info to shared data"""
 
+        # Do not count these!
+        uncountable_asns = scenario._preset_asns
+
         for as_obj, outcome in outcomes.items():
+            if as_obj.asn in uncountable_asns:
+                continue
             as_type = self._get_as_type(as_obj)
 
             # TODO: refactor this ridiculousness into a class
@@ -231,6 +236,9 @@ class Subgraph(ABC):
         # NOTE: this double for loop should realy be avoided
         # Only O(2n) but bad for runtime
         for as_obj, outcome in outcomes.items():
+            if as_obj.asn in uncountable_asns:
+                continue
+
             as_type = self._get_as_type(as_obj)
             as_type_pol_k = self._get_as_type_pol_k(as_type, as_obj.__class__)
             as_type_pol_outcome_k = self._get_as_type_pol_outcome_k(

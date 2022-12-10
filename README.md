@@ -1,4 +1,3 @@
-[![Windows](https://svgshare.com/i/ZhY.svg)](https://svgshare.com/i/ZhY.svg)
 [![Linux](https://svgshare.com/i/Zhy.svg)](https://svgshare.com/i/Zhy.svg)
 [![Python 3.7](https://img.shields.io/badge/python-3.7-blue.svg)](https://www.python.org/downloads/release/python-370/)
 [![Python 3.8](https://img.shields.io/badge/python-3.8-blue.svg)](https://www.python.org/downloads/release/python-380/)
@@ -95,6 +94,7 @@ tox
 ## History
 * [bgp\_simulator\_pkg](#bgp_simulator_pkg)
 
+* 0.2.1 Various bug fixes. PRs from Cameron (Thank you!). input clique rounding up now. Victims/attackers no longer being counted. No more windows support.
 * 0.2.0 Fixed subgraph issues. Changed the -1 and 101% cases to be SpecialPercentAdoptions
 * 0.1.03 Fixed subgraph bug that resulted in incorrect graphs
 * 0.1.02 Removed slots from ASes since it does not increase speed, and now ASes with different slots can be interchanged

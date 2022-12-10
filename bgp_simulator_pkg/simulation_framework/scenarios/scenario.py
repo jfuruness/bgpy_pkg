@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+import math
 import random
 from ipaddress import ip_network
 from ipaddress import IPv4Network
@@ -291,7 +292,7 @@ class Scenario(ABC):
                 k = len(possible_adopters) - 1
             else:
                 assert isinstance(percent_adopt, float), "Make mypy happy"
-                k = int(len(possible_adopters) * percent_adopt)
+                k = math.ceil(len(possible_adopters) * percent_adopt)
 
             # https://stackoverflow.com/a/15837796/8903959
             possible_adopters = tuple(possible_adopters)
