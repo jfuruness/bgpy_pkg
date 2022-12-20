@@ -35,7 +35,8 @@ class Scenario(ABC):
                  "ordered_prefix_subprefix_dict",
                  "announcements",
                  "non_default_as_cls_dict",
-                 "min_rov_confidence")
+                 "min_rov_confidence",
+                 "adoption_subcategory_attrs")
 
     def __init__(self,
                  # This is the base type of announcement for this class
@@ -50,7 +51,9 @@ class Scenario(ABC):
                  min_rov_confidence: float = 1000,
                  # Purely for rebuilding from YAML
                  non_default_as_cls_dict: Optional[Dict[int, Type[AS]]] = None,
-                 announcements: Tuple[Announcement, ...] = ()
+                 announcements: Tuple[Announcement, ...] = (),
+                 adoption_subcategory_attrs: Tuple[str, ...] = (
+                    "stub_or_mh_ases", "etc_ases", "input_clique_ases")
                  ):
         """inits attrs
 
@@ -58,6 +61,9 @@ class Scenario(ABC):
         where you do __not__ include any of the BaseASCls,
         since that is the default
         """
+
+        self.adoption_subcategory_attrs: Tuple[str, ...] =\
+            adoption_subcategory_attrs
 
         self.AnnCls: Type[Announcement] = AnnCls
         self.BaseASCls: Type[AS] = BaseASCls
@@ -263,8 +269,7 @@ class Scenario(ABC):
         """
 
         asn_cls_dict = dict()
-        subcategories = ("stub_or_mh_ases", "etc_ases", "input_clique_ases")
-        for subcategory in subcategories:
+        for subcategory in self.adoption_subcategory_attrs:
             ases = getattr(engine, subcategory)
             real_rov_ases = set()
             # If we are including ROV nodes
@@ -473,6 +478,7 @@ class Scenario(ABC):
                 "num_victims": self.num_victims,
                 "num_attackers": self.num_attackers,
                 "min_rov_confidence": self.min_rov_confidence,
+                "adoption_subcategory_attrs": self.adoption_subcategory_attrs,
                 "non_default_as_cls_dict":
                     {asn: AS.subclass_to_name_dict[ASCls]
                      for asn, ASCls in self.non_default_as_cls_dict.items()}}
@@ -490,4 +496,6 @@ class Scenario(ABC):
                    num_victims=dct["num_victims"],
                    num_attackers=dct["num_attackers"],
                    min_rov_confidence=dct["min_rov_confidence"],
-                   non_default_as_cls_dict=as_classes)
+                   non_default_as_cls_dict=as_classes,
+                   adoption_subcategory_attrs=dct["adoption_subcategory_attrs"]
+                   )
