@@ -1,5 +1,5 @@
-all_ATTACKER_SUCCESS: 2
-all_ATTACKER_SUCCESS_perc: 50.0
+all_ATTACKER_SUCCESS: 1
+all_ATTACKER_SUCCESS_perc: 25.0
 all_DISCONNECTED: 2
 all_DISCONNECTED_perc: 50.0
 etc_BGP Simple: 1
@@ -9,8 +9,6 @@ etc_ROVSimple: 1
 etc_ROVSimple_DISCONNECTED: 1
 etc_ROVSimple_DISCONNECTED_percent: 100.0
 set: true
-stubs_or_mh_BGP Simple: 2
-stubs_or_mh_BGP Simple_ATTACKER_SUCCESS: 1
-stubs_or_mh_BGP Simple_ATTACKER_SUCCESS_percent: 50.0
+stubs_or_mh_BGP Simple: 1
 stubs_or_mh_BGP Simple_DISCONNECTED: 1
-stubs_or_mh_BGP Simple_DISCONNECTED_percent: 50.0
+stubs_or_mh_BGP Simple_DISCONNECTED_percent: 100.0

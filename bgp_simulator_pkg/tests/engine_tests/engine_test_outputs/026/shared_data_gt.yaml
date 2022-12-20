@@ -1,9 +1,6 @@
-all_VICTIM_SUCCESS: 6
-all_VICTIM_SUCCESS_perc: 100.0
+all_VICTIM_SUCCESS: 5
+all_VICTIM_SUCCESS_perc: 83.33333333333333
 etc_ROV: 5
 etc_ROV_VICTIM_SUCCESS: 5
 etc_ROV_VICTIM_SUCCESS_percent: 100.0
 set: true
-stubs_or_mh_ROV: 1
-stubs_or_mh_ROV_VICTIM_SUCCESS: 1
-stubs_or_mh_ROV_VICTIM_SUCCESS_percent: 100.0
