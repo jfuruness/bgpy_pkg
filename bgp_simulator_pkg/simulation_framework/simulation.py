@@ -140,22 +140,23 @@ class Simulation:
     def _get_single_process_results(self) -> List[Tuple[Subgraph, ...]]:
         """Get all results when using single processing"""
 
-        return [self._run_chunk(x, single_proc=True)
-                for x in self._get_chunks(1)]
+        return [self._run_chunk(chunk_id, x, single_proc=True)
+                for chunk_id, x in enumerate(self._get_chunks(1))]
 
     def _get_mp_results(self, parse_cpus: int) -> List[Tuple[Subgraph, ...]]:
         """Get results from multiprocessing"""
 
         # Pool is much faster than ProcessPoolExecutor
         with Pool(parse_cpus) as pool:
-            return pool.map(self._run_chunk,  # type: ignore
-                            self._get_chunks(parse_cpus))
+            return pool.starmap(self._run_chunk,  # type: ignore
+                                enumerate(self._get_chunks(parse_cpus)))
 
 ############################
 # Data Aggregation Methods #
 ############################
 
     def _run_chunk(self,
+                   chunk_id: int,
                    percent_adopt_trials: List[Tuple[Union[float,
                                                     SpecialPercentAdoptions],
                                                     int]],
@@ -164,6 +165,10 @@ class Simulation:
                    single_proc: bool = False
                    ) -> Tuple[Subgraph, ...]:
         """Runs a chunk of trial inputs"""
+
+        # To enable deterministic multiprocess runs
+        import random
+        random.seed(chunk_id)
 
         # Engine is not picklable or dillable AT ALL, so do it here
         # (after the multiprocess process has started)
