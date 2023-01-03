@@ -34,7 +34,9 @@ class Simulation:
                  num_trials: int = 2,
                  propagation_rounds: int = 1,
                  output_path: Path = Path("/tmp/graphs"),
-                 parse_cpus: int = 8):
+                 parse_cpus: int = 8,
+                 seed_random_generator_automatically=True,
+                 random_seed = None):
         """Downloads relationship data, runs simulation
 
         Graphs -> A list of graph classes
@@ -58,6 +60,8 @@ class Simulation:
         self.output_path: Path = output_path
         self.parse_cpus: int = parse_cpus
         self.scenarios: Tuple[Scenario, ...] = scenarios
+        self.seed_random_generator_automatically = seed_random_generator_automatically
+        self.random_seed = random_seed
         # All scenarios must have a uni que graph label
         labels = [x.graph_label for x in self.scenarios]
         assert len(labels) == len(set(labels)), "Scenario labels not unique"
@@ -140,11 +144,27 @@ class Simulation:
     def _get_single_process_results(self) -> List[Tuple[Subgraph, ...]]:
         """Get all results when using single processing"""
 
+        # Check if random generator will be seeded automatically
+        if not self.seed_random_generator_automatically:
+            assert isinstance(self.random_seed, int), "" \
+                   "If seed_random_generator_automatically " \
+                   "is False and parse_cpus=1, then a " \
+                   "random_seed needs to be provided"
+            import random
+            random.seed(self.random_seed)
+
         return [self._run_chunk(chunk_id, x, single_proc=True)
                 for chunk_id, x in enumerate(self._get_chunks(1))]
 
     def _get_mp_results(self, parse_cpus: int) -> List[Tuple[Subgraph, ...]]:
         """Get results from multiprocessing"""
+
+        if not self.seed_random_generator_automatically:
+            assert self.random_seed is None, "" \
+                   "If seed_random_generator_automatically " \
+                   "is False and parse_cpus > 1, then a " \
+                   "random_seed should not be set. " \
+                   "Instead use a single process"
 
         # Pool is much faster than ProcessPoolExecutor
         with Pool(parse_cpus) as pool:
@@ -167,8 +187,12 @@ class Simulation:
         """Runs a chunk of trial inputs"""
 
         # To enable deterministic multiprocess runs
-        import random
-        random.seed(chunk_id)
+        # Note: Deterministic runs can be set for a single process
+        # by setting the random_seed parameter and 
+        # seed_random_generator_automatically=False
+        if self.seed_random_generator_automatically:
+            import random
+            random.seed(chunk_id)
 
         # Engine is not picklable or dillable AT ALL, so do it here
         # (after the multiprocess process has started)
