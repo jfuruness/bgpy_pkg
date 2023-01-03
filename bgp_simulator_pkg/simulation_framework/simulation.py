@@ -6,7 +6,7 @@ from pathlib import Path
 from shutil import make_archive
 from tempfile import TemporaryDirectory
 from typing import Any, Dict, List, Optional, Tuple, Union
-
+import random
 
 from caida_collector_pkg import CaidaCollector
 
@@ -60,7 +60,8 @@ class Simulation:
         self.output_path: Path = output_path
         self.parse_cpus: int = parse_cpus
         self.scenarios: Tuple[Scenario, ...] = scenarios
-        self.seed_random_generator_automatically = seed_random_generator_automatically
+        self.seed_random_generator_automatically = \
+                seed_random_generator_automatically
         self.random_seed = random_seed
         # All scenarios must have a uni que graph label
         labels = [x.graph_label for x in self.scenarios]
@@ -150,7 +151,6 @@ class Simulation:
                    "If seed_random_generator_automatically " \
                    "is False and parse_cpus=1, then a " \
                    "random_seed needs to be provided"
-            import random
             random.seed(self.random_seed)
 
         return [self._run_chunk(chunk_id, x, single_proc=True)
@@ -191,7 +191,6 @@ class Simulation:
         # by setting the random_seed parameter and 
         # seed_random_generator_automatically=False
         if self.seed_random_generator_automatically:
-            import random
             random.seed(chunk_id)
 
         # Engine is not picklable or dillable AT ALL, so do it here
