@@ -222,6 +222,7 @@ class Simulation:
 
                     # By default, this is a no op
                     scenario.post_propagation_hook(**kwargs)
+                prev_scenario = scenario
             # Reset scenario for next round of trials
             prev_scenario = None
         return subgraphs
