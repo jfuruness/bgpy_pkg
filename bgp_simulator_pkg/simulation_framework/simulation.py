@@ -245,6 +245,10 @@ class Simulation:
                               "trial": trial,
                               "scenario": scenario,
                               "propagation_round": propagation_round}
+
+                    # Pre-aggregation Hook
+                    scenario.pre_aggregation_hook(**kwargs)
+
                     # Save all engine run info
                     # The reason we aggregate info right now, instead of saving
                     # the engine and doing it later, is because doing it all
