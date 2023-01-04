@@ -7,6 +7,7 @@ from shutil import make_archive
 from tempfile import TemporaryDirectory
 from typing import Any, Dict, List, Optional, Tuple, Union
 import random
+import os
 
 from caida_collector_pkg import CaidaCollector
 
@@ -35,8 +36,7 @@ class Simulation:
                  propagation_rounds: int = 1,
                  output_path: Path = Path("/tmp/graphs"),
                  parse_cpus: int = 8,
-                 seed_random_generator_automatically=True,
-                 random_seed = None):
+                 python_hash_seed: Optional[int] = None):
         """Downloads relationship data, runs simulation
 
         Graphs -> A list of graph classes
@@ -60,9 +60,7 @@ class Simulation:
         self.output_path: Path = output_path
         self.parse_cpus: int = parse_cpus
         self.scenarios: Tuple[Scenario, ...] = scenarios
-        self.seed_random_generator_automatically = \
-                seed_random_generator_automatically
-        self.random_seed = random_seed
+        self.python_hash_seed = python_hash_seed
         # All scenarios must have a uni que graph label
         labels = [x.graph_label for x in self.scenarios]
         assert len(labels) == len(set(labels)), "Scenario labels not unique"
@@ -115,6 +113,25 @@ class Simulation:
                 # Merges the trial subgraph into this subgraph
                 self_subgraph.add_trial_info(result_subgraph)
 
+    def _check_python_hash_seed(self, set_random_seed: bool = False):
+        """Checks that the python_hash_seed is the same
+        as environment variable PYTHONHASHSEED
+        set_random_seed: bool:  set the random.seed() with
+        python_hash_seed value.
+        """
+        # Check if python_hash_seed is set
+        if self.python_hash_seed is not None:
+            # Check if PYTHONHASHSEED environment variable
+            # is set properly
+            env_var = os.environ.get('PYTHONHASHSEED')
+            assert env_var and env_var == str(self.python_hash_seed), "" \
+                "If python_hash_seed is set then " \
+                "'PYTHONHASHSEED' environement needs to be set as the " \
+                "same value as python_hash_seed"
+            if set_random_seed:
+                # Set random seed
+                random.seed(self.python_hash_seed)
+
 ###########################
 # Multiprocessing Methods #
 ###########################
@@ -145,27 +162,16 @@ class Simulation:
     def _get_single_process_results(self) -> List[Tuple[Subgraph, ...]]:
         """Get all results when using single processing"""
 
-        # Check if random generator will be seeded automatically
-        if not self.seed_random_generator_automatically:
-            assert isinstance(self.random_seed, int), "" \
-                   "If seed_random_generator_automatically " \
-                   "is False and parse_cpus=1, then a " \
-                   "random_seed needs to be provided"
-            random.seed(self.random_seed)
-
+        # Check if the python_hash_seed is set properly
+        self._check_python_hash_seed(set_random_seed=True)
         return [self._run_chunk(chunk_id, x, single_proc=True)
                 for chunk_id, x in enumerate(self._get_chunks(1))]
 
     def _get_mp_results(self, parse_cpus: int) -> List[Tuple[Subgraph, ...]]:
         """Get results from multiprocessing"""
 
-        if not self.seed_random_generator_automatically:
-            assert self.random_seed is None, "" \
-                   "If seed_random_generator_automatically " \
-                   "is False and parse_cpus > 1, then a " \
-                   "random_seed should not be set. " \
-                   "Instead use a single process"
-
+        # Check if the python_hash_seed is set properly
+        self._check_python_hash_seed()
         # Pool is much faster than ProcessPoolExecutor
         with Pool(parse_cpus) as pool:
             return pool.starmap(self._run_chunk,  # type: ignore
@@ -186,11 +192,8 @@ class Simulation:
                    ) -> Tuple[Subgraph, ...]:
         """Runs a chunk of trial inputs"""
 
-        # To enable deterministic multiprocess runs
-        # Note: Deterministic runs can be set for a single process
-        # by setting the random_seed parameter and 
-        # seed_random_generator_automatically=False
-        if self.seed_random_generator_automatically:
+        # Check to enable deterministic multiprocess runs
+        if self.python_hash_seed is not None and self.parse_cpus > 1:
             random.seed(chunk_id)
 
         # Engine is not picklable or dillable AT ALL, so do it here
