@@ -6,7 +6,8 @@ from pathlib import Path
 from shutil import make_archive
 from tempfile import TemporaryDirectory
 from typing import Any, Dict, List, Optional, Tuple, Union
-
+import random
+import os
 
 from caida_collector_pkg import CaidaCollector
 
@@ -34,7 +35,8 @@ class Simulation:
                  num_trials: int = 2,
                  propagation_rounds: int = 1,
                  output_path: Path = Path("/tmp/graphs"),
-                 parse_cpus: int = 8):
+                 parse_cpus: int = 8,
+                 python_hash_seed: Optional[int] = None):
         """Downloads relationship data, runs simulation
 
         Graphs -> A list of graph classes
@@ -58,6 +60,7 @@ class Simulation:
         self.output_path: Path = output_path
         self.parse_cpus: int = parse_cpus
         self.scenarios: Tuple[Scenario, ...] = scenarios
+        self.python_hash_seed = python_hash_seed
         # All scenarios must have a uni que graph label
         labels = [x.graph_label for x in self.scenarios]
         assert len(labels) == len(set(labels)), "Scenario labels not unique"
@@ -110,6 +113,25 @@ class Simulation:
                 # Merges the trial subgraph into this subgraph
                 self_subgraph.add_trial_info(result_subgraph)
 
+    def _check_python_hash_seed(self, set_random_seed: bool = False):
+        """Checks that the python_hash_seed is the same
+        as environment variable PYTHONHASHSEED
+        set_random_seed: bool:  set the random.seed() with
+        python_hash_seed value.
+        """
+        # Check if python_hash_seed is set
+        if self.python_hash_seed is not None:
+            # Check if PYTHONHASHSEED environment variable
+            # is set properly
+            env_var = os.environ.get('PYTHONHASHSEED')
+            assert env_var and env_var == str(self.python_hash_seed), "" \
+                "If python_hash_seed is set then " \
+                "'PYTHONHASHSEED' environement needs to be set as the " \
+                "same value as python_hash_seed"
+            if set_random_seed:
+                # Set random seed
+                random.seed(self.python_hash_seed)
+
 ###########################
 # Multiprocessing Methods #
 ###########################
@@ -140,22 +162,27 @@ class Simulation:
     def _get_single_process_results(self) -> List[Tuple[Subgraph, ...]]:
         """Get all results when using single processing"""
 
-        return [self._run_chunk(x, single_proc=True)
-                for x in self._get_chunks(1)]
+        # Check if the python_hash_seed is set properly
+        self._check_python_hash_seed(set_random_seed=True)
+        return [self._run_chunk(chunk_id, x, single_proc=True)
+                for chunk_id, x in enumerate(self._get_chunks(1))]
 
     def _get_mp_results(self, parse_cpus: int) -> List[Tuple[Subgraph, ...]]:
         """Get results from multiprocessing"""
 
+        # Check if the python_hash_seed is set properly
+        self._check_python_hash_seed()
         # Pool is much faster than ProcessPoolExecutor
         with Pool(parse_cpus) as pool:
-            return pool.map(self._run_chunk,  # type: ignore
-                            self._get_chunks(parse_cpus))
+            return pool.starmap(self._run_chunk,  # type: ignore
+                                enumerate(self._get_chunks(parse_cpus)))
 
 ############################
 # Data Aggregation Methods #
 ############################
 
     def _run_chunk(self,
+                   chunk_id: int,
                    percent_adopt_trials: List[Tuple[Union[float,
                                                     SpecialPercentAdoptions],
                                                     int]],
@@ -164,6 +191,10 @@ class Simulation:
                    single_proc: bool = False
                    ) -> Tuple[Subgraph, ...]:
         """Runs a chunk of trial inputs"""
+
+        # Check to enable deterministic multiprocess runs
+        if self.python_hash_seed is not None and self.parse_cpus > 1:
+            random.seed(chunk_id)
 
         # Engine is not picklable or dillable AT ALL, so do it here
         # (after the multiprocess process has started)
