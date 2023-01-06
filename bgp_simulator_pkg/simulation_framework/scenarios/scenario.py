@@ -427,6 +427,12 @@ class Scenario(ABC):
             # Seed by placing in the local rib
             obj_to_seed._local_rib.add_ann(ann)
 
+    def pre_aggregation_hook(self, *args, **kwargs):
+        """ Useful hook for changes/checks
+        prior to results aggregation.
+        """
+        pass
+
     def post_propagation_hook(self, *args, **kwargs):
         """Useful hook for post propagation"""
 
