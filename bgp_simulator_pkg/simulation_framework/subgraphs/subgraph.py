@@ -78,13 +78,27 @@ class Subgraph(ABC):
 
         matplotlib.use("Agg")
         fig, ax = plt.subplots()
+        fig.set_dpi(150)
         # Set X and Y axis size
         plt.xlim(0, 100)
         plt.ylim(0, 100)
+
+        styles = self.line_styles
+        markers = self.markers
         # Add the data from the lines
-        for line in lines:
+        for i, line in enumerate(sorted(lines, key=lambda x: x.label)):
+            # Ya, not great I know.
+            # Sorry, they don't pay me enough
+            # In fact, they don't pay me at all
+            assert self.name, "looking at you mypy"
+            if "adopting" in self.name and "non_adopting" not in self.name:
+                adopt_pol = line.label.split("(")[0].replace("adopting)", "")
+                line.label = adopt_pol
+
             ax.errorbar(line.xs,
                         line.ys,
+                        ls=styles[i],
+                        marker=markers[i],
                         yerr=line.yerrs,
                         label=line.label)
         # Set labels
@@ -99,6 +113,20 @@ class Subgraph(ABC):
         plt.savefig(graph_dir / f"{self.name}.png")
         # https://stackoverflow.com/a/33343289/8903959
         plt.close(fig)
+
+    @property
+    def markers(self) -> List[str]:
+        markers = [".", "1", "*", "x", "d", "2", "3", "4"]
+        markers += markers.copy()[0:-2:2]
+        markers += markers.copy()[::-1]
+        return markers
+
+    @property
+    def line_styles(self) -> List[str]:
+        styles = ["-", "--", "-.", ":", "solid", "dotted", "dashdot", "dashed"]
+        styles += styles.copy()[::-1]
+        styles += styles.copy()[0:-2:2]
+        return styles
 
     def _get_lines(self, prop_round: int) -> List[Line]:
         """Returns lines for matplotlib graph"""
@@ -115,7 +143,8 @@ class Subgraph(ABC):
     def x_axis_label(self) -> str:
         """Returns X axis label"""
 
-        return "Percent adoption of the adopted class"
+        # Upon request from Cameron
+        return "Percent Adoption"  # of the adopted class"
 
     ##############
     # Data funcs #

@@ -13,9 +13,3 @@ class DisconnectedNonAdoptingEtcSubgraph(DisconnectedSubgraph):
 
         return self._get_as_type_pol_outcome_perc_k(
             ASTypes.ETC, scenario.BaseASCls, Outcomes.DISCONNECTED)
-
-    @property
-    def y_axis_label(self) -> str:
-        """returns y axis label"""
-
-        return Outcomes.DISCONNECTED.name

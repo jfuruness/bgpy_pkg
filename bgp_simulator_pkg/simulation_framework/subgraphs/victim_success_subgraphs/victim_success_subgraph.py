@@ -18,8 +18,7 @@ class VictimSuccessSubgraph(Subgraph):
         raise NotImplementedError
 
     @property
-    @abstractmethod
     def y_axis_label(self) -> str:
         """returns y axis label"""
 
-        raise NotImplementedError
+        return "Data Plane % Successful Connection"

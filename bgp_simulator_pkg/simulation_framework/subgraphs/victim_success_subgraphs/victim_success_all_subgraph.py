@@ -14,9 +14,3 @@ class VictimSuccessAllSubgraph(VictimSuccessSubgraph):
         """Returns the key to be used in shared_data on the subgraph"""
 
         return f"all_{Outcomes.VICTIM_SUCCESS.name}_perc"
-
-    @property
-    def y_axis_label(self) -> str:
-        """returns y axis label"""
-
-        return Outcomes.VICTIM_SUCCESS.name

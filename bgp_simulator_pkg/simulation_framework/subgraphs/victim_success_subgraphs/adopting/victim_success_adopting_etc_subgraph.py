@@ -16,9 +16,3 @@ class VictimSuccessAdoptingEtcSubgraph(VictimSuccessSubgraph):
 
         return self._get_as_type_pol_outcome_perc_k(
             ASTypes.ETC, scenario.AdoptASCls, Outcomes.VICTIM_SUCCESS)
-
-    @property
-    def y_axis_label(self) -> str:
-        """returns y axis label"""
-
-        return Outcomes.VICTIM_SUCCESS.name

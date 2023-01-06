@@ -27,7 +27,8 @@ class Line:
         self.percent_adopt_dict = {k: v for k, v in
                                    sorted(self.percent_adopt_dict.items())}
 
-        self.label: str = scenario_label
+        # Remove the term Simple from the graphs
+        self.label: str = scenario_label.replace("Simple", "")
         self.xs: List[float] = self._get_xs()
         self.ys: List[float] = self._get_ys()
         self.yerrs: List[float] = self._get_yerrs()
