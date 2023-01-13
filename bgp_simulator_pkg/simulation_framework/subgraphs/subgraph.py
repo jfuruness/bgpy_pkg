@@ -91,8 +91,8 @@ class Subgraph(ABC):
             # Sorry, they don't pay me enough
             # In fact, they don't pay me at all
             assert self.name, "looking at you mypy"
-            if "adopting" in self.name and "non_adopting" not in self.name:
-                adopt_pol = line.label.split("(")[0].replace("adopting)", "")
+            if "non_adopting" in self.name:
+                adopt_pol = line.label.replace("adopting", "non-adopting")
                 line.label = adopt_pol
 
             ax.errorbar(line.xs,
