@@ -3,7 +3,7 @@
 overleaf_dir="./6352b3da198d914e49175712"  # TODO: Replace with your path repo
 output_dir="${overleaf_dir}/testing"  # This is where the extracted figures will be put
 graphs_zip_files_path="this_is_a_place_holder_string_set_with_args_loop_below"
-usage_information="script usage: $(basename \${0}) [-u graph-zip-files-path]"
+usage_information="script usage: $(basename ${0}) [-u graph-zip-files-path]"
 
 # Based on the flag entered do the following for the updates
 while getopts 'u:h' OPTION; do
