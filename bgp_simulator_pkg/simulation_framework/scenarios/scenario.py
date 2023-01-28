@@ -393,6 +393,10 @@ class Scenario(ABC):
             engine,
             percent_adoption,
             prev_scenario=prev_scenario)
+        # If any of the default non adopting ASes were added, remove them
+        for asn in self._default_non_adopters:
+            if asn in self.non_default_as_cls_dict:
+                del self.non_default_as_cls_dict[asn]
         # Validate that this is only non_default ASes
         # This matters, because later this entire dict may be used for the next
         # scenario
