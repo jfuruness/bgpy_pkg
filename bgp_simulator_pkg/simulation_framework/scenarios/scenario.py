@@ -353,6 +353,25 @@ class Scenario(ABC):
         else:
             return Outcomes.UNDETERMINED
 
+    def determine_as_outcome_ctrl_plane(self,
+                                        as_obj: AS,
+                                        ann: Optional[Announcement]
+                                        ) -> Outcomes:
+        """Determines the outcome at an AS on the control plane
+
+        ann is most_specific_ann is the most specific prefix announcement
+        that exists at that AS
+        """
+
+        if not ann:
+            return Outcomes.DISCONNECTED
+        elif ann.origin in self.attacker_asns:
+            return Outcomes.ATTACKER_SUCCESS
+        elif ann.origin in self.victim_asns:
+            return Outcomes.VICTIM_SUCCESS
+        else:
+            return Outcomes.DISCONNECTED
+
     #############################
     # Engine Manipulation Funcs #
     #############################
