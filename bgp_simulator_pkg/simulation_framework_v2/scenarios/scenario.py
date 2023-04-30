@@ -36,12 +36,12 @@ class ScenarioTrial(ABC):
         # Only necessary if coming from YAML
         yaml_attacker_asns: Optional[Set[int]] = None,
         yaml_victim_asns: Optional[Set[int]] = None,
-        yaml_non_default_as_cls_dict: Optional[Dict[int, Type[AS]]] = None,
+        yaml_non_default_asn_cls_dict: Optional[Dict[int, Type[AS]]] = None,
         yaml_announcements: Tuple[Announcement, ...] = (),
     ):
         """inits attrs
 
-        non_default_as_cls_dict is a dict of asn: AdoptASCls
+        non_base_as_cls_dict is a dict of asn: ASCls
         where you do __not__ include any of the BaseASCls,
         since that is the default
         """
@@ -52,22 +52,23 @@ class ScenarioTrial(ABC):
         self.attacker_asns: Set[int] = self._get_attacker_asns(
             yaml_attacker_asns,
             engine,
-            precent_adoption,
             prev_scenario
         )
 
         self.victim_asns: Set[int] = self._get_victim_asns(
             yaml_victim_asns,
             engine,
-            precent_adoption,
             prev_scenario
         )
+
+        AS_CLS_DCT = Dict[int, Type[AS]]
+        self.non_default_asn_cls_dict: AS_CLS_DCT = self._get_non_default_asn_cls_dict(
+            yaml_non_default_asn_cls_dict,
+            engine,
+            prev_scenario
+        )
+
         raise NotImplementedError
-        # Purely for yaml #################################################
-        if non_default_as_cls_dict:
-            self.non_default_as_cls_dict: Dict[int,
-                                               Type[AS]
-                                               ] = non_default_as_cls_dict
         if announcements:
             self.announcements: Tuple["Announcement", ...] = announcements
 
@@ -79,7 +80,6 @@ class ScenarioTrial(ABC):
         self,
         yaml_attacker_asns: Set[int],
         engine: SimulationEngine,
-        percent_adoption: Union[float, SpecialPercentAdoptions],
         prev_scenario: Optional["Scenario"]
     ) -> Set[int]:
         """Returns attacker ASN at random"""
@@ -87,11 +87,14 @@ class ScenarioTrial(ABC):
         # This is coming from YAML, do not recalculate
         if yaml_attacker_asns:
             attacker_asns = yaml_attacker_asns
+        # Reuse the attacker from the last scenario for comparability
+        elif prev_scenario:
+            attacker_asns = prev_scenario.attacker_asns
         # This is being initialized for the first time
         else:
             possible_attacker_asns = self._get_possible_attacker_asns(
                 engine,
-                percent_adoption,
+                self.percent_adoption,
                 prev_scenario
             )
             # https://stackoverflow.com/a/15837796/8903959
@@ -130,7 +133,6 @@ class ScenarioTrial(ABC):
         self,
         yaml_victim_asns: Set[int],
         engine: SimulationEngine,
-        percent_adoption: Union[float, SpecialPercentAdoptions],
         prev_scenario: Optional["Scenario"]
     ) -> Set[int]:
         """Returns victim ASN at random"""
@@ -138,11 +140,14 @@ class ScenarioTrial(ABC):
         # This is coming from YAML, do not recalculate
         if yaml_victim_asns:
             victim_asns = yaml_victim_asns
+        # Reuse the victim from the last scenario for comparability
+        elif prev_scenario:
+            victim_asns = prev_scenario.victim_asns
         # This is being initialized for the first time
         else:
             possible_victim_asns = self._get_possible_victim_asns(
                 engine,
-                percent_adoption,
+                self.percent_adoption,
                 prev_scenario
             )
             # https://stackoverflow.com/a/15837796/8903959
@@ -174,66 +179,16 @@ class ScenarioTrial(ABC):
         possible_asns = possible_asns.difference(self.attacker_asns)
         return possible_asns
 
-
-
-
-
-
-raise NotImplementedError
-
-
-
-
-    ##############################################
-    # Set Attacker/Victim and Announcement Funcs #
-    ##############################################
-
-    def _set_attackers_victims_anns(
-            self,
-            engine: SimulationEngine,
-            percent_adoption: Union[float, SpecialPercentAdoptions],
-            prev_scenario: Optional["Scenario"]):
-        """Sets attackers, victims. announcements instance vars"""
-
-        # Use the same attacker victim pair that was used previously
-        if prev_scenario:
-            self.attacker_asns = prev_scenario.attacker_asns
-            self.victim_asns = prev_scenario.victim_asns
-        # This is the first time, randomly select attacker/victim
-        else:
-            self._set_attackers_victims(engine,
-                                        percent_adoption,
-                                        prev_scenario)
-        # Must call this here due to atk/vic pair being different
-        try:
-            self.announcements = self._get_announcements(
-                engine=engine,
-                percent_adoption=percent_adoption,
-                prev_scenario=prev_scenario)
-        except TypeError:
-            self.announcements = self._get_announcements()
-            warn("Add *args and **kwargs to your _get_announcements func"
-                 ", this will break in November",
-                 DeprecationWarning,
-                 stacklevel=2)
-        self._get_ordered_prefix_subprefix_dict()
-
-    @abstractmethod
-    def _get_announcements(self, *args, **kwargs):
-        """Returns announcements"""
-
-        raise NotImplementedError
-
     #######################
     # Adopting ASNs funcs #
     #######################
 
-    def _get_non_default_as_cls_dict(
-            self,
-            engine: SimulationEngine,
-            percent_adoption: Union[float, SpecialPercentAdoptions],
-            prev_scenario: Optional["Scenario"]
-            ) -> Dict[int, Type[AS]]:
+    def _get_non_default_asn_cls_dict(
+        self,
+        yaml_non_default_asn_cls_dict: Dict[int, Type[AS]],
+        engine: SimulationEngine,
+        prev_scenario: Optional["Scenario"]
+    ) -> Dict[int, Type[AS]]:
         """Returns as class dict
 
         non_default_as_cls_dict is a dict of asn: AdoptASCls
@@ -244,12 +199,15 @@ raise NotImplementedError
         adoption across trials
         """
 
+        if yaml_non_default_asn_cls_dict:
+            return yaml_non_default_asn_cls_dict
         # By default, use the last engine input to maintain static
         # adoption across the graph
-        if prev_scenario:
+        elif prev_scenario:
             non_default_as_cls_dict = dict()
             for asn, OldASCls in prev_scenario.non_default_as_cls_dict.items():
                 # If the ASN was of the adopting class of the last scenario,
+                # Update the adopting AS class for the new scenario
                 if OldASCls == prev_scenario.AdoptASCls:
                     non_default_as_cls_dict[asn] = self.AdoptASCls
                 # Otherwise keep the AS class as it was
@@ -257,37 +215,32 @@ raise NotImplementedError
                 else:
                     non_default_as_cls_dict[asn] = OldASCls
             return non_default_as_cls_dict
-        # Randomly get adopting ases
+        # Randomly get adopting ases if it hasn't been set yet
         else:
-            return self._get_adopting_asns_dict(engine, percent_adoption)
+            return self._get_randomized_non_default_asn_cls_dict(engine)
 
-    def _get_adopting_asns_dict(
-            self,
-            engine: SimulationEngine,
-            percent_adopt: Union[float, SpecialPercentAdoptions]
-            ) -> Dict[int, Type[AS]]:
-        """Get adopting ASNs
+    def _get_randomized_non_default_asn_cls_dict(
+        self,
+        engine: SimulationEngine,
+    ) -> Dict[int, Type[AS]]:
+        """Get adopting ASNs and non default ASNs
 
         By default, to get even adoption, adopt in each of the three
         subcategories
         """
 
-        asn_cls_dict = dict()
-        for subcategory in self.adoption_subcategory_attrs:
-            ases = getattr(engine, subcategory)
-            real_rov_ases = set()
-            # If we are including ROV nodes
-            # Don't always run this to save on time
-            if self.min_rov_confidence <= 1:
-                for as_ in ases:
-                    if as_.rov_confidence >= self.min_rov_confidence:
-                        asn_cls_dict[as_.asn] = RealROVSimpleAS
-                        real_rov_ases.add(as_)
+        # Get the asn_cls_dict without randomized adoption
+        asn_cls_dict = self.scenario_config.hardcoded_asn_cls_dict.copy()
+        for asn in self._default_adopters:
+            asn_cls_dict[asn] = self.AdoptASCls
+
+        # Randomly adopt in all three subcategories
+        for subcategory in self.scenario_config.adoption_subcategory_attrs:
+            asns = getattr(engine, subcategory)
             # Remove ASes that are already pre-set
             # Ex: Attacker and victim
             # Ex: ROV Nodes (in certain situations)
-            possible_adopters = ases.difference(self._preset_asns)
-            possible_adopters = possible_adopters.difference(real_rov_ases)
+            possible_adopters = asns.difference(self._preset_asns)
 
             # Get how many ASes should be adopting
 
@@ -295,24 +248,22 @@ raise NotImplementedError
             # (if 0 ASes would be adopting, have 1 as adopt)
             # (If all ASes would be adopting, have all -1 adopt)
             # This was a feature request, but it's not supported
-            if percent_adopt == SpecialPercentAdoptions.ONLY_ONE:
+            if self.percent_adoption == SpecialPercentAdoptions.ONLY_ONE:
                 k = 1
-            elif percent_adopt == SpecialPercentAdoptions.ALL_BUT_ONE:
+            elif self.percent_adoption == SpecialPercentAdoptions.ALL_BUT_ONE:
                 k = len(possible_adopters) - 1
             else:
-                assert isinstance(percent_adopt, float), "Make mypy happy"
-                k = math.ceil(len(possible_adopters) * percent_adopt)
+                assert isinstance(self.percent_adoption, float), "Make mypy happy"
+                k = math.ceil(len(possible_adopters) * self.percent_adoption)
 
             # https://stackoverflow.com/a/15837796/8903959
             possible_adopters = tuple(possible_adopters)
             try:
-                for as_ in random.sample(possible_adopters, k):
-                    asn_cls_dict[as_.asn] = self.AdoptASCls
+                for asn in random.sample(possible_adopters, k):
+                    asn_cls_dict[asn] = self.AdoptASCls
             except ValueError:
                 raise ValueError(
                     f"{k} can't be sampled from {len(possible_adopters)}")
-            for asn in self._default_adopters:
-                asn_cls_dict[asn] = self.AdoptASCls
         return asn_cls_dict
 
     @property
@@ -332,7 +283,37 @@ raise NotImplementedError
         """ASNs that have a preset adoption policy"""
 
         # Returns the union of default adopters and non adopters
-        return self._default_adopters | self._default_non_adopters
+        hardcoded_asns = set(self.scenario_config.hardcoded_asn_cls_dict)
+        return self._default_adopters | self._default_non_adopters | hardcoded_asns
+
+    ##############################################
+    # Set Attacker/Victim and Announcement Funcs #
+    ##############################################
+
+
+raise NotImplementedError
+
+
+    def _get_announcements(
+        self,
+        engine: SimulationEngine,
+        prev_scenario: Optional["Scenario"]
+    ):
+        """Returns announcements"""
+
+        # Must call this here due to atk/vic pair being different
+        self.announcements = self._get_announcements(
+            engine=engine,
+            percent_adoption=percent_adoption,
+            prev_scenario=prev_scenario)
+        self._get_ordered_prefix_subprefix_dict()
+
+    @abstractmethod
+    def _get_announcements(self, *args, **kwargs):
+        """Returns announcements"""
+
+        raise NotImplementedError
+
 
     def determine_as_outcome(self,
                              as_obj: AS,
@@ -408,6 +389,8 @@ raise NotImplementedError
         and have each do half and half
         """
 
+        raise NotImplementedError("MUST keep track of both adopting asn cls dict"
+            "AND hardcoded asn cls dict!!!")
         # non_default_as_cls_dict is a dict of asn: AdoptASCls
         # where you do __not__ include any of the BaseASCls,
         # since that is the default

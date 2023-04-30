@@ -27,9 +27,9 @@ class ScenarioConfig:
     num_victims: int = 1,
     # Adoption is equal across these atributes of the engine
     adoption_subcategory_attrs: Tuple[str, ...] = (
-        "stub_or_mh_ases",
-        "etc_ases",
-        "input_clique_ases"
+        "stub_or_mh_asns",
+        "etc_asns",
+        "input_clique_asns"
     )
     # Attackers can be chosen from this attribute of the engine
     attacker_subcategory_attr: str = "stubs_or_mh_asns"
