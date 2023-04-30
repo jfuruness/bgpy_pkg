@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from .simulation_framework import Simulation
+from .simulation_framework_v2 import Simulation
 
 
 def main():
