@@ -28,14 +28,16 @@ class ScenarioTrial(ABC):
 
     def __init__(
         self,
+        *,
         scenario_config: ScenarioConfig
         engine: SimulationEngine,
         percent_adoption: Union[float, SpecialPercentAdoptions],
-        attacker_asns: Optional[Set[int]] = None,
-        victim_asns: Optional[Set[int]] = None,
-        non_default_as_cls_dict: Optional[Dict[int, Type[AS]]] = None,
-        announcements: Tuple[Announcement, ...] = (),
         prev_scenario: Optional[ScenarioTrial] = None,
+        # Only necessary if coming from YAML
+        yaml_attacker_asns: Optional[Set[int]] = None,
+        yaml_victim_asns: Optional[Set[int]] = None,
+        yaml_non_default_as_cls_dict: Optional[Dict[int, Type[AS]]] = None,
+        yaml_announcements: Tuple[Announcement, ...] = (),
     ):
         """inits attrs
 
@@ -45,39 +47,21 @@ class ScenarioTrial(ABC):
         """
 
         self.scenario_config: ScenarioConfig = scenario_config
+        self.percent_adoption: Union[float, SpecialPercentAdoptions] = percent_adoption
 
         self.attacker_asns: Set[int] = self._get_attacker_asns(
-            attacker_asns,
+            yaml_attacker_asns,
             engine,
             precent_adoption,
             prev_scenario
         )
 
-
-        # This randomizes the attacker ASNs
-        if attacker_asns is None:
-            raise NotImplementedError
-        # If we are regenerating from YAML this will already be set
-        else
-            self.attacker_asns: Set[int] = attacker_asns
-        err = "Number of attackers is different from attacker length"
-        assert len(attacker_asns) == num_attackers, err
-
-        # This randomizes the victim ASNs
-        if victim_asns is None:
-            raise NotImplementedError
-        # If we are regenerating from YAML this will already be set
-        else
-            self.victim_asns: Set[int] = victim_asns
-        err = "Number of victims is different from victim length"
-        assert len(victim_asns) == num_victims, err
-
-
-
-        self.victim_asns = victim_asns if victim_asns else set()
-        assert (victim_asns is None
-                or len(victim_asns) == num_victims)
-
+        self.victim_asns: Set[int] = self._get_victim_asns(
+            yaml_victim_asns,
+            engine,
+            precent_adoption,
+            prev_scenario
+        )
         raise NotImplementedError
         # Purely for yaml #################################################
         if non_default_as_cls_dict:
@@ -102,7 +86,7 @@ class ScenarioTrial(ABC):
 
         # This is coming from YAML, do not recalculate
         if yaml_attacker_asns:
-            return yaml_attacker_asns
+            attacker_asns = yaml_attacker_asns
         # This is being initialized for the first time
         else:
             possible_attacker_asns = self._get_possible_attacker_asns(
@@ -111,12 +95,18 @@ class ScenarioTrial(ABC):
                 prev_scenario
             )
             # https://stackoverflow.com/a/15837796/8903959
-            return set(
+            attacker_asns = set(
                 random.sample(
                     tuple(possible_attacker_asns),
                     self.scenario_config.num_attackers
                 )
             )
+
+        # Validate attacker asns
+        err = "Number of attackers is different from attacker length"
+        assert len(attacker_asns) == num_attackers, err
+
+        return attacker_asns
 
     def _get_possible_attacker_asns(
         self,
@@ -147,7 +137,7 @@ class ScenarioTrial(ABC):
 
         # This is coming from YAML, do not recalculate
         if yaml_victim_asns:
-            return yaml_victim_asns
+            victim_asns = yaml_victim_asns
         # This is being initialized for the first time
         else:
             possible_victim_asns = self._get_possible_victim_asns(
@@ -156,12 +146,17 @@ class ScenarioTrial(ABC):
                 prev_scenario
             )
             # https://stackoverflow.com/a/15837796/8903959
-            return set(
+            victim_asns = set(
                 random.sample(
                     tuple(possible_victim_asns),
                     self.scenario_config.num_victims
                 )
             )
+
+        err = "Number of victims is different from victim length"
+        assert len(victim_asns) == num_victims, err
+
+        return victim_asns
 
     def _get_possible_victim_asns(
         self,

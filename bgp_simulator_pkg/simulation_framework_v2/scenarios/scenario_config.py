@@ -35,6 +35,8 @@ class ScenarioConfig:
     attacker_subcategory_attr: str = "stubs_or_mh_asns"
     # Victims can be chosen from this attribute of the engine
     victim_subcategory_attr: str = "stubs_or_mh_asns"
+    # ASes that are hardcoded to specific values
+    hardcoded_asn_cls_dict: Dict[int, Type[AS]] = dict()
 
     def __post_init__(self):
         """Sets AdoptASCls if it is None
