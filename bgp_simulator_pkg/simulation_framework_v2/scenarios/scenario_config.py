@@ -1,11 +1,14 @@
-from dataclasses import asdict, dataclass
-from typing import Any, Dict, Tuple, Type
+from dataclasses import asdict, dataclass, field
+from typing import Any, Dict, Tuple, Type, TYPE_CHECKING
 
 from caida_collector_pkg import AS
 
-from .scenario_trial import ScenarioTrial
 from ...simulation_engine import Announcement
 from ...simulation_engine import BGPSimpleAS
+
+
+if TYPE_CHECKING:
+    from .scenario_trial import ScenarioTrial
 
 pseudo_base_cls_dict: Dict[Type[AS], Type[AS]] = dict()
 
@@ -21,7 +24,7 @@ class ScenarioConfig:
     Is reused for multiple trials (thus, frozen)
     """
 
-    ScenarioTrialCls: Type[ScenarioTrial]
+    ScenarioTrialCls: Type["ScenarioTrial"]
     # This is the base type of announcement for this class
     # You can specify a different base ann
     AnnCls: Type[Announcement] = Announcement
@@ -34,14 +37,14 @@ class ScenarioConfig:
     adoption_subcategory_attrs: Tuple[str, ...] = (
         "stub_or_mh_asns",
         "etc_asns",
-        "input_clique_asns"
+        "input_clique_asns",
     )
     # Attackers can be chosen from this attribute of the engine
     attacker_subcategory_attr: str = "stubs_or_mh_asns"
     # Victims can be chosen from this attribute of the engine
     victim_subcategory_attr: str = "stubs_or_mh_asns"
     # ASes that are hardcoded to specific values
-    hardcoded_asn_cls_dict: Dict[int, Type[AS]] = dict()
+    hardcoded_asn_cls_dict: Dict[int, Type[AS]] = field(default_factory=dict)
 
     def __post_init__(self):
         """Sets AdoptASCls if it is None
@@ -74,8 +77,10 @@ class ScenarioConfig:
     def _yamlable_hardcoded_asn_cls_dict(self) -> Dict[int, str]:
         """Converts non default as cls dict to a yamlable dict of asn: name"""
 
-        return {asn: AS.subclass_to_name_dict[ASCls]
-                for asn, ASCls in self.hardcoded_asn_cls_dict.items()}
+        return {
+            asn: AS.subclass_to_name_dict[ASCls]
+            for asn, ASCls in self.hardcoded_asn_cls_dict.items()
+        }
 
     @staticmethod
     def _get_hardcoded_asn_cls_dict_from_yaml(yaml_dict) -> Dict[int, Type[AS]]:

@@ -7,5 +7,6 @@ class SimulatorLoader(SafeLoader):
         return tuple(self.construct_sequence(node))
 
 
-SimulatorLoader.add_constructor(u'tag:yaml.org,2002:python/tuple',
-                                SimulatorLoader.construct_python_tuple)
+SimulatorLoader.add_constructor(
+    "tag:yaml.org,2002:python/tuple", SimulatorLoader.construct_python_tuple
+)

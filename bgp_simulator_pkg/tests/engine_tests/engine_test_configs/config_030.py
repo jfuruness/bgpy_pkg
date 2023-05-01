@@ -24,9 +24,11 @@ class Custom30MultiValidPrefix(ValidPrefix):
         for i in range(len(vic_anns)):
             if vic_anns[i].origin == 1:
                 # longer path for AS 1
-                vic_anns[i].as_path = (vic_anns[i].origin,
-                                       vic_anns[i].origin,
-                                       vic_anns[i].origin)
+                vic_anns[i].as_path = (
+                    vic_anns[i].origin,
+                    vic_anns[i].origin,
+                    vic_anns[i].origin,
+                )
         return vic_anns
 
 
@@ -35,10 +37,9 @@ class Config030(EngineTestConfig):
 
     name = "030"
     desc = "Test seeded announcement should never be replaced"
-    scenario = Custom30MultiValidPrefix(victim_asns={1, 4, 3, 5},
-                                        num_victims=4,
-                                        AdoptASCls=None,
-                                        BaseASCls=BGPSimpleAS)
+    scenario = Custom30MultiValidPrefix(
+        victim_asns={1, 4, 3, 5}, num_victims=4, AdoptASCls=None, BaseASCls=BGPSimpleAS
+    )
     graph = Graph040()
     non_default_as_cls_dict: Dict[int, Type[AS]] = dict()
     propagation_rounds = 1

@@ -4,21 +4,22 @@ from ....announcement import Announcement as Ann
 from .....enums import Relationships
 
 
-def _new_ann_better(self,
-                    # Current announcement to check against
-                    current_ann: Optional[Ann],
-                    # Whether or not current ann has been processed local rib
-                    # or if it resides in the ribs in
-                    current_processed: bool,
-                    # Default recv relationship if current ann is unprocessed
-                    default_current_recv_rel: Relationships,
-                    # New announcement
-                    new_ann: Ann,
-                    # If new announcement is in local rib, this is True
-                    new_processed: Relationships,
-                    # Default recv rel if new ann is unprocessed
-                    default_new_recv_rel: Relationships
-                    ) -> bool:
+def _new_ann_better(
+    self,
+    # Current announcement to check against
+    current_ann: Optional[Ann],
+    # Whether or not current ann has been processed local rib
+    # or if it resides in the ribs in
+    current_processed: bool,
+    # Default recv relationship if current ann is unprocessed
+    default_current_recv_rel: Relationships,
+    # New announcement
+    new_ann: Ann,
+    # If new announcement is in local rib, this is True
+    new_processed: Relationships,
+    # Default recv rel if new ann is unprocessed
+    default_new_recv_rel: Relationships,
+) -> bool:
     """Determines if the new ann > current ann by Gao Rexford
 
     current_ann: Announcement we are checking against
@@ -44,25 +45,26 @@ def _new_ann_better(self,
         default_current_recv_rel,
         new_ann,
         new_processed,
-        default_new_recv_rel)
+        default_new_recv_rel,
+    )
     # If new rel better is True or False, return it
     if new_rel_better is not None:
         return new_rel_better
     else:
         # Return the outcome of as path and tiebreaks
         # mypy doesn't recognize that this is always a bool
-        return self._new_as_path_ties_better(current_ann,  # type: ignore
-                                             current_processed,
-                                             new_ann,
-                                             new_processed)
+        return self._new_as_path_ties_better(  # type: ignore
+            current_ann, current_processed, new_ann, new_processed
+        )
 
 
-def _new_as_path_ties_better(self,
-                             current_ann: Optional[Ann],
-                             current_processed: bool,
-                             new_ann: Ann,
-                             new_processed: bool
-                             ) -> bool:
+def _new_as_path_ties_better(
+    self,
+    current_ann: Optional[Ann],
+    current_processed: bool,
+    new_ann: Ann,
+    new_processed: bool,
+) -> bool:
     """Returns bool if new_ann > current_ann by gao rexford
 
     Specifically relating to as path and tie breaks
@@ -79,10 +81,8 @@ def _new_as_path_ties_better(self,
 
     # Determine if the new as path is shorter
     new_as_path_shorter: Optional[bool] = self._new_as_path_shorter(
-        current_ann,
-        current_processed,
-        new_ann,
-        new_processed)
+        current_ann, current_processed, new_ann, new_processed
+    )
 
     # If new_as_path_shorter is True or False, return it
     if new_as_path_shorter is not None:
@@ -90,20 +90,20 @@ def _new_as_path_ties_better(self,
     # Otherwise it's a tie and we must tiebreak
     else:
         # Ignore type since mypy doesn't recognize that this is bool
-        return self._new_wins_ties(current_ann,  # type: ignore
-                                   current_processed,
-                                   new_ann,
-                                   new_processed)
+        return self._new_wins_ties(  # type: ignore
+            current_ann, current_processed, new_ann, new_processed
+        )
 
 
-def _new_rel_better(self,
-                    current_ann: Optional[Ann],
-                    current_processed: bool,
-                    default_current_recv_rel: Relationships,
-                    new_ann: Ann,
-                    new_processed: bool,
-                    default_new_recv_rel: Relationships,
-                    ) -> Optional[bool]:
+def _new_rel_better(
+    self,
+    current_ann: Optional[Ann],
+    current_processed: bool,
+    default_current_recv_rel: Relationships,
+    new_ann: Ann,
+    new_processed: bool,
+    default_new_recv_rel: Relationships,
+) -> Optional[bool]:
     """Determines if the new ann > current ann by Gao Rexford/relationship
 
     current_ann: Announcement we are checking against
@@ -147,12 +147,13 @@ def _new_rel_better(self,
         return None
 
 
-def _new_as_path_shorter(self,
-                         current_ann: Ann,
-                         current_processed: bool,
-                         new_ann: Ann,
-                         new_processed: bool,
-                         ) -> Optional[bool]:
+def _new_as_path_shorter(
+    self,
+    current_ann: Ann,
+    current_processed: bool,
+    new_ann: Ann,
+    new_processed: bool,
+) -> Optional[bool]:
     """Determines if the new ann > current ann by Gao Rexford for AS Path
 
     current_ann: Announcement we are checking against
@@ -177,12 +178,13 @@ def _new_as_path_shorter(self,
         return None
 
 
-def _new_wins_ties(self,
-                   current_ann,
-                   current_processed,
-                   new_ann,
-                   new_processed,
-                   ) -> bool:
+def _new_wins_ties(
+    self,
+    current_ann,
+    current_processed,
+    new_ann,
+    new_processed,
+) -> bool:
     """Determines if the new ann > current ann by Gao Rexford for ties
 
     This breaks ties by lowest asn

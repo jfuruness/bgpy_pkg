@@ -21,10 +21,7 @@ class LocalRIB(AnnContainer):
 
         self._info: Dict[str, Ann] = _info if _info is not None else dict()
 
-    def get_ann(self,
-                prefix: str,
-                default: Optional[Ann] = None
-                ) -> Optional[Ann]:
+    def get_ann(self, prefix: str, default: Optional[Ann] = None) -> Optional[Ann]:
         """Returns announcement or none from the local rib by prefix"""
 
         return self._info.get(prefix, default)

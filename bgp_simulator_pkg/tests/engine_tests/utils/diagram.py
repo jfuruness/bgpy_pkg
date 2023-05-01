@@ -12,14 +12,16 @@ class Diagram:
         # purple is cooler but I guess that's not paper worthy
         # self.dot.attr(bgcolor='purple:pink')
 
-    def generate_as_graph(self,
-                          engine,
-                          scenario,
-                          traceback,
-                          description,
-                          shared_data,
-                          path=None,
-                          view=False):
+    def generate_as_graph(
+        self,
+        engine,
+        scenario,
+        traceback,
+        description,
+        shared_data,
+        path=None,
+        view=False,
+    ):
         self._add_legend(traceback)
         self._add_ases(engine, traceback, scenario)
         self._add_edges(engine)
@@ -31,13 +33,16 @@ class Diagram:
     def _add_legend(self, traceback):
         """Adds legend to the graph with outcome counts"""
 
-        attacker_success_count = sum(1 for x in traceback.values()
-                                     if x == Outcomes.ATTACKER_SUCCESS)
-        victim_success_count = sum(1 for x in traceback.values()
-                                   if x == Outcomes.VICTIM_SUCCESS)
-        disconnect_count = sum(1 for x in traceback.values()
-                               if x == Outcomes.DISCONNECTED)
-        html = f'''<
+        attacker_success_count = sum(
+            1 for x in traceback.values() if x == Outcomes.ATTACKER_SUCCESS
+        )
+        victim_success_count = sum(
+            1 for x in traceback.values() if x == Outcomes.VICTIM_SUCCESS
+        )
+        disconnect_count = sum(
+            1 for x in traceback.values() if x == Outcomes.DISCONNECTED
+        )
+        html = f"""<
               <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4">
               <TR>
           <TD COLSPAN="2" BORDER="0">(For most specific prefix only)</TD>
@@ -54,7 +59,7 @@ class Diagram:
                 <TD BGCOLOR="grey:white">&#10041; DISCONNECTED &#10041;</TD>
                 <TD>{disconnect_count}</TD>
               </TR>
-            </TABLE>>'''
+            </TABLE>>"""
 
         kwargs = {"color": "black", "style": "filled", "fillcolor": "white"}
         self.dot.node("Legend", html, shape="plaintext", **kwargs)
@@ -62,18 +67,9 @@ class Diagram:
     def _add_ases(self, engine, traceback, scenario):
         # First add all nodes to the graph
         for as_obj in engine:
-            self._encode_as_obj_as_node(self.dot,
-                                        as_obj,
-                                        engine,
-                                        traceback,
-                                        scenario)
+            self._encode_as_obj_as_node(self.dot, as_obj, engine, traceback, scenario)
 
-    def _encode_as_obj_as_node(self,
-                               subgraph,
-                               as_obj,
-                               engine,
-                               traceback,
-                               scenario):
+    def _encode_as_obj_as_node(self, subgraph, as_obj, engine, traceback, scenario):
         kwargs = dict()
         # if False:
         #     kwargs = {"style": "filled,dashed",
@@ -82,10 +78,7 @@ class Diagram:
         #               "fillcolor": "lightgray"}
         html = self._get_html(as_obj, engine, scenario)
 
-        kwargs = self._get_kwargs(as_obj,
-                                  engine,
-                                  traceback,
-                                  scenario)
+        kwargs = self._get_kwargs(as_obj, engine, traceback, scenario)
 
         subgraph.node(str(as_obj.asn), html, **kwargs)
 
@@ -106,9 +99,12 @@ class Diagram:
             </TR>"""
         local_rib_anns = tuple(list(as_obj._local_rib._info.values()))
         local_rib_anns = tuple(
-            sorted(local_rib_anns,
-                   key=lambda x: ipaddress.ip_network(x.prefix).num_addresses,
-                   reverse=True))
+            sorted(
+                local_rib_anns,
+                key=lambda x: ipaddress.ip_network(x.prefix).num_addresses,
+                reverse=True,
+            )
+        )
         if len(local_rib_anns) > 0:
             html += """<TR>
                         <TD COLSPAN="4">Local RIB</TD>
@@ -116,8 +112,7 @@ class Diagram:
 
             for ann in local_rib_anns:
                 mask = "/" + ann.prefix.split("/")[-1]
-                path = ", ".join(str(x) for x in
-                                 ann.as_path)
+                path = ", ".join(str(x) for x in ann.as_path)
                 ann_help = ""
                 if getattr(ann, "blackhole", False):
                     ann_help = "&#10041;"
@@ -139,10 +134,12 @@ class Diagram:
         return html
 
     def _get_kwargs(self, as_obj, engine, traceback, scenario):
-        kwargs = {"color": "black",
-                  "style": "filled",
-                  "fillcolor": "white",
-                  "gradientangle": "270"}
+        kwargs = {
+            "color": "black",
+            "style": "filled",
+            "fillcolor": "white",
+            "gradientangle": "270",
+        }
 
         # If the as obj is the attacker
         if as_obj.asn in scenario.attacker_asns:
@@ -182,11 +179,13 @@ class Diagram:
             # Only add if the largest asn is the curren as_obj to avoid dups
             for peer_obj in as_obj.peers:
                 if as_obj.asn > peer_obj.asn:
-                    self.dot.edge(str(as_obj.asn),
-                                  str(peer_obj.asn),
-                                  dir="none",
-                                  style="dashed",
-                                  penwidth="2")
+                    self.dot.edge(
+                        str(as_obj.asn),
+                        str(peer_obj.asn),
+                        dir="none",
+                        style="dashed",
+                        penwidth="2",
+                    )
 
     def _add_propagation_ranks(self, engine):
         for i, rank in enumerate(engine.propagation_ranks):

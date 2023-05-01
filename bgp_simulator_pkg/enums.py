@@ -6,7 +6,6 @@ yamlable_enums = []
 # Yaml must have unique keys/values
 @unique
 class YamlAbleEnum(Enum):
-
     def __init_subclass__(cls, *args, **kwargs):
         """This method essentially creates a list of all subclasses
 

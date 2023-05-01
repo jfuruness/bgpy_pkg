@@ -186,5 +186,5 @@ __all__ = [
     "Graph048",
     "Graph049",
     "Graph050",
-    "Graph051"
+    "Graph051",
 ]

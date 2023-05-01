@@ -12,8 +12,7 @@ def propagate_to_providers(self):
     Propogate ann's that have a recv_rel of origin or customer to providers
     """
 
-    send_rels: Set[Relationships] = set([Relationships.ORIGIN,
-                                         Relationships.CUSTOMERS])
+    send_rels: Set[Relationships] = set([Relationships.ORIGIN, Relationships.CUSTOMERS])
     self._propagate(Relationships.PROVIDERS, send_rels)
 
 
@@ -21,10 +20,14 @@ def propagate_to_customers(self):
     """Propogates to customers"""
 
     # Anns that have any of these as recv_rel get propogated
-    send_rels: Set[Relationships] = set([Relationships.ORIGIN,
-                                         Relationships.CUSTOMERS,
-                                         Relationships.PEERS,
-                                         Relationships.PROVIDERS])
+    send_rels: Set[Relationships] = set(
+        [
+            Relationships.ORIGIN,
+            Relationships.CUSTOMERS,
+            Relationships.PEERS,
+            Relationships.PROVIDERS,
+        ]
+    )
     self._propagate(Relationships.CUSTOMERS, send_rels)
 
 
@@ -32,14 +35,11 @@ def propagate_to_peers(self):
     """Propogates to peers"""
 
     # Anns that have any of these as recv_rel get propogated
-    send_rels: Set[Relationships] = set([Relationships.ORIGIN,
-                                         Relationships.CUSTOMERS])
+    send_rels: Set[Relationships] = set([Relationships.ORIGIN, Relationships.CUSTOMERS])
     self._propagate(Relationships.PEERS, send_rels)
 
 
-def _propagate(self,
-               propagate_to: Relationships,
-               send_rels: List[Relationships]):
+def _propagate(self, propagate_to: Relationships, send_rels: List[Relationships]):
     """Propogates announcements from local rib to other ASes
 
     send_rels is the relationships that are acceptable to send
@@ -47,8 +47,9 @@ def _propagate(self,
 
     for neighbor in getattr(self, propagate_to.name.lower()):
         for prefix, ann in self._local_rib.prefix_anns():
-            if (ann.recv_relationship in send_rels
-                    and not self._prev_sent(neighbor, ann)):
+            if ann.recv_relationship in send_rels and not self._prev_sent(
+                neighbor, ann
+            ):
                 propagate_args = [neighbor, ann, propagate_to, send_rels]
                 # Policy took care of it's own propagation for this ann
                 if self._policy_propagate(*propagate_args):
@@ -68,11 +69,13 @@ def _prev_sent(*args, **kwargs) -> bool:
     return False
 
 
-def _process_outgoing_ann(self,
-                          neighbor: AS,
-                          ann: Ann,
-                          propagate_to: Relationships,
-                          send_rels: List[Relationships]):
+def _process_outgoing_ann(
+    self,
+    neighbor: AS,
+    ann: Ann,
+    propagate_to: Relationships,
+    send_rels: List[Relationships],
+):
     """Adds ann to the neighbors recv q"""
 
     # Add the new ann to the incoming anns for that prefix

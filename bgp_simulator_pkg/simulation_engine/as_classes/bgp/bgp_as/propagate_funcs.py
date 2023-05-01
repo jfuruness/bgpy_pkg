@@ -8,9 +8,7 @@ from ....announcement import Announcement as Ann
 from .....enums import Relationships
 
 
-def _propagate(self,
-               propagate_to: Relationships,
-               send_rels: List[Relationships]):
+def _propagate(self, propagate_to: Relationships, send_rels: List[Relationships]):
     """Propogates announcements to other ASes
 
     send_rels is the relationships that are acceptable to send
@@ -25,16 +23,13 @@ def _propagate(self,
 
 def _prev_sent(self, neighbor: AS, ann: Ann) -> bool:
     """Don't send what we've already sent"""
-    ribs_out_ann: Optional[Ann] = self._ribs_out.get_ann(neighbor.asn,
-                                                         ann.prefix)
+    ribs_out_ann: Optional[Ann] = self._ribs_out.get_ann(neighbor.asn, ann.prefix)
     return ann.prefix_path_attributes_eq(ribs_out_ann)
 
 
-def _process_outgoing_ann(self,
-                          neighbor: BGPSimpleAS,
-                          ann: Ann,
-                          propagate_to,
-                          send_rels: List[Relationships]):
+def _process_outgoing_ann(
+    self, neighbor: BGPSimpleAS, ann: Ann, propagate_to, send_rels: List[Relationships]
+):
     self._send_q.add_ann(neighbor.asn, ann)
 
 
@@ -43,7 +38,7 @@ def _send_anns(self, propagate_to: Relationships):
 
     neighbors: List[BGPSimpleAS] = getattr(self, propagate_to.name.lower())
 
-    for (neighbor, prefix, ann) in self._send_q.info(neighbors):
+    for neighbor, prefix, ann in self._send_q.info(neighbors):
         neighbor.receive_ann(ann)
         # Update Ribs out if it's not a withdraw
         if not ann.withdraw:

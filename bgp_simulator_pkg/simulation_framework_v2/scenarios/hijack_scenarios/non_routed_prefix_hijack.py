@@ -16,10 +16,7 @@ class NonRoutedPrefixHijack(ScenarioTrial):
 
     __slots__ = ()
 
-    def _get_announcements(self,
-                           *args,
-                           **kwargs
-                           ) -> Tuple["Announcement", ...]:
+    def _get_announcements(self, *args, **kwargs) -> Tuple["Announcement", ...]:
         """Returns non routed prefix announcement from attacker
 
         for subclasses of this EngineInput, you can set AnnCls equal to
@@ -28,11 +25,15 @@ class NonRoutedPrefixHijack(ScenarioTrial):
 
         anns = list()
         for attacker_asn in self.attacker_asns:
-            anns.append(self.scenario_config.AnnCls(prefix=Prefixes.PREFIX.value,
-                                    as_path=(attacker_asn,),
-                                    timestamp=Timestamps.ATTACKER.value,
-                                    seed_asn=attacker_asn,
-                                    roa_valid_length=True,
-                                    roa_origin=0,
-                                    recv_relationship=Relationships.ORIGIN))
+            anns.append(
+                self.scenario_config.AnnCls(
+                    prefix=Prefixes.PREFIX.value,
+                    as_path=(attacker_asn,),
+                    timestamp=Timestamps.ATTACKER.value,
+                    seed_asn=attacker_asn,
+                    roa_valid_length=True,
+                    roa_origin=0,
+                    recv_relationship=Relationships.ORIGIN,
+                )
+            )
         return tuple(anns)

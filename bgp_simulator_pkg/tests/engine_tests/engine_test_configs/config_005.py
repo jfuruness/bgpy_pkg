@@ -15,9 +15,9 @@ class Config005(EngineTestConfig):
 
     name = "005"
     desc = "Basic BGP Propagation (with ROV Simple AS)"
-    scenario = ValidPrefix(victim_asns={ASNs.VICTIM.value},
-                           AdoptASCls=None,
-                           BaseASCls=ROVSimpleAS)
+    scenario = ValidPrefix(
+        victim_asns={ASNs.VICTIM.value}, AdoptASCls=None, BaseASCls=ROVSimpleAS
+    )
     graph = Graph002()
     non_default_as_cls_dict: Dict[int, Type[AS]] = dict()
     propagation_rounds = 1

@@ -14,10 +14,9 @@ class Config028(EngineTestConfig):
 
     name = "028"
     desc = "Test of peer preference"
-    scenario = ValidPrefix(victim_asns={2, 3},
-                           num_victims=2,
-                           AdoptASCls=None,
-                           BaseASCls=BGPSimpleAS)
+    scenario = ValidPrefix(
+        victim_asns={2, 3}, num_victims=2, AdoptASCls=None, BaseASCls=BGPSimpleAS
+    )
     graph = Graph040()
     non_default_as_cls_dict: Dict[int, Type[AS]] = dict()
     propagation_rounds = 1

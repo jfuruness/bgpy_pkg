@@ -15,22 +15,32 @@ class Announcement(YamlAble):
 
     # MUST use slots for speed
     # Since anns get copied across 70k ASes
-    __slots__ = ("prefix", "timestamp", "as_path", "roa_valid_length",
-                 "roa_origin",
-                 "recv_relationship", "seed_asn", "withdraw", "traceback_end")
+    __slots__ = (
+        "prefix",
+        "timestamp",
+        "as_path",
+        "roa_valid_length",
+        "roa_origin",
+        "recv_relationship",
+        "seed_asn",
+        "withdraw",
+        "traceback_end",
+    )
 
-    def __init__(self,
-                 *,
-                 prefix: str,
-                 as_path: Tuple[int, ...],
-                 timestamp: int,
-                 seed_asn: Optional[int],
-                 roa_valid_length: Optional[bool],
-                 roa_origin: Optional[int],
-                 recv_relationship: Relationships,
-                 withdraw: bool = False,
-                 traceback_end: bool = False,
-                 communities: Tuple[str, ...] = ()):
+    def __init__(
+        self,
+        *,
+        prefix: str,
+        as_path: Tuple[int, ...],
+        timestamp: int,
+        seed_asn: Optional[int],
+        roa_valid_length: Optional[bool],
+        roa_origin: Optional[int],
+        recv_relationship: Relationships,
+        withdraw: bool = False,
+        traceback_end: bool = False,
+        communities: Tuple[str, ...] = (),
+    ):
         self.prefix: str = prefix
         self.as_path: Tuple[int, ...] = as_path
         self.timestamp: int = timestamp
@@ -67,9 +77,9 @@ class Announcement(YamlAble):
         else:
             raise NotImplementedError
 
-    def copy(self,
-             overwrite_default_kwargs: Optional[Dict[Any, Any]] = None
-             ) -> "Announcement":
+    def copy(
+        self, overwrite_default_kwargs: Optional[Dict[Any, Any]] = None
+    ) -> "Announcement":
         """Creates a new ann with proper sim attrs"""
 
         kwargs = self._get_vars()
@@ -141,8 +151,9 @@ class Announcement(YamlAble):
         # singleton for speed
         if not cls_slots_tpl:
             # https://stackoverflow.com/a/6720815/8903959
-            cls_slots = chain.from_iterable(getattr(cls, '__slots__', [])
-                                            for cls in self.__class__.__mro__)
+            cls_slots = chain.from_iterable(
+                getattr(cls, "__slots__", []) for cls in self.__class__.__mro__
+            )
             cls_slots_tpl = tuple(list(cls_slots))
             _all_slots[self.__class__] = cls_slots_tpl
         return cls_slots_tpl
@@ -158,20 +169,19 @@ class Announcement(YamlAble):
         """Hash func. Needed for ROV++"""
         return hash(str(self))
 
-##############
-# Yaml funcs #
-##############
+    ##############
+    # Yaml funcs #
+    ##############
 
     def __to_yaml_dict__(self) -> Dict[str, Any]:
-        """ This optional method is called when you call yaml.dump()"""
+        """This optional method is called when you call yaml.dump()"""
 
         return self._get_vars()
 
     @classmethod
-    def __from_yaml_dict__(cls: Type["Announcement"],
-                           dct: Dict[str, Any],
-                           yaml_tag: Any
-                           ) -> "Announcement":
-        """ This optional method is called when you call yaml.load()"""
+    def __from_yaml_dict__(
+        cls: Type["Announcement"], dct: Dict[str, Any], yaml_tag: Any
+    ) -> "Announcement":
+        """This optional method is called when you call yaml.load()"""
 
         return cls(**dct)

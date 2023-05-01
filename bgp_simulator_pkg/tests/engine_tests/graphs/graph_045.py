@@ -29,7 +29,7 @@ class Graph045(GraphInfo):
                     CPLink(provider_asn=6, customer_asn=8),
                     CPLink(provider_asn=8, customer_asn=9),
                     CPLink(provider_asn=3, customer_asn=7),
-                    CPLink(provider_asn=3, customer_asn=5)
+                    CPLink(provider_asn=3, customer_asn=5),
                 ]
             ),
         )

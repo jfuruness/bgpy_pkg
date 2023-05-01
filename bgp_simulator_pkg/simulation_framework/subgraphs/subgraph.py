@@ -53,13 +53,12 @@ class Subgraph(ABC):
         # You must save info trial by trial, so that you can join
         # After a return from multiprocessing
         # {propagation_round: {scenario_label: {percent_adopt: [percentages]}}}
-        self.data: DefaultDict[int,
-                               DefaultDict[str,
-                                           DefaultDict[
-                                               Union[float,
-                                                     SpecialPercentAdoptions],
-                                               List[float]]]] =\
-            defaultdict(default_dict_func)
+        self.data: DefaultDict[
+            int,
+            DefaultDict[
+                str, DefaultDict[Union[float, SpecialPercentAdoptions], List[float]]
+            ],
+        ] = defaultdict(default_dict_func)
 
     ###############
     # Graph funcs #
@@ -95,12 +94,14 @@ class Subgraph(ABC):
                 adopt_pol = line.label.replace("adopting", "non-adopting")
                 line.label = adopt_pol
 
-            ax.errorbar(line.xs,
-                        line.ys,
-                        ls=styles[i],
-                        marker=markers[i],
-                        yerr=line.yerrs,
-                        label=line.label)
+            ax.errorbar(
+                line.xs,
+                line.ys,
+                ls=styles[i],
+                marker=markers[i],
+                yerr=line.yerrs,
+                label=line.label,
+            )
         # Set labels
         ax.set_ylabel(self.y_axis_label)
         ax.set_xlabel(self.x_axis_label)
@@ -162,17 +163,20 @@ class Subgraph(ABC):
                 for percent_adopt, trial_results in percent_dict.items():
                     if isinstance(percent_adopt, SpecialPercentAdoptions):
                         percent_adopt = percent_adopt.value
-                    self.data[prop_round][scenario_label][percent_adopt
-                        ].extend(trial_results)  # noqa
+                    self.data[prop_round][scenario_label][percent_adopt].extend(
+                        trial_results
+                    )  # noqa
 
-    def aggregate_engine_run_data(self,
-                                  shared_data: Dict[Any, Any],
-                                  *,
-                                  engine: SimulationEngine,
-                                  percent_adopt: float,
-                                  trial: int,
-                                  scenario: Scenario,
-                                  propagation_round: int):
+    def aggregate_engine_run_data(
+        self,
+        shared_data: Dict[Any, Any],
+        *,
+        engine: SimulationEngine,
+        percent_adopt: float,
+        trial: int,
+        scenario: Scenario,
+        propagation_round: int,
+    ):
         """Aggregates data after a single engine run
 
         Shared data is passed between subgraph classes and is
@@ -201,15 +205,13 @@ class Subgraph(ABC):
         if not shared_data.get("set"):
             # {as_obj: outcome}
             outcomes = self._get_engine_outcomes(engine, scenario)
-            self._add_traceback_to_shared_data(shared_data,
-                                               engine,
-                                               scenario,
-                                               outcomes)
+            self._add_traceback_to_shared_data(shared_data, engine, scenario, outcomes)
         key = self._get_subgraph_key(scenario)
         if isinstance(percent_adopt, SpecialPercentAdoptions):
             percent_adopt = percent_adopt.value
-        self.data[propagation_round][scenario.graph_label][percent_adopt
-            ].append(shared_data.get(key, 0))  # noqa
+        self.data[propagation_round][scenario.graph_label][percent_adopt].append(
+            shared_data.get(key, 0)
+        )  # noqa
 
     def _get_subgraph_key(self, scenario: Scenario, *args: Any) -> str:
         """Returns the key to be used in shared_data on the subgraph"""
@@ -220,11 +222,13 @@ class Subgraph(ABC):
     # Shared data funcs #
     #####################
 
-    def _add_traceback_to_shared_data(self,
-                                      shared: Dict[Any, Any],
-                                      engine: SimulationEngine,
-                                      scenario: Scenario,
-                                      outcomes: Dict[AS, Outcomes]):
+    def _add_traceback_to_shared_data(
+        self,
+        shared: Dict[Any, Any],
+        engine: SimulationEngine,
+        scenario: Scenario,
+        outcomes: Dict[AS, Outcomes],
+    ):
         """Adds traceback info to shared data"""
 
         # Do not count these!
@@ -243,33 +247,42 @@ class Subgraph(ABC):
             ##################################################################
             as_type_pol_k = self._get_as_type_pol_k(as_type, as_obj.__class__)
             as_type_pol_outcome_k = self._get_as_type_pol_outcome_k(
-                as_type, as_obj.__class__, outcome)
+                as_type, as_obj.__class__, outcome
+            )
             # as type + policy + outcome as a percentage
             as_type_pol_outcome_perc_k = self._get_as_type_pol_outcome_perc_k(
-                as_type, as_obj.__class__, outcome)
+                as_type, as_obj.__class__, outcome
+            )
             ##################################################################
 
             # Getting control plane data #
             # Get the most specific announcement in the rib
             most_specific_ann = self._get_most_specific_ann(
-                as_obj, scenario.ordered_prefix_subprefix_dict)
+                as_obj, scenario.ordered_prefix_subprefix_dict
+            )
 
-            ctrl_outcome = scenario.determine_as_outcome(as_obj,
-                                                         most_specific_ann)
+            ctrl_outcome = scenario.determine_as_outcome(as_obj, most_specific_ann)
             as_type_pol_k_ctrl = as_type_pol_k + "_ctrl"
-            as_type_pol_outcome_k_ctrl = self._get_as_type_pol_outcome_k(
-                as_type, as_obj.__class__, ctrl_outcome) + "_ctrl"
-            as_type_pol_outcome_perc_k_ctrl =\
+            as_type_pol_outcome_k_ctrl = (
+                self._get_as_type_pol_outcome_k(as_type, as_obj.__class__, ctrl_outcome)
+                + "_ctrl"
+            )
+            as_type_pol_outcome_perc_k_ctrl = (
                 self._get_as_type_pol_outcome_perc_k(
-                    as_type, as_obj.__class__, ctrl_outcome) + "_ctrl"
+                    as_type, as_obj.__class__, ctrl_outcome
+                )
+                + "_ctrl"
+            )
 
             ###################################
 
             # Add to the totals:
-            for k in [as_type_pol_k,
-                      as_type_pol_outcome_k,
-                      as_type_pol_k_ctrl,
-                      as_type_pol_outcome_k_ctrl]:
+            for k in [
+                as_type_pol_k,
+                as_type_pol_outcome_k,
+                as_type_pol_k_ctrl,
+                as_type_pol_outcome_k_ctrl,
+            ]:
                 shared[k] = shared.get(k, 0) + 1
 
             ############################
@@ -291,16 +304,17 @@ class Subgraph(ABC):
             as_type = self._get_as_type(as_obj)
             as_type_pol_k = self._get_as_type_pol_k(as_type, as_obj.__class__)
             as_type_pol_outcome_k = self._get_as_type_pol_outcome_k(
-                as_type, as_obj.__class__, outcome)
+                as_type, as_obj.__class__, outcome
+            )
             # as type + policy + outcome as a percentage
             as_type_pol_outcome_perc_k = self._get_as_type_pol_outcome_perc_k(
-                as_type, as_obj.__class__, outcome)
+                as_type, as_obj.__class__, outcome
+            )
 
             # Set the new percent
             if shared.get(as_type_pol_outcome_k) is not None:
                 shared[as_type_pol_outcome_perc_k] = (
-                        shared[as_type_pol_outcome_k] *
-                        100 / shared[as_type_pol_k]
+                    shared[as_type_pol_outcome_k] * 100 / shared[as_type_pol_k]
                 )
             name = outcome.name
             total = shared[f"all_{name}"]
@@ -310,22 +324,28 @@ class Subgraph(ABC):
             # Getting control plane data #
             # Get the most specific announcement in the rib
             most_specific_ann = self._get_most_specific_ann(
-                as_obj, scenario.ordered_prefix_subprefix_dict)
+                as_obj, scenario.ordered_prefix_subprefix_dict
+            )
 
-            ctrl_outcome = scenario.determine_as_outcome(as_obj,
-                                                         most_specific_ann)
+            ctrl_outcome = scenario.determine_as_outcome(as_obj, most_specific_ann)
             as_type_pol_k_ctrl = as_type_pol_k + "_ctrl"
-            as_type_pol_outcome_k_ctrl = self._get_as_type_pol_outcome_k(
-                as_type, as_obj.__class__, ctrl_outcome) + "_ctrl"
-            as_type_pol_outcome_perc_k_ctrl =\
+            as_type_pol_outcome_k_ctrl = (
+                self._get_as_type_pol_outcome_k(as_type, as_obj.__class__, ctrl_outcome)
+                + "_ctrl"
+            )
+            as_type_pol_outcome_perc_k_ctrl = (
                 self._get_as_type_pol_outcome_perc_k(
-                    as_type, as_obj.__class__, ctrl_outcome) + "_ctrl"
+                    as_type, as_obj.__class__, ctrl_outcome
+                )
+                + "_ctrl"
+            )
 
             # Set the new percent
             if shared.get(as_type_pol_outcome_k_ctrl) is not None:
                 shared[as_type_pol_outcome_perc_k_ctrl] = (
-                        shared[as_type_pol_outcome_k_ctrl] *
-                        100 / shared[as_type_pol_k_ctrl]
+                    shared[as_type_pol_outcome_k_ctrl]
+                    * 100
+                    / shared[as_type_pol_k_ctrl]
                 )
 
             ###################################
@@ -342,26 +362,21 @@ class Subgraph(ABC):
         else:
             return ASTypes.ETC
 
-    def _get_as_type_pol_k(self,
-                           as_type: ASTypes,
-                           ASCls: Type[AS]
-                           ) -> str:
+    def _get_as_type_pol_k(self, as_type: ASTypes, ASCls: Type[AS]) -> str:
         """Returns AS type+policy key"""
 
         return f"{as_type.value}_{ASCls.name}"
 
-    def _get_as_type_pol_outcome_k(self,
-                                   as_type: ASTypes,
-                                   ASCls: Type[AS],
-                                   outcome: Outcomes) -> str:
+    def _get_as_type_pol_outcome_k(
+        self, as_type: ASTypes, ASCls: Type[AS], outcome: Outcomes
+    ) -> str:
         """returns as type+policy+outcome key"""
 
         return f"{self._get_as_type_pol_k(as_type, ASCls)}_{outcome.name}"
 
-    def _get_as_type_pol_outcome_perc_k(self,
-                                        as_type: ASTypes,
-                                        ASCls: Type[AS],
-                                        outcome: Outcomes) -> str:
+    def _get_as_type_pol_outcome_perc_k(
+        self, as_type: ASTypes, ASCls: Type[AS], outcome: Outcomes
+    ) -> str:
         """returns as type+policy+outcome key as a percent"""
 
         x = self._get_as_type_pol_outcome_k(as_type, ASCls, outcome)
@@ -371,28 +386,25 @@ class Subgraph(ABC):
     # Traceback funcs #
     ###################
 
-    def _get_engine_outcomes(self,
-                             engine: SimulationEngine,
-                             scenario: Scenario
-                             ) -> Dict[AS, Outcomes]:
+    def _get_engine_outcomes(
+        self, engine: SimulationEngine, scenario: Scenario
+    ) -> Dict[AS, Outcomes]:
         """Gets the outcomes of all ASes"""
 
         # {ASN: outcome}
         outcomes: Dict[AS, Outcomes] = dict()
         for as_obj in engine.as_dict.values():
             # Gets AS outcome and stores it in the outcomes dict
-            self._get_as_outcome(as_obj,
-                                 outcomes,
-                                 engine,
-                                 scenario)
+            self._get_as_outcome(as_obj, outcomes, engine, scenario)
         return outcomes
 
-    def _get_as_outcome(self,
-                        as_obj: AS,
-                        outcomes: Dict[AS, Outcomes],
-                        engine: SimulationEngine,
-                        scenario: Scenario
-                        ) -> Outcomes:
+    def _get_as_outcome(
+        self,
+        as_obj: AS,
+        outcomes: Dict[AS, Outcomes],
+        engine: SimulationEngine,
+        scenario: Scenario,
+    ) -> Outcomes:
         """Recursively returns the as outcome"""
 
         if as_obj in outcomes:
@@ -400,7 +412,8 @@ class Subgraph(ABC):
         else:
             # Get the most specific announcement in the rib
             most_specific_ann = self._get_most_specific_ann(
-                as_obj, scenario.ordered_prefix_subprefix_dict)
+                as_obj, scenario.ordered_prefix_subprefix_dict
+            )
             # This has to be done in the scenario
             # Because only the scenario knows attacker/victim
             # And it's possible for scenario's to have multiple attackers
@@ -414,19 +427,15 @@ class Subgraph(ABC):
                 next_as = engine.as_dict[
                     most_specific_ann.as_path[1]  # type: ignore
                 ]  # type: ignore
-                outcome = self._get_as_outcome(next_as,
-                                               outcomes,
-                                               engine,
-                                               scenario)
+                outcome = self._get_as_outcome(next_as, outcomes, engine, scenario)
             assert outcome != Outcomes.UNDETERMINED, "Shouldn't be possible"
 
             outcomes[as_obj] = outcome
             return outcome
 
-    def _get_most_specific_ann(self,
-                               as_obj: AS,
-                               ordered_prefixes: Dict[str, List[str]]
-                               ) -> Optional[Ann]:
+    def _get_most_specific_ann(
+        self, as_obj: AS, ordered_prefixes: Dict[str, List[str]]
+    ) -> Optional[Ann]:
         """Returns the most specific announcement that exists in a rib
 
         as_obj is the as

@@ -15,10 +15,12 @@ class Config022(EngineTestConfig):
 
     name = "022"
     desc = "Test of relationship preference"
-    scenario = ValidPrefix(attacker_asns={ASNs.ATTACKER.value},
-                           victim_asns={ASNs.VICTIM.value},
-                           AdoptASCls=None,
-                           BaseASCls=ROVAS)
+    scenario = ValidPrefix(
+        attacker_asns={ASNs.ATTACKER.value},
+        victim_asns={ASNs.VICTIM.value},
+        AdoptASCls=None,
+        BaseASCls=ROVAS,
+    )
     graph = Graph017()
     non_default_as_cls_dict: Dict[int, Type[AS]] = dict()
     propagation_rounds = 1

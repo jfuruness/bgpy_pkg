@@ -8,9 +8,7 @@ class DisconnectedAllSubgraph(DisconnectedSubgraph):
 
     name: str = "disconnected_all"
 
-    def _get_subgraph_key(self,
-                          scenario: ScenarioTrial,
-                          *args) -> str:
+    def _get_subgraph_key(self, scenario: ScenarioTrial, *args) -> str:
         """Returns the key to be used in shared_data on the subgraph"""
 
         return f"all_{Outcomes.DISCONNECTED.name}_perc"

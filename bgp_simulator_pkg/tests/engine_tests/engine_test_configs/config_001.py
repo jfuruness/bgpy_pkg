@@ -15,9 +15,11 @@ class Config001(EngineTestConfig):
 
     name = "001"
     desc = "BGP hidden hijack (with simple AS)"
-    scenario = SubprefixHijack(attacker_asns={ASNs.ATTACKER.value},
-                               victim_asns={ASNs.VICTIM.value},
-                               BaseASCls=BGPSimpleAS)
+    scenario = SubprefixHijack(
+        attacker_asns={ASNs.ATTACKER.value},
+        victim_asns={ASNs.VICTIM.value},
+        BaseASCls=BGPSimpleAS,
+    )
     graph = Graph001()
     non_default_as_cls_dict: Dict[int, Type[AS]] = dict()
     propagation_rounds = 1

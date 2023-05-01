@@ -12,6 +12,7 @@ def engine():
     # (after the multiprocess process has started)
     # Changing recursion depth does nothing
     # Making nothing a reference does nothing
-    return CaidaCollector(BaseASCls=BGPSimpleAS,
-                          GraphCls=SimulationEngine,
-                          ).run(tsv_path=None)
+    return CaidaCollector(
+        BaseASCls=BGPSimpleAS,
+        GraphCls=SimulationEngine,
+    ).run(tsv_path=None)

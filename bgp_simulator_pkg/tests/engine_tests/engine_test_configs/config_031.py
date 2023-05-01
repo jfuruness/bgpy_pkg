@@ -27,9 +27,9 @@ class Config031(EngineTestConfig):
 
     name = "031"
     desc = "Test loop prevention mechanism"
-    scenario = Custom31ValidPrefix(victim_asns={4},
-                                   AdoptASCls=None,
-                                   BaseASCls=BGPSimpleAS)
+    scenario = Custom31ValidPrefix(
+        victim_asns={4}, AdoptASCls=None, BaseASCls=BGPSimpleAS
+    )
     graph = Graph040()
     non_default_as_cls_dict: Dict[int, Type[AS]] = dict()
     propagation_rounds = 1

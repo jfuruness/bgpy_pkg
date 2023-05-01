@@ -42,14 +42,13 @@ class RIBsIn(AnnContainer):
         """
 
         # {neighbor: {prefix: (announcement, relationship)}}
-        self._info: Dict[int,
-                         Dict[str, AnnInfo]
-                         ] = _info if _info is not None else dict()
+        self._info: Dict[int, Dict[str, AnnInfo]] = (
+            _info if _info is not None else dict()
+        )
 
-    def get_unprocessed_ann_recv_rel(self,
-                                     neighbor_asn: int,
-                                     prefix: str
-                                     ) -> Optional[AnnInfo]:
+    def get_unprocessed_ann_recv_rel(
+        self, neighbor_asn: int, prefix: str
+    ) -> Optional[AnnInfo]:
         """Returns AnnInfo for a neighbor ASN and prefix
 
         We don't use defaultdict here because that's not yamlable
@@ -57,9 +56,9 @@ class RIBsIn(AnnContainer):
 
         return self._info.get(neighbor_asn, dict()).get(prefix)
 
-    def add_unprocessed_ann(self,
-                            unprocessed_ann: Announcement,
-                            recv_relationship: Relationships):
+    def add_unprocessed_ann(
+        self, unprocessed_ann: Announcement, recv_relationship: Relationships
+    ):
         """Adds an unprocessed ann to ribs in
 
         We don't use default dict here because it's not yamlable"""
@@ -67,19 +66,22 @@ class RIBsIn(AnnContainer):
         # Shorten the var name
         ann = unprocessed_ann
         if ann.as_path[0] not in self._info:
-            self._info[ann.as_path[0]] = {ann.prefix: AnnInfo(
-                unprocessed_ann=unprocessed_ann,
-                recv_relationship=recv_relationship)}
+            self._info[ann.as_path[0]] = {
+                ann.prefix: AnnInfo(
+                    unprocessed_ann=unprocessed_ann, recv_relationship=recv_relationship
+                )
+            }
         else:
             self._info[ann.as_path[0]][ann.prefix] = AnnInfo(
-                unprocessed_ann=unprocessed_ann,
-                recv_relationship=recv_relationship)
+                unprocessed_ann=unprocessed_ann, recv_relationship=recv_relationship
+            )
 
     def get_ann_infos(self, prefix: str) -> Iterator[AnnInfo]:
         """Returns AnnInfos for a given prefix"""
 
-        default_ann_info: AnnInfo = AnnInfo(unprocessed_ann=None,
-                                            recv_relationship=None)
+        default_ann_info: AnnInfo = AnnInfo(
+            unprocessed_ann=None, recv_relationship=None
+        )
         for prefix_ann_info in self._info.values():
             yield prefix_ann_info.get(prefix, default_ann_info)
 

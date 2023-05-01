@@ -9,11 +9,13 @@ from .victim_success_subgraph import VictimSuccessSubgraph
 from .victim_success_all_subgraph import VictimSuccessAllSubgraph
 
 
-__all__ = ["VictimSuccessSubgraph",
-           "VictimSuccessAdoptingEtcSubgraph",
-           "VictimSuccessAdoptingInputCliqueSubgraph",
-           "VictimSuccessAdoptingStubsAndMHSubgraph",
-           "VictimSuccessNonAdoptingEtcSubgraph",
-           "VictimSuccessNonAdoptingInputCliqueSubgraph",
-           "VictimSuccessNonAdoptingStubsAndMHSubgraph",
-           "VictimSuccessAllSubgraph"]
+__all__ = [
+    "VictimSuccessSubgraph",
+    "VictimSuccessAdoptingEtcSubgraph",
+    "VictimSuccessAdoptingInputCliqueSubgraph",
+    "VictimSuccessAdoptingStubsAndMHSubgraph",
+    "VictimSuccessNonAdoptingEtcSubgraph",
+    "VictimSuccessNonAdoptingInputCliqueSubgraph",
+    "VictimSuccessNonAdoptingStubsAndMHSubgraph",
+    "VictimSuccessAllSubgraph",
+]

@@ -48,32 +48,25 @@ class ScenarioTrial(ABC):
         self.percent_adoption: Union[float, SpecialPercentAdoptions] = percent_adoption
 
         self.attacker_asns: Set[int] = self._get_attacker_asns(
-            yaml_attacker_asns,
-            engine,
-            prev_scenario
+            yaml_attacker_asns, engine, prev_scenario
         )
 
         self.victim_asns: Set[int] = self._get_victim_asns(
-            yaml_victim_asns,
-            engine,
-            prev_scenario
+            yaml_victim_asns, engine, prev_scenario
         )
 
         AS_CLS_DCT = Dict[int, Type[AS]]
         self.non_default_asn_cls_dict: AS_CLS_DCT = self._get_non_default_asn_cls_dict(
-            yaml_non_default_asn_cls_dict,
-            engine,
-            prev_scenario
+            yaml_non_default_asn_cls_dict, engine, prev_scenario
         )
 
         self.announcements: Tuple["Announcement", ...] = self._get_announcements(
-            engine=engine,
-            prev_scenario=prev_scenario
+            engine=engine, prev_scenario=prev_scenario
         )
 
-        self.ordered_prefix_subprefix_dict: Dict[str, List[str]] = (
-            self._get_ordered_prefix_subprefix_dict()
-        )
+        self.ordered_prefix_subprefix_dict: Dict[
+            str, List[str]
+        ] = self._get_ordered_prefix_subprefix_dict()
 
     #################
     # Get attackers #
@@ -83,7 +76,7 @@ class ScenarioTrial(ABC):
         self,
         yaml_attacker_asns: Optional[Set[int]],
         engine: Optional[SimulationEngine],
-        prev_scenario: Optional["ScenarioTrial"]
+        prev_scenario: Optional["ScenarioTrial"],
     ) -> Set[int]:
         """Returns attacker ASN at random"""
 
@@ -97,15 +90,12 @@ class ScenarioTrial(ABC):
         else:
             assert engine
             possible_attacker_asns = self._get_possible_attacker_asns(
-                engine,
-                self.percent_adoption,
-                prev_scenario
+                engine, self.percent_adoption, prev_scenario
             )
             # https://stackoverflow.com/a/15837796/8903959
             attacker_asns = set(
                 random.sample(
-                    tuple(possible_attacker_asns),
-                    self.scenario_config.num_attackers
+                    tuple(possible_attacker_asns), self.scenario_config.num_attackers
                 )
             )
 
@@ -119,7 +109,7 @@ class ScenarioTrial(ABC):
         self,
         engine: SimulationEngine,
         percent_adoption: Union[float, SpecialPercentAdoptions],
-        prev_scenario: Optional["ScenarioTrial"]
+        prev_scenario: Optional["ScenarioTrial"],
     ) -> Set[int]:
         """Returns possible attacker ASNs, defaulted from config"""
 
@@ -137,7 +127,7 @@ class ScenarioTrial(ABC):
         self,
         yaml_victim_asns: Optional[Set[int]],
         engine: Optional[SimulationEngine],
-        prev_scenario: Optional["ScenarioTrial"]
+        prev_scenario: Optional["ScenarioTrial"],
     ) -> Set[int]:
         """Returns victim ASN at random"""
 
@@ -151,15 +141,12 @@ class ScenarioTrial(ABC):
         else:
             assert engine
             possible_victim_asns = self._get_possible_victim_asns(
-                engine,
-                self.percent_adoption,
-                prev_scenario
+                engine, self.percent_adoption, prev_scenario
             )
             # https://stackoverflow.com/a/15837796/8903959
             victim_asns = set(
                 random.sample(
-                    tuple(possible_victim_asns),
-                    self.scenario_config.num_victims
+                    tuple(possible_victim_asns), self.scenario_config.num_victims
                 )
             )
 
@@ -172,7 +159,7 @@ class ScenarioTrial(ABC):
         self,
         engine: SimulationEngine,
         percent_adoption: Union[float, SpecialPercentAdoptions],
-        prev_scenario: Optional["ScenarioTrial"]
+        prev_scenario: Optional["ScenarioTrial"],
     ) -> Set[int]:
         """Returns possible victim ASNs, defaulted from config"""
 
@@ -192,7 +179,7 @@ class ScenarioTrial(ABC):
         self,
         yaml_non_default_asn_cls_dict: Optional[Dict[int, Type[AS]]],
         engine: Optional[SimulationEngine],
-        prev_scenario: Optional["ScenarioTrial"]
+        prev_scenario: Optional["ScenarioTrial"],
     ) -> Dict[int, Type[AS]]:
         """Returns as class dict
 
@@ -277,8 +264,7 @@ class ScenarioTrial(ABC):
                 for asn in random.sample(possible_adopters, k):
                     asn_cls_dict[asn] = self.scenario_config.AdoptASCls
             except ValueError:
-                raise ValueError(
-                    f"{k} can't be sampled from {len(possible_adopters)}")
+                raise ValueError(f"{k} can't be sampled from {len(possible_adopters)}")
         return asn_cls_dict
 
     @property
@@ -305,10 +291,7 @@ class ScenarioTrial(ABC):
     # Determine AS outcome funcs #
     ##############################
 
-    def determine_as_outcome(self,
-                             as_obj: AS,
-                             ann: Optional[Announcement]
-                             ) -> Outcomes:
+    def determine_as_outcome(self, as_obj: AS, ann: Optional[Announcement]) -> Outcomes:
         """Determines the outcome at an AS
 
         ann is most_specific_ann is the most specific prefix announcement
@@ -320,18 +303,19 @@ class ScenarioTrial(ABC):
         elif as_obj.asn in self.victim_asns:
             return Outcomes.VICTIM_SUCCESS
         # End of traceback
-        elif (ann is None
-              or len(ann.as_path) == 1
-              or ann.recv_relationship == Relationships.ORIGIN
-              or ann.traceback_end):
+        elif (
+            ann is None
+            or len(ann.as_path) == 1
+            or ann.recv_relationship == Relationships.ORIGIN
+            or ann.traceback_end
+        ):
             return Outcomes.DISCONNECTED
         else:
             return Outcomes.UNDETERMINED
 
-    def determine_as_outcome_ctrl_plane(self,
-                                        as_obj: AS,
-                                        ann: Optional[Announcement]
-                                        ) -> Outcomes:
+    def determine_as_outcome_ctrl_plane(
+        self, as_obj: AS, ann: Optional[Announcement]
+    ) -> Outcomes:
         """Determines the outcome at an AS on the control plane
 
         ann is most_specific_ann is the most specific prefix announcement
@@ -352,9 +336,7 @@ class ScenarioTrial(ABC):
     #############################
 
     def setup_engine(
-        self,
-        engine: SimulationEngine,
-        prev_scenario: Optional["ScenarioTrial"] = None
+        self, engine: SimulationEngine, prev_scenario: Optional["ScenarioTrial"] = None
     ) -> None:
         """Sets up engine input"""
 
@@ -363,9 +345,7 @@ class ScenarioTrial(ABC):
         engine.ready_to_run_round = 0
 
     def _set_engine_as_classes(
-        self,
-        engine: SimulationEngine,
-        prev_scenario: Optional["ScenarioTrial"]
+        self, engine: SimulationEngine, prev_scenario: Optional["ScenarioTrial"]
     ) -> None:
         """Resets Engine ASes and changes their AS class
 
@@ -385,9 +365,7 @@ class ScenarioTrial(ABC):
             as_obj.__init__(reset_base=False)
 
     def _seed_engine_announcements(
-        self,
-        engine: SimulationEngine,
-        prev_scenario: Optional["ScenarioTrial"]
+        self, engine: SimulationEngine, prev_scenario: Optional["ScenarioTrial"]
     ) -> None:
         """Seeds announcement at the proper AS
 
@@ -417,7 +395,7 @@ class ScenarioTrial(ABC):
         raise NotImplementedError
 
     def pre_aggregation_hook(self, *args, **kwargs):
-        """ Useful hook for changes/checks
+        """Useful hook for changes/checks
         prior to results aggregation.
         """
         pass
@@ -443,18 +421,20 @@ class ScenarioTrial(ABC):
             prefixes.add(ann.prefix)
         # Do this here for speed
         prefixes: List[Union[IPv4Network, IPv6Network]] = [  # type: ignore
-            ip_network(x) for x in prefixes]
+            ip_network(x) for x in prefixes
+        ]
         # Sort prefixes with most specific prefix first
         # Note that this must be sorted for the traceback to get the
         # most specific prefix first
-        prefixes = list(sorted(prefixes,
-                               key=lambda x: x.num_addresses))  # type: ignore
+        prefixes = list(sorted(prefixes, key=lambda x: x.num_addresses))  # type: ignore
 
         prefix_subprefix_dict = {x: [] for x in prefixes}  # type: ignore
         for outer_prefix, subprefix_list in prefix_subprefix_dict.items():
             for prefix in prefixes:
-                if (prefix.subnet_of(outer_prefix)  # type: ignore
-                        and prefix != outer_prefix):
+                if (
+                    prefix.subnet_of(outer_prefix)  # type: ignore
+                    and prefix != outer_prefix
+                ):
                     subprefix_list.append(str(prefix))
         # Get rid of ip_network
         return {str(k): v for k, v in prefix_subprefix_dict.items()}
@@ -476,8 +456,10 @@ class ScenarioTrial(ABC):
     def _yamlable_non_default_asn_cls_dict(self) -> Dict[int, str]:
         """Converts non default as cls dict to a yamlable dict of asn: name"""
 
-        return {asn: AS.subclass_to_name_dict[ASCls]
-                for asn, ASCls in self.non_default_asn_cls_dict.items()}
+        return {
+            asn: AS.subclass_to_name_dict[ASCls]
+            for asn, ASCls in self.non_default_asn_cls_dict.items()
+        }
 
     @staticmethod
     def _get_non_default_asn_cls_dict_from_yaml(yaml_dict) -> Dict[int, Type[AS]]:
@@ -488,13 +470,14 @@ class ScenarioTrial(ABC):
     def __to_yaml_dict__(self) -> Dict[Any, Any]:
         """This optional method is called when you call yaml.dump()"""
 
-        return {"scenario_config": self.scenario_config,
-                "percent_adoption": self.percent_adoption,
-                "yaml_attacker_asns": self.attacker_asns,
-                "yaml_victim_asns": self.victim_asns,
-                "yaml_non_default_asn_cls_dict":
-                    self._yamlable_non_default_asn_cls_dict,
-                "yaml_announcements": self.announcements}
+        return {
+            "scenario_config": self.scenario_config,
+            "percent_adoption": self.percent_adoption,
+            "yaml_attacker_asns": self.attacker_asns,
+            "yaml_victim_asns": self.victim_asns,
+            "yaml_non_default_asn_cls_dict": self._yamlable_non_default_asn_cls_dict,
+            "yaml_announcements": self.announcements,
+        }
 
     @classmethod
     def __from_yaml_dict__(cls, dct, yaml_tag):
@@ -510,5 +493,5 @@ class ScenarioTrial(ABC):
             yaml_attacker_asns=dct["yaml_attacker_asns"],
             yaml_victim_asns=dct["yaml_victim_asns"],
             yaml_non_default_asn_cls_dict=non_default_asn_cls_dict,
-            yaml_announcements=dct["announcements"]
+            yaml_announcements=dct["announcements"],
         )

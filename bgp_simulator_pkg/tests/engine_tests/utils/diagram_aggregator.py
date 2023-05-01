@@ -1,4 +1,3 @@
-
 # This should be made compatible with mypy, but I have no time
 
 from pathlib import Path
@@ -34,11 +33,13 @@ class DiagramAggregator:
                 converted_images.append(img)
 
         # Aggregate all images into a PDF
-        converted_images[0].save(self.aggregated_diagrams_path,
-                                 "PDF",
-                                 resolution=100.0,
-                                 save_all=True,
-                                 append_images=converted_images[1:])
+        converted_images[0].save(
+            self.aggregated_diagrams_path,
+            "PDF",
+            resolution=100.0,
+            save_all=True,
+            append_images=converted_images[1:],
+        )
         for img in converted_images:
             img.close()
 

@@ -19,8 +19,7 @@ class SendInfo(YamlAble):
 
     @property
     def anns(self):
-        return [x for x in [self.withdrawal_ann, self.ann]
-                if x is not None]
+        return [x for x in [self.withdrawal_ann, self.ann] if x is not None]
 
     def __str__(self):
         return f"send_info: ann: {self.ann}, withdrawal {self.withdrawal_ann}"
@@ -44,9 +43,9 @@ class SendQueue(AnnContainer):
         """
 
         # {neighbor: {prefix: SendInfo}}
-        self._info: Dict[int,
-                         Dict[str, SendInfo]
-                         ] = _info if _info is not None else dict()
+        self._info: Dict[int, Dict[str, SendInfo]] = (
+            _info if _info is not None else dict()
+        )
 
     def add_ann(self, neighbor_asn: int, ann: Ann):
         """Adds Ann to be sent"""
@@ -66,8 +65,9 @@ class SendQueue(AnnContainer):
             assert send_info.withdrawal_ann is None, msg
 
             # If the withdrawal is equal to ann, delete both
-            if (send_info.ann is not None and
-                    send_info.ann.prefix_path_attributes_eq(ann)):
+            if send_info.ann is not None and send_info.ann.prefix_path_attributes_eq(
+                ann
+            ):
                 del self._info[neighbor_asn][ann.prefix]
             # If withdrawl is not equal to Ann, add withdrawal
             else:
@@ -79,8 +79,7 @@ class SendQueue(AnnContainer):
             assert send_info.ann is None, "Replacing valid ann?"
             err = "Can't send identical withdrawal and ann"
             err += f" {ann}, {send_info.withdrawal_ann}"
-            assert not ann.prefix_path_attributes_eq(
-                send_info.withdrawal_ann), err
+            assert not ann.prefix_path_attributes_eq(send_info.withdrawal_ann), err
 
             # Add announcement
             send_info.ann = ann
@@ -95,8 +94,7 @@ class SendQueue(AnnContainer):
 
         for neighbor_obj in neighbors:
             # assert isinstance(neighbor_obj, bgp_as.BGPAS)
-            for prefix, send_info in self._info.get(neighbor_obj.asn,
-                                                    dict()).items():
+            for prefix, send_info in self._info.get(neighbor_obj.asn, dict()).items():
                 for ann in send_info.anns:
                     yield neighbor_obj, prefix, ann
 

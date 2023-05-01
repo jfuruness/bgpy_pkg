@@ -21,10 +21,13 @@ class Graph002(GraphInfo):
 
     def __init__(self):
         super(Graph002, self).__init__(
-            peer_links=set([PeerLink(2, 3),
-                            PeerLink(ASNs.VICTIM.value, 5)]),
+            peer_links=set([PeerLink(2, 3), PeerLink(ASNs.VICTIM.value, 5)]),
             customer_provider_links=set(
-                [CPLink(provider_asn=1, customer_asn=2),
-                 CPLink(provider_asn=2, customer_asn=4),
-                 CPLink(provider_asn=2, customer_asn=ASNs.VICTIM.value),
-                 CPLink(provider_asn=3, customer_asn=6)]))
+                [
+                    CPLink(provider_asn=1, customer_asn=2),
+                    CPLink(provider_asn=2, customer_asn=4),
+                    CPLink(provider_asn=2, customer_asn=ASNs.VICTIM.value),
+                    CPLink(provider_asn=3, customer_asn=6),
+                ]
+            ),
+        )

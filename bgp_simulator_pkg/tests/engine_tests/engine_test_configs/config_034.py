@@ -18,11 +18,9 @@ class Custom34ValidPrefix(ValidPrefix):
 
     __slots__ = ()
 
-    def post_propagation_hook(self, engine=None, propagation_round=0,
-                              *args, **kwargs):
+    def post_propagation_hook(self, engine=None, propagation_round=0, *args, **kwargs):
         if propagation_round == 1:  # second round
-            ann = deepcopy(
-                engine.as_dict[2]._local_rib.get_ann(Prefixes.PREFIX.value))
+            ann = deepcopy(engine.as_dict[2]._local_rib.get_ann(Prefixes.PREFIX.value))
             # Add a new announcement at AS 3, which will be better than the one
             # from 2 and cause a withdrawn route by 1 to 4
             ann.seed_asn = 3
@@ -31,8 +29,7 @@ class Custom34ValidPrefix(ValidPrefix):
             Custom34ValidPrefix.victim_asns = {2, 3}
 
         if propagation_round == 2:  # third round
-            ann = deepcopy(
-                engine.as_dict[3]._local_rib.get_ann(Prefixes.PREFIX.value))
+            ann = deepcopy(engine.as_dict[3]._local_rib.get_ann(Prefixes.PREFIX.value))
             ann.withdraw = True
             # Remove the original announcement from 3
             # The one from 2 is now the next-best
@@ -47,10 +44,7 @@ class Config034(EngineTestConfig):
 
     name = "034"
     desc = "Test withdrawal mechanism"
-    scenario = Custom34ValidPrefix(
-        victim_asns={2},
-        AdoptASCls=None,
-        BaseASCls=BGPAS)
+    scenario = Custom34ValidPrefix(victim_asns={2}, AdoptASCls=None, BaseASCls=BGPAS)
     graph = Graph040()
     non_default_as_cls_dict: Dict[int, Type[AS]] = dict()
     propagation_rounds = 4

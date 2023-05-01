@@ -26,7 +26,7 @@ class Graph051(GraphInfo):
                     CPLink(provider_asn=3, customer_asn=6),
                     CPLink(provider_asn=6, customer_asn=7),
                     CPLink(provider_asn=6, customer_asn=8),
-                    CPLink(provider_asn=4, customer_asn=6)
+                    CPLink(provider_asn=4, customer_asn=6),
                 ]
             ),
         )

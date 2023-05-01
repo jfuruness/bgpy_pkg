@@ -15,11 +15,12 @@ class Config010(EngineTestConfig):
 
     name = "010"
     desc = "Fig 2 (ROVSimpleAS)"
-    scenario = SubprefixHijack(attacker_asns={ASNs.ATTACKER.value},
-                               victim_asns={ASNs.VICTIM.value},
-                               AdoptASCls=None,
-                               BaseASCls=BGPSimpleAS,
-                               )
+    scenario = SubprefixHijack(
+        attacker_asns={ASNs.ATTACKER.value},
+        victim_asns={ASNs.VICTIM.value},
+        AdoptASCls=None,
+        BaseASCls=BGPSimpleAS,
+    )
 
     graph = Graph003()
     non_default_as_cls_dict: Dict[int, Type[AS]] = dict()

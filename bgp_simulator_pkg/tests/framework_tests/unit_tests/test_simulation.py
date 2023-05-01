@@ -26,8 +26,9 @@ class TestSimulation:
 
         raise NotImplementedError
 
-    @pytest.mark.skip(reason=("Low priority, doesn't affect data, "
-                              "high effort due to randomness"))
+    @pytest.mark.skip(
+        reason=("Low priority, doesn't affect data, " "high effort due to randomness")
+    )
     def test_get_data_multiprocess_vs_single(self):
         """Tests that the multiprocess and single process are the same"""
 
@@ -48,8 +49,12 @@ class TestSimulation:
 
         raise NotImplementedError
 
-    @pytest.mark.skip(reason=("Low priority, checked a lot by hand, "
-                              "tests could never acct for all cases"))
+    @pytest.mark.skip(
+        reason=(
+            "Low priority, checked a lot by hand, "
+            "tests could never acct for all cases"
+        )
+    )
     def test_get_data(self):
         """Tests that the subgraphs aggregate properly"""
 
@@ -61,22 +66,34 @@ class TestSimulation:
 
         raise NotImplementedError
 
-    @pytest.mark.skip(reason=("Low priority, checked a lot by hand, "
-                              "tests could never acct for all cases"))
+    @pytest.mark.skip(
+        reason=(
+            "Low priority, checked a lot by hand, "
+            "tests could never acct for all cases"
+        )
+    )
     def test_get_single_process_results(self):
         """Tests a sample set of results"""
 
         raise NotImplementedError
 
-    @pytest.mark.skip(reason=("Low priority, checked a lot by hand, "
-                              "tests could never acct for all cases"))
+    @pytest.mark.skip(
+        reason=(
+            "Low priority, checked a lot by hand, "
+            "tests could never acct for all cases"
+        )
+    )
     def test_get_multi_process_results(self):
         """Tests a sample set of results"""
 
         raise NotImplementedError
 
-    @pytest.mark.skip(reason=("Low priority, checked a lot by hand, "
-                              "tests could never acct for all cases"))
+    @pytest.mark.skip(
+        reason=(
+            "Low priority, checked a lot by hand, "
+            "tests could never acct for all cases"
+        )
+    )
     def test_run_chunk(self):
         """Tests the running of a chunk
 
@@ -90,8 +107,12 @@ class TestSimulation:
 
         raise NotImplementedError
 
-    @pytest.mark.skip(reason=("Low priority, checked a lot by hand, "
-                              "tests could never acct for all cases"))
+    @pytest.mark.skip(
+        reason=(
+            "Low priority, checked a lot by hand, "
+            "tests could never acct for all cases"
+        )
+    )
     def test_aggregate_engine_run_data(self):
         """Tests that the data is aggregated properly with examples"""
 

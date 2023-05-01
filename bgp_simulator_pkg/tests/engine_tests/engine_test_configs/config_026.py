@@ -15,9 +15,9 @@ class Config026(EngineTestConfig):
 
     name = "026"
     desc = "Test of tiebreak preference"
-    scenario = ValidPrefix(victim_asns={ASNs.VICTIM.value},
-                           AdoptASCls=None,
-                           BaseASCls=ROVAS)
+    scenario = ValidPrefix(
+        victim_asns={ASNs.VICTIM.value}, AdoptASCls=None, BaseASCls=ROVAS
+    )
     graph = Graph019()
     non_default_as_cls_dict: Dict[int, Type[AS]] = dict()
     propagation_rounds = 1

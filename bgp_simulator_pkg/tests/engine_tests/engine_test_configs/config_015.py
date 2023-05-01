@@ -15,10 +15,12 @@ class Config015(EngineTestConfig):
 
     name = "015"
     desc = "Test of path length preference"
-    scenario = ValidPrefix(attacker_asns={ASNs.ATTACKER.value},
-                           victim_asns={ASNs.VICTIM.value},
-                           AdoptASCls=None,
-                           BaseASCls=BGPSimpleAS)
+    scenario = ValidPrefix(
+        attacker_asns={ASNs.ATTACKER.value},
+        victim_asns={ASNs.VICTIM.value},
+        AdoptASCls=None,
+        BaseASCls=BGPSimpleAS,
+    )
     graph = Graph018()
     non_default_as_cls_dict: Dict[int, Type[AS]] = dict()
     propagation_rounds = 1

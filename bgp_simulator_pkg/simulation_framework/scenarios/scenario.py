@@ -23,38 +23,44 @@ pseudo_base_cls_dict: Dict[Type[AS], Type[AS]] = dict()
 class Scenario(ABC):
     """Contains information regarding an attack"""
 
-    __slots__ = ("AnnCls",
-                 "BaseASCls",
-                 "AdoptASCls",
-                 "num_attackers",
-                 "num_victims",
-                 "attacker_asns",
-                 "victim_asns",
-                 "attacker_victim_asns_preset",
-                 "non_default_as_cls_dict",
-                 "ordered_prefix_subprefix_dict",
-                 "announcements",
-                 "non_default_as_cls_dict",
-                 "min_rov_confidence",
-                 "adoption_subcategory_attrs")
+    __slots__ = (
+        "AnnCls",
+        "BaseASCls",
+        "AdoptASCls",
+        "num_attackers",
+        "num_victims",
+        "attacker_asns",
+        "victim_asns",
+        "attacker_victim_asns_preset",
+        "non_default_as_cls_dict",
+        "ordered_prefix_subprefix_dict",
+        "announcements",
+        "non_default_as_cls_dict",
+        "min_rov_confidence",
+        "adoption_subcategory_attrs",
+    )
 
-    def __init__(self,
-                 # This is the base type of announcement for this class
-                 # You can specify a different base ann
-                 AnnCls: Type[Announcement] = Announcement,
-                 BaseASCls: Type[AS] = BGPSimpleAS,
-                 AdoptASCls: Optional[Type[AS]] = None,
-                 num_attackers: int = 1,
-                 num_victims: int = 1,
-                 attacker_asns: Optional[Set[int]] = None,
-                 victim_asns: Optional[Set[int]] = None,
-                 min_rov_confidence: float = 1000,
-                 # Purely for rebuilding from YAML
-                 non_default_as_cls_dict: Optional[Dict[int, Type[AS]]] = None,
-                 announcements: Tuple[Announcement, ...] = (),
-                 adoption_subcategory_attrs: Tuple[str, ...] = (
-                    "stub_or_mh_ases", "etc_ases", "input_clique_ases")
-                 ):
+    def __init__(
+        self,
+        # This is the base type of announcement for this class
+        # You can specify a different base ann
+        AnnCls: Type[Announcement] = Announcement,
+        BaseASCls: Type[AS] = BGPSimpleAS,
+        AdoptASCls: Optional[Type[AS]] = None,
+        num_attackers: int = 1,
+        num_victims: int = 1,
+        attacker_asns: Optional[Set[int]] = None,
+        victim_asns: Optional[Set[int]] = None,
+        min_rov_confidence: float = 1000,
+        # Purely for rebuilding from YAML
+        non_default_as_cls_dict: Optional[Dict[int, Type[AS]]] = None,
+        announcements: Tuple[Announcement, ...] = (),
+        adoption_subcategory_attrs: Tuple[str, ...] = (
+            "stub_or_mh_ases",
+            "etc_ases",
+            "input_clique_ases",
+        ),
+    ):
         """inits attrs
 
         non_default_as_cls_dict is a dict of asn: AdoptASCls
@@ -62,8 +68,7 @@ class Scenario(ABC):
         since that is the default
         """
 
-        self.adoption_subcategory_attrs: Tuple[str, ...] =\
-            adoption_subcategory_attrs
+        self.adoption_subcategory_attrs: Tuple[str, ...] = adoption_subcategory_attrs
 
         self.AnnCls: Type[Announcement] = AnnCls
         self.BaseASCls: Type[AS] = BaseASCls
@@ -93,11 +98,9 @@ class Scenario(ABC):
 
         # If we are regenerating from yaml
         self.attacker_asns = attacker_asns if attacker_asns else set()
-        assert (attacker_asns is None
-                or len(attacker_asns) == num_attackers)
+        assert attacker_asns is None or len(attacker_asns) == num_attackers
         self.victim_asns = victim_asns if victim_asns else set()
-        assert (victim_asns is None
-                or len(victim_asns) == num_victims)
+        assert victim_asns is None or len(victim_asns) == num_victims
 
         if (victim_asns, attacker_asns) != (None, None):
             self.attacker_victim_asns_preset: bool = True
@@ -108,9 +111,7 @@ class Scenario(ABC):
 
         # Purely for yaml #################################################
         if non_default_as_cls_dict:
-            self.non_default_as_cls_dict: Dict[int,
-                                               Type[AS]
-                                               ] = non_default_as_cls_dict
+            self.non_default_as_cls_dict: Dict[int, Type[AS]] = non_default_as_cls_dict
         if announcements:
             self.announcements: Tuple["Announcement", ...] = announcements
 
@@ -127,10 +128,11 @@ class Scenario(ABC):
     ##############################################
 
     def _set_attackers_victims_anns(
-            self,
-            engine: SimulationEngine,
-            percent_adoption: Union[float, SpecialPercentAdoptions],
-            prev_scenario: Optional["Scenario"]):
+        self,
+        engine: SimulationEngine,
+        percent_adoption: Union[float, SpecialPercentAdoptions],
+        prev_scenario: Optional["Scenario"],
+    ):
         """Sets attackers, victims. announcements instance vars"""
 
         # Use the same attacker victim pair that was used previously
@@ -139,21 +141,22 @@ class Scenario(ABC):
             self.victim_asns = prev_scenario.victim_asns
         # This is the first time, randomly select attacker/victim
         else:
-            self._set_attackers_victims(engine,
-                                        percent_adoption,
-                                        prev_scenario)
+            self._set_attackers_victims(engine, percent_adoption, prev_scenario)
         # Must call this here due to atk/vic pair being different
         try:
             self.announcements = self._get_announcements(
                 engine=engine,
                 percent_adoption=percent_adoption,
-                prev_scenario=prev_scenario)
+                prev_scenario=prev_scenario,
+            )
         except TypeError:
             self.announcements = self._get_announcements()
-            warn("Add *args and **kwargs to your _get_announcements func"
-                 ", this will break in November",
-                 DeprecationWarning,
-                 stacklevel=2)
+            warn(
+                "Add *args and **kwargs to your _get_announcements func"
+                ", this will break in November",
+                DeprecationWarning,
+                stacklevel=2,
+            )
         self._get_ordered_prefix_subprefix_dict()
 
     def _set_attackers_victims(self, *args, **kwargs):
@@ -167,30 +170,31 @@ class Scenario(ABC):
     def _get_attacker_asns(self, *args, **kwargs) -> Set[int]:
         """Returns attacker ASN at random"""
 
-        possible_attacker_asns = \
-            self._get_possible_attacker_asns(*args, **kwargs)
+        possible_attacker_asns = self._get_possible_attacker_asns(*args, **kwargs)
         # https://stackoverflow.com/a/15837796/8903959
-        return set(random.sample(tuple(possible_attacker_asns),
-                                 self.num_attackers))
+        return set(random.sample(tuple(possible_attacker_asns), self.num_attackers))
 
     def _get_victim_asns(self, *args, **kwargs) -> Set[int]:
         """Returns victim ASN at random. Attacker can't be victim"""
 
         possible_vic_asns = self._get_possible_victim_asns(*args, **kwargs)
-        return set(random.sample(
-            # https://stackoverflow.com/a/15837796/8903959
-            tuple(possible_vic_asns.difference(self.attacker_asns)),
-            self.num_victims))
+        return set(
+            random.sample(
+                # https://stackoverflow.com/a/15837796/8903959
+                tuple(possible_vic_asns.difference(self.attacker_asns)),
+                self.num_victims,
+            )
+        )
 
     # For this, don't bother making a subclass with stubs_and_mh
     # Since it won't really create another class branch,
     # Since another dev would likely just subclass from the same place
     def _get_possible_attacker_asns(
-            self,
-            engine: SimulationEngine,
-            percent_adoption: Union[float, SpecialPercentAdoptions],
-            prev_scenario: Optional["Scenario"]
-            ) -> Set[int]:
+        self,
+        engine: SimulationEngine,
+        percent_adoption: Union[float, SpecialPercentAdoptions],
+        prev_scenario: Optional["Scenario"],
+    ) -> Set[int]:
         """Returns possible attacker ASNs, defaulted from stubs_and_mh"""
 
         err = "Make mypy happy"
@@ -202,11 +206,11 @@ class Scenario(ABC):
     # Since it won't really create another class branch,
     # Since another dev would likely just subclass from the same place
     def _get_possible_victim_asns(
-            self,
-            engine: SimulationEngine,
-            percent_adoption: Union[float, SpecialPercentAdoptions],
-            prev_scenario: Optional["Scenario"]
-            ) -> Set[int]:
+        self,
+        engine: SimulationEngine,
+        percent_adoption: Union[float, SpecialPercentAdoptions],
+        prev_scenario: Optional["Scenario"],
+    ) -> Set[int]:
         """Returns possible victim ASNs, defaulted from stubs_and_mh"""
 
         err = "Make mypy happy"
@@ -225,11 +229,11 @@ class Scenario(ABC):
     #######################
 
     def _get_non_default_as_cls_dict(
-            self,
-            engine: SimulationEngine,
-            percent_adoption: Union[float, SpecialPercentAdoptions],
-            prev_scenario: Optional["Scenario"]
-            ) -> Dict[int, Type[AS]]:
+        self,
+        engine: SimulationEngine,
+        percent_adoption: Union[float, SpecialPercentAdoptions],
+        prev_scenario: Optional["Scenario"],
+    ) -> Dict[int, Type[AS]]:
         """Returns as class dict
 
         non_default_as_cls_dict is a dict of asn: AdoptASCls
@@ -258,10 +262,10 @@ class Scenario(ABC):
             return self._get_adopting_asns_dict(engine, percent_adoption)
 
     def _get_adopting_asns_dict(
-            self,
-            engine: SimulationEngine,
-            percent_adopt: Union[float, SpecialPercentAdoptions]
-            ) -> Dict[int, Type[AS]]:
+        self,
+        engine: SimulationEngine,
+        percent_adopt: Union[float, SpecialPercentAdoptions],
+    ) -> Dict[int, Type[AS]]:
         """Get adopting ASNs
 
         By default, to get even adoption, adopt in each of the three
@@ -305,8 +309,7 @@ class Scenario(ABC):
                 for as_ in random.sample(possible_adopters, k):
                     asn_cls_dict[as_.asn] = self.AdoptASCls
             except ValueError:
-                raise ValueError(
-                    f"{k} can't be sampled from {len(possible_adopters)}")
+                raise ValueError(f"{k} can't be sampled from {len(possible_adopters)}")
             for asn in self._default_adopters:
                 asn_cls_dict[asn] = self.AdoptASCls
         return asn_cls_dict
@@ -330,10 +333,7 @@ class Scenario(ABC):
         # Returns the union of default adopters and non adopters
         return self._default_adopters | self._default_non_adopters
 
-    def determine_as_outcome(self,
-                             as_obj: AS,
-                             ann: Optional[Announcement]
-                             ) -> Outcomes:
+    def determine_as_outcome(self, as_obj: AS, ann: Optional[Announcement]) -> Outcomes:
         """Determines the outcome at an AS
 
         ann is most_specific_ann is the most specific prefix announcement
@@ -345,18 +345,19 @@ class Scenario(ABC):
         elif as_obj.asn in self.victim_asns:
             return Outcomes.VICTIM_SUCCESS
         # End of traceback
-        elif (ann is None
-              or len(ann.as_path) == 1
-              or ann.recv_relationship == Relationships.ORIGIN
-              or ann.traceback_end):
+        elif (
+            ann is None
+            or len(ann.as_path) == 1
+            or ann.recv_relationship == Relationships.ORIGIN
+            or ann.traceback_end
+        ):
             return Outcomes.DISCONNECTED
         else:
             return Outcomes.UNDETERMINED
 
-    def determine_as_outcome_ctrl_plane(self,
-                                        as_obj: AS,
-                                        ann: Optional[Announcement]
-                                        ) -> Outcomes:
+    def determine_as_outcome_ctrl_plane(
+        self, as_obj: AS, ann: Optional[Announcement]
+    ) -> Outcomes:
         """Determines the outcome at an AS on the control plane
 
         ann is most_specific_ann is the most specific prefix announcement
@@ -376,26 +377,25 @@ class Scenario(ABC):
     # Engine Manipulation Funcs #
     #############################
 
-    def setup_engine(self,
-                     engine: SimulationEngine,
-                     percent_adoption: Union[float, SpecialPercentAdoptions],
-                     prev_scenario: Optional["Scenario"] = None):
+    def setup_engine(
+        self,
+        engine: SimulationEngine,
+        percent_adoption: Union[float, SpecialPercentAdoptions],
+        prev_scenario: Optional["Scenario"] = None,
+    ):
         """Sets up engine input"""
 
-        self._set_attackers_victims_anns(engine,
-                                         percent_adoption,
-                                         prev_scenario)
+        self._set_attackers_victims_anns(engine, percent_adoption, prev_scenario)
         self._set_engine_as_classes(engine, percent_adoption, prev_scenario)
-        self._seed_engine_announcements(engine,
-                                        percent_adoption,
-                                        prev_scenario)
+        self._seed_engine_announcements(engine, percent_adoption, prev_scenario)
         engine.ready_to_run_round = 0
 
     def _set_engine_as_classes(
-            self,
-            engine: SimulationEngine,
-            percent_adoption: Union[float, SpecialPercentAdoptions],
-            prev_scenario: Optional["Scenario"]):
+        self,
+        engine: SimulationEngine,
+        percent_adoption: Union[float, SpecialPercentAdoptions],
+        prev_scenario: Optional["Scenario"],
+    ):
         """Resets Engine ASes and changes their AS class
 
         We do this here because we already seed from the scenario
@@ -409,9 +409,8 @@ class Scenario(ABC):
         # since that is the default
         # Only regenerate this if it's not already set (like with YAML)
         self.non_default_as_cls_dict = self._get_non_default_as_cls_dict(
-            engine,
-            percent_adoption,
-            prev_scenario=prev_scenario)
+            engine, percent_adoption, prev_scenario=prev_scenario
+        )
         # Validate that this is only non_default ASes
         # This matters, because later this entire dict may be used for the next
         # scenario
@@ -422,8 +421,7 @@ class Scenario(ABC):
         BaseASCls = self.BaseASCls
         for as_obj in engine:
             # Set the AS class to be the proper type of AS
-            as_obj.__class__ = self.non_default_as_cls_dict.get(as_obj.asn,
-                                                                BaseASCls)
+            as_obj.__class__ = self.non_default_as_cls_dict.get(as_obj.asn, BaseASCls)
             # Clears all RIBs, etc
             # Reset base is False to avoid overrides base AS info (peers, etc)
             as_obj.__init__(reset_base=False)
@@ -447,7 +445,7 @@ class Scenario(ABC):
             obj_to_seed._local_rib.add_ann(ann)
 
     def pre_aggregation_hook(self, *args, **kwargs):
-        """ Useful hook for changes/checks
+        """Useful hook for changes/checks
         prior to results aggregation.
         """
         pass
@@ -473,22 +471,25 @@ class Scenario(ABC):
             prefixes.add(ann.prefix)
         # Do this here for speed
         prefixes: List[Union[IPv4Network, IPv6Network]] = [  # type: ignore
-            ip_network(x) for x in prefixes]
+            ip_network(x) for x in prefixes
+        ]
         # Sort prefixes with most specific prefix first
         # Note that this must be sorted for the traceback to get the
         # most specific prefix first
-        prefixes = list(sorted(prefixes,
-                               key=lambda x: x.num_addresses))  # type: ignore
+        prefixes = list(sorted(prefixes, key=lambda x: x.num_addresses))  # type: ignore
 
         prefix_subprefix_dict = {x: [] for x in prefixes}  # type: ignore
         for outer_prefix, subprefix_list in prefix_subprefix_dict.items():
             for prefix in prefixes:
-                if (prefix.subnet_of(outer_prefix)  # type: ignore
-                        and prefix != outer_prefix):
+                if (
+                    prefix.subnet_of(outer_prefix)  # type: ignore
+                    and prefix != outer_prefix
+                ):
                     subprefix_list.append(str(prefix))
         # Get rid of ip_network
         self.ordered_prefix_subprefix_dict: Dict[str, List[str]] = {
-            str(k): v for k, v in prefix_subprefix_dict.items()}
+            str(k): v for k, v in prefix_subprefix_dict.items()
+        }
 
     ##############
     # Yaml Funcs #
@@ -497,30 +498,36 @@ class Scenario(ABC):
     def __to_yaml_dict__(self) -> Dict[Any, Any]:
         """This optional method is called when you call yaml.dump()"""
 
-        return {"announcements": self.announcements,
-                "attacker_asns": self.attacker_asns,
-                "victim_asns": self.victim_asns,
-                "num_victims": self.num_victims,
-                "num_attackers": self.num_attackers,
-                "min_rov_confidence": self.min_rov_confidence,
-                "adoption_subcategory_attrs": self.adoption_subcategory_attrs,
-                "non_default_as_cls_dict":
-                    {asn: AS.subclass_to_name_dict[ASCls]
-                     for asn, ASCls in self.non_default_as_cls_dict.items()}}
+        return {
+            "announcements": self.announcements,
+            "attacker_asns": self.attacker_asns,
+            "victim_asns": self.victim_asns,
+            "num_victims": self.num_victims,
+            "num_attackers": self.num_attackers,
+            "min_rov_confidence": self.min_rov_confidence,
+            "adoption_subcategory_attrs": self.adoption_subcategory_attrs,
+            "non_default_as_cls_dict": {
+                asn: AS.subclass_to_name_dict[ASCls]
+                for asn, ASCls in self.non_default_as_cls_dict.items()
+            },
+        }
 
     @classmethod
     def __from_yaml_dict__(cls, dct, yaml_tag):
         """This optional method is called when you call yaml.load()"""
 
-        as_classes = {asn: AS.name_to_subclass_dict[name]
-                      for asn, name in dct["non_default_as_cls_dict"].items()}
+        as_classes = {
+            asn: AS.name_to_subclass_dict[name]
+            for asn, name in dct["non_default_as_cls_dict"].items()
+        }
 
-        return cls(announcements=dct["announcements"],
-                   attacker_asns=dct["attacker_asns"],
-                   victim_asns=dct["victim_asns"],
-                   num_victims=dct["num_victims"],
-                   num_attackers=dct["num_attackers"],
-                   min_rov_confidence=dct["min_rov_confidence"],
-                   non_default_as_cls_dict=as_classes,
-                   adoption_subcategory_attrs=dct["adoption_subcategory_attrs"]
-                   )
+        return cls(
+            announcements=dct["announcements"],
+            attacker_asns=dct["attacker_asns"],
+            victim_asns=dct["victim_asns"],
+            num_victims=dct["num_victims"],
+            num_attackers=dct["num_attackers"],
+            min_rov_confidence=dct["min_rov_confidence"],
+            non_default_as_cls_dict=as_classes,
+            adoption_subcategory_attrs=dct["adoption_subcategory_attrs"],
+        )

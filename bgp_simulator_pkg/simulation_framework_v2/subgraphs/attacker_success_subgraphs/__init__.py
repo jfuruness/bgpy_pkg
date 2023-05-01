@@ -9,11 +9,13 @@ from .attacker_success_subgraph import AttackerSuccessSubgraph
 from .attacker_success_all_subgraph import AttackerSuccessAllSubgraph
 
 
-__all__ = ["AttackerSuccessSubgraph",
-           "AttackerSuccessAdoptingEtcSubgraph",
-           "AttackerSuccessAdoptingInputCliqueSubgraph",
-           "AttackerSuccessAdoptingStubsAndMHSubgraph",
-           "AttackerSuccessNonAdoptingEtcSubgraph",
-           "AttackerSuccessNonAdoptingInputCliqueSubgraph",
-           "AttackerSuccessNonAdoptingStubsAndMHSubgraph",
-           "AttackerSuccessAllSubgraph"]
+__all__ = [
+    "AttackerSuccessSubgraph",
+    "AttackerSuccessAdoptingEtcSubgraph",
+    "AttackerSuccessAdoptingInputCliqueSubgraph",
+    "AttackerSuccessAdoptingStubsAndMHSubgraph",
+    "AttackerSuccessNonAdoptingEtcSubgraph",
+    "AttackerSuccessNonAdoptingInputCliqueSubgraph",
+    "AttackerSuccessNonAdoptingStubsAndMHSubgraph",
+    "AttackerSuccessAllSubgraph",
+]

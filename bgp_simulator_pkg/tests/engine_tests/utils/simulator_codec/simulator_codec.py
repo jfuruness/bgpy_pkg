@@ -7,13 +7,11 @@ from .simulator_loader import SimulatorLoader
 from .....enums import YamlAbleEnum
 
 # 2-way mappings between the types and the yaml tags
-types_to_yaml_tags = {X: X.yaml_suffix()
-                      for X in YamlAbleEnum.yamlable_enums()}
+types_to_yaml_tags = {X: X.yaml_suffix() for X in YamlAbleEnum.yamlable_enums()}
 yaml_tags_to_types = {v: k for k, v in types_to_yaml_tags.items()}
 
 
 class SimulatorCodec(YamlCodec):
-
     @classmethod
     def get_yaml_prefix(cls):
         """Root yaml tag"""
@@ -48,8 +46,7 @@ class SimulatorCodec(YamlCodec):
         """Converts objects to yaml dicts"""
 
         if isinstance(obj, YamlAbleEnum):
-            return types_to_yaml_tags[type(obj)], {"value": obj.value,
-                                                   "name": obj.name}
+            return types_to_yaml_tags[type(obj)], {"value": obj.value, "name": obj.name}
         else:
             # Encode the given object and also return the tag it should have
             return types_to_yaml_tags[type(obj)], vars(obj)

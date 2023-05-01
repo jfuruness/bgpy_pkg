@@ -1,4 +1,3 @@
-
 # This should be made compatible with mypy, but I have no time
 
 from copy import deepcopy
@@ -14,11 +13,13 @@ from ....simulation_engine import SimulationEngine
 class EngineTester:
     """Tests an engine run"""
 
-    def __init__(self,
-                 base_dir: Path,
-                 conf: EngineTestConfig,
-                 overwrite: bool = False,
-                 codec: SimulatorCodec = SimulatorCodec()):
+    def __init__(
+        self,
+        base_dir: Path,
+        conf: EngineTestConfig,
+        overwrite: bool = False,
+        codec: SimulatorCodec = SimulatorCodec(),
+    ):
         self.conf = conf
         self.overwrite = overwrite
         self.codec = codec
@@ -47,28 +48,25 @@ class EngineTester:
         # Get's an engine that has been set up
         engine = self._get_engine(scenario)
         # Run engine
-        for propagation_round in range(
-                self.conf.propagation_rounds):  # type: ignore
-            engine.run(propagation_round=propagation_round,
-                       scenario=scenario)
-            kwargs = {"engine": engine,
-                      "scenario": scenario,
-                      "propagation_round": propagation_round}
+        for propagation_round in range(self.conf.propagation_rounds):  # type: ignore
+            engine.run(propagation_round=propagation_round, scenario=scenario)
+            kwargs = {
+                "engine": engine,
+                "scenario": scenario,
+                "propagation_round": propagation_round,
+            }
             # By default, this is a no op
             scenario.post_propagation_hook(**kwargs)
 
         # Get traceback results {AS: Outcome}
-        outcomes = self.conf.SubgraphCls()._get_engine_outcomes(engine,
-                                                                scenario)
+        outcomes = self.conf.SubgraphCls()._get_engine_outcomes(engine, scenario)
         # Convert this to just be {ASN: Outcome} (Not the AS object)
-        outcomes_yaml = {as_obj.asn: result for as_obj, result
-                         in outcomes.items()}
+        outcomes_yaml = {as_obj.asn: result for as_obj, result in outcomes.items()}
         # Get shared_data
         shared_data: Dict[Any, Any] = dict()
-        self.conf.SubgraphCls()._add_traceback_to_shared_data(shared_data,
-                                                              engine,
-                                                              scenario,
-                                                              outcomes)
+        self.conf.SubgraphCls()._add_traceback_to_shared_data(
+            shared_data, engine, scenario, outcomes
+        )
         # Store engine and traceback YAML
         self._store_yaml(engine, outcomes_yaml, shared_data)
         # Create diagrams before the test can fail
@@ -82,11 +80,13 @@ class EngineTester:
         engine = SimulationEngine(
             BaseASCls=scenario.BaseASCls,
             peer_links=self.conf.graph.peer_links,  # type: ignore
-            cp_links=self.conf.graph.customer_provider_links)  # type: ignore
+            cp_links=self.conf.graph.customer_provider_links,  # type: ignore
+        )  # type: ignore
 
         prev_scenario = deepcopy(scenario)
-        prev_scenario.non_default_as_cls_dict =\
+        prev_scenario.non_default_as_cls_dict = (
             self.conf.non_default_as_cls_dict  # type: ignore
+        )  # type: ignore
         scenario.setup_engine(engine, 0, prev_scenario)
         return engine
 
@@ -109,8 +109,7 @@ class EngineTester:
         self.codec.dump(shared_data, path=self.shared_data_guess_path)
         # Save shared_data as ground truth if ground truth doesn't exist
         if not self.shared_data_ground_truth_path.exists() or self.overwrite:
-            self.codec.dump(shared_data,
-                            path=self.shared_data_ground_truth_path)
+            self.codec.dump(shared_data, path=self.shared_data_ground_truth_path)
 
     def _generate_diagrams(self, shared_data):
         """Generates diagrams"""
@@ -130,7 +129,8 @@ class EngineTester:
             f"({self.conf.name} Guess)\n{self.conf.desc}",  # type: ignore
             shared_data,
             path=self.test_dir / "guess.gv",
-            view=False)
+            view=False,
+        )
         # Write ground truth graph
         Diagram().generate_as_graph(
             engine_gt,
@@ -140,7 +140,8 @@ class EngineTester:
             f"{self.conf.desc}",  # type: ignore
             shared_data,
             path=self.test_dir / "ground_truth.gv",
-            view=False)
+            view=False,
+        )
 
     def _compare_yaml(self):
         """Compares YAML for ground truth vs guess for engine and outcomes"""
@@ -158,9 +159,9 @@ class EngineTester:
         shared_data_gt = self.codec.load(self.shared_data_ground_truth_path)
         assert shared_data_guess == shared_data_gt
 
-#########
-# Paths #
-#########
+    #########
+    # Paths #
+    #########
 
     @property
     def engine_ground_truth_path(self) -> Path:

@@ -21,16 +21,18 @@ class SimulationEngine(BGPDAG):
     Then the run function can be called, and propagation occurs
     """
 
-    def __init__(self,
-                 *args,
-                 # Default AS class in the BGPDAG
-                 BaseASCls: Type[AS] = BGPSimpleAS,
-                 **kwargs):
+    def __init__(
+        self,
+        *args,
+        # Default AS class in the BGPDAG
+        BaseASCls: Type[AS] = BGPSimpleAS,
+        **kwargs,
+    ):
         """Saves read_to_run_rund attr and inits superclass"""
 
-        super(SimulationEngine, self).__init__(*args,
-                                               BaseASCls=BaseASCls,
-                                               **kwargs)  # type: ignore
+        super(SimulationEngine, self).__init__(
+            *args, BaseASCls=BaseASCls, **kwargs
+        )  # type: ignore
         # This indicates whether or not the simulator has been set up for a run
         # We use a number instead of a bool so that we can indicate for
         # each round whether it is ready to run or not
@@ -46,23 +48,20 @@ class SimulationEngine(BGPDAG):
         else:
             return NotImplemented
 
-    def run(self,
-            propagation_round: int = 0,
-            scenario: Optional["Scenario"] = None):
+    def run(self, propagation_round: int = 0, scenario: Optional["Scenario"] = None):
         """Propogates announcements and ensures proper setup"""
 
         # Ensure that the simulator is ready to run this round
         if self.ready_to_run_round != propagation_round:
-            raise Exception(
-                f"Engine not set up to run for {propagation_round} round")
+            raise Exception(f"Engine not set up to run for {propagation_round} round")
         # Propogate anns
         self._propagate(propagation_round, scenario)
         # Increment the ready to run round
         self.ready_to_run_round += 1
 
-    def _propagate(self,
-                   propagation_round: Optional[int],
-                   scenario: Optional["Scenario"]):
+    def _propagate(
+        self, propagation_round: Optional[int], scenario: Optional["Scenario"]
+    ):
         """Propogates announcements
 
         to stick with Gao Rexford, we propagate to
@@ -75,9 +74,9 @@ class SimulationEngine(BGPDAG):
         self._propagate_to_peers(propagation_round, scenario)
         self._propagate_to_customers(propagation_round, scenario)
 
-    def _propagate_to_providers(self,
-                                propagation_round: Optional[int],
-                                scenario: Optional["Scenario"]):
+    def _propagate_to_providers(
+        self, propagation_round: Optional[int], scenario: Optional["Scenario"]
+    ):
         """Propogate to providers"""
 
         # Propogation ranks go from stubs to input_clique in ascending order
@@ -90,14 +89,15 @@ class SimulationEngine(BGPDAG):
                     as_obj.process_incoming_anns(
                         from_rel=Relationships.CUSTOMERS,
                         propagation_round=propagation_round,
-                        scenario=scenario)
+                        scenario=scenario,
+                    )
             # Send to the higher ranks
             for as_obj in rank:
                 as_obj.propagate_to_providers()
 
-    def _propagate_to_peers(self,
-                            propagation_round: Optional[int],
-                            scenario: Optional["Scenario"]):
+    def _propagate_to_peers(
+        self, propagation_round: Optional[int], scenario: Optional["Scenario"]
+    ):
         """Propagate to peers"""
 
         # The reason you must separate this for loop here
@@ -108,13 +108,15 @@ class SimulationEngine(BGPDAG):
         for as_obj in self:
             as_obj.propagate_to_peers()
         for as_obj in self:
-            as_obj.process_incoming_anns(from_rel=Relationships.PEERS,
-                                         propagation_round=propagation_round,
-                                         scenario=scenario)
+            as_obj.process_incoming_anns(
+                from_rel=Relationships.PEERS,
+                propagation_round=propagation_round,
+                scenario=scenario,
+            )
 
-    def _propagate_to_customers(self,
-                                propagation_round: Optional[int],
-                                scenario: Optional["Scenario"]):
+    def _propagate_to_customers(
+        self, propagation_round: Optional[int], scenario: Optional["Scenario"]
+    ):
         """Propagate to customers"""
 
         # Propogation ranks go from stubs to input_clique in ascending order
@@ -127,6 +129,7 @@ class SimulationEngine(BGPDAG):
                     as_obj.process_incoming_anns(
                         from_rel=Relationships.PROVIDERS,
                         propagation_round=propagation_round,
-                        scenario=scenario)
+                        scenario=scenario,
+                    )
             for as_obj in rank:
                 as_obj.propagate_to_customers()

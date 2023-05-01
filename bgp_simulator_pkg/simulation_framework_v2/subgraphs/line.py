@@ -9,12 +9,11 @@ from ...enums import SpecialPercentAdoptions
 class Line:
     """Formats raw data for matplotlib graph"""
 
-    def __init__(self,
-                 scenario_label: str,
-                 percent_adopt_dict: Dict[Union[float,
-                                                SpecialPercentAdoptions],
-                                          List[float]]
-                 ) -> None:
+    def __init__(
+        self,
+        scenario_label: str,
+        percent_adopt_dict: Dict[Union[float, SpecialPercentAdoptions], List[float]],
+    ) -> None:
         """Stores info aobut a line in a graph"""
 
         # {percent_adopt: [percentages]}
@@ -24,8 +23,9 @@ class Line:
             key = k.value if isinstance(k, SpecialPercentAdoptions) else k
             self.percent_adopt_dict[key] = v
 
-        self.percent_adopt_dict = {k: v for k, v in
-                                   sorted(self.percent_adopt_dict.items())}
+        self.percent_adopt_dict = {
+            k: v for k, v in sorted(self.percent_adopt_dict.items())
+        }
 
         # Remove the term Simple from the graphs
         self.label: str = scenario_label.replace("Simple", "")
@@ -34,7 +34,7 @@ class Line:
         self.yerrs: List[float] = self._get_yerrs()
 
     def _get_xs(self) -> List[float]:
-        """"Gets X axis makers"""
+        """ "Gets X axis makers"""
 
         # Convert decimals to whole numbers
         return [x * 100 for x in self.percent_adopt_dict]

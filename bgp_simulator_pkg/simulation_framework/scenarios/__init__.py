@@ -9,11 +9,13 @@ from .hijack_scenarios import NonRoutedSuperprefixPrefixHijack
 from .valid_prefix import ValidPrefix
 
 
-__all__ = ["Scenario",
-           "PrefixHijack",
-           "SubprefixHijack",
-           "NonRoutedPrefixHijack",
-           "SuperprefixPrefixHijack",
-           "NonRoutedSuperprefixHijack",
-           "NonRoutedSuperprefixPrefixHijack",
-           "ValidPrefix"]
+__all__ = [
+    "Scenario",
+    "PrefixHijack",
+    "SubprefixHijack",
+    "NonRoutedPrefixHijack",
+    "SuperprefixPrefixHijack",
+    "NonRoutedSuperprefixHijack",
+    "NonRoutedSuperprefixPrefixHijack",
+    "ValidPrefix",
+]

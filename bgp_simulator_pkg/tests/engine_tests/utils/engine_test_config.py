@@ -18,7 +18,6 @@ def unique_names_msg(names) -> str:
 
 
 class EngineTestConfig:
-
     subclasses: List[Type["EngineTestConfig"]] = list()
     SubgraphCls: Type[Subgraph] = Subgraph
 
@@ -31,12 +30,14 @@ class EngineTestConfig:
         """
 
         super().__init_subclass__(*args, **kwargs)
-        for attr in ("name",
-                     "desc",
-                     "scenario",
-                     "graph",
-                     "non_default_as_cls_dict",
-                     "propagation_rounds"):
+        for attr in (
+            "name",
+            "desc",
+            "scenario",
+            "graph",
+            "non_default_as_cls_dict",
+            "propagation_rounds",
+        ):
             assert getattr(cls, attr, None) is not None, attr
 
         cls.subclasses.append(cls)

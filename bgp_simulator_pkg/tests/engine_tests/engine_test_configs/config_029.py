@@ -32,10 +32,9 @@ class Config029(EngineTestConfig):
 
     name = "029"
     desc = "Test of path length preference"
-    scenario = Custom29MultiValidPrefix(victim_asns={3, 5},
-                                        num_victims=2,
-                                        AdoptASCls=None,
-                                        BaseASCls=BGPSimpleAS)
+    scenario = Custom29MultiValidPrefix(
+        victim_asns={3, 5}, num_victims=2, AdoptASCls=None, BaseASCls=BGPSimpleAS
+    )
     graph = Graph040()
     non_default_as_cls_dict: Dict[int, Type[AS]] = dict()
     propagation_rounds = 1

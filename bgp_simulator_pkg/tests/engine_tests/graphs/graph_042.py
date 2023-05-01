@@ -33,7 +33,6 @@ class Graph042(GraphInfo):
                     CPLink(provider_asn=23, customer_asn=22),
                     CPLink(provider_asn=22, customer_asn=21),
                     CPLink(provider_asn=21, customer_asn=ASNs.VICTIM.value),
-
                 ]
             ),
         )

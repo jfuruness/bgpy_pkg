@@ -30,7 +30,6 @@ from ....ann_containers import RecvQueue
 
 
 class BGPSimpleAS(AS):
-
     name: str = "BGP Simple"
     as_class_names: List[str] = []
     as_classes: List[Type[AS]] = []
@@ -44,19 +43,23 @@ class BGPSimpleAS(AS):
         super().__init_subclass__(*args, **kwargs)
         assert hasattr(cls, "name"), "Policy must have a name"
         cls.as_class_names.append(cls.name)
-        msg: str = (f"Duplicate name {cls.name} with {cls.__name__}."
-                    "Please make a class attr "
-                    "name for the policy something else")
+        msg: str = (
+            f"Duplicate name {cls.name} with {cls.__name__}."
+            "Please make a class attr "
+            "name for the policy something else"
+        )
         assert len(set(cls.as_class_names)) == len(cls.as_class_names), msg
         cls.as_classes.append(cls)
         if BGPSimpleAS not in cls.as_classes:
             cls.as_classes.append(BGPSimpleAS)
 
-    def __init__(self,
-                 *args,
-                 _local_rib: Optional[LocalRIB] = None,
-                 _recv_q: Optional[RecvQueue] = None,
-                 **kwargs):
+    def __init__(
+        self,
+        *args,
+        _local_rib: Optional[LocalRIB] = None,
+        _recv_q: Optional[RecvQueue] = None,
+        **kwargs,
+    ):
         """Add local rib and data structures here
 
         This way they can be easily cleared later without having to redo
@@ -109,20 +112,19 @@ class BGPSimpleAS(AS):
     _new_as_path_shorter = _new_as_path_shorter
     _new_wins_ties = _new_wins_ties
 
-##############
-# Yaml funcs #
-##############
+    ##############
+    # Yaml funcs #
+    ##############
 
     def __to_yaml_dict__(self):
-        """ This optional method is called when you call yaml.dump()"""
+        """This optional method is called when you call yaml.dump()"""
 
         as_dict = super(BGPSimpleAS, self).__to_yaml_dict__()
-        as_dict.update({"_local_rib": self._local_rib,
-                        "_recv_q": self._recv_q})
+        as_dict.update({"_local_rib": self._local_rib, "_recv_q": self._recv_q})
         return as_dict
 
     @classmethod
     def __from_yaml_dict__(cls, dct, yaml_tag):
-        """ This optional method is called when you call yaml.load()"""
+        """This optional method is called when you call yaml.load()"""
 
         return cls(**dct)
