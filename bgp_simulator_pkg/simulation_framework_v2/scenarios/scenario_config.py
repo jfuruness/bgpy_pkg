@@ -67,13 +67,35 @@ class ScenarioConfig:
     # Yaml Funcs #
     ##############
 
+    @property
+    def _yamlable_hardcoded_asn_cls_dict(self) -> Dict[int, str]:
+        """Converts non default as cls dict to a yamlable dict of asn: name"""
+
+        return {asn: AS.subclass_to_name_dict[ASCls]
+                for asn, ASCls in self.hardcoded_asn_cls_dict.items()}
+
+    @staticmethod
+    def _get_hardcoded_asn_cls_dict_from_yaml(self, yaml_dict) -> Dict[int, Type[AS]]:
+        """Converts yamlified non_default_as_cls_dict back to normal asn: class"""
+
+        return {asn: AS.name_to_subclass_dict[name] for asn, name in yaml_dict.items()}
+
     def __to_yaml_dict__(self) -> Dict[Any, Any]:
         """This optional method is called when you call yaml.dump()"""
 
-        return asdict(self)
+        yaml_dict = dict()
+        for k, v in asdict(self).items():
+            if k == "hardcoded_asn_cls_dict":
+                yaml_dict[k] = self._yamlable_hardcoded_asn_cls_dict
+            else:
+                yaml_dict[k] = v
+        return yaml_dict
 
     @classmethod
     def __from_yaml_dict__(cls, dct, yaml_tag):
         """This optional method is called when you call yaml.load()"""
 
+        dct["hardcoded_asn_cls_dict"] = cls._get_hardcoded_asn_cls_dict_from_yaml(
+            dct["hardcoded_asn_cls_dict"]
+        )
         return cls(**dct)

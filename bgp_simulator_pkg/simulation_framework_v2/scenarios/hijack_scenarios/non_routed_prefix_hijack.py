@@ -1,7 +1,7 @@
 from __future__ import annotations
 from typing import Tuple, TYPE_CHECKING
 
-from ..scenario import Scenario
+from ..scenario_trial import ScenarioTrial
 from ....enums import Prefixes
 from ....enums import Relationships
 from ....enums import Timestamps
@@ -11,7 +11,7 @@ if TYPE_CHECKING:
     from ....simulation_engine import Announcement
 
 
-class NonRoutedPrefixHijack(Scenario):
+class NonRoutedPrefixHijack(ScenarioTrial):
     """Non routed prefix hijack (ROA of AS 0)"""
 
     __slots__ = ()

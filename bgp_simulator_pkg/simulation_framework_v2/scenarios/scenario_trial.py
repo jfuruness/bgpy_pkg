@@ -5,16 +5,14 @@ from ipaddress import ip_network
 from ipaddress import IPv4Network
 from ipaddress import IPv6Network
 from typing import Any, Dict, List, Optional, Set, Tuple, Type, Union
-from warnings import warn
 
 from caida_collector_pkg import AS
 
+from .scenario_config import ScenarioConfig
 from ...enums import Outcomes
 from ...enums import Relationships
 from ...enums import SpecialPercentAdoptions
 from ...simulation_engine import Announcement
-from ...simulation_engine import BGPSimpleAS
-from ...simulation_engine import RealROVSimpleAS
 from ...simulation_engine import SimulationEngine
 
 pseudo_base_cls_dict: Dict[Type[AS], Type[AS]] = dict()
@@ -29,10 +27,10 @@ class ScenarioTrial(ABC):
     def __init__(
         self,
         *,
-        scenario_config: ScenarioConfig
-        engine: SimulationEngine,
+        scenario_config: ScenarioConfig,
         percent_adoption: Union[float, SpecialPercentAdoptions],
-        prev_scenario: Optional[ScenarioTrial] = None,
+        engine: Optional[SimulationEngine] = None,
+        prev_scenario: Optional["ScenarioTrial"] = None,
         # Only necessary if coming from YAML
         yaml_attacker_asns: Optional[Set[int]] = None,
         yaml_victim_asns: Optional[Set[int]] = None,
@@ -41,7 +39,7 @@ class ScenarioTrial(ABC):
     ):
         """inits attrs
 
-        non_base_as_cls_dict is a dict of asn: ASCls
+        non_base_asn_cls_dict is a dict of asn: ASCls
         where you do __not__ include any of the BaseASCls,
         since that is the default
         """
@@ -84,8 +82,8 @@ class ScenarioTrial(ABC):
     def _get_attacker_asns(
         self,
         yaml_attacker_asns: Set[int],
-        engine: SimulationEngine,
-        prev_scenario: Optional["Scenario"]
+        engine: Optional[SimulationEngine],
+        prev_scenario: Optional["ScenarioTrial"]
     ) -> Set[int]:
         """Returns attacker ASN at random"""
 
@@ -97,6 +95,7 @@ class ScenarioTrial(ABC):
             attacker_asns = prev_scenario.attacker_asns
         # This is being initialized for the first time
         else:
+            assert engine
             possible_attacker_asns = self._get_possible_attacker_asns(
                 engine,
                 self.percent_adoption,
@@ -112,7 +111,7 @@ class ScenarioTrial(ABC):
 
         # Validate attacker asns
         err = "Number of attackers is different from attacker length"
-        assert len(attacker_asns) == num_attackers, err
+        assert len(attacker_asns) == self.scenario_config.num_attackers, err
 
         return attacker_asns
 
@@ -120,7 +119,7 @@ class ScenarioTrial(ABC):
         self,
         engine: SimulationEngine,
         percent_adoption: Union[float, SpecialPercentAdoptions],
-        prev_scenario: Optional["Scenario"]
+        prev_scenario: Optional["ScenarioTrial"]
     ) -> Set[int]:
         """Returns possible attacker ASNs, defaulted from config"""
 
@@ -137,8 +136,8 @@ class ScenarioTrial(ABC):
     def _get_victim_asns(
         self,
         yaml_victim_asns: Set[int],
-        engine: SimulationEngine,
-        prev_scenario: Optional["Scenario"]
+        engine: Optional[SimulationEngine],
+        prev_scenario: Optional["ScenarioTrial"]
     ) -> Set[int]:
         """Returns victim ASN at random"""
 
@@ -150,6 +149,7 @@ class ScenarioTrial(ABC):
             victim_asns = prev_scenario.victim_asns
         # This is being initialized for the first time
         else:
+            assert engine
             possible_victim_asns = self._get_possible_victim_asns(
                 engine,
                 self.percent_adoption,
@@ -164,7 +164,7 @@ class ScenarioTrial(ABC):
             )
 
         err = "Number of victims is different from victim length"
-        assert len(victim_asns) == num_victims, err
+        assert len(victim_asns) == self.scenario_config.num_victims, err
 
         return victim_asns
 
@@ -172,7 +172,7 @@ class ScenarioTrial(ABC):
         self,
         engine: SimulationEngine,
         percent_adoption: Union[float, SpecialPercentAdoptions],
-        prev_scenario: Optional["Scenario"]
+        prev_scenario: Optional["ScenarioTrial"]
     ) -> Set[int]:
         """Returns possible victim ASNs, defaulted from config"""
 
@@ -191,12 +191,12 @@ class ScenarioTrial(ABC):
     def _get_non_default_asn_cls_dict(
         self,
         yaml_non_default_asn_cls_dict: Dict[int, Type[AS]],
-        engine: SimulationEngine,
-        prev_scenario: Optional["Scenario"]
+        engine: Optional[SimulationEngine],
+        prev_scenario: Optional["ScenarioTrial"]
     ) -> Dict[int, Type[AS]]:
         """Returns as class dict
 
-        non_default_as_cls_dict is a dict of asn: AdoptASCls
+        non_default_asn_cls_dict is a dict of asn: AdoptASCls
         where you do __not__ include any of the BaseASCls,
         since that is the default
 
@@ -205,33 +205,34 @@ class ScenarioTrial(ABC):
         """
 
         if yaml_non_default_asn_cls_dict:
-            non_default_as_cls_dict = yaml_non_default_asn_cls_dict
+            non_default_asn_cls_dict = yaml_non_default_asn_cls_dict
         # By default, use the last engine input to maintain static
         # adoption across the graph
         elif prev_scenario:
-            non_default_as_cls_dict = dict()
-            for asn, OldASCls in prev_scenario.non_default_as_cls_dict.items():
+            non_default_asn_cls_dict = dict()
+            for asn, OldASCls in prev_scenario.non_default_asn_cls_dict.items():
                 # If the ASN was of the adopting class of the last scenario,
                 # Update the adopting AS class for the new scenario
                 if OldASCls == prev_scenario.AdoptASCls:
-                    non_default_as_cls_dict[asn] = self.AdoptASCls
+                    non_default_asn_cls_dict[asn] = self.AdoptASCls
                 # Otherwise keep the AS class as it was
                 # This is useful for things like ROV, etc...
                 else:
-                    non_default_as_cls_dict[asn] = OldASCls
+                    non_default_asn_cls_dict[asn] = OldASCls
         # Randomly get adopting ases if it hasn't been set yet
         else:
-            non_default_as_cls_dict = self._get_randomized_non_default_asn_cls_dict(
+            assert engine, "either yaml, prev_scenario, or engine must be set"
+            non_default_asn_cls_dict = self._get_randomized_non_default_asn_cls_dict(
                 engine
             )
 
         # Validate that this is only non_default ASes
         # This matters, because later this entire dict may be used for the next
         # scenario
-        for asn, ASCls in non_default_as_cls_dict.items():
+        for asn, ASCls in non_default_asn_cls_dict.items():
             assert ASCls != self.BaseASCls, "No defaults! See comment above"
 
-        return non_default_as_cls_dict
+        return non_default_asn_cls_dict
 
     def _get_randomized_non_default_asn_cls_dict(
         self,
@@ -300,7 +301,6 @@ class ScenarioTrial(ABC):
         hardcoded_asns = set(self.scenario_config.hardcoded_asn_cls_dict)
         return self._default_adopters | self._default_non_adopters | hardcoded_asns
 
-
     ##############################
     # Determine AS outcome funcs #
     ##############################
@@ -354,7 +354,7 @@ class ScenarioTrial(ABC):
     def setup_engine(
         self,
         engine: SimulationEngine,
-        prev_scenario: Optional["Scenario"] = None
+        prev_scenario: Optional["ScenarioTrial"] = None
     ) -> None:
         """Sets up engine input"""
 
@@ -365,7 +365,7 @@ class ScenarioTrial(ABC):
     def _set_engine_as_classes(
         self,
         engine: SimulationEngine,
-        prev_scenario: Optional["Scenario"]
+        prev_scenario: Optional["ScenarioTrial"]
     ) -> None:
         """Resets Engine ASes and changes their AS class
 
@@ -379,15 +379,15 @@ class ScenarioTrial(ABC):
         BaseASCls = self.BaseASCls
         for as_obj in engine:
             # Set the AS class to be the proper type of AS
-            as_obj.__class__ = self.non_default_as_cls_dict.get(as_obj.asn, BaseASCls)
+            as_obj.__class__ = self.non_default_asn_cls_dict.get(as_obj.asn, BaseASCls)
             # Clears all RIBs, etc
             # Reset base is False to avoid overrides base AS info (peers, etc)
             as_obj.__init__(reset_base=False)
 
     def _seed_engine_announcements(
         self,
-        engine: SimulationEngine
-        prev_scenario: Optional["Scenario"]
+        engine: SimulationEngine,
+        prev_scenario: Optional["ScenarioTrial"]
     ) -> None:
         """Seeds announcement at the proper AS
 
@@ -415,7 +415,6 @@ class ScenarioTrial(ABC):
         """Returns announcements"""
 
         raise NotImplementedError
-
 
     def pre_aggregation_hook(self, *args, **kwargs):
         """ Useful hook for changes/checks
@@ -460,39 +459,47 @@ class ScenarioTrial(ABC):
         # Get rid of ip_network
         return {str(k): v for k, v in prefix_subprefix_dict.items()}
 
-
     ##############
     # Yaml Funcs #
     ##############
 
-raise NotImplementedError
+    @property
+    def _yamlable_non_default_asn_cls_dict(self) -> Dict[int, str]:
+        """Converts non default as cls dict to a yamlable dict of asn: name"""
+
+        return {asn: AS.subclass_to_name_dict[ASCls]
+                for asn, ASCls in self.non_default_asn_cls_dict.items()}
+
+    @staticmethod
+    def _get_non_default_asn_cls_dict_from_yaml(yaml_dict) -> Dict[int, Type[AS]]:
+        """Converts yamlified non_default_asn_cls_dict back to normal asn: class"""
+
+        return {asn: AS.name_to_subclass_dict[name] for asn, name in yaml_dict.items()}
+
     def __to_yaml_dict__(self) -> Dict[Any, Any]:
         """This optional method is called when you call yaml.dump()"""
 
-        return {"announcements": self.announcements,
-                "attacker_asns": self.attacker_asns,
-                "victim_asns": self.victim_asns,
-                "num_victims": self.num_victims,
-                "num_attackers": self.num_attackers,
-                "min_rov_confidence": self.min_rov_confidence,
-                "adoption_subcategory_attrs": self.adoption_subcategory_attrs,
-                "non_default_as_cls_dict":
-                    {asn: AS.subclass_to_name_dict[ASCls]
-                     for asn, ASCls in self.non_default_as_cls_dict.items()}}
+        return {"scenario_config": self.scenario_config,
+                "percent_adoption": self.percent_adoption,
+                "yaml_attacker_asns": self.attacker_asns,
+                "yaml_victim_asns": self.victim_asns,
+                "yaml_non_default_asn_cls_dict":
+                    self._yamlable_non_default_asn_cls_dict,
+                "yaml_announcements": self.announcements}
 
     @classmethod
     def __from_yaml_dict__(cls, dct, yaml_tag):
         """This optional method is called when you call yaml.load()"""
 
-        as_classes = {asn: AS.name_to_subclass_dict[name]
-                      for asn, name in dct["non_default_as_cls_dict"].items()}
+        non_default_asn_cls_dict = cls._get_non_default_asn_cls_dict_from_yaml(
+            dct["yaml_non_default_asn_cls_dict"]
+        )
 
-        return cls(announcements=dct["announcements"],
-                   attacker_asns=dct["attacker_asns"],
-                   victim_asns=dct["victim_asns"],
-                   num_victims=dct["num_victims"],
-                   num_attackers=dct["num_attackers"],
-                   min_rov_confidence=dct["min_rov_confidence"],
-                   non_default_as_cls_dict=as_classes,
-                   adoption_subcategory_attrs=dct["adoption_subcategory_attrs"]
-                   )
+        return cls(
+            scenario_config=dct["scenario_config"],
+            percent_adoption=dct["percent_adoption"],
+            yaml_attacker_asns=dct["yaml_attacker_asns"],
+            yaml_victim_asns=dct["yaml_victim_asns"],
+            yaml_non_default_asn_cls_dict=non_default_asn_cls_dict,
+            yaml_announcements=dct["announcements"]
+        )

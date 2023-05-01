@@ -1,6 +1,6 @@
 from typing import Tuple, TYPE_CHECKING
 
-from ..scenario import Scenario
+from ..scenario_trial import ScenarioTrial
 from ....enums import Prefixes
 from ....enums import Relationships
 from ....enums import Timestamps
@@ -10,7 +10,7 @@ if TYPE_CHECKING:
     from ....simulation_engine import Announcement
 
 
-class SuperprefixPrefixHijack(Scenario):
+class SuperprefixPrefixHijack(ScenarioTrial):
     """Superprefix prefix attack
 
     This is an attack where the attacker
