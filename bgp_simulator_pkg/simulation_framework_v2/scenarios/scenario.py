@@ -68,9 +68,14 @@ class ScenarioTrial(ABC):
             prev_scenario
         )
 
-        raise NotImplementedError
-        if announcements:
-            self.announcements: Tuple["Announcement", ...] = announcements
+        self.announcements: Tuple["Announcement", ...] = self._get_announcements(
+            engine=engine,
+            prev_scenario=prev_scenario
+        )
+
+        self.ordered_prefix_subprefix_dict: Dict[str, List[str]] = (
+            self._get_ordered_prefix_subprefix_dict()
+        )
 
     #################
     # Get attackers #
@@ -200,7 +205,7 @@ class ScenarioTrial(ABC):
         """
 
         if yaml_non_default_asn_cls_dict:
-            return yaml_non_default_asn_cls_dict
+            non_default_as_cls_dict = yaml_non_default_asn_cls_dict
         # By default, use the last engine input to maintain static
         # adoption across the graph
         elif prev_scenario:
@@ -214,10 +219,19 @@ class ScenarioTrial(ABC):
                 # This is useful for things like ROV, etc...
                 else:
                     non_default_as_cls_dict[asn] = OldASCls
-            return non_default_as_cls_dict
         # Randomly get adopting ases if it hasn't been set yet
         else:
-            return self._get_randomized_non_default_asn_cls_dict(engine)
+            non_default_as_cls_dict = self._get_randomized_non_default_asn_cls_dict(
+                engine
+            )
+
+        # Validate that this is only non_default ASes
+        # This matters, because later this entire dict may be used for the next
+        # scenario
+        for asn, ASCls in non_default_as_cls_dict.items():
+            assert ASCls != self.BaseASCls, "No defaults! See comment above"
+
+        return non_default_as_cls_dict
 
     def _get_randomized_non_default_asn_cls_dict(
         self,
@@ -286,34 +300,10 @@ class ScenarioTrial(ABC):
         hardcoded_asns = set(self.scenario_config.hardcoded_asn_cls_dict)
         return self._default_adopters | self._default_non_adopters | hardcoded_asns
 
-    ##############################################
-    # Set Attacker/Victim and Announcement Funcs #
-    ##############################################
 
-
-raise NotImplementedError
-
-
-    def _get_announcements(
-        self,
-        engine: SimulationEngine,
-        prev_scenario: Optional["Scenario"]
-    ):
-        """Returns announcements"""
-
-        # Must call this here due to atk/vic pair being different
-        self.announcements = self._get_announcements(
-            engine=engine,
-            percent_adoption=percent_adoption,
-            prev_scenario=prev_scenario)
-        self._get_ordered_prefix_subprefix_dict()
-
-    @abstractmethod
-    def _get_announcements(self, *args, **kwargs):
-        """Returns announcements"""
-
-        raise NotImplementedError
-
+    ##############################
+    # Determine AS outcome funcs #
+    ##############################
 
     def determine_as_outcome(self,
                              as_obj: AS,
@@ -361,26 +351,22 @@ raise NotImplementedError
     # Engine Manipulation Funcs #
     #############################
 
-    def setup_engine(self,
-                     engine: SimulationEngine,
-                     percent_adoption: Union[float, SpecialPercentAdoptions],
-                     prev_scenario: Optional["Scenario"] = None):
+    def setup_engine(
+        self,
+        engine: SimulationEngine,
+        prev_scenario: Optional["Scenario"] = None
+    ) -> None:
         """Sets up engine input"""
 
-        self._set_attackers_victims_anns(engine,
-                                         percent_adoption,
-                                         prev_scenario)
-        self._set_engine_as_classes(engine, percent_adoption, prev_scenario)
-        self._seed_engine_announcements(engine,
-                                        percent_adoption,
-                                        prev_scenario)
+        self._set_engine_as_classes(engine, prev_scenario)
+        self._seed_engine_announcements(engine, prev_scenario)
         engine.ready_to_run_round = 0
 
     def _set_engine_as_classes(
-            self,
-            engine: SimulationEngine,
-            percent_adoption: Union[float, SpecialPercentAdoptions],
-            prev_scenario: Optional["Scenario"]):
+        self,
+        engine: SimulationEngine,
+        prev_scenario: Optional["Scenario"]
+    ) -> None:
         """Resets Engine ASes and changes their AS class
 
         We do this here because we already seed from the scenario
@@ -389,33 +375,20 @@ raise NotImplementedError
         and have each do half and half
         """
 
-        raise NotImplementedError("MUST keep track of both adopting asn cls dict"
-            "AND hardcoded asn cls dict!!!")
-        # non_default_as_cls_dict is a dict of asn: AdoptASCls
-        # where you do __not__ include any of the BaseASCls,
-        # since that is the default
-        # Only regenerate this if it's not already set (like with YAML)
-        self.non_default_as_cls_dict = self._get_non_default_as_cls_dict(
-            engine,
-            percent_adoption,
-            prev_scenario=prev_scenario)
-        # Validate that this is only non_default ASes
-        # This matters, because later this entire dict may be used for the next
-        # scenario
-        for asn, ASCls in self.non_default_as_cls_dict.items():
-            assert ASCls != self.BaseASCls, "No defaults! See comment above"
-
         # Done here to save as much time  as possible
         BaseASCls = self.BaseASCls
         for as_obj in engine:
             # Set the AS class to be the proper type of AS
-            as_obj.__class__ = self.non_default_as_cls_dict.get(as_obj.asn,
-                                                                BaseASCls)
+            as_obj.__class__ = self.non_default_as_cls_dict.get(as_obj.asn, BaseASCls)
             # Clears all RIBs, etc
             # Reset base is False to avoid overrides base AS info (peers, etc)
             as_obj.__init__(reset_base=False)
 
-    def _seed_engine_announcements(self, engine: SimulationEngine, *args):
+    def _seed_engine_announcements(
+        self,
+        engine: SimulationEngine
+        prev_scenario: Optional["Scenario"]
+    ) -> None:
         """Seeds announcement at the proper AS
 
         Since this is the simulator engine, we should
@@ -432,6 +405,17 @@ raise NotImplementedError
             assert obj_to_seed._local_rib.get_ann(ann.prefix) is None, err
             # Seed by placing in the local rib
             obj_to_seed._local_rib.add_ann(ann)
+
+    ##################
+    # Subclass Funcs #
+    ##################
+
+    @abstractmethod
+    def _get_announcements(self, *args, **kwargs):
+        """Returns announcements"""
+
+        raise NotImplementedError
+
 
     def pre_aggregation_hook(self, *args, **kwargs):
         """ Useful hook for changes/checks
@@ -474,13 +458,14 @@ raise NotImplementedError
                         and prefix != outer_prefix):
                     subprefix_list.append(str(prefix))
         # Get rid of ip_network
-        self.ordered_prefix_subprefix_dict: Dict[str, List[str]] = {
-            str(k): v for k, v in prefix_subprefix_dict.items()}
+        return {str(k): v for k, v in prefix_subprefix_dict.items()}
+
 
     ##############
     # Yaml Funcs #
     ##############
 
+raise NotImplementedError
     def __to_yaml_dict__(self) -> Dict[Any, Any]:
         """This optional method is called when you call yaml.dump()"""
 
