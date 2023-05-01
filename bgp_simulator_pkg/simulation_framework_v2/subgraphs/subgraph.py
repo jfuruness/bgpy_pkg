@@ -11,7 +11,7 @@ from ...enums import ASTypes
 from ...enums import Outcomes
 from ...enums import SpecialPercentAdoptions
 from ...simulation_engine import SimulationEngine
-from ..scenarios import Scenario
+from ..scenarios import ScenarioTrial
 from ...simulation_engine.announcement import Announcement as Ann
 
 from caida_collector_pkg import AS
@@ -171,7 +171,7 @@ class Subgraph(ABC):
                                   engine: SimulationEngine,
                                   percent_adopt: float,
                                   trial: int,
-                                  scenario: Scenario,
+                                  scenario: ScenarioTrial,
                                   propagation_round: int):
         """Aggregates data after a single engine run
 
@@ -208,10 +208,10 @@ class Subgraph(ABC):
         key = self._get_subgraph_key(scenario)
         if isinstance(percent_adopt, SpecialPercentAdoptions):
             percent_adopt = percent_adopt.value
-        self.data[propagation_round][scenario.graph_label][percent_adopt
+        self.data[propagation_round][scenario.json_label][percent_adopt
             ].append(shared_data.get(key, 0))  # noqa
 
-    def _get_subgraph_key(self, scenario: Scenario, *args: Any) -> str:
+    def _get_subgraph_key(self, scenario: ScenarioTrial, *args: Any) -> str:
         """Returns the key to be used in shared_data on the subgraph"""
 
         raise NotImplementedError
@@ -223,7 +223,7 @@ class Subgraph(ABC):
     def _add_traceback_to_shared_data(self,
                                       shared: Dict[Any, Any],
                                       engine: SimulationEngine,
-                                      scenario: Scenario,
+                                      scenario: ScenarioTrial,
                                       outcomes: Dict[AS, Outcomes]):
         """Adds traceback info to shared data"""
 
@@ -373,7 +373,7 @@ class Subgraph(ABC):
 
     def _get_engine_outcomes(self,
                              engine: SimulationEngine,
-                             scenario: Scenario
+                             scenario: ScenarioTrial
                              ) -> Dict[AS, Outcomes]:
         """Gets the outcomes of all ASes"""
 
@@ -391,7 +391,7 @@ class Subgraph(ABC):
                         as_obj: AS,
                         outcomes: Dict[AS, Outcomes],
                         engine: SimulationEngine,
-                        scenario: Scenario
+                        scenario: ScenarioTrial
                         ) -> Outcomes:
         """Recursively returns the as outcome"""
 

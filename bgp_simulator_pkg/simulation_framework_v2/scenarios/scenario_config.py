@@ -1,5 +1,5 @@
 from dataclasses import asdict, dataclass
-from typing import Any, Dict, Optional, Tuple, Type
+from typing import Any, Dict, Tuple, Type
 
 from caida_collector_pkg import AS
 
@@ -10,6 +10,10 @@ from ...simulation_engine import BGPSimpleAS
 pseudo_base_cls_dict: Dict[Type[AS], Type[AS]] = dict()
 
 
+class MISSINGAS(AS):
+    pass
+
+
 @dataclass(frozen=True)
 class ScenarioConfig:
     """Contains information required to set up a scenario/attack
@@ -17,14 +21,15 @@ class ScenarioConfig:
     Is reused for multiple trials (thus, frozen)
     """
 
-    ScenarioTrialCls: ScenarioTrial
+    ScenarioTrialCls: Type[ScenarioTrial]
     # This is the base type of announcement for this class
     # You can specify a different base ann
-    AnnCls: Type[Announcement]
+    AnnCls: Type[Announcement] = Announcement
     BaseASCls: Type[AS] = BGPSimpleAS
-    AdoptASCls: Optional[Type[AS]] = None
-    num_attackers: int = 1,
-    num_victims: int = 1,
+    # Fixed in post init, but can't show mypy for some reason
+    AdoptASCls: Type[AS] = MISSINGAS
+    num_attackers: int = 1
+    num_victims: int = 1
     # Adoption is equal across these atributes of the engine
     adoption_subcategory_attrs: Tuple[str, ...] = (
         "stub_or_mh_asns",
@@ -50,7 +55,7 @@ class ScenarioConfig:
         Then scenario 3 will still work as expected
         """
 
-        if self.AdoptASCls is None:
+        if self.AdoptASCls == MISSINGAS:
             # mypy says this is unreachable, which is wrong
             global pseudo_base_cls_dict  # type: ignore
             AdoptASCls = pseudo_base_cls_dict.get(self.BaseASCls)
@@ -59,8 +64,6 @@ class ScenarioConfig:
                 PseudoBaseCls = type(name, (self.BaseASCls,), {"name": name})
                 pseudo_base_cls_dict[self.BaseASCls] = PseudoBaseCls
                 AdoptASCls = PseudoBaseCls
-            object.__setattr__(self, "AdoptASCls", AdoptASCls)
-        else:
             object.__setattr__(self, "AdoptASCls", AdoptASCls)
 
     ##############
@@ -75,7 +78,7 @@ class ScenarioConfig:
                 for asn, ASCls in self.hardcoded_asn_cls_dict.items()}
 
     @staticmethod
-    def _get_hardcoded_asn_cls_dict_from_yaml(self, yaml_dict) -> Dict[int, Type[AS]]:
+    def _get_hardcoded_asn_cls_dict_from_yaml(yaml_dict) -> Dict[int, Type[AS]]:
         """Converts yamlified non_default_as_cls_dict back to normal asn: class"""
 
         return {asn: AS.name_to_subclass_dict[name] for asn, name in yaml_dict.items()}

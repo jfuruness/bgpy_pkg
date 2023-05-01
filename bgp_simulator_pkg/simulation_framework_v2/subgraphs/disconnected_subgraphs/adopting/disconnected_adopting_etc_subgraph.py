@@ -1,7 +1,7 @@
 from ..disconnected_subgraph import DisconnectedSubgraph
 from .....enums import ASTypes
 from .....enums import Outcomes
-from ....scenarios import Scenario
+from ....scenarios import ScenarioTrial
 
 
 class DisconnectedAdoptingEtcSubgraph(DisconnectedSubgraph):
@@ -10,9 +10,9 @@ class DisconnectedAdoptingEtcSubgraph(DisconnectedSubgraph):
     name: str = "disconnected_adopting_etc"
 
     def _get_subgraph_key(self,
-                          scenario: Scenario,
+                          scenario: ScenarioTrial,
                           *args) -> str:  # type: ignore
         """Returns the key to be used in shared_data on the subgraph"""
 
         return self._get_as_type_pol_outcome_perc_k(
-            ASTypes.ETC, scenario.AdoptASCls, Outcomes.DISCONNECTED)
+            ASTypes.ETC, scenario.scenario_config.AdoptASCls, Outcomes.DISCONNECTED)

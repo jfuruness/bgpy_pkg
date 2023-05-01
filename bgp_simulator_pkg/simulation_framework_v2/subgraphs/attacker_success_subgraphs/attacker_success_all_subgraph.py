@@ -1,6 +1,6 @@
 from .attacker_success_subgraph import AttackerSuccessSubgraph
 from ....enums import Outcomes
-from ...scenarios import Scenario
+from ...scenarios import ScenarioTrial
 
 
 class AttackerSuccessAllSubgraph(AttackerSuccessSubgraph):
@@ -9,7 +9,7 @@ class AttackerSuccessAllSubgraph(AttackerSuccessSubgraph):
     name: str = "attacker_success_all"
 
     def _get_subgraph_key(self,
-                          scenario: Scenario,
+                          scenario: ScenarioTrial,
                           *args) -> str:
         """Returns the key to be used in shared_data on the subgraph"""
 

@@ -70,9 +70,6 @@ class Simulation:
         self.parse_cpus: int = parse_cpus
         self.scenario_configs: Tuple[ScenarioConfig, ...] = scenario_configs
         self.python_hash_seed = python_hash_seed
-        # All scenarios must have a uni que graph label
-        labels = [x.graph_label for x in self.scenarios]
-        assert len(labels) == len(set(labels)), "Scenario labels not unique"
 
         # Done here so that the caida files are cached
         # So that multiprocessing doesn't interfere with one another
@@ -226,7 +223,7 @@ class Simulation:
 
                 # Deep copy scenario to ensure it's fresh
                 # Since certain things like announcements change round to round
-                scenario_trial = self.scenario_config.ScenarioTrialCls(
+                scenario_trial = scenario_config.ScenarioTrialCls(
                     scenario_config=scenario_config,
                     percent_adoption=percent_adopt,
                     engine=engine,
@@ -235,12 +232,12 @@ class Simulation:
 
                 if isinstance(percent_adopt, float):
                     print(f"{percent_adopt * 100}% "
-                          f"{scenario_trial.graph_label}, "
+                          f"{scenario_trial.__class__.__name__}, "
                           f"#{trial}",
                           end="                             " + "\r")
                 elif isinstance(percent_adopt, SpecialPercentAdoptions):
                     print(f"{percent_adopt.value * 100}% "
-                          f"{scenario_trial.graph_label}, "
+                          f"{scenario_trial.__class__.__name__}, "
                           f"#{trial}",
                           end="                             " + "\r")
                 else:

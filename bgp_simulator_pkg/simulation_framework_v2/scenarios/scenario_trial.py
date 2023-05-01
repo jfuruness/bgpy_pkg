@@ -81,7 +81,7 @@ class ScenarioTrial(ABC):
 
     def _get_attacker_asns(
         self,
-        yaml_attacker_asns: Set[int],
+        yaml_attacker_asns: Optional[Set[int]],
         engine: Optional[SimulationEngine],
         prev_scenario: Optional["ScenarioTrial"]
     ) -> Set[int]:
@@ -135,7 +135,7 @@ class ScenarioTrial(ABC):
 
     def _get_victim_asns(
         self,
-        yaml_victim_asns: Set[int],
+        yaml_victim_asns: Optional[Set[int]],
         engine: Optional[SimulationEngine],
         prev_scenario: Optional["ScenarioTrial"]
     ) -> Set[int]:
@@ -190,7 +190,7 @@ class ScenarioTrial(ABC):
 
     def _get_non_default_asn_cls_dict(
         self,
-        yaml_non_default_asn_cls_dict: Dict[int, Type[AS]],
+        yaml_non_default_asn_cls_dict: Optional[Dict[int, Type[AS]]],
         engine: Optional[SimulationEngine],
         prev_scenario: Optional["ScenarioTrial"]
     ) -> Dict[int, Type[AS]]:
@@ -213,8 +213,8 @@ class ScenarioTrial(ABC):
             for asn, OldASCls in prev_scenario.non_default_asn_cls_dict.items():
                 # If the ASN was of the adopting class of the last scenario,
                 # Update the adopting AS class for the new scenario
-                if OldASCls == prev_scenario.AdoptASCls:
-                    non_default_asn_cls_dict[asn] = self.AdoptASCls
+                if OldASCls == prev_scenario.scenario_config.AdoptASCls:
+                    non_default_asn_cls_dict[asn] = self.scenario_config.AdoptASCls
                 # Otherwise keep the AS class as it was
                 # This is useful for things like ROV, etc...
                 else:
@@ -230,7 +230,7 @@ class ScenarioTrial(ABC):
         # This matters, because later this entire dict may be used for the next
         # scenario
         for asn, ASCls in non_default_asn_cls_dict.items():
-            assert ASCls != self.BaseASCls, "No defaults! See comment above"
+            assert ASCls != self.scenario_config.BaseASCls, "No defaults!"
 
         return non_default_asn_cls_dict
 
@@ -247,7 +247,7 @@ class ScenarioTrial(ABC):
         # Get the asn_cls_dict without randomized adoption
         asn_cls_dict = self.scenario_config.hardcoded_asn_cls_dict.copy()
         for asn in self._default_adopters:
-            asn_cls_dict[asn] = self.AdoptASCls
+            asn_cls_dict[asn] = self.scenario_config.AdoptASCls
 
         # Randomly adopt in all three subcategories
         for subcategory in self.scenario_config.adoption_subcategory_attrs:
@@ -275,7 +275,7 @@ class ScenarioTrial(ABC):
             possible_adopters = tuple(possible_adopters)
             try:
                 for asn in random.sample(possible_adopters, k):
-                    asn_cls_dict[asn] = self.AdoptASCls
+                    asn_cls_dict[asn] = self.scenario_config.AdoptASCls
             except ValueError:
                 raise ValueError(
                     f"{k} can't be sampled from {len(possible_adopters)}")
@@ -376,7 +376,7 @@ class ScenarioTrial(ABC):
         """
 
         # Done here to save as much time  as possible
-        BaseASCls = self.BaseASCls
+        BaseASCls = self.scenario_config.BaseASCls
         for as_obj in engine:
             # Set the AS class to be the proper type of AS
             as_obj.__class__ = self.non_default_asn_cls_dict.get(as_obj.asn, BaseASCls)
@@ -458,6 +458,15 @@ class ScenarioTrial(ABC):
                     subprefix_list.append(str(prefix))
         # Get rid of ip_network
         return {str(k): v for k, v in prefix_subprefix_dict.items()}
+
+    @property
+    def json_label(self) -> str:
+        """Label that will be used on the graph"""
+
+        return (
+            f"{self.scenario_config.BaseASCls.name} "
+            "({self.scenario_config.AdoptASCls.name} adopting)"
+        )
 
     ##############
     # Yaml Funcs #

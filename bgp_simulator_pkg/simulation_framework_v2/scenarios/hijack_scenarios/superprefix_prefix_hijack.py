@@ -33,7 +33,7 @@ class SuperprefixPrefixHijack(ScenarioTrial):
 
         anns = list()
         for victim_asn in self.victim_asns:
-            anns.append(self.AnnCls(prefix=Prefixes.PREFIX.value,
+            anns.append(self.scenario_config.AnnCls(prefix=Prefixes.PREFIX.value,
                                     as_path=(victim_asn,),
                                     timestamp=Timestamps.VICTIM.value,
                                     seed_asn=victim_asn,
@@ -48,14 +48,14 @@ class SuperprefixPrefixHijack(ScenarioTrial):
         roa_origin: int = next(iter(self.victim_asns))
 
         for attacker_asn in self.attacker_asns:
-            anns.append(self.AnnCls(prefix=Prefixes.PREFIX.value,
+            anns.append(self.scenario_config.AnnCls(prefix=Prefixes.PREFIX.value,
                                     as_path=(attacker_asn,),
                                     timestamp=Timestamps.ATTACKER.value,
                                     seed_asn=attacker_asn,
                                     roa_valid_length=True,
                                     roa_origin=roa_origin,
                                     recv_relationship=Relationships.ORIGIN))
-            anns.append(self.AnnCls(prefix=Prefixes.SUPERPREFIX.value,
+            anns.append(self.scenario_config.AnnCls(prefix=Prefixes.SUPERPREFIX.value,
                                     as_path=(attacker_asn,),
                                     timestamp=Timestamps.ATTACKER.value,
                                     seed_asn=attacker_asn,

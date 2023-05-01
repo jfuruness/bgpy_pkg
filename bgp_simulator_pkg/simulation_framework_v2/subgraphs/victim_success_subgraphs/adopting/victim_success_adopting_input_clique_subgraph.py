@@ -1,7 +1,7 @@
 from ..victim_success_subgraph import VictimSuccessSubgraph
 from .....enums import ASTypes
 from .....enums import Outcomes
-from ....scenarios import Scenario
+from ....scenarios import ScenarioTrial
 
 
 class VictimSuccessAdoptingInputCliqueSubgraph(VictimSuccessSubgraph):
@@ -10,10 +10,10 @@ class VictimSuccessAdoptingInputCliqueSubgraph(VictimSuccessSubgraph):
     name: str = "victim_success_adopting_input_clique"
 
     def _get_subgraph_key(self,
-                          scenario: Scenario,
+                          scenario: ScenarioTrial,
                           *args) -> str:  # type: ignore
         """Returns the key to be used in shared_data on the subgraph"""
 
         return self._get_as_type_pol_outcome_perc_k(ASTypes.INPUT_CLIQUE,
-                                                    scenario.AdoptASCls,
+                                                    scenario.scenario_config.AdoptASCls,
                                                     Outcomes.VICTIM_SUCCESS)
