@@ -6,7 +6,7 @@ from .simulation_framework_v2 import Simulation
 def main():
     """Runs the defaults"""
 
-    Simulation(output_path=Path("~/Desktop/graphs").expanduser()).run()
+    Simulation(output_path=Path("~/Desktop/graphs").expanduser(), parse_cpus=1).run()
 
 
 if __name__ == "__main__":

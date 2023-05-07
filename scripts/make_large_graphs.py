@@ -100,12 +100,17 @@ for node in secondary_customers:
             fifth_customers.append(peer)
 
 
-all_asns = set([x.asn for x in [base] +
-                base_customers +
-                secondary_customers +
-                tertiary_customers +
-                forth_customers +
-                fifth_customers])
+all_asns = set(
+    [
+        x.asn
+        for x in [base]
+        + base_customers
+        + secondary_customers
+        + tertiary_customers
+        + forth_customers
+        + fifth_customers
+    ]
+)
 print(len(all_asns))
 
 bgp_dag_nodes = list(bgp_dag)
@@ -113,8 +118,9 @@ for node in bgp_dag_nodes:
     if node.asn in all_asns:
         for customer in node.customers:
             if customer.asn in all_asns:
-                print(f"CPLink(provider_asn={node.asn}, "
-                      f"customer_asn={customer.asn}),")
+                print(
+                    f"CPLink(provider_asn={node.asn}, " f"customer_asn={customer.asn}),"
+                )
 
 for node in bgp_dag_nodes:
     if node.asn in all_asns:

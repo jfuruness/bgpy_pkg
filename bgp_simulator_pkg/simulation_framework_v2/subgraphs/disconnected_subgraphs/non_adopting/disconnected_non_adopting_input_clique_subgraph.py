@@ -12,5 +12,7 @@ class DisconnectedNonAdoptingInputCliqueSubgraph(DisconnectedSubgraph):
         """Returns the key to be used in shared_data on the subgraph"""
 
         return self._get_as_type_pol_outcome_perc_k(
-            ASTypes.INPUT_CLIQUE, scenario.BaseASCls, Outcomes.DISCONNECTED
+            ASTypes.INPUT_CLIQUE,
+            scenario.scenario_config.BaseASCls,
+            Outcomes.DISCONNECTED,
         )

@@ -12,5 +12,5 @@ class VictimSuccessNonAdoptingEtcSubgraph(VictimSuccessSubgraph):
         """Returns the key to be used in shared_data on the subgraph"""
 
         return self._get_as_type_pol_outcome_perc_k(
-            ASTypes.ETC, scenario.BaseASCls, Outcomes.VICTIM_SUCCESS
+            ASTypes.ETC, scenario.scenario_config.BaseASCls, Outcomes.VICTIM_SUCCESS
         )

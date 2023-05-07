@@ -12,8 +12,10 @@ else:
     percent_adoptions = (50,)
     num_trials = 1
 
-sim = Simulation(num_trials=num_trials,
-                 scenarios=[SubprefixHijack(AdoptASCls=ROVSimpleAS)],
-                 propagation_rounds=1,
-                 parse_cpus=1)
+sim = Simulation(
+    num_trials=num_trials,
+    scenarios=[SubprefixHijack(AdoptASCls=ROVSimpleAS)],
+    propagation_rounds=1,
+    parse_cpus=1,
+)
 sim.run()

@@ -40,9 +40,9 @@ class ScenarioConfig:
         "input_clique_asns",
     )
     # Attackers can be chosen from this attribute of the engine
-    attacker_subcategory_attr: str = "stubs_or_mh_asns"
+    attacker_subcategory_attr: str = "stub_or_mh_asns"
     # Victims can be chosen from this attribute of the engine
-    victim_subcategory_attr: str = "stubs_or_mh_asns"
+    victim_subcategory_attr: str = "stub_or_mh_asns"
     # ASes that are hardcoded to specific values
     hardcoded_asn_cls_dict: Dict[int, Type[AS]] = field(default_factory=dict)
 

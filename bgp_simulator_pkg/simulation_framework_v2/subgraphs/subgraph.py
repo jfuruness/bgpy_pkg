@@ -174,7 +174,7 @@ class Subgraph(ABC):
         engine: SimulationEngine,
         percent_adopt: float,
         trial: int,
-        scenario: ScenarioTrial,
+        scenario_trial: ScenarioTrial,
         propagation_round: int,
     ):
         """Aggregates data after a single engine run
@@ -202,6 +202,7 @@ class Subgraph(ABC):
         {scenario_label: {percent_adopt: [percents]}}
         """
 
+        scenario = scenario_trial
         if not shared_data.get("set"):
             # {as_obj: outcome}
             outcomes = self._get_engine_outcomes(engine, scenario)

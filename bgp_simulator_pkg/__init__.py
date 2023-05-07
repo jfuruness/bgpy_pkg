@@ -8,6 +8,7 @@ from .simulation_engine import SendQueue
 from .simulation_engine import ROVAS
 from .simulation_engine import ROVSimpleAS
 from .simulation_engine import RealROVSimpleAS
+from .simulation_engine import RealPeerROVSimpleAS
 from .simulation_engine import SimulationEngine
 from .simulation_engine import Announcement
 
@@ -116,6 +117,7 @@ __all__ = [
     "RecvQueue",
     "ROVAS",
     "ROVSimpleAS",
+    "RealPeerROVSimpleAS",
     "RealROVSimpleAS",
     "SimulationEngine",
     "YamlAbleEnum",
