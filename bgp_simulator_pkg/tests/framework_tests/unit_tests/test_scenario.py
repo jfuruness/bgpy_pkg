@@ -24,52 +24,54 @@ class TestScenario:
     def test_init_valid(self, num_attackers, num_victims):
         """Tests the initialization works when valid"""
 
-        SubprefixHijack(
+        scenario_config = ScenarioConfig(
+            ScenarioTrialCls=SubprefixHijack,
             AnnCls=Announcement,
             BaseASCls=BGPSimpleAS,
             AdoptASCls=None,
             num_attackers=num_attackers,
             num_victims=num_victims,
-            attacker_asns=set(range(num_attackers)),
-            victim_asns=set(range(num_victims)),
+        )
+        SubprefixHijack(
+            scenario_config=scenario_config,
+            yaml_attacker_asns=set(range(num_attackers)),
+            yaml_victim_asns=set(range(num_victims)),
         )
 
     def test_init_invalid_attackers(self):
         """Tests the len(attacker_asns) == num_attackers"""
 
         with pytest.raises(AssertionError):
-            SubprefixHijack(num_attackers=1, attacker_asns={1, 2})
+            scenario_config = ScenarioConfig(
+                ScenarioTrialCls=SubprefixHijack,
+                num_attackers=1,
+            )
+            SubprefixHijack(
+                scenario_config=scenario_config,
+                yaml_attacker_asns={1, 2}),
+            )
 
     def test_init_invalid_victims(self):
         """Tests the len(victim_asns) == num_victims"""
 
         with pytest.raises(AssertionError):
-            SubprefixHijack(num_victims=1, victim_asns={1, 2})
-
-    @pytest.mark.parametrize(
-        "attacker, victim", ((True, True), (True, False), (False, False), (False, True))
-    )
-    def test_init_attacker_victim_asns_preset(self, attacker, victim):
-        """Tests the attacker_victim_asns_preset is correct"""
-
-        kwargs = dict()
-        if attacker:
-            kwargs["attacker_asns"] = {1}
-        elif victim:
-            kwargs["victim_asns"] = {2}
-
-        # Mypy can't handle kwargs
-        hijack = SubprefixHijack(**kwargs)  # type: ignore
-        if attacker or victim:
-            assert hijack.attacker_victim_asns_preset
-        else:
-            assert hijack.attacker_victim_asns_preset is False
+            scenario_config = ScenarioConfig(
+                ScenarioTrialCls=SubprefixHijack,
+                num_victims=1,
+            )
+            SubprefixHijack(
+                scenario_config=scenario_config,
+                yaml_victim_asns={1, 2}),
+            )
 
     def test_init_adopt_as_cls(self):
         """Tests the AdoptASCls is never None, and is the pseudo BaseAS"""
 
-        hijack = SubprefixHijack()
-        assert issubclass(hijack.AdoptASCls, hijack.BaseASCls)
+        conf = ScenarioConfig(
+            ScenarioTrialCls=SubprefixHijack,
+        )
+
+        assert issubclass(conf.AdoptASCls, conf.BaseASCls)
 
     ##############################################
     # Set Attacker/Victim and Announcement Funcs #

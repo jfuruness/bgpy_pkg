@@ -1,6 +1,6 @@
 from typing import Tuple, TYPE_CHECKING
 
-from .scenario import Scenario
+from .scenario_trial import ScenarioTrial
 from ...enums import Prefixes
 from ...enums import Relationships
 from ...enums import Timestamps
@@ -10,7 +10,7 @@ if TYPE_CHECKING:
     from ...simulation_engine import Announcement
 
 
-class ValidPrefix(Scenario):
+class ValidPrefix(ScenarioTrial):
     """A valid prefix engine input, mainly for testing"""
 
     __slots__ = ()
@@ -25,7 +25,7 @@ class ValidPrefix(Scenario):
         anns = list()
         for victim_asn in self.victim_asns:
             anns.append(
-                self.AnnCls(
+                self.scenario_config.AnnCls(
                     prefix=Prefixes.PREFIX.value,
                     as_path=(victim_asn,),
                     timestamp=Timestamps.VICTIM.value,

@@ -1,6 +1,6 @@
 from typing import Tuple, TYPE_CHECKING
 
-from ..scenario import Scenario
+from ..scenario_trial import ScenarioTrial
 from ....enums import Prefixes
 from ....enums import Relationships
 from ....enums import Timestamps
@@ -10,7 +10,7 @@ if TYPE_CHECKING:
     from ....simulation_engine import Announcement
 
 
-class NonRoutedSuperprefixHijack(Scenario):
+class NonRoutedSuperprefixHijack(ScenarioTrial):
     """Non routed superprefix hijack
 
     Attacker has a superprefix with an unknown ROA,
@@ -29,7 +29,7 @@ class NonRoutedSuperprefixHijack(Scenario):
         anns = list()
         for attacker_asn in self.attacker_asns:
             anns.append(
-                self.AnnCls(
+                self.scenario_config.AnnCls(
                     prefix=Prefixes.SUPERPREFIX.value,
                     as_path=(attacker_asn,),
                     timestamp=Timestamps.ATTACKER.value,

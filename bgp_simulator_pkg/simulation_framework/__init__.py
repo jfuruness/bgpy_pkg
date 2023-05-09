@@ -1,4 +1,5 @@
-from .scenarios import Scenario
+from .scenarios import ScenarioConfig
+from .scenarios import ScenarioTrial
 from .scenarios import PrefixHijack
 from .scenarios import SubprefixHijack
 from .scenarios import NonRoutedPrefixHijack
@@ -41,7 +42,8 @@ from .subgraphs import Subgraph
 
 
 __all__ = [
-    "Scenario",
+    "ScenarioConfig",
+    "ScenarioTrial",
     "PrefixHijack",
     "SubprefixHijack",
     "NonRoutedPrefixHijack",

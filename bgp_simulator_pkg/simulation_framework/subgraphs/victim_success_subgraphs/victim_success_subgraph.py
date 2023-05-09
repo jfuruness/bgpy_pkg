@@ -5,14 +5,14 @@ from ..subgraph import Subgraph
 
 
 if TYPE_CHECKING:
-    from ...scenarios import Scenario
+    from ...scenarios import ScenarioTrial
 
 
 class VictimSuccessSubgraph(Subgraph):
     """A subgraph for data display"""
 
     @abstractmethod
-    def _get_subgraph_key(self, scenario: "Scenario", *args) -> str:
+    def _get_subgraph_key(self, scenario: "ScenarioTrial", *args) -> str:
         """Returns the key to be used in shared_data on the subgraph"""
 
         raise NotImplementedError

@@ -1,6 +1,6 @@
 from typing import Tuple, TYPE_CHECKING
 
-from ..scenario import Scenario
+from ..scenario_trial import ScenarioTrial
 from ....enums import Prefixes
 from ....enums import Relationships
 from ....enums import Timestamps
@@ -10,7 +10,7 @@ if TYPE_CHECKING:
     from ....simulation_engine import Announcement
 
 
-class SuperprefixPrefixHijack(Scenario):
+class SuperprefixPrefixHijack(ScenarioTrial):
     """Superprefix prefix attack
 
     This is an attack where the attacker
@@ -31,7 +31,7 @@ class SuperprefixPrefixHijack(Scenario):
         anns = list()
         for victim_asn in self.victim_asns:
             anns.append(
-                self.AnnCls(
+                self.scenario_config.AnnCls(
                     prefix=Prefixes.PREFIX.value,
                     as_path=(victim_asn,),
                     timestamp=Timestamps.VICTIM.value,
@@ -49,7 +49,7 @@ class SuperprefixPrefixHijack(Scenario):
 
         for attacker_asn in self.attacker_asns:
             anns.append(
-                self.AnnCls(
+                self.scenario_config.AnnCls(
                     prefix=Prefixes.PREFIX.value,
                     as_path=(attacker_asn,),
                     timestamp=Timestamps.ATTACKER.value,
@@ -60,7 +60,7 @@ class SuperprefixPrefixHijack(Scenario):
                 )
             )
             anns.append(
-                self.AnnCls(
+                self.scenario_config.AnnCls(
                     prefix=Prefixes.SUPERPREFIX.value,
                     as_path=(attacker_asn,),
                     timestamp=Timestamps.ATTACKER.value,

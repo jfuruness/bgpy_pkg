@@ -9,7 +9,7 @@ from ..enums import Relationships
 
 # https://stackoverflow.com/a/57005931/8903959
 if TYPE_CHECKING:
-    from ..simulation_framework import Scenario
+    from ..simulation_framework import ScenarioTrial
 
 
 class SimulationEngine(BGPDAG):
@@ -48,7 +48,7 @@ class SimulationEngine(BGPDAG):
         else:
             return NotImplemented
 
-    def run(self, propagation_round: int = 0, scenario: Optional["Scenario"] = None):
+    def run(self, propagation_round: int = 0, scenario: Optional["ScenarioTrial"] = None):
         """Propogates announcements and ensures proper setup"""
 
         # Ensure that the simulator is ready to run this round
@@ -60,7 +60,7 @@ class SimulationEngine(BGPDAG):
         self.ready_to_run_round += 1
 
     def _propagate(
-        self, propagation_round: Optional[int], scenario: Optional["Scenario"]
+        self, propagation_round: Optional[int], scenario: Optional["ScenarioTrial"]
     ):
         """Propogates announcements
 
@@ -75,7 +75,7 @@ class SimulationEngine(BGPDAG):
         self._propagate_to_customers(propagation_round, scenario)
 
     def _propagate_to_providers(
-        self, propagation_round: Optional[int], scenario: Optional["Scenario"]
+        self, propagation_round: Optional[int], scenario: Optional["ScenarioTrial"]
     ):
         """Propogate to providers"""
 
@@ -96,7 +96,7 @@ class SimulationEngine(BGPDAG):
                 as_obj.propagate_to_providers()
 
     def _propagate_to_peers(
-        self, propagation_round: Optional[int], scenario: Optional["Scenario"]
+        self, propagation_round: Optional[int], scenario: Optional["ScenarioTrial"]
     ):
         """Propagate to peers"""
 
@@ -115,7 +115,7 @@ class SimulationEngine(BGPDAG):
             )
 
     def _propagate_to_customers(
-        self, propagation_round: Optional[int], scenario: Optional["Scenario"]
+        self, propagation_round: Optional[int], scenario: Optional["ScenarioTrial"]
     ):
         """Propagate to customers"""
 

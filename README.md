@@ -122,3 +122,9 @@ BSD License (see license file)
 * [bgp\_simulator\_pkg](#bgp_simulator_pkg)
 
 See Jira
+
+## Design Decisions
+
+We can't output CSVs for each trial of the graph and then later aggregate, analyze the data, etc.
+This is because we would be outputting a ton of data into CSVs (30+ gigabytes for the RPV++ configuration for example) and this would be way too slow for Python.
+Instead, we average the trials as we go, keeping it in RAM, and only writing the aggregate data onto disk at the end.
