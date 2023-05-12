@@ -6,6 +6,7 @@ from .simulation_engine import RIBsOut
 from .simulation_engine import RecvQueue
 from .simulation_engine import SendQueue
 from .simulation_engine import ROVAS
+from .simulation_engine import PeerROVSimpleAS
 from .simulation_engine import ROVSimpleAS
 from .simulation_engine import RealROVSimpleAS
 from .simulation_engine import SimulationEngine
@@ -113,6 +114,7 @@ __all__ = ["BGPAS",
            "SendQueue",
            "RecvQueue",
            "ROVAS",
+           "PeerROVSimpleAS",
            "ROVSimpleAS",
            "RealROVSimpleAS",
            "SimulationEngine",

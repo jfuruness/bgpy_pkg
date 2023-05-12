@@ -1,4 +1,11 @@
 from .bgp import BGPSimpleAS, BGPAS
-from .rov import ROVSimpleAS, ROVAS, RealROVSimpleAS
+from .rov import PeerROVSimpleAS, ROVSimpleAS, ROVAS, RealROVSimpleAS
 
-__all__ = ["BGPSimpleAS", "BGPAS", "ROVSimpleAS", "ROVAS", "RealROVSimpleAS"]
+__all__ = [
+    "BGPSimpleAS",
+    "BGPAS",
+    "PeerROVSimpleAS",
+    "ROVSimpleAS",
+    "ROVAS",
+    "RealROVSimpleAS"
+]

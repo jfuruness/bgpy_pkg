@@ -229,10 +229,10 @@ class Simulation:
                           f"{scenario.graph_label}, "
                           f"#{trial}",
                           end="                             " + "\r")
-                elif percent_adopt > 1:
-                    raise Exception("Percent adoptions must be decimals less than 1")
+                elif percent_adopt > 1:  # type: ignore
+                    raise Exception("Percent adoptions must be decimals <1")
                 else:
-                    raise NotImplementedError("Not proper value for percent adoptions")
+                    raise NotImplementedError("Invalid percent adoptions")
 
                 # Change AS Classes, seed announcements before propagation
                 scenario.setup_engine(engine, percent_adopt, prev_scenario)

@@ -8,6 +8,7 @@ from .ann_containers import RecvQueue
 
 from .as_classes import BGPSimpleAS
 from .as_classes import BGPAS
+from .as_classes import PeerROVSimpleAS
 from .as_classes import ROVSimpleAS
 from .as_classes import RealROVSimpleAS
 from .as_classes import ROVAS
@@ -22,6 +23,7 @@ __all__ = ["Announcement",
            "RecvQueue",
            "BGPSimpleAS",
            "BGPAS",
+           "PeerROVSimpleAS",
            "ROVSimpleAS",
            "RealROVSimpleAS",
            "ROVAS",

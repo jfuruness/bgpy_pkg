@@ -1,6 +1,5 @@
 from pathlib import Path
 
-from .enums import SpecialPercentAdoptions
 from .simulation_engine import ROVSimpleAS
 from .simulation_framework import Simulation, SubprefixHijack
 
@@ -10,18 +9,14 @@ def main():
 
     # Simulation for the paper
     sim = Simulation(
-        percent_adoptions = (
-            SpecialPercentAdoptions.ONLY_ONE,
-            .1,
+        percent_adoptions=(
             .2,
-            .4,
-            .8,
-            SpecialPercentAdoptions.ALL_BUT_ONE
+            .5,
         ),
         scenarios=(SubprefixHijack(AdoptASCls=ROVSimpleAS),),
-        output_path=Path("~/Desktop/graphs").expanduser(),
-        num_trials=100,
-        parse_cpus=12,
+        output_path=Path("~/Desktop/main_ex_graphs").expanduser(),
+        num_trials=2,
+        parse_cpus=1,
     )
     sim.run()
 
