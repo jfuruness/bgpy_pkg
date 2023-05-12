@@ -91,9 +91,12 @@ class Subgraph(ABC):
             # Sorry, they don't pay me enough
             # In fact, they don't pay me at all
             assert self.name, "looking at you mypy"
-            if "non_adopting" in self.name:
-                adopt_pol = line.label.replace("adopting", "non-adopting")
-                line.label = adopt_pol
+            # if "non_adopting" in self.name:
+            #     adopt_pol = line.label.replace("adopting", "non-adopting")
+            #     line.label = adopt_pol
+            if "adopting" in self.name and "non_adopting" not in self.name:
+                adopt_pol = line.label.replace("BGP  (", "").replace(")", "")
+                line.label = adopt_pol.strip()
 
             ax.errorbar(line.xs,
                         line.ys,

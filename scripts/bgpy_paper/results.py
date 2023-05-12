@@ -23,7 +23,7 @@ def main():
             SubprefixHijack(AdoptASCls=PeerROVSimpleAS),
         ),
         output_path=Path("~/Desktop/paper_graphs").expanduser(),
-        num_trials=10,
+        num_trials=1000,
         parse_cpus=12,
     )
     sim.run()
