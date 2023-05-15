@@ -1,4 +1,5 @@
 from pathlib import Path
+import time
 
 from bgp_simulator_pkg import SpecialPercentAdoptions
 from bgp_simulator_pkg import ROVSimpleAS
@@ -23,7 +24,9 @@ def main():
         num_trials=1000,
         parse_cpus=12,
     )
+    start = time.perf_counter()
     sim.run()
+    print(time.perf_counter() - start)
 
 
 if __name__ == "__main__":
