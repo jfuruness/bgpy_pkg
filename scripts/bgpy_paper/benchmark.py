@@ -1,3 +1,4 @@
+from multiprocessing import cpu_count
 from pathlib import Path
 import time
 
@@ -11,7 +12,7 @@ def main():
 
     # Simulation for the paper
     sim = Simulation(
-        percent_adoptions = (
+        percent_adoptions=(
             SpecialPercentAdoptions.ONLY_ONE,
             .1,
             .2,
@@ -22,7 +23,7 @@ def main():
         scenarios=(SubprefixHijack(AdoptASCls=ROVSimpleAS),),
         output_path=Path("~/Desktop/benchmark_graphs").expanduser(),
         num_trials=1000,
-        parse_cpus=12,
+        parse_cpus=cpu_count(),
     )
     start = time.perf_counter()
     sim.run()
