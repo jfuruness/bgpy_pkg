@@ -258,22 +258,22 @@ class Subgraph(ABC):
 
             # Getting control plane data #
             # Get the most specific announcement in the rib
-            most_specific_ann = self._get_most_specific_ann(
-                as_obj, scenario.ordered_prefix_subprefix_dict
-            )
+            # most_specific_ann = self._get_most_specific_ann(
+            #     as_obj, scenario.ordered_prefix_subprefix_dict
+            # )
 
-            ctrl_outcome = scenario.determine_as_outcome(as_obj, most_specific_ann)
-            as_type_pol_k_ctrl = as_type_pol_k + "_ctrl"
-            as_type_pol_outcome_k_ctrl = (
-                self._get_as_type_pol_outcome_k(as_type, as_obj.__class__, ctrl_outcome)
-                + "_ctrl"
-            )
-            as_type_pol_outcome_perc_k_ctrl = (
-                self._get_as_type_pol_outcome_perc_k(
-                    as_type, as_obj.__class__, ctrl_outcome
-                )
-                + "_ctrl"
-            )
+            # ctrl_outcome = scenario.determine_as_outcome(as_obj, most_specific_ann)
+            # as_type_pol_k_ctrl = as_type_pol_k + "_ctrl"
+            # as_type_pol_outcome_k_ctrl = (
+            #     self._get_as_type_pol_outcome_k(as_type, as_obj.__class__, ctrl_outcome)  # noqa
+            #     + "_ctrl"
+            # )
+            # as_type_pol_outcome_perc_k_ctrl = (
+            #     self._get_as_type_pol_outcome_perc_k(
+            #         as_type, as_obj.__class__, ctrl_outcome
+            #     )
+            #     + "_ctrl"
+            # )
 
             ###################################
 
@@ -281,8 +281,9 @@ class Subgraph(ABC):
             for k in [
                 as_type_pol_k,
                 as_type_pol_outcome_k,
-                as_type_pol_k_ctrl,
-                as_type_pol_outcome_k_ctrl,
+                # NOTE: CONTROL
+                # as_type_pol_k_ctrl,
+                # as_type_pol_outcome_k_ctrl,
             ]:
                 shared[k] = shared.get(k, 0) + 1
 
@@ -322,32 +323,34 @@ class Subgraph(ABC):
             # Keep track of percentages for all ASes
             shared[f"all_{name}_perc"] = total * 100 / len(outcomes)
 
+            # NOTE: CONTROL
+            ##################################################
             # Getting control plane data #
             # Get the most specific announcement in the rib
-            most_specific_ann = self._get_most_specific_ann(
-                as_obj, scenario.ordered_prefix_subprefix_dict
-            )
+            # most_specific_ann = self._get_most_specific_ann(
+            #     as_obj, scenario.ordered_prefix_subprefix_dict
+            # )
 
-            ctrl_outcome = scenario.determine_as_outcome(as_obj, most_specific_ann)
-            as_type_pol_k_ctrl = as_type_pol_k + "_ctrl"
-            as_type_pol_outcome_k_ctrl = (
-                self._get_as_type_pol_outcome_k(as_type, as_obj.__class__, ctrl_outcome)
-                + "_ctrl"
-            )
-            as_type_pol_outcome_perc_k_ctrl = (
-                self._get_as_type_pol_outcome_perc_k(
-                    as_type, as_obj.__class__, ctrl_outcome
-                )
-                + "_ctrl"
-            )
+            # ctrl_outcome = scenario.determine_as_outcome(as_obj, most_specific_ann)
+            # as_type_pol_k_ctrl = as_type_pol_k + "_ctrl"
+            # as_type_pol_outcome_k_ctrl = (
+            #     self._get_as_type_pol_outcome_k(as_type, as_obj.__class__, ctrl_outcome)  # noqa
+            #     + "_ctrl"
+            # )
+            # as_type_pol_outcome_perc_k_ctrl = (
+            #     self._get_as_type_pol_outcome_perc_k(
+            #         as_type, as_obj.__class__, ctrl_outcome
+            #     )
+            #     + "_ctrl"
+            # )
 
             # Set the new percent
-            if shared.get(as_type_pol_outcome_k_ctrl) is not None:
-                shared[as_type_pol_outcome_perc_k_ctrl] = (
-                    shared[as_type_pol_outcome_k_ctrl]
-                    * 100
-                    / shared[as_type_pol_k_ctrl]
-                )
+            # if shared.get(as_type_pol_outcome_k_ctrl) is not None:
+            #     shared[as_type_pol_outcome_perc_k_ctrl] = (
+            #         shared[as_type_pol_outcome_k_ctrl]
+            #         * 100
+            #         / shared[as_type_pol_k_ctrl]
+            #     )
 
             ###################################
 

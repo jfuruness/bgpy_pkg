@@ -109,7 +109,7 @@ tox
 
 Thanks to Cameron Morris for helping with extending the BGP policy to include withdrawals, RIBsIn, RIBsOut
 
-Thanks to Cameron and Reynaldo for helping out with the refactor
+Thanks to Cameron and Reynaldo for helping out a ton with this simulator and it's corresponding testing. They have been major contributors and I appreciate it.
 
 Thanks to Dr. Herzberg and Dr. Wang for employing me and allowing this project to be open source
 
