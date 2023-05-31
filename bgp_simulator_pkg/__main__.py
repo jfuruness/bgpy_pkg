@@ -1,12 +1,24 @@
 from pathlib import Path
 
-from .simulation_framework_v2 import Simulation
+from .simulation_engine import ROVSimpleAS
+from .simulation_framework import Simulation, SubprefixHijack
 
 
 def main():
     """Runs the defaults"""
 
-    Simulation(output_path=Path("~/Desktop/graphs").expanduser(), parse_cpus=1).run()
+    # Simulation for the paper
+    sim = Simulation(
+        percent_adoptions=(
+            .2,
+            .5,
+        ),
+        scenarios=(SubprefixHijack(AdoptASCls=ROVSimpleAS),),
+        output_path=Path("~/Desktop/main_ex_graphs").expanduser(),
+        num_trials=2,
+        parse_cpus=1,
+    )
+    sim.run()
 
 
 if __name__ == "__main__":

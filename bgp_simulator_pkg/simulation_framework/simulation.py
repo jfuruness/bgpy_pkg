@@ -227,7 +227,7 @@ class Simulation:
                     prev_scenario=prev_scenario,
                 )
 
-                if isinstance(percent_adopt, float):
+                if isinstance(percent_adopt, float) and percent_adopt <= 1:
                     print(
                         f"{percent_adopt * 100}% "
                         f"{scenario_trial.__class__.__name__}, "
@@ -241,8 +241,10 @@ class Simulation:
                         f"#{trial}",
                         end="                             " + "\r",
                     )
+                elif percent_adopt > 1:
+                    raise Exception("Percent Adoptions must be decimals less than 1")
                 else:
-                    raise NotImplementedError
+                    raise NotImplementedError("Improper value for percent adoptions")
 
                 # Change AS Classes, seed announcements before propagation
                 scenario_trial.setup_engine(engine, prev_scenario)
