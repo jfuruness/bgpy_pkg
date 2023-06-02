@@ -27,37 +27,35 @@ class ScenarioTrial(ABC):
     def __init__(
         self,
         *,
-        scenario_config: ScenarioConfig,
-        percent_adoption: Union[float, SpecialPercentAdoptions],
+        scenario_config: ScenarioConfig = ScenarioConfig(),
+        percent_adoption: Union[float, SpecialPercentAdoptions] = 0,
         engine: Optional[SimulationEngine] = None,
         prev_scenario: Optional["ScenarioTrial"] = None,
-        # Only necessary if coming from YAML
-        yaml_attacker_asns: Optional[Set[int]] = None,
-        yaml_victim_asns: Optional[Set[int]] = None,
-        yaml_non_default_asn_cls_dict: Optional[Dict[int, Type[AS]]] = None,
-        yaml_announcements: Tuple[Announcement, ...] = (),
+        # Only necessary if coming from YAML or the test suite
+        default_attacker_asns: Optional[Set[int]] = None,
+        default_victim_asns: Optional[Set[int]] = None,
+        default_non_default_asn_cls_dict: Optional[Dict[int, Type[AS]]] = None,
+        default_announcements: Tuple[Announcement, ...] = (),
     ):
         """inits attrs
 
-        non_base_asn_cls_dict is a dict of asn: ASCls
-        where you do __not__ include any of the BaseASCls,
-        since that is the default
+        Any kwarg prefixed with default is only required for the test suite/YAML
         """
 
         self.scenario_config: ScenarioConfig = scenario_config
         self.percent_adoption: Union[float, SpecialPercentAdoptions] = percent_adoption
 
         self.attacker_asns: Set[int] = self._get_attacker_asns(
-            yaml_attacker_asns, engine, prev_scenario
+            default_attacker_asns, engine, prev_scenario
         )
 
         self.victim_asns: Set[int] = self._get_victim_asns(
-            yaml_victim_asns, engine, prev_scenario
+            default_victim_asns, engine, prev_scenario
         )
 
         AS_CLS_DCT = Dict[int, Type[AS]]
         self.non_default_asn_cls_dict: AS_CLS_DCT = self._get_non_default_asn_cls_dict(
-            yaml_non_default_asn_cls_dict, engine, prev_scenario
+            default_non_default_asn_cls_dict, engine, prev_scenario
         )
 
         self.announcements: Tuple["Announcement", ...] = self._get_announcements(
@@ -74,15 +72,15 @@ class ScenarioTrial(ABC):
 
     def _get_attacker_asns(
         self,
-        yaml_attacker_asns: Optional[Set[int]],
+        default_attacker_asns: Optional[Set[int]],
         engine: Optional[SimulationEngine],
         prev_scenario: Optional["ScenarioTrial"],
     ) -> Set[int]:
         """Returns attacker ASN at random"""
 
         # This is coming from YAML, do not recalculate
-        if yaml_attacker_asns:
-            attacker_asns = yaml_attacker_asns
+        if default_attacker_asns:
+            attacker_asns = default_attacker_asns
         # Reuse the attacker from the last scenario for comparability
         elif prev_scenario:
             attacker_asns = prev_scenario.attacker_asns
@@ -125,15 +123,15 @@ class ScenarioTrial(ABC):
 
     def _get_victim_asns(
         self,
-        yaml_victim_asns: Optional[Set[int]],
+        default_victim_asns: Optional[Set[int]],
         engine: Optional[SimulationEngine],
         prev_scenario: Optional["ScenarioTrial"],
     ) -> Set[int]:
         """Returns victim ASN at random"""
 
         # This is coming from YAML, do not recalculate
-        if yaml_victim_asns:
-            victim_asns = yaml_victim_asns
+        if default_victim_asns:
+            victim_asns = default_victim_asns
         # Reuse the victim from the last scenario for comparability
         elif prev_scenario:
             victim_asns = prev_scenario.victim_asns
@@ -177,7 +175,7 @@ class ScenarioTrial(ABC):
 
     def _get_non_default_asn_cls_dict(
         self,
-        yaml_non_default_asn_cls_dict: Optional[Dict[int, Type[AS]]],
+        default_non_default_asn_cls_dict: Optional[Dict[int, Type[AS]]],
         engine: Optional[SimulationEngine],
         prev_scenario: Optional["ScenarioTrial"],
     ) -> Dict[int, Type[AS]]:
@@ -191,8 +189,8 @@ class ScenarioTrial(ABC):
         adoption across trials
         """
 
-        if yaml_non_default_asn_cls_dict:
-            non_default_asn_cls_dict = yaml_non_default_asn_cls_dict
+        if default_non_default_asn_cls_dict:
+            non_default_asn_cls_dict = default_non_default_asn_cls_dict
         # By default, use the last engine input to maintain static
         # adoption across the graph
         elif prev_scenario:
@@ -490,8 +488,8 @@ class ScenarioTrial(ABC):
         return cls(
             scenario_config=dct["scenario_config"],
             percent_adoption=dct["percent_adoption"],
-            yaml_attacker_asns=dct["yaml_attacker_asns"],
-            yaml_victim_asns=dct["yaml_victim_asns"],
-            yaml_non_default_asn_cls_dict=non_default_asn_cls_dict,
-            yaml_announcements=dct["announcements"],
+            default_attacker_asns=dct["yaml_attacker_asns"],
+            default_victim_asns=dct["yaml_victim_asns"],
+            default_non_default_asn_cls_dict=non_default_asn_cls_dict,
+            default_announcements=dct["announcements"],
         )

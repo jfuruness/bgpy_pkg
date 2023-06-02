@@ -1,5 +1,5 @@
 from dataclasses import asdict, dataclass, field
-from typing import Any, Dict, Tuple, Type, TYPE_CHECKING
+from typing import Any, Dict, Optional, Tuple, Type, TYPE_CHECKING
 
 from caida_collector_pkg import AS
 
@@ -24,7 +24,8 @@ class ScenarioConfig:
     Is reused for multiple trials (thus, frozen)
     """
 
-    ScenarioTrialCls: Type["ScenarioTrial"]
+    # Optional since tests don't need it
+    ScenarioTrialCls: Optional[Type["ScenarioTrial"]] = None
     # This is the base type of announcement for this class
     # You can specify a different base ann
     AnnCls: Type[Announcement] = Announcement

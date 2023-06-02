@@ -6,6 +6,8 @@ from ....simulation_engine import BGPSimpleAS
 from ....simulation_engine import BGPAS
 from ....simulation_engine import ROVAS
 from ....simulation_engine import ROVSimpleAS
+from ....simulation_engine import RealROVSimpleAS
+from ....simulation_engine import RealPeerROVSimpleAS
 
 from ....simulation_framework import NonRoutedPrefixHijack
 from ....simulation_framework import NonRoutedSuperprefixHijack
@@ -14,10 +16,19 @@ from ....simulation_framework import PrefixHijack
 from ....simulation_framework import ValidPrefix
 from ....simulation_framework import SubprefixHijack
 from ....simulation_framework import SuperprefixPrefixHijack
+from ....simulation_framework import ScenarioConfig
 
 from ....simulation_framework import Simulation
 
-AS_CLASSES = (BGPSimpleAS, BGPAS, ROVAS, ROVSimpleAS)
+AS_CLASSES = (
+    BGPSimpleAS,
+    BGPAS,
+    ROVAS,
+    ROVSimpleAS,
+    RealROVSimpleAS,
+    RealPeerROVSimpleAS
+)
+
 SCENARIOS = (
     NonRoutedPrefixHijack,
     NonRoutedSuperprefixHijack,
@@ -53,8 +64,8 @@ def test_sim_inputs(
 
     sim = Simulation(
         percent_adoptions=(0.0, 0.5, 1.0),
-        scenarios=(
-            ScenarioCls(
+        scenario_configs=(
+            ScenarioConfig(
                 AdoptASCls=AdoptASCls, BaseASCls=BaseASCls, num_attackers=num_attackers
             ),
         ),

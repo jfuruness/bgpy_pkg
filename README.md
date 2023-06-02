@@ -107,9 +107,11 @@ tox
 ## Credits
 * [bgp\_simulator\_pkg](#bgp_simulator_pkg)
 
-Thanks to Cameron Morris for helping with extending the BGP policy to include withdrawals, RIBsIn, RIBsOut
+Thanks to Cameron Morris for helping with extending the BGP policy to include withdrawals, RIBsIn, RIBsOut.
 
 Thanks to Cameron and Reynaldo for helping out a ton with this simulator and it's corresponding testing. They have been major contributors and I appreciate it.
+
+Also thanks to Reynaldo for the awesome name, love it.
 
 Thanks to Dr. Herzberg and Dr. Wang for employing me and allowing this project to be open source
 

@@ -220,6 +220,7 @@ class Simulation:
             for scenario_config in self.scenario_configs:
                 # Deep copy scenario to ensure it's fresh
                 # Since certain things like announcements change round to round
+                assert scenario_config.ScenarioTrialCls, "ScenarioTrialCls is None"
                 scenario_trial = scenario_config.ScenarioTrialCls(
                     scenario_config=scenario_config,
                     percent_adoption=percent_adopt,
