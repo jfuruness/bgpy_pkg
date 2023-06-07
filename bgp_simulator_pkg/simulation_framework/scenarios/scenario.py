@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from dataclasses import replace
 import math
 import random
 from ipaddress import ip_network
@@ -27,7 +28,7 @@ class Scenario(ABC):
     def __init__(
         self,
         *,
-        scenario_config: ScenarioConfig = ScenarioConfig(),
+        scenario_config: ScenarioConfig,
         percent_adoption: Union[float, SpecialPercentAdoptions] = 0,
         engine: Optional[SimulationEngine] = None,
         prev_scenario: Optional["Scenario"] = None,
@@ -53,9 +54,14 @@ class Scenario(ABC):
             scenario_config.override_non_default_asn_cls_dict, engine, prev_scenario
         )
 
-        self.announcements: Tuple["Announcement", ...] = self._get_announcements(
-            engine=engine, prev_scenario=prev_scenario
-        )
+        if self.scenario_config.override_announcements:
+            self.announcements: Tuple["Announcement", ...] = (
+                self.scenario_config.override_announcements
+            )
+        else:
+            self.announcements = self._get_announcements(
+                engine=engine, prev_scenario=prev_scenario
+            )
 
         self.ordered_prefix_subprefix_dict: Dict[
             str, List[str]
@@ -463,13 +469,17 @@ class Scenario(ABC):
     def __to_yaml_dict__(self) -> Dict[Any, Any]:
         """This optional method is called when you call yaml.dump()"""
 
+        config_to_save = replace(
+            self.scenario_config,
+            override_attacker_asns=self.attacker_asns,
+            override_victim_asns=self.victim_asns,
+            override_non_default_as_cls_dict=self._yamlable_non_default_asn_cls_dict,
+            override_announcements=self.announcements
+        )
+
         return {
-            "scenario_config": self.scenario_config,
+            "scenario_config": config_to_save,
             "percent_adoption": self.percent_adoption,
-            "yaml_attacker_asns": self.attacker_asns,
-            "yaml_victim_asns": self.victim_asns,
-            "yaml_non_default_asn_cls_dict": self._yamlable_non_default_asn_cls_dict,
-            "yaml_announcements": self.announcements,
         }
 
     @classmethod
@@ -477,14 +487,14 @@ class Scenario(ABC):
         """This optional method is called when you call yaml.load()"""
 
         non_default_asn_cls_dict = cls._get_non_default_asn_cls_dict_from_yaml(
-            dct["yaml_non_default_asn_cls_dict"]
+            dct["scenario_config"].override_non_default_asn_cls_dict
+        )
+        config_to_use = replace(
+            dct["scenario_config"],
+            override_non_default_asn_cls_dict=non_default_asn_cls_dict
         )
 
         return cls(
-            scenario_config=dct["scenario_config"],
+            scenario_config=config_to_use,
             percent_adoption=dct["percent_adoption"],
-            override_attacker_asns=dct["yaml_attacker_asns"],
-            override_victim_asns=dct["yaml_victim_asns"],
-            default_non_default_asn_cls_dict=non_default_asn_cls_dict,
-            override_announcements=dct["announcements"],
         )

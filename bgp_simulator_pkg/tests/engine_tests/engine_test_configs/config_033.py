@@ -1,7 +1,4 @@
 from copy import deepcopy
-from typing import Dict, Type
-
-from caida_collector_pkg import AS
 
 
 from ..graphs import Graph047
@@ -9,7 +6,7 @@ from ..utils import EngineTestConfig
 
 
 from ....simulation_engine import BGPAS
-from ....simulation_framework import ValidPrefix
+from ....simulation_framework import ValidPrefix, ScenarioConfig
 from ....enums import Prefixes
 
 
@@ -30,13 +27,13 @@ class Custom33ValidPrefix(ValidPrefix):
 
 
 config_033 = EngineTestConfig(
-    name ="033",
+    name="033",
     desc="Test withdrawal mechanism caused by better announcement",
     scenario_config=ScenarioConfig(
         ScenarioCls=Custom33ValidPrefix,
         BaseASCls=BGPAS,
         override_victim_asns={2}
-    )
+    ),
     graph=Graph047(),
     propagation_rounds=3
 )

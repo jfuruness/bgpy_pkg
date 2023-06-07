@@ -1,7 +1,7 @@
 from pathlib import Path
 
 from .simulation_engine import ROVSimpleAS
-from .simulation_framework import Simulation, SubprefixHijack
+from .simulation_framework import Simulation, SubprefixHijack, ScenarioConfig
 
 
 def main():
@@ -13,7 +13,12 @@ def main():
             .2,
             .5,
         ),
-        scenarios=(SubprefixHijack(AdoptASCls=ROVSimpleAS),),
+        scenario_configs=(
+            ScenarioConfig(
+                ScenarioCls=SubprefixHijack,
+                AdoptASCls=ROVSimpleAS
+            ),
+        ),
         output_path=Path("~/Desktop/main_ex_graphs").expanduser(),
         num_trials=2,
         parse_cpus=1,

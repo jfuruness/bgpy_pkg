@@ -1,13 +1,9 @@
-from typing import Dict, Type
-
-from caida_collector_pkg import AS
-
 from ..graphs import Graph040
 from ..utils import EngineTestConfig
 
 
 from ....simulation_engine import BGPSimpleAS
-from ....simulation_framework import ValidPrefix
+from ....simulation_framework import ValidPrefix, ScenarioConfig
 
 
 class Custom31ValidPrefix(ValidPrefix):
@@ -23,12 +19,12 @@ class Custom31ValidPrefix(ValidPrefix):
 
 
 config_031 = EngineTestConfig(
-    name="031"
-    desc="Test loop prevention mechanism"
+    name="031",
+    desc="Test loop prevention mechanism",
     scenario_config=ScenarioConfig(
         ScenarioCls=Custom31ValidPrefix,
         override_victim_asns={4},
         BaseASCls=BGPSimpleAS
-    )
-    graph = Graph040()
+    ),
+    graph=Graph040()
 )

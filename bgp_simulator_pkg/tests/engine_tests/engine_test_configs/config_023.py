@@ -1,7 +1,3 @@
-from typing import Dict, Type
-
-from caida_collector_pkg import AS
-
 from ..graphs import Graph019
 from ..utils import EngineTestConfig
 

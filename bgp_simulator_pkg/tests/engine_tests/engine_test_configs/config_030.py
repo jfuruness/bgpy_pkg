@@ -1,7 +1,3 @@
-from typing import Dict, Type
-
-from caida_collector_pkg import AS
-
 from ..graphs import Graph040
 
 from ..utils import EngineTestConfig
@@ -33,13 +29,13 @@ class Custom30MultiValidPrefix(ValidPrefix):
 
 
 config_030 = EngineTestConfig(
-    name="030"
-    desc="Test seeded announcement should never be replaced"
+    name="030",
+    desc="Test seeded announcement should never be replaced",
     scenario_config=ScenarioConfig(
-        ScenarioCls=Custom30MultiValidPrefix
+        ScenarioCls=Custom30MultiValidPrefix,
         BaseASCls=BGPSimpleAS,
         override_victim_asns={1, 4, 3, 5},
         num_victims=4
     ),
-    graph = Graph040()
+    graph=Graph040()
 )

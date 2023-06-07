@@ -1,7 +1,3 @@
-from typing import Dict, Type
-
-from caida_collector_pkg import AS
-
 from copy import deepcopy
 
 from ..graphs import Graph040
@@ -9,7 +5,7 @@ from ..utils import EngineTestConfig
 
 
 from ....simulation_engine import BGPAS
-from ....simulation_framework import ValidPrefix
+from ....simulation_framework import ValidPrefix, ScenarioConfig
 from ....enums import Prefixes
 
 

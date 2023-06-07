@@ -1,5 +1,5 @@
 from dataclasses import asdict, dataclass, field
-from typing import Any, Dict, Optional, Tuple, Type, TYPE_CHECKING
+from typing import Any, Dict, Optional, Set, Tuple, Type, TYPE_CHECKING
 
 from caida_collector_pkg import AS
 
@@ -24,8 +24,7 @@ class ScenarioConfig:
     Is reused for multiple trials (thus, frozen)
     """
 
-    # Optional since tests don't need it
-    ScenarioCls: Optional[Type["Scenario"]] = None
+    ScenarioCls: Type["Scenario"]
     # This is the base type of announcement for this class
     # You can specify a different base ann
     AnnCls: Type[Announcement] = Announcement
@@ -47,10 +46,10 @@ class ScenarioConfig:
     # ASes that are hardcoded to specific values
     hardcoded_asn_cls_dict: Dict[int, Type[AS]] = field(default_factory=dict)
     # Only necessary if coming from YAML or the test suite
-    override_attacker_asns: Optional[Set[int]] = None,
-    override_victim_asns: Optional[Set[int]] = None,
-    override_non_default_asn_cls_dict: Optional[Dict[int, Type[AS]]] = None,
-
+    override_attacker_asns: Optional[Set[int]] = None
+    override_victim_asns: Optional[Set[int]] = None
+    override_non_default_asn_cls_dict: Optional[Dict[int, Type[AS]]] = None
+    override_announcements: Tuple[Announcement, ...] = ()
 
     def __post_init__(self):
         """Sets AdoptASCls if it is None

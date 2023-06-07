@@ -1,6 +1,5 @@
 # This should be made compatible with mypy, but I have no time
 
-from copy import deepcopy
 from pathlib import Path
 from typing import Dict, Any
 
@@ -43,9 +42,10 @@ class EngineTester:
             to the ground truth
         """
 
-        raise NotImplementedError("Add UUID to self.conf.name")
         # Get a fresh copy of the scenario
-        scenario = deepcopy(self.conf.scenario)  # type: ignore
+        scenario = self.conf.scenario_config.ScenarioCls(
+            scenario_config=self.conf.scenario_config
+        )
         # Get's an engine that has been set up
         engine = self._get_engine(scenario)
         # Run engine
@@ -71,7 +71,7 @@ class EngineTester:
         # Store engine and traceback YAML
         self._store_yaml(engine, outcomes_yaml, shared_data)
         # Create diagrams before the test can fail
-        self._generate_diagrams(shared_data)
+        self._generate_diagrams(scenario, shared_data)
         # Compare the YAML's together
         self._compare_yaml()
 
@@ -79,16 +79,12 @@ class EngineTester:
         """Creates and engine and sets it up for runs"""
 
         engine = SimulationEngine(
-            BaseASCls=scenario.BaseASCls,
+            BaseASCls=self.conf.scenario_config.BaseASCls,
             peer_links=self.conf.graph.peer_links,  # type: ignore
             cp_links=self.conf.graph.customer_provider_links,  # type: ignore
         )  # type: ignore
 
-        prev_scenario = deepcopy(scenario)
-        prev_scenario.non_default_as_cls_dict = (
-            self.conf.non_default_as_cls_dict  # type: ignore
-        )  # type: ignore
-        scenario.setup_engine(engine, 0, prev_scenario)
+        scenario.setup_engine(engine, 0, scenario)
         return engine
 
     def _store_yaml(self, engine, outcomes, shared_data):
@@ -112,7 +108,7 @@ class EngineTester:
         if not self.shared_data_ground_truth_path.exists() or self.overwrite:
             self.codec.dump(shared_data, path=self.shared_data_ground_truth_path)
 
-    def _generate_diagrams(self, shared_data):
+    def _generate_diagrams(self, scenario, shared_data):
         """Generates diagrams"""
 
         # Load engines
@@ -125,7 +121,7 @@ class EngineTester:
         # Write guess graph
         Diagram().generate_as_graph(
             engine_guess,
-            self.conf.scenario,  # type: ignore
+            scenario,  # type: ignore
             outcomes_guess,
             f"({self.conf.name} Guess)\n{self.conf.desc}",  # type: ignore
             shared_data,
@@ -135,7 +131,7 @@ class EngineTester:
         # Write ground truth graph
         Diagram().generate_as_graph(
             engine_gt,
-            self.conf.scenario,  # type: ignore
+            scenario,  # type: ignore
             outcomes_gt,
             f"({self.conf.name} Ground Truth)\n"  # type: ignore
             f"{self.conf.desc}",  # type: ignore

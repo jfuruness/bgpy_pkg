@@ -1,15 +1,11 @@
 from copy import deepcopy
-from typing import Dict, Type
-
-from caida_collector_pkg import AS
-
 
 from ..graphs import Graph040
 from ..utils import EngineTestConfig
 
 
 from ....simulation_engine import BGPAS
-from ....simulation_framework import ValidPrefix
+from ....simulation_framework import ValidPrefix, ScenarioConfig
 from ....enums import Prefixes
 
 
@@ -40,7 +36,7 @@ class Custom34ValidPrefix(ValidPrefix):
 
 
 config_034 = EngineTestConfig(
-    name="034"m
+    name="034",
     desc="Test withdrawal mechanism choosing next best announcement",
     scenario_config=ScenarioConfig(
         ScenarioCls=Custom34ValidPrefix,

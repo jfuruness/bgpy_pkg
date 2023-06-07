@@ -16,7 +16,7 @@ from ....simulation_framework import PrefixHijack
 from ....simulation_framework import ValidPrefix
 from ....simulation_framework import SubprefixHijack
 from ....simulation_framework import SuperprefixPrefixHijack
-from ....simulation_framework import ScenarioConfig
+from ....simulation_framework import ScenarioConfig, Scenario
 
 from ....simulation_framework import Simulation
 
@@ -66,7 +66,10 @@ def test_sim_inputs(
         percent_adoptions=(0.0, 0.5, 1.0),
         scenario_configs=(
             ScenarioConfig(
-                AdoptASCls=AdoptASCls, BaseASCls=BaseASCls, num_attackers=num_attackers
+                ScenarioCls=Scenario,
+                AdoptASCls=AdoptASCls,
+                BaseASCls=BaseASCls,
+                num_attackers=num_attackers
             ),
         ),
         num_trials=2,

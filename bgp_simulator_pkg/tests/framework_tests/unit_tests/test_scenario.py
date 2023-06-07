@@ -29,7 +29,6 @@ class TestScenario:
             ScenarioCls=SubprefixHijack,
             AnnCls=Announcement,
             BaseASCls=BGPSimpleAS,
-            AdoptASCls=None,
             num_attackers=num_attackers,
             num_victims=num_victims,
             override_attacker_asns=set(range(num_attackers)),
@@ -42,6 +41,7 @@ class TestScenario:
 
         with pytest.raises(AssertionError):
             scenario_config = ScenarioConfig(
+                ScenarioCls=SubprefixHijack,
                 num_attackers=1,
                 override_attacker_asns={1, 2},
             )
@@ -52,6 +52,7 @@ class TestScenario:
 
         with pytest.raises(AssertionError):
             scenario_config = ScenarioConfig(
+                ScenarioCls=SubprefixHijack,
                 num_victims=1,
                 override_victim_asns={1, 2},
             )
@@ -76,6 +77,7 @@ class TestScenario:
         """
 
         prev_scenario_config = ScenarioConfig(
+            ScenarioCls=SubprefixHijack,
             override_attacker_asns={1},
             override_victim_asns={2}
         )
@@ -107,6 +109,7 @@ class TestScenario:
         victim_asns = {2}
         scenario = SubprefixHijack(
             scenario_config=ScenarioConfig(
+                ScenarioCls=SubprefixHijack,
                 override_attacker_asns=attacker_asns,
                 override_victim_asns=victim_asns
             )
@@ -135,7 +138,10 @@ class TestScenario:
         """
 
         num_attackers = 2
-        scenario_config = ScenarioConfig(num_attackers=num_attackers)
+        scenario_config = ScenarioConfig(
+            ScenarioCls=SubprefixHijack,
+            num_attackers=num_attackers
+        )
         scenario = SubprefixHijack(scenario_config=scenario_config)
         attacker_asns = scenario._get_attacker_asns(
             override_attacker_asns=None,
@@ -168,7 +174,7 @@ class TestScenario:
         """
 
         num_victims = 2
-        scenario_config = ScenarioConfig(num_victims=2)
+        scenario_config = ScenarioConfig(ScenarioCls=SubprefixHijack, num_victims=2)
         scenario = NonRoutedPrefixHijack(scenario_config=scenario_config)
         victim_asns = scenario._get_victim_asns(
             override_victim_asns=None,
@@ -254,6 +260,7 @@ class TestScenario:
         BaseASCls = BGPSimpleAS
 
         prev_scenario_config = ScenarioConfig(
+            ScenarioCls=SubprefixHijack,
             AdoptASCls=ROVSimpleAS,
             BaseASCls=BaseASCls,
             override_non_default_asn_cls_dict={
@@ -264,6 +271,7 @@ class TestScenario:
         )
         prev_scenario = SubprefixHijack(scenario_config=prev_scenario_config)
         scenario_config = ScenarioConfig(
+            ScenarioCls=SubprefixHijack,
             AdoptASCls=BGPAS,
             BaseASCls=BaseASCls
         )
@@ -289,7 +297,7 @@ class TestScenario:
         BaseASCls = BGPSimpleAS
 
         prev_scenario_config = ScenarioConfig(
-            AdoptASCls=None,
+            ScenarioCls=SubprefixHijack,
             BaseASCls=BGPSimpleAS,
             override_non_default_asn_cls_dict={
                 1: BaseASCls,
@@ -299,6 +307,7 @@ class TestScenario:
         )
         prev_scenario = SubprefixHijack(scenario_config=prev_scenario_config)
         scenario_config = ScenarioConfig(
+            ScenarioCls=SubprefixHijack,
             AdoptASCls=BGPAS,
             BaseASCls=BaseASCls
         )
@@ -324,6 +333,7 @@ class TestScenario:
         """
 
         scenario_config = ScenarioConfig(
+            ScenarioCls=SubprefixHijack,
             AdoptASCls=ROVSimpleAS,
             BaseASCls=BGPSimpleAS
         )
@@ -371,14 +381,20 @@ class TestScenario:
         """Ensures that the default adopters returns the victims"""
 
         assert SubprefixHijack(
-            scenario_config=ScenarioConfig(override_victim_asns={1})
+            scenario_config=ScenarioConfig(
+                ScenarioCls=SubprefixHijack,
+                override_victim_asns={1}
+            )
         )._default_adopters == {1}
 
     def test_default_non_adopters(self):
         """Tests that the attacker does not adopt"""
 
         assert SubprefixHijack(
-            scenario_config=ScenarioConfig(override_attacker_asns={1})
+            scenario_config=ScenarioConfig(
+                ScenarioCls=SubprefixHijack,
+                override_attacker_asns={1}
+            )
         )._default_non_adopters == {1}
 
     def test_preset_asns(self):
@@ -386,6 +402,7 @@ class TestScenario:
 
         hijack = SubprefixHijack(
             scenario_config=ScenarioConfig(
+                ScenarioCls=SubprefixHijack,
                 override_attacker_asns={1},
                 override_victim_asns={2}
             )

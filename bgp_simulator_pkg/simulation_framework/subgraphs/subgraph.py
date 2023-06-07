@@ -438,6 +438,7 @@ class Subgraph(ABC):
             assert outcome != Outcomes.UNDETERMINED, "Shouldn't be possible"
 
             outcomes[as_obj] = outcome
+            assert isinstance(outcome, Outcomes), "For mypy"
             return outcome
 
     def _get_most_specific_ann(

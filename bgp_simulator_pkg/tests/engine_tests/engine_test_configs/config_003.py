@@ -1,7 +1,3 @@
-from typing import Dict, Type
-
-from caida_collector_pkg import AS
-
 from ..graphs import Graph002
 from ..utils import EngineTestConfig
 
@@ -17,7 +13,6 @@ config_003 = EngineTestConfig(
         ScenarioCls=ValidPrefix,
         BaseASCls=BGPSimpleAS,
         override_victim_asns={ASNs.VICTIM.value},
-        AdoptASCls=None,
     ),
     graph=Graph002(),
 )
