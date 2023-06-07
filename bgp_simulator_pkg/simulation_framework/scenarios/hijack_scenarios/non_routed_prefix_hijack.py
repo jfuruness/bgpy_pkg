@@ -1,7 +1,7 @@
 from __future__ import annotations
 from typing import Tuple, TYPE_CHECKING
 
-from ..scenario_trial import Scenario
+from ..scenario import Scenario
 from ....enums import Prefixes
 from ....enums import Relationships
 from ....enums import Timestamps

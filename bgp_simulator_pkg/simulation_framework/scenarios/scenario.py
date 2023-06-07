@@ -191,7 +191,7 @@ class Scenario(ABC):
         """
 
         if override_non_default_asn_cls_dict:
-            non_default_asn_cls_dict = override_non_default_asn_cls_dict
+            return override_non_default_asn_cls_dict
         # By default, use the last engine input to maintain static
         # adoption across the graph
         elif prev_scenario:
@@ -253,8 +253,12 @@ class Scenario(ABC):
                 k = 1
             elif self.percent_adoption == SpecialPercentAdoptions.ALL_BUT_ONE:
                 k = len(possible_adopters) - 1
+            # Really used just for testing
+            elif self.percent_adoption == 0:
+                k = 0
             else:
-                assert isinstance(self.percent_adoption, float), "Make mypy happy"
+                err = f"{self.percent_adoption}"
+                assert isinstance(self.percent_adoption, float), err
                 k = math.ceil(len(possible_adopters) * self.percent_adoption)
 
             # https://stackoverflow.com/a/15837796/8903959
