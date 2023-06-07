@@ -43,6 +43,7 @@ class EngineTester:
             to the ground truth
         """
 
+        raise NotImplementedError("Add UUID to self.conf.name")
         # Get a fresh copy of the scenario
         scenario = deepcopy(self.conf.scenario)  # type: ignore
         # Get's an engine that has been set up

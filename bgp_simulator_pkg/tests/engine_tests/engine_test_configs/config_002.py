@@ -1,3 +1,4 @@
+
 from typing import Dict, Type
 
 from caida_collector_pkg import AS
@@ -7,20 +8,17 @@ from ..utils import EngineTestConfig
 
 from ....simulation_engine import BGPAS
 from ....enums import ASNs
-from ....simulation_framework import SubprefixHijack
+from ....simulation_framework import ScenarioConfig, SubprefixHijack
 
 
-class Config002(EngineTestConfig):
-    """Contains config options to run a test"""
-
-    name = "002"
-    desc = "BGP hidden hijack"
-    scenario = SubprefixHijack(
-        attacker_asns={ASNs.ATTACKER.value},
-        victim_asns={ASNs.VICTIM.value},
-        AdoptASCls=None,
+config_002 = EngineTestConfig(
+    name="002",
+    desc="BGP hidden hijack",
+    scenario_config=ScenarioConfig(
+        ScenarioCls=SubprefixHijack,
         BaseASCls=BGPAS,
-    )
-    graph = Graph001()
-    non_default_as_cls_dict: Dict[int, Type[AS]] = dict()
-    propagation_rounds = 1
+        override_attacker_asns={ASNs.ATTACKER.value},
+        override_victim_asns={ASNs.VICTIM.value},
+    ),
+    graph=Graph001(),
+)

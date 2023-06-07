@@ -7,21 +7,17 @@ from ..utils import EngineTestConfig
 
 from ....simulation_engine import BGPAS
 from ....enums import ASNs
-from ....simulation_framework import SubprefixHijack
+from ....simulation_framework import ScenarioConfig, SubprefixHijack
 
 
-class Config009(EngineTestConfig):
-    """Contains config options to run a test"""
-
-    name = "009"
-    desc = "Fig 2 (ROVSimpleAS)"
-    scenario = SubprefixHijack(
-        attacker_asns={ASNs.ATTACKER.value},
-        victim_asns={ASNs.VICTIM.value},
-        AdoptASCls=None,
+config_009 = EngineTestConfig(
+    name="009",
+    desc="Fig 2 (ROVSimpleAS)",
+    scenario_config=ScenarioConfig(
+        ScenarioCls=SubprefixHijack,
         BaseASCls=BGPAS,
-    )
-
-    graph = Graph003()
-    non_default_as_cls_dict: Dict[int, Type[AS]] = dict()
-    propagation_rounds = 1
+        override_attacker_asns={ASNs.ATTACKER.value},
+        override_victim_asns={ASNs.VICTIM.value},
+    ),
+    graph=Graph003(),
+)

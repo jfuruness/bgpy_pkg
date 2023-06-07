@@ -32,7 +32,7 @@ class Simulation:
             0.8,
         ),
         scenario_configs: Tuple[ScenarioConfig, ...] = tuple(
-            [ScenarioConfig(ScenarioTrialCls=SubprefixHijack, AdoptASCls=ROVSimpleAS)]
+            [ScenarioConfig(ScenarioCls=SubprefixHijack, AdoptASCls=ROVSimpleAS)]
         ),
         subgraphs: Optional[Tuple[Subgraph, ...]] = None,
         num_trials: int = 2,
@@ -220,8 +220,8 @@ class Simulation:
             for scenario_config in self.scenario_configs:
                 # Deep copy scenario to ensure it's fresh
                 # Since certain things like announcements change round to round
-                assert scenario_config.ScenarioTrialCls, "ScenarioTrialCls is None"
-                scenario_trial = scenario_config.ScenarioTrialCls(
+                assert scenario_config.ScenarioCls, "ScenarioCls is None"
+                scenario_trial = scenario_config.ScenarioCls(
                     scenario_config=scenario_config,
                     percent_adoption=percent_adopt,
                     engine=engine,

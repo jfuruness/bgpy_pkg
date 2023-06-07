@@ -7,7 +7,7 @@ from ..utils import EngineTestConfig
 
 
 from ....simulation_engine import BGPSimpleAS
-from ....simulation_framework import ValidPrefix
+from ....simulation_framework import ValidPrefix, ScenarioConfig
 
 
 class Custom29MultiValidPrefix(ValidPrefix):
@@ -27,14 +27,14 @@ class Custom29MultiValidPrefix(ValidPrefix):
         return vic_anns
 
 
-class Config029(EngineTestConfig):
-    """Contains config options to run a test"""
-
-    name = "029"
-    desc = "Test of path length preference"
-    scenario = Custom29MultiValidPrefix(
-        victim_asns={3, 5}, num_victims=2, AdoptASCls=None, BaseASCls=BGPSimpleAS
-    )
-    graph = Graph040()
-    non_default_as_cls_dict: Dict[int, Type[AS]] = dict()
-    propagation_rounds = 1
+config_029 = EngineTestConfig(
+    name="029",
+    desc="Test of path length preference",
+    scenario_config=ScenarioConfig(
+        ScenarioCls=Custom29MultiValidPrefix,
+        BaseASCls=BGPSimpleAS,
+        num_victims=2,
+        override_victim_asns={3, 5},
+    ),
+    graph=Graph040(),
+)

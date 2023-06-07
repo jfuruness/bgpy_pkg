@@ -1,5 +1,5 @@
 from .scenario_config import ScenarioConfig
-from .scenario_trial import ScenarioTrial
+from .scenario_trial import Scenario
 
 from .hijack_scenarios import PrefixHijack
 from .hijack_scenarios import SubprefixHijack
@@ -12,7 +12,7 @@ from .valid_prefix import ValidPrefix
 
 __all__ = [
     "ScenarioConfig",
-    "ScenarioTrial",
+    "Scenario",
     "PrefixHijack",
     "SubprefixHijack",
     "NonRoutedPrefixHijack",

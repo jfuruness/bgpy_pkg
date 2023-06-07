@@ -29,12 +29,14 @@ class Custom33ValidPrefix(ValidPrefix):
             Custom33ValidPrefix.victim_asns = {2, 3}
 
 
-class Config033(EngineTestConfig):
-    """Test withdrawal caused by better announcement"""
-
-    name = "033"
-    desc = "Test withdrawal mechanism"
-    scenario = Custom33ValidPrefix(victim_asns={2}, AdoptASCls=None, BaseASCls=BGPAS)
-    graph = Graph047()
-    non_default_as_cls_dict: Dict[int, Type[AS]] = dict()
-    propagation_rounds = 3
+config_033 = EngineTestConfig(
+    name ="033",
+    desc="Test withdrawal mechanism caused by better announcement",
+    scenario_config=ScenarioConfig(
+        ScenarioCls=Custom33ValidPrefix,
+        BaseASCls=BGPAS,
+        override_victim_asns={2}
+    )
+    graph=Graph047(),
+    propagation_rounds=3
+)

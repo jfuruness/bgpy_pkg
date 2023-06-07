@@ -5,24 +5,21 @@ from caida_collector_pkg import AS
 from ..graphs import Graph003
 from ..utils import EngineTestConfig
 
-from ....simulation_engine import ROVAS
-from ....simulation_engine import BGPAS
+from ....simulation_engine import ROVAS, BGPAS
 from ....enums import ASNs
-from ....simulation_framework import SubprefixHijack
+from ....simulation_framework import ScenarioConfig, SubprefixHijack
 
 
-class Config008(EngineTestConfig):
-    """Contains config options to run a test"""
-
-    name = "008"
-    desc = "Fig 2 (ROVSimpleAS)"
-    scenario = SubprefixHijack(
-        attacker_asns={ASNs.ATTACKER.value},
-        victim_asns={ASNs.VICTIM.value},
+config_008 = EngineTestConfig(
+    name="008",
+    desc="Fig 2 (ROVSimpleAS)",
+    scenario_config=ScenarioConfig(
+        ScenarioCls=SubprefixHijack,
         AdoptASCls=ROVAS,
         BaseASCls=BGPAS,
-    )
-
-    graph = Graph003()
-    non_default_as_cls_dict: Dict[int, Type[AS]] = {3: ROVAS, 4: ROVAS}
-    propagation_rounds = 1
+        override_attacker_asns={ASNs.ATTACKER.value},
+        override_victim_asns={ASNs.VICTIM.value},
+        override_non_default_asn_cls_dict={3: ROVAS, 4: ROVAS},
+    ),
+    graph=Graph003(),
+)

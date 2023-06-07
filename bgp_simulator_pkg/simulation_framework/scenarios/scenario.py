@@ -18,7 +18,7 @@ from ...simulation_engine import SimulationEngine
 pseudo_base_cls_dict: Dict[Type[AS], Type[AS]] = dict()
 
 
-class ScenarioTrial(ABC):
+class Scenario(ABC):
     """Contains information regarding a scenario/attack
 
     This represents a single trial
@@ -30,12 +30,7 @@ class ScenarioTrial(ABC):
         scenario_config: ScenarioConfig = ScenarioConfig(),
         percent_adoption: Union[float, SpecialPercentAdoptions] = 0,
         engine: Optional[SimulationEngine] = None,
-        prev_scenario: Optional["ScenarioTrial"] = None,
-        # Only necessary if coming from YAML or the test suite
-        default_attacker_asns: Optional[Set[int]] = None,
-        default_victim_asns: Optional[Set[int]] = None,
-        default_non_default_asn_cls_dict: Optional[Dict[int, Type[AS]]] = None,
-        default_announcements: Tuple[Announcement, ...] = (),
+        prev_scenario: Optional["Scenario"] = None,
     ):
         """inits attrs
 
@@ -46,16 +41,16 @@ class ScenarioTrial(ABC):
         self.percent_adoption: Union[float, SpecialPercentAdoptions] = percent_adoption
 
         self.attacker_asns: Set[int] = self._get_attacker_asns(
-            default_attacker_asns, engine, prev_scenario
+            scenario_config.override_attacker_asns, engine, prev_scenario
         )
 
         self.victim_asns: Set[int] = self._get_victim_asns(
-            default_victim_asns, engine, prev_scenario
+            scenario_config.override_victim_asns, engine, prev_scenario
         )
 
         AS_CLS_DCT = Dict[int, Type[AS]]
         self.non_default_asn_cls_dict: AS_CLS_DCT = self._get_non_default_asn_cls_dict(
-            default_non_default_asn_cls_dict, engine, prev_scenario
+            scenario_config.override_non_default_asn_cls_dict, engine, prev_scenario
         )
 
         self.announcements: Tuple["Announcement", ...] = self._get_announcements(
@@ -72,15 +67,15 @@ class ScenarioTrial(ABC):
 
     def _get_attacker_asns(
         self,
-        default_attacker_asns: Optional[Set[int]],
+        override_attacker_asns: Optional[Set[int]],
         engine: Optional[SimulationEngine],
-        prev_scenario: Optional["ScenarioTrial"],
+        prev_scenario: Optional["Scenario"],
     ) -> Set[int]:
         """Returns attacker ASN at random"""
 
         # This is coming from YAML, do not recalculate
-        if default_attacker_asns:
-            attacker_asns = default_attacker_asns
+        if override_attacker_asns:
+            attacker_asns = override_attacker_asns
         # Reuse the attacker from the last scenario for comparability
         elif prev_scenario:
             attacker_asns = prev_scenario.attacker_asns
@@ -107,7 +102,7 @@ class ScenarioTrial(ABC):
         self,
         engine: SimulationEngine,
         percent_adoption: Union[float, SpecialPercentAdoptions],
-        prev_scenario: Optional["ScenarioTrial"],
+        prev_scenario: Optional["Scenario"],
     ) -> Set[int]:
         """Returns possible attacker ASNs, defaulted from config"""
 
@@ -123,15 +118,15 @@ class ScenarioTrial(ABC):
 
     def _get_victim_asns(
         self,
-        default_victim_asns: Optional[Set[int]],
+        override_victim_asns: Optional[Set[int]],
         engine: Optional[SimulationEngine],
-        prev_scenario: Optional["ScenarioTrial"],
+        prev_scenario: Optional["Scenario"],
     ) -> Set[int]:
         """Returns victim ASN at random"""
 
         # This is coming from YAML, do not recalculate
-        if default_victim_asns:
-            victim_asns = default_victim_asns
+        if override_victim_asns:
+            victim_asns = override_victim_asns
         # Reuse the victim from the last scenario for comparability
         elif prev_scenario:
             victim_asns = prev_scenario.victim_asns
@@ -157,7 +152,7 @@ class ScenarioTrial(ABC):
         self,
         engine: SimulationEngine,
         percent_adoption: Union[float, SpecialPercentAdoptions],
-        prev_scenario: Optional["ScenarioTrial"],
+        prev_scenario: Optional["Scenario"],
     ) -> Set[int]:
         """Returns possible victim ASNs, defaulted from config"""
 
@@ -175,9 +170,9 @@ class ScenarioTrial(ABC):
 
     def _get_non_default_asn_cls_dict(
         self,
-        default_non_default_asn_cls_dict: Optional[Dict[int, Type[AS]]],
+        override_non_default_asn_cls_dict: Optional[Dict[int, Type[AS]]],
         engine: Optional[SimulationEngine],
-        prev_scenario: Optional["ScenarioTrial"],
+        prev_scenario: Optional["Scenario"],
     ) -> Dict[int, Type[AS]]:
         """Returns as class dict
 
@@ -189,8 +184,8 @@ class ScenarioTrial(ABC):
         adoption across trials
         """
 
-        if default_non_default_asn_cls_dict:
-            non_default_asn_cls_dict = default_non_default_asn_cls_dict
+        if override_non_default_asn_cls_dict:
+            non_default_asn_cls_dict = override_non_default_asn_cls_dict
         # By default, use the last engine input to maintain static
         # adoption across the graph
         elif prev_scenario:
@@ -334,7 +329,7 @@ class ScenarioTrial(ABC):
     #############################
 
     def setup_engine(
-        self, engine: SimulationEngine, prev_scenario: Optional["ScenarioTrial"] = None
+        self, engine: SimulationEngine, prev_scenario: Optional["Scenario"] = None
     ) -> None:
         """Sets up engine input"""
 
@@ -343,7 +338,7 @@ class ScenarioTrial(ABC):
         engine.ready_to_run_round = 0
 
     def _set_engine_as_classes(
-        self, engine: SimulationEngine, prev_scenario: Optional["ScenarioTrial"]
+        self, engine: SimulationEngine, prev_scenario: Optional["Scenario"]
     ) -> None:
         """Resets Engine ASes and changes their AS class
 
@@ -363,7 +358,7 @@ class ScenarioTrial(ABC):
             as_obj.__init__(reset_base=False)
 
     def _seed_engine_announcements(
-        self, engine: SimulationEngine, prev_scenario: Optional["ScenarioTrial"]
+        self, engine: SimulationEngine, prev_scenario: Optional["Scenario"]
     ) -> None:
         """Seeds announcement at the proper AS
 
@@ -488,8 +483,8 @@ class ScenarioTrial(ABC):
         return cls(
             scenario_config=dct["scenario_config"],
             percent_adoption=dct["percent_adoption"],
-            default_attacker_asns=dct["yaml_attacker_asns"],
-            default_victim_asns=dct["yaml_victim_asns"],
+            override_attacker_asns=dct["yaml_attacker_asns"],
+            override_victim_asns=dct["yaml_victim_asns"],
             default_non_default_asn_cls_dict=non_default_asn_cls_dict,
-            default_announcements=dct["announcements"],
+            override_announcements=dct["announcements"],
         )

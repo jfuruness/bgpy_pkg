@@ -7,17 +7,16 @@ from ..utils import EngineTestConfig
 
 from ....simulation_engine import BGPAS
 from ....enums import ASNs
-from ....simulation_framework import ValidPrefix
+from ....simulation_framework import ScenarioConfig, ValidPrefix
 
 
-class Config004(EngineTestConfig):
-    """Contains config options to run a test"""
-
-    name = "004"
-    desc = "Basic BGP Propagation (with full BGP AS)"
-    scenario = ValidPrefix(
-        victim_asns={ASNs.VICTIM.value}, AdoptASCls=None, BaseASCls=BGPAS
-    )
-    graph = Graph002()
-    non_default_as_cls_dict: Dict[int, Type[AS]] = dict()
-    propagation_rounds = 1
+config_004 = EngineTestConfig(
+    name="004",
+    desc="Basic BGP Propagation (with full BGP AS)",
+    scenario_config=ScenarioConfig(
+        ScenarioCls=ValidPrefix,
+        BaseASCls=BGPAS,
+        override_victim_asns={ASNs.VICTIM.value},
+    ),
+    graph=Graph002(),
+)

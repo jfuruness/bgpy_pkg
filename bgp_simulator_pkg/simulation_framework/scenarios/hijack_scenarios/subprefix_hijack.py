@@ -1,6 +1,6 @@
 from typing import Tuple, TYPE_CHECKING
 
-from ..scenario_trial import ScenarioTrial
+from ..scenario_trial import Scenario
 from ....enums import Prefixes
 from ....enums import Relationships
 from ....enums import Timestamps
@@ -10,7 +10,7 @@ if TYPE_CHECKING:
     from ....simulation_engine import Announcement
 
 
-class SubprefixHijack(ScenarioTrial):
+class SubprefixHijack(Scenario):
     """Subprefix Hijack Engine input
 
     Subprefix hijack consists of a valid prefix by the victim with a roa

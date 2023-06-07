@@ -8,7 +8,7 @@ from ..utils import EngineTestConfig
 
 
 from ....simulation_engine import BGPSimpleAS
-from ....simulation_framework import ValidPrefix
+from ....simulation_framework import ValidPrefix, ScenarioConfig
 
 
 class Custom30MultiValidPrefix(ValidPrefix):
@@ -32,14 +32,14 @@ class Custom30MultiValidPrefix(ValidPrefix):
         return vic_anns
 
 
-class Config030(EngineTestConfig):
-    """Contains config options to run a test"""
-
-    name = "030"
-    desc = "Test seeded announcement should never be replaced"
-    scenario = Custom30MultiValidPrefix(
-        victim_asns={1, 4, 3, 5}, num_victims=4, AdoptASCls=None, BaseASCls=BGPSimpleAS
-    )
+config_030 = EngineTestConfig(
+    name="030"
+    desc="Test seeded announcement should never be replaced"
+    scenario_config=ScenarioConfig(
+        ScenarioCls=Custom30MultiValidPrefix
+        BaseASCls=BGPSimpleAS,
+        override_victim_asns={1, 4, 3, 5},
+        num_victims=4
+    ),
     graph = Graph040()
-    non_default_as_cls_dict: Dict[int, Type[AS]] = dict()
-    propagation_rounds = 1
+)

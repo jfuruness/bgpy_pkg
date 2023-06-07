@@ -7,20 +7,19 @@ from ..utils import EngineTestConfig
 
 from ....simulation_engine import BGPSimpleAS, ROVAS
 from ....enums import ASNs
-from ....simulation_framework import NonRoutedPrefixHijack
+from ....simulation_framework import ScenarioConfig, NonRoutedPrefixHijack
 
 
-class Config012(EngineTestConfig):
-    """Contains config options to run a test"""
-
-    name = "012"
-    desc = "NonRouted Prefix Hijack"
-    scenario = NonRoutedPrefixHijack(
-        attacker_asns={ASNs.ATTACKER.value},
-        victim_asns={ASNs.VICTIM.value},
+config_012 = EngineTestConfig(
+    name="012",
+    desc="NonRouted Prefix Hijack",
+    scenario_config=ScenarioConfig(
+        ScenarioCls=NonRoutedPrefixHijack,
         AdoptASCls=ROVAS,
         BaseASCls=BGPSimpleAS,
-    )
-    graph = Graph006()
-    non_default_as_cls_dict: Dict[int, Type[AS]] = {2: ROVAS}
-    propagation_rounds = 1
+        override_attacker_asns={ASNs.ATTACKER.value},
+        override_victim_asns={ASNs.VICTIM.value},
+        override_non_default_asn_cls_dict={2: ROVAS},
+    ),
+    graph=Graph006(),
+)

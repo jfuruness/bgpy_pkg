@@ -7,20 +7,19 @@ from ..utils import EngineTestConfig
 
 from ....simulation_engine import BGPSimpleAS, ROVSimpleAS
 from ....enums import ASNs
-from ....simulation_framework import NonRoutedSuperprefixHijack
+from ....simulation_framework import ScenarioConfig, NonRoutedSuperprefixHijack
 
 
-class Config013(EngineTestConfig):
-    """Contains config options to run a test"""
-
-    name = "013"
-    desc = "NonRouted Superprefix Hijack"
-    scenario = NonRoutedSuperprefixHijack(
-        attacker_asns={ASNs.ATTACKER.value},
-        victim_asns={ASNs.VICTIM.value},
+config_013 = EngineTestConfig(
+    name="013",
+    desc="NonRouted Superprefix Hijack",
+    scenario_config=ScenarioConfig(
+        ScenarioCls=NonRoutedSuperprefixHijack,
         AdoptASCls=ROVSimpleAS,
         BaseASCls=BGPSimpleAS,
-    )
-    graph = Graph006()
-    non_default_as_cls_dict: Dict[int, Type[AS]] = {2: ROVSimpleAS}
-    propagation_rounds = 1
+        override_attacker_asns={ASNs.ATTACKER.value},
+        override_victim_asns={ASNs.VICTIM.value},
+        override_non_default_asn_cls_dict={2: ROVSimpleAS},
+    ),
+    graph=Graph006(),
+)

@@ -26,45 +26,41 @@ class TestScenario:
         """Tests the initialization works when valid"""
 
         scenario_config = ScenarioConfig(
-            ScenarioTrialCls=SubprefixHijack,
+            ScenarioCls=SubprefixHijack,
             AnnCls=Announcement,
             BaseASCls=BGPSimpleAS,
             AdoptASCls=None,
             num_attackers=num_attackers,
             num_victims=num_victims,
+            override_attacker_asns=set(range(num_attackers)),
+            override_victim_asns=set(range(num_victims)),
         )
-        SubprefixHijack(
-            scenario_config=scenario_config,
-            default_attacker_asns=set(range(num_attackers)),
-            default_victim_asns=set(range(num_victims)),
-        )
+        SubprefixHijack(scenario_config=scenario_config)
 
     def test_init_invalid_attackers(self):
         """Tests the len(attacker_asns) == num_attackers"""
 
         with pytest.raises(AssertionError):
-            scenario_config = ScenarioConfig(num_attackers=1)
-            SubprefixHijack(
-                scenario_config=scenario_config,
-                default_attacker_asns={1, 2},
+            scenario_config = ScenarioConfig(
+                num_attackers=1,
+                override_attacker_asns={1, 2},
             )
+            SubprefixHijack(scenario_config=scenario_config)
 
     def test_init_invalid_victims(self):
         """Tests the len(victim_asns) == num_victims"""
 
         with pytest.raises(AssertionError):
-            scenario_config = ScenarioConfig(num_victims=1)
-            SubprefixHijack(
-                scenario_config=scenario_config,
-                default_victim_asns={1, 2},
+            scenario_config = ScenarioConfig(
+                num_victims=1,
+                override_victim_asns={1, 2},
             )
+            SubprefixHijack(scenario_config=scenario_config)
 
     def test_init_adopt_as_cls(self):
         """Tests the AdoptASCls is never None, and is the pseudo BaseAS"""
 
-        conf = ScenarioConfig(
-            ScenarioTrialCls=SubprefixHijack,
-        )
+        conf = ScenarioConfig(ScenarioCls=SubprefixHijack)
 
         assert issubclass(conf.AdoptASCls, conf.BaseASCls)
 
@@ -79,10 +75,11 @@ class TestScenario:
         scenario that was run
         """
 
-        prev_scenario = SubprefixHijack(
-            default_attacker_asns={1},
-            default_victim_asns={2}
+        prev_scenario_config = ScenarioConfig(
+            override_attacker_asns={1},
+            override_victim_asns={2}
         )
+        prev_scenario = SubprefixHijack(scenario_config=prev_scenario_config)
         scenario = SubprefixHijack(engine=engine, prev_scenario=prev_scenario)
         assert prev_scenario.attacker_asns == scenario.attacker_asns
         assert prev_scenario.victim_asns == scenario.victim_asns
@@ -109,8 +106,10 @@ class TestScenario:
         attacker_asns = {1}
         victim_asns = {2}
         scenario = SubprefixHijack(
-            default_attacker_asns=attacker_asns,
-            default_victim_asns=victim_asns
+            scenario_config=ScenarioConfig(
+                override_attacker_asns=attacker_asns,
+                override_victim_asns=victim_asns
+            )
         )
         assert scenario.attacker_asns == attacker_asns
         assert scenario.victim_asns == victim_asns
@@ -139,7 +138,7 @@ class TestScenario:
         scenario_config = ScenarioConfig(num_attackers=num_attackers)
         scenario = SubprefixHijack(scenario_config=scenario_config)
         attacker_asns = scenario._get_attacker_asns(
-            default_attacker_asns=None,
+            override_attacker_asns=None,
             engine=engine,
             prev_scenario=None
         )
@@ -149,7 +148,7 @@ class TestScenario:
         assert len(attacker_asns) == num_attackers
         # Check for number 3
         attacker_asns_2 = scenario._get_attacker_asns(
-            default_attacker_asns=None,
+            override_attacker_asns=None,
             engine=engine,
             prev_scenario=None
         )
@@ -172,7 +171,7 @@ class TestScenario:
         scenario_config = ScenarioConfig(num_victims=2)
         scenario = NonRoutedPrefixHijack(scenario_config=scenario_config)
         victim_asns = scenario._get_victim_asns(
-            default_victim_asns=None,
+            override_victim_asns=None,
             engine=engine,
             prev_scenario=None
         )
@@ -182,7 +181,7 @@ class TestScenario:
         assert len(victim_asns) == num_victims
         # Check for number 3
         victim_asns_2 = scenario._get_victim_asns(
-            default_victim_asns=None,
+            override_victim_asns=None,
             engine=engine,
             prev_scenario=None
         )
@@ -205,7 +204,7 @@ class TestScenario:
         ).run(tsv_path=None)
 
         assert SubprefixHijack()._get_possible_attacker_asns(
-            default_attacker_asns=None,
+            override_attacker_asns=None,
             engine=engine,
             prev_scenario=None
         )
@@ -219,7 +218,7 @@ class TestScenario:
         ).run(tsv_path=None)
 
         assert SubprefixHijack()._get_possible_victim_asns(
-            default_victim_asns=None,
+            override_victim_asns=None,
             engine=engine,
             prev_scenario=None
         )
@@ -242,7 +241,7 @@ class TestScenario:
     # Adopting ASNs funcs #
     #######################
 
-    def test_get_non_default_as_cls_dict_prev_scenario_adopt(self, engine):
+    def test_get_non_default_asn_cls_dict_prev_scenario_adopt(self, engine):
         """Tests that the non default as cls dict is set properly
 
         Old scenario must have mixed deployment to test that feature as well
@@ -252,31 +251,33 @@ class TestScenario:
         AdoptASCls
         """
 
+        BaseASCls = BGPSimpleAS
+
         prev_scenario_config = ScenarioConfig(
             AdoptASCls=ROVSimpleAS,
-            BaseASCls=BGPSimpleAS
+            BaseASCls=BaseASCls,
+            override_non_default_asn_cls_dict={
+                1: BaseASCls,
+                2: ROVAS,
+                3: ROVSimpleAS,
+            }
         )
         prev_scenario = SubprefixHijack(scenario_config=prev_scenario_config)
-        prev_scenario.non_default_as_cls_dict = {
-            1: prev_scenario.BaseASCls,
-            2: ROVAS,
-            3: ROVSimpleAS,
-        }
         scenario_config = ScenarioConfig(
             AdoptASCls=BGPAS,
-            BaseASCls=BGPSimpleAS
+            BaseASCls=BaseASCls
         )
         scenario = SubprefixHijack(scenario_config=scenario_config)
-        non_default_as_cls_dict = scenario._get_non_default_as_cls_dict(
-            default_non_default_asn_cks_dict=None,
+        non_default_asn_cls_dict = scenario._get_non_default_asn_cls_dict(
+            override_non_default_asn_cls_dict=None,
             engine=engine,
             prev_scenario=prev_scenario
         )
 
-        gt = {1: prev_scenario_config.BaseASCls, 2: ROVAS, 3: BGPAS}
-        assert non_default_as_cls_dict == gt
+        gt = {1: BaseASCls, 2: ROVAS, 3: BGPAS}
+        assert non_default_asn_cls_dict == gt
 
-    def test_get_non_default_as_cls_dict_prev_scenario_no_adopt(self, engine):
+    def test_get_non_default_asn_cls_dict_prev_scenario_no_adopt(self, engine):
         """Tests that the non default as cls dict is set properly
 
         Old scenario must have mixed deployment but no adopting ASes!
@@ -285,35 +286,37 @@ class TestScenario:
         DefaultASCls
         """
 
+        BaseASCls = BGPSimpleAS
+
         prev_scenario_config = ScenarioConfig(
             AdoptASCls=None,
-            BaseASCls=BGPSimpleAS
+            BaseASCls=BGPSimpleAS,
+            override_non_default_asn_cls_dict={
+                1: BaseASCls,
+                2: ROVAS,
+                3: BaseASCls,
+            }
         )
         prev_scenario = SubprefixHijack(scenario_config=prev_scenario_config)
-        prev_scenario.non_default_as_cls_dict = {
-            1: prev_scenario.BaseASCls,
-            2: ROVAS,
-            3: prev_scenario.BaseASCls,
-        }
         scenario_config = ScenarioConfig(
             AdoptASCls=BGPAS,
-            BaseASCls=BGPSimpleAS
+            BaseASCls=BaseASCls
         )
         scenario = SubprefixHijack(scenario_config=scenario_config)
-        non_default_as_cls_dict = scenario._get_non_default_as_cls_dict(
-            default_non_default_as_cls_dict=None,
+        non_default_asn_cls_dict = scenario._get_non_default_asn_cls_dict(
+            override_non_default_asn_cls_dict=None,
             engine=engine,
             prev_scenario=prev_scenario
         )
 
         gt = {
-            1: prev_scenario_config.BaseASCls,
+            1: BaseASCls,
             2: ROVAS,
-            3: prev_scenario_config.BaseASCls
+            3: BaseASCls
         }
-        assert non_default_as_cls_dict == gt
+        assert non_default_asn_cls_dict == gt
 
-    def test_get_non_default_as_cls_dict_no_prev_scenario_no_adopt(self, engine):
+    def test_get_non_default_asn_cls_dict_no_prev_scenario_no_adopt(self, engine):
         """Tests that the non default as cls dict is set properly
 
         No prev_scenario and no adopt AS Cls - should be the result of the
@@ -325,17 +328,17 @@ class TestScenario:
             BaseASCls=BGPSimpleAS
         )
         scenario = SubprefixHijack(scenario_config=scenario_config, percent_adoption=.5)
-        non_default_as_cls_dict = scenario._get_non_default_as_cls_dict(
-            default_non_default_asn_cls_dict=None,
+        non_default_asn_cls_dict = scenario._get_non_default_asn_cls_dict(
+            override_non_default_asn_cls_dict=None,
             engine=engine,
             prev_scenario=None
         )
 
-        assert ROVSimpleAS in list(non_default_as_cls_dict.values())
-        assert BGPSimpleAS not in list(non_default_as_cls_dict.values())
+        assert ROVSimpleAS in list(non_default_asn_cls_dict.values())
+        assert BGPSimpleAS not in list(non_default_asn_cls_dict.values())
 
     @pytest.mark.skip(reason="Covered by other unit tests")
-    def test_get_non_default_as_cls_dict_no_adoption_sequence(self):
+    def test_get_non_default_asn_cls_dict_no_adoption_sequence(self):
         """Tests the Pseudo AdoptASCls
 
         # This is done to fix the following:
@@ -367,19 +370,25 @@ class TestScenario:
     def test_default_adopters(self):
         """Ensures that the default adopters returns the victims"""
 
-        assert SubprefixHijack(default_victim_asns={1})._default_adopters == {1}
+        assert SubprefixHijack(
+            scenario_config=ScenarioConfig(override_victim_asns={1})
+        )._default_adopters == {1}
 
     def test_default_non_adopters(self):
         """Tests that the attacker does not adopt"""
 
-        assert SubprefixHijack(default_attacker_asns={1})._default_non_adopters == {1}
+        assert SubprefixHijack(
+            scenario_config=ScenarioConfig(override_attacker_asns={1})
+        )._default_non_adopters == {1}
 
     def test_preset_asns(self):
         """Tests that the preset ASNs is the union of default ASNs"""
 
         hijack = SubprefixHijack(
-            default_attacker_asns={1},
-            default_victim_asns={2}
+            scenario_config=ScenarioConfig(
+                override_attacker_asns={1},
+                override_victim_asns={2}
+            )
         )
         assert hijack._preset_asns == {1, 2}
 

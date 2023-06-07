@@ -22,14 +22,13 @@ class Custom31ValidPrefix(ValidPrefix):
         return (vic_ann,)
 
 
-class Config031(EngineTestConfig):
-    """Contains config options to run a test"""
-
-    name = "031"
-    desc = "Test loop prevention mechanism"
-    scenario = Custom31ValidPrefix(
-        victim_asns={4}, AdoptASCls=None, BaseASCls=BGPSimpleAS
+config_031 = EngineTestConfig(
+    name="031"
+    desc="Test loop prevention mechanism"
+    scenario_config=ScenarioConfig(
+        ScenarioCls=Custom31ValidPrefix,
+        override_victim_asns={4},
+        BaseASCls=BGPSimpleAS
     )
     graph = Graph040()
-    non_default_as_cls_dict: Dict[int, Type[AS]] = dict()
-    propagation_rounds = 1
+)

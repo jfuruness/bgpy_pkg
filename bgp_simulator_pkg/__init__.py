@@ -30,7 +30,7 @@ from .enums import Relationships
 from .enums import SpecialPercentAdoptions
 
 from .simulation_framework import ScenarioConfig
-from .simulation_framework import ScenarioTrial
+from .simulation_framework import Scenario
 from .simulation_framework import PrefixHijack
 from .simulation_framework import SubprefixHijack
 from .simulation_framework import NonRoutedPrefixHijack
@@ -71,40 +71,41 @@ from .simulation_framework import VictimSuccessAllSubgraph
 
 
 # Test configs
-from .tests import Config001
-from .tests import Config002
-from .tests import Config003
-from .tests import Config004
-from .tests import Config005
-from .tests import Config006
-from .tests import Config007
-from .tests import Config008
-from .tests import Config009
-from .tests import Config010
-from .tests import Config011
-from .tests import Config012
-from .tests import Config013
-from .tests import Config014
-from .tests import Config015
-from .tests import Config016
-from .tests import Config017
-from .tests import Config018
-from .tests import Config019
-from .tests import Config020
-from .tests import Config021
-from .tests import Config022
-from .tests import Config023
-from .tests import Config024
-from .tests import Config025
-from .tests import Config026
-from .tests import Config027
-from .tests import Config028
-from .tests import Config029
-from .tests import Config030
-from .tests import Config031
-from .tests import Config032
-from .tests import Config033
-from .tests import Config034
+from .tests import config_001
+from .tests import config_002
+from .tests import config_003
+from .tests import config_004
+from .tests import config_005
+from .tests import config_006
+from .tests import config_007
+from .tests import config_008
+from .tests import config_009
+from .tests import config_010
+from .tests import config_011
+from .tests import config_012
+from .tests import config_013
+from .tests import config_014
+from .tests import config_015
+from .tests import config_016
+from .tests import config_017
+from .tests import config_018
+from .tests import config_019
+from .tests import config_020
+from .tests import config_021
+from .tests import config_022
+from .tests import config_023
+from .tests import config_024
+from .tests import config_025
+from .tests import config_026
+from .tests import config_027
+from .tests import config_028
+from .tests import config_029
+from .tests import config_030
+from .tests import config_031
+from .tests import config_032
+from .tests import config_033
+from .tests import config_034
+from .tests import engine_test_configs
 
 
 __all__ = [
@@ -129,7 +130,7 @@ __all__ = [
     "Relationships",
     "SpecialPercentAdoptions",
     "ScenarioConfig",
-    "ScenarioTrial",
+    "Scenario",
     "PrefixHijack",
     "SubprefixHijack",
     "NonRoutedPrefixHijack",
@@ -171,38 +172,39 @@ __all__ = [
     "GraphInfo",
     "pytest_addoption",
     "graphs",
-    "Config001",
-    "Config002",
-    "Config003",
-    "Config004",
-    "Config005",
-    "Config006",
-    "Config007",
-    "Config008",
-    "Config009",
-    "Config010",
-    "Config011",
-    "Config012",
-    "Config013",
-    "Config014",
-    "Config015",
-    "Config016",
-    "Config017",
-    "Config018",
-    "Config019",
-    "Config020",
-    "Config021",
-    "Config022",
-    "Config023",
-    "Config024",
-    "Config025",
-    "Config026",
-    "Config027",
-    "Config028",
-    "Config029",
-    "Config030",
-    "Config031",
-    "Config032",
-    "Config033",
-    "Config034",
+    "config_001",
+    "config_002",
+    "config_003",
+    "config_004",
+    "config_005",
+    "config_006",
+    "config_007",
+    "config_008",
+    "config_009",
+    "config_010",
+    "config_011",
+    "config_012",
+    "config_013",
+    "config_014",
+    "config_015",
+    "config_016",
+    "config_017",
+    "config_018",
+    "config_019",
+    "config_020",
+    "config_021",
+    "config_022",
+    "config_023",
+    "config_024",
+    "config_025",
+    "config_026",
+    "config_027",
+    "config_028",
+    "config_029",
+    "config_030",
+    "config_031",
+    "config_032",
+    "config_033",
+    "config_034",
+    "engine_test_configs",
 ]

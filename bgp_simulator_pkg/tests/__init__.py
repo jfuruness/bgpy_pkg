@@ -58,40 +58,41 @@ from .engine_tests import Graph050
 from .engine_tests import Graph051
 
 # Test configs
-from .engine_tests import Config001
-from .engine_tests import Config002
-from .engine_tests import Config003
-from .engine_tests import Config004
-from .engine_tests import Config005
-from .engine_tests import Config006
-from .engine_tests import Config007
-from .engine_tests import Config008
-from .engine_tests import Config009
-from .engine_tests import Config010
-from .engine_tests import Config011
-from .engine_tests import Config012
-from .engine_tests import Config013
-from .engine_tests import Config014
-from .engine_tests import Config015
-from .engine_tests import Config016
-from .engine_tests import Config017
-from .engine_tests import Config018
-from .engine_tests import Config019
-from .engine_tests import Config020
-from .engine_tests import Config021
-from .engine_tests import Config022
-from .engine_tests import Config023
-from .engine_tests import Config024
-from .engine_tests import Config025
-from .engine_tests import Config026
-from .engine_tests import Config027
-from .engine_tests import Config028
-from .engine_tests import Config029
-from .engine_tests import Config030
-from .engine_tests import Config031
-from .engine_tests import Config032
-from .engine_tests import Config033
-from .engine_tests import Config034
+from .engine_tests import config_001
+from .engine_tests import config_002
+from .engine_tests import config_003
+from .engine_tests import config_004
+from .engine_tests import config_005
+from .engine_tests import config_006
+from .engine_tests import config_007
+from .engine_tests import config_008
+from .engine_tests import config_009
+from .engine_tests import config_010
+from .engine_tests import config_011
+from .engine_tests import config_012
+from .engine_tests import config_013
+from .engine_tests import config_014
+from .engine_tests import config_015
+from .engine_tests import config_016
+from .engine_tests import config_017
+from .engine_tests import config_018
+from .engine_tests import config_019
+from .engine_tests import config_020
+from .engine_tests import config_021
+from .engine_tests import config_022
+from .engine_tests import config_023
+from .engine_tests import config_024
+from .engine_tests import config_025
+from .engine_tests import config_026
+from .engine_tests import config_027
+from .engine_tests import config_028
+from .engine_tests import config_029
+from .engine_tests import config_030
+from .engine_tests import config_031
+from .engine_tests import config_032
+from .engine_tests import config_033
+from .engine_tests import config_034
+from .engine_tests import engine_test_configs
 
 
 __all__ = [
@@ -101,40 +102,41 @@ __all__ = [
     "EngineTester",
     "EngineTestConfig",
     "TestEngine",
-    "Config001",
-    "Config002",
-    "Config003",
-    "Config004",
-    "Config005",
-    "Config006",
-    "Config007",
-    "Config008",
-    "Config009",
-    "Config010",
-    "Config011",
-    "Config012",
-    "Config013",
-    "Config014",
-    "Config015",
-    "Config016",
-    "Config017",
-    "Config018",
-    "Config019",
-    "Config020",
-    "Config021",
-    "Config022",
-    "Config023",
-    "Config024",
-    "Config025",
-    "Config026",
-    "Config027",
-    "Config028",
-    "Config029",
-    "Config030",
-    "Config031",
-    "Config032",
-    "Config033",
-    "Config034",
+    "config_001",
+    "config_002",
+    "config_003",
+    "config_004",
+    "config_005",
+    "config_006",
+    "config_007",
+    "config_008",
+    "config_009",
+    "config_010",
+    "config_011",
+    "config_012",
+    "config_013",
+    "config_014",
+    "config_015",
+    "config_016",
+    "config_017",
+    "config_018",
+    "config_019",
+    "config_020",
+    "config_021",
+    "config_022",
+    "config_023",
+    "config_024",
+    "config_025",
+    "config_026",
+    "config_027",
+    "config_028",
+    "config_029",
+    "config_030",
+    "config_031",
+    "config_032",
+    "config_033",
+    "config_034",
+    "engine_test_configs",
     "GraphInfo",
     "Graph001",
     "Graph002",

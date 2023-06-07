@@ -11,7 +11,7 @@ from ...enums import ASTypes
 from ...enums import Outcomes
 from ...enums import SpecialPercentAdoptions
 from ...simulation_engine import SimulationEngine
-from ..scenarios import ScenarioTrial
+from ..scenarios import Scenario
 from ...simulation_engine.announcement import Announcement as Ann
 
 from caida_collector_pkg import AS
@@ -177,7 +177,7 @@ class Subgraph(ABC):
         engine: SimulationEngine,
         percent_adopt: float,
         trial: int,
-        scenario_trial: ScenarioTrial,
+        scenario_trial: Scenario,
         propagation_round: int,
     ):
         """Aggregates data after a single engine run
@@ -217,7 +217,7 @@ class Subgraph(ABC):
             shared_data.get(key, 0)
         )  # noqa
 
-    def _get_subgraph_key(self, scenario: ScenarioTrial, *args: Any) -> str:
+    def _get_subgraph_key(self, scenario: Scenario, *args: Any) -> str:
         """Returns the key to be used in shared_data on the subgraph"""
 
         raise NotImplementedError
@@ -230,7 +230,7 @@ class Subgraph(ABC):
         self,
         shared: Dict[Any, Any],
         engine: SimulationEngine,
-        scenario: ScenarioTrial,
+        scenario: Scenario,
         outcomes: Dict[AS, Outcomes],
     ):
         """Adds traceback info to shared data"""
@@ -394,7 +394,7 @@ class Subgraph(ABC):
     ###################
 
     def _get_engine_outcomes(
-        self, engine: SimulationEngine, scenario: ScenarioTrial
+        self, engine: SimulationEngine, scenario: Scenario
     ) -> Dict[AS, Outcomes]:
         """Gets the outcomes of all ASes"""
 
@@ -410,7 +410,7 @@ class Subgraph(ABC):
         as_obj: AS,
         outcomes: Dict[AS, Outcomes],
         engine: SimulationEngine,
-        scenario: ScenarioTrial,
+        scenario: Scenario,
     ) -> Outcomes:
         """Recursively returns the as outcome"""
 

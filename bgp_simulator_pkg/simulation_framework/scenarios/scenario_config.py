@@ -8,7 +8,7 @@ from ...simulation_engine import BGPSimpleAS
 
 
 if TYPE_CHECKING:
-    from .scenario_trial import ScenarioTrial
+    from .scenario_trial import Scenario
 
 pseudo_base_cls_dict: Dict[Type[AS], Type[AS]] = dict()
 
@@ -25,7 +25,7 @@ class ScenarioConfig:
     """
 
     # Optional since tests don't need it
-    ScenarioTrialCls: Optional[Type["ScenarioTrial"]] = None
+    ScenarioCls: Optional[Type["Scenario"]] = None
     # This is the base type of announcement for this class
     # You can specify a different base ann
     AnnCls: Type[Announcement] = Announcement
@@ -46,6 +46,11 @@ class ScenarioConfig:
     victim_subcategory_attr: str = "stub_or_mh_asns"
     # ASes that are hardcoded to specific values
     hardcoded_asn_cls_dict: Dict[int, Type[AS]] = field(default_factory=dict)
+    # Only necessary if coming from YAML or the test suite
+    override_attacker_asns: Optional[Set[int]] = None,
+    override_victim_asns: Optional[Set[int]] = None,
+    override_non_default_asn_cls_dict: Optional[Dict[int, Type[AS]]] = None,
+
 
     def __post_init__(self):
         """Sets AdoptASCls if it is None
