@@ -66,7 +66,7 @@ def test_sim_inputs(
         percent_adoptions=(0.0, 0.5, 1.0),
         scenario_configs=(
             ScenarioConfig(
-                ScenarioCls=Scenario,
+                ScenarioCls=ScenarioCls,
                 AdoptASCls=AdoptASCls,
                 BaseASCls=BaseASCls,
                 num_attackers=num_attackers
