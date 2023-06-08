@@ -23,6 +23,7 @@ class Custom32ValidPrefix(ValidPrefix):
             ann.as_path = (3,)
             engine.as_dict[3]._local_rib.add_ann(ann)
             Custom32ValidPrefix.victim_asns = {2, 3}
+            self.victim_asns = {2, 3}
 
 
 config_032 = EngineTestConfig(
@@ -32,6 +33,7 @@ config_032 = EngineTestConfig(
         ScenarioCls=Custom32ValidPrefix,
         BaseASCls=BGPAS,
         override_victim_asns={2},
+        override_non_default_asn_cls_dict=dict()
     ),
     graph=Graph040(),
     propagation_rounds=3

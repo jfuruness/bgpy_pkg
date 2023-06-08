@@ -42,6 +42,7 @@ config_034 = EngineTestConfig(
         ScenarioCls=Custom34ValidPrefix,
         BaseASCls=BGPAS,
         override_victim_asns={2},
+        override_non_default_asn_cls_dict=dict()
     ),
     graph=Graph040(),
     propagation_rounds=4

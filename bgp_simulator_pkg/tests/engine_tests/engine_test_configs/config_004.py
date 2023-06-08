@@ -13,6 +13,7 @@ config_004 = EngineTestConfig(
         ScenarioCls=ValidPrefix,
         BaseASCls=BGPAS,
         override_victim_asns={ASNs.VICTIM.value},
+        override_non_default_asn_cls_dict=dict()
     ),
     graph=Graph002(),
 )

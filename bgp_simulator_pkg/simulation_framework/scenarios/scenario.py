@@ -190,7 +190,7 @@ class Scenario(ABC):
         adoption across trials
         """
 
-        if override_non_default_asn_cls_dict:
+        if override_non_default_asn_cls_dict is not None:
             return override_non_default_asn_cls_dict
         # By default, use the last engine input to maintain static
         # adoption across the graph

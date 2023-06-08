@@ -123,7 +123,7 @@ class Diagram:
                 elif any(x == ann.origin for x in scenario.victim_asns):
                     ann_help = "&#128519;"
                 else:
-                    raise Exception("Not valid ann for rib?")
+                    raise Exception(f"Not valid ann for rib? {ann}")
 
                 html += f"""<TR>
                             <TD>{mask}</TD>

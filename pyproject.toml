@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta"
 python_files = ["test*.py"]
 python_classes = ["Test*"]
 python_functions = ["test*"]
-addopts = "--cov=bgp_simulator_pkg -n 6 -m 'not slow'"
+# addopts = "--cov=bgp_simulator_pkg -n 6 -m 'not slow'"
 markers = [
     "slow",  # All slow tests
     "framework",  # All framework tests

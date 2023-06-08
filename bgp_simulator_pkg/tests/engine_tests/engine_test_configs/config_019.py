@@ -14,6 +14,7 @@ config_019 = EngineTestConfig(
         BaseASCls=BGPSimpleAS,
         override_attacker_asns={ASNs.ATTACKER.value},
         override_victim_asns={ASNs.VICTIM.value},
+        override_non_default_asn_cls_dict=dict()
     ),
     graph=Graph017(),
 )

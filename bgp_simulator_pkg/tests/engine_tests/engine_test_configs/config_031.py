@@ -24,7 +24,8 @@ config_031 = EngineTestConfig(
     scenario_config=ScenarioConfig(
         ScenarioCls=Custom31ValidPrefix,
         override_victim_asns={4},
-        BaseASCls=BGPSimpleAS
+        BaseASCls=BGPSimpleAS,
+        override_non_default_asn_cls_dict=dict()
     ),
     graph=Graph040()
 )

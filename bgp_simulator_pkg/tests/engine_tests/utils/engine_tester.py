@@ -84,7 +84,7 @@ class EngineTester:
             cp_links=self.conf.graph.customer_provider_links,  # type: ignore
         )  # type: ignore
 
-        scenario.setup_engine(engine, 0, scenario)
+        scenario.setup_engine(engine, scenario)
         return engine
 
     def _store_yaml(self, engine, outcomes, shared_data):

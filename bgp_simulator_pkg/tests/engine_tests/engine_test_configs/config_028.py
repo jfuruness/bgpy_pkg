@@ -13,6 +13,7 @@ config_028 = EngineTestConfig(
         BaseASCls=BGPSimpleAS,
         num_victims=2,
         override_victim_asns={2, 3},
+        override_non_default_asn_cls_dict=dict()
     ),
     graph=Graph040(),
 )
