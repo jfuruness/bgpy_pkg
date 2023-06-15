@@ -7,7 +7,7 @@ from ipaddress import IPv4Network
 from ipaddress import IPv6Network
 from typing import Any, Dict, List, Optional, Set, Tuple, Type, Union
 
-from caida_collector_pkg import AS
+from bgp_simulator_pkg.caida_collector import AS
 
 from .scenario_config import ScenarioConfig
 from ...enums import Outcomes
@@ -55,9 +55,9 @@ class Scenario(ABC):
         )
 
         if self.scenario_config.override_announcements:
-            self.announcements: Tuple["Announcement", ...] = (
-                self.scenario_config.override_announcements
-            )
+            self.announcements: Tuple[
+                "Announcement", ...
+            ] = self.scenario_config.override_announcements
         else:
             self.announcements = self._get_announcements(
                 engine=engine, prev_scenario=prev_scenario
@@ -478,7 +478,7 @@ class Scenario(ABC):
             override_attacker_asns=self.attacker_asns,
             override_victim_asns=self.victim_asns,
             override_non_default_as_cls_dict=self._yamlable_non_default_asn_cls_dict,
-            override_announcements=self.announcements
+            override_announcements=self.announcements,
         )
 
         return {
@@ -495,7 +495,7 @@ class Scenario(ABC):
         )
         config_to_use = replace(
             dct["scenario_config"],
-            override_non_default_asn_cls_dict=non_default_asn_cls_dict
+            override_non_default_asn_cls_dict=non_default_asn_cls_dict,
         )
 
         return cls(

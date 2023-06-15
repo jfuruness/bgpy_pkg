@@ -1,4 +1,4 @@
-from ..graphs import Graph040
+from ..graphs import graph_040
 
 from ..utils import EngineTestConfig
 
@@ -20,10 +20,16 @@ class Custom30MultiValidPrefix(ValidPrefix):
         for i in range(len(vic_anns)):
             if vic_anns[i].origin == 1:
                 # longer path for AS 1
-                vic_anns[i].as_path = (
-                    vic_anns[i].origin,
-                    vic_anns[i].origin,
-                    vic_anns[i].origin,
+                # vic_anns[i].as_path = (
+                #     vic_anns[i].origin,
+                #     vic_anns[i].origin,
+                #     vic_anns[i].origin,
+                # )
+
+                object.__setattr__(
+                    vic_anns[i],
+                    "as_path",
+                    (vic_anns[i].origin, vic_anns[i].origin, vic_anns[i].origin)
                 )
         return vic_anns
 
@@ -36,7 +42,7 @@ config_030 = EngineTestConfig(
         BaseASCls=BGPSimpleAS,
         override_victim_asns={1, 4, 3, 5},
         num_victims=4,
-        override_non_default_asn_cls_dict=dict()
+        override_non_default_asn_cls_dict=dict(),
     ),
-    graph=Graph040()
+    graph=graph_040,
 )

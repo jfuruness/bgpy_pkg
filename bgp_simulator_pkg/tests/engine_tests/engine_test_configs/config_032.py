@@ -1,6 +1,6 @@
 from copy import deepcopy
 
-from ..graphs import Graph040
+from ..graphs import graph_040
 from ..utils import EngineTestConfig
 
 
@@ -19,8 +19,10 @@ class Custom32ValidPrefix(ValidPrefix):
             ann = deepcopy(engine.as_dict[2]._local_rib.get_ann(Prefixes.PREFIX.value))
             # Add a new announcement at AS 3, which will be better than the one
             # from 2 and cause a withdrawn route by 1 to 4
-            ann.seed_asn = 3
-            ann.as_path = (3,)
+            # ann.seed_asn = 3
+            # ann.as_path = (3,)
+            object.__setattr__(ann, "seed_asn", 3)
+            object.__setattr__(ann, "as_path", (3,))
             engine.as_dict[3]._local_rib.add_ann(ann)
             Custom32ValidPrefix.victim_asns = {2, 3}
             self.victim_asns = {2, 3}
@@ -33,8 +35,8 @@ config_032 = EngineTestConfig(
         ScenarioCls=Custom32ValidPrefix,
         BaseASCls=BGPAS,
         override_victim_asns={2},
-        override_non_default_asn_cls_dict=dict()
+        override_non_default_asn_cls_dict=dict(),
     ),
-    graph=Graph040(),
-    propagation_rounds=3
+    graph=graph_040,
+    propagation_rounds=3,
 )

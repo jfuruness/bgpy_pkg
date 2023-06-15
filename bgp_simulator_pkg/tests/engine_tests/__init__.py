@@ -44,57 +44,57 @@ from .engine_test_configs import engine_test_configs
 
 # Graphs
 from .graphs import GraphInfo
-from .graphs import Graph001
-from .graphs import Graph002
-from .graphs import Graph003
-from .graphs import Graph004
-from .graphs import Graph005
-from .graphs import Graph006
-from .graphs import Graph007
-from .graphs import Graph008
-from .graphs import Graph009
-from .graphs import Graph010
-from .graphs import Graph011
-from .graphs import Graph012
-from .graphs import Graph013
-from .graphs import Graph014
-from .graphs import Graph015
-from .graphs import Graph016
-from .graphs import Graph017
-from .graphs import Graph018
-from .graphs import Graph019
-from .graphs import Graph020
-from .graphs import Graph021
-from .graphs import Graph022
-from .graphs import Graph023
-from .graphs import Graph024
-from .graphs import Graph025
-from .graphs import Graph026
-from .graphs import Graph027
-from .graphs import Graph028
-from .graphs import Graph029
-from .graphs import Graph030
-from .graphs import Graph031
-from .graphs import Graph032
-from .graphs import Graph033
-from .graphs import Graph034
-from .graphs import Graph035
-from .graphs import Graph036
-from .graphs import Graph037
-from .graphs import Graph038
-from .graphs import Graph039
-from .graphs import Graph040
-from .graphs import Graph041
-from .graphs import Graph042
-from .graphs import Graph043
-from .graphs import Graph044
-from .graphs import Graph045
-from .graphs import Graph046
-from .graphs import Graph047
-from .graphs import Graph048
-from .graphs import Graph049
-from .graphs import Graph050
-from .graphs import Graph051
+from .graphs import graph_001
+from .graphs import graph_002
+from .graphs import graph_003
+from .graphs import graph_004
+from .graphs import graph_005
+from .graphs import graph_006
+from .graphs import graph_007
+from .graphs import graph_008
+from .graphs import graph_009
+from .graphs import graph_010
+from .graphs import graph_011
+from .graphs import graph_012
+from .graphs import graph_013
+from .graphs import graph_014
+from .graphs import graph_015
+from .graphs import graph_016
+from .graphs import graph_017
+from .graphs import graph_018
+from .graphs import graph_019
+from .graphs import graph_020
+from .graphs import graph_021
+from .graphs import graph_022
+from .graphs import graph_023
+from .graphs import graph_024
+from .graphs import graph_025
+from .graphs import graph_026
+from .graphs import graph_027
+from .graphs import graph_028
+from .graphs import graph_029
+from .graphs import graph_030
+from .graphs import graph_031
+from .graphs import graph_032
+from .graphs import graph_033
+from .graphs import graph_034
+from .graphs import graph_035
+from .graphs import graph_036
+from .graphs import graph_037
+from .graphs import graph_038
+from .graphs import graph_039
+from .graphs import graph_040
+from .graphs import graph_041
+from .graphs import graph_042
+from .graphs import graph_043
+from .graphs import graph_044
+from .graphs import graph_045
+from .graphs import graph_046
+from .graphs import graph_047
+from .graphs import graph_048
+from .graphs import graph_049
+from .graphs import graph_050
+from .graphs import graph_051
 
 __all__ = [
     "Diagram",
@@ -138,55 +138,55 @@ __all__ = [
     "config_034",
     "engine_test_configs",
     "GraphInfo",
-    "Graph001",
-    "Graph002",
-    "Graph003",
-    "Graph004",
-    "Graph005",
-    "Graph006",
-    "Graph007",
-    "Graph008",
-    "Graph009",
-    "Graph010",
-    "Graph011",
-    "Graph012",
-    "Graph013",
-    "Graph014",
-    "Graph015",
-    "Graph016",
-    "Graph017",
-    "Graph018",
-    "Graph019",
-    "Graph020",
-    "Graph021",
-    "Graph022",
-    "Graph023",
-    "Graph024",
-    "Graph025",
-    "Graph026",
-    "Graph027",
-    "Graph028",
-    "Graph029",
-    "Graph030",
-    "Graph031",
-    "Graph032",
-    "Graph033",
-    "Graph034",
-    "Graph035",
-    "Graph036",
-    "Graph037",
-    "Graph038",
-    "Graph039",
-    "Graph040",
-    "Graph041",
-    "Graph042",
-    "Graph043",
-    "Graph044",
-    "Graph045",
-    "Graph046",
-    "Graph047",
-    "Graph048",
-    "Graph049",
-    "Graph050",
-    "Graph051",
+    "graph_001",
+    "graph_002",
+    "graph_003",
+    "graph_004",
+    "graph_005",
+    "graph_006",
+    "graph_007",
+    "graph_008",
+    "graph_009",
+    "graph_010",
+    "graph_011",
+    "graph_012",
+    "graph_013",
+    "graph_014",
+    "graph_015",
+    "graph_016",
+    "graph_017",
+    "graph_018",
+    "graph_019",
+    "graph_020",
+    "graph_021",
+    "graph_022",
+    "graph_023",
+    "graph_024",
+    "graph_025",
+    "graph_026",
+    "graph_027",
+    "graph_028",
+    "graph_029",
+    "graph_030",
+    "graph_031",
+    "graph_032",
+    "graph_033",
+    "graph_034",
+    "graph_035",
+    "graph_036",
+    "graph_037",
+    "graph_038",
+    "graph_039",
+    "graph_040",
+    "graph_041",
+    "graph_042",
+    "graph_043",
+    "graph_044",
+    "graph_045",
+    "graph_046",
+    "graph_047",
+    "graph_048",
+    "graph_049",
+    "graph_050",
+    "graph_051",
 ]

@@ -1,7 +1,7 @@
 from dataclasses import asdict, dataclass, field
 from typing import Any, Dict, Optional, Set, Tuple, Type, TYPE_CHECKING
 
-from caida_collector_pkg import AS
+from bgp_simulator_pkg.caida_collector import AS
 
 from ...simulation_engine import Announcement
 from ...simulation_engine import BGPSimpleAS

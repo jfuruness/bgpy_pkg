@@ -1,4 +1,4 @@
-from ..graphs import Graph003
+from ..graphs import graph_003
 from ..utils import EngineTestConfig
 
 from ....simulation_engine import ROVSimpleAS, BGPSimpleAS
@@ -17,5 +17,5 @@ config_007 = EngineTestConfig(
         AdoptASCls=ROVSimpleAS,
         override_non_default_asn_cls_dict={3: ROVSimpleAS, 4: ROVSimpleAS},
     ),
-    graph=Graph003(),
+    graph=graph_003,
 )

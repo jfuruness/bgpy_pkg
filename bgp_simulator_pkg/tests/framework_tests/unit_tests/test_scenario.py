@@ -2,7 +2,7 @@ import random
 
 import pytest
 
-from caida_collector_pkg import CaidaCollector
+from bgp_simulator_pkg.caida_collector import CaidaCollector
 
 from ....enums import Prefixes
 from ....simulation_framework import ScenarioConfig
@@ -19,9 +19,7 @@ from ....simulation_engine import SimulationEngine
 @pytest.mark.framework
 @pytest.mark.unit_tests
 class TestScenario:
-    @pytest.mark.parametrize(
-        "num_attackers", (1, 2)
-    )
+    @pytest.mark.parametrize("num_attackers", (1, 2))
     def test_init_valid(self, num_attackers):
         """Tests the initialization works when valid"""
 
@@ -81,17 +79,15 @@ class TestScenario:
         prev_scenario_config = ScenarioConfig(
             ScenarioCls=SubprefixHijack,
             override_attacker_asns={1},
-            override_victim_asns={2}
+            override_victim_asns={2},
         )
         prev_scenario = SubprefixHijack(
             scenario_config=prev_scenario_config, engine=engine
         )
         scenario = SubprefixHijack(
-            scenario_config=ScenarioConfig(
-                ScenarioCls=SubprefixHijack
-            ),
+            scenario_config=ScenarioConfig(ScenarioCls=SubprefixHijack),
             engine=engine,
-            prev_scenario=prev_scenario
+            prev_scenario=prev_scenario,
         )
         assert prev_scenario.attacker_asns == scenario.attacker_asns
         assert prev_scenario.victim_asns == scenario.victim_asns
@@ -104,16 +100,10 @@ class TestScenario:
 
         random.seed(0)
         scenario = SubprefixHijack(
-            scenario_config=ScenarioConfig(
-                ScenarioCls=SubprefixHijack
-            ),
-            engine=engine
+            scenario_config=ScenarioConfig(ScenarioCls=SubprefixHijack), engine=engine
         )
         scenario_2 = SubprefixHijack(
-            scenario_config=ScenarioConfig(
-                ScenarioCls=SubprefixHijack
-            ),
-            engine=engine
+            scenario_config=ScenarioConfig(ScenarioCls=SubprefixHijack), engine=engine
         )
 
         assert scenario.attacker_asns != scenario_2.attacker_asns
@@ -131,9 +121,9 @@ class TestScenario:
             scenario_config=ScenarioConfig(
                 ScenarioCls=SubprefixHijack,
                 override_attacker_asns=attacker_asns,
-                override_victim_asns=victim_asns
+                override_victim_asns=victim_asns,
             ),
-            engine=engine
+            engine=engine,
         )
         assert scenario.attacker_asns == attacker_asns, scenario.attacker_asns
         assert scenario.victim_asns == victim_asns, scenario.victim_asns
@@ -143,10 +133,7 @@ class TestScenario:
 
         # No preset attacker and victim asns
         scenario = SubprefixHijack(
-            scenario_config=ScenarioConfig(
-                ScenarioCls=SubprefixHijack
-            ),
-            engine=engine
+            scenario_config=ScenarioConfig(ScenarioCls=SubprefixHijack), engine=engine
         )
         # Ensure that these are filled
         assert scenario.attacker_asns
@@ -165,14 +152,11 @@ class TestScenario:
 
         num_attackers = 2
         scenario_config = ScenarioConfig(
-            ScenarioCls=SubprefixHijack,
-            num_attackers=num_attackers
+            ScenarioCls=SubprefixHijack, num_attackers=num_attackers
         )
         scenario = SubprefixHijack(scenario_config=scenario_config, engine=engine)
         attacker_asns = scenario._get_attacker_asns(
-            override_attacker_asns=None,
-            engine=engine,
-            prev_scenario=None
+            override_attacker_asns=None, engine=engine, prev_scenario=None
         )
         # Check for #1
         assert attacker_asns
@@ -180,9 +164,7 @@ class TestScenario:
         assert len(attacker_asns) == num_attackers
         # Check for number 3
         attacker_asns_2 = scenario._get_attacker_asns(
-            override_attacker_asns=None,
-            engine=engine,
-            prev_scenario=None
+            override_attacker_asns=None, engine=engine, prev_scenario=None
         )
         assert attacker_asns != attacker_asns_2
 
@@ -203,9 +185,7 @@ class TestScenario:
         scenario_config = ScenarioConfig(ScenarioCls=SubprefixHijack, num_victims=2)
         scenario = NonRoutedPrefixHijack(scenario_config=scenario_config, engine=engine)
         victim_asns = scenario._get_victim_asns(
-            override_victim_asns=None,
-            engine=engine,
-            prev_scenario=None
+            override_victim_asns=None, engine=engine, prev_scenario=None
         )
         # Check for #1
         assert victim_asns
@@ -213,9 +193,7 @@ class TestScenario:
         assert len(victim_asns) == num_victims
         # Check for number 3
         victim_asns_2 = scenario._get_victim_asns(
-            override_victim_asns=None,
-            engine=engine,
-            prev_scenario=None
+            override_victim_asns=None, engine=engine, prev_scenario=None
         )
 
         assert victim_asns != victim_asns_2
@@ -236,15 +214,10 @@ class TestScenario:
         ).run(tsv_path=None)
 
         scenario = SubprefixHijack(
-            scenario_config=ScenarioConfig(
-                ScenarioCls=SubprefixHijack
-            ),
-            engine=engine
+            scenario_config=ScenarioConfig(ScenarioCls=SubprefixHijack), engine=engine
         )
         assert scenario._get_possible_attacker_asns(
-            engine=engine,
-            percent_adoption=.5,
-            prev_scenario=None
+            engine=engine, percent_adoption=0.5, prev_scenario=None
         )
 
     def test_get_possible_victim_asns(self, engine):
@@ -256,15 +229,10 @@ class TestScenario:
         ).run(tsv_path=None)
 
         scenario = SubprefixHijack(
-            scenario_config=ScenarioConfig(
-                ScenarioCls=SubprefixHijack
-            ),
-            engine=engine
+            scenario_config=ScenarioConfig(ScenarioCls=SubprefixHijack), engine=engine
         )
         assert scenario._get_possible_victim_asns(
-            engine=engine,
-            percent_adoption=.5,
-            prev_scenario=None
+            engine=engine, percent_adoption=0.5, prev_scenario=None
         )
 
     def test_get_announcements(self, engine):
@@ -274,10 +242,7 @@ class TestScenario:
         """
 
         scenario = SubprefixHijack(
-            scenario_config=ScenarioConfig(
-                ScenarioCls=SubprefixHijack
-            ),
-            engine=engine
+            scenario_config=ScenarioConfig(ScenarioCls=SubprefixHijack), engine=engine
         )
         # Victim prefix, subprefix attacker
         assert len(scenario.announcements) == 2
@@ -310,27 +275,22 @@ class TestScenario:
                 # 1: BaseASCls,
                 2: ROVAS,
                 3: ROVSimpleAS,
-            }
+            },
         )
         prev_scenario = SubprefixHijack(
-            scenario_config=prev_scenario_config,
-            engine=engine
+            scenario_config=prev_scenario_config, engine=engine
         )
         scenario_config = ScenarioConfig(
-            ScenarioCls=SubprefixHijack,
-            AdoptASCls=BGPAS,
-            BaseASCls=BaseASCls
+            ScenarioCls=SubprefixHijack, AdoptASCls=BGPAS, BaseASCls=BaseASCls
         )
         scenario = SubprefixHijack(scenario_config=scenario_config, engine=engine)
         non_default_asn_cls_dict = scenario._get_non_default_asn_cls_dict(
             override_non_default_asn_cls_dict=None,
             engine=engine,
-            prev_scenario=prev_scenario
+            prev_scenario=prev_scenario,
         )
 
-        gt = {  # 1: BaseASCls,
-            2: ROVAS, 3: BGPAS
-        }
+        gt = {2: ROVAS, 3: BGPAS}  # 1: BaseASCls,
         assert non_default_asn_cls_dict == gt
 
     def test_get_non_default_asn_cls_dict_prev_scenario_no_adopt(self, engine):
@@ -351,22 +311,19 @@ class TestScenario:
                 # 1: BaseASCls,
                 2: ROVAS,
                 # 3: BaseASCls,
-            }
+            },
         )
         prev_scenario = SubprefixHijack(
-            scenario_config=prev_scenario_config,
-            engine=engine
+            scenario_config=prev_scenario_config, engine=engine
         )
         scenario_config = ScenarioConfig(
-            ScenarioCls=SubprefixHijack,
-            AdoptASCls=BGPAS,
-            BaseASCls=BaseASCls
+            ScenarioCls=SubprefixHijack, AdoptASCls=BGPAS, BaseASCls=BaseASCls
         )
         scenario = SubprefixHijack(scenario_config=scenario_config, engine=engine)
         non_default_asn_cls_dict = scenario._get_non_default_asn_cls_dict(
             override_non_default_asn_cls_dict=None,
             engine=engine,
-            prev_scenario=prev_scenario
+            prev_scenario=prev_scenario,
         )
 
         gt = {
@@ -384,19 +341,13 @@ class TestScenario:
         """
 
         scenario_config = ScenarioConfig(
-            ScenarioCls=SubprefixHijack,
-            AdoptASCls=ROVSimpleAS,
-            BaseASCls=BGPSimpleAS
+            ScenarioCls=SubprefixHijack, AdoptASCls=ROVSimpleAS, BaseASCls=BGPSimpleAS
         )
         scenario = SubprefixHijack(
-            scenario_config=scenario_config,
-            percent_adoption=.5,
-            engine=engine
+            scenario_config=scenario_config, percent_adoption=0.5, engine=engine
         )
         non_default_asn_cls_dict = scenario._get_non_default_asn_cls_dict(
-            override_non_default_asn_cls_dict=None,
-            engine=engine,
-            prev_scenario=None
+            override_non_default_asn_cls_dict=None, engine=engine, prev_scenario=None
         )
 
         assert ROVSimpleAS in list(non_default_asn_cls_dict.values())
@@ -437,10 +388,9 @@ class TestScenario:
 
         assert SubprefixHijack(
             scenario_config=ScenarioConfig(
-                ScenarioCls=SubprefixHijack,
-                override_victim_asns={1}
+                ScenarioCls=SubprefixHijack, override_victim_asns={1}
             ),
-            engine=engine
+            engine=engine,
         )._default_adopters == {1}
 
     def test_default_non_adopters(self, engine):
@@ -448,10 +398,9 @@ class TestScenario:
 
         assert SubprefixHijack(
             scenario_config=ScenarioConfig(
-                ScenarioCls=SubprefixHijack,
-                override_attacker_asns={1}
+                ScenarioCls=SubprefixHijack, override_attacker_asns={1}
             ),
-            engine=engine
+            engine=engine,
         )._default_non_adopters == {1}
 
     def test_preset_asns(self, engine):
@@ -461,9 +410,9 @@ class TestScenario:
             scenario_config=ScenarioConfig(
                 ScenarioCls=SubprefixHijack,
                 override_attacker_asns={1},
-                override_victim_asns={2}
+                override_victim_asns={2},
             ),
-            engine=engine
+            engine=engine,
         )
         assert hijack._preset_asns == {1, 2}
 
@@ -516,10 +465,7 @@ class TestScenario:
         """Test that the post_propagation_hook doesn't error"""
 
         SubprefixHijack(
-            scenario_config=ScenarioConfig(
-                ScenarioCls=SubprefixHijack
-            ),
-            engine=engine
+            scenario_config=ScenarioConfig(ScenarioCls=SubprefixHijack), engine=engine
         ).post_propagation_hook()
 
     ################
@@ -530,10 +476,7 @@ class TestScenario:
         """Tests that the get_ordered_prefix_subprefix_dict works"""
 
         scenario = SubprefixHijack(
-            scenario_config=ScenarioConfig(
-                ScenarioCls=SubprefixHijack
-            ),
-            engine=engine
+            scenario_config=ScenarioConfig(ScenarioCls=SubprefixHijack), engine=engine
         )
         gt = {
             Prefixes.PREFIX.value: [Prefixes.SUBPREFIX.value],

@@ -1,4 +1,4 @@
-from ..graphs import Graph019
+from ..graphs import graph_019
 from ..utils import EngineTestConfig
 
 from ....simulation_engine import ROVSimpleAS
@@ -14,7 +14,7 @@ config_025 = EngineTestConfig(
         BaseASCls=ROVSimpleAS,
         override_attacker_asns={ASNs.ATTACKER.value},
         override_victim_asns={ASNs.VICTIM.value},
-        override_non_default_asn_cls_dict=dict()
+        override_non_default_asn_cls_dict=dict(),
     ),
-    graph=Graph019(),
+    graph=graph_019,
 )

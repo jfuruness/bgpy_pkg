@@ -1,4 +1,4 @@
-from ..graphs import Graph017
+from ..graphs import graph_017
 from ..utils import EngineTestConfig
 
 from ....simulation_engine import ROVAS
@@ -14,7 +14,7 @@ config_022 = EngineTestConfig(
         BaseASCls=ROVAS,
         override_attacker_asns={ASNs.ATTACKER.value},
         override_victim_asns={ASNs.VICTIM.value},
-        override_non_default_asn_cls_dict=dict()
+        override_non_default_asn_cls_dict=dict(),
     ),
-    graph=Graph017(),
+    graph=graph_017,
 )

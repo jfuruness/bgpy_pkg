@@ -1,0 +1,202 @@
+# source:topology|BGP|20210901|ripe|rrc00
+# source:topology|BGP|20210902|ripe|rrc00
+# source:topology|BGP|20210903|ripe|rrc00
+# source:topology|BGP|20210904|ripe|rrc00
+# source:topology|BGP|20210905|ripe|rrc00
+# source:topology|BGP|20210901|ripe|rrc01
+# source:topology|BGP|20210902|ripe|rrc01
+# source:topology|BGP|20210903|ripe|rrc01
+# source:topology|BGP|20210904|ripe|rrc01
+# source:topology|BGP|20210905|ripe|rrc01
+# source:topology|BGP|20210901|ripe|rrc03
+# source:topology|BGP|20210902|ripe|rrc03
+# source:topology|BGP|20210903|ripe|rrc03
+# source:topology|BGP|20210904|ripe|rrc03
+# source:topology|BGP|20210905|ripe|rrc03
+# source:topology|BGP|20210901|ripe|rrc04
+# source:topology|BGP|20210902|ripe|rrc04
+# source:topology|BGP|20210903|ripe|rrc04
+# source:topology|BGP|20210904|ripe|rrc04
+# source:topology|BGP|20210905|ripe|rrc04
+# source:topology|BGP|20210901|ripe|rrc05
+# source:topology|BGP|20210902|ripe|rrc05
+# source:topology|BGP|20210903|ripe|rrc05
+# source:topology|BGP|20210904|ripe|rrc05
+# source:topology|BGP|20210905|ripe|rrc05
+# source:topology|BGP|20210901|ripe|rrc06
+# source:topology|BGP|20210902|ripe|rrc06
+# source:topology|BGP|20210903|ripe|rrc06
+# source:topology|BGP|20210904|ripe|rrc06
+# source:topology|BGP|20210905|ripe|rrc06
+# source:topology|BGP|20210901|ripe|rrc07
+# source:topology|BGP|20210902|ripe|rrc07
+# source:topology|BGP|20210903|ripe|rrc07
+# source:topology|BGP|20210904|ripe|rrc07
+# source:topology|BGP|20210905|ripe|rrc07
+# source:topology|BGP|20210901|ripe|rrc10
+# source:topology|BGP|20210902|ripe|rrc10
+# source:topology|BGP|20210903|ripe|rrc10
+# source:topology|BGP|20210904|ripe|rrc10
+# source:topology|BGP|20210905|ripe|rrc10
+# source:topology|BGP|20210901|ripe|rrc11
+# source:topology|BGP|20210902|ripe|rrc11
+# source:topology|BGP|20210903|ripe|rrc11
+# source:topology|BGP|20210904|ripe|rrc11
+# source:topology|BGP|20210905|ripe|rrc11
+# source:topology|BGP|20210901|ripe|rrc12
+# source:topology|BGP|20210902|ripe|rrc12
+# source:topology|BGP|20210903|ripe|rrc12
+# source:topology|BGP|20210904|ripe|rrc12
+# source:topology|BGP|20210905|ripe|rrc12
+# source:topology|BGP|20210901|ripe|rrc13
+# source:topology|BGP|20210902|ripe|rrc13
+# source:topology|BGP|20210903|ripe|rrc13
+# source:topology|BGP|20210904|ripe|rrc13
+# source:topology|BGP|20210905|ripe|rrc13
+# source:topology|BGP|20210901|ripe|rrc14
+# source:topology|BGP|20210902|ripe|rrc14
+# source:topology|BGP|20210903|ripe|rrc14
+# source:topology|BGP|20210904|ripe|rrc14
+# source:topology|BGP|20210905|ripe|rrc14
+# source:topology|BGP|20210901|ripe|rrc15
+# source:topology|BGP|20210902|ripe|rrc15
+# source:topology|BGP|20210903|ripe|rrc15
+# source:topology|BGP|20210904|ripe|rrc15
+# source:topology|BGP|20210905|ripe|rrc15
+# source:topology|BGP|20210901|ripe|rrc16
+# source:topology|BGP|20210902|ripe|rrc16
+# source:topology|BGP|20210903|ripe|rrc16
+# source:topology|BGP|20210904|ripe|rrc16
+# source:topology|BGP|20210905|ripe|rrc16
+# source:topology|BGP|20210901|ripe|rrc18
+# source:topology|BGP|20210902|ripe|rrc18
+# source:topology|BGP|20210903|ripe|rrc18
+# source:topology|BGP|20210904|ripe|rrc18
+# source:topology|BGP|20210905|ripe|rrc18
+# source:topology|BGP|20210901|ripe|rrc19
+# source:topology|BGP|20210902|ripe|rrc19
+# source:topology|BGP|20210903|ripe|rrc19
+# source:topology|BGP|20210904|ripe|rrc19
+# source:topology|BGP|20210905|ripe|rrc19
+# source:topology|BGP|20210901|ripe|rrc20
+# source:topology|BGP|20210902|ripe|rrc20
+# source:topology|BGP|20210903|ripe|rrc20
+# source:topology|BGP|20210904|ripe|rrc20
+# source:topology|BGP|20210905|ripe|rrc20
+# source:topology|BGP|20210901|ripe|rrc21
+# source:topology|BGP|20210902|ripe|rrc21
+# source:topology|BGP|20210903|ripe|rrc21
+# source:topology|BGP|20210904|ripe|rrc21
+# source:topology|BGP|20210905|ripe|rrc21
+# source:topology|BGP|20210901|routeviews|eqix
+# source:topology|BGP|20210902|routeviews|eqix
+# source:topology|BGP|20210903|routeviews|eqix
+# source:topology|BGP|20210904|routeviews|eqix
+# source:topology|BGP|20210905|routeviews|eqix
+# source:topology|BGP|20210901|routeviews|isc
+# source:topology|BGP|20210902|routeviews|isc
+# source:topology|BGP|20210903|routeviews|isc
+# source:topology|BGP|20210904|routeviews|isc
+# source:topology|BGP|20210905|routeviews|isc
+# source:topology|BGP|20210901|routeviews|kixp
+# source:topology|BGP|20210902|routeviews|kixp
+# source:topology|BGP|20210903|routeviews|kixp
+# source:topology|BGP|20210904|routeviews|kixp
+# source:topology|BGP|20210905|routeviews|kixp
+# source:topology|BGP|20210901|routeviews|linx
+# source:topology|BGP|20210902|routeviews|linx
+# source:topology|BGP|20210903|routeviews|linx
+# source:topology|BGP|20210904|routeviews|linx
+# source:topology|BGP|20210905|routeviews|linx
+# source:topology|BGP|20210901|routeviews|napafrica
+# source:topology|BGP|20210902|routeviews|napafrica
+# source:topology|BGP|20210903|routeviews|napafrica
+# source:topology|BGP|20210904|routeviews|napafrica
+# source:topology|BGP|20210905|routeviews|napafrica
+# source:topology|BGP|20210901|routeviews|nwax
+# source:topology|BGP|20210902|routeviews|nwax
+# source:topology|BGP|20210903|routeviews|nwax
+# source:topology|BGP|20210904|routeviews|nwax
+# source:topology|BGP|20210905|routeviews|nwax
+# source:topology|BGP|20210901|routeviews|perth
+# source:topology|BGP|20210902|routeviews|perth
+# source:topology|BGP|20210903|routeviews|perth
+# source:topology|BGP|20210904|routeviews|perth
+# source:topology|BGP|20210905|routeviews|perth
+# source:topology|BGP|20210901|routeviews|routeviews2
+# source:topology|BGP|20210902|routeviews|routeviews2
+# source:topology|BGP|20210903|routeviews|routeviews2
+# source:topology|BGP|20210904|routeviews|routeviews2
+# source:topology|BGP|20210905|routeviews|routeviews2
+# source:topology|BGP|20210901|routeviews|routeviews3
+# source:topology|BGP|20210902|routeviews|routeviews3
+# source:topology|BGP|20210903|routeviews|routeviews3
+# source:topology|BGP|20210904|routeviews|routeviews3
+# source:topology|BGP|20210905|routeviews|routeviews3
+# source:topology|BGP|20210901|routeviews|saopaulo
+# source:topology|BGP|20210902|routeviews|saopaulo
+# source:topology|BGP|20210903|routeviews|saopaulo
+# source:topology|BGP|20210904|routeviews|saopaulo
+# source:topology|BGP|20210905|routeviews|saopaulo
+# source:topology|BGP|20210901|routeviews|sfmix
+# source:topology|BGP|20210902|routeviews|sfmix
+# source:topology|BGP|20210903|routeviews|sfmix
+# source:topology|BGP|20210904|routeviews|sfmix
+# source:topology|BGP|20210905|routeviews|sfmix
+# source:topology|BGP|20210901|routeviews|sg
+# source:topology|BGP|20210902|routeviews|sg
+# source:topology|BGP|20210903|routeviews|sg
+# source:topology|BGP|20210904|routeviews|sg
+# source:topology|BGP|20210905|routeviews|sg
+# source:topology|BGP|20210901|routeviews|soxrs
+# source:topology|BGP|20210902|routeviews|soxrs
+# source:topology|BGP|20210903|routeviews|soxrs
+# source:topology|BGP|20210904|routeviews|soxrs
+# source:topology|BGP|20210905|routeviews|soxrs
+# source:topology|BGP|20210901|routeviews|sydney
+# source:topology|BGP|20210902|routeviews|sydney
+# source:topology|BGP|20210903|routeviews|sydney
+# source:topology|BGP|20210904|routeviews|sydney
+# source:topology|BGP|20210905|routeviews|sydney
+# source:topology|BGP|20210901|routeviews|telxatl
+# source:topology|BGP|20210902|routeviews|telxatl
+# source:topology|BGP|20210903|routeviews|telxatl
+# source:topology|BGP|20210904|routeviews|telxatl
+# source:topology|BGP|20210905|routeviews|telxatl
+# source:topology|BGP|20210901|routeviews|wide
+# source:topology|BGP|20210902|routeviews|wide
+# source:topology|BGP|20210903|routeviews|wide
+# source:topology|BGP|20210904|routeviews|wide
+# source:topology|BGP|20210905|routeviews|wide
+# source:topology|looking-glass|20210901|mlp|lg57056
+# source:topology|looking-glass|20210901|mlp|lg43213
+# source:topology|looking-glass|20210901|mlp|lg48216
+# source:topology|looking-glass|20210901|mlp|lg47822
+# source:topology|looking-glass|20210901|mlp|lg50706
+# source:topology|looking-glass|20210901|mlp|lg42403
+# source:topology|looking-glass|20210901|mlp|lg8631
+# source:topology|looking-glass|20210901|mlp|lg43690
+# input clique: 174 209 286 701 1239 1299 2828 2914 3257 3320 3356 3491 5511 6453 6461 6762 6830 7018 12956
+# IXP ASes: 1200 4635 5507 6695 7606 8714 9355 9439 9560 9722 9989 11670 15645 17819 18398 21371 24029 24115 24990 35054 40633 42476 43100 47886 48850 50384 55818 57463
+1|1898|-1|bgp
+1|5401|-1|bgp
+1|8641|0|bgp
+1|11537|0|bgp
+1|28618|-1|bgp
+1|50017|-1|bgp
+1|56847|0|bgp
+1|58243|-1|bgp
+1|60664|-1|bgp
+1|61396|-1|bgp
+1|263036|0|bgp
+1|267701|0|bgp
+2|55855|-1|bgp
+2|203427|0|bgp
+2|267222|0|bgp
+3|293|0|bgp
+3|6939|0|bgp
+4|7633|-1|bgp
+5|21710|-1|bgp
+6|64031|-1|bgp
+9|35104|0|bgp
+10|131401|-1|bgp

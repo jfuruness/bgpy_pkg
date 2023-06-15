@@ -1,7 +1,4 @@
 [![Linux](https://svgshare.com/i/Zhy.svg)](https://svgshare.com/i/Zhy.svg)
-[![Python 3.7](https://img.shields.io/badge/python-3.7-blue.svg)](https://www.python.org/downloads/release/python-370/)
-[![Python 3.8](https://img.shields.io/badge/python-3.8-blue.svg)](https://www.python.org/downloads/release/python-380/)
-[![Python 3.9](https://img.shields.io/badge/python-3.9-blue.svg)](https://www.python.org/downloads/release/python-390/)
 [![Python 3.10](https://img.shields.io/badge/python-3.10-blue.svg)](https://www.python.org/downloads/release/python-3100/)
 ![Tests](https://github.com/jfuruness/bgp_simulator_pkg/actions/workflows/tests.yml/badge.svg)
 
@@ -115,6 +112,8 @@ Also thanks to Reynaldo for the awesome name, love it.
 
 Thanks to Dr. Herzberg and Dr. Wang for employing me and allowing this project to be open source
 
+Thanks to Matt Jaccino and Tony Zheng for assistance with the initial implementation of the Caida Collector
+
 ## License
 * [bgp\_simulator\_pkg](#bgp_simulator_pkg)
 
@@ -130,3 +129,10 @@ See Jira
 We can't output CSVs for each trial of the graph and then later aggregate, analyze the data, etc.
 This is because we would be outputting a ton of data into CSVs (30+ gigabytes for the RPV++ configuration for example) and this would be way too slow for Python.
 Instead, we average the trials as we go, keeping it in RAM, and only writing the aggregate data onto disk at the end.
+
+We ended up moving the caida collector into this repo for a few reasons.
+There is less dependency madness. If you are installing for development, pypy will overwrite your local install of the caida collector witht he caida collector within git.
+This will allow for much better typing
+Previously this was separate because it was used in many other places, however, now it is only used within this simulator
+This is really coupled with the simulator now, since the base of the caida collector serves as the base for the simulator itself
+We will be able to dynamically make the subgraphs part of the caida collector, with an enum that someone can inherit and use, veasy easily if it's part of the simulator

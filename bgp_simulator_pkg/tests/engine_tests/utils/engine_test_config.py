@@ -6,7 +6,7 @@ from ....simulation_framework import ScenarioConfig
 from ....simulation_framework import Subgraph
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class EngineTestConfig:
     """Configuration info for the test suite"""
 

@@ -3,7 +3,7 @@ from typing import Dict, Iterator, List, Optional, Tuple
 
 from yamlable import YamlAble, yaml_info
 
-from caida_collector_pkg import AS
+from bgp_simulator_pkg.caida_collector import AS
 
 
 from .ann_container import AnnContainer

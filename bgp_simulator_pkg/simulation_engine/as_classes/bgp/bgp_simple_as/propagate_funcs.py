@@ -1,6 +1,6 @@
 from typing import List, Set
 
-from caida_collector_pkg import AS
+from bgp_simulator_pkg.caida_collector import AS
 
 from ....announcement import Announcement as Ann
 from .....enums import Relationships

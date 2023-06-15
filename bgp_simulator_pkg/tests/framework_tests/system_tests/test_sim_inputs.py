@@ -16,7 +16,7 @@ from ....simulation_framework import PrefixHijack
 from ....simulation_framework import ValidPrefix
 from ....simulation_framework import SubprefixHijack
 from ....simulation_framework import SuperprefixPrefixHijack
-from ....simulation_framework import ScenarioConfig, Scenario
+from ....simulation_framework import ScenarioConfig
 
 from ....simulation_framework import Simulation
 
@@ -26,7 +26,7 @@ AS_CLASSES = (
     ROVAS,
     ROVSimpleAS,
     RealROVSimpleAS,
-    RealPeerROVSimpleAS
+    RealPeerROVSimpleAS,
 )
 
 SCENARIOS = (
@@ -69,7 +69,7 @@ def test_sim_inputs(
                 ScenarioCls=ScenarioCls,
                 AdoptASCls=AdoptASCls,
                 BaseASCls=BaseASCls,
-                num_attackers=num_attackers
+                num_attackers=num_attackers,
             ),
         ),
         num_trials=2,

@@ -1,6 +1,6 @@
 from typing import List, Optional
 
-from caida_collector_pkg.graph.base_as import AS
+from bgp_simulator_pkg.caida_collector.graph.base_as import AS
 
 from ..bgp_simple_as import BGPSimpleAS
 

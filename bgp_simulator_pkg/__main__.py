@@ -10,14 +10,11 @@ def main():
     # Simulation for the paper
     sim = Simulation(
         percent_adoptions=(
-            .2,
-            .5,
+            0.2,
+            0.5,
         ),
         scenario_configs=(
-            ScenarioConfig(
-                ScenarioCls=SubprefixHijack,
-                AdoptASCls=ROVSimpleAS
-            ),
+            ScenarioConfig(ScenarioCls=SubprefixHijack, AdoptASCls=ROVSimpleAS),
         ),
         output_path=Path("~/Desktop/main_ex_graphs").expanduser(),
         num_trials=2,

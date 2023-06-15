@@ -1,4 +1,4 @@
-from ..graphs import Graph040
+from ..graphs import graph_040
 from ..utils import EngineTestConfig
 
 
@@ -14,7 +14,13 @@ class Custom31ValidPrefix(ValidPrefix):
     def _get_announcements(self, *args, **kwargs):
         vic_ann = super()._get_announcements()[0]
         # Add 1 to the path so AS 1 rejects this
-        vic_ann.as_path = (vic_ann.origin, 1, vic_ann.origin)
+        # vic_ann.as_path = (vic_ann.origin, 1, vic_ann.origin)
+
+        object.__setattr__(
+            vic_ann,
+            "as_path",
+            (vic_ann.origin, 1, vic_ann.origin)
+        )
         return (vic_ann,)
 
 
@@ -25,7 +31,7 @@ config_031 = EngineTestConfig(
         ScenarioCls=Custom31ValidPrefix,
         override_victim_asns={4},
         BaseASCls=BGPSimpleAS,
-        override_non_default_asn_cls_dict=dict()
+        override_non_default_asn_cls_dict=dict(),
     ),
-    graph=Graph040()
+    graph=graph_040,
 )

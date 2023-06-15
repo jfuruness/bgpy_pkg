@@ -8,54 +8,54 @@ from .engine_tests import EngineTestConfig
 
 # Graphs
 from .engine_tests import GraphInfo
-from .engine_tests import Graph001
-from .engine_tests import Graph002
-from .engine_tests import Graph003
-from .engine_tests import Graph004
-from .engine_tests import Graph005
-from .engine_tests import Graph006
-from .engine_tests import Graph007
-from .engine_tests import Graph008
-from .engine_tests import Graph009
-from .engine_tests import Graph010
-from .engine_tests import Graph011
-from .engine_tests import Graph012
-from .engine_tests import Graph013
-from .engine_tests import Graph014
-from .engine_tests import Graph015
-from .engine_tests import Graph016
-from .engine_tests import Graph020
-from .engine_tests import Graph021
-from .engine_tests import Graph022
-from .engine_tests import Graph023
-from .engine_tests import Graph024
-from .engine_tests import Graph025
-from .engine_tests import Graph026
-from .engine_tests import Graph027
-from .engine_tests import Graph028
-from .engine_tests import Graph029
-from .engine_tests import Graph030
-from .engine_tests import Graph031
-from .engine_tests import Graph032
-from .engine_tests import Graph033
-from .engine_tests import Graph034
-from .engine_tests import Graph035
-from .engine_tests import Graph036
-from .engine_tests import Graph037
-from .engine_tests import Graph038
-from .engine_tests import Graph039
-from .engine_tests import Graph040
-from .engine_tests import Graph041
-from .engine_tests import Graph042
-from .engine_tests import Graph043
-from .engine_tests import Graph044
-from .engine_tests import Graph045
-from .engine_tests import Graph046
-from .engine_tests import Graph047
-from .engine_tests import Graph048
-from .engine_tests import Graph049
-from .engine_tests import Graph050
-from .engine_tests import Graph051
+from .engine_tests import graph_001
+from .engine_tests import graph_002
+from .engine_tests import graph_003
+from .engine_tests import graph_004
+from .engine_tests import graph_005
+from .engine_tests import graph_006
+from .engine_tests import graph_007
+from .engine_tests import graph_008
+from .engine_tests import graph_009
+from .engine_tests import graph_010
+from .engine_tests import graph_011
+from .engine_tests import graph_012
+from .engine_tests import graph_013
+from .engine_tests import graph_014
+from .engine_tests import graph_015
+from .engine_tests import graph_016
+from .engine_tests import graph_020
+from .engine_tests import graph_021
+from .engine_tests import graph_022
+from .engine_tests import graph_023
+from .engine_tests import graph_024
+from .engine_tests import graph_025
+from .engine_tests import graph_026
+from .engine_tests import graph_027
+from .engine_tests import graph_028
+from .engine_tests import graph_029
+from .engine_tests import graph_030
+from .engine_tests import graph_031
+from .engine_tests import graph_032
+from .engine_tests import graph_033
+from .engine_tests import graph_034
+from .engine_tests import graph_035
+from .engine_tests import graph_036
+from .engine_tests import graph_037
+from .engine_tests import graph_038
+from .engine_tests import graph_039
+from .engine_tests import graph_040
+from .engine_tests import graph_041
+from .engine_tests import graph_042
+from .engine_tests import graph_043
+from .engine_tests import graph_044
+from .engine_tests import graph_045
+from .engine_tests import graph_046
+from .engine_tests import graph_047
+from .engine_tests import graph_048
+from .engine_tests import graph_049
+from .engine_tests import graph_050
+from .engine_tests import graph_051
 
 # Test configs
 from .engine_tests import config_001
@@ -138,55 +138,55 @@ __all__ = [
     "config_034",
     "engine_test_configs",
     "GraphInfo",
-    "Graph001",
-    "Graph002",
-    "Graph003",
-    "Graph004",
-    "Graph005",
-    "Graph006",
-    "Graph007",
-    "Graph008",
-    "Graph009",
-    "Graph010",
-    "Graph011",
-    "Graph012",
-    "Graph013",
-    "Graph014",
-    "Graph015",
-    "Graph016",
-    "Graph017",
-    "Graph018",
-    "Graph019",
-    "Graph020",
-    "Graph021",
-    "Graph022",
-    "Graph023",
-    "Graph024",
-    "Graph025",
-    "Graph026",
-    "Graph027",
-    "Graph028",
-    "Graph029",
-    "Graph030",
-    "Graph031",
-    "Graph032",
-    "Graph033",
-    "Graph034",
-    "Graph035",
-    "Graph036",
-    "Graph037",
-    "Graph038",
-    "Graph039",
-    "Graph040",
-    "Graph041",
-    "Graph042",
-    "Graph043",
-    "Graph044",
-    "Graph045",
-    "Graph046",
-    "Graph047",
-    "Graph048",
-    "Graph049",
-    "Graph050",
-    "Graph051",
+    "graph_001",
+    "graph_002",
+    "graph_003",
+    "graph_004",
+    "graph_005",
+    "graph_006",
+    "graph_007",
+    "graph_008",
+    "graph_009",
+    "graph_010",
+    "graph_011",
+    "graph_012",
+    "graph_013",
+    "graph_014",
+    "graph_015",
+    "graph_016",
+    "graph_017",
+    "graph_018",
+    "graph_019",
+    "graph_020",
+    "graph_021",
+    "graph_022",
+    "graph_023",
+    "graph_024",
+    "graph_025",
+    "graph_026",
+    "graph_027",
+    "graph_028",
+    "graph_029",
+    "graph_030",
+    "graph_031",
+    "graph_032",
+    "graph_033",
+    "graph_034",
+    "graph_035",
+    "graph_036",
+    "graph_037",
+    "graph_038",
+    "graph_039",
+    "graph_040",
+    "graph_041",
+    "graph_042",
+    "graph_043",
+    "graph_044",
+    "graph_045",
+    "graph_046",
+    "graph_047",
+    "graph_048",
+    "graph_049",
+    "graph_050",
+    "graph_051",
 ]

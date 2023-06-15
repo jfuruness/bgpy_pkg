@@ -10,7 +10,7 @@ from typing import Any, Dict, List, Optional, Tuple, Union
 import random
 import os
 
-from caida_collector_pkg import CaidaCollector
+from bgp_simulator_pkg.caida_collector import CaidaCollector
 
 from .scenarios import ScenarioConfig
 from .scenarios import SubprefixHijack

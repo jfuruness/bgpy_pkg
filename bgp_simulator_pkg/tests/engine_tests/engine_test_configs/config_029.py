@@ -1,4 +1,4 @@
-from ..graphs import Graph040
+from ..graphs import graph_040
 from ..utils import EngineTestConfig
 
 
@@ -19,7 +19,12 @@ class Custom29MultiValidPrefix(ValidPrefix):
         for i in range(len(vic_anns)):
             if vic_anns[i].origin == 5:
                 # longer path for AS 5 to test path length preference
-                vic_anns[i].as_path = (vic_anns[i].origin, vic_anns[i].origin)
+                # vic_anns[i].as_path = (vic_anns[i].origin, vic_anns[i].origin)
+                object.__setattr__(
+                    vic_anns[i],
+                    "as_path",
+                    (vic_anns[i].origin, vic_anns[i].origin)
+                )
         return vic_anns
 
 
@@ -31,7 +36,7 @@ config_029 = EngineTestConfig(
         BaseASCls=BGPSimpleAS,
         num_victims=2,
         override_victim_asns={3, 5},
-        override_non_default_asn_cls_dict=dict()
+        override_non_default_asn_cls_dict=dict(),
     ),
-    graph=Graph040(),
+    graph=graph_040,
 )

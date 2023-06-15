@@ -1,7 +1,7 @@
 from typing import Dict
 from typing import Type
 
-from caida_collector_pkg import CaidaCollector
+from bgp_simulator_pkg.caida_collector import CaidaCollector
 
 from ..simulation_engine import BGPSimpleAS
 from ..simulation_engine import RealROVSimpleAS

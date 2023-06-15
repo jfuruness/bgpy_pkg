@@ -1,4 +1,4 @@
-from ..graphs import Graph002
+from ..graphs import graph_002
 from ..utils import EngineTestConfig
 
 from ....simulation_engine import BGPSimpleAS
@@ -13,7 +13,7 @@ config_003 = EngineTestConfig(
         ScenarioCls=ValidPrefix,
         BaseASCls=BGPSimpleAS,
         override_victim_asns={ASNs.VICTIM.value},
-        override_non_default_asn_cls_dict=dict()
+        override_non_default_asn_cls_dict=dict(),
     ),
-    graph=Graph002(),
+    graph=graph_002,
 )
