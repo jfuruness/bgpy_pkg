@@ -22,9 +22,7 @@ def _get_customer_cone_size(self):
         as_obj.customer_cone_size = len(customer_cone)
 
 
-def _get_cone_size_helper(self,
-                          as_obj: AS,
-                          cone_dict: Dict[int, Set[int]]) -> Set[int]:
+def _get_cone_size_helper(self, as_obj: AS, cone_dict: Dict[int, Set[int]]) -> Set[int]:
     """Recursively determines the cone size of an as"""
 
     if as_obj.asn in cone_dict:

@@ -10,17 +10,21 @@ from bgp_simulator_pkg.caida_collector import CaidaCollector
 class TestHTMLFuncs:
     """Tests funcs related to html"""
 
-    def test_get_url(self,
-                     caida_collector: CaidaCollector,
-                     mock_caida_collector: CaidaCollector,
-                     run_kwargs: Dict[str, Any]):
+    def test_get_url(
+        self,
+        caida_collector: CaidaCollector,
+        mock_caida_collector: CaidaCollector,
+        run_kwargs: Dict[str, Any],
+    ):
         """Tests that the URL collected from Caida is accurate
 
         Get an example html and ensure that the URL is what we expect
         """
 
-        test_url: str = ("http://data.caida.org/datasets/as-relationships/"
-                         "serial-2/20210901.as-rel2.txt.bz2")
+        test_url: str = (
+            "http://data.caida.org/datasets/as-relationships/"
+            "serial-2/20210901.as-rel2.txt.bz2"
+        )
 
         dl_time = run_kwargs["dl_time"]
 

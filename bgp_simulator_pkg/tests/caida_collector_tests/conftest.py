@@ -67,14 +67,14 @@ def mocked_download_file(self, url: str, path: str):
 
 
 @pytest.fixture(scope="function")
-def run_kwargs(tmp_path: Path) -> Generator[Dict[str, Any],
-                                            Dict[str, Any],
-                                            None]:
+def run_kwargs(tmp_path: Path) -> Generator[Dict[str, Any], Dict[str, Any], None]:
     """Returns run kwargs for caida collector"""
 
-    yield {"dl_time": _dl_time,
-           "cache_dir": tmp_path,
-           "tsv_path": tmp_path / "test.txt"}
+    yield {
+        "dl_time": _dl_time,
+        "cache_dir": tmp_path,
+        "tsv_path": tmp_path / "test.txt",
+    }
 
 
 @pytest.fixture(scope="function")
@@ -83,11 +83,20 @@ def mock_caida_collector():
 
     Clears cache and tsv before yielding"""
 
-    with patch(("bgp_simulator_pkg.caida_collector.caida_collector."
-                "html_funcs.requests.get"), mocked_requests_get):
-        with patch(("bgp_simulator_pkg.caida_collector.caida_collector."
-                    "CaidaCollector._download_bz2_file"),
-                   mocked_download_file):
+    with patch(
+        (
+            "bgp_simulator_pkg.caida_collector.caida_collector."
+            "html_funcs.requests.get"
+        ),
+        mocked_requests_get,
+    ):
+        with patch(
+            (
+                "bgp_simulator_pkg.caida_collector.caida_collector."
+                "CaidaCollector._download_bz2_file"
+            ),
+            mocked_download_file,
+        ):
             yield CaidaCollector()
 
 

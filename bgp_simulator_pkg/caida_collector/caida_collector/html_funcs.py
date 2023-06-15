@@ -9,10 +9,11 @@ def _get_url(self, dl_time: datetime) -> str:
     """Gets urls to download relationship files"""
 
     # Api url
-    prepend: str = 'http://data.caida.org/datasets/as-relationships/serial-2/'
+    prepend: str = "http://data.caida.org/datasets/as-relationships/serial-2/"
     # Gets all URLs. Keeps only the link for the proper download time
-    urls = [prepend + x for x in self._get_hrefs(prepend)
-            if dl_time.strftime("%Y%m01") in x]
+    urls = [
+        prepend + x for x in self._get_hrefs(prepend) if dl_time.strftime("%Y%m01") in x
+    ]
     if len(urls) > 0:
         return urls[0]  # type: ignore
     else:  # pragma: no cover
@@ -29,5 +30,4 @@ def _get_hrefs(self, url: str) -> List[str]:
         # Get soup
         soup = Soup(r.text, "html.parser")
         # Extract hrefs from a tags
-        return [x.get("href") for x in soup.select("a")
-                if x.get("href") is not None]
+        return [x.get("href") for x in soup.select("a") if x.get("href") is not None]

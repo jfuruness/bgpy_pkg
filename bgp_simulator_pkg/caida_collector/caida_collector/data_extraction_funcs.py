@@ -4,10 +4,9 @@ from ..links import CustomerProviderLink as CPLink
 from ..links import PeerLink
 
 
-def _get_ases(self, lines: Tuple[str, ...]) -> Tuple[Set[CPLink],
-                                                     Set[PeerLink],
-                                                     Set[int],
-                                                     Set[int]]:
+def _get_ases(
+    self, lines: Tuple[str, ...]
+) -> Tuple[Set[CPLink], Set[PeerLink], Set[int], Set[int]]:
     """Fills the initial AS dict and adds the following info:
 
     Creates AS dict with peers, providers, customers, input clique, ixps
@@ -58,8 +57,7 @@ def _extract_provider_customers(self, line: str, cp_links: Set[CPLink]):
     """Extracts provider customers: <provider-as>|<customer-as>|-1"""
 
     provider_asn, customer_asn, _, source = line.split("|")
-    cp_links.add(CPLink(customer_asn=int(customer_asn),
-                        provider_asn=int(provider_asn)))
+    cp_links.add(CPLink(customer_asn=int(customer_asn), provider_asn=int(provider_asn)))
 
 
 def _extract_peers(self, line: str, peer_links: Set[PeerLink]):

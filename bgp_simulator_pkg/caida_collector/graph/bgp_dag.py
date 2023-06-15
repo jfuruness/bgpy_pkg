@@ -34,9 +34,19 @@ class BGPDAG(YamlAble):
 
     # Slots are used here to allow for fast access (1/3 faster)
     # And also because it allows others to easily see the instance attrs
-    __slots__ = ("as_dict", "propagation_ranks", "ases",
-                 "stub_asns", "mh_asns", "input_clique_asns", "etc_asns",
-                 "stub_ases", "mh_ases", "input_clique_ases", "etc_ases")
+    __slots__ = (
+        "as_dict",
+        "propagation_ranks",
+        "ases",
+        "stub_asns",
+        "mh_asns",
+        "input_clique_asns",
+        "etc_asns",
+        "stub_ases",
+        "mh_ases",
+        "input_clique_ases",
+        "etc_ases",
+    )
 
     # Graph building functionality
     _gen_graph = _gen_graph
@@ -62,49 +72,52 @@ class BGPDAG(YamlAble):
         # Fix this later once the system test framework is updated
         yaml_info_decorate(cls, yaml_tag=cls.__name__)
 
-    def __init__(self,
-                 cp_links: Set[CPLink],
-                 peer_links: Set[PeerLink],
-                 ixps: Optional[Set[int]] = None,
-                 input_clique: Optional[Set[int]] = None,
-                 BaseASCls: Type[AS] = AS,
-                 yaml_as_dict: Optional[Dict[int, AS]] = None,
-                 csv_path: Path = (Path(__file__).parent.parent
-                                   / "combined.csv"),
-                 ):
+    def __init__(
+        self,
+        cp_links: Set[CPLink],
+        peer_links: Set[PeerLink],
+        ixps: Optional[Set[int]] = None,
+        input_clique: Optional[Set[int]] = None,
+        BaseASCls: Type[AS] = AS,
+        yaml_as_dict: Optional[Dict[int, AS]] = None,
+        csv_path: Path = (Path(__file__).parent.parent / "combined.csv"),
+    ):
         """Reads in relationship data from a TSV and generate graph"""
 
         if yaml_as_dict is not None:
             self.as_dict: Dict[int, AS] = yaml_as_dict
             # Convert ASNs to refs
             for as_obj in self.as_dict.values():
-                as_obj.peers = tuple([self.as_dict[asn]
-                                      for asn in as_obj.peers])
-                as_obj.customers = tuple([self.as_dict[asn]
-                                          for asn in as_obj.customers])
-                as_obj.providers = tuple([self.as_dict[asn]
-                                          for asn in as_obj.providers])
+                as_obj.peers = tuple([self.as_dict[asn] for asn in as_obj.peers])
+                as_obj.customers = tuple(
+                    [self.as_dict[asn] for asn in as_obj.customers]
+                )
+                as_obj.providers = tuple(
+                    [self.as_dict[asn] for asn in as_obj.providers]
+                )
 
             # Used for iteration
             self.ases: Tuple[AS, ...] = tuple(self.as_dict.values())
-            self.propagation_ranks: Tuple[Tuple[AS, ...], ...] =\
-                self._get_propagation_ranks()
+            self.propagation_ranks: Tuple[
+                Tuple[AS, ...], ...
+            ] = self._get_propagation_ranks()
 
         else:
             self.as_dict: Dict[int, AS] = dict()  # type: ignore
             logging.debug("gen graph")
             # Just adds all ASes to the dict, and adds ixp/input_clique info
-            self._gen_graph(cp_links,
-                            peer_links,
-                            ixps if ixps else set(),
-                            input_clique if input_clique else set(),
-                            BaseASCls)
+            self._gen_graph(
+                cp_links,
+                peer_links,
+                ixps if ixps else set(),
+                input_clique if input_clique else set(),
+                BaseASCls,
+            )
             logging.debug("gen graph done")
             # Adds references to all relationships
             self._add_relationships(cp_links, peer_links)
             # Used for iteration
-            self.ases: Tuple[AS, ...] = tuple(  # type: ignore
-                self.as_dict.values())
+            self.ases: Tuple[AS, ...] = tuple(self.as_dict.values())  # type: ignore
             logging.debug("add rels done")
             # Remove duplicates from relationships and sort
             self._make_relationships_tuples()
@@ -125,19 +138,21 @@ class BGPDAG(YamlAble):
         self.mh_ases = set([x for x in self if x.multihomed])
         self.stub_or_mh_ases = set(self.stub_ases | self.mh_ases)
         self.input_clique_ases = set([x for x in self if x.input_clique])
-        self.etc_ases = set([x for x in self if not
-                             (x.stub or x.multihomed or x.input_clique)])
+        self.etc_ases = set(
+            [x for x in self if not (x.stub or x.multihomed or x.input_clique)]
+        )
         # Backwards compatibility
         self.stub_asns = set([x.asn for x in self if x.stub])
         self.mh_asns = set([x.asn for x in self if x.multihomed])
         self.stub_or_mh_asns = set(self.stub_asns | self.mh_asns)
         self.input_clique_asns = set([x.asn for x in self if x.input_clique])
-        self.etc_asns = set([x.asn for x in self if not
-                             (x.stub or x.multihomed or x.input_clique)])
+        self.etc_asns = set(
+            [x.asn for x in self if not (x.stub or x.multihomed or x.input_clique)]
+        )
 
-##############
-# Yaml funcs #
-##############
+    ##############
+    # Yaml funcs #
+    ##############
 
     def __to_yaml_dict__(self) -> Dict[int, AS]:  # type: ignore
         """Optional method called when yaml.dump is called"""
@@ -150,9 +165,9 @@ class BGPDAG(YamlAble):
 
         return cls(set(), set(), yaml_as_dict=dct)
 
-##################
-# Iterator funcs #
-##################
+    ##################
+    # Iterator funcs #
+    ##################
 
     # https://stackoverflow.com/a/7542261/8903959
     def __getitem__(self, index) -> AS:

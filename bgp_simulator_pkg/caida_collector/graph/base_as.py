@@ -11,12 +11,22 @@ else:
 SETUP_REL = Optional[Set[ASTypeHint]]
 REL = Tuple[ASTypeHint, ...]
 
-SLOTS = ("asn", "peers", "customers", "providers", "input_clique",
-         "ixp", "customer_cone_size", "propagation_rank",
-         "rov_filtering", "rov_confidence", "rov_source")
+SLOTS = (
+    "asn",
+    "peers",
+    "customers",
+    "providers",
+    "input_clique",
+    "ixp",
+    "customer_cone_size",
+    "propagation_rank",
+    "rov_filtering",
+    "rov_confidence",
+    "rov_source",
+)
 
 
-@yaml_info(yaml_tag='AS')
+@yaml_info(yaml_tag="AS")
 class AS(YamlAble):
     """Autonomous System class. Contains attributes of an AS"""
 
@@ -34,19 +44,20 @@ class AS(YamlAble):
         cls.subclass_to_name_dict[cls] = cls.__name__
         cls.name_to_subclass_dict[cls.__name__] = cls
 
-    def __init__(self,
-                 asn: Optional[int] = None,
-                 input_clique: bool = False,
-                 ixp: bool = False,
-                 peers_setup_set: SETUP_REL = None,
-                 providers_setup_set: SETUP_REL = None,
-                 customers_setup_set: SETUP_REL = None,
-                 peers: REL = tuple(),
-                 providers: REL = tuple(),
-                 customers: REL = tuple(),
-                 customer_cone_size: Optional[int] = None,
-                 propagation_rank: Optional[int] = None):
-
+    def __init__(
+        self,
+        asn: Optional[int] = None,
+        input_clique: bool = False,
+        ixp: bool = False,
+        peers_setup_set: SETUP_REL = None,
+        providers_setup_set: SETUP_REL = None,
+        customers_setup_set: SETUP_REL = None,
+        peers: REL = tuple(),
+        providers: REL = tuple(),
+        customers: REL = tuple(),
+        customer_cone_size: Optional[int] = None,
+        propagation_rank: Optional[int] = None,
+    ):
         if isinstance(asn, int):
             self.asn: int = asn
         else:
@@ -89,8 +100,9 @@ class AS(YamlAble):
             return "{" + ",".join(str(x.asn) for x in sorted(as_objs)) + "}"
 
         def _format(x: Any) -> str:
-            if ((isinstance(x, list) or isinstance(x, tuple))
-                    and all([isinstance(y, AS) for y in x])):
+            if (isinstance(x, list) or isinstance(x, tuple)) and all(
+                [isinstance(y, AS) for y in x]
+            ):
                 return asns(x)  # type: ignore
             elif x is None:
                 return ""
@@ -115,8 +127,7 @@ class AS(YamlAble):
     def multihomed(self) -> bool:
         """Returns True if AS is multihomed by RFC1772"""
 
-        return (len(self.customers) == 0
-                and len(self.peers) + len(self.providers) > 1)
+        return len(self.customers) == 0 and len(self.peers) + len(self.providers) > 1
 
     @property
     def transit(self) -> bool:
@@ -136,24 +147,26 @@ class AS(YamlAble):
 
         return self.customers + self.peers + self.providers
 
-##############
-# Yaml funcs #
-##############
+    ##############
+    # Yaml funcs #
+    ##############
 
     def __to_yaml_dict__(self) -> Dict[str, Any]:
-        """ This optional method is called when you call yaml.dump()"""
-        return {"asn": self.asn,
-                "customers": tuple([x.asn for x in self.customers]),
-                "peers": tuple([x.asn for x in self.peers]),
-                "providers": tuple([x.asn for x in self.providers]),
-                "input_clique": self.input_clique,
-                "ixp": self.ixp,
-                "customer_cone_size": self.customer_cone_size,
-                "propagation_rank": self.propagation_rank}
+        """This optional method is called when you call yaml.dump()"""
+        return {
+            "asn": self.asn,
+            "customers": tuple([x.asn for x in self.customers]),
+            "peers": tuple([x.asn for x in self.peers]),
+            "providers": tuple([x.asn for x in self.providers]),
+            "input_clique": self.input_clique,
+            "ixp": self.ixp,
+            "customer_cone_size": self.customer_cone_size,
+            "propagation_rank": self.propagation_rank,
+        }
 
     @classmethod
     def __from_yaml_dict__(cls, dct: Dict[Any, Any], yaml_tag: str):
-        """ This optional method is called when you call yaml.load()"""
+        """This optional method is called when you call yaml.load()"""
         return cls(**dct)
 
 

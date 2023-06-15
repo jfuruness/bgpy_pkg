@@ -49,34 +49,34 @@ class CaidaCollector:
     _extract_provider_customers = _extract_provider_customers
     _extract_peers = _extract_peers
 
-    def __init__(self,
-                 BaseASCls: Type[AS] = AS,
-                 GraphCls: Type[BGPDAG] = BGPDAG):
-
+    def __init__(self, BaseASCls: Type[AS] = AS, GraphCls: Type[BGPDAG] = BGPDAG):
         # Base AS Class for the BGPDAG
         self.BaseASCls: Type[AS] = BaseASCls
         # BGPDAG class
         self.GraphCls: Type[BGPDAG] = GraphCls
 
-    def run(self,
-            dl_time: Optional[datetime] = None,
-            cache_dir: Path = Path("/tmp/caida_collector_cache"),
-            tsv_path: Optional[Path] = Path("/tmp/caida_collector.tsv")):
+    def run(
+        self,
+        dl_time: Optional[datetime] = None,
+        cache_dir: Path = Path("/tmp/caida_collector_cache"),
+        tsv_path: Optional[Path] = Path("/tmp/caida_collector.tsv"),
+    ):
         """Runs run func and deletes cache if anything is amiss"""
 
         try:
             return self._run(dl_time, cache_dir, tsv_path)
         except Exception as e:
-            logging.critical(f"{e}: Potentially the result of a messed up"
-                             "cache, which was just deleted. please try again")
+            logging.critical(
+                f"{e}: Potentially the result of a messed up"
+                "cache, which was just deleted. please try again"
+            )
             # MAke sure no matter what don't create a messed up cache
             shutil.rmtree(cache_dir)
             raise
 
-    def _run(self,
-             dl_time_arg: Optional[datetime],
-             cache_dir: Path,
-             tsv_path: Optional[Path]) -> BGPDAG:
+    def _run(
+        self, dl_time_arg: Optional[datetime], cache_dir: Path, tsv_path: Optional[Path]
+    ) -> BGPDAG:
         """Downloads relationships, parses data, and inserts into the db.
 
         https://publicdata.caida.org/datasets/as-relationships/serial-2/
@@ -101,15 +101,14 @@ class CaidaCollector:
             cache_path = None
 
         file_lines: Tuple[str, ...] = self.read_file(cache_path, dl_time)
-        (cp_links,
-         peer_links,
-         ixps,
-         input_clique) = self._get_ases(file_lines)
-        bgp_dag: BGPDAG = self.GraphCls(cp_links,
-                                        peer_links,
-                                        ixps=ixps,
-                                        input_clique=input_clique,
-                                        BaseASCls=self.BaseASCls)
+        (cp_links, peer_links, ixps, input_clique) = self._get_ases(file_lines)
+        bgp_dag: BGPDAG = self.GraphCls(
+            cp_links,
+            peer_links,
+            ixps=ixps,
+            input_clique=input_clique,
+            BaseASCls=self.BaseASCls,
+        )
         if tsv_path:
             self._write_tsv(bgp_dag, tsv_path)
         return bgp_dag
@@ -132,8 +131,7 @@ class CaidaCollector:
         logging.info("Made graph. Now writing to TSV")
         with tsv_path.open(mode="w") as f:
             # Get columns
-            cols: List[str] = list(next(iter(dag.as_dict.values())
-                                        ).db_row.keys())
+            cols: List[str] = list(next(iter(dag.as_dict.values())).db_row.keys())
             writer = DictWriter(f, fieldnames=cols, delimiter="\t")
             writer.writeheader()
             for x in dag.as_dict.values():

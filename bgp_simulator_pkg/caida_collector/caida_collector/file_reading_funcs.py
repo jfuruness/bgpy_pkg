@@ -14,9 +14,7 @@ import requests
 LINES_TYPE = Tuple[str, ...]
 
 
-def read_file(self,
-              cache_path: Optional[Path],
-              dl_time: datetime) -> LINES_TYPE:
+def read_file(self, cache_path: Optional[Path], dl_time: datetime) -> LINES_TYPE:
     """Reads the file from the URL and unzips it and returns the lines
 
     Also caches the file for later calls

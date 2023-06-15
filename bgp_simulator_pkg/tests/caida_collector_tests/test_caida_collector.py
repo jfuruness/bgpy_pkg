@@ -13,20 +13,23 @@ from bgp_simulator_pkg.caida_collector import CaidaCollector
 class TestCaidaCollector:
     """Tests the functions that reside in caida_collector.py"""
 
-    @pytest.mark.parametrize("write_tsv, cache_written, mock",
-                             product(*[[True, False] for _ in range(3)]))
-    def test_run(self,
-                 mock_caida_collector: CaidaCollector,
-                 caida_collector: CaidaCollector,
-                 decoded_path: Path,
-                 tsv_path: Path,
-                 write_tsv: bool,
-                 cache_written: bool,
-                 mock: bool,
-                 # Delete these
-                 tmp_caida_collector,
-                 cache,
-                 tsv):
+    @pytest.mark.parametrize(
+        "write_tsv, cache_written, mock", product(*[[True, False] for _ in range(3)])
+    )
+    def test_run(
+        self,
+        mock_caida_collector: CaidaCollector,
+        caida_collector: CaidaCollector,
+        decoded_path: Path,
+        tsv_path: Path,
+        write_tsv: bool,
+        cache_written: bool,
+        mock: bool,
+        # Delete these
+        tmp_caida_collector,
+        cache,
+        tsv,
+    ):
         """Just runs with every possible param and cache
 
         test_run_manual_checks should replace this
@@ -38,11 +41,11 @@ class TestCaidaCollector:
             # Write cache file from mocked
             if mock:
                 read_tester.test_write_cache_file_mock(  # type: ignore
-                    mock_caida_collector, decoded_path)
+                    mock_caida_collector, decoded_path
+                )
             # Write real cache file
             else:
-                read_tester.test_write_cache_file(  # type: ignore
-                    tmp_caida_collector)
+                read_tester.test_write_cache_file(tmp_caida_collector)  # type: ignore
 
         collector = mock_caida_collector if mock else tmp_caida_collector
         collector.run(cache=cache, tsv=tsv)

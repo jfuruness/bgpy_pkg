@@ -35,5 +35,4 @@ class CustomerProviderLink(Link):
     def asns(self) -> Tuple[int, int]:
         """Returns asns associated with this link. Used for hashing"""
 
-        return tuple(sorted([self.customer_asn,
-                             self.provider_asn]))  # type: ignore
+        return tuple(sorted([self.customer_asn, self.provider_asn]))  # type: ignore

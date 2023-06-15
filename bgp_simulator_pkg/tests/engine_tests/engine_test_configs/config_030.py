@@ -29,7 +29,7 @@ class Custom30MultiValidPrefix(ValidPrefix):
                 object.__setattr__(
                     vic_anns[i],
                     "as_path",
-                    (vic_anns[i].origin, vic_anns[i].origin, vic_anns[i].origin)
+                    (vic_anns[i].origin, vic_anns[i].origin, vic_anns[i].origin),
                 )
         return vic_anns
 

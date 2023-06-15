@@ -9,22 +9,26 @@ from ..links import CustomerProviderLink as CPLink
 from ..links import PeerLink
 
 
-def _gen_graph(self,
-               cp_links: Set[CPLink],
-               peer_links: Set[PeerLink],
-               ixps: Set[int],
-               input_clique: Set[int],
-               BaseAsCls: Type[AS]):
+def _gen_graph(
+    self,
+    cp_links: Set[CPLink],
+    peer_links: Set[PeerLink],
+    ixps: Set[int],
+    input_clique: Set[int],
+    BaseAsCls: Type[AS],
+):
     """Generates a graph of AS objects"""
 
     msg = "Shouldn't have a customer-provider that is also a peer!"
     assert len(cp_links) + len(peer_links) == len(cp_links | peer_links), msg
 
     def _gen_as(asn):
-        return BaseAsCls(asn,
-                         peers_setup_set=set(),
-                         customers_setup_set=set(),
-                         providers_setup_set=set())
+        return BaseAsCls(
+            asn,
+            peers_setup_set=set(),
+            customers_setup_set=set(),
+            providers_setup_set=set(),
+        )
 
     # Add all links to the graph
     for link in cp_links | peer_links:
@@ -42,9 +46,7 @@ def _gen_graph(self,
         self.as_dict[asn].input_clique = True
 
 
-def _add_relationships(self,
-                       cp_links: Set[CPLink],
-                       peer_links: Set[PeerLink]):
+def _add_relationships(self, cp_links: Set[CPLink], peer_links: Set[PeerLink]):
     """Adds relationships to the graph as references"""
 
     for cp_link in cp_links:
@@ -68,9 +70,7 @@ def _make_relationships_tuples(self):
     """Make relationships tuples"""
 
     rel_attrs = ("peers", "providers", "customers")
-    setup_rel_attrs = ("peers_setup_set",
-                       "providers_setup_set",
-                       "customers_setup_set")
+    setup_rel_attrs = ("peers_setup_set", "providers_setup_set", "customers_setup_set")
 
     for as_obj in self:
         for rel_attr, setup_rel_attr in zip(rel_attrs, setup_rel_attrs):

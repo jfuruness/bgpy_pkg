@@ -1,5 +1,4 @@
 from dataclasses import dataclass, asdict, replace
-from itertools import chain
 from typing import Any, Dict, Optional, Tuple, Type
 
 from yamlable import YamlAble, yaml_info, yaml_info_decorate

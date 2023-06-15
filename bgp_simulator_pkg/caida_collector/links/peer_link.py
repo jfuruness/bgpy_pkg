@@ -6,13 +6,12 @@ from .link import Link
 class PeerLink(Link):
     """Stores the info for a peer link"""
 
-    def __init__(self,
-                 peer1_asn: int,
-                 peer2_asn: int):
+    def __init__(self, peer1_asn: int, peer2_asn: int):
         """Saves the link info"""
 
         self.__peer_asns: Tuple[int, int] = tuple(
-            sorted([int(peer1_asn), int(peer2_asn)]))  # type: ignore
+            sorted([int(peer1_asn), int(peer2_asn)])
+        )  # type: ignore
         super(PeerLink, self).__init__()
 
     @property
