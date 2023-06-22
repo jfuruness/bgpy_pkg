@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import Any, Dict, Optional, TYPE_CHECKING
+from typing import Any, Optional, TYPE_CHECKING
 
 from ....announcement import Announcement as Ann
 from ....ann_containers import RecvQueue
@@ -70,14 +70,14 @@ def _copy_and_process(
     self,
     ann: Ann,
     recv_relationship: Relationships,
-    overwrite_default_kwargs: Optional[Dict[Any, Any]] = None,
+    overwrite_default_kwargs: Optional[dict[Any, Any]] = None,
 ) -> Ann:
     """Deep copies ann and modifies attrs
 
     Prepends AS to AS Path and sets recv_relationship
     """
 
-    kwargs: Dict[str, Any] = {
+    kwargs: dict[str, Any] = {
         "as_path": (self.asn,) + ann.as_path,
         "recv_relationship": recv_relationship,
     }

@@ -1,5 +1,5 @@
 from bgp_simulator_pkg.caida_collector import AS
-from typing import List, Optional, Type
+from typing import Optional
 
 # Propagation functionality
 from .propagate_funcs import propagate_to_providers
@@ -31,8 +31,8 @@ from ....ann_containers import RecvQueue
 
 class BGPSimpleAS(AS):
     name: str = "BGP Simple"
-    as_class_names: List[str] = []
-    as_classes: List[Type[AS]] = []
+    as_class_names: list[str] = []
+    as_classes: list[type[AS]] = []
 
     def __init_subclass__(cls, *args, **kwargs):
         """This method essentially creates a list of all subclasses

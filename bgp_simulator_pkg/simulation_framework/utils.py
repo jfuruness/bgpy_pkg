@@ -1,6 +1,3 @@
-from typing import Dict
-from typing import Type
-
 from bgp_simulator_pkg.caida_collector import CaidaCollector
 
 from ..simulation_engine import BGPSimpleAS
@@ -12,7 +9,7 @@ from ..simulation_engine import SimulationEngine
 def get_real_world_rov_asn_cls_dict(
     self,
     min_rov_confidence: float = 0,
-) -> Dict[int, Type[BGPSimpleAS]]:
+) -> dict[int, type[BGPSimpleAS]]:
     """Gets real world ROV ASes, and creates a dict of asn: AS Class
 
     There are unique probabilities for each ROV AS, and additionally

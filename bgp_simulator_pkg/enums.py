@@ -97,8 +97,8 @@ class ASNs(YamlAbleEnum):
     VICTIM: int = 777
 
 
-class ASTypes(YamlAbleEnum):
-    """AS Types"""
+class AStypes(YamlAbleEnum):
+    """AS types"""
 
     __slots__ = ()
 

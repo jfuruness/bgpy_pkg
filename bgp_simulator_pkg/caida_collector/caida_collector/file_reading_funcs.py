@@ -4,14 +4,14 @@ import os
 from pathlib import Path
 import shutil
 from tempfile import TemporaryDirectory
-from typing import Optional, Tuple
+from typing import Optional
 
 import bz2
 import requests
 
 
-# Type for lines that are read from caida/cached files
-LINES_TYPE = Tuple[str, ...]
+# type for lines that are read from caida/cached files
+LINES_TYPE = tuple[str, ...]
 
 
 def read_file(self, cache_path: Optional[Path], dl_time: datetime) -> LINES_TYPE:

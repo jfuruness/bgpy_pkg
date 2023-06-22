@@ -2,7 +2,6 @@
 
 import csv
 from pathlib import Path
-from typing import Set, Type
 
 from .base_as import AS
 from ..links import CustomerProviderLink as CPLink
@@ -11,11 +10,11 @@ from ..links import PeerLink
 
 def _gen_graph(
     self,
-    cp_links: Set[CPLink],
-    peer_links: Set[PeerLink],
-    ixps: Set[int],
-    input_clique: Set[int],
-    BaseAsCls: Type[AS],
+    cp_links: set[CPLink],
+    peer_links: set[PeerLink],
+    ixps: set[int],
+    input_clique: set[int],
+    BaseAsCls: type[AS],
 ):
     """Generates a graph of AS objects"""
 
@@ -46,7 +45,7 @@ def _gen_graph(
         self.as_dict[asn].input_clique = True
 
 
-def _add_relationships(self, cp_links: Set[CPLink], peer_links: Set[PeerLink]):
+def _add_relationships(self, cp_links: set[CPLink], peer_links: set[PeerLink]):
     """Adds relationships to the graph as references"""
 
     for cp_link in cp_links:

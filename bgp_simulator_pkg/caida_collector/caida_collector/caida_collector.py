@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 import logging
 from pathlib import Path
 import shutil
-from typing import List, Optional, Tuple, Type
+from typing import Optional
 
 
 from ..graph import AS, BGPDAG
@@ -49,11 +49,11 @@ class CaidaCollector:
     _extract_provider_customers = _extract_provider_customers
     _extract_peers = _extract_peers
 
-    def __init__(self, BaseASCls: Type[AS] = AS, GraphCls: Type[BGPDAG] = BGPDAG):
+    def __init__(self, BaseASCls: type[AS] = AS, GraphCls: type[BGPDAG] = BGPDAG):
         # Base AS Class for the BGPDAG
-        self.BaseASCls: Type[AS] = BaseASCls
+        self.BaseASCls: type[AS] = BaseASCls
         # BGPDAG class
-        self.GraphCls: Type[BGPDAG] = GraphCls
+        self.GraphCls: type[BGPDAG] = GraphCls
 
     def run(
         self,
@@ -71,7 +71,8 @@ class CaidaCollector:
                 "cache, which was just deleted. please try again"
             )
             # MAke sure no matter what don't create a messed up cache
-            shutil.rmtree(cache_dir)
+            # shutil.rmtree(cache_dir)
+            print("MUST ADD THIS BACK")
             raise
 
     def _run(
@@ -100,7 +101,7 @@ class CaidaCollector:
         else:
             cache_path = None
 
-        file_lines: Tuple[str, ...] = self.read_file(cache_path, dl_time)
+        file_lines: tuple[str, ...] = self.read_file(cache_path, dl_time)
         (cp_links, peer_links, ixps, input_clique) = self._get_ases(file_lines)
         bgp_dag: BGPDAG = self.GraphCls(
             cp_links,
@@ -111,6 +112,7 @@ class CaidaCollector:
         )
         if tsv_path:
             self._write_tsv(bgp_dag, tsv_path)
+
         return bgp_dag
 
     def default_dl_time(self) -> datetime:
@@ -131,7 +133,7 @@ class CaidaCollector:
         logging.info("Made graph. Now writing to TSV")
         with tsv_path.open(mode="w") as f:
             # Get columns
-            cols: List[str] = list(next(iter(dag.as_dict.values())).db_row.keys())
+            cols: list[str] = list(next(iter(dag.as_dict.values())).db_row.keys())
             writer = DictWriter(f, fieldnames=cols, delimiter="\t")
             writer.writeheader()
             for x in dag.as_dict.values():

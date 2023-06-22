@@ -1,7 +1,6 @@
 # This should be made compatible with mypy, but I have no time
 
 from pathlib import Path
-from typing import List
 
 from PIL import Image, ImageFile
 
@@ -50,7 +49,7 @@ class DiagramAggregator:
         return self.base_dir / "aggregated_diagrams.pdf"
 
     @property
-    def image_paths(self) -> List[Path]:
+    def image_paths(self) -> list[Path]:
         """Returns paths as strings for all images"""
 
         return list(sorted(self.base_dir.glob("*/*png")))

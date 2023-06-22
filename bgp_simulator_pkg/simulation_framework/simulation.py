@@ -6,7 +6,7 @@ from multiprocessing import Pool
 from pathlib import Path
 from shutil import make_archive
 from tempfile import TemporaryDirectory
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import Any, Optional, Union
 import random
 import os
 
@@ -26,15 +26,15 @@ class Simulation:
 
     def __init__(
         self,
-        percent_adoptions: Tuple[Union[float, SpecialPercentAdoptions], ...] = (
+        percent_adoptions: tuple[Union[float, SpecialPercentAdoptions], ...] = (
             0.1,
             0.5,
             0.8,
         ),
-        scenario_configs: Tuple[ScenarioConfig, ...] = tuple(
+        scenario_configs: tuple[ScenarioConfig, ...] = tuple(
             [ScenarioConfig(ScenarioCls=SubprefixHijack, AdoptASCls=ROVSimpleAS)]
         ),
-        subgraphs: Optional[Tuple[Subgraph, ...]] = None,
+        subgraphs: Optional[tuple[Subgraph, ...]] = None,
         num_trials: int = 2,
         propagation_rounds: int = 1,
         output_path: Path = Path("/tmp/graphs"),
@@ -50,18 +50,18 @@ class Simulation:
         """
 
         if subgraphs:
-            self.subgraphs: Tuple[Subgraph, ...] = subgraphs
+            self.subgraphs: tuple[Subgraph, ...] = subgraphs
         else:
             self.subgraphs = tuple([Cls() for Cls in Subgraph.subclasses if Cls.name])
 
-        self.percent_adoptions: Tuple[
+        self.percent_adoptions: tuple[
             Union[float, SpecialPercentAdoptions], ...
         ] = percent_adoptions
         self.num_trials: int = num_trials
         self.propagation_rounds: int = propagation_rounds
         self.output_path: Path = output_path
         self.parse_cpus: int = parse_cpus
-        self.scenario_configs: Tuple[ScenarioConfig, ...] = scenario_configs
+        self.scenario_configs: tuple[ScenarioConfig, ...] = scenario_configs
         self.python_hash_seed = python_hash_seed
 
         # Done here so that the caida files are cached
@@ -129,7 +129,7 @@ class Simulation:
                 "same value as python_hash_seed"
             )
             if set_random_seed:
-                # Set random seed
+                # set random seed
                 random.seed(self.python_hash_seed)
 
     ###########################
@@ -138,7 +138,7 @@ class Simulation:
 
     def _get_chunks(
         self, parse_cpus: int
-    ) -> List[List[Tuple[Union[float, SpecialPercentAdoptions], int]]]:
+    ) -> list[list[tuple[Union[float, SpecialPercentAdoptions], int]]]:
         """Returns chunks of trial inputs based on number of CPUs running
 
         Not a generator since we need this for multiprocessing
@@ -160,7 +160,7 @@ class Simulation:
             percents_trials[i::parse_cpus] for i in range(parse_cpus)  # type: ignore
         ]
 
-    def _get_single_process_results(self) -> List[Tuple[Subgraph, ...]]:
+    def _get_single_process_results(self) -> list[tuple[Subgraph, ...]]:
         """Get all results when using single processing"""
 
         # Check if the python_hash_seed is set properly
@@ -170,7 +170,7 @@ class Simulation:
             for chunk_id, x in enumerate(self._get_chunks(1))
         ]
 
-    def _get_mp_results(self, parse_cpus: int) -> List[Tuple[Subgraph, ...]]:
+    def _get_mp_results(self, parse_cpus: int) -> list[tuple[Subgraph, ...]]:
         """Get results from multiprocessing"""
 
         # Check if the python_hash_seed is set properly
@@ -188,11 +188,11 @@ class Simulation:
     def _run_chunk(
         self,
         chunk_id: int,
-        percent_adopt_trials: List[Tuple[Union[float, SpecialPercentAdoptions], int]],
+        percent_adopt_trials: list[tuple[Union[float, SpecialPercentAdoptions], int]],
         # MUST leave as false. _get_mp_results depends on this
         # This should be fixed and this comment deleted
         single_proc: bool = False,
-    ) -> Tuple[Subgraph, ...]:
+    ) -> tuple[Subgraph, ...]:
         """Runs a chunk of trial inputs"""
 
         # Check to enable deterministic multiprocess runs
@@ -280,7 +280,7 @@ class Simulation:
             prev_scenario = None
         return subgraphs
 
-    def _aggregate_engine_run_data(self, subgraphs: Tuple[Subgraph, ...], **kwargs):
+    def _aggregate_engine_run_data(self, subgraphs: tuple[Subgraph, ...], **kwargs):
         """For each subgraph, aggregate data
 
         Some data aggregation is shared to speed up runs
@@ -288,6 +288,6 @@ class Simulation:
         Multiple subgraphs
         """
 
-        shared_data: Dict[Any, Any] = dict()
+        shared_data: dict[Any, Any] = dict()
         for subgraph in subgraphs:
             subgraph.aggregate_engine_run_data(shared_data, **kwargs)

@@ -5,7 +5,7 @@ import random
 from ipaddress import ip_network
 from ipaddress import IPv4Network
 from ipaddress import IPv6Network
-from typing import Any, Dict, List, Optional, Set, Tuple, Type, Union
+from typing import Any, Optional, Union
 
 from bgp_simulator_pkg.caida_collector import AS
 
@@ -16,7 +16,7 @@ from ...enums import SpecialPercentAdoptions
 from ...simulation_engine import Announcement
 from ...simulation_engine import SimulationEngine
 
-pseudo_base_cls_dict: Dict[Type[AS], Type[AS]] = dict()
+pseudo_base_cls_dict: dict[type[AS], type[AS]] = dict()
 
 
 class Scenario(ABC):
@@ -41,21 +41,21 @@ class Scenario(ABC):
         self.scenario_config: ScenarioConfig = scenario_config
         self.percent_adoption: Union[float, SpecialPercentAdoptions] = percent_adoption
 
-        self.attacker_asns: Set[int] = self._get_attacker_asns(
+        self.attacker_asns: set[int] = self._get_attacker_asns(
             scenario_config.override_attacker_asns, engine, prev_scenario
         )
 
-        self.victim_asns: Set[int] = self._get_victim_asns(
+        self.victim_asns: set[int] = self._get_victim_asns(
             scenario_config.override_victim_asns, engine, prev_scenario
         )
 
-        AS_CLS_DCT = Dict[int, Type[AS]]
+        AS_CLS_DCT = dict[int, type[AS]]
         self.non_default_asn_cls_dict: AS_CLS_DCT = self._get_non_default_asn_cls_dict(
             scenario_config.override_non_default_asn_cls_dict, engine, prev_scenario
         )
 
         if self.scenario_config.override_announcements:
-            self.announcements: Tuple[
+            self.announcements: tuple[
                 "Announcement", ...
             ] = self.scenario_config.override_announcements
         else:
@@ -63,8 +63,8 @@ class Scenario(ABC):
                 engine=engine, prev_scenario=prev_scenario
             )
 
-        self.ordered_prefix_subprefix_dict: Dict[
-            str, List[str]
+        self.ordered_prefix_subprefix_dict: dict[
+            str, list[str]
         ] = self._get_ordered_prefix_subprefix_dict()
 
     #################
@@ -73,10 +73,10 @@ class Scenario(ABC):
 
     def _get_attacker_asns(
         self,
-        override_attacker_asns: Optional[Set[int]],
+        override_attacker_asns: Optional[set[int]],
         engine: Optional[SimulationEngine],
         prev_scenario: Optional["Scenario"],
-    ) -> Set[int]:
+    ) -> set[int]:
         """Returns attacker ASN at random"""
 
         # This is coming from YAML, do not recalculate
@@ -109,7 +109,7 @@ class Scenario(ABC):
         engine: SimulationEngine,
         percent_adoption: Union[float, SpecialPercentAdoptions],
         prev_scenario: Optional["Scenario"],
-    ) -> Set[int]:
+    ) -> set[int]:
         """Returns possible attacker ASNs, defaulted from config"""
 
         possible_asns = getattr(engine, self.scenario_config.attacker_subcategory_attr)
@@ -124,10 +124,10 @@ class Scenario(ABC):
 
     def _get_victim_asns(
         self,
-        override_victim_asns: Optional[Set[int]],
+        override_victim_asns: Optional[set[int]],
         engine: Optional[SimulationEngine],
         prev_scenario: Optional["Scenario"],
-    ) -> Set[int]:
+    ) -> set[int]:
         """Returns victim ASN at random"""
 
         # This is coming from YAML, do not recalculate
@@ -159,7 +159,7 @@ class Scenario(ABC):
         engine: SimulationEngine,
         percent_adoption: Union[float, SpecialPercentAdoptions],
         prev_scenario: Optional["Scenario"],
-    ) -> Set[int]:
+    ) -> set[int]:
         """Returns possible victim ASNs, defaulted from config"""
 
         possible_asns = getattr(engine, self.scenario_config.victim_subcategory_attr)
@@ -176,10 +176,10 @@ class Scenario(ABC):
 
     def _get_non_default_asn_cls_dict(
         self,
-        override_non_default_asn_cls_dict: Optional[Dict[int, Type[AS]]],
+        override_non_default_asn_cls_dict: Optional[dict[int, type[AS]]],
         engine: Optional[SimulationEngine],
         prev_scenario: Optional["Scenario"],
-    ) -> Dict[int, Type[AS]]:
+    ) -> dict[int, type[AS]]:
         """Returns as class dict
 
         non_default_asn_cls_dict is a dict of asn: AdoptASCls
@@ -223,7 +223,7 @@ class Scenario(ABC):
     def _get_randomized_non_default_asn_cls_dict(
         self,
         engine: SimulationEngine,
-    ) -> Dict[int, Type[AS]]:
+    ) -> dict[int, type[AS]]:
         """Get adopting ASNs and non default ASNs
 
         By default, to get even adoption, adopt in each of the three
@@ -271,19 +271,19 @@ class Scenario(ABC):
         return asn_cls_dict
 
     @property
-    def _default_adopters(self) -> Set[int]:
+    def _default_adopters(self) -> set[int]:
         """By default, victim always adopts"""
 
         return self.victim_asns
 
     @property
-    def _default_non_adopters(self) -> Set[int]:
+    def _default_non_adopters(self) -> set[int]:
         """By default, attacker always does not adopt"""
 
         return self.attacker_asns
 
     @property
-    def _preset_asns(self) -> Set[int]:
+    def _preset_asns(self) -> set[int]:
         """ASNs that have a preset adoption policy"""
 
         # Returns the union of default adopters and non adopters
@@ -341,7 +341,7 @@ class Scenario(ABC):
     def setup_engine(
         self, engine: SimulationEngine, prev_scenario: Optional["Scenario"] = None
     ) -> None:
-        """Sets up engine input"""
+        """sets up engine input"""
 
         self._set_engine_as_classes(engine, prev_scenario)
         self._seed_engine_announcements(engine, prev_scenario)
@@ -361,7 +361,7 @@ class Scenario(ABC):
         # Done here to save as much time  as possible
         BaseASCls = self.scenario_config.BaseASCls
         for as_obj in engine:
-            # Set the AS class to be the proper type of AS
+            # set the AS class to be the proper type of AS
             as_obj.__class__ = self.non_default_asn_cls_dict.get(as_obj.asn, BaseASCls)
             # Clears all RIBs, etc
             # Reset base is False to avoid overrides base AS info (peers, etc)
@@ -423,7 +423,7 @@ class Scenario(ABC):
         for ann in self.announcements:
             prefixes.add(ann.prefix)
         # Do this here for speed
-        prefixes: List[Union[IPv4Network, IPv6Network]] = [  # type: ignore
+        prefixes: list[Union[IPv4Network, IPv6Network]] = [  # type: ignore
             ip_network(x) for x in prefixes
         ]
         # Sort prefixes with most specific prefix first
@@ -456,7 +456,7 @@ class Scenario(ABC):
     ##############
 
     @property
-    def _yamlable_non_default_asn_cls_dict(self) -> Dict[int, str]:
+    def _yamlable_non_default_asn_cls_dict(self) -> dict[int, str]:
         """Converts non default as cls dict to a yamlable dict of asn: name"""
 
         return {
@@ -465,12 +465,12 @@ class Scenario(ABC):
         }
 
     @staticmethod
-    def _get_non_default_asn_cls_dict_from_yaml(yaml_dict) -> Dict[int, Type[AS]]:
+    def _get_non_default_asn_cls_dict_from_yaml(yaml_dict) -> dict[int, type[AS]]:
         """Converts yamlified non_default_asn_cls_dict back to normal asn: class"""
 
         return {asn: AS.name_to_subclass_dict[name] for asn, name in yaml_dict.items()}
 
-    def __to_yaml_dict__(self) -> Dict[Any, Any]:
+    def __to_yaml_dict__(self) -> dict[Any, Any]:
         """This optional method is called when you call yaml.dump()"""
 
         config_to_save = replace(

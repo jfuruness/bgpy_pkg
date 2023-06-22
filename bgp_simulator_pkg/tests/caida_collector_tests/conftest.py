@@ -2,7 +2,7 @@ from datetime import datetime
 import os
 from pathlib import Path
 from shutil import copyfile
-from typing import Any, Dict, Generator
+from typing import Any, Generator
 from unittest.mock import patch
 
 import pytest
@@ -67,7 +67,7 @@ def mocked_download_file(self, url: str, path: str):
 
 
 @pytest.fixture(scope="function")
-def run_kwargs(tmp_path: Path) -> Generator[Dict[str, Any], Dict[str, Any], None]:
+def run_kwargs(tmp_path: Path) -> Generator[dict[str, Any], dict[str, Any], None]:
     """Returns run kwargs for caida collector"""
 
     yield {

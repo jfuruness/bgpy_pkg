@@ -1,6 +1,6 @@
 import logging
 from pathlib import Path
-from typing import Any, Dict, Optional, Set, Tuple, Type
+from typing import Any, Optional
 
 from yamlable import yaml_info, YamlAble, yaml_info_decorate
 
@@ -74,18 +74,18 @@ class BGPDAG(YamlAble):
 
     def __init__(
         self,
-        cp_links: Set[CPLink],
-        peer_links: Set[PeerLink],
-        ixps: Optional[Set[int]] = None,
-        input_clique: Optional[Set[int]] = None,
-        BaseASCls: Type[AS] = AS,
-        yaml_as_dict: Optional[Dict[int, AS]] = None,
+        cp_links: set[CPLink],
+        peer_links: set[PeerLink],
+        ixps: Optional[set[int]] = None,
+        input_clique: Optional[set[int]] = None,
+        BaseASCls: type[AS] = AS,
+        yaml_as_dict: Optional[dict[int, AS]] = None,
         csv_path: Path = (Path(__file__).parent.parent / "combined.csv"),
     ):
         """Reads in relationship data from a TSV and generate graph"""
 
         if yaml_as_dict is not None:
-            self.as_dict: Dict[int, AS] = yaml_as_dict
+            self.as_dict: dict[int, AS] = yaml_as_dict
             # Convert ASNs to refs
             for as_obj in self.as_dict.values():
                 as_obj.peers = tuple([self.as_dict[asn] for asn in as_obj.peers])
@@ -97,13 +97,13 @@ class BGPDAG(YamlAble):
                 )
 
             # Used for iteration
-            self.ases: Tuple[AS, ...] = tuple(self.as_dict.values())
-            self.propagation_ranks: Tuple[
-                Tuple[AS, ...], ...
+            self.ases: tuple[AS, ...] = tuple(self.as_dict.values())
+            self.propagation_ranks: tuple[
+                tuple[AS, ...], ...
             ] = self._get_propagation_ranks()
 
         else:
-            self.as_dict: Dict[int, AS] = dict()  # type: ignore
+            self.as_dict: dict[int, AS] = dict()  # type: ignore
             logging.debug("gen graph")
             # Just adds all ASes to the dict, and adds ixp/input_clique info
             self._gen_graph(
@@ -117,7 +117,7 @@ class BGPDAG(YamlAble):
             # Adds references to all relationships
             self._add_relationships(cp_links, peer_links)
             # Used for iteration
-            self.ases: Tuple[AS, ...] = tuple(self.as_dict.values())  # type: ignore
+            self.ases: tuple[AS, ...] = tuple(self.as_dict.values())  # type: ignore
             logging.debug("add rels done")
             # Remove duplicates from relationships and sort
             self._make_relationships_tuples()
@@ -154,7 +154,7 @@ class BGPDAG(YamlAble):
     # Yaml funcs #
     ##############
 
-    def __to_yaml_dict__(self) -> Dict[int, AS]:  # type: ignore
+    def __to_yaml_dict__(self) -> dict[int, AS]:  # type: ignore
         """Optional method called when yaml.dump is called"""
 
         return {asn: as_obj for asn, as_obj in self.as_dict.items()}

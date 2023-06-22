@@ -1,5 +1,4 @@
 from datetime import datetime
-from typing import List
 
 from bs4 import BeautifulSoup as Soup
 import requests
@@ -20,7 +19,7 @@ def _get_url(self, dl_time: datetime) -> str:
         raise Exception("No Urls")
 
 
-def _get_hrefs(self, url: str) -> List[str]:
+def _get_hrefs(self, url: str) -> list[str]:
     """Returns hrefs from a tags at a given url"""
 
     # Query URL

@@ -1,5 +1,3 @@
-from typing import Tuple
-
 from .link import Link
 
 
@@ -32,7 +30,7 @@ class CustomerProviderLink(Link):
         return self.__provider_asn
 
     @property
-    def asns(self) -> Tuple[int, int]:
+    def asns(self) -> tuple[int, int]:
         """Returns asns associated with this link. Used for hashing"""
 
         return tuple(sorted([self.customer_asn, self.provider_asn]))  # type: ignore

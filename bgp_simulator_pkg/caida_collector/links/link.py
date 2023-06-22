@@ -1,12 +1,12 @@
 from abc import ABC, abstractmethod
 
-from typing import Any, Tuple
+from typing import Any
 
 
 class Link(ABC):
     """Contains a relationship link in a BGP topology"""
 
-    __slots__: Tuple[str, ...] = tuple()
+    __slots__: tuple[str, ...] = tuple()
 
     def __init__(self):
         # Make sure we have asns
@@ -34,5 +34,5 @@ class Link(ABC):
 
     @property
     @abstractmethod
-    def asns(self) -> Tuple[int, int]:
+    def asns(self) -> tuple[int, int]:
         raise NotImplementedError

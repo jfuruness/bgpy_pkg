@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Dict, Iterator, List, Optional, Tuple
+from typing import Iterator, Optional
 
 from yamlable import YamlAble, yaml_info
 
@@ -33,7 +33,7 @@ class SendQueue(AnnContainer):
 
     __slots__ = ()  # type: ignore
 
-    def __init__(self, _info: Optional[Dict[int, Dict[str, SendInfo]]] = None):
+    def __init__(self, _info: Optional[dict[int, dict[str, SendInfo]]] = None):
         """Stores _info dict which contains send queue
 
         This is passed in so that we can regenerate this class from yaml
@@ -43,7 +43,7 @@ class SendQueue(AnnContainer):
         """
 
         # {neighbor: {prefix: SendInfo}}
-        self._info: Dict[int, Dict[str, SendInfo]] = (
+        self._info: dict[int, dict[str, SendInfo]] = (
             _info if _info is not None else dict()
         )
 
@@ -89,7 +89,7 @@ class SendQueue(AnnContainer):
 
         return self._info.get(neighbor_obj.asn, dict()).get(prefix)
 
-    def info(self, neighbors: List[AS]) -> Iterator[Tuple["AS", str, Ann]]:
+    def info(self, neighbors: list[AS]) -> Iterator[tuple["AS", str, Ann]]:
         """Returns neighbor obj, prefix, announcement"""
 
         for neighbor_obj in neighbors:

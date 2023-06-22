@@ -1,5 +1,4 @@
 from dataclasses import dataclass
-from typing import Type
 
 from ..graphs import GraphInfo
 from ....simulation_framework import ScenarioConfig
@@ -15,4 +14,4 @@ class EngineTestConfig:
     scenario_config: ScenarioConfig
     graph: GraphInfo
     propagation_rounds: int = 1
-    SubgraphCls: Type[Subgraph] = Subgraph
+    SubgraphCls: type[Subgraph] = Subgraph

@@ -1,7 +1,7 @@
 # This should be made compatible with mypy, but I have no time
 
 from pathlib import Path
-from typing import Dict, Any
+from typing import Any
 
 from .diagram import Diagram
 from .engine_test_config import EngineTestConfig
@@ -64,7 +64,7 @@ class EngineTester:
         # Convert this to just be {ASN: Outcome} (Not the AS object)
         outcomes_yaml = {as_obj.asn: result for as_obj, result in outcomes.items()}
         # Get shared_data
-        shared_data: Dict[Any, Any] = dict()
+        shared_data: dict[Any, Any] = dict()
         self.conf.SubgraphCls()._add_traceback_to_shared_data(
             shared_data, engine, scenario, outcomes
         )

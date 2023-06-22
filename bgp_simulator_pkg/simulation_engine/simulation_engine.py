@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import Optional, Type, TYPE_CHECKING
+from typing import Optional, TYPE_CHECKING
 
 from bgp_simulator_pkg.caida_collector import BGPDAG, AS
 
@@ -25,7 +25,7 @@ class SimulationEngine(BGPDAG):
         self,
         *args,
         # Default AS class in the BGPDAG
-        BaseASCls: Type[AS] = BGPSimpleAS,
+        BaseASCls: type[AS] = BGPSimpleAS,
         **kwargs,
     ):
         """Saves read_to_run_rund attr and inits superclass"""

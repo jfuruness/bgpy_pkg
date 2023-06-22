@@ -1,4 +1,4 @@
-from typing import Tuple, TYPE_CHECKING
+from typing import TYPE_CHECKING
 
 from .scenario import Scenario
 from ...enums import Prefixes
@@ -15,7 +15,7 @@ class ValidPrefix(Scenario):
 
     __slots__ = ()
 
-    def _get_announcements(self, *args, **kwargs) -> Tuple["Announcement", ...]:
+    def _get_announcements(self, *args, **kwargs) -> tuple["Announcement", ...]:
         """Returns a valid prefix announcement
 
         for subclasses of this EngineInput, you can set AnnCls equal to

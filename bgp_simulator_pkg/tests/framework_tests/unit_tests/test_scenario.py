@@ -66,7 +66,7 @@ class TestScenario:
         assert issubclass(conf.AdoptASCls, conf.BaseASCls)
 
     ##############################################
-    # Set Attacker/Victim and Announcement Funcs #
+    # set Attacker/Victim and Announcement Funcs #
     ##############################################
 
     def test_set_attackers_victims_anns_w_prev_scenario(self, engine):
@@ -207,12 +207,6 @@ class TestScenario:
 
         Ensures that a set is returned filled with at least a few ases
         """
-
-        engine = CaidaCollector(
-            BaseASCls=BGPSimpleAS,
-            GraphCls=SimulationEngine,
-        ).run(tsv_path=None)
-
         scenario = SubprefixHijack(
             scenario_config=ScenarioConfig(ScenarioCls=SubprefixHijack), engine=engine
         )
@@ -222,11 +216,6 @@ class TestScenario:
 
     def test_get_possible_victim_asns(self, engine):
         """Tests that a set is returned with at least a few ases"""
-
-        engine = CaidaCollector(
-            BaseASCls=BGPSimpleAS,
-            GraphCls=SimulationEngine,
-        ).run(tsv_path=None)
 
         scenario = SubprefixHijack(
             scenario_config=ScenarioConfig(ScenarioCls=SubprefixHijack), engine=engine

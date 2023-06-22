@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import Optional
 
 from bgp_simulator_pkg.caida_collector.graph.base_as import AS
 
@@ -8,7 +8,7 @@ from ....announcement import Announcement as Ann
 from .....enums import Relationships
 
 
-def _propagate(self, propagate_to: Relationships, send_rels: List[Relationships]):
+def _propagate(self, propagate_to: Relationships, send_rels: list[Relationships]):
     """Propogates announcements to other ASes
 
     send_rels is the relationships that are acceptable to send
@@ -28,7 +28,7 @@ def _prev_sent(self, neighbor: AS, ann: Ann) -> bool:
 
 
 def _process_outgoing_ann(
-    self, neighbor: BGPSimpleAS, ann: Ann, propagate_to, send_rels: List[Relationships]
+    self, neighbor: BGPSimpleAS, ann: Ann, propagate_to, send_rels: list[Relationships]
 ):
     self._send_q.add_ann(neighbor.asn, ann)
 
@@ -36,7 +36,7 @@ def _process_outgoing_ann(
 def _send_anns(self, propagate_to: Relationships):
     """Sends announcements and populates ribs out"""
 
-    neighbors: List[BGPSimpleAS] = getattr(self, propagate_to.name.lower())
+    neighbors: list[BGPSimpleAS] = getattr(self, propagate_to.name.lower())
 
     for neighbor, prefix, ann in self._send_q.info(neighbors):
         neighbor.receive_ann(ann)

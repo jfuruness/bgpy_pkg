@@ -1,5 +1,5 @@
 from dataclasses import dataclass, asdict, replace
-from typing import Any, Dict, Optional, Tuple, Type
+from typing import Any, Optional
 
 from yamlable import YamlAble, yaml_info, yaml_info_decorate
 
@@ -14,7 +14,7 @@ class Announcement(YamlAble):
     # MUST use slots for speed
     # Since anns get copied across 70k ASes
     prefix: str
-    as_path: Tuple[int, ...]
+    as_path: tuple[int, ...]
     timestamp: int
     seed_asn: Optional[int]
     roa_valid_length: Optional[bool]
@@ -22,7 +22,7 @@ class Announcement(YamlAble):
     recv_relationship: Relationships
     withdraw: bool = False
     traceback_end: bool = False
-    communities: Tuple[str, ...] = ()
+    communities: tuple[str, ...] = ()
 
     def __init_subclass__(cls, *args, **kwargs):
         """This method essentially creates a list of all subclasses
@@ -44,7 +44,7 @@ class Announcement(YamlAble):
             raise NotImplementedError
 
     def copy(
-        self, overwrite_default_kwargs: Optional[Dict[Any, Any]] = None
+        self, overwrite_default_kwargs: Optional[dict[Any, Any]] = None
     ) -> "Announcement":
         """Creates a new ann with proper sim attrs"""
 
@@ -113,14 +113,14 @@ class Announcement(YamlAble):
     # Yaml funcs #
     ##############
 
-    def __to_yaml_dict__(self) -> Dict[str, Any]:
+    def __to_yaml_dict__(self) -> dict[str, Any]:
         """This optional method is called when you call yaml.dump()"""
 
         return asdict(self)
 
     @classmethod
     def __from_yaml_dict__(
-        cls: Type["Announcement"], dct: Dict[str, Any], yaml_tag: Any
+        cls: type["Announcement"], dct: dict[str, Any], yaml_tag: Any
     ) -> "Announcement":
         """This optional method is called when you call yaml.load()"""
 

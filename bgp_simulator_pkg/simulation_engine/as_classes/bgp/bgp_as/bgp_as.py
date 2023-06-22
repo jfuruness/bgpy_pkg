@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import Optional
 
 from .propagate_funcs import _propagate
 from .propagate_funcs import _process_outgoing_ann
@@ -45,7 +45,7 @@ class BGPAS(BGPSimpleAS):
     # Must add this func here since it refers to BGPAS
     # Could use super but want to avoid additional func calls
     def _populate_send_q(
-        self, propagate_to: Relationships, send_rels: List[Relationships]
+        self, propagate_to: Relationships, send_rels: list[Relationships]
     ) -> None:
         # Process outging ann is oerriden so this just adds to send q
         super(BGPAS, self)._propagate(propagate_to, send_rels)

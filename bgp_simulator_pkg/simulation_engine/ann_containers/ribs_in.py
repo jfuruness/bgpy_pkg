@@ -1,5 +1,5 @@
 import dataclasses
-from typing import Dict, Iterator, Optional
+from typing import Iterator, Optional
 
 from yamlable import YamlAble, yaml_info
 
@@ -32,7 +32,7 @@ class RIBsIn(AnnContainer):
 
     __slots__ = ()
 
-    def __init__(self, _info: Optional[Dict[int, Dict[str, AnnInfo]]] = None):
+    def __init__(self, _info: Optional[dict[int, dict[str, AnnInfo]]] = None):
         """Stores _info dict which contains ribs in
 
         This is passed in so that we can regenerate this class from yaml
@@ -42,7 +42,7 @@ class RIBsIn(AnnContainer):
         """
 
         # {neighbor: {prefix: (announcement, relationship)}}
-        self._info: Dict[int, Dict[str, AnnInfo]] = (
+        self._info: dict[int, dict[str, AnnInfo]] = (
             _info if _info is not None else dict()
         )
 

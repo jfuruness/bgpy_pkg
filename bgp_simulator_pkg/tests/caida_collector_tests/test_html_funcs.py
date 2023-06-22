@@ -1,5 +1,5 @@
 from datetime import date
-from typing import Any, Dict
+from typing import Any
 
 import pytest
 
@@ -14,7 +14,7 @@ class TestHTMLFuncs:
         self,
         caida_collector: CaidaCollector,
         mock_caida_collector: CaidaCollector,
-        run_kwargs: Dict[str, Any],
+        run_kwargs: dict[str, Any],
     ):
         """Tests that the URL collected from Caida is accurate
 

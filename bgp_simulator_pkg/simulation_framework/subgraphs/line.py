@@ -1,7 +1,7 @@
 from math import sqrt
 from statistics import mean
 from statistics import stdev
-from typing import Dict, List, Union
+from typing import Union
 
 from ...enums import SpecialPercentAdoptions
 
@@ -12,12 +12,12 @@ class Line:
     def __init__(
         self,
         scenario_label: str,
-        percent_adopt_dict: Dict[Union[float, SpecialPercentAdoptions], List[float]],
+        percent_adopt_dict: dict[Union[float, SpecialPercentAdoptions], list[float]],
     ) -> None:
         """Stores info aobut a line in a graph"""
 
         # {percent_adopt: [percentages]}
-        self.percent_adopt_dict: Dict[float, List[float]] = dict()
+        self.percent_adopt_dict: dict[float, list[float]] = dict()
 
         for k, v in percent_adopt_dict.items():
             key = k.value if isinstance(k, SpecialPercentAdoptions) else k
@@ -29,22 +29,22 @@ class Line:
 
         # Remove the term Simple from the graphs
         self.label: str = scenario_label.replace("Simple", "")
-        self.xs: List[float] = self._get_xs()
-        self.ys: List[float] = self._get_ys()
-        self.yerrs: List[float] = self._get_yerrs()
+        self.xs: list[float] = self._get_xs()
+        self.ys: list[float] = self._get_ys()
+        self.yerrs: list[float] = self._get_yerrs()
 
-    def _get_xs(self) -> List[float]:
+    def _get_xs(self) -> list[float]:
         """ "Gets X axis makers"""
 
         # Convert decimals to whole numbers
         return [x * 100 for x in self.percent_adopt_dict]
 
-    def _get_ys(self) -> List[float]:
+    def _get_ys(self) -> list[float]:
         """Gets Y axis markers"""
 
         return [mean(x) for x in self.percent_adopt_dict.values()]
 
-    def _get_yerrs(self) -> List[float]:
+    def _get_yerrs(self) -> list[float]:
         """Gets Yerr for each data point"""
 
         return [self._get_yerr(x) for x in self.percent_adopt_dict.values()]

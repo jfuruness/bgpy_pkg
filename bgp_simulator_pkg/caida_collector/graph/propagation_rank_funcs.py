@@ -1,7 +1,5 @@
 """Functions to create ranks for propagation"""
 
-from typing import List, Tuple
-
 from .base_as import AS
 
 
@@ -23,13 +21,13 @@ def _assign_ranks_helper(self, as_obj: AS, rank: int):
             self._assign_ranks_helper(provider_obj, rank + 1)
 
 
-def _get_propagation_ranks(self) -> Tuple[Tuple[AS, ...], ...]:
+def _get_propagation_ranks(self) -> tuple[tuple[AS, ...], ...]:
     """Orders ASes by rank"""
 
     max_rank: int = max(x.propagation_rank for x in self)
     # Create a list of empty lists
     # Ignore types here for speed purposes
-    ranks: List[List[AS]] = list(list() for _ in range(max_rank + 1))
+    ranks: list[list[AS]] = list(list() for _ in range(max_rank + 1))
     # Append the ASes into their proper rank
     for as_obj in self:
         ranks[as_obj.propagation_rank].append(as_obj)

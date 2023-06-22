@@ -1,5 +1,4 @@
 from dataclasses import dataclass, field
-from typing import Set
 
 from bgp_simulator_pkg.caida_collector import PeerLink, CustomerProviderLink as CPLink
 
@@ -8,8 +7,8 @@ from bgp_simulator_pkg.caida_collector import PeerLink, CustomerProviderLink as 
 class GraphInfo:
     """Contains information to build a graph"""
 
-    customer_provider_links: Set[CPLink] = field(default_factory=set)
-    peer_links: Set[PeerLink] = field(default_factory=set)
+    customer_provider_links: set[CPLink] = field(default_factory=set)
+    peer_links: set[PeerLink] = field(default_factory=set)
 
     @property
     def asns(self) -> list[int]:

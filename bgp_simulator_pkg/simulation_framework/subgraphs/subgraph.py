@@ -1,13 +1,13 @@
 from abc import ABC
 from collections import defaultdict
 from pathlib import Path
-from typing import Any, DefaultDict, Dict, List, Optional, Type, Union
+from typing import Any, DefaultDict, Optional, Union
 
 import matplotlib  # type: ignore
 import matplotlib.pyplot as plt  # type: ignore
 
 from .line import Line
-from ...enums import ASTypes
+from ...enums import AStypes
 from ...enums import Outcomes
 from ...enums import SpecialPercentAdoptions
 from ...simulation_engine import SimulationEngine
@@ -34,7 +34,7 @@ class Subgraph(ABC):
 
     name: Optional[str] = None
 
-    subclasses: List[Type["Subgraph"]] = []
+    subclasses: list[type["Subgraph"]] = []
 
     def __init_subclass__(cls, *args, **kwargs):
         """This method essentially creates a list of all subclasses
@@ -56,7 +56,7 @@ class Subgraph(ABC):
         self.data: DefaultDict[
             int,
             DefaultDict[
-                str, DefaultDict[Union[float, SpecialPercentAdoptions], List[float]]
+                str, DefaultDict[Union[float, SpecialPercentAdoptions], list[float]]
             ],
         ] = defaultdict(default_dict_func)
 
@@ -73,12 +73,12 @@ class Subgraph(ABC):
     def write_graph(self, prop_round: int, graph_dir: Path):
         """Writes graph into the graph directory"""
 
-        lines: List[Line] = self._get_lines(prop_round)
+        lines: list[Line] = self._get_lines(prop_round)
 
         matplotlib.use("Agg")
         fig, ax = plt.subplots()
         fig.set_dpi(150)
-        # Set X and Y axis size
+        # set X and Y axis size
         plt.xlim(0, 100)
         plt.ylim(0, 100)
 
@@ -105,7 +105,7 @@ class Subgraph(ABC):
                 yerr=line.yerrs,
                 label=line.label,
             )
-        # Set labels
+        # set labels
         ax.set_ylabel(self.y_axis_label)
         ax.set_xlabel(self.x_axis_label)
 
@@ -119,20 +119,20 @@ class Subgraph(ABC):
         plt.close(fig)
 
     @property
-    def markers(self) -> List[str]:
+    def markers(self) -> list[str]:
         markers = [".", "1", "*", "x", "d", "2", "3", "4"]
         markers += markers.copy()[0:-2:2]
         markers += markers.copy()[::-1]
         return markers
 
     @property
-    def line_styles(self) -> List[str]:
+    def line_styles(self) -> list[str]:
         styles = ["-", "--", "-.", ":", "solid", "dotted", "dashdot", "dashed"]
         styles += styles.copy()[::-1]
         styles += styles.copy()[0:-2:2]
         return styles
 
-    def _get_lines(self, prop_round: int) -> List[Line]:
+    def _get_lines(self, prop_round: int) -> list[Line]:
         """Returns lines for matplotlib graph"""
 
         return [Line(k, v) for k, v in self.data[prop_round].items()]
@@ -172,7 +172,7 @@ class Subgraph(ABC):
 
     def aggregate_engine_run_data(
         self,
-        shared_data: Dict[Any, Any],
+        shared_data: dict[Any, Any],
         *,
         engine: SimulationEngine,
         percent_adopt: float,
@@ -228,10 +228,10 @@ class Subgraph(ABC):
 
     def _add_traceback_to_shared_data(
         self,
-        shared: Dict[Any, Any],
+        shared: dict[Any, Any],
         engine: SimulationEngine,
         scenario: Scenario,
-        outcomes: Dict[AS, Outcomes],
+        outcomes: dict[AS, Outcomes],
     ):
         """Adds traceback info to shared data"""
 
@@ -316,7 +316,7 @@ class Subgraph(ABC):
                 as_type, as_obj.__class__, outcome
             )
 
-            # Set the new percent
+            # set the new percent
             if shared.get(as_type_pol_outcome_k) is not None:
                 shared[as_type_pol_outcome_perc_k] = (
                     shared[as_type_pol_outcome_k] * 100 / shared[as_type_pol_k]
@@ -347,7 +347,7 @@ class Subgraph(ABC):
             #     + "_ctrl"
             # )
 
-            # Set the new percent
+            # set the new percent
             # if shared.get(as_type_pol_outcome_k_ctrl) is not None:
             #     shared[as_type_pol_outcome_perc_k_ctrl] = (
             #         shared[as_type_pol_outcome_k_ctrl]
@@ -359,30 +359,30 @@ class Subgraph(ABC):
 
         shared["set"] = True
 
-    def _get_as_type(self, as_obj: AS) -> ASTypes:
+    def _get_as_type(self, as_obj: AS) -> AStypes:
         """Returns the type of AS (stub_or_mh, input_clique, or etc)"""
 
         if as_obj.stub or as_obj.multihomed:
-            return ASTypes.STUBS_OR_MH
+            return AStypes.STUBS_OR_MH
         elif as_obj.input_clique:
-            return ASTypes.INPUT_CLIQUE
+            return AStypes.INPUT_CLIQUE
         else:
-            return ASTypes.ETC
+            return AStypes.ETC
 
-    def _get_as_type_pol_k(self, as_type: ASTypes, ASCls: Type[AS]) -> str:
+    def _get_as_type_pol_k(self, as_type: AStypes, ASCls: type[AS]) -> str:
         """Returns AS type+policy key"""
 
         return f"{as_type.value}_{ASCls.name}"
 
     def _get_as_type_pol_outcome_k(
-        self, as_type: ASTypes, ASCls: Type[AS], outcome: Outcomes
+        self, as_type: AStypes, ASCls: type[AS], outcome: Outcomes
     ) -> str:
         """returns as type+policy+outcome key"""
 
         return f"{self._get_as_type_pol_k(as_type, ASCls)}_{outcome.name}"
 
     def _get_as_type_pol_outcome_perc_k(
-        self, as_type: ASTypes, ASCls: Type[AS], outcome: Outcomes
+        self, as_type: AStypes, ASCls: type[AS], outcome: Outcomes
     ) -> str:
         """returns as type+policy+outcome key as a percent"""
 
@@ -395,11 +395,11 @@ class Subgraph(ABC):
 
     def _get_engine_outcomes(
         self, engine: SimulationEngine, scenario: Scenario
-    ) -> Dict[AS, Outcomes]:
+    ) -> dict[AS, Outcomes]:
         """Gets the outcomes of all ASes"""
 
         # {ASN: outcome}
-        outcomes: Dict[AS, Outcomes] = dict()
+        outcomes: dict[AS, Outcomes] = dict()
         for as_obj in engine.as_dict.values():
             # Gets AS outcome and stores it in the outcomes dict
             self._get_as_outcome(as_obj, outcomes, engine, scenario)
@@ -408,7 +408,7 @@ class Subgraph(ABC):
     def _get_as_outcome(
         self,
         as_obj: AS,
-        outcomes: Dict[AS, Outcomes],
+        outcomes: dict[AS, Outcomes],
         engine: SimulationEngine,
         scenario: Scenario,
     ) -> Outcomes:
@@ -442,7 +442,7 @@ class Subgraph(ABC):
             return outcome
 
     def _get_most_specific_ann(
-        self, as_obj: AS, ordered_prefixes: Dict[str, List[str]]
+        self, as_obj: AS, ordered_prefixes: dict[str, list[str]]
     ) -> Optional[Ann]:
         """Returns the most specific announcement that exists in a rib
 

@@ -1,5 +1,3 @@
-from typing import List, Set
-
 from bgp_simulator_pkg.caida_collector import AS
 
 from ....announcement import Announcement as Ann
@@ -12,7 +10,7 @@ def propagate_to_providers(self):
     Propogate ann's that have a recv_rel of origin or customer to providers
     """
 
-    send_rels: Set[Relationships] = set([Relationships.ORIGIN, Relationships.CUSTOMERS])
+    send_rels: set[Relationships] = set([Relationships.ORIGIN, Relationships.CUSTOMERS])
     self._propagate(Relationships.PROVIDERS, send_rels)
 
 
@@ -20,7 +18,7 @@ def propagate_to_customers(self):
     """Propogates to customers"""
 
     # Anns that have any of these as recv_rel get propogated
-    send_rels: Set[Relationships] = set(
+    send_rels: set[Relationships] = set(
         [
             Relationships.ORIGIN,
             Relationships.CUSTOMERS,
@@ -35,11 +33,11 @@ def propagate_to_peers(self):
     """Propogates to peers"""
 
     # Anns that have any of these as recv_rel get propogated
-    send_rels: Set[Relationships] = set([Relationships.ORIGIN, Relationships.CUSTOMERS])
+    send_rels: set[Relationships] = set([Relationships.ORIGIN, Relationships.CUSTOMERS])
     self._propagate(Relationships.PEERS, send_rels)
 
 
-def _propagate(self, propagate_to: Relationships, send_rels: List[Relationships]):
+def _propagate(self, propagate_to: Relationships, send_rels: list[Relationships]):
     """Propogates announcements from local rib to other ASes
 
     send_rels is the relationships that are acceptable to send
@@ -74,7 +72,7 @@ def _process_outgoing_ann(
     neighbor: AS,
     ann: Ann,
     propagate_to: Relationships,
-    send_rels: List[Relationships],
+    send_rels: list[Relationships],
 ):
     """Adds ann to the neighbors recv q"""
 

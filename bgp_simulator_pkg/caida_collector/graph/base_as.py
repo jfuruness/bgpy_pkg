@@ -1,15 +1,14 @@
-from typing import Any, Dict, List, Optional, Set
-from typing import Tuple, Type, TYPE_CHECKING, Union
+from typing import Any, Optional, TYPE_CHECKING, Union
 
 from yamlable import yaml_info, YamlAble, yaml_info_decorate
 
 if TYPE_CHECKING:
-    from .base_as import AS as ASTypeHint
+    from .base_as import AS as AStypeHint
 else:
-    ASTypeHint = "AS"
+    AStypeHint = "AS"
 
-SETUP_REL = Optional[Set[ASTypeHint]]
-REL = Tuple[ASTypeHint, ...]
+SETUP_REL = Optional[set[AStypeHint]]
+REL = tuple[AStypeHint, ...]
 
 SLOTS = (
     "asn",
@@ -31,8 +30,8 @@ class AS(YamlAble):
     """Autonomous System class. Contains attributes of an AS"""
 
     base_slots = SLOTS
-    subclass_to_name_dict: Dict[Type[ASTypeHint], str] = {}
-    name_to_subclass_dict: Dict[str, Type[ASTypeHint]] = {}
+    subclass_to_name_dict: dict[type[AStypeHint], str] = {}
+    name_to_subclass_dict: dict[str, type[AStypeHint]] = {}
 
     def __init_subclass__(cls, *args, **kwargs):
         """This method essentially creates a list of all subclasses
@@ -95,8 +94,8 @@ class AS(YamlAble):
         return hash(self.asn)
 
     @property
-    def db_row(self) -> Dict[str, str]:
-        def asns(as_objs: Union[List[ASTypeHint], Tuple[ASTypeHint]]) -> str:
+    def db_row(self) -> dict[str, str]:
+        def asns(as_objs: Union[list[AStypeHint], tuple[AStypeHint]]) -> str:
             return "{" + ",".join(str(x.asn) for x in sorted(as_objs)) + "}"
 
         def _format(x: Any) -> str:
@@ -136,13 +135,13 @@ class AS(YamlAble):
         return len(self.customers) > 1
 
     @property
-    def stubs(self) -> Tuple[ASTypeHint, ...]:
+    def stubs(self) -> tuple[AStypeHint, ...]:
         """Returns a list of any stubs connected to that AS"""
 
         return tuple([x for x in self.customers if x.stub])
 
     @property
-    def neighbors(self) -> Tuple[ASTypeHint, ...]:
+    def neighbors(self) -> tuple[AStypeHint, ...]:
         """Returns customers + peers + providers"""
 
         return self.customers + self.peers + self.providers
@@ -151,7 +150,7 @@ class AS(YamlAble):
     # Yaml funcs #
     ##############
 
-    def __to_yaml_dict__(self) -> Dict[str, Any]:
+    def __to_yaml_dict__(self) -> dict[str, Any]:
         """This optional method is called when you call yaml.dump()"""
         return {
             "asn": self.asn,
@@ -165,7 +164,7 @@ class AS(YamlAble):
         }
 
     @classmethod
-    def __from_yaml_dict__(cls, dct: Dict[Any, Any], yaml_tag: str):
+    def __from_yaml_dict__(cls, dct: dict[Any, Any], yaml_tag: str):
         """This optional method is called when you call yaml.load()"""
         return cls(**dct)
 

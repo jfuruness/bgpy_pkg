@@ -1,4 +1,4 @@
-from typing import Dict, ItemsView, List, Optional
+from typing import ItemsView, Optional
 
 from .ann_container import AnnContainer
 from ..announcement import Announcement as Ann
@@ -13,7 +13,7 @@ class RecvQueue(AnnContainer):
 
     __slots__ = ()
 
-    def __init__(self, _info: Optional[Dict[str, List[Ann]]] = None):
+    def __init__(self, _info: Optional[dict[str, list[Ann]]] = None):
         """Stores _info dict which contains recv_queue
 
         This is passed in so that we can regenerate this class from yaml
@@ -22,7 +22,7 @@ class RecvQueue(AnnContainer):
         yamlable using the yamlable library
         """
 
-        self._info: Dict[str, List[Ann]] = _info if _info is not None else dict()
+        self._info: dict[str, list[Ann]] = _info if _info is not None else dict()
 
     def add_ann(self, ann: Ann):
         """Appends ann to the list of recieved ann for that prefix
@@ -32,12 +32,12 @@ class RecvQueue(AnnContainer):
 
         self._info[ann.prefix] = self._info.get(ann.prefix, list()) + [ann]
 
-    def prefix_anns(self) -> ItemsView[str, List[Ann]]:
+    def prefix_anns(self) -> ItemsView[str, list[Ann]]:
         """Returns all prefixes and announcement lists zipped"""
 
         return self._info.items()
 
-    def get_ann_list(self, prefix: str) -> List[Ann]:
+    def get_ann_list(self, prefix: str) -> list[Ann]:
         """Returns recevied ann list for a given prefix"""
 
         # mypy can't handle this, just ignore

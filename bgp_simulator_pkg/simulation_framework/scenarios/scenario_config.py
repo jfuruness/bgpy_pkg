@@ -1,5 +1,5 @@
 from dataclasses import asdict, dataclass, field
-from typing import Any, Dict, Optional, Set, Tuple, Type, TYPE_CHECKING
+from typing import Any, Optional, TYPE_CHECKING
 
 from bgp_simulator_pkg.caida_collector import AS
 
@@ -10,7 +10,7 @@ from ...simulation_engine import BGPSimpleAS
 if TYPE_CHECKING:
     from .scenario_trial import Scenario
 
-pseudo_base_cls_dict: Dict[Type[AS], Type[AS]] = dict()
+pseudo_base_cls_dict: dict[type[AS], type[AS]] = dict()
 
 
 class MISSINGAS(AS):
@@ -24,17 +24,17 @@ class ScenarioConfig:
     Is reused for multiple trials (thus, frozen)
     """
 
-    ScenarioCls: Type["Scenario"]
+    ScenarioCls: type["Scenario"]
     # This is the base type of announcement for this class
     # You can specify a different base ann
-    AnnCls: Type[Announcement] = Announcement
-    BaseASCls: Type[AS] = BGPSimpleAS
+    AnnCls: type[Announcement] = Announcement
+    BaseASCls: type[AS] = BGPSimpleAS
     # Fixed in post init, but can't show mypy for some reason
-    AdoptASCls: Type[AS] = MISSINGAS
+    AdoptASCls: type[AS] = MISSINGAS
     num_attackers: int = 1
     num_victims: int = 1
     # Adoption is equal across these atributes of the engine
-    adoption_subcategory_attrs: Tuple[str, ...] = (
+    adoption_subcategory_attrs: tuple[str, ...] = (
         "stub_or_mh_asns",
         "etc_asns",
         "input_clique_asns",
@@ -44,15 +44,15 @@ class ScenarioConfig:
     # Victims can be chosen from this attribute of the engine
     victim_subcategory_attr: str = "stub_or_mh_asns"
     # ASes that are hardcoded to specific values
-    hardcoded_asn_cls_dict: Dict[int, Type[AS]] = field(default_factory=dict)
+    hardcoded_asn_cls_dict: dict[int, type[AS]] = field(default_factory=dict)
     # Only necessary if coming from YAML or the test suite
-    override_attacker_asns: Optional[Set[int]] = None
-    override_victim_asns: Optional[Set[int]] = None
-    override_non_default_asn_cls_dict: Optional[Dict[int, Type[AS]]] = None
-    override_announcements: Tuple[Announcement, ...] = ()
+    override_attacker_asns: Optional[set[int]] = None
+    override_victim_asns: Optional[set[int]] = None
+    override_non_default_asn_cls_dict: Optional[dict[int, type[AS]]] = None
+    override_announcements: tuple[Announcement, ...] = ()
 
     def __post_init__(self):
-        """Sets AdoptASCls if it is None
+        """sets AdoptASCls if it is None
 
         This is done to fix the following:
         Scenario 1 has 3 BGP ASes and 1 AdoptCls
@@ -79,7 +79,7 @@ class ScenarioConfig:
     ##############
 
     @property
-    def _yamlable_hardcoded_asn_cls_dict(self) -> Dict[int, str]:
+    def _yamlable_hardcoded_asn_cls_dict(self) -> dict[int, str]:
         """Converts non default as cls dict to a yamlable dict of asn: name"""
 
         return {
@@ -88,12 +88,12 @@ class ScenarioConfig:
         }
 
     @staticmethod
-    def _get_hardcoded_asn_cls_dict_from_yaml(yaml_dict) -> Dict[int, Type[AS]]:
+    def _get_hardcoded_asn_cls_dict_from_yaml(yaml_dict) -> dict[int, type[AS]]:
         """Converts yamlified non_default_as_cls_dict back to normal asn: class"""
 
         return {asn: AS.name_to_subclass_dict[name] for asn, name in yaml_dict.items()}
 
-    def __to_yaml_dict__(self) -> Dict[Any, Any]:
+    def __to_yaml_dict__(self) -> dict[Any, Any]:
         """This optional method is called when you call yaml.dump()"""
 
         yaml_dict = dict()

@@ -1,6 +1,6 @@
 # YAML STUFF
 from yamlable import YamlCodec
-from typing import Type, Any, Iterable, Tuple
+from typing import Any, Iterable
 import yaml
 
 from .simulator_loader import SimulatorLoader
@@ -19,7 +19,7 @@ class SimulatorCodec(YamlCodec):
         return "!simulator_codec/"
 
     @classmethod
-    def get_known_types(cls) -> Iterable[Type[Any]]:
+    def get_known_types(cls) -> Iterable[type[Any]]:
         """return the list of types that we know how to encode"""
 
         return types_to_yaml_tags.keys()
@@ -42,7 +42,7 @@ class SimulatorCodec(YamlCodec):
             return typ(**dct)
 
     @classmethod
-    def to_yaml_dict(cls, obj) -> Tuple[str, Any]:
+    def to_yaml_dict(cls, obj) -> tuple[str, Any]:
         """Converts objects to yaml dicts"""
 
         if isinstance(obj, YamlAbleEnum):

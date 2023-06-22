@@ -1,10 +1,10 @@
-from typing import Any, Dict, Tuple
+from typing import Any
 
 import pytest
 
 from bgp_simulator_pkg.caida_collector import CaidaCollector
 
-COLLECTOR_AND_KWARGS = Tuple[CaidaCollector, Dict[str, Any]]
+COLLECTOR_AND_KWARGS = tuple[CaidaCollector, dict[str, Any]]
 
 
 @pytest.mark.read_file_funcs
