@@ -6,7 +6,7 @@ from typing import Any
 from .diagram import Diagram
 from .engine_test_config import EngineTestConfig
 from .simulator_codec import SimulatorCodec
-from ....simulation_engine import SimulationEngine
+from bgp_simulator_pkg.simulation_engine import SimulationEngine
 
 
 class EngineTester:

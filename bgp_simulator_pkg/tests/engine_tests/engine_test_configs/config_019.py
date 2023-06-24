@@ -1,9 +1,9 @@
-from ..graphs import graph_017
-from ..utils import EngineTestConfig
+from bgp_simulator_pkg.tests.engine_tests.graphs import graph_017
+from bgp_simulator_pkg.tests.engine_tests.utils import EngineTestConfig
 
-from ....simulation_engine import BGPSimpleAS
-from ....enums import ASNs
-from ....simulation_framework import ScenarioConfig, ValidPrefix
+from bgp_simulator_pkg.simulation_engine import BGPSimpleAS
+from bgp_simulator_pkg.enums import ASNs
+from bgp_simulator_pkg.simulation_framework import ScenarioConfig, ValidPrefix
 
 
 config_019 = EngineTestConfig(

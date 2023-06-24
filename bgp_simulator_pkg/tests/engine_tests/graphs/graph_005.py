@@ -2,7 +2,7 @@ from bgp_simulator_pkg.caida_collector import CustomerProviderLink as CPLink
 from bgp_simulator_pkg.caida_collector import PeerLink
 
 from .graph_info import GraphInfo
-from ....enums import ASNs
+from bgp_simulator_pkg.enums import ASNs
 
 
 r"""v3 example with ROV++v2

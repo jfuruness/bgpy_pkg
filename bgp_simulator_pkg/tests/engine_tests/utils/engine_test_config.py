@@ -1,8 +1,8 @@
 from dataclasses import dataclass
 
-from ..graphs import GraphInfo
-from ....simulation_framework import ScenarioConfig
-from ....simulation_framework import Subgraph
+from bgp_simulator_pkg.tests.engine_tests.graphs import GraphInfo
+from bgp_simulator_pkg.simulation_framework import ScenarioConfig
+from bgp_simulator_pkg.simulation_framework import Subgraph
 
 
 @dataclass(frozen=True, slots=True)

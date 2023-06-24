@@ -1,9 +1,9 @@
 from graphviz import Digraph
 import ipaddress
 
-from ....enums import Outcomes
-from ....simulation_engine import BGPAS
-from ....simulation_engine import BGPSimpleAS
+from bgp_simulator_pkg.enums import Outcomes
+from bgp_simulator_pkg.simulation_engine import BGPAS
+from bgp_simulator_pkg.simulation_engine import BGPSimpleAS
 
 
 class Diagram:

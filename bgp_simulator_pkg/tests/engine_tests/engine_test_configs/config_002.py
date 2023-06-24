@@ -1,9 +1,9 @@
-from ..graphs import graph_001
-from ..utils import EngineTestConfig
+from bgp_simulator_pkg.tests.engine_tests.graphs import graph_001
+from bgp_simulator_pkg.tests.engine_tests.utils import EngineTestConfig
 
-from ....simulation_engine import BGPAS
-from ....enums import ASNs
-from ....simulation_framework import ScenarioConfig, SubprefixHijack
+from bgp_simulator_pkg.simulation_engine import BGPAS
+from bgp_simulator_pkg.enums import ASNs
+from bgp_simulator_pkg.simulation_framework import ScenarioConfig, SubprefixHijack
 
 
 config_002 = EngineTestConfig(

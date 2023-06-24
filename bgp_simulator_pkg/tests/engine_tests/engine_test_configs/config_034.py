@@ -1,12 +1,12 @@
 from copy import deepcopy
 
-from ..graphs import graph_040
-from ..utils import EngineTestConfig
+from bgp_simulator_pkg.tests.engine_tests.graphs import graph_040
+from bgp_simulator_pkg.tests.engine_tests.utils import EngineTestConfig
 
 
-from ....simulation_engine import BGPAS
-from ....simulation_framework import ValidPrefix, ScenarioConfig
-from ....enums import Prefixes
+from bgp_simulator_pkg.simulation_engine import BGPAS
+from bgp_simulator_pkg.simulation_framework import ValidPrefix, ScenarioConfig
+from bgp_simulator_pkg.enums import Prefixes
 
 
 class Custom34ValidPrefix(ValidPrefix):
