@@ -25,7 +25,6 @@ class YamlAbleEnum(Enum):
 
 
 class Outcomes(YamlAbleEnum):
-    __slots__ = ()
 
     ATTACKER_SUCCESS: int = 0
     VICTIM_SUCCESS: int = 1
@@ -34,7 +33,6 @@ class Outcomes(YamlAbleEnum):
 
 
 class Relationships(YamlAbleEnum):
-    __slots__ = ()
 
     # Must start at one for the priority
     PROVIDERS: int = 1
@@ -57,8 +55,6 @@ class ROAValidity(YamlAbleEnum):
     and invalid by max length for another roa
     """
 
-    __slots__ = ()
-
     VALID: int = 0
     UNKNOWN: int = 1
     INVALID: int = 2
@@ -66,8 +62,6 @@ class ROAValidity(YamlAbleEnum):
 
 class Timestamps(YamlAbleEnum):
     """Different timestamps to use"""
-
-    __slots__ = ()
 
     # Victim is always first
     VICTIM: int = 0
@@ -80,8 +74,6 @@ class Prefixes(YamlAbleEnum):
     prefix always belongs to the victim
     """
 
-    __slots__ = ()
-
     SUPERPREFIX: str = "1.0.0.0/8"
     # Prefix always belongs to victim
     PREFIX: str = "1.2.0.0/16"
@@ -91,16 +83,12 @@ class Prefixes(YamlAbleEnum):
 class ASNs(YamlAbleEnum):
     """Default ASNs for various ASNs"""
 
-    __slots__ = ()
-
     ATTACKER: int = 666
     VICTIM: int = 777
 
 
 class AStypes(YamlAbleEnum):
     """AS types"""
-
-    __slots__ = ()
 
     STUBS_OR_MH: str = "stubs_or_mh"
     INPUT_CLIQUE: str = "input_clique"

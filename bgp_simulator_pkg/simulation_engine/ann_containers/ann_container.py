@@ -7,8 +7,6 @@ from yamlable import YamlAble, yaml_info_decorate
 class AnnContainer(YamlAble):
     """Container for announcement that has slots and equality"""
 
-    __slots__ = ("_info",)
-
     def __init_subclass__(cls, *args, **kwargs):
         """This method essentially creates a list of all subclasses
         This is allows us to easily assign yaml tags

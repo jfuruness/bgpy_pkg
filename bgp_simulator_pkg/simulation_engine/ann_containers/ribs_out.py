@@ -11,8 +11,6 @@ class RIBsOut(AnnContainer):
     neighbor: {prefix: announcement}
     """
 
-    __slots__ = ()  # type: ignore
-
     def __init__(self, _info: Optional[dict[int, dict[str, Ann]]] = None):
         """Stores _info dict which contains ribs in
 

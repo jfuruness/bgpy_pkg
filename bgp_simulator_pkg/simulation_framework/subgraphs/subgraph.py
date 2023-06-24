@@ -30,8 +30,6 @@ def default_dict_func():
 class Subgraph(ABC):
     """A subgraph for data display"""
 
-    __slots__ = ("data",)  # type: ignore
-
     name: Optional[str] = None
 
     subclasses: list[type["Subgraph"]] = []

@@ -32,22 +32,6 @@ from .customer_cone_funcs import _get_cone_size_helper
 class BGPDAG(YamlAble):
     """BGP Topology from caida which is a DAG"""
 
-    # Slots are used here to allow for fast access (1/3 faster)
-    # And also because it allows others to easily see the instance attrs
-    __slots__ = (
-        "as_dict",
-        "propagation_ranks",
-        "ases",
-        "stub_asns",
-        "mh_asns",
-        "input_clique_asns",
-        "etc_asns",
-        "stub_ases",
-        "mh_ases",
-        "input_clique_ases",
-        "etc_ases",
-    )
-
     # Graph building functionality
     _gen_graph = _gen_graph
     _add_relationships = _add_relationships

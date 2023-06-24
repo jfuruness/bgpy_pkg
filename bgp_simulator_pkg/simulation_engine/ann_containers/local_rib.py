@@ -8,8 +8,6 @@ from bgp_simulator_pkg.simulation_engine.announcement import Announcement as Ann
 class LocalRIB(AnnContainer):
     """Local RIB for a BGP AS"""
 
-    __slots__ = ()
-
     def __init__(self, _info: Optional[dict[str, Ann]] = None):
         """Stores _info dict which contains local ribs
 

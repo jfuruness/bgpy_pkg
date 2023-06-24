@@ -31,8 +31,6 @@ class SendQueue(AnnContainer):
     {neighbor: {prefix: SendInfo}}
     """
 
-    __slots__ = ()  # type: ignore
-
     def __init__(self, _info: Optional[dict[int, dict[str, SendInfo]]] = None):
         """Stores _info dict which contains send queue
 

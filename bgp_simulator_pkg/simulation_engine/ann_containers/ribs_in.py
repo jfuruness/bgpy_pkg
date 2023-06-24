@@ -30,8 +30,6 @@ class RIBsIn(AnnContainer):
     neighbor: {prefix: (announcement, relationship)}
     """
 
-    __slots__ = ()
-
     def __init__(self, _info: Optional[dict[int, dict[str, AnnInfo]]] = None):
         """Stores _info dict which contains ribs in
 

@@ -19,8 +19,6 @@ class SuperprefixPrefixHijack(Scenario):
     and the victim announces their own prefix
     """
 
-    __slots__ = ()
-
     def _get_announcements(self, *args, **kwargs) -> tuple["Announcement", ...]:
         """Returns victim+attacker prefix ann, attacker superprefix ann
 

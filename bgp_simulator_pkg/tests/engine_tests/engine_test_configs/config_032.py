@@ -12,8 +12,6 @@ from bgp_simulator_pkg.enums import Prefixes
 class Custom32ValidPrefix(ValidPrefix):
     """Add a better announcement in round 2 to cause withdrawal"""
 
-    __slots__ = ()
-
     def post_propagation_hook(self, engine=None, propagation_round=0, *args, **kwargs):
         if propagation_round == 1:  # second round
             ann = deepcopy(engine.as_dict[2]._local_rib.get_ann(Prefixes.PREFIX.value))

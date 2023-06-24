@@ -9,8 +9,6 @@ from bgp_simulator_pkg.simulation_framework import ValidPrefix, ScenarioConfig
 class Custom29MultiValidPrefix(ValidPrefix):
     """A valid prefix engine input with multiple victims"""
 
-    __slots__ = ()
-
     def _get_announcements(self, *args, **kwargs):
         """Returns several valid prefix announcements"""
 

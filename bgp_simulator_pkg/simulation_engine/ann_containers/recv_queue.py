@@ -11,8 +11,6 @@ class RecvQueue(AnnContainer):
     {prefix: list_of_ann}
     """
 
-    __slots__ = ()
-
     def __init__(self, _info: Optional[dict[str, list[Ann]]] = None):
         """Stores _info dict which contains recv_queue
 

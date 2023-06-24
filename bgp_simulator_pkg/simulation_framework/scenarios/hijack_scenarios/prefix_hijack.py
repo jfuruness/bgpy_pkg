@@ -13,8 +13,6 @@ if TYPE_CHECKING:
 class PrefixHijack(Scenario):
     """Prefix hijack where both attacker and victim compete for a prefix"""
 
-    __slots__ = ()
-
     def _get_announcements(self, *args, **kwargs) -> tuple["Announcement", ...]:
         """Returns the two announcements seeded for this engine input
 

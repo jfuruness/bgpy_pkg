@@ -6,8 +6,6 @@ from typing import Any
 class Link(ABC):
     """Contains a relationship link in a BGP topology"""
 
-    __slots__: tuple[str, ...] = tuple()
-
     def __init__(self):
         # Make sure we have asns
         # Make sure the asns is a tuple

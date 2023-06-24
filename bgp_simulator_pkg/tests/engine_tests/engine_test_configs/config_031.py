@@ -9,8 +9,6 @@ from bgp_simulator_pkg.simulation_framework import ValidPrefix, ScenarioConfig
 class Custom31ValidPrefix(ValidPrefix):
     """A valid prefix engine input"""
 
-    __slots__ = ()
-
     def _get_announcements(self, *args, **kwargs):
         vic_ann = super()._get_announcements()[0]
         # Add 1 to the path so AS 1 rejects this

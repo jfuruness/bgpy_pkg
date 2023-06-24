@@ -18,8 +18,6 @@ class SubprefixHijack(Scenario):
     invalid by roa by length and origin
     """
 
-    __slots__ = ()
-
     def _get_announcements(self, *args, **kwargs) -> tuple["Announcement", ...]:
         """Returns victim and attacker anns for subprefix hijack
 

@@ -14,8 +14,6 @@ if TYPE_CHECKING:
 class NonRoutedPrefixHijack(Scenario):
     """Non routed prefix hijack (ROA of AS 0)"""
 
-    __slots__ = ()
-
     def _get_announcements(self, *args, **kwargs) -> tuple["Announcement", ...]:
         """Returns non routed prefix announcement from attacker
 
