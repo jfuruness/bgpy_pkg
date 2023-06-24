@@ -122,6 +122,8 @@ BSD License (see license file)
 ## TODO
 * [bgp\_simulator\_pkg](#bgp_simulator_pkg)
 
+* Update the typing so that the AS class is either consistently coming from the CaidaCollector or the BGPSimpleAS, not this weird mix of both.
+* Imports should be reordered sensibly
 See Jira
 
 ## Design Decisions
@@ -136,3 +138,7 @@ This will allow for much better typing
 Previously this was separate because it was used in many other places, however, now it is only used within this simulator
 This is really coupled with the simulator now, since the base of the caida collector serves as the base for the simulator itself
 We will be able to dynamically make the subgraphs part of the caida collector, with an enum that someone can inherit and use, veasy easily if it's part of the simulator
+
+__slots__ was initially used for a speedup, however this caused problems with extendability because we are swapping out the __class__ attribute for ASes that may have routing policies that require the use of new instance attributes. This is specifically noted as a use case against __slots__ in the documentation. Also, when we ran the testing with pypy to determine the time difference, it was less than 1 second with everything having slots or nothing have slots for 100 trials. In other words, the difference was negligable, so for easier development, __slots__ were removed from everything other than the announcements. Additionally, a lot of the benefit of these is likely negated by using the YamlAble base class, which, afaik, doesn't use slots.
+
+pytest-cov has also been removed. It brings the testing time up to 10 minutes (when normally it is less than 30 seconds). This does not play well with pypy, and also does not work with multiprocessing after their 4.0.0 release, so thus it is no longer a default. Developers can add it as they wish, just be aware it is quite slow.
