@@ -1,13 +1,13 @@
 from typing import TYPE_CHECKING
 
-from ..scenario import Scenario
-from ....enums import Prefixes
-from ....enums import Relationships
-from ....enums import Timestamps
+from bgp_simulator_pkg.simulation_framework.scenarios.scenario import Scenario
+from bgp_simulator_pkg.enums import Prefixes
+from bgp_simulator_pkg.enums import Relationships
+from bgp_simulator_pkg.enums import Timestamps
 
 
 if TYPE_CHECKING:
-    from ....simulation_engine import Announcement
+    from bgp_simulator_pkg.simulation_engine import Announcement
 
 
 class SuperprefixPrefixHijack(Scenario):

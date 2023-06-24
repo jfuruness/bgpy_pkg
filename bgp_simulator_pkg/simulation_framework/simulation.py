@@ -15,10 +15,10 @@ from bgp_simulator_pkg.caida_collector import CaidaCollector
 from .scenarios import ScenarioConfig
 from .scenarios import SubprefixHijack
 from .subgraphs import Subgraph
-from ..enums import SpecialPercentAdoptions
-from ..simulation_engine import BGPSimpleAS
-from ..simulation_engine import SimulationEngine
-from ..simulation_engine import ROVSimpleAS
+from bgp_simulator_pkg.enums import SpecialPercentAdoptions
+from bgp_simulator_pkg.simulation_engine import BGPSimpleAS
+from bgp_simulator_pkg.simulation_engine import SimulationEngine
+from bgp_simulator_pkg.simulation_engine import ROVSimpleAS
 
 
 class Simulation:

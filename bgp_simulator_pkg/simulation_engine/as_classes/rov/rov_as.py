@@ -1,6 +1,6 @@
 from .rov_simple_as import ROVSimpleAS
 
-from ..bgp import BGPAS
+from bgp_simulator_pkg.simulation_engine.as_classes.bgp import BGPAS
 
 
 class ROVAS(ROVSimpleAS, BGPAS):

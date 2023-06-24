@@ -1,5 +1,5 @@
-from ..links import CustomerProviderLink as CPLink
-from ..links import PeerLink
+from bgp_simulator_pkg.caida_collector.links import CustomerProviderLink as CPLink
+from bgp_simulator_pkg.caida_collector.links import PeerLink
 
 
 def _get_ases(

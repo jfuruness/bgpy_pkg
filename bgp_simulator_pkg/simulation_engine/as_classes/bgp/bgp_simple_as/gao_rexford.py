@@ -1,7 +1,7 @@
 from typing import Optional
 
-from ....announcement import Announcement as Ann
-from .....enums import Relationships
+from bgp_simulator_pkg.simulation_engine.announcement import Announcement as Ann
+from bgp_simulator_pkg.enums import Relationships
 
 
 def _new_ann_better(

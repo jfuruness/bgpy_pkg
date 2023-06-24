@@ -1,12 +1,14 @@
 from typing import Optional, TYPE_CHECKING
 
-from ....announcement import Announcement as Ann
-from .....enums import Relationships
-from ....ann_containers import AnnInfo, SendInfo
+
+from bgp_simulator_pkg.simulation_engine.ann_containers import AnnInfo, SendInfo
+
+from bgp_simulator_pkg.simulation_engine.announcement import Announcement as Ann
+from bgp_simulator_pkg.enums import Relationships
 
 
 if TYPE_CHECKING:
-    from ....simulation_framework import Scenario
+    from bgp_simulator_pkg.simulation_framework import Scenario
 
 
 def process_incoming_anns(

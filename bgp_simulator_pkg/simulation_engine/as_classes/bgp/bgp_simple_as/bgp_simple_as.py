@@ -25,8 +25,8 @@ from .gao_rexford import _new_as_path_shorter
 from .gao_rexford import _new_wins_ties
 
 
-from ....ann_containers import LocalRIB
-from ....ann_containers import RecvQueue
+from bgp_simulator_pkg.simulation_engine.ann_containers import LocalRIB
+from bgp_simulator_pkg.simulation_engine.ann_containers import RecvQueue
 
 
 class BGPSimpleAS(AS):

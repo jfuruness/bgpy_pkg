@@ -3,8 +3,8 @@ from typing import Any, Optional, TYPE_CHECKING
 
 from bgp_simulator_pkg.caida_collector import AS
 
-from ...simulation_engine import Announcement
-from ...simulation_engine import BGPSimpleAS
+from bgp_simulator_pkg.simulation_engine import Announcement
+from bgp_simulator_pkg.simulation_engine import BGPSimpleAS
 
 
 if TYPE_CHECKING:

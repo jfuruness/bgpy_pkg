@@ -5,8 +5,8 @@ from yamlable import YamlAble, yaml_info
 
 from .ann_container import AnnContainer
 
-from ..announcement import Announcement
-from ...enums import Relationships
+from bgp_simulator_pkg.simulation_engine.announcement import Announcement
+from bgp_simulator_pkg.enums import Relationships
 
 
 @yaml_info(yaml_tag="AnnInfo")

@@ -3,7 +3,7 @@ from typing import Any, Optional
 
 from yamlable import YamlAble, yaml_info, yaml_info_decorate
 
-from ..enums import Relationships
+from bgp_simulator_pkg.enums import Relationships
 
 
 @yaml_info(yaml_tag="Announcement")

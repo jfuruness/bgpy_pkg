@@ -10,11 +10,12 @@ from typing import Any, Optional, Union
 from bgp_simulator_pkg.caida_collector import AS
 
 from .scenario_config import ScenarioConfig
-from ...enums import Outcomes
-from ...enums import Relationships
-from ...enums import SpecialPercentAdoptions
-from ...simulation_engine import Announcement
-from ...simulation_engine import SimulationEngine
+
+from bgp_simulator_pkg.simulation_engine import Announcement
+from bgp_simulator_pkg.simulation_engine import SimulationEngine
+from bgp_simulator_pkg.enums import Outcomes
+from bgp_simulator_pkg.enums import Relationships
+from bgp_simulator_pkg.enums import SpecialPercentAdoptions
 
 pseudo_base_cls_dict: dict[type[AS], type[AS]] = dict()
 

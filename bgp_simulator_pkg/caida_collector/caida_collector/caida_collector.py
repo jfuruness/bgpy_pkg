@@ -6,7 +6,7 @@ import shutil
 from typing import Optional
 
 
-from ..graph import AS, BGPDAG
+from bgp_simulator_pkg.caida_collector.graph import AS, BGPDAG
 
 # Can't import into class due to mypy issue:
 # https://github.com/python/mypy/issues/7045
@@ -71,8 +71,7 @@ class CaidaCollector:
                 "cache, which was just deleted. please try again"
             )
             # MAke sure no matter what don't create a messed up cache
-            # shutil.rmtree(cache_dir)
-            print("MUST ADD THIS BACK")
+            shutil.rmtree(cache_dir)
             raise
 
     def _run(

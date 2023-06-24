@@ -1,9 +1,9 @@
 from bgp_simulator_pkg.caida_collector import CaidaCollector
 
-from ..simulation_engine import BGPSimpleAS
-from ..simulation_engine import RealROVSimpleAS
-from ..simulation_engine import RealPeerROVSimpleAS
-from ..simulation_engine import SimulationEngine
+from bgp_simulator_pkg.simulation_engine import BGPSimpleAS
+from bgp_simulator_pkg.simulation_engine import RealROVSimpleAS
+from bgp_simulator_pkg.simulation_engine import RealPeerROVSimpleAS
+from bgp_simulator_pkg.simulation_engine import SimulationEngine
 
 
 def get_real_world_rov_asn_cls_dict(

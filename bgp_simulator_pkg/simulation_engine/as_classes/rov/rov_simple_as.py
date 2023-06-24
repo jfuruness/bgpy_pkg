@@ -1,6 +1,5 @@
-from ..bgp import BGPSimpleAS
-
-from ...announcement import Announcement as Ann
+from bgp_simulator_pkg.simulation_engine.as_classes.bgp import BGPSimpleAS
+from bgp_simulator_pkg.simulation_engine.announcement import Announcement as Ann
 
 
 class ROVSimpleAS(BGPSimpleAS):

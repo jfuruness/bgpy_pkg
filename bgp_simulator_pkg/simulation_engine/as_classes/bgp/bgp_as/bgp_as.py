@@ -10,14 +10,14 @@ from .process_incoming_funcs import _process_incoming_withdrawal
 from .process_incoming_funcs import _withdraw_ann_from_neighbors
 from .process_incoming_funcs import _select_best_ribs_in
 
-from ..bgp_simple_as import BGPSimpleAS
+from bgp_simulator_pkg.simulation_engine.as_classes.bgp.bgp_simple_as import BGPSimpleAS
 
-from ....ann_containers import RIBsIn
-from ....ann_containers import RIBsOut
-from ....ann_containers import SendQueue
+from bgp_simulator_pkg.simulation_engine.ann_containers import RIBsIn
+from bgp_simulator_pkg.simulation_engine.ann_containers import RIBsOut
+from bgp_simulator_pkg.simulation_engine.ann_containers import SendQueue
 
-from ....announcement import Announcement as Ann
-from .....enums import Relationships
+from bgp_simulator_pkg.simulation_engine.announcement import Announcement as Ann
+from bgp_simulator_pkg.enums import Relationships
 
 
 class BGPAS(BGPSimpleAS):

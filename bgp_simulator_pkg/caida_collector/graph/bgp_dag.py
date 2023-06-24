@@ -6,8 +6,8 @@ from yamlable import yaml_info, YamlAble, yaml_info_decorate
 
 from .base_as import AS
 
-from ..links import CustomerProviderLink as CPLink
-from ..links import PeerLink
+from bgp_simulator_pkg.caida_collector.links import CustomerProviderLink as CPLink
+from bgp_simulator_pkg.caida_collector.links import PeerLink
 
 
 # can't import into class due to mypy issue

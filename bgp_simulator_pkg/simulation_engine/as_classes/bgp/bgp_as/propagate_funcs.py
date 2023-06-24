@@ -2,10 +2,10 @@ from typing import Optional
 
 from bgp_simulator_pkg.caida_collector.graph.base_as import AS
 
-from ..bgp_simple_as import BGPSimpleAS
+from bgp_simulator_pkg.simulation_engine.as_classes.bgp.bgp_simple_as import BGPSimpleAS
 
-from ....announcement import Announcement as Ann
-from .....enums import Relationships
+from bgp_simulator_pkg.simulation_engine.announcement import Announcement as Ann
+from bgp_simulator_pkg.enums import Relationships
 
 
 def _propagate(self, propagate_to: Relationships, send_rels: list[Relationships]):

@@ -2,14 +2,13 @@ from __future__ import annotations
 from typing import Optional, TYPE_CHECKING
 
 from bgp_simulator_pkg.caida_collector import BGPDAG, AS
-
-from .as_classes import BGPSimpleAS
-from ..enums import Relationships
+from bgp_simulator_pkg.enums import Relationships
+from bgp_simulator_pkg.simulation_engine.as_classes import BGPSimpleAS
 
 
 # https://stackoverflow.com/a/57005931/8903959
 if TYPE_CHECKING:
-    from ..simulation_framework import Scenario
+    from bgp_simulator_pkg.simulation_framework import Scenario
 
 
 class SimulationEngine(BGPDAG):

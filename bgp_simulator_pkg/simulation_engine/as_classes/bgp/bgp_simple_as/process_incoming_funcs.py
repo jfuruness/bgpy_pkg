@@ -1,12 +1,12 @@
 from __future__ import annotations
 from typing import Any, Optional, TYPE_CHECKING
 
-from ....announcement import Announcement as Ann
-from ....ann_containers import RecvQueue
-from .....enums import Relationships
+from bgp_simulator_pkg.simulation_engine.announcement import Announcement as Ann
+from bgp_simulator_pkg.simulation_engine.ann_containers import RecvQueue
+from bgp_simulator_pkg.enums import Relationships
 
 if TYPE_CHECKING:
-    from ....simulation_framework import Scenario
+    from bgp_simulator_pkg.simulation_framework import Scenario
 
 
 def receive_ann(self, ann: Ann, accept_withdrawals: bool = False):

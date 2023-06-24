@@ -8,7 +8,7 @@ from bgp_simulator_pkg.caida_collector import AS
 
 from .ann_container import AnnContainer
 
-from ..announcement import Announcement as Ann
+from bgp_simulator_pkg.simulation_engine.announcement import Announcement as Ann
 
 
 @yaml_info(yaml_tag="SendInfo")
