@@ -1,5 +1,5 @@
 include README.md
 include LICENSE
 include bgp_simulator_pkg/py.typed
-include bgp_simulator_pkg/caida_collector_pkg/combined.csv
+include bgp_simulator_pkg/caida_collector/combined.csv
 include tox.ini
