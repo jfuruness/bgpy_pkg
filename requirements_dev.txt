@@ -13,3 +13,4 @@ mypy==0.982
 flake8==4.0.1
 tox==3.25.1
 pytest-xdist==2.5.0
+ruff==0.0.275

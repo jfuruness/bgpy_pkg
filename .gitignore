@@ -1,3 +1,5 @@
+.ruff_cache/
+
 # Test generates these automatically
 *.gv
 *.pdf

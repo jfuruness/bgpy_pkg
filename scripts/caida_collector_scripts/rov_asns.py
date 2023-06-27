@@ -1,3 +1,4 @@
+import csv
 from pathlib import Path
 
 # Done here so that it only happens once
@@ -12,7 +13,9 @@ with path.open() as f:
 
 
 # Add to caida graph
-# Change the stub_asns, my_asns, etc in the caida graph to be just ASes with a hash of their ASN
+# Change the stub_asns, my_asns, etc
+# in the caida graph to be just ASes with a hash of their ASN
 # Modify the subcategories in the scenario class to account for this
-# Modify the subcategories in the scenario class to be ROV or not based on scenario...
+# Modify the subcategories in the scenario class
+# to be ROV or not based on scenario...
 # Alert the team to know about it

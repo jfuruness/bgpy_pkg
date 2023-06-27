@@ -1,8 +1,9 @@
 from pathlib import Path
 
 from bgp_simulator_pkg import SpecialPercentAdoptions
-from bgp_simulator_pkg import ROVSimpleAS, PeerROVSimpleAS
-from bgp_simulator_pkg import Simulation, SubprefixHijack
+
+# from bgp_simulator_pkg import ROVSimpleAS, RealPeerROVSimpleAS
+from bgp_simulator_pkg import Simulation  # , SubprefixHijack
 
 
 def main():
@@ -10,18 +11,18 @@ def main():
 
     # Simulation for the paper
     sim = Simulation(
-        percent_adoptions = (
+        percent_adoptions=(
             SpecialPercentAdoptions.ONLY_ONE,
-            .1,
-            .2,
-            .4,
-            .8,
-            SpecialPercentAdoptions.ALL_BUT_ONE
+            0.1,
+            0.2,
+            0.4,
+            0.8,
+            SpecialPercentAdoptions.ALL_BUT_ONE,
         ),
-        scenarios=(
-            SubprefixHijack(AdoptASCls=ROVSimpleAS),
-            SubprefixHijack(AdoptASCls=PeerROVSimpleAS),
-        ),
+        # scenarios=(
+        #     SubprefixHijack(AdoptASCls=ROVSimpleAS),
+        #     SubprefixHijack(AdoptASCls=PeerROVSimpleAS),
+        # ),
         output_path=Path("~/Desktop/paper_graphs").expanduser(),
         num_trials=1000,
         parse_cpus=12,

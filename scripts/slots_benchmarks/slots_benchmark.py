@@ -1,5 +1,4 @@
 from multiprocessing import cpu_count
-import os
 from pathlib import Path
 import time
 
@@ -14,7 +13,7 @@ def main():
     assert False, "Turn asserts off! (With -O flag)"
 
     # Simulation for the paper
-    sim = Simulation(
+    sim = Simulation(  # type: ignore
         percent_adoptions=(
             SpecialPercentAdoptions.ONLY_ONE,
             0.1,
@@ -24,10 +23,7 @@ def main():
             SpecialPercentAdoptions.ALL_BUT_ONE,
         ),
         scenario_configs=(
-            ScenarioConfig(
-                ScenarioCls=SubprefixHijack,
-                AdoptASCls=ROVSimpleAS
-            ),
+            ScenarioConfig(ScenarioCls=SubprefixHijack, AdoptASCls=ROVSimpleAS),
         ),
         output_path=Path("~/Desktop/slots_benchmark_graphs").expanduser(),
         num_trials=100,

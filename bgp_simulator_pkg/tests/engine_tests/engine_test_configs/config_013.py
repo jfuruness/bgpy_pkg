@@ -3,7 +3,10 @@ from bgp_simulator_pkg.tests.engine_tests.utils import EngineTestConfig
 
 from bgp_simulator_pkg.simulation_engine import BGPSimpleAS, ROVSimpleAS
 from bgp_simulator_pkg.enums import ASNs
-from bgp_simulator_pkg.simulation_framework import ScenarioConfig, NonRoutedSuperprefixHijack
+from bgp_simulator_pkg.simulation_framework import (
+    ScenarioConfig,
+    NonRoutedSuperprefixHijack,
+)
 
 
 config_013 = EngineTestConfig(

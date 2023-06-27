@@ -63,7 +63,7 @@ def _valid_ann(self, ann: Ann, recv_relationship: Relationships) -> bool:
     """Determine if an announcement is valid or should be dropped"""
 
     # BGP Loop Prevention Check
-    return not (self.asn in ann.as_path)
+    return self.asn not in ann.as_path
 
 
 def _copy_and_process(

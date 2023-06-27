@@ -16,9 +16,10 @@ def pytest_configure(config):
     """Caches the caida collector before parallelization"""
 
     # Prevent workers from running the same code
-    if not hasattr(config, 'workerinput'):
+    if not hasattr(config, "workerinput"):
         # Caches CAIDA downloaded file only once before tests run
         CaidaCollector().run(tsv_path=None)
+
 
 def pytest_sessionfinish(session, exitstatus):
     """Runs when all tests are done, once per session, even with xdist

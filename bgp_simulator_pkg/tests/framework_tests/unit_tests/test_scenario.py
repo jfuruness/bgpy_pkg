@@ -2,8 +2,6 @@ import random
 
 import pytest
 
-from bgp_simulator_pkg.caida_collector import CaidaCollector
-
 from ....enums import Prefixes
 from ....simulation_framework import ScenarioConfig
 from ....simulation_framework import SubprefixHijack
@@ -13,7 +11,6 @@ from ....simulation_engine import BGPSimpleAS
 from ....simulation_engine import BGPAS
 from ....simulation_engine import ROVSimpleAS
 from ....simulation_engine import ROVAS
-from ....simulation_engine import SimulationEngine
 
 
 @pytest.mark.framework

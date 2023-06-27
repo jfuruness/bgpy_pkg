@@ -25,7 +25,6 @@ class YamlAbleEnum(Enum):
 
 
 class Outcomes(YamlAbleEnum):
-
     ATTACKER_SUCCESS: int = 0
     VICTIM_SUCCESS: int = 1
     DISCONNECTED: int = 2
@@ -33,7 +32,6 @@ class Outcomes(YamlAbleEnum):
 
 
 class Relationships(YamlAbleEnum):
-
     # Must start at one for the priority
     PROVIDERS: int = 1
     PEERS: int = 2
