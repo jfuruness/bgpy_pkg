@@ -113,7 +113,9 @@ class Scenario(ABC):
     ) -> set[int]:
         """Returns possible attacker ASNs, defaulted from config"""
 
-        possible_asns = getattr(engine, self.scenario_config.attacker_subcategory_attr)
+        possible_asns = engine.asn_groups[
+            self.scenario_config.attacker_subcategory_attr
+        ]
         err = "Make mypy happy"
         assert all(isinstance(x, int) for x in possible_asns), err
         assert isinstance(possible_asns, set), err
@@ -163,7 +165,7 @@ class Scenario(ABC):
     ) -> set[int]:
         """Returns possible victim ASNs, defaulted from config"""
 
-        possible_asns = getattr(engine, self.scenario_config.victim_subcategory_attr)
+        possible_asns = engine.asn_groups[self.scenario_config.victim_subcategory_attr]
         err = "Make mypy happy"
         assert all(isinstance(x, int) for x in possible_asns), err
         assert isinstance(possible_asns, set), err
@@ -238,7 +240,7 @@ class Scenario(ABC):
 
         # Randomly adopt in all three subcategories
         for subcategory in self.scenario_config.adoption_subcategory_attrs:
-            asns = getattr(engine, subcategory)
+            asns = engine.asn_groups[subcategory]
             # Remove ASes that are already pre-set
             # Ex: Attacker and victim
             # Ex: ROV Nodes (in certain situations)

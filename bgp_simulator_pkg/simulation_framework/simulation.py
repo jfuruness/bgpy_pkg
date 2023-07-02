@@ -40,6 +40,7 @@ class Simulation:
         output_path: Path = Path("/tmp/graphs"),
         parse_cpus: int = cpu_count(),
         python_hash_seed: Optional[int] = None,
+        engine_kwargs: Optional[dict[Any, Any]] = None,
     ) -> None:
         """Downloads relationship data, runs simulation
 
@@ -64,6 +65,13 @@ class Simulation:
         self.scenario_configs: tuple[ScenarioConfig, ...] = scenario_configs
         self.python_hash_seed = python_hash_seed
 
+        if engine_kwargs:
+            self.engine_kwargs: dict[Any, Any] = engine_kwargs
+        else:
+            self.engine_kwargs = {
+                "BaseASCls": BGPSimpleAS,
+                "GraphCls": SimulationEngine,
+            }
         # Done here so that the caida files are cached
         # So that multiprocessing doesn't interfere with one another
         CaidaCollector().run()
@@ -203,10 +211,7 @@ class Simulation:
         # (after the multiprocess process has started)
         # Changing recursion depth does nothing
         # Making nothing a reference does nothing
-        engine = CaidaCollector(
-            BaseASCls=BGPSimpleAS,
-            GraphCls=SimulationEngine,
-        ).run(tsv_path=None)
+        engine = CaidaCollector(**self.engine_kwargs.copy()).run(tsv_path=None)
         # Must deepcopy here to have the same behavior between single
         # And multiprocessing
         if single_proc:

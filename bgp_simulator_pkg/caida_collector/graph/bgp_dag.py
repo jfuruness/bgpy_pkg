@@ -117,22 +117,26 @@ class BGPDAG(YamlAble):
             logging.debug("Customer cones complete")
             self._add_extra_csv_info(csv_path)
 
-        # Some helpful sets of asns
-        self.stub_ases = set([x for x in self if x.stub])
-        self.mh_ases = set([x for x in self if x.multihomed])
-        self.stub_or_mh_ases = set(self.stub_ases | self.mh_ases)
-        self.input_clique_ases = set([x for x in self if x.input_clique])
-        self.etc_ases = set(
-            [x for x in self if not (x.stub or x.multihomed or x.input_clique)]
-        )
-        # Backwards compatibility
-        self.stub_asns = set([x.asn for x in self if x.stub])
-        self.mh_asns = set([x.asn for x in self if x.multihomed])
-        self.stub_or_mh_asns = set(self.stub_asns | self.mh_asns)
-        self.input_clique_asns = set([x.asn for x in self if x.input_clique])
-        self.etc_asns = set(
-            [x.asn for x in self if not (x.stub or x.multihomed or x.input_clique)]
-        )
+        # Some helpful sets of ases for faster loops
+        self.as_groups: dict[str, int] = {
+            "stub": set([x for x in self if x.stub]),
+            "multihomed": set([x for x in self if x.multihomed]),
+            "stub_or_multihomed": set([x for x in self if x.multihomed or x.stub]),
+            "input_clique": set([x for x in self if x.input_clique]),
+            "etc": set(
+                [x for x in self if not (x.stub or x.multihomed or x.input_clique)]
+            ),
+        }
+        # Some helpful sets of asns for faster loops
+        self.asn_groups: dict[str, int] = {
+            "stub": set([x.asn for x in self if x.stub]),
+            "multihomed": set([x.asn for x in self if x.multihomed]),
+            "stub_or_multihomed": set([x.asn for x in self if x.multihomed or x.stub]),
+            "input_clique": set([x.asn for x in self if x.input_clique]),
+            "etc": set(
+                [x.asn for x in self if not (x.stub or x.multihomed or x.input_clique)]
+            ),
+        }
 
     ##############
     # Yaml funcs #

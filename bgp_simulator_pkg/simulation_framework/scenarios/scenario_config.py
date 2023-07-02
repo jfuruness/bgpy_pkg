@@ -35,14 +35,14 @@ class ScenarioConfig:
     num_victims: int = 1
     # Adoption is equal across these atributes of the engine
     adoption_subcategory_attrs: tuple[str, ...] = (
-        "stub_or_mh_asns",
-        "etc_asns",
-        "input_clique_asns",
+        "stub_or_multihomed",
+        "etc",
+        "input_clique",
     )
     # Attackers can be chosen from this attribute of the engine
-    attacker_subcategory_attr: str = "stub_or_mh_asns"
+    attacker_subcategory_attr: str = "stub_or_multihomed"
     # Victims can be chosen from this attribute of the engine
-    victim_subcategory_attr: str = "stub_or_mh_asns"
+    victim_subcategory_attr: str = "stub_or_multihomed"
     # ASes that are hardcoded to specific values
     hardcoded_asn_cls_dict: dict[int, type[AS]] = field(default_factory=dict)
     # Only necessary if coming from YAML or the test suite
