@@ -11,6 +11,6 @@ etc_ROV: 2
 etc_ROV_ATTACKER_SUCCESS: 2
 etc_ROV_ATTACKER_SUCCESS_percent: 100.0
 set: true
-stubs_or_mh_BGP: 2
-stubs_or_mh_BGP_ATTACKER_SUCCESS: 2
-stubs_or_mh_BGP_ATTACKER_SUCCESS_percent: 100.0
+stub_or_multihomed_BGP: 2
+stub_or_multihomed_BGP_ATTACKER_SUCCESS: 2
+stub_or_multihomed_BGP_ATTACKER_SUCCESS_percent: 100.0

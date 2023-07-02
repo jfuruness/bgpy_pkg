@@ -45,6 +45,7 @@
       - 4
       - 1
       - 4
+      communities: !!python/tuple []
       prefix: 1.2.0.0/16
       recv_relationship: !simulator_codec/Relationships
         name: ORIGIN

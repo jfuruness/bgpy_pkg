@@ -6,6 +6,7 @@
       - 1
       - 2
       - 777
+      communities: !!python/tuple []
       prefix: 1.2.0.0/16
       recv_relationship: !simulator_codec/Relationships
         name: CUSTOMERS
@@ -32,6 +33,7 @@
       as_path: !!python/tuple
       - 2
       - 777
+      communities: !!python/tuple []
       prefix: 1.2.0.0/16
       recv_relationship: !simulator_codec/Relationships
         name: CUSTOMERS
@@ -47,6 +49,7 @@
       - 2
       - 3
       - 666
+      communities: !!python/tuple []
       prefix: 1.2.3.0/24
       recv_relationship: !simulator_codec/Relationships
         name: PEERS
@@ -76,6 +79,7 @@
       - 3
       - 2
       - 777
+      communities: !!python/tuple []
       prefix: 1.2.0.0/16
       recv_relationship: !simulator_codec/Relationships
         name: PEERS
@@ -90,6 +94,7 @@
       as_path: !!python/tuple
       - 3
       - 666
+      communities: !!python/tuple []
       prefix: 1.2.3.0/24
       recv_relationship: !simulator_codec/Relationships
         name: CUSTOMERS
@@ -119,6 +124,7 @@
       - 3
       - 2
       - 777
+      communities: !!python/tuple []
       prefix: 1.2.0.0/16
       recv_relationship: !simulator_codec/Relationships
         name: PROVIDERS
@@ -132,6 +138,7 @@
     1.2.3.0/24: !yamlable/Announcement
       as_path: !!python/tuple
       - 666
+      communities: !!python/tuple []
       prefix: 1.2.3.0/24
       recv_relationship: !simulator_codec/Relationships
         name: ORIGIN
@@ -157,6 +164,7 @@
     1.2.0.0/16: !yamlable/Announcement
       as_path: !!python/tuple
       - 777
+      communities: !!python/tuple []
       prefix: 1.2.0.0/16
       recv_relationship: !simulator_codec/Relationships
         name: ORIGIN
@@ -173,6 +181,7 @@
       - 2
       - 3
       - 666
+      communities: !!python/tuple []
       prefix: 1.2.3.0/24
       recv_relationship: !simulator_codec/Relationships
         name: PROVIDERS

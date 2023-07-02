@@ -8,6 +8,6 @@ etc_BGP Simple_ATTACKER_SUCCESS_percent: 60.0
 etc_BGP Simple_VICTIM_SUCCESS: 2
 etc_BGP Simple_VICTIM_SUCCESS_percent: 40.0
 set: true
-stubs_or_mh_BGP Simple: 2
-stubs_or_mh_BGP Simple_ATTACKER_SUCCESS: 2
-stubs_or_mh_BGP Simple_ATTACKER_SUCCESS_percent: 100.0
+stub_or_multihomed_BGP Simple: 2
+stub_or_multihomed_BGP Simple_ATTACKER_SUCCESS: 2
+stub_or_multihomed_BGP Simple_ATTACKER_SUCCESS_percent: 100.0

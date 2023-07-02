@@ -4,6 +4,6 @@ etc_BGP Simple: 1
 etc_BGP Simple_DISCONNECTED: 1
 etc_BGP Simple_DISCONNECTED_percent: 100.0
 set: true
-stubs_or_mh_BGP Simple: 3
-stubs_or_mh_BGP Simple_DISCONNECTED: 3
-stubs_or_mh_BGP Simple_DISCONNECTED_percent: 100.0
+stub_or_multihomed_BGP Simple: 3
+stub_or_multihomed_BGP Simple_DISCONNECTED: 3
+stub_or_multihomed_BGP Simple_DISCONNECTED_percent: 100.0

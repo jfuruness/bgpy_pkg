@@ -5,6 +5,7 @@
       as_path: !!python/tuple
       - 1
       - 777
+      communities: !!python/tuple []
       prefix: 1.2.0.0/16
       recv_relationship: !simulator_codec/Relationships
         name: CUSTOMERS
@@ -19,6 +20,7 @@
       as_path: !!python/tuple
       - 1
       - 666
+      communities: !!python/tuple []
       prefix: 1.2.3.0/24
       recv_relationship: !simulator_codec/Relationships
         name: CUSTOMERS
@@ -33,10 +35,10 @@
   asn: 1
   customer_cone_size: 6
   customers: !!python/tuple
-  - 777
-  - 666
   - 3
   - 4
+  - 777
+  - 666
   input_clique: false
   ixp: false
   peers: !!python/tuple []
@@ -49,6 +51,7 @@
       - 2
       - 5
       - 777
+      communities: !!python/tuple []
       prefix: 1.2.0.0/16
       recv_relationship: !simulator_codec/Relationships
         name: CUSTOMERS
@@ -77,6 +80,7 @@
       - 3
       - 1
       - 777
+      communities: !!python/tuple []
       prefix: 1.2.0.0/16
       recv_relationship: !simulator_codec/Relationships
         name: PROVIDERS
@@ -105,6 +109,7 @@
       - 4
       - 1
       - 777
+      communities: !!python/tuple []
       prefix: 1.2.0.0/16
       recv_relationship: !simulator_codec/Relationships
         name: PROVIDERS
@@ -133,6 +138,7 @@
       as_path: !!python/tuple
       - 5
       - 777
+      communities: !!python/tuple []
       prefix: 1.2.0.0/16
       recv_relationship: !simulator_codec/Relationships
         name: CUSTOMERS
@@ -162,6 +168,7 @@
       - 3
       - 1
       - 777
+      communities: !!python/tuple []
       prefix: 1.2.0.0/16
       recv_relationship: !simulator_codec/Relationships
         name: PROVIDERS
@@ -190,6 +197,7 @@
       - 4
       - 1
       - 777
+      communities: !!python/tuple []
       prefix: 1.2.0.0/16
       recv_relationship: !simulator_codec/Relationships
         name: PROVIDERS
@@ -217,6 +225,7 @@
       - 666
       - 1
       - 777
+      communities: !!python/tuple []
       prefix: 1.2.0.0/16
       recv_relationship: !simulator_codec/Relationships
         name: PROVIDERS
@@ -230,6 +239,7 @@
     1.2.3.0/24: !yamlable/Announcement
       as_path: !!python/tuple
       - 666
+      communities: !!python/tuple []
       prefix: 1.2.3.0/24
       recv_relationship: !simulator_codec/Relationships
         name: ORIGIN
@@ -255,6 +265,7 @@
     1.2.0.0/16: !yamlable/Announcement
       as_path: !!python/tuple
       - 777
+      communities: !!python/tuple []
       prefix: 1.2.0.0/16
       recv_relationship: !simulator_codec/Relationships
         name: ORIGIN
@@ -270,6 +281,7 @@
       - 777
       - 1
       - 666
+      communities: !!python/tuple []
       prefix: 1.2.3.0/24
       recv_relationship: !simulator_codec/Relationships
         name: PROVIDERS

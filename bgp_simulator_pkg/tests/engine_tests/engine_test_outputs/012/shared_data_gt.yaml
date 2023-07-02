@@ -9,6 +9,6 @@ etc_ROV: 1
 etc_ROV_DISCONNECTED: 1
 etc_ROV_DISCONNECTED_percent: 100.0
 set: true
-stubs_or_mh_BGP Simple: 1
-stubs_or_mh_BGP Simple_DISCONNECTED: 1
-stubs_or_mh_BGP Simple_DISCONNECTED_percent: 100.0
+stub_or_multihomed_BGP Simple: 1
+stub_or_multihomed_BGP Simple_DISCONNECTED: 1
+stub_or_multihomed_BGP Simple_DISCONNECTED_percent: 100.0

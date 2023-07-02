@@ -4,6 +4,6 @@ etc_ROV: 2
 etc_ROV_VICTIM_SUCCESS: 2
 etc_ROV_VICTIM_SUCCESS_percent: 100.0
 set: true
-stubs_or_mh_ROV: 4
-stubs_or_mh_ROV_VICTIM_SUCCESS: 4
-stubs_or_mh_ROV_VICTIM_SUCCESS_percent: 100.0
+stub_or_multihomed_ROV: 4
+stub_or_multihomed_ROV_VICTIM_SUCCESS: 4
+stub_or_multihomed_ROV_VICTIM_SUCCESS_percent: 100.0
