@@ -88,6 +88,8 @@ class ASNs(YamlAbleEnum):
 class AStypes(YamlAbleEnum):
     """AS types"""
 
+    STUBS: str = "stub"
+    MULTIHOMED: str = "multihomed"
     STUBS_OR_MH: str = "stub_or_multihomed"
     INPUT_CLIQUE: str = "input_clique"
     # Not stubs, multihomed, or input clique

@@ -6,6 +6,7 @@ from yamlable import yaml_info, YamlAble, yaml_info_decorate
 
 from .base_as import AS
 
+from bgp_simulator_pkg.enums import AStypes
 from bgp_simulator_pkg.caida_collector.links import CustomerProviderLink as CPLink
 from bgp_simulator_pkg.caida_collector.links import PeerLink
 
@@ -119,21 +120,23 @@ class BGPDAG(YamlAble):
 
         # Some helpful sets of ases for faster loops
         self.as_groups: dict[str, int] = {
-            "stub": set([x for x in self if x.stub]),
-            "multihomed": set([x for x in self if x.multihomed]),
-            "stub_or_multihomed": set([x for x in self if x.multihomed or x.stub]),
-            "input_clique": set([x for x in self if x.input_clique]),
-            "etc": set(
+            AStypes.STUBS.value: set([x for x in self if x.stub]),
+            AStypes.MULTIHOMED.value: set([x for x in self if x.multihomed]),
+            AStypes.STUBS_OR_MH.value: set([x for x in self if x.multihomed or x.stub]),
+            AStypes.INPUT_CLIQUE.value: set([x for x in self if x.input_clique]),
+            AStypes.ETC.value: set(
                 [x for x in self if not (x.stub or x.multihomed or x.input_clique)]
             ),
         }
         # Some helpful sets of asns for faster loops
         self.asn_groups: dict[str, int] = {
-            "stub": set([x.asn for x in self if x.stub]),
-            "multihomed": set([x.asn for x in self if x.multihomed]),
-            "stub_or_multihomed": set([x.asn for x in self if x.multihomed or x.stub]),
-            "input_clique": set([x.asn for x in self if x.input_clique]),
-            "etc": set(
+            AStypes.STUBS.value: set([x.asn for x in self if x.stub]),
+            AStypes.MULTIHOMED.value: set([x.asn for x in self if x.multihomed]),
+            AStypes.STUBS_OR_MH.value: set([
+                x.asn for x in self if x.multihomed or x.stub
+            ]),
+            AStypes.INPUT_CLIQUE.value: set([x.asn for x in self if x.input_clique]),
+            AStypes.ETC.value: set(
                 [x.asn for x in self if not (x.stub or x.multihomed or x.input_clique)]
             ),
         }

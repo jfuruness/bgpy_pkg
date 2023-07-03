@@ -2,6 +2,7 @@ from dataclasses import asdict, dataclass, field
 from typing import Any, Optional, TYPE_CHECKING
 
 from bgp_simulator_pkg.caida_collector import AS
+from bgp_simulator_pkg.enums import AStypes
 
 from bgp_simulator_pkg.simulation_engine import Announcement
 from bgp_simulator_pkg.simulation_engine import BGPSimpleAS
@@ -35,14 +36,14 @@ class ScenarioConfig:
     num_victims: int = 1
     # Adoption is equal across these atributes of the engine
     adoption_subcategory_attrs: tuple[str, ...] = (
-        "stub_or_multihomed",
-        "etc",
-        "input_clique",
+        AStypes.STUBS_OR_MH.value,
+        AStypes.ETC.value,
+        AStypes.INPUT_CLIQUE.value
     )
     # Attackers can be chosen from this attribute of the engine
-    attacker_subcategory_attr: str = "stub_or_multihomed"
+    attacker_subcategory_attr: str = AStypes.STUBS_OR_MH.value
     # Victims can be chosen from this attribute of the engine
-    victim_subcategory_attr: str = "stub_or_multihomed"
+    victim_subcategory_attr: str = AStypes.STUBS_OR_MH.value
     # ASes that are hardcoded to specific values
     hardcoded_asn_cls_dict: dict[int, type[AS]] = field(default_factory=dict)
     # Only necessary if coming from YAML or the test suite
