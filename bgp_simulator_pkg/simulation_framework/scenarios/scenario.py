@@ -265,9 +265,9 @@ class Scenario(ABC):
                 k = math.ceil(len(possible_adopters) * self.percent_adoption)
 
             # https://stackoverflow.com/a/15837796/8903959
-            possible_adopters = tuple(possible_adopters)
+            possible_adopters_tup = tuple(possible_adopters)
             try:
-                for asn in random.sample(possible_adopters, k):
+                for asn in random.sample(possible_adopters_tup, k):
                     asn_cls_dict[asn] = self.scenario_config.AdoptASCls
             except ValueError:
                 raise ValueError(f"{k} can't be sampled from {len(possible_adopters)}")

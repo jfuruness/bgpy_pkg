@@ -38,7 +38,7 @@ class ScenarioConfig:
     adoption_subcategory_attrs: tuple[str, ...] = (
         ASGroups.STUBS_OR_MH.value,
         ASGroups.ETC.value,
-        ASGroups.INPUT_CLIQUE.value
+        ASGroups.INPUT_CLIQUE.value,
     )
     # Attackers can be chosen from this attribute of the engine
     attacker_subcategory_attr: str = ASGroups.STUBS_OR_MH.value

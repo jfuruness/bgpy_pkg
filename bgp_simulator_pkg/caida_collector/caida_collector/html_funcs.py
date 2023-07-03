@@ -25,8 +25,8 @@ def _get_hrefs(self, url: str) -> list[str]:
     # Query URL
     with requests.get(url, stream=True, timeout=30) as r:
         # Check for errors
-        r.raise_for_status()
+        r.raise_for_status()  # type: ignore
         # Get soup
-        soup = Soup(r.text, "html.parser")
+        soup = Soup(r.text, "html.parser")  # type: ignore
         # Extract hrefs from a tags
         return [x.get("href") for x in soup.select("a") if x.get("href") is not None]
