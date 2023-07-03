@@ -293,50 +293,6 @@ class Scenario(ABC):
         hardcoded_asns = set(self.scenario_config.hardcoded_asn_cls_dict)
         return self._default_adopters | self._default_non_adopters | hardcoded_asns
 
-    ##############################
-    # Determine AS outcome funcs #
-    ##############################
-
-    def determine_as_outcome(self, as_obj: AS, ann: Optional[Announcement]) -> Outcomes:
-        """Determines the outcome at an AS
-
-        ann is most_specific_ann is the most specific prefix announcement
-        that exists at that AS
-        """
-
-        if as_obj.asn in self.attacker_asns:
-            return Outcomes.ATTACKER_SUCCESS
-        elif as_obj.asn in self.victim_asns:
-            return Outcomes.VICTIM_SUCCESS
-        # End of traceback
-        elif (
-            ann is None
-            or len(ann.as_path) == 1
-            or ann.recv_relationship == Relationships.ORIGIN
-            or ann.traceback_end
-        ):
-            return Outcomes.DISCONNECTED
-        else:
-            return Outcomes.UNDETERMINED
-
-    def determine_as_outcome_ctrl_plane(
-        self, as_obj: AS, ann: Optional[Announcement]
-    ) -> Outcomes:
-        """Determines the outcome at an AS on the control plane
-
-        ann is most_specific_ann is the most specific prefix announcement
-        that exists at that AS
-        """
-
-        if not ann:
-            return Outcomes.DISCONNECTED
-        elif ann.origin in self.attacker_asns:
-            return Outcomes.ATTACKER_SUCCESS
-        elif ann.origin in self.victim_asns:
-            return Outcomes.VICTIM_SUCCESS
-        else:
-            return Outcomes.DISCONNECTED
-
     #############################
     # Engine Manipulation Funcs #
     #############################
