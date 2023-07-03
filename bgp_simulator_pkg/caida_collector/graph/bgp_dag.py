@@ -6,7 +6,7 @@ from yamlable import yaml_info, YamlAble, yaml_info_decorate
 
 from .base_as import AS
 
-from bgp_simulator_pkg.enums import AStypes
+from bgp_simulator_pkg.enums import ASGroups
 from bgp_simulator_pkg.caida_collector.links import CustomerProviderLink as CPLink
 from bgp_simulator_pkg.caida_collector.links import PeerLink
 
@@ -159,11 +159,11 @@ class BGPDAG(YamlAble):
             )
 
         return {
-            AStypes.STUBS.value: stub_filter,
-            AStypes.MULTIHOMED.value: multihomed_filter,
-            AStypes.STUBS_OR_MH.value: stubs_or_multihomed_filter,
-            AStypes.INPUT_CLIQUE.value: input_clique_filter,
-            AStypes.ETC.value: etc_filter,
+            ASGroups.STUBS.value: stub_filter,
+            ASGroups.MULTIHOMED.value: multihomed_filter,
+            ASGroups.STUBS_OR_MH.value: stubs_or_multihomed_filter,
+            ASGroups.INPUT_CLIQUE.value: input_clique_filter,
+            ASGroups.ETC.value: etc_filter,
         }
 
     ##############

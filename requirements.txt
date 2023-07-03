@@ -1,5 +1,5 @@
 beautifulsoup4==4.10.0
-requests==2.26.0
+requests==2.31.0
 graphviz==0.20
 pillow==9.2.0
 matplotlib==3.5.2

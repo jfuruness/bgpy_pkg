@@ -85,7 +85,7 @@ class ASNs(YamlAbleEnum):
     VICTIM: int = 777
 
 
-class AStypes(YamlAbleEnum):
+class ASGroups(YamlAbleEnum):
     """AS types"""
 
     STUBS: str = "stub"
