@@ -1,6 +1,6 @@
 import logging
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any, Callable, Optional
 
 from yamlable import yaml_info, YamlAble, yaml_info_decorate
 
@@ -66,6 +66,10 @@ class BGPDAG(YamlAble):
         BaseASCls: type[AS] = AS,
         yaml_as_dict: Optional[dict[int, AS]] = None,
         csv_path: Path = (Path(__file__).parent.parent / "combined.csv"),
+        # Users can pass in any additional AS groups they want to keep track of
+        additional_as_group_filters: Optional[
+            dict[str, Callable[[list[AS]], set[AS]]]
+        ] = None,
     ):
         """Reads in relationship data from a TSV and generate graph"""
 
@@ -118,27 +122,48 @@ class BGPDAG(YamlAble):
             logging.debug("Customer cones complete")
             self._add_extra_csv_info(csv_path)
 
+        self.as_group_filters: dict[
+            str, Callable[["BGPDAG"], set[AS]]
+        ] = self._default_as_group_filters
+
+        if additional_as_group_filters:
+            self.as_group_filters.update(additional_as_group_filters)
+
         # Some helpful sets of ases for faster loops
-        self.as_groups: dict[str, int] = {
-            AStypes.STUBS.value: set([x for x in self if x.stub]),
-            AStypes.MULTIHOMED.value: set([x for x in self if x.multihomed]),
-            AStypes.STUBS_OR_MH.value: set([x for x in self if x.multihomed or x.stub]),
-            AStypes.INPUT_CLIQUE.value: set([x for x in self if x.input_clique]),
-            AStypes.ETC.value: set(
-                [x for x in self if not (x.stub or x.multihomed or x.input_clique)]
-            ),
-        }
-        # Some helpful sets of asns for faster loops
-        self.asn_groups: dict[str, int] = {
-            AStypes.STUBS.value: set([x.asn for x in self if x.stub]),
-            AStypes.MULTIHOMED.value: set([x.asn for x in self if x.multihomed]),
-            AStypes.STUBS_OR_MH.value: set([
-                x.asn for x in self if x.multihomed or x.stub
-            ]),
-            AStypes.INPUT_CLIQUE.value: set([x.asn for x in self if x.input_clique]),
-            AStypes.ETC.value: set(
-                [x.asn for x in self if not (x.stub or x.multihomed or x.input_clique)]
-            ),
+        self.as_groups: dict[str, set[AS]] = dict()
+        self.asn_groups: dict[str, set[int]] = dict()
+
+        for as_group_key, filter_func in self.as_group_filters.items():
+            self.as_groups[as_group_key] = filter_func(self)
+            self.asn_groups[as_group_key] = set(x.asn for x in filter_func(self))
+
+    @property
+    def _default_as_group_filters(self) -> dict[str, Callable[["BGPDAG"], set[AS]]]:
+        """Returns the default filter functions for AS groups"""
+
+        def stub_filter(bgp_dag: "BGPDAG") -> set[AS]:
+            return set(x for x in bgp_dag if x.stub)
+
+        def multihomed_filter(bgp_dag: "BGPDAG") -> set[AS]:
+            return set(x for x in bgp_dag if x.multihomed)
+
+        def stubs_or_multihomed_filter(bgp_dag: "BGPDAG") -> set[AS]:
+            return set(x for x in bgp_dag if x.stub or x.multihomed)
+
+        def input_clique_filter(bgp_dag: "BGPDAG") -> set[AS]:
+            return set(x for x in bgp_dag if x.input_clique)
+
+        def etc_filter(bgp_dag: "BGPDAG") -> set[AS]:
+            return set(
+                x for x in bgp_dag if not (x.stub or x.multihomed or x.input_clique)
+            )
+
+        return {
+            AStypes.STUBS.value: stub_filter,
+            AStypes.MULTIHOMED.value: multihomed_filter,
+            AStypes.STUBS_OR_MH.value: stubs_or_multihomed_filter,
+            AStypes.INPUT_CLIQUE.value: input_clique_filter,
+            AStypes.ETC.value: etc_filter,
         }
 
     ##############
