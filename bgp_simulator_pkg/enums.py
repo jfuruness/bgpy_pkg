@@ -31,6 +31,11 @@ class Outcomes(YamlAbleEnum):
     UNDETERMINED: int = 3
 
 
+class Plane:
+    DATA: str = "data_plane"
+    CTRL: str = "control_plane"
+
+
 class Relationships(YamlAbleEnum):
     # Must start at one for the priority
     PROVIDERS: int = 1
