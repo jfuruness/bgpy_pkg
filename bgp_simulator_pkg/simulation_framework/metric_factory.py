@@ -3,7 +3,7 @@ from bgp_simulator_pkg.enums import Plane
 from .metric import Metric
 
 
-class MetricSubclassFactory:
+class MetricFactory:
     def __init__(self) -> list[type[Metric]]:
         """Generates a list of all metric subclasses to use"""
 

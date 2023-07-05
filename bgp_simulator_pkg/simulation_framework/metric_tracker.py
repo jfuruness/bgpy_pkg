@@ -35,13 +35,12 @@ class MetricTracker:
         # This is a list of all the trial info
         # You must save info trial by trial, so that you can join
         # After a return from multiprocessing
-        # {propagation_round: {percent_adopt: [Metrics]}}
+        # {propagation_round: {percent_adopt: {Metric.__class__: [Metrics]}}}
         self.data: DefaultDict[int,
-                               DefaultDict[float,
+                               DefaultDict[Union[float, SpecialPercentAdoptions],
                                            DefaultDict[
-                                               Union[str,
-                                                     SpecialPercentAdoptions],
-                                               List[float]]]] =\
+                                               type[Metric],
+                                               List[Metric]]]] =\
             defaultdict(default_dict_func)
 
     def add_trial_info(self, other_metric_tracker: "MetricTracker"):
@@ -53,14 +52,10 @@ class MetricTracker:
         from the various processes that were spawned
         """
 
-        raise NotImplementedError("Account for new structure")
-        for prop_round, scenario_dict in other_subgraph.data.items():
-            for scenario_label, percent_dict in scenario_dict.items():
-                for percent_adopt, trial_results in percent_dict.items():
-                    if isinstance(percent_adopt, SpecialPercentAdoptions):
-                        percent_adopt = percent_adopt.value
-                    self.data[prop_round][scenario_label][percent_adopt
-                        ].extend(trial_results)  # noqa
+        for prop_round, outer_dict in other_metric_tracker.items():
+            for percent_adopt, metric_dict in outer_dict.items():
+                for MetricCls, metric_list in metric_dict.items():
+                    self.data[prop_round][percent_adopt][MetricCls].extend(metric_list)
 
     def track_trial_metrics(
         self,
@@ -107,7 +102,39 @@ class MetricTracker:
         """
 
 
-        raise NotImplementedError
+        metrics = self.metric_factory.get_metric_subclasses()
+        self._populate_metrics(engine=engine, scenario=scenario, outcomes=outcomes)
+        for metric in metrics:
+            self.data[propagation_round][percent_adopt][metric.__class__].append(metric)
+
+    def _populate_metrics(
+        self,
+        *,
+        metrics: list[Metric],
+        engine: SimulationEngine,
+        scenario: Scenario,
+        outcomes=outcomes,
+    ) -> None:
+        """Populates all metrics with data"""
+
+        ctrl_plane_outcomes = outcomes[Plane.CTRL.value]
+        data_plane_outcomes = outcomes[Plane.DATA.value]
+
+        # Don't count these!
+        uncountable_asns = scenario.preset_asns
+
+        for as_obj in engine:
+            # Don't count preset ASNs
+            if as_obj.asn in uncountable_asns:
+                continue
+            for metric in metrics:
+                metric.add_data(
+                    as_obj=as_obj,
+                    engine=engine,
+                    scenario=scenario,
+                    ctrl_plane_outcome=ctrl_plane_outcomes[as_obj]
+                    data_plane_outcome=data_plane_outcomes[as_obj]
+                )
 
     def _track_trial_metrics_hook(
         self,
