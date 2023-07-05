@@ -1,5 +1,6 @@
 from abc import ABC
 from collections import defaultdict
+from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, DefaultDict, Dict, List, Optional, Type, Union
 
@@ -7,6 +8,7 @@ import matplotlib  # type: ignore
 import matplotlib.pyplot as plt  # type: ignore
 
 from .line import Line
+from .metric import Metric
 from ...enums import ASTypes
 from ...enums import Outcomes
 from ...enums import SpecialPercentAdoptions
@@ -14,48 +16,42 @@ from ...simulation_engine import SimulationEngine
 from ..scenarios import Scenario
 from ...simulation_engine.announcement import Announcement as Ann
 
-from caida_collector_pkg import AS
+from bgp_simulator_pkg.caida_collector.graph.base_as import AS
 
-
-# Must be module level in order to be picklable
-# https://stackoverflow.com/a/16439720/8903959
-def default_dict_inner_func():
-    return defaultdict(list)
-
-
-def default_dict_func():
-    return defaultdict(default_dict_inner_func)
 
 class MetricTracker:
     """Tracks metrics used in graphs across trials"""
 
-    def __init__(self):
+    def __init__(self, default_data: Optional[defaultdict[DataKey, list[Metric]]] = None):
         """Inits data"""
 
         # This is a list of all the trial info
         # You must save info trial by trial, so that you can join
         # After a return from multiprocessing
-        # {propagation_round: {percent_adopt: {Metric.__class__: [Metrics]}}}
-        self.data: DefaultDict[int,
-                               DefaultDict[Union[float, SpecialPercentAdoptions],
-                                           DefaultDict[
-                                               type[Metric],
-                                               List[Metric]]]] =\
-            defaultdict(default_dict_func)
+        # key DataKey (prop_round, percent_adopt, scenario_label, MetricCls)
+        # value is a list of metric instances
+        if default_data:
+            self.data: defaultdict[DataKey, list[Metric]] = defaultdata
+        else:
+            self.data = defaultdict(list)
 
-    def add_trial_info(self, other_metric_tracker: "MetricTracker"):
+    def __add__(self, other):
         """Merges other MetricTracker into this one and combines the data
 
-        NOTE this should probably use a dunder method, not this
-
-        This gets called when we need to merge all the
+        This gets called when we need to merge all the MetricTrackers
         from the various processes that were spawned
         """
 
-        for prop_round, outer_dict in other_metric_tracker.items():
-            for percent_adopt, metric_dict in outer_dict.items():
-                for MetricCls, metric_list in metric_dict.items():
-                    self.data[prop_round][percent_adopt][MetricCls].extend(metric_list)
+        if isinstance(other, MetricTracker):
+            new_data: defaultdict[DataKey, list[Metric]] = deepcopy(self.data)
+            for k, v in other.data.items():
+                new_data[k].extend(v)
+            return MetricTracker(default_data=new_data)
+        else:
+            return NotImplemented
+
+    def __radd__(self, other):
+        return self.__add__(other)
 
     def track_trial_metrics(
         self,
@@ -67,7 +63,11 @@ class MetricTracker:
         propagation_round: int,
         outcomes: dict[str, dict[AS, Any]],
     ) -> None:
-        """Tracks all metrics from a single trial, adding to self.data"""
+        """Tracks all metrics from a single trial, adding to self.data
+
+        The reason we don't simply save the engine to track metrics later
+        is because the engines are very large and this would take a lot longer
+        """
 
         self._track_trial_metrics(
             engine=engine,
@@ -105,7 +105,13 @@ class MetricTracker:
         metrics = self.metric_factory.get_metric_subclasses()
         self._populate_metrics(engine=engine, scenario=scenario, outcomes=outcomes)
         for metric in metrics:
-            self.data[propagation_round][percent_adopt][metric.__class__].append(metric)
+            key = DataKey(
+                propagation_round=propagation_round,
+                percent_adopt=percent_adopt,
+                scenario_label=scenario.unique_data_label,
+                MetricCls=metric.__class__,
+            )
+            self.data[key].append(metric)
 
     def _populate_metrics(
         self,

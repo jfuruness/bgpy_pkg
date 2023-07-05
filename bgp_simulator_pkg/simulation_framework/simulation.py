@@ -34,7 +34,6 @@ class Simulation:
         scenario_configs: tuple[ScenarioConfig, ...] = tuple(
             [ScenarioConfig(ScenarioCls=SubprefixHijack, AdoptASCls=ROVSimpleAS)]
         ),
-        lines: Optional[tuple[Line, ...]] = None,
         num_trials: int = 2,
         propagation_rounds: int = 1,
         output_path: Path = Path("/tmp/graphs"),
@@ -50,11 +49,6 @@ class Simulation:
         mp_method: Multiprocessing method
         """
 
-        if lines:
-            self.lines: tuple[Line, ...] = lines
-        else:
-            self.lines = tuple([Cls() for Cls in Subgraph.subclasses if Cls.name])
-
         self.percent_adoptions: tuple[
             Union[float, SpecialPercentAdoptions], ...
         ] = percent_adoptions
@@ -63,7 +57,14 @@ class Simulation:
         self.output_path: Path = output_path
         self.parse_cpus: int = parse_cpus
         self.scenario_configs: tuple[ScenarioConfig, ...] = scenario_configs
-        self.python_hash_seed = python_hash_seed
+
+        msg = ("Please add a unique_data_label to scenario configs. "
+               "These are used for data storage as keys, and are not unique")
+        labels = [x.unique_data_label for x in self.scenario_configs]
+        assert len(labels) == len(set(labels)), msg
+
+        self.python_hash_seed: Optional[int] = python_hash_seed
+        self._seed_random()
 
         if engine_kwargs:
             self.engine_kwargs: dict[Any, Any] = engine_kwargs
@@ -79,12 +80,22 @@ class Simulation:
     def run(self):
         """Runs the simulation and write the data"""
 
-        self._get_data()
-        self._write_data()
+        metric_tracker = self._get_data()
+        self._write_data(metric_tracker)
 
-    def _write_data(self):
+    def _seed_random(self, seed_suffix: str = "") -> None:
+        """Seeds randomness"""
+
+        if self.python_hash_seed is not None:
+            msg = "Not deterministic unless you also set PYTHONHASHSEED in the env"
+            assert os.environ("PYTHONHASHSEED") == self.python_hash_seed, msg
+
+            random.seed(str(self.python_hash_seed) + seed_suffix)
+
+    def _write_data(self, metric_tracker: MetricTracker):
         """Writes subgraphs in graph_dir"""
 
+        raise NotImplementedError("Must write metric tracker. Potentially csv, json, pickle")
         # init JSON and temporary directory
         json_data = dict()
         with TemporaryDirectory() as tmp_dir:
@@ -105,40 +116,12 @@ class Simulation:
 
         # Single process
         if self.parse_cpus == 1:
-            # Results are a list of lists of subgraphs
-            results = self._get_single_process_results()
+            # Results are a list of lists of metric trackers that we then sum
+            return sum(self._get_single_process_results())
         # Multiprocess
         else:
-            # Results are a list of lists of subgraphs
-            results = self._get_mp_results(self.parse_cpus)
-
-        # Results is a list of lists of subgraphs
-        # This joins all results from all trials
-        for result_subgraphs in results:
-            for self_subgraph, result_subgraph in zip(self.subgraphs, result_subgraphs):
-                # Merges the trial subgraph into this subgraph
-                self_subgraph.add_trial_info(result_subgraph)
-
-    def _check_python_hash_seed(self, set_random_seed: bool = False):
-        """Checks that the python_hash_seed is the same
-        as environment variable PYTHONHASHSEED
-        set_random_seed: bool:  set the random.seed() with
-        python_hash_seed value.
-        """
-        # Check if python_hash_seed is set
-        if self.python_hash_seed is not None:
-            # Check if PYTHONHASHSEED environment variable
-            # is set properly
-            env_var = os.environ.get("PYTHONHASHSEED")
-            assert env_var and env_var == str(self.python_hash_seed), (
-                ""
-                "If python_hash_seed is set then "
-                "'PYTHONHASHSEED' environement needs to be set as the "
-                "same value as python_hash_seed"
-            )
-            if set_random_seed:
-                # set random seed
-                random.seed(self.python_hash_seed)
+            # Results are a list of lists of metric trackers that we then sum
+            return sum(self._get_mp_results(self.parse_cpus))
 
     ###########################
     # Multiprocessing Methods #
@@ -157,37 +140,24 @@ class Simulation:
         """
 
         # https://stackoverflow.com/a/34032549/8903959
-        percents_trials = [
-            tuple(x)
-            for x in product(self.percent_adoptions, list(range(self.num_trials)))
-        ]
+        combos = product(self.percent_adoptions, list(range(self.num_trials)))
+        percents_trials = [tuple(x) for x in combos]
 
         # https://stackoverflow.com/a/2136090/8903959
         # mypy can't seem to handle these types?
-        return [
-            percents_trials[i::parse_cpus] for i in range(parse_cpus)  # type: ignore
-        ]
+        return [percents_trials[i::parse_cpus] for i in range(parse_cpus)]
 
     def _get_single_process_results(self) -> list[tuple[Subgraph, ...]]:
         """Get all results when using single processing"""
 
-        # Check if the python_hash_seed is set properly
-        self._check_python_hash_seed(set_random_seed=True)
-        return [
-            self._run_chunk(chunk_id, x, single_proc=True)
-            for chunk_id, x in enumerate(self._get_chunks(1))
-        ]
+        return [self._run_chunk(i, x) for i, x in enumerate(self._get_chunks(1))]
 
     def _get_mp_results(self, parse_cpus: int) -> list[tuple[Subgraph, ...]]:
         """Get results from multiprocessing"""
 
-        # Check if the python_hash_seed is set properly
-        self._check_python_hash_seed()
         # Pool is much faster than ProcessPoolExecutor
-        with Pool(parse_cpus) as pool:
-            return pool.starmap(
-                self._run_chunk, enumerate(self._get_chunks(parse_cpus))  # type: ignore
-            )
+        with Pool(parse_cpus) as p:
+            return p.starmap(self._run_chunk, enumerate(self._get_chunks(parse_cpus)))
 
     ############################
     # Data Aggregation Methods #
@@ -197,102 +167,101 @@ class Simulation:
         self,
         chunk_id: int,
         percent_adopt_trials: list[tuple[Union[float, SpecialPercentAdoptions], int]],
-        # MUST leave as false. _get_mp_results depends on this
-        # This should be fixed and this comment deleted
-        single_proc: bool = False,
-    ) -> tuple[Subgraph, ...]:
+    ) -> MetricTracker:
         """Runs a chunk of trial inputs"""
 
-        # Check to enable deterministic multiprocess runs
-        if self.python_hash_seed is not None and self.parse_cpus > 1:
-            random.seed(chunk_id)
+        # Must also seed randomness here since we don't want multiproc to be the same
+        self._seed_random(seed_suffix=str(chunk_id))
 
         # Engine is not picklable or dillable AT ALL, so do it here
         # (after the multiprocess process has started)
         # Changing recursion depth does nothing
         # Making nothing a reference does nothing
         engine = CaidaCollector(**self.engine_kwargs.copy()).run(tsv_path=None)
-        # Must deepcopy here to have the same behavior between single
-        # And multiprocessing
-        if single_proc:
-            subgraphs = deepcopy(self.subgraphs)
-        else:
-            subgraphs = self.subgraphs
+
+        metric_tracker = MetricTracker()
 
         prev_scenario = None
 
         for percent_adopt, trial in percent_adopt_trials:
             for scenario_config in self.scenario_configs:
-                # Deep copy scenario to ensure it's fresh
-                # Since certain things like announcements change round to round
+
+                # Create the scenario for this trial
                 assert scenario_config.ScenarioCls, "ScenarioCls is None"
-                scenario_trial = scenario_config.ScenarioCls(
+                scenario = scenario_config.ScenarioCls(
                     scenario_config=scenario_config,
                     percent_adoption=percent_adopt,
                     engine=engine,
                     prev_scenario=prev_scenario,
                 )
 
-                if isinstance(percent_adopt, float) and percent_adopt <= 1:
-                    print(
-                        f"{percent_adopt * 100}% "
-                        f"{scenario_trial.__class__.__name__}, "
-                        f"#{trial}",
-                        end="                             " + "\r",
-                    )
-                elif isinstance(percent_adopt, SpecialPercentAdoptions):
-                    print(
-                        f"{percent_adopt.value * 100}% "
-                        f"{scenario_trial.__class__.__name__}, "
-                        f"#{trial}",
-                        end="                             " + "\r",
-                    )
-                elif percent_adopt > 1:
-                    raise Exception("Percent Adoptions must be decimals less than 1")
-                else:
-                    raise NotImplementedError("Improper value for percent adoptions")
+                self._print_progress(percent_adopt, scenario, trial)
 
                 # Change AS Classes, seed announcements before propagation
-                scenario_trial.setup_engine(engine, prev_scenario)
+                scenario.setup_engine(engine, prev_scenario)
 
+                # For each round of propagation run the engine
                 for propagation_round in range(self.propagation_rounds):
-                    # Run the engine
-                    engine.run(
-                        propagation_round=propagation_round, scenario=scenario_trial
+                    self._single_engine_run(
+                        engine=engine,
+                        percent_adopt=percent_adopt,
+                        trial=trial,
+                        scenario=scenario,
+                        propagation_round=propagation_round,
+                        metric_tracker=metric_tracker,
                     )
-
-                    kwargs = {
-                        "engine": engine,
-                        "percent_adopt": percent_adopt,
-                        "trial": trial,
-                        "scenario_trial": scenario_trial,
-                        "propagation_round": propagation_round,
-                    }
-
-                    # Pre-aggregation Hook
-                    scenario_trial.pre_aggregation_hook(**kwargs)
-
-                    # Save all engine run info
-                    # The reason we aggregate info right now, instead of saving
-                    # the engine and doing it later, is because doing it all
-                    # in RAM is MUCH faster, and speed is important
-                    self._aggregate_engine_run_data(subgraphs, **kwargs)
-
-                    # By default, this is a no op
-                    scenario_trial.post_propagation_hook(**kwargs)
-                prev_scenario = scenario_trial
+                prev_scenario = scenario
             # Reset scenario for next round of trials
             prev_scenario = None
-        return subgraphs
+        return metric_tracker
 
-    def _aggregate_engine_run_data(self, subgraphs: tuple[Subgraph, ...], **kwargs):
-        """For each subgraph, aggregate data
+    def _print_progress(
+        self,
+        percent_adopt: Union[float | SpecialPercentAdoptions],
+        scenario: Scenario, trial: int
+    ) -> None:
+        """Printing progress"""
 
-        Some data aggregation is shared to speed up runs
-        For example, traceback might be useful across
-        Multiple subgraphs
-        """
+        if not isinstance(percent_adopt, (float, SpecialPercentAdoptions)):
+            raise Exception("Percent Adoptions not float or SpecialPercentAdoptions")
+        elif percent_adopt > 1:
+            raise Exception("Percent Adoptions must be decimals less than 1")
+        else:
+            name = scenario.__class__.__name__
+            print(f"{float(percent_adopt) * 100}% {name} #{trial}", end=" " * 10 + "\r")
 
-        shared_data: dict[Any, Any] = dict()
-        for subgraph in subgraphs:
-            subgraph.aggregate_engine_run_data(shared_data, **kwargs)
+    def _single_engine_run(
+        self,
+        *,
+        engine: SimulationEngine,
+        percent_adopt: Union[float, SpecialPercentAdoptions],
+        trial: int,
+        scenario: Scenario,
+        propagation_round: int,
+        metric_tracker: MetricTracker,
+    ) -> None:
+        """Single engine run"""
+
+        # Run the engine
+        engine.run(propagation_round=propagation_round, scenario=scenario)
+
+        kwargs = {
+            "engine": engine,
+            "percent_adopt": percent_adopt,
+            "trial": trial,
+            "scenario": scenario,
+            "propagation_round": propagation_round,
+        }
+
+        # Pre-aggregation Hook
+        scenario.pre_aggregation_hook(**kwargs)
+
+        # Save all engine run info
+        # The reason we aggregate info right now, instead of saving
+        # the engine and doing it later, is because doing it all
+        # in RAM is MUCH faster, and speed is important
+        outcomes = GraphAnalyzer(engine=engine, scenario=scenario).analyze()
+        metric_tracker.track_trial_metrics(**kwargs, outcomes=outcomes)
+
+        # By default, this is a no op
+        scenario.post_propagation_hook(**kwargs)

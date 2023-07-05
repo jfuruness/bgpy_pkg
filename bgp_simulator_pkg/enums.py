@@ -102,5 +102,8 @@ class ASGroups(YamlAbleEnum):
 
 
 class SpecialPercentAdoptions(Enum):
-    ALL_BUT_ONE = 1
-    ONLY_ONE = 0
+    ALL_BUT_ONE: float = 1
+    ONLY_ONE: float = 0
+
+    def __float__(self) -> float:
+        return self.value
