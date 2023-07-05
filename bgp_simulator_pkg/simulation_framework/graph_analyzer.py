@@ -1,17 +1,10 @@
-from abc import ABC
-from collections import defaultdict
-from pathlib import Path
-from typing import Any, DefaultDict, Optional, Union
+from typing import Any, Optional
 
-import matplotlib  # type: ignore
-import matplotlib.pyplot as plt  # type: ignore
-
-from .line import Line
-from ...enums import ASGroups
 from ...enums import Outcomes
 from ...enums import Plane
-from ...enums import SpecialPercentAdoptions
+from ...enums import Relationships
 from ...simulation_engine import SimulationEngine
+from ...simulation_engine import Announcement
 from ..scenarios import Scenario
 from ...simulation_engine.announcement import Announcement as Ann
 
@@ -49,7 +42,7 @@ class GraphAnalyzer:
                 return most_specific_ann  # type: ignore
         return None
 
-    def analyze(self) -> dict[Any, Any]:
+    def analyze(self, engine: SimulationEngine) -> dict[Any, Any]:
         """Takes in engine and outputs traceback for ctrl + data plane data"""
 
         for as_obj in engine:
@@ -104,10 +97,10 @@ class GraphAnalyzer:
             return Outcomes.VICTIM_SUCCESS
         # End of traceback
         elif (
-            ann is None
-            or len(ann.as_path) == 1
-            or ann.recv_relationship == Relationships.ORIGIN
-            or ann.traceback_end
+            most_specific_ann is None
+            or len(most_specific_ann.as_path) == 1
+            or most_specific_ann.recv_relationship == Relationships.ORIGIN
+            or most_specific_ann.traceback_end
         ):
             return Outcomes.DISCONNECTED
         else:
@@ -126,7 +119,6 @@ class GraphAnalyzer:
         self._ctrl_plane_outcomes[as_obj] = outcome
         assert isinstance(outcome, Outcomes), "For mypy"
         return outcome
-
 
     def _determine_as_outcome_ctrl_plane(
         self, as_obj: AS, ann: Optional[Announcement]

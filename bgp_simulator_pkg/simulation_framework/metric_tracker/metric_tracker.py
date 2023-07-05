@@ -1,28 +1,20 @@
-from abc import ABC
 from collections import defaultdict
-from dataclasses import dataclass
-from pathlib import Path
-from typing import Any, DefaultDict, Dict, List, Optional, Type, Union
+from copy import deepcopy
+from typing import Any, Optional
 
-import matplotlib  # type: ignore
-import matplotlib.pyplot as plt  # type: ignore
-
-from .line import Line
+from .data_key import DataKey
 from .metric import Metric
-from ...enums import ASTypes
-from ...enums import Outcomes
-from ...enums import SpecialPercentAdoptions
-from ...simulation_engine import SimulationEngine
-from ..scenarios import Scenario
-from ...simulation_engine.announcement import Announcement as Ann
 
 from bgp_simulator_pkg.caida_collector.graph.base_as import AS
+from bgp_simulator_pkg.enums import Plane
+from bgp_simulator_pkg.simulation_engine import SimulationEngine
+from bgp_simulator_pkg.simulation_framework import Scenario
 
 
 class MetricTracker:
     """Tracks metrics used in graphs across trials"""
 
-    def __init__(self, default_data: Optional[defaultdict[DataKey, list[Metric]]] = None):
+    def __init__(self, data: Optional[defaultdict[DataKey, list[Metric]]] = None):
         """Inits data"""
 
         # This is a list of all the trial info
@@ -30,8 +22,8 @@ class MetricTracker:
         # After a return from multiprocessing
         # key DataKey (prop_round, percent_adopt, scenario_label, MetricCls)
         # value is a list of metric instances
-        if default_data:
-            self.data: defaultdict[DataKey, list[Metric]] = defaultdata
+        if data:
+            self.data: defaultdict[DataKey, list[Metric]] = data
         else:
             self.data = defaultdict(list)
 
@@ -46,7 +38,7 @@ class MetricTracker:
             new_data: defaultdict[DataKey, list[Metric]] = deepcopy(self.data)
             for k, v in other.data.items():
                 new_data[k].extend(v)
-            return MetricTracker(default_data=new_data)
+            return MetricTracker(data=new_data)
         else:
             return NotImplemented
 
@@ -94,13 +86,12 @@ class MetricTracker:
         trial: int,
         scenario: Scenario,
         propagation_round: int,
-        outcomes=outcomes,
+        outcomes,
     ) -> None:
         """Tracks all metrics from a single trial, adding to self.data
 
         TODO: This should really be cleaned up, but good enough for now
         """
-
 
         metrics = self.metric_factory.get_metric_subclasses()
         self._populate_metrics(engine=engine, scenario=scenario, outcomes=outcomes)
@@ -119,7 +110,7 @@ class MetricTracker:
         metrics: list[Metric],
         engine: SimulationEngine,
         scenario: Scenario,
-        outcomes=outcomes,
+        outcomes,
     ) -> None:
         """Populates all metrics with data"""
 
@@ -138,7 +129,7 @@ class MetricTracker:
                     as_obj=as_obj,
                     engine=engine,
                     scenario=scenario,
-                    ctrl_plane_outcome=ctrl_plane_outcomes[as_obj]
+                    ctrl_plane_outcome=ctrl_plane_outcomes[as_obj],
                     data_plane_outcome=data_plane_outcomes[as_obj]
                 )
 
@@ -150,7 +141,7 @@ class MetricTracker:
         trial: int,
         scenario: Scenario,
         propagation_round: int,
-        outcomes=outcomes,
+        outcomes,
     ) -> None:
         """Hook function for easy subclassing by a user"""
 

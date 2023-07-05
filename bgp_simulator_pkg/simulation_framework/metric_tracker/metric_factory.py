@@ -1,4 +1,9 @@
-from bgp_simulator_pkg.enums import Plane
+from typing import Callable
+
+from bgp_simulator_pkg.caida_collector.graph.base_as import AS
+from bgp_simulator_pkg.enums import ASGroups, Plane, Outcomes
+from bgp_simulator_pkg.simulation_engine import SimulationEngine
+from bgp_simulator_pkg.simulation_framework import Scenario
 
 from .metric import Metric
 
@@ -37,8 +42,8 @@ class MetricFactory:
     def _get_label_prefix_func(
         self,
         plane: Plane,
-        as_group: ASGroup,
-        outcome: Outcome
+        as_group: ASGroups,
+        outcome: Outcomes
     ) -> Callable:
 
         return property(lambda self: f"{plane.value}_{as_group.value}_{outcome.value}")
@@ -46,8 +51,8 @@ class MetricFactory:
     def _get_add_numerator_func(
         self,
         plane: Plane,
-        as_group: ASGroup,
-        outcome: Outcome
+        as_group: ASGroups,
+        outcome: Outcomes
     ) -> Callable:
         """Returns the _add_numerator func"""
 
@@ -71,12 +76,12 @@ class MetricFactory:
     def _get_add_denominator_func(
         self,
         plane: Plane,
-        as_group: ASGroup,
-        outcome: Outcome
+        as_group: ASGroups,
+        outcome: Outcomes
     ) -> Callable:
         """Returns the _add_denominator_func"""
 
-         def _add_denominator(
+        def _add_denominator(
             self,
             *,
             as_obj: AS,
@@ -87,7 +92,7 @@ class MetricFactory:
         ) -> None:
             """Adds result to the denominator"""
 
-            if as_obj in engine.as_groups[as_group.value:
+            if as_obj in engine.as_groups[as_group.value]:
                 self._denominators[as_obj.__class__] += 1
 
         return _add_denominator

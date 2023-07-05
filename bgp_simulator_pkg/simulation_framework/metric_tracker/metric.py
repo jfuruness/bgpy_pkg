@@ -1,7 +1,13 @@
+from abc import ABC, abstractmethod
+from collections import defaultdict
+
 from bgp_simulator_pkg.caida_collector.graph.base_as import AS
+from bgp_simulator_pkg.enums import Outcomes
+from bgp_simulator_pkg.simulation_engine import SimulationEngine
+from bgp_simulator_pkg.simulation_framework import Scenario
 
 
-class Metric:
+class Metric(ABC):
     """Tracks a single metric"""
 
     def __init__(self) -> None:
@@ -48,7 +54,6 @@ class Metric:
             data_plane_outcome=data_plane_outcome,
         )
 
-
     @abstractmethod
     def _add_numerator(
         self,
@@ -74,6 +79,6 @@ class Metric:
         raise NotImplementedError
 
     @property
-    @abstactmethod
+    @abstractmethod
     def label_prefix(self) -> str:
         raise NotImplementedError

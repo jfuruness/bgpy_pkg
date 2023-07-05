@@ -79,11 +79,9 @@ class ScenarioConfig:
 
         # Used for data storage to differentiate this config
         if not self.unique_data_label:
-            label = f"{self.ScenarioCls}_{self.AdoptASCls.name}"
-                    f"_adopting_{self.BaseASCls.name}_base"
+            label = (f"{self.ScenarioCls}_{self.AdoptASCls.name}"
+                     f"_adopting_{self.BaseASCls.name}_base")
             object.__setattr__(self, "unique_data_label", label)
-
-    @property
 
     ##############
     # Yaml Funcs #

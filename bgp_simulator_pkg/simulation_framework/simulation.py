@@ -1,4 +1,3 @@
-from copy import deepcopy
 from itertools import product
 import json
 from multiprocessing import cpu_count
@@ -12,9 +11,12 @@ import os
 
 from bgp_simulator_pkg.caida_collector import CaidaCollector
 
+from .graph_analyzer import GraphAnalyzer
+from .metric_tracker import MetricTracker
+from .scenarios import Scenario
 from .scenarios import ScenarioConfig
 from .scenarios import SubprefixHijack
-from .subgraphs import Subgraph
+
 from bgp_simulator_pkg.enums import SpecialPercentAdoptions
 from bgp_simulator_pkg.simulation_engine import BGPSimpleAS
 from bgp_simulator_pkg.simulation_engine import SimulationEngine
@@ -95,7 +97,7 @@ class Simulation:
     def _write_data(self, metric_tracker: MetricTracker):
         """Writes subgraphs in graph_dir"""
 
-        raise NotImplementedError("Must write metric tracker. Potentially csv, json, pickle")
+        raise NotImplementedError("Must write metric tracker. csv?, json?, pickle?")
         # init JSON and temporary directory
         json_data = dict()
         with TemporaryDirectory() as tmp_dir:
@@ -147,12 +149,12 @@ class Simulation:
         # mypy can't seem to handle these types?
         return [percents_trials[i::parse_cpus] for i in range(parse_cpus)]
 
-    def _get_single_process_results(self) -> list[tuple[Subgraph, ...]]:
+    def _get_single_process_results(self) -> list[MetricTracker]:
         """Get all results when using single processing"""
 
         return [self._run_chunk(i, x) for i, x in enumerate(self._get_chunks(1))]
 
-    def _get_mp_results(self, parse_cpus: int) -> list[tuple[Subgraph, ...]]:
+    def _get_mp_results(self, parse_cpus: int) -> list[MetricTracker]:
         """Get results from multiprocessing"""
 
         # Pool is much faster than ProcessPoolExecutor
@@ -218,7 +220,8 @@ class Simulation:
     def _print_progress(
         self,
         percent_adopt: Union[float | SpecialPercentAdoptions],
-        scenario: Scenario, trial: int
+        scenario: Scenario,
+        trial: int
     ) -> None:
         """Printing progress"""
 
