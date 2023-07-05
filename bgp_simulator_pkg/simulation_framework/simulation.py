@@ -34,7 +34,7 @@ class Simulation:
         scenario_configs: tuple[ScenarioConfig, ...] = tuple(
             [ScenarioConfig(ScenarioCls=SubprefixHijack, AdoptASCls=ROVSimpleAS)]
         ),
-        subgraphs: Optional[tuple[Subgraph, ...]] = None,
+        lines: Optional[tuple[Line, ...]] = None,
         num_trials: int = 2,
         propagation_rounds: int = 1,
         output_path: Path = Path("/tmp/graphs"),
@@ -50,10 +50,10 @@ class Simulation:
         mp_method: Multiprocessing method
         """
 
-        if subgraphs:
-            self.subgraphs: tuple[Subgraph, ...] = subgraphs
+        if lines:
+            self.lines: tuple[Line, ...] = lines
         else:
-            self.subgraphs = tuple([Cls() for Cls in Subgraph.subclasses if Cls.name])
+            self.lines = tuple([Cls() for Cls in Subgraph.subclasses if Cls.name])
 
         self.percent_adoptions: tuple[
             Union[float, SpecialPercentAdoptions], ...
