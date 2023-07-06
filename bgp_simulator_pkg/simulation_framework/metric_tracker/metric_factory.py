@@ -1,15 +1,16 @@
-from typing import Callable
+from typing import Any, Callable
+from mypy_extensions import NamedArg
 
 from bgp_simulator_pkg.caida_collector.graph.base_as import AS
 from bgp_simulator_pkg.enums import ASGroups, Plane, Outcomes
 from bgp_simulator_pkg.simulation_engine import SimulationEngine
-from bgp_simulator_pkg.simulation_framework import Scenario
+from bgp_simulator_pkg.simulation_framework.scenarios import Scenario
 
 from .metric import Metric
 
 
 class MetricFactory:
-    def __init__(self) -> list[type[Metric]]:
+    def __init__(self) -> None:
         """Generates a list of all metric subclasses to use"""
 
         self.metric_subclasses: list[type[Metric]] = list()
@@ -44,7 +45,7 @@ class MetricFactory:
         plane: Plane,
         as_group: ASGroups,
         outcome: Outcomes
-    ) -> Callable:
+    ) -> property:  # Callable[[], str]:
 
         return property(lambda self: f"{plane.value}_{as_group.value}_{outcome.value}")
 
@@ -53,7 +54,14 @@ class MetricFactory:
         plane: Plane,
         as_group: ASGroups,
         outcome: Outcomes
-    ) -> Callable:
+    ) -> Callable[[
+        Any,
+        NamedArg(AS, "as_obj"),
+        NamedArg(SimulationEngine, "engine"),
+        NamedArg(Scenario, "scenario"),
+        NamedArg(Outcomes, "ctrl_plane_outcome"),
+        NamedArg(Outcomes, "data_plane_outcome")
+    ], None]:
         """Returns the _add_numerator func"""
 
         def _add_numerator(
@@ -64,7 +72,7 @@ class MetricFactory:
             scenario: Scenario,
             ctrl_plane_outcome: Outcomes,
             data_plane_outcome: Outcomes,
-        ):
+        ) -> None:
             """Adds result to numerator"""
 
             result = data_plane_outcome if Plane.DATA else ctrl_plane_outcome
@@ -78,7 +86,14 @@ class MetricFactory:
         plane: Plane,
         as_group: ASGroups,
         outcome: Outcomes
-    ) -> Callable:
+    ) -> Callable[[
+        Any,
+        NamedArg(AS, "as_obj"),
+        NamedArg(SimulationEngine, "engine"),
+        NamedArg(Scenario, "scenario"),
+        NamedArg(Outcomes, "ctrl_plane_outcome"),
+        NamedArg(Outcomes, "data_plane_outcome")
+    ], None]:
         """Returns the _add_denominator_func"""
 
         def _add_denominator(

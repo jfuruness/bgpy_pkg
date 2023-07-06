@@ -3,7 +3,7 @@ from typing import Any, Optional
 from bgp_simulator_pkg.caida_collector import AS
 from bgp_simulator_pkg.enums import Outcomes, Plane, Relationships
 from bgp_simulator_pkg.simulation_engine import Announcement, SimulationEngine
-from bgp_simulator_pkg.simulation_framework import Scenario
+from bgp_simulator_pkg.simulation_framework.scenarios import Scenario
 
 
 class GraphAnalyzer:
@@ -11,11 +11,11 @@ class GraphAnalyzer:
 
     def __init__(self, engine: SimulationEngine, scenario: Scenario):
         self.engine: SimulationEngine = engine
-        self._most_specific_ann_dict: dict[AS, Announcement] = {
+        self.scenario: Scenario = scenario
+        self._most_specific_ann_dict: dict[AS, Optional[Announcement]] = {
             # Get the most specific ann in the rib
             as_obj: self._get_most_specific_ann(as_obj) for as_obj in engine
         }
-        self.scenario: Scenario = scenario
         self._data_plane_outcomes: dict[AS, Outcomes] = dict()
         self._control_plane_outcomes: dict[AS, Outcomes] = dict()
         self.outcomes: dict[str, dict[AS, Any]] = {
@@ -37,14 +37,14 @@ class GraphAnalyzer:
                 return most_specific_ann  # type: ignore
         return None
 
-    def analyze(self, engine: SimulationEngine) -> dict[Any, Any]:
+    def analyze(self) -> dict[Any, Any]:
         """Takes in engine and outputs traceback for ctrl + data plane data"""
 
-        for as_obj in engine:
+        for as_obj in self.engine:
 
             # Gets AS outcome and stores it in the outcomes dict
-            self._get_as_data_plane_outcome(as_obj)
-            self._get_as_ctrl_plane_outcome(as_obj)
+            self._get_as_outcome_data_plane(as_obj)
+            self._get_as_outcome_ctrl_plane(as_obj)
             self._get_other_as_outcome_hook(as_obj)
         return self.outcomes
 
@@ -109,9 +109,9 @@ class GraphAnalyzer:
         """Stores and returns the AS outcome from the control plane"""
 
         most_specific_ann = self._most_specific_ann_dict[as_obj]
-        outcome = self._determine_as_outcome_data_plane(as_obj, most_specific_ann)
+        outcome = self._determine_as_outcome_ctrl_plane(as_obj, most_specific_ann)
         assert outcome != Outcomes.UNDETERMINED, "Shouldn't be possible"
-        self._ctrl_plane_outcomes[as_obj] = outcome
+        self._control_plane_outcomes[as_obj] = outcome
         assert isinstance(outcome, Outcomes), "For mypy"
         return outcome
 
@@ -126,9 +126,9 @@ class GraphAnalyzer:
 
         if not ann:
             return Outcomes.DISCONNECTED
-        elif ann.origin in self.attacker_asns:
+        elif ann.origin in self.scenario.attacker_asns:
             return Outcomes.ATTACKER_SUCCESS
-        elif ann.origin in self.victim_asns:
+        elif ann.origin in self.scenario.victim_asns:
             return Outcomes.VICTIM_SUCCESS
         else:
             return Outcomes.DISCONNECTED

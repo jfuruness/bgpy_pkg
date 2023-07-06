@@ -31,7 +31,7 @@ class Outcomes(YamlAbleEnum):
     UNDETERMINED: int = 3
 
 
-class Plane:
+class Plane(YamlAbleEnum):
     DATA: str = "data_plane"
     CTRL: str = "control_plane"
 

@@ -4,7 +4,7 @@ from collections import defaultdict
 from bgp_simulator_pkg.caida_collector.graph.base_as import AS
 from bgp_simulator_pkg.enums import Outcomes
 from bgp_simulator_pkg.simulation_engine import SimulationEngine
-from bgp_simulator_pkg.simulation_framework import Scenario
+from bgp_simulator_pkg.simulation_framework.scenarios import Scenario
 
 
 class Metric(ABC):
@@ -12,7 +12,7 @@ class Metric(ABC):
 
     def __init__(self) -> None:
         self._numerators: defaultdict[type[AS], float] = defaultdict(float)
-        self._demoninators: defaultdict[type[AS], float] = defaultdict(float)
+        self._denominators: defaultdict[type[AS], float] = defaultdict(float)
 
     @property
     def percents(self) -> dict[str, float]:

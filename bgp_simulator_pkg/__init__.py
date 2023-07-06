@@ -41,36 +41,9 @@ from .simulation_framework import NonRoutedSuperprefixPrefixHijack
 from .simulation_framework import SuperprefixPrefixHijack
 from .simulation_framework import ValidPrefix
 
+from .simulation_framework import GraphAnalyzer
+from .simulation_framework import MetricTracker
 from .simulation_framework import Simulation
-
-from .simulation_framework import AttackerSuccessAdoptingEtcSubgraph
-from .simulation_framework import AttackerSuccessAdoptingInputCliqueSubgraph
-from .simulation_framework import AttackerSuccessAdoptingStubsAndMHSubgraph
-from .simulation_framework import AttackerSuccessNonAdoptingEtcSubgraph
-from .simulation_framework import AttackerSuccessNonAdoptingInputCliqueSubgraph
-from .simulation_framework import AttackerSuccessNonAdoptingStubsAndMHSubgraph
-from .simulation_framework import Subgraph
-from .simulation_framework import AttackerSuccessSubgraph
-from .simulation_framework import AttackerSuccessAllSubgraph
-
-from .simulation_framework import DisconnectedAdoptingEtcSubgraph
-from .simulation_framework import DisconnectedAdoptingInputCliqueSubgraph
-from .simulation_framework import DisconnectedAdoptingStubsAndMHSubgraph
-from .simulation_framework import DisconnectedNonAdoptingEtcSubgraph
-from .simulation_framework import DisconnectedNonAdoptingInputCliqueSubgraph
-from .simulation_framework import DisconnectedNonAdoptingStubsAndMHSubgraph
-from .simulation_framework import DisconnectedSubgraph
-from .simulation_framework import DisconnectedAllSubgraph
-
-from .simulation_framework import VictimSuccessAdoptingEtcSubgraph
-from .simulation_framework import VictimSuccessAdoptingInputCliqueSubgraph
-from .simulation_framework import VictimSuccessAdoptingStubsAndMHSubgraph
-from .simulation_framework import VictimSuccessNonAdoptingEtcSubgraph
-from .simulation_framework import VictimSuccessNonAdoptingInputCliqueSubgraph
-from .simulation_framework import VictimSuccessNonAdoptingStubsAndMHSubgraph
-from .simulation_framework import VictimSuccessSubgraph
-from .simulation_framework import VictimSuccessAllSubgraph
-
 
 # Test configs
 from .tests import config_001
@@ -141,6 +114,8 @@ __all__ = [
     "NonRoutedSuperprefixPrefixHijack",
     "SuperprefixPrefixHijack",
     "ValidPrefix",
+    "GraphAnalyzer",
+    "MetricTracker",
     "Simulation",
     "Announcement",
     "AttackerSuccessAdoptingEtcSubgraph",

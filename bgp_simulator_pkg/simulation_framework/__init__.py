@@ -1,3 +1,6 @@
+from .graph_analyzer import GraphAnalyzer
+from .metric_tracker import MetricTracker
+
 from .scenarios import ScenarioConfig
 from .scenarios import Scenario
 from .scenarios import PrefixHijack
@@ -12,6 +15,8 @@ from .simulation import Simulation
 
 
 __all__ = [
+    "GraphAnalyzer",
+    "MetricTracker",
     "ScenarioConfig",
     "Scenario",
     "PrefixHijack",

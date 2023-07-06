@@ -3,7 +3,8 @@ from typing import ClassVar
 
 from bgp_simulator_pkg.tests.engine_tests.graphs import GraphInfo
 from bgp_simulator_pkg.simulation_framework import ScenarioConfig
-from bgp_simulator_pkg.simulation_framework import Subgraph
+from bgp_simulator_pkg.simulation_framework import MetricTracker
+from bgp_simulator_pkg.simulation_framework import GraphAnalyzer
 
 
 @dataclass(frozen=True, slots=True)
@@ -15,7 +16,8 @@ class EngineTestConfig:
     scenario_config: ScenarioConfig
     graph: GraphInfo
     propagation_rounds: int = 1
-    SubgraphCls: type[Subgraph] = Subgraph
+    MetricTrackerCls: type[MetricTracker] = MetricTracker
+    GraphAnalyzerCls: type[GraphAnalyzer] = GraphAnalyzer
     _used_names: ClassVar[set[str]] = set()
 
     def __post_init__(self):

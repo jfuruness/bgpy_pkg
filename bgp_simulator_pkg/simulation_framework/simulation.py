@@ -61,7 +61,8 @@ class Simulation:
         self.scenario_configs: tuple[ScenarioConfig, ...] = scenario_configs
 
         msg = ("Please add a unique_data_label to scenario configs. "
-               "These are used for data storage as keys, and are not unique")
+               "These are used for data storage as keys, and currently aren't"
+               " unique enough")
         labels = [x.unique_data_label for x in self.scenario_configs]
         assert len(labels) == len(set(labels)), msg
 
@@ -90,7 +91,7 @@ class Simulation:
 
         if self.python_hash_seed is not None:
             msg = "Not deterministic unless you also set PYTHONHASHSEED in the env"
-            assert os.environ("PYTHONHASHSEED") == self.python_hash_seed, msg
+            assert os.environ.get("PYTHONHASHSEED") == str(self.python_hash_seed), msg
 
             random.seed(str(self.python_hash_seed) + seed_suffix)
 
@@ -99,7 +100,7 @@ class Simulation:
 
         raise NotImplementedError("Must write metric tracker. csv?, json?, pickle?")
         # init JSON and temporary directory
-        json_data = dict()
+        json_data = dict()  # type: ignore
         with TemporaryDirectory() as tmp_dir:
             # Write subgraph and add data to the JSON
             for subgraph in self.subgraphs:
@@ -130,7 +131,7 @@ class Simulation:
     ###########################
 
     def _get_chunks(
-        self, parse_cpus: int
+        self, cpus: int
     ) -> list[list[tuple[Union[float, SpecialPercentAdoptions], int]]]:
         """Returns chunks of trial inputs based on number of CPUs running
 
@@ -147,7 +148,7 @@ class Simulation:
 
         # https://stackoverflow.com/a/2136090/8903959
         # mypy can't seem to handle these types?
-        return [percents_trials[i::parse_cpus] for i in range(parse_cpus)]
+        return [percents_trials[i::cpus] for i in range(cpus)]  # type: ignore
 
     def _get_single_process_results(self) -> list[MetricTracker]:
         """Get all results when using single processing"""
@@ -227,7 +228,7 @@ class Simulation:
 
         if not isinstance(percent_adopt, (float, SpecialPercentAdoptions)):
             raise Exception("Percent Adoptions not float or SpecialPercentAdoptions")
-        elif percent_adopt > 1:
+        elif float(percent_adopt) > 1:
             raise Exception("Percent Adoptions must be decimals less than 1")
         else:
             name = scenario.__class__.__name__
@@ -248,23 +249,34 @@ class Simulation:
         # Run the engine
         engine.run(propagation_round=propagation_round, scenario=scenario)
 
-        kwargs = {
-            "engine": engine,
-            "percent_adopt": percent_adopt,
-            "trial": trial,
-            "scenario": scenario,
-            "propagation_round": propagation_round,
-        }
-
         # Pre-aggregation Hook
-        scenario.pre_aggregation_hook(**kwargs)
+        scenario.pre_aggregation_hook(
+            engine=engine,
+            percent_adopt=percent_adopt,
+            trial=trial,
+            scenario=scenario,
+            propagation_round=propagation_round
+        )
 
         # Save all engine run info
         # The reason we aggregate info right now, instead of saving
         # the engine and doing it later, is because doing it all
         # in RAM is MUCH faster, and speed is important
         outcomes = GraphAnalyzer(engine=engine, scenario=scenario).analyze()
-        metric_tracker.track_trial_metrics(**kwargs, outcomes=outcomes)
+        metric_tracker.track_trial_metrics(
+            engine=engine,
+            percent_adopt=percent_adopt,
+            trial=trial,
+            scenario=scenario,
+            propagation_round=propagation_round,
+            outcomes=outcomes
+        )
 
         # By default, this is a no op
-        scenario.post_propagation_hook(**kwargs)
+        scenario.post_propagation_hook(
+            engine=engine,
+            percent_adopt=percent_adopt,
+            trial=trial,
+            scenario=scenario,
+            propagation_round=propagation_round,
+        )

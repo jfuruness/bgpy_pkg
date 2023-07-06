@@ -1,14 +1,15 @@
 from collections import defaultdict
 from copy import deepcopy
-from typing import Any, Optional
+from typing import Any, Optional, Union
 
 from .data_key import DataKey
 from .metric import Metric
+from .metric_factory import MetricFactory
 
 from bgp_simulator_pkg.caida_collector.graph.base_as import AS
-from bgp_simulator_pkg.enums import Plane
+from bgp_simulator_pkg.enums import Plane, SpecialPercentAdoptions
 from bgp_simulator_pkg.simulation_engine import SimulationEngine
-from bgp_simulator_pkg.simulation_framework import Scenario
+from bgp_simulator_pkg.simulation_framework.scenarios import Scenario
 
 
 class MetricTracker:
@@ -26,6 +27,8 @@ class MetricTracker:
             self.data: defaultdict[DataKey, list[Metric]] = data
         else:
             self.data = defaultdict(list)
+
+        self.metric_factory = MetricFactory()
 
     def __add__(self, other):
         """Merges other MetricTracker into this one and combines the data
@@ -49,7 +52,7 @@ class MetricTracker:
         self,
         *,
         engine: SimulationEngine,
-        percent_adopt: float,
+        percent_adopt: Union[float, SpecialPercentAdoptions],
         trial: int,
         scenario: Scenario,
         propagation_round: int,
@@ -82,7 +85,7 @@ class MetricTracker:
         self,
         *,
         engine: SimulationEngine,
-        percent_adopt: float,
+        percent_adopt: Union[float, SpecialPercentAdoptions],
         trial: int,
         scenario: Scenario,
         propagation_round: int,
@@ -94,12 +97,17 @@ class MetricTracker:
         """
 
         metrics = self.metric_factory.get_metric_subclasses()
-        self._populate_metrics(engine=engine, scenario=scenario, outcomes=outcomes)
+        self._populate_metrics(
+            metrics=metrics,
+            engine=engine,
+            scenario=scenario,
+            outcomes=outcomes
+        )
         for metric in metrics:
             key = DataKey(
                 propagation_round=propagation_round,
                 percent_adopt=percent_adopt,
-                scenario_label=scenario.unique_data_label,
+                scenario_label=scenario.scenario_config.unique_data_label,
                 MetricCls=metric.__class__,
             )
             self.data[key].append(metric)
@@ -118,7 +126,7 @@ class MetricTracker:
         data_plane_outcomes = outcomes[Plane.DATA.value]
 
         # Don't count these!
-        uncountable_asns = scenario.preset_asns
+        uncountable_asns = scenario._preset_asns
 
         for as_obj in engine:
             # Don't count preset ASNs
@@ -137,7 +145,7 @@ class MetricTracker:
         self,
         *,
         engine: SimulationEngine,
-        percent_adopt: float,
+        percent_adopt: Union[float, SpecialPercentAdoptions],
         trial: int,
         scenario: Scenario,
         propagation_round: int,
