@@ -1,10 +1,8 @@
+import csv
 from itertools import product
-import json
 from multiprocessing import cpu_count
 from multiprocessing import Pool
 from pathlib import Path
-from shutil import make_archive
-from tempfile import TemporaryDirectory
 from typing import Any, Optional, Union
 import random
 import os
@@ -38,7 +36,7 @@ class Simulation:
         ),
         num_trials: int = 2,
         propagation_rounds: int = 1,
-        output_path: Path = Path("/tmp/graphs"),
+        output_dir: Path = Path("/tmp/sims"),
         parse_cpus: int = cpu_count(),
         python_hash_seed: Optional[int] = None,
         engine_kwargs: Optional[dict[Any, Any]] = None,
@@ -56,7 +54,7 @@ class Simulation:
         ] = percent_adoptions
         self.num_trials: int = num_trials
         self.propagation_rounds: int = propagation_rounds
-        self.output_path: Path = output_path
+        self.output_dir: Path = output_dir
         self.parse_cpus: int = parse_cpus
         self.scenario_configs: tuple[ScenarioConfig, ...] = scenario_configs
 
@@ -85,6 +83,7 @@ class Simulation:
 
         metric_tracker = self._get_data()
         self._write_data(metric_tracker)
+        self._graph_data()
 
     def _seed_random(self, seed_suffix: str = "") -> None:
         """Seeds randomness"""
@@ -94,25 +93,6 @@ class Simulation:
             assert os.environ.get("PYTHONHASHSEED") == str(self.python_hash_seed), msg
 
             random.seed(str(self.python_hash_seed) + seed_suffix)
-
-    def _write_data(self, metric_tracker: MetricTracker):
-        """Writes subgraphs in graph_dir"""
-
-        raise NotImplementedError("Must write metric tracker. csv?, json?, pickle?")
-        # init JSON and temporary directory
-        json_data = dict()  # type: ignore
-        with TemporaryDirectory() as tmp_dir:
-            # Write subgraph and add data to the JSON
-            for subgraph in self.subgraphs:
-                subgraph.write_graphs(Path(tmp_dir))
-                json_data[subgraph.name] = subgraph.data
-            # Save the JSON
-            with (Path(tmp_dir) / "results.json").open("w") as f:
-                json.dump(json_data, f, indent=4)
-
-            # Zip the data
-            make_archive(self.output_path, "zip", tmp_dir)  # type: ignore
-            print(f"\nWrote graphs to {self.output_path}.zip")
 
     def _get_data(self):
         """Runs trials for graph and aggregates data"""
@@ -280,3 +260,33 @@ class Simulation:
             scenario=scenario,
             propagation_round=propagation_round,
         )
+
+######################
+# Data Writing Funcs #
+######################
+
+    def _write_data(self, metric_tracker: MetricTracker):
+        """Writes subgraphs in graph_dir"""
+
+        with self.data_output_path.open("w") as f:
+            writer = csv.DictWriter(f, fieldnames=metric_tracker.fieldnames)
+            writer.write_rows(metric_tracker.get_csv_rows())
+
+    @property
+    def data_output_path(self) -> Path:
+        return self.output_dir / "data.csv"
+
+#######################
+# Graph Writing Funcs #
+#######################
+
+    def _graph_data(self) -> None:
+        """Generates some default graphs"""
+        raise NotImplementedError
+        # Write archive to temp dir then copy it to output path
+        #             make_archive(self.output_path, "zip", tmp_dir)
+        print(f"\nWrote graphs to {self.output_path}.zip")
+
+    @property
+    def graph_output_dir(self) -> Path:
+        return self.output_dir / "graphs"

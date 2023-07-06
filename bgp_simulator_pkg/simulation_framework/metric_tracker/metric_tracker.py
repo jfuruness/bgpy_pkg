@@ -1,5 +1,6 @@
 from collections import defaultdict
 from copy import deepcopy
+from dataclass import fields
 from typing import Any, Optional, Union
 
 from .data_key import DataKey
@@ -30,6 +31,10 @@ class MetricTracker:
 
         self.metric_factory = MetricFactory()
 
+#############
+# Add Funcs #
+#############
+
     def __add__(self, other):
         """Merges other MetricTracker into this one and combines the data
 
@@ -38,6 +43,7 @@ class MetricTracker:
         """
 
         if isinstance(other, MetricTracker):
+            # Deepcopy is slow, but fine here since it's only called once after sims
             new_data: defaultdict[DataKey, list[Metric]] = deepcopy(self.data)
             for k, v in other.data.items():
                 new_data[k].extend(v)
@@ -47,6 +53,33 @@ class MetricTracker:
 
     def __radd__(self, other):
         return self.__add__(other)
+
+#############
+# CSV Funcs #
+#############
+
+    @property
+    def csv_headers(self) -> Tuple[str, ...]:
+        """Returns headers used in CSV"""
+
+        data_key_fields = [field.name for field in fields(DataKey)]
+        other_fields = ["inner_label", "value"]
+        return tuple(data_key_fields + other_fields)
+
+    def get_csv_rows(self) -> list[dict[str, Any]]:
+        """Returns rows for a CSV"""
+
+        rows = list()
+        for data_key, metric_list in self.data.items():
+            agg_percents = sum(metric_list).percents
+            for inner_label, final_val in agg_percents.items():
+                values = list(asdict(data_key).values()) = [inner_label, final_val]
+                rows.append({k: v for k, v in zip(self.csv_headers, values)})
+        return rows
+
+######################
+# Track Metric Funcs #
+######################
 
     def track_trial_metrics(
         self,
