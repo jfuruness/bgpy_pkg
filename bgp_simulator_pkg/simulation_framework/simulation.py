@@ -120,11 +120,11 @@ class Simulation:
         # Single process
         if self.parse_cpus == 1:
             # Results are a list of lists of metric trackers that we then sum
-            return sum(self._get_single_process_results())
+            return sum(self._get_single_process_results(), start=MetricTracker())
         # Multiprocess
         else:
             # Results are a list of lists of metric trackers that we then sum
-            return sum(self._get_mp_results(self.parse_cpus))
+            return sum(self._get_mp_results(self.parse_cpus), start=MetricTracker())
 
     ###########################
     # Multiprocessing Methods #
