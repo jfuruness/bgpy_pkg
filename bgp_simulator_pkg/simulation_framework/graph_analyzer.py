@@ -1,14 +1,9 @@
 from typing import Any, Optional
 
-from ...enums import Outcomes
-from ...enums import Plane
-from ...enums import Relationships
-from ...simulation_engine import SimulationEngine
-from ...simulation_engine import Announcement
-from ..scenarios import Scenario
-from ...simulation_engine.announcement import Announcement as Ann
-
 from bgp_simulator_pkg.caida_collector import AS
+from bgp_simulator_pkg.enums import Outcomes, Plane, Relationships
+from bgp_simulator_pkg.simulation_engine import Announcement, SimulationEngine
+from bgp_simulator_pkg.simulation_framework import Scenario
 
 
 class GraphAnalyzer:
@@ -16,7 +11,7 @@ class GraphAnalyzer:
 
     def __init__(self, engine: SimulationEngine, scenario: Scenario):
         self.engine: SimulationEngine = engine
-        self._most_specific_ann_dict: dict[AS, Ann] = {
+        self._most_specific_ann_dict: dict[AS, Announcement] = {
             # Get the most specific ann in the rib
             as_obj: self._get_most_specific_ann(as_obj) for as_obj in engine
         }
@@ -28,7 +23,7 @@ class GraphAnalyzer:
             Plane.CTRL.value: self._control_plane_outcomes,
         }
 
-    def _get_most_specific_ann(self, as_obj) -> Optional[Ann]:
+    def _get_most_specific_ann(self, as_obj) -> Optional[Announcement]:
         """Returns the most specific announcement that exists in a rib
 
         as_obj is the as
