@@ -1,3 +1,4 @@
+import copyreg
 from typing import Any, Callable
 from mypy_extensions import NamedArg
 
@@ -7,6 +8,23 @@ from bgp_simulator_pkg.simulation_engine import SimulationEngine
 from bgp_simulator_pkg.simulation_framework.scenarios import Scenario
 
 from .metric import Metric
+
+# TODO: Clean up these unpicklable dynamic subclasses
+# https://stackoverflow.com/a/75943813/8903959
+class Metaclass(type):
+    pass
+
+def _reduce_metaclass(cls):
+    metaclass = cls.__class__
+    cls_vars = dict(vars(cls))
+    cls_vars.pop("__dict__", None)
+    cls_vars.pop("__weakref__", None)
+    for unpicklable_func in ("label_prefix", "_add_numerator", "_add_denominator"):
+        cls_vars.pop(unpicklable_func)
+    # print("reduce metaclass", cls, metaclass, cls.__name__, cls.__bases__, vars(cls))
+    return metaclass, (cls.__name__, cls.__bases__, cls_vars)
+
+copyreg.pickle(Metaclass, _reduce_metaclass)
 
 
 class MetricFactory:
@@ -21,7 +39,8 @@ class MetricFactory:
                 "_add_numerator": self._get_add_numerator_func(*args),
                 "_add_denominator": self._get_add_denominator_func(*args),
             }
-            self.metric_subclasses.append(type(f"Metric{i}", (Metric,), class_dict))
+            subclass = Metaclass(f"Metric{i}", (Metric,), class_dict)
+            self.metric_subclasses.append(subclass)
 
     def get_metric_subclasses(self) -> list[Metric]:
         """Returns a list of all combinations of metric objects"""

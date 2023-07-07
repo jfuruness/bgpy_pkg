@@ -25,7 +25,7 @@ def main():
         scenario_configs=(
             ScenarioConfig(ScenarioCls=SubprefixHijack, AdoptASCls=ROVSimpleAS),
         ),
-        output_path=Path("~/Desktop/slots_benchmark_graphs").expanduser(),
+        output_dir=Path("~/Desktop/slots_benchmark_graphs").expanduser(),
         num_trials=100,
         parse_cpus=cpu_count(),
         python_hash_seed=1,

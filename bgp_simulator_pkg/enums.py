@@ -106,4 +106,4 @@ class SpecialPercentAdoptions(Enum):
     ONLY_ONE: float = 0
 
     def __float__(self) -> float:
-        return self.value
+        return float(self.value)

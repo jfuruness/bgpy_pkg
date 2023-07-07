@@ -1,6 +1,6 @@
 from collections import defaultdict
 from copy import deepcopy
-from dataclass import fields
+from dataclasses import asdict, fields
 from typing import Any, Optional, Union
 
 from .data_key import DataKey
@@ -59,7 +59,7 @@ class MetricTracker:
 #############
 
     @property
-    def csv_headers(self) -> Tuple[str, ...]:
+    def csv_headers(self) -> tuple[str, ...]:
         """Returns headers used in CSV"""
 
         data_key_fields = [field.name for field in fields(DataKey)]
@@ -71,9 +71,9 @@ class MetricTracker:
 
         rows = list()
         for data_key, metric_list in self.data.items():
-            agg_percents = sum(metric_list).percents
+            agg_percents = sum(metric_list, start=metric_list[0]).percents
             for inner_label, final_val in agg_percents.items():
-                values = list(asdict(data_key).values()) = [inner_label, final_val]
+                values = list(asdict(data_key).values()) + [inner_label, final_val]
                 rows.append({k: v for k, v in zip(self.csv_headers, values)})
         return rows
 

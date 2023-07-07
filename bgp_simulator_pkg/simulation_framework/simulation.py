@@ -55,6 +55,7 @@ class Simulation:
         self.num_trials: int = num_trials
         self.propagation_rounds: int = propagation_rounds
         self.output_dir: Path = output_dir
+        self.output_dir.mkdir(parents=True, exist_ok=True)
         self.parse_cpus: int = parse_cpus
         self.scenario_configs: tuple[ScenarioConfig, ...] = scenario_configs
 
@@ -196,6 +197,7 @@ class Simulation:
                 prev_scenario = scenario
             # Reset scenario for next round of trials
             prev_scenario = None
+
         return metric_tracker
 
     def _print_progress(
@@ -269,8 +271,9 @@ class Simulation:
         """Writes subgraphs in graph_dir"""
 
         with self.data_output_path.open("w") as f:
-            writer = csv.DictWriter(f, fieldnames=metric_tracker.fieldnames)
-            writer.write_rows(metric_tracker.get_csv_rows())
+            writer = csv.DictWriter(f, fieldnames=metric_tracker.csv_headers)
+            writer.writeheader()
+            writer.writerows(metric_tracker.get_csv_rows())
 
     @property
     def data_output_path(self) -> Path:

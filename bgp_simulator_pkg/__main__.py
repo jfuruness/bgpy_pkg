@@ -16,9 +16,9 @@ def main():
         scenario_configs=(
             ScenarioConfig(ScenarioCls=SubprefixHijack, AdoptASCls=ROVSimpleAS),
         ),
-        output_path=Path("~/Desktop/main_ex_graphs").expanduser(),
+        output_dir=Path("~/Desktop/main_ex").expanduser(),
         num_trials=2,
-        parse_cpus=1,
+        parse_cpus=2,
     )
     sim.run()
 

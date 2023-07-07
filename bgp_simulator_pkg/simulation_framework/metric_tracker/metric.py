@@ -1,5 +1,5 @@
-from abc import ABC, abstractmethod
 from collections import defaultdict
+from typing import Optional, Union
 
 from bgp_simulator_pkg.caida_collector.graph.base_as import AS
 from bgp_simulator_pkg.enums import Outcomes
@@ -7,7 +7,9 @@ from bgp_simulator_pkg.simulation_engine import SimulationEngine
 from bgp_simulator_pkg.simulation_framework.scenarios import Scenario
 
 
-class Metric(ABC):
+
+
+class Metric:
     """Tracks a single metric"""
 
     def __init__(
@@ -21,12 +23,12 @@ class Metric(ABC):
         else:
             self.percents = defaultdict(list)
 
-    def __add__(self, other) -> Union["Metric", NotImplemented]:
+    def __add__(self, other) -> Union["Metric", type[NotImplemented]]:
         """Adds metric classes together"""
 
         if isinstance(other, Metric):
             agg_percents = self.percents.copy()
-            for as_cls, percent_list in other.get_percents():
+            for as_cls, percent_list in other.percents.items():
                 agg_percents[as_cls].extend(percent_list)
             return Metric(percents=agg_percents)
         else:
@@ -71,7 +73,6 @@ class Metric(ABC):
         )
         self.save_percents()
 
-    @abstractmethod
     def _add_numerator(
         self,
         *,
@@ -83,7 +84,6 @@ class Metric(ABC):
     ) -> None:
         raise NotImplementedError
 
-    @abstractmethod
     def _add_denominator(
         self,
         *,
@@ -96,6 +96,5 @@ class Metric(ABC):
         raise NotImplementedError
 
     @property
-    @abstractmethod
     def label_prefix(self) -> str:
         raise NotImplementedError
