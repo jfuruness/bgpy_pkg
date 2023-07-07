@@ -2,23 +2,23 @@ from itertools import product
 
 import pytest
 
-from ....simulation_engine import BGPSimpleAS
-from ....simulation_engine import BGPAS
-from ....simulation_engine import ROVAS
-from ....simulation_engine import ROVSimpleAS
-from ....simulation_engine import RealROVSimpleAS
-from ....simulation_engine import RealPeerROVSimpleAS
+from bgp_simulator_pkg.simulation_engine import BGPSimpleAS
+from bgp_simulator_pkg.simulation_engine import BGPAS
+from bgp_simulator_pkg.simulation_engine import ROVAS
+from bgp_simulator_pkg.simulation_engine import ROVSimpleAS
+from bgp_simulator_pkg.simulation_engine import RealROVSimpleAS
+from bgp_simulator_pkg.simulation_engine import RealPeerROVSimpleAS
 
-from ....simulation_framework import NonRoutedPrefixHijack
-from ....simulation_framework import NonRoutedSuperprefixHijack
-from ....simulation_framework import NonRoutedSuperprefixPrefixHijack
-from ....simulation_framework import PrefixHijack
-from ....simulation_framework import ValidPrefix
-from ....simulation_framework import SubprefixHijack
-from ....simulation_framework import SuperprefixPrefixHijack
-from ....simulation_framework import ScenarioConfig
+from bgp_simulator_pkg.simulation_framework import NonRoutedPrefixHijack
+from bgp_simulator_pkg.simulation_framework import NonRoutedSuperprefixHijack
+from bgp_simulator_pkg.simulation_framework import NonRoutedSuperprefixPrefixHijack
+from bgp_simulator_pkg.simulation_framework import PrefixHijack
+from bgp_simulator_pkg.simulation_framework import ValidPrefix
+from bgp_simulator_pkg.simulation_framework import SubprefixHijack
+from bgp_simulator_pkg.simulation_framework import SuperprefixPrefixHijack
+from bgp_simulator_pkg.simulation_framework import ScenarioConfig
 
-from ....simulation_framework import Simulation
+from bgp_simulator_pkg.simulation_framework import Simulation
 
 AS_CLASSES = (
     BGPSimpleAS,

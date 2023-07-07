@@ -2,15 +2,15 @@ import random
 
 import pytest
 
-from ....enums import Prefixes
-from ....simulation_framework import ScenarioConfig
-from ....simulation_framework import SubprefixHijack
-from ....simulation_framework import NonRoutedPrefixHijack
-from ....simulation_engine import Announcement
-from ....simulation_engine import BGPSimpleAS
-from ....simulation_engine import BGPAS
-from ....simulation_engine import ROVSimpleAS
-from ....simulation_engine import ROVAS
+from bgp_simulator_pkg.enums import Prefixes
+from bgp_simulator_pkg.simulation_framework import ScenarioConfig
+from bgp_simulator_pkg.simulation_framework import SubprefixHijack
+from bgp_simulator_pkg.simulation_framework import NonRoutedPrefixHijack
+from bgp_simulator_pkg.simulation_engine import Announcement
+from bgp_simulator_pkg.simulation_engine import BGPSimpleAS
+from bgp_simulator_pkg.simulation_engine import BGPAS
+from bgp_simulator_pkg.simulation_engine import ROVSimpleAS
+from bgp_simulator_pkg.simulation_engine import ROVAS
 
 
 @pytest.mark.framework

@@ -18,7 +18,7 @@ class Diagram:
         scenario,
         traceback,
         description,
-        shared_data,
+        metric_tracker,
         path=None,
         view=False,
     ):

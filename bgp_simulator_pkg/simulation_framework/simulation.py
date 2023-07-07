@@ -40,6 +40,8 @@ class Simulation:
         parse_cpus: int = cpu_count(),
         python_hash_seed: Optional[int] = None,
         engine_kwargs: Optional[dict[Any, Any]] = None,
+        GraphAnalyzerCls: type[GraphAnalyzer] = GraphAnalyzer,
+        MetricTrackerCls: type[MetricTracker] = MetricTracker,
     ) -> None:
         """Downloads relationship data, runs simulation
 
@@ -79,11 +81,14 @@ class Simulation:
         # So that multiprocessing doesn't interfere with one another
         CaidaCollector().run()
 
+        self.GraphAnalyzerCls = GraphAnalyzerCls
+        self.MetricTrackerCls = MetricTrackerCls
+
     def run(self):
         """Runs the simulation and write the data"""
 
         metric_tracker = self._get_data()
-        self._write_data(metric_tracker)
+        metric_tracker.write_csv(self.data_output_path)
         self._graph_data()
 
     def _seed_random(self, seed_suffix: str = "") -> None:
@@ -101,11 +106,15 @@ class Simulation:
         # Single process
         if self.parse_cpus == 1:
             # Results are a list of lists of metric trackers that we then sum
-            return sum(self._get_single_process_results(), start=MetricTracker())
+            return sum(
+                self._get_single_process_results(), start=self.MetricTrackerCls()
+            )
         # Multiprocess
         else:
             # Results are a list of lists of metric trackers that we then sum
-            return sum(self._get_mp_results(self.parse_cpus), start=MetricTracker())
+            return sum(
+                self._get_mp_results(self.parse_cpus), start=self.MetricTrackerCls()
+            )
 
     ###########################
     # Multiprocessing Methods #
@@ -163,7 +172,7 @@ class Simulation:
         # Making nothing a reference does nothing
         engine = CaidaCollector(**self.engine_kwargs.copy()).run(tsv_path=None)
 
-        metric_tracker = MetricTracker()
+        metric_tracker = self.MetricTrackerCls()
 
         prev_scenario = None
 
@@ -236,7 +245,6 @@ class Simulation:
             engine=engine,
             percent_adopt=percent_adopt,
             trial=trial,
-            scenario=scenario,
             propagation_round=propagation_round
         )
 
@@ -244,7 +252,7 @@ class Simulation:
         # The reason we aggregate info right now, instead of saving
         # the engine and doing it later, is because doing it all
         # in RAM is MUCH faster, and speed is important
-        outcomes = GraphAnalyzer(engine=engine, scenario=scenario).analyze()
+        outcomes = self.GraphAnalyzerCls(engine=engine, scenario=scenario).analyze()
         metric_tracker.track_trial_metrics(
             engine=engine,
             percent_adopt=percent_adopt,
@@ -259,21 +267,12 @@ class Simulation:
             engine=engine,
             percent_adopt=percent_adopt,
             trial=trial,
-            scenario=scenario,
             propagation_round=propagation_round,
         )
 
 ######################
 # Data Writing Funcs #
 ######################
-
-    def _write_data(self, metric_tracker: MetricTracker):
-        """Writes subgraphs in graph_dir"""
-
-        with self.data_output_path.open("w") as f:
-            writer = csv.DictWriter(f, fieldnames=metric_tracker.csv_headers)
-            writer.writeheader()
-            writer.writerows(metric_tracker.get_csv_rows())
 
     @property
     def data_output_path(self) -> Path:

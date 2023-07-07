@@ -47,7 +47,7 @@ class MetricTracker:
             new_data: defaultdict[DataKey, list[Metric]] = deepcopy(self.data)
             for k, v in other.data.items():
                 new_data[k].extend(v)
-            return MetricTracker(data=new_data)
+            return self.__class__(data=new_data)
         else:
             return NotImplemented
 
@@ -76,6 +76,15 @@ class MetricTracker:
                 values = list(asdict(data_key).values()) + [inner_label, final_val]
                 rows.append({k: v for k, v in zip(self.csv_headers, values)})
         return rows
+
+    def write_csv(self, path: Path) -> None:
+        """Writes data to CSV"""
+
+        with path.open("w") as f:
+            writer = csv.DictWriter(f, fieldnames=self.csv_headers)
+            writer.writeheader()
+            writer.writerows(self.get_csv_rows())
+
 
 ######################
 # Track Metric Funcs #

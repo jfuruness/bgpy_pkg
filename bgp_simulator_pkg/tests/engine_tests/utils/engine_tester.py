@@ -1,12 +1,11 @@
-# This should be made compatible with mypy, but I have no time
-
+import csv
 from pathlib import Path
-from typing import Any
 
 from .diagram import Diagram
 from .engine_test_config import EngineTestConfig
 from .simulator_codec import SimulatorCodec
 from bgp_simulator_pkg.simulation_engine import SimulationEngine
+from bgp_simulator_pkg.enums import Plane
 
 
 class EngineTester:
@@ -49,31 +48,36 @@ class EngineTester:
         # Get's an engine that has been set up
         engine = self._get_engine(scenario)
         # Run engine
-        for propagation_round in range(self.conf.propagation_rounds):  # type: ignore
-            engine.run(propagation_round=propagation_round, scenario=scenario)
-            kwargs = {
-                "engine": engine,
-                "scenario": scenario,
-                "propagation_round": propagation_round,
-            }
-            # By default, this is a no op
-            scenario.post_propagation_hook(**kwargs)
+        for round_ in range(self.conf.propagation_rounds):  # type: ignore
+            engine.run(propagation_round=round_, scenario=scenario)
+            # By default, these are both no ops
+            for func in (scenario.pre_aggregation_hook, scenario.post_propagation_hook):
+                func(engine=engine, propagation_round=round_, trial=0, percent_adopt=0)
 
         # Get traceback results {AS: Outcome}
-        outcomes = self.conf.SubgraphCls()._get_engine_outcomes(engine, scenario)
+        analyzer = self.conf.GraphAnalyzerCls(engine=engine, scenario=scenario)
+        outcomes = analyzer.analyze()
+        data_plane_outcomes = outcomes[Plane.DATA.value]
         # Convert this to just be {ASN: Outcome} (Not the AS object)
-        outcomes_yaml = {as_obj.asn: result for as_obj, result in outcomes.items()}
-        # Get shared_data
-        shared_data: dict[Any, Any] = dict()
-        self.conf.SubgraphCls()._add_traceback_to_shared_data(
-            shared_data, engine, scenario, outcomes
+        outcomes_yaml = {
+            as_obj.asn: result for as_obj, result in data_plane_outcomes.items()
+        }
+        # Get stored metrics
+        metric_tracker = self.conf.MetricTrackerCls()
+        metric_tracker.track_trial_metrics(
+            engine=engine,
+            percent_adopt=0,
+            trial=0,
+            scenario=scenario,
+            propagation_round=self.conf.propagation_rounds - 1,
+            outcomes=outcomes
         )
         # Store engine and traceback YAML
-        self._store_yaml(engine, outcomes_yaml, shared_data)
+        self._store_data(engine, outcomes_yaml, metric_tracker)
         # Create diagrams before the test can fail
-        self._generate_diagrams(scenario, shared_data)
+        self._generate_diagrams(scenario, metric_tracker)
         # Compare the YAML's together
-        self._compare_yaml()
+        self._compare_data()
 
     def _get_engine(self, scenario):
         """Creates and engine and sets it up for runs"""
@@ -87,8 +91,8 @@ class EngineTester:
         scenario.setup_engine(engine, scenario)
         return engine
 
-    def _store_yaml(self, engine, outcomes, shared_data):
-        """Stores YAML for the engine, outcomes, and shared_data.
+    def _store_data(self, engine, outcomes, metric_tracker):
+        """Stores YAML for the engine, outcomes, and CSV for metrics.
 
         If ground truth doesn't exist, create it
         """
@@ -103,12 +107,13 @@ class EngineTester:
         # Save outcomes as ground truth if ground truth doesn't exist
         if not self.outcomes_ground_truth_path.exists() or self.overwrite:
             self.codec.dump(outcomes, path=self.outcomes_ground_truth_path)
-        self.codec.dump(shared_data, path=self.shared_data_guess_path)
+
+        metric_tracker.write_csv(self.metrics_guess_path)
         # Save shared_data as ground truth if ground truth doesn't exist
         if not self.shared_data_ground_truth_path.exists() or self.overwrite:
-            self.codec.dump(shared_data, path=self.shared_data_ground_truth_path)
+            metric_tracker.write_csv(self.metrics_ground_truth_path)
 
-    def _generate_diagrams(self, scenario, shared_data):
+    def _generate_diagrams(self, scenario, metric_tracker):
         """Generates diagrams"""
 
         # Load engines
@@ -124,7 +129,7 @@ class EngineTester:
             scenario,  # type: ignore
             outcomes_guess,
             f"({self.conf.name} Guess)\n{self.conf.desc}",  # type: ignore
-            shared_data,
+            metric_tracker,
             path=self.test_dir / "guess.gv",
             view=False,
         )
@@ -135,12 +140,12 @@ class EngineTester:
             outcomes_gt,
             f"({self.conf.name} Ground Truth)\n"  # type: ignore
             f"{self.conf.desc}",  # type: ignore
-            shared_data,
+            metric_tracker,
             path=self.test_dir / "ground_truth.gv",
             view=False,
         )
 
-    def _compare_yaml(self):
+    def _compare_data(self):
         """Compares YAML for ground truth vs guess for engine and outcomes"""
 
         # Compare Engine
@@ -152,9 +157,11 @@ class EngineTester:
         outcomes_gt = self.codec.load(self.outcomes_ground_truth_path)
         assert outcomes_guess == outcomes_gt
         # Compare shared_data
-        shared_data_guess = self.codec.load(self.shared_data_guess_path)
-        shared_data_gt = self.codec.load(self.shared_data_ground_truth_path)
-        assert shared_data_guess == shared_data_gt
+        with self.metrics_guess_path.open() as guess_f:
+            with self.metrics_ground_truth.open() as ground_truth_f:
+                guess_lines = set(csv.Reader(guess_f))
+                gt_lines = set(csv.Reader(ground_truth_f))
+                assert gt_lines == guess_lines, gt_lines.difference(guess_lines)
 
     #########
     # Paths #
@@ -185,13 +192,13 @@ class EngineTester:
         return self.test_dir / "outcomes_guess.yaml"
 
     @property
-    def shared_data_ground_truth_path(self) -> Path:
+    def metrics_ground_truth_path(self) -> Path:
         """Returns the path to the shared_data ground truth YAML"""
 
-        return self.test_dir / "shared_data_gt.yaml"
+        return self.test_dir / "metrics_gt.yaml"
 
     @property
-    def shared_data_guess_path(self) -> Path:
+    def metrics_guess_path(self) -> Path:
         """Returns the path to the shared_data guess YAML"""
 
-        return self.test_dir / "shared_data_guess.yaml"
+        return self.test_dir / "metrics_guess.yaml"
