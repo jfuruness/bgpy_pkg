@@ -6,7 +6,7 @@ from .metric import Metric
 from bgp_simulator_pkg.enums import SpecialPercentAdoptions
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class DataKey:
     """Key for storing data within the MetricTracker"""
 

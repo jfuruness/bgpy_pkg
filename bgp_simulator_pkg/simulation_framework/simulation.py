@@ -285,10 +285,10 @@ class Simulation:
 
     def _graph_data(self) -> None:
         """Generates some default graphs"""
-        raise NotImplementedError
+        print("TODO")
         # Write archive to temp dir then copy it to output path
         #             make_archive(self.output_path, "zip", tmp_dir)
-        print(f"\nWrote graphs to {self.output_path}.zip")
+        # print(f"\nWrote graphs to {self.output_path}.zip")
 
     @property
     def graph_output_dir(self) -> Path:

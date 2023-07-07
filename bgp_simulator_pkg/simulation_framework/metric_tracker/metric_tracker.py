@@ -173,6 +173,9 @@ class MetricTracker:
                     ctrl_plane_outcome=ctrl_plane_outcomes[as_obj],
                     data_plane_outcome=data_plane_outcomes[as_obj]
                 )
+        # Only call this once or else it adds significant amounts of time
+        for metric in metrics:
+            metric.save_percents()
 
     def _track_trial_metrics_hook(
         self,

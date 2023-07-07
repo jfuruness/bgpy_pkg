@@ -22,6 +22,7 @@ SLOTS = (
     "rov_filtering",
     "rov_confidence",
     "rov_source",
+    "hashed_asn",
 )
 
 
@@ -84,6 +85,8 @@ class AS(YamlAble):
         self.rov_confidence: float = -1
         self.rov_source: str = ""
 
+        self.hashed_asn = hash(self.asn)
+
     def __lt__(self, as_obj: Any) -> bool:
         if isinstance(as_obj, AS):
             return self.asn < as_obj.asn
@@ -91,7 +94,7 @@ class AS(YamlAble):
             return NotImplemented
 
     def __hash__(self) -> int:
-        return hash(self.asn)
+        return self.hashed_asn
 
     @property
     def db_row(self) -> dict[str, str]:

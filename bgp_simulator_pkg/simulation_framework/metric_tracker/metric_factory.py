@@ -95,7 +95,7 @@ class MetricFactory:
             """Adds result to numerator"""
 
             result = data_plane_outcome if Plane.DATA else ctrl_plane_outcome
-            if as_obj in engine.as_groups[as_group.value] and outcome == result:
+            if as_obj.asn in engine.asn_groups[as_group.value] and outcome == result:
                 self._numerators[as_obj.__class__] += 1
 
         return _add_numerator
@@ -123,10 +123,13 @@ class MetricFactory:
             scenario: Scenario,
             ctrl_plane_outcome: Outcomes,
             data_plane_outcome: Outcomes,
-        ) -> None:
+        ) -> bool:
             """Adds result to the denominator"""
 
-            if as_obj in engine.as_groups[as_group.value]:
+            if as_obj.asn in engine.asn_groups[as_group.value]:
                 self._denominators[as_obj.__class__] += 1
+                return True
+            else:
+                return False
 
         return _add_denominator

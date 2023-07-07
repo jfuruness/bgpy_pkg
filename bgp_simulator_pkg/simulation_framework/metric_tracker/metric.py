@@ -7,8 +7,6 @@ from bgp_simulator_pkg.simulation_engine import SimulationEngine
 from bgp_simulator_pkg.simulation_framework.scenarios import Scenario
 
 
-
-
 class Metric:
     """Tracks a single metric"""
 
@@ -56,7 +54,7 @@ class Metric:
         data_plane_outcome: Outcomes,
     ):
 
-        self._add_numerator(
+        within_denom = self._add_denominator(
             as_obj=as_obj,
             engine=engine,
             scenario=scenario,
@@ -64,14 +62,14 @@ class Metric:
             data_plane_outcome=data_plane_outcome,
         )
 
-        self._add_denominator(
-            as_obj=as_obj,
-            engine=engine,
-            scenario=scenario,
-            ctrl_plane_outcome=ctrl_plane_outcome,
-            data_plane_outcome=data_plane_outcome,
-        )
-        self.save_percents()
+        if within_denom:
+            self._add_numerator(
+                as_obj=as_obj,
+                engine=engine,
+                scenario=scenario,
+                ctrl_plane_outcome=ctrl_plane_outcome,
+                data_plane_outcome=data_plane_outcome,
+            )
 
     def _add_numerator(
         self,
@@ -92,7 +90,7 @@ class Metric:
         scenario: Scenario,
         ctrl_plane_outcome: Outcomes,
         data_plane_outcome: Outcomes,
-    ) -> None:
+    ) -> bool:
         raise NotImplementedError
 
     @property
