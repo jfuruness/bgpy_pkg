@@ -1,6 +1,8 @@
 from dataclasses import asdict, dataclass, field
 from typing import Any, Optional, TYPE_CHECKING
 
+from frozendict import frozendict
+
 from bgp_simulator_pkg.caida_collector import AS
 from bgp_simulator_pkg.enums import ASGroups
 
@@ -45,12 +47,16 @@ class ScenarioConfig:
     # Victims can be chosen from this attribute of the engine
     victim_subcategory_attr: str = ASGroups.STUBS_OR_MH.value
     # ASes that are hardcoded to specific values
-    hardcoded_asn_cls_dict: dict[int, type[AS]] = field(default_factory=dict)
+    hardcoded_asn_cls_dict: frozendict[int, type[AS]] = field(
+        default_factory=frozendict
+    )
     # Only necessary if coming from YAML or the test suite
-    override_attacker_asns: Optional[set[int]] = None
-    override_victim_asns: Optional[set[int]] = None
-    override_non_default_asn_cls_dict: Optional[dict[int, type[AS]]] = None
+    override_attacker_asns: Optional[frozenset[int]] = None
+    override_victim_asns: Optional[frozenset[int]] = None
+    override_non_default_asn_cls_dict: Optional[frozendict[int, type[AS]]] = None
     override_announcements: tuple[Announcement, ...] = ()
+    # If you'd like to add an extra CSV label you do so here
+    csv_label: str = ""
 
     def __post_init__(self):
         """sets AdoptASCls if it is None

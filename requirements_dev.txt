@@ -3,6 +3,7 @@ setuptools==68.0.0
 wheel==0.40.0
 beautifulsoup4==4.10.0
 requests==2.31.0
+frozendict==2.3.8
 graphviz==0.20
 pillow==9.2.0
 matplotlib==3.5.2

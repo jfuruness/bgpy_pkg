@@ -12,8 +12,8 @@ config_020 = EngineTestConfig(
     scenario_config=ScenarioConfig(
         ScenarioCls=ValidPrefix,
         BaseASCls=BGPAS,
-        override_attacker_asns={ASNs.ATTACKER.value},
-        override_victim_asns={ASNs.VICTIM.value},
+        override_attacker_asns=frozenset({ASNs.ATTACKER.value}),
+        override_victim_asns=frozenset({ASNs.VICTIM.value}),
         override_non_default_asn_cls_dict=dict(),
     ),
     graph=graph_017,

@@ -232,7 +232,7 @@ class Scenario(ABC):
         """
 
         # Get the asn_cls_dict without randomized adoption
-        asn_cls_dict = self.scenario_config.hardcoded_asn_cls_dict.copy()
+        asn_cls_dict = dict(self.scenario_config.hardcoded_asn_cls_dict)
         for asn in self._default_adopters:
             asn_cls_dict[asn] = self.scenario_config.AdoptASCls
 

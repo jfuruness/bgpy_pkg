@@ -9,12 +9,14 @@ from typing import Any, Optional, Union
 
 from .data_key import DataKey
 from .metric import Metric
+from .metric_key import MetricKey
 
 from bgp_simulator_pkg.caida_collector.graph.base_as import AS
 from bgp_simulator_pkg.enums import Plane, SpecialPercentAdoptions
 from bgp_simulator_pkg.simulation_engine import SimulationEngine
 from bgp_simulator_pkg.simulation_framework.scenarios import Scenario
 from bgp_simulator_pkg.simulation_framework.utils import get_all_metric_keys
+from bgp_simulator_pkg.tests.engine_tests.utils.simulator_codec import SimulatorCodec
 
 
 class MetricTracker:
@@ -70,13 +72,13 @@ class MetricTracker:
     ) -> None:
         """Writes data to CSV and pickles it"""
 
-        with (data_dir / "data.csv").open("w") as f:
+        with csv_path.open("w") as f:
             rows = self.get_csv_rows()
             writer = csv.DictWriter(f, fieldnames=list(rows[0].keys()))
             writer.writeheader()
             writer.writerows(rows)
 
-        yaml_codec.dump(self.get_yaml_data(), path=data_dir / "data.yaml")
+        yaml_codec.dump(self.get_yaml_data(), path=yaml_path)
 
     def get_csv_rows(self) -> list[dict[str, Any]]:
         """Returns rows for a CSV"""
@@ -96,6 +98,7 @@ class MetricTracker:
                     "propagation_round": data_key.propagation_round,
                     "value": mean(trial_data),
                     "yerr": self._get_yerr(trial_data),
+                    "scenario_config_label": data_key.scenario_config.csv_label,
                 }
                 rows.append(row)
         return rows

@@ -1,8 +1,9 @@
 from collections import defaultdict
+from dataclasses import replace
 from typing import Optional
 
 from bgp_simulator_pkg.caida_collector.graph.base_as import AS
-from bgp_simulator_pkg.enums import ASGroups, Plane, Outcomes
+from bgp_simulator_pkg.enums import Plane, Outcomes
 from bgp_simulator_pkg.simulation_engine import SimulationEngine
 from bgp_simulator_pkg.simulation_framework.scenarios import Scenario
 
@@ -44,7 +45,7 @@ class Metric:
         for (as_cls, numerator), (_, denominator) in zip(
             self._numerators.items(), self._denominators.items()
         ):
-            k = replace(self.metric_key, "ASCls", as_cls)
+            k = replace(self.metric_key, ASCls=as_cls)
             percents[k] = [100 * numerator / denominator]
         self.percents = percents
 

@@ -1,7 +1,6 @@
 from dataclasses import dataclass
 from typing import Union
 
-from .metric import Metric
 from .metric_key import MetricKey
 
 from bgp_simulator_pkg.enums import SpecialPercentAdoptions

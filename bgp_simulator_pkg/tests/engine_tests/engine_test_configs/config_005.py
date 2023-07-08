@@ -12,7 +12,7 @@ config_005 = EngineTestConfig(
     scenario_config=ScenarioConfig(
         ScenarioCls=ValidPrefix,
         BaseASCls=ROVSimpleAS,
-        override_victim_asns={ASNs.VICTIM.value},
+        override_victim_asns=frozenset({ASNs.VICTIM.value}),
         override_non_default_asn_cls_dict=dict(),
     ),
     graph=graph_002,

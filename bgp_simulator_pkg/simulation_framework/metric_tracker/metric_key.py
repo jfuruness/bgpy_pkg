@@ -1,10 +1,8 @@
 from dataclasses import dataclass
-from typing import Union
+from typing import Optional
 
-from .metric import Metric
-
-from bgp_simulator_pkg.enums import Plane, ASGroup, Outcome
-from bgp_simulator_pkg.simulation_engine import AS
+from bgp_simulator_pkg.enums import ASGroups, Plane, Outcomes
+from bgp_simulator_pkg.caida_collector.graph.base_as import AS
 
 
 @dataclass(frozen=True, slots=True)
@@ -12,6 +10,6 @@ class MetricKey:
     """Key for storing data within each metric"""
 
     plane: Plane
-    as_group: ASGroup
-    outcome: Outcome
+    as_group: ASGroups
+    outcome: Outcomes
     ASCls: Optional[type[AS]] = None

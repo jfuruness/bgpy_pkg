@@ -12,8 +12,8 @@ config_007 = EngineTestConfig(
     scenario_config=ScenarioConfig(
         ScenarioCls=SubprefixHijack,
         BaseASCls=BGPSimpleAS,
-        override_attacker_asns={ASNs.ATTACKER.value},
-        override_victim_asns={ASNs.VICTIM.value},
+        override_attacker_asns=frozenset({ASNs.ATTACKER.value}),
+        override_victim_asns=frozenset({ASNs.VICTIM.value}),
         AdoptASCls=ROVSimpleAS,
         override_non_default_asn_cls_dict={3: ROVSimpleAS, 4: ROVSimpleAS},
     ),
