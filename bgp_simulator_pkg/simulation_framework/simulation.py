@@ -60,14 +60,6 @@ class Simulation:
         self.parse_cpus: int = parse_cpus
         self.scenario_configs: tuple[ScenarioConfig, ...] = scenario_configs
 
-        msg = (
-            "Please add a unique_data_label to scenario configs. "
-            "These are used for data storage as keys, and currently aren't"
-            " unique enough"
-        )
-        labels = [x.unique_data_label for x in self.scenario_configs]
-        assert len(labels) == len(set(labels)), msg
-
         self.python_hash_seed: Optional[int] = python_hash_seed
         self._seed_random()
 
@@ -89,7 +81,7 @@ class Simulation:
         """Runs the simulation and write the data"""
 
         metric_tracker = self._get_data()
-        metric_tracker.write_csv(self.data_output_path)
+        metric_tracker.write_data(csv_path=self.csv_path, yaml_path=self.yaml_path)
         self._graph_data()
 
     def _seed_random(self, seed_suffix: str = "") -> None:
@@ -275,8 +267,12 @@ class Simulation:
     ######################
 
     @property
-    def data_output_path(self) -> Path:
+    def csv_path(self) -> Path:
         return self.output_dir / "data.csv"
+
+    @property
+    def yaml_path(self) -> Path:
+        return self.output_dir / "data.yaml"
 
     #######################
     # Graph Writing Funcs #

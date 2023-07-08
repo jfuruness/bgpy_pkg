@@ -2,8 +2,10 @@ from dataclasses import dataclass
 from typing import Union
 
 from .metric import Metric
+from .metric_key import MetricKey
 
 from bgp_simulator_pkg.enums import SpecialPercentAdoptions
+from bgp_simulator_pkg.simulation_framework.scenarios import ScenarioConfig
 
 
 @dataclass(frozen=True, slots=True)
@@ -12,5 +14,5 @@ class DataKey:
 
     propagation_round: int
     percent_adopt: Union[float, SpecialPercentAdoptions]
-    scenario_label: str
-    MetricCls: type[Metric]
+    scenario_config: ScenarioConfig
+    metric_key: MetricKey

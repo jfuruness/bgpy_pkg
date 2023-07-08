@@ -108,10 +108,18 @@ class EngineTester:
         if not self.outcomes_ground_truth_path.exists() or self.overwrite:
             self.codec.dump(outcomes, path=self.outcomes_ground_truth_path)
 
-        metric_tracker.write_csv(self.metrics_guess_path)
+        metric_tracker.write_data(
+            csv_path=self.metrics_guess_path_csv,
+            yaml_path=self.metric_guess_path_yaml
+        )
         # Save metrics as ground truth if ground truth doesn't exist
-        if not self.metrics_ground_truth_path.exists() or self.overwrite:
-            metric_tracker.write_csv(self.metrics_ground_truth_path)
+        if ((not self.metrics_ground_truth_path_yaml.exists()
+             or not self.metrics_ground_truth_path_csv.exists())
+                or self.overwrite):
+            metric_tracker.write_data(
+                csv_path=self.metrics_ground_truth_path_csv,
+                yaml_path=self.metrics_ground_truth_path_yaml,
+            )
 
     def _generate_diagrams(self, scenario, metric_tracker):
         """Generates diagrams"""
@@ -156,12 +164,17 @@ class EngineTester:
         outcomes_guess = self.codec.load(self.outcomes_guess_path)
         outcomes_gt = self.codec.load(self.outcomes_ground_truth_path)
         assert outcomes_guess == outcomes_gt
-        # Compare metrics
-        with self.metrics_guess_path.open() as guess_f:
-            with self.metrics_ground_truth_path.open() as ground_truth_f:
+        # Compare metrics CSV
+        with self.metrics_guess_path_csv.open() as guess_f:
+            with self.metrics_ground_truth_path_csv.open() as ground_truth_f:
                 guess_lines = set([tuple(x) for x in csv.reader(guess_f)])
                 gt_lines = set([tuple(x) for x in csv.reader(ground_truth_f)])
                 assert gt_lines == guess_lines, self.metrics_guess_path
+
+        # Compare metrics YAML
+        metrics_guess = self.codec.load(self.metrics_guess_path_yaml)
+        metrics_gt = self.codec.load(self.metrics_ground_truth_path_yaml)
+        assert metrics_guess == metrics_gt
 
     #########
     # Paths #
@@ -192,13 +205,25 @@ class EngineTester:
         return self.test_dir / "outcomes_guess.yaml"
 
     @property
-    def metrics_ground_truth_path(self) -> Path:
+    def metrics_ground_truth_path_csv(self) -> Path:
         """Returns the path to the metrics ground truth YAML"""
 
         return self.test_dir / "metrics_gt.csv"
 
     @property
-    def metrics_guess_path(self) -> Path:
+    def metrics_guess_path_csv(self) -> Path:
         """Returns the path to the metrics guess YAML"""
 
         return self.test_dir / "metrics_guess.csv"
+
+    @property
+    def metrics_ground_truth_path_yaml(self) -> Path:
+        """Returns the path to the metrics ground truth YAML"""
+
+        return self.test_dir / "metrics_gt.yaml"
+
+    @property
+    def metrics_guess_path_yaml(self) -> Path:
+        """Returns the path to the metrics guess YAML"""
+
+        return self.test_dir / "metrics_guess.yaml"

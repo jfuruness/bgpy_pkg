@@ -2,9 +2,11 @@ from collections import defaultdict
 from typing import Optional
 
 from bgp_simulator_pkg.caida_collector.graph.base_as import AS
-from bgp_simulator_pkg.enums import Outcomes
+from bgp_simulator_pkg.enums import ASGroups, Plane, Outcomes
 from bgp_simulator_pkg.simulation_engine import SimulationEngine
 from bgp_simulator_pkg.simulation_framework.scenarios import Scenario
+
+from .metric_key import MetricKey
 
 
 class Metric:
@@ -12,12 +14,15 @@ class Metric:
 
     def __init__(
         self,
+        metric_key: MetricKey,
         percents: Optional[defaultdict[str, list[float]]] = None,
     ) -> None:
+
+        self.metric_key: MetricKey = metric_key
         self._numerators: defaultdict[type[AS], float] = defaultdict(float)
         self._denominators: defaultdict[type[AS], float] = defaultdict(float)
         if percents:
-            self.percents: defaultdict[str, list[float]] = percents
+            self.percents: defaultdict[MetricKey, list[float]] = percents
         else:
             self.percents = defaultdict(list)
 
@@ -26,8 +31,8 @@ class Metric:
 
         if isinstance(other, Metric):
             agg_percents = self.percents.copy()
-            for as_cls, percent_list in other.percents.items():
-                agg_percents[as_cls].extend(percent_list)
+            for metric_key, percent_list in other.percents.items():
+                agg_percents[metric_key].extend(percent_list)
             return Metric(percents=agg_percents)
         else:
             return NotImplemented
@@ -39,7 +44,7 @@ class Metric:
         for (as_cls, numerator), (_, denominator) in zip(
             self._numerators.items(), self._denominators.items()
         ):
-            k = f"{self.label_prefix}_{as_cls.__name__}"
+            k = replace(self.metric_key, "ASCls", as_cls)
             percents[k] = [100 * numerator / denominator]
         self.percents = percents
 
@@ -78,7 +83,18 @@ class Metric:
         ctrl_plane_outcome: Outcomes,
         data_plane_outcome: Outcomes,
     ) -> None:
-        raise NotImplementedError
+        """Adds to numerator if it is within the as group and the outcome is correct"""
+
+        if self.metric_key.plane == Plane.DATA:
+            outcome = data_plane_outcome
+        elif self.metric_key.plane == Plane.CTRL:
+            outcome = ctrl_plane_outcome
+        else:
+            raise NotImplementedError
+
+        asn_group = engine.asn_groups[self.metric_key.as_group.value]
+        if as_obj.asn in asn_group and outcome == self.metric_key.outcome:
+            self._numerators[as_obj.__class__] += 1
 
     def _add_denominator(
         self,
@@ -89,8 +105,10 @@ class Metric:
         ctrl_plane_outcome: Outcomes,
         data_plane_outcome: Outcomes,
     ) -> bool:
-        raise NotImplementedError
+        """Adds to the denominator if it is within the as group"""
 
-    @property
-    def label_prefix(self) -> str:
-        raise NotImplementedError
+        if as_obj.asn in engine.asn_groups[self.metric_key.as_group.value]:
+            self._denominators[as_obj.__class__] += 1
+            return True
+        else:
+            return False

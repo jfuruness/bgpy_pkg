@@ -1,9 +1,11 @@
 from bgp_simulator_pkg.caida_collector import CaidaCollector
 
+from bgp_simulator_pkg.enums import ASGroups, Plane, Outcomes
 from bgp_simulator_pkg.simulation_engine import BGPSimpleAS
 from bgp_simulator_pkg.simulation_engine import RealROVSimpleAS
 from bgp_simulator_pkg.simulation_engine import RealPeerROVSimpleAS
 from bgp_simulator_pkg.simulation_engine import SimulationEngine
+from bgp_simulator_pkg.simulation_framework.metric_tracker.metric_key import MetricKey
 
 
 def get_real_world_rov_asn_cls_dict(
@@ -34,3 +36,12 @@ def get_real_world_rov_asn_cls_dict(
                 raise NotImplementedError("ROV filtering case not accoutned for")
 
     return asn_as_cls_dict
+
+
+def get_all_metric_keys() -> MetricKey:
+    """Returns all possible metric key combos"""
+
+    for plane in Plane:
+        for as_group in ASGroups:
+            for outcome in [x for x in Outcomes if x != Outcomes.UNDETERMINED]:
+                yield MetricKey(plane=plane, as_group=as_group, outcome=outcome)

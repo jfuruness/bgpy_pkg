@@ -9,12 +9,12 @@ from typing import Any, Optional, Union
 
 from .data_key import DataKey
 from .metric import Metric
-from .metric_factory import MetricFactory
 
 from bgp_simulator_pkg.caida_collector.graph.base_as import AS
 from bgp_simulator_pkg.enums import Plane, SpecialPercentAdoptions
 from bgp_simulator_pkg.simulation_engine import SimulationEngine
 from bgp_simulator_pkg.simulation_framework.scenarios import Scenario
+from bgp_simulator_pkg.simulation_framework.utils import get_all_metric_keys
 
 
 class MetricTracker:
@@ -26,14 +26,14 @@ class MetricTracker:
         # This is a list of all the trial info
         # You must save info trial by trial, so that you can join
         # After a return from multiprocessing
-        # key DataKey (prop_round, percent_adopt, scenario_label, MetricCls)
+        # key DataKey (prop_round, percent_adopt, scenario_label, MetricKey)
         # value is a list of metric instances
         if data:
             self.data: defaultdict[DataKey, list[Metric]] = data
         else:
             self.data = defaultdict(list)
 
-        self.metric_factory = MetricFactory()
+        self.metric_keys: list[MetricKey] = list(get_all_metric_keys())
 
     #############
     # Add Funcs #
@@ -58,9 +58,25 @@ class MetricTracker:
     def __radd__(self, other):
         return self.__add__(other)
 
-    #############
-    # CSV Funcs #
-    #############
+    ######################
+    # Data Writing Funcs #
+    ######################
+
+    def write_data(
+        self,
+        csv_path: Path,
+        yaml_path: Path,
+        yaml_codec=SimulatorCodec()
+    ) -> None:
+        """Writes data to CSV and pickles it"""
+
+        with (data_dir / "data.csv").open("w") as f:
+            rows = self.get_csv_rows()
+            writer = csv.DictWriter(f, fieldnames=list(rows[0].keys()))
+            writer.writeheader()
+            writer.writerows(rows)
+
+        yaml_codec.dump(self.get_yaml_data(), path=data_dir / "data.yaml")
 
     def get_csv_rows(self) -> list[dict[str, Any]]:
         """Returns rows for a CSV"""
@@ -68,34 +84,46 @@ class MetricTracker:
         rows = list()
         for data_key, metric_list in self.data.items():
             agg_percents = sum(metric_list, start=metric_list[0]).percents
-            for inner_label, final_val_list in agg_percents.items():
-                # TODO: Cleanup
-                if len(final_val_list) > 1:
-                    yerr_num = 1.645 * 2 * stdev(final_val_list)
-                    yerr_denom = sqrt(len(final_val_list))
-                    final_val_yerr = float(yerr_num / yerr_denom)
-                else:
-                    final_val_yerr = 0
-
+            for metric_key, trial_data in agg_percents.items():
                 row = {
-                    "inner_label": inner_label,
+                    "scenario_cls": data_key.scenario_config.ScenarioCls.__name__,
+                    "adopting_as_cls": data_key.scenario_config.AdoptASCls.__name__,
+                    "base_as_cls": data_key.scenario_config.BaseASCls.__name__,
+                    "outcome_type": metric_key.plane.value,
+                    "as_group": metric_key.as_group.value,
+                    "outcome": metric_key.outcome.value,
                     "percent_adopt": data_key.percent_adopt,
-                    "value": mean(final_val_list),
-                    "yerr": final_val_yerr,
                     "propagation_round": data_key.propagation_round,
-                    "scenario_label": data_key.scenario_label,
+                    "value": mean(trial_data),
+                    "yerr": self._get_yerr(trial_data),
                 }
                 rows.append(row)
         return rows
 
-    def write_csv(self, path: Path) -> None:
-        """Writes data to CSV"""
+    def get_yaml_data(self):
 
-        with path.open("w") as f:
-            rows = self.get_csv_rows()
-            writer = csv.DictWriter(f, fieldnames=list(rows[0].keys()))
-            writer.writeheader()
-            writer.writerows(rows)
+        agg_data = list()
+        for data_key, metric_list in self.data.items():
+            agg_percents = sum(metric_list, start=metric_list[0]).percents
+            for metric_key, trial_data in agg_percents.items():
+                row = {
+                    "data_key": data_key,
+                    "metric_key": metric_key,
+                    "value": mean(trial_data),
+                    "yerr": self._get_yerr(trial_data),
+                }
+                agg_data.append(row)
+        return agg_data
+
+    def _get_yerr(self, trial_data: list[float]) -> float:
+        """Returns 90% confidence interval for graphing"""
+
+        if len(trial_data) > 1:
+            yerr_num = 1.645 * 2 * stdev(trial_data)
+            yerr_denom = sqrt(len(trial_data))
+            return float(yerr_num / yerr_denom)
+        else:
+            return 0
 
     ######################
     # Track Metric Funcs #
@@ -149,7 +177,7 @@ class MetricTracker:
         TODO: This should really be cleaned up, but good enough for now
         """
 
-        metrics = self.metric_factory.get_metric_subclasses()
+        metrics = [Metric(x) for x in self.metric_keys]
         self._populate_metrics(
             metrics=metrics, engine=engine, scenario=scenario, outcomes=outcomes
         )
@@ -157,8 +185,8 @@ class MetricTracker:
             key = DataKey(
                 propagation_round=propagation_round,
                 percent_adopt=percent_adopt,
-                scenario_label=scenario.scenario_config.unique_data_label,
-                MetricCls=metric.__class__,
+                scenario_config=scenario.scenario_config,
+                metric_key=metric.metric_key,
             )
             self.data[key].append(metric)
 

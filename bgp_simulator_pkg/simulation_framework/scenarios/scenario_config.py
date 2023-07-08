@@ -51,8 +51,6 @@ class ScenarioConfig:
     override_victim_asns: Optional[set[int]] = None
     override_non_default_asn_cls_dict: Optional[dict[int, type[AS]]] = None
     override_announcements: tuple[Announcement, ...] = ()
-    # Used for data storage to differentiate this config
-    unique_data_label: str = ""
 
     def __post_init__(self):
         """sets AdoptASCls if it is None
@@ -76,14 +74,6 @@ class ScenarioConfig:
                 pseudo_base_cls_dict[self.BaseASCls] = PseudoBaseCls
                 AdoptASCls = PseudoBaseCls
             object.__setattr__(self, "AdoptASCls", AdoptASCls)
-
-        # Used for data storage to differentiate this config
-        if not self.unique_data_label:
-            label = (
-                f"{self.ScenarioCls.__name__}_{self.AdoptASCls.name}"
-                f"_{self.BaseASCls.name}"
-            )
-            object.__setattr__(self, "unique_data_label", label)
 
     ##############
     # Yaml Funcs #
