@@ -81,7 +81,7 @@ class Simulation:
         """Runs the simulation and write the data"""
 
         metric_tracker = self._get_data()
-        metric_tracker.write_data(csv_path=self.csv_path, yaml_path=self.yaml_path)
+        metric_tracker.write_data(csv_path=self.csv_path, pickle_path=self.pickle_path)
         self._graph_data()
 
     def _seed_random(self, seed_suffix: str = "") -> None:
@@ -271,8 +271,8 @@ class Simulation:
         return self.output_dir / "data.csv"
 
     @property
-    def yaml_path(self) -> Path:
-        return self.output_dir / "data.yaml"
+    def pickle_path(self) -> Path:
+        return self.output_dir / "data.pickle"
 
     #######################
     # Graph Writing Funcs #

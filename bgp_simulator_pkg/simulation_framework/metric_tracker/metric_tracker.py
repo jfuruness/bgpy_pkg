@@ -3,6 +3,7 @@ from copy import deepcopy
 import csv
 from math import sqrt
 from pathlib import Path
+import pickle
 from statistics import mean
 from statistics import stdev
 from typing import Any, Optional, Union
@@ -67,8 +68,8 @@ class MetricTracker:
     def write_data(
         self,
         csv_path: Path,
-        yaml_path: Path,
-        yaml_codec=SimulatorCodec()
+        pickle_path: Path,
+        pickle_codec=SimulatorCodec()
     ) -> None:
         """Writes data to CSV and pickles it"""
 
@@ -78,7 +79,8 @@ class MetricTracker:
             writer.writeheader()
             writer.writerows(rows)
 
-        yaml_codec.dump(self.get_yaml_data(), path=yaml_path)
+        with pickle_path.open("wb") as f:
+            pickle.dump(self.get_pickle_data(), f)
 
     def get_csv_rows(self) -> list[dict[str, Any]]:
         """Returns rows for a CSV"""
@@ -103,7 +105,7 @@ class MetricTracker:
                 rows.append(row)
         return rows
 
-    def get_yaml_data(self):
+    def get_pickle_data(self):
 
         agg_data = list()
         for data_key, metric_list in self.data.items():

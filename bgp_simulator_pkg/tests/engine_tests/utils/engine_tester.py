@@ -1,5 +1,6 @@
 import csv
 from pathlib import Path
+import pickle
 
 from .diagram import Diagram
 from .engine_test_config import EngineTestConfig
@@ -110,15 +111,15 @@ class EngineTester:
 
         metric_tracker.write_data(
             csv_path=self.metrics_guess_path_csv,
-            yaml_path=self.metric_guess_path_yaml
+            pickle_path=self.metric_guess_path_pickle
         )
         # Save metrics as ground truth if ground truth doesn't exist
-        if ((not self.metrics_ground_truth_path_yaml.exists()
+        if ((not self.metrics_ground_truth_path_pickle.exists()
              or not self.metrics_ground_truth_path_csv.exists())
                 or self.overwrite):
             metric_tracker.write_data(
                 csv_path=self.metrics_ground_truth_path_csv,
-                yaml_path=self.metrics_ground_truth_path_yaml,
+                pickle_path=self.metrics_ground_truth_path_pickle,
             )
 
     def _generate_diagrams(self, scenario, metric_tracker):
@@ -172,8 +173,10 @@ class EngineTester:
                 assert gt_lines == guess_lines, self.metrics_guess_path
 
         # Compare metrics YAML
-        metrics_guess = self.codec.load(self.metrics_guess_path_yaml)
-        metrics_gt = self.codec.load(self.metrics_ground_truth_path_yaml)
+        with self.metrics_guess_path_yaml.open("rb") as f:
+            metrics_guess = pickle.load(f)
+        with self.metrics_ground_truth_path_yaml.open("rb") as f:
+            metrics_gt = pickle.load(f)
         assert metrics_guess == metrics_gt
 
     #########
@@ -217,13 +220,13 @@ class EngineTester:
         return self.test_dir / "metrics_guess.csv"
 
     @property
-    def metrics_ground_truth_path_yaml(self) -> Path:
+    def metrics_ground_truth_path_pickle(self) -> Path:
         """Returns the path to the metrics ground truth YAML"""
 
-        return self.test_dir / "metrics_gt.yaml"
+        return self.test_dir / "metrics_gt.pickle"
 
     @property
-    def metrics_guess_path_yaml(self) -> Path:
+    def metrics_guess_path_pickle(self) -> Path:
         """Returns the path to the metrics guess YAML"""
 
-        return self.test_dir / "metrics_guess.yaml"
+        return self.test_dir / "metrics_guess.pickle"
