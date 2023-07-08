@@ -70,7 +70,7 @@ class EngineTester:
             trial=0,
             scenario=scenario,
             propagation_round=self.conf.propagation_rounds - 1,
-            outcomes=outcomes
+            outcomes=outcomes,
         )
         # Store engine and traceback YAML
         self._store_data(engine, outcomes_yaml, metric_tracker)
@@ -109,8 +109,8 @@ class EngineTester:
             self.codec.dump(outcomes, path=self.outcomes_ground_truth_path)
 
         metric_tracker.write_csv(self.metrics_guess_path)
-        # Save shared_data as ground truth if ground truth doesn't exist
-        if not self.shared_data_ground_truth_path.exists() or self.overwrite:
+        # Save metrics as ground truth if ground truth doesn't exist
+        if not self.metrics_ground_truth_path.exists() or self.overwrite:
             metric_tracker.write_csv(self.metrics_ground_truth_path)
 
     def _generate_diagrams(self, scenario, metric_tracker):
@@ -156,12 +156,12 @@ class EngineTester:
         outcomes_guess = self.codec.load(self.outcomes_guess_path)
         outcomes_gt = self.codec.load(self.outcomes_ground_truth_path)
         assert outcomes_guess == outcomes_gt
-        # Compare shared_data
+        # Compare metrics
         with self.metrics_guess_path.open() as guess_f:
-            with self.metrics_ground_truth.open() as ground_truth_f:
-                guess_lines = set(csv.Reader(guess_f))
-                gt_lines = set(csv.Reader(ground_truth_f))
-                assert gt_lines == guess_lines, gt_lines.difference(guess_lines)
+            with self.metrics_ground_truth_path.open() as ground_truth_f:
+                guess_lines = set([tuple(x) for x in csv.reader(guess_f)])
+                gt_lines = set([tuple(x) for x in csv.reader(ground_truth_f)])
+                assert gt_lines == guess_lines, self.metrics_guess_path
 
     #########
     # Paths #
@@ -193,12 +193,12 @@ class EngineTester:
 
     @property
     def metrics_ground_truth_path(self) -> Path:
-        """Returns the path to the shared_data ground truth YAML"""
+        """Returns the path to the metrics ground truth YAML"""
 
-        return self.test_dir / "metrics_gt.yaml"
+        return self.test_dir / "metrics_gt.csv"
 
     @property
     def metrics_guess_path(self) -> Path:
-        """Returns the path to the shared_data guess YAML"""
+        """Returns the path to the metrics guess YAML"""
 
-        return self.test_dir / "metrics_guess.yaml"
+        return self.test_dir / "metrics_guess.csv"

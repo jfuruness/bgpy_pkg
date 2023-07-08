@@ -1,0 +1,11 @@
+inner_label,percent_adopt,value,yerr,propagation_round,scenario_label
+data_plane_stub_ATTACKER_SUCCESS_BGPAS,0,100.0,0.0,0,SubprefixHijack_ROV_BGP
+data_plane_stub_or_multihomed_ATTACKER_SUCCESS_BGPAS,0,100.0,0.0,0,SubprefixHijack_ROV_BGP
+data_plane_etc_ATTACKER_SUCCESS_BGPAS,0,33.333333333333336,0.0,0,SubprefixHijack_ROV_BGP
+data_plane_etc_ATTACKER_SUCCESS_ROVAS,0,100.0,0.0,0,SubprefixHijack_ROV_BGP
+data_plane_etc_VICTIM_SUCCESS_BGPAS,0,66.66666666666667,0.0,0,SubprefixHijack_ROV_BGP
+control_plane_stub_ATTACKER_SUCCESS_BGPAS,0,100.0,0.0,0,SubprefixHijack_ROV_BGP
+control_plane_stub_or_multihomed_ATTACKER_SUCCESS_BGPAS,0,100.0,0.0,0,SubprefixHijack_ROV_BGP
+control_plane_etc_ATTACKER_SUCCESS_BGPAS,0,33.333333333333336,0.0,0,SubprefixHijack_ROV_BGP
+control_plane_etc_ATTACKER_SUCCESS_ROVAS,0,100.0,0.0,0,SubprefixHijack_ROV_BGP
+control_plane_etc_VICTIM_SUCCESS_BGPAS,0,66.66666666666667,0.0,0,SubprefixHijack_ROV_BGP

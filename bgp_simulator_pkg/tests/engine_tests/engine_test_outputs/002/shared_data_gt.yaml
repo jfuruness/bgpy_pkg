@@ -1,9 +1,0 @@
-all_ATTACKER_SUCCESS: 3
-all_ATTACKER_SUCCESS_perc: 60.0
-etc_BGP: 2
-etc_BGP_ATTACKER_SUCCESS: 2
-etc_BGP_ATTACKER_SUCCESS_percent: 100.0
-set: true
-stub_or_multihomed_BGP: 1
-stub_or_multihomed_BGP_ATTACKER_SUCCESS: 1
-stub_or_multihomed_BGP_ATTACKER_SUCCESS_percent: 100.0

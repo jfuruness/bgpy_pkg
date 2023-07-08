@@ -1,5 +1,5 @@
 from collections import defaultdict
-from typing import Optional, Union
+from typing import Optional
 
 from bgp_simulator_pkg.caida_collector.graph.base_as import AS
 from bgp_simulator_pkg.enums import Outcomes
@@ -17,11 +17,11 @@ class Metric:
         self._numerators: defaultdict[type[AS], float] = defaultdict(float)
         self._denominators: defaultdict[type[AS], float] = defaultdict(float)
         if percents:
-            self.percents:  defaultdict[str, list[float]] = percents
+            self.percents: defaultdict[str, list[float]] = percents
         else:
             self.percents = defaultdict(list)
 
-    def __add__(self, other) -> Union["Metric", type[NotImplemented]]:
+    def __add__(self, other):
         """Adds metric classes together"""
 
         if isinstance(other, Metric):
@@ -37,8 +37,7 @@ class Metric:
 
         percents = defaultdict(list)
         for (as_cls, numerator), (_, denominator) in zip(
-            self._numerators.items(),
-            self._denominators.items()
+            self._numerators.items(), self._denominators.items()
         ):
             k = f"{self.label_prefix}_{as_cls.__name__}"
             percents[k] = [100 * numerator / denominator]
@@ -53,7 +52,6 @@ class Metric:
         ctrl_plane_outcome: Outcomes,
         data_plane_outcome: Outcomes,
     ):
-
         within_denom = self._add_denominator(
             as_obj=as_obj,
             engine=engine,

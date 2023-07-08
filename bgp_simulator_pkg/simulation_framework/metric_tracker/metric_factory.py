@@ -9,10 +9,12 @@ from bgp_simulator_pkg.simulation_framework.scenarios import Scenario
 
 from .metric import Metric
 
+
 # TODO: Clean up these unpicklable dynamic subclasses
 # https://stackoverflow.com/a/75943813/8903959
 class Metaclass(type):
     pass
+
 
 def _reduce_metaclass(cls):
     metaclass = cls.__class__
@@ -23,6 +25,7 @@ def _reduce_metaclass(cls):
         cls_vars.pop(unpicklable_func)
     # print("reduce metaclass", cls, metaclass, cls.__name__, cls.__bases__, vars(cls))
     return metaclass, (cls.__name__, cls.__bases__, cls_vars)
+
 
 copyreg.pickle(Metaclass, _reduce_metaclass)
 
@@ -40,7 +43,7 @@ class MetricFactory:
                 "_add_denominator": self._get_add_denominator_func(*args),
             }
             subclass = Metaclass(f"Metric{i}", (Metric,), class_dict)
-            self.metric_subclasses.append(subclass)
+            self.metric_subclasses.append(subclass)  # type: ignore
 
     def get_metric_subclasses(self) -> list[Metric]:
         """Returns a list of all combinations of metric objects"""
@@ -55,32 +58,28 @@ class MetricFactory:
                 for outcome in [x for x in Outcomes if x != Outcomes.UNDETERMINED]:
                     yield plane, as_group, outcome
 
-#######################
-# Function Generators #
-#######################
+    #######################
+    # Function Generators #
+    #######################
 
     def _get_label_prefix_func(
-        self,
-        plane: Plane,
-        as_group: ASGroups,
-        outcome: Outcomes
+        self, plane: Plane, as_group: ASGroups, outcome: Outcomes
     ) -> property:  # Callable[[], str]:
-
-        return property(lambda self: f"{plane.value}_{as_group.value}_{outcome.value}")
+        return property(lambda self: f"{plane.value}_{as_group.value}_{outcome.name}")
 
     def _get_add_numerator_func(
-        self,
-        plane: Plane,
-        as_group: ASGroups,
-        outcome: Outcomes
-    ) -> Callable[[
-        Any,
-        NamedArg(AS, "as_obj"),
-        NamedArg(SimulationEngine, "engine"),
-        NamedArg(Scenario, "scenario"),
-        NamedArg(Outcomes, "ctrl_plane_outcome"),
-        NamedArg(Outcomes, "data_plane_outcome")
-    ], None]:
+        self, plane: Plane, as_group: ASGroups, outcome: Outcomes
+    ) -> Callable[
+        [
+            Any,
+            NamedArg(AS, "as_obj"),  # noqa
+            NamedArg(SimulationEngine, "engine"),  # noqa
+            NamedArg(Scenario, "scenario"),  # noqa
+            NamedArg(Outcomes, "ctrl_plane_outcome"),  # noqa
+            NamedArg(Outcomes, "data_plane_outcome"),  # noqa
+        ],
+        None,
+    ]:
         """Returns the _add_numerator func"""
 
         def _add_numerator(
@@ -101,18 +100,18 @@ class MetricFactory:
         return _add_numerator
 
     def _get_add_denominator_func(
-        self,
-        plane: Plane,
-        as_group: ASGroups,
-        outcome: Outcomes
-    ) -> Callable[[
-        Any,
-        NamedArg(AS, "as_obj"),
-        NamedArg(SimulationEngine, "engine"),
-        NamedArg(Scenario, "scenario"),
-        NamedArg(Outcomes, "ctrl_plane_outcome"),
-        NamedArg(Outcomes, "data_plane_outcome")
-    ], None]:
+        self, plane: Plane, as_group: ASGroups, outcome: Outcomes
+    ) -> Callable[
+        [
+            Any,
+            NamedArg(AS, "as_obj"),  # noqa
+            NamedArg(SimulationEngine, "engine"),  # noqa
+            NamedArg(Scenario, "scenario"),  # noqa
+            NamedArg(Outcomes, "ctrl_plane_outcome"),  # noqa
+            NamedArg(Outcomes, "data_plane_outcome"),  # noqa
+        ],
+        bool,
+    ]:
         """Returns the _add_denominator_func"""
 
         def _add_denominator(

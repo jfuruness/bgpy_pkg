@@ -1,4 +1,3 @@
-import csv
 from itertools import product
 from multiprocessing import cpu_count
 from multiprocessing import Pool
@@ -61,9 +60,11 @@ class Simulation:
         self.parse_cpus: int = parse_cpus
         self.scenario_configs: tuple[ScenarioConfig, ...] = scenario_configs
 
-        msg = ("Please add a unique_data_label to scenario configs. "
-               "These are used for data storage as keys, and currently aren't"
-               " unique enough")
+        msg = (
+            "Please add a unique_data_label to scenario configs. "
+            "These are used for data storage as keys, and currently aren't"
+            " unique enough"
+        )
         labels = [x.unique_data_label for x in self.scenario_configs]
         assert len(labels) == len(set(labels)), msg
 
@@ -178,7 +179,6 @@ class Simulation:
 
         for percent_adopt, trial in percent_adopt_trials:
             for scenario_config in self.scenario_configs:
-
                 # Create the scenario for this trial
                 assert scenario_config.ScenarioCls, "ScenarioCls is None"
                 scenario = scenario_config.ScenarioCls(
@@ -213,7 +213,7 @@ class Simulation:
         self,
         percent_adopt: Union[float | SpecialPercentAdoptions],
         scenario: Scenario,
-        trial: int
+        trial: int,
     ) -> None:
         """Printing progress"""
 
@@ -245,7 +245,7 @@ class Simulation:
             engine=engine,
             percent_adopt=percent_adopt,
             trial=trial,
-            propagation_round=propagation_round
+            propagation_round=propagation_round,
         )
 
         # Save all engine run info
@@ -259,7 +259,7 @@ class Simulation:
             trial=trial,
             scenario=scenario,
             propagation_round=propagation_round,
-            outcomes=outcomes
+            outcomes=outcomes,
         )
 
         # By default, this is a no op
@@ -270,17 +270,17 @@ class Simulation:
             propagation_round=propagation_round,
         )
 
-######################
-# Data Writing Funcs #
-######################
+    ######################
+    # Data Writing Funcs #
+    ######################
 
     @property
     def data_output_path(self) -> Path:
         return self.output_dir / "data.csv"
 
-#######################
-# Graph Writing Funcs #
-#######################
+    #######################
+    # Graph Writing Funcs #
+    #######################
 
     def _graph_data(self) -> None:
         """Generates some default graphs"""

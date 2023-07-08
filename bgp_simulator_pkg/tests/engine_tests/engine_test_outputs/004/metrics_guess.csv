@@ -1,0 +1,7 @@
+inner_label,percent_adopt,value,yerr,propagation_round,scenario_label
+data_plane_stub_VICTIM_SUCCESS_BGPAS,0,100.0,0.0,0,ValidPrefix_PsuedoBGP_BGP
+data_plane_stub_or_multihomed_VICTIM_SUCCESS_BGPAS,0,100.0,0.0,0,ValidPrefix_PsuedoBGP_BGP
+data_plane_etc_VICTIM_SUCCESS_BGPAS,0,100.0,0.0,0,ValidPrefix_PsuedoBGP_BGP
+control_plane_stub_VICTIM_SUCCESS_BGPAS,0,100.0,0.0,0,ValidPrefix_PsuedoBGP_BGP
+control_plane_stub_or_multihomed_VICTIM_SUCCESS_BGPAS,0,100.0,0.0,0,ValidPrefix_PsuedoBGP_BGP
+control_plane_etc_VICTIM_SUCCESS_BGPAS,0,100.0,0.0,0,ValidPrefix_PsuedoBGP_BGP

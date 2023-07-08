@@ -1,0 +1,3 @@
+inner_label,percent_adopt,value,yerr,propagation_round,scenario_label
+data_plane_etc_VICTIM_SUCCESS_ROVAS,0,100.0,0.0,0,ValidPrefix_PsuedoROV_ROV
+control_plane_etc_VICTIM_SUCCESS_ROVAS,0,100.0,0.0,0,ValidPrefix_PsuedoROV_ROV

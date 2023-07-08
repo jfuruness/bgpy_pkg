@@ -1,9 +1,0 @@
-all_DISCONNECTED: 4
-all_DISCONNECTED_perc: 80.0
-etc_BGP Simple: 1
-etc_BGP Simple_DISCONNECTED: 1
-etc_BGP Simple_DISCONNECTED_percent: 100.0
-set: true
-stub_or_multihomed_BGP Simple: 3
-stub_or_multihomed_BGP Simple_DISCONNECTED: 3
-stub_or_multihomed_BGP Simple_DISCONNECTED_percent: 100.0

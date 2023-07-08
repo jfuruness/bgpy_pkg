@@ -14,7 +14,8 @@ class GraphAnalyzer:
         self.scenario: Scenario = scenario
         self._most_specific_ann_dict: dict[AS, Optional[Announcement]] = {
             # Get the most specific ann in the rib
-            as_obj: self._get_most_specific_ann(as_obj) for as_obj in engine
+            as_obj: self._get_most_specific_ann(as_obj)
+            for as_obj in engine
         }
         self._data_plane_outcomes: dict[AS, Outcomes] = dict()
         self._control_plane_outcomes: dict[AS, Outcomes] = dict()
@@ -41,16 +42,15 @@ class GraphAnalyzer:
         """Takes in engine and outputs traceback for ctrl + data plane data"""
 
         for as_obj in self.engine:
-
             # Gets AS outcome and stores it in the outcomes dict
             self._get_as_outcome_data_plane(as_obj)
             self._get_as_outcome_ctrl_plane(as_obj)
             self._get_other_as_outcome_hook(as_obj)
         return self.outcomes
 
-####################
-# Data plane funcs #
-####################
+    ####################
+    # Data plane funcs #
+    ####################
 
     def _get_as_outcome_data_plane(self, as_obj: AS) -> Outcomes:
         """Recursively returns the as outcome"""
@@ -76,9 +76,7 @@ class GraphAnalyzer:
             return outcome
 
     def _determine_as_outcome_data_plane(
-        self,
-        as_obj: AS,
-        most_specific_ann: Optional[Announcement]
+        self, as_obj: AS, most_specific_ann: Optional[Announcement]
     ) -> Outcomes:
         """Determines the outcome at an AS
 
@@ -101,9 +99,9 @@ class GraphAnalyzer:
         else:
             return Outcomes.UNDETERMINED
 
-#######################
-# Control Plane Funcs #
-#######################
+    #######################
+    # Control Plane Funcs #
+    #######################
 
     def _get_as_outcome_ctrl_plane(self, as_obj: AS) -> Outcomes:
         """Stores and returns the AS outcome from the control plane"""
@@ -133,9 +131,9 @@ class GraphAnalyzer:
         else:
             return Outcomes.DISCONNECTED
 
-################################
-# Hook funcs for other metrics #
-################################
+    ################################
+    # Hook funcs for other metrics #
+    ################################
 
     def _get_other_as_outcome_hook(self, as_obj: AS) -> Outcomes:
         pass

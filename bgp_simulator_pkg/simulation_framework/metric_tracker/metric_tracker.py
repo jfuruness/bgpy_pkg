@@ -1,6 +1,10 @@
 from collections import defaultdict
 from copy import deepcopy
-from dataclasses import asdict, fields
+import csv
+from math import sqrt
+from pathlib import Path
+from statistics import mean
+from statistics import stdev
 from typing import Any, Optional, Union
 
 from .data_key import DataKey
@@ -31,9 +35,9 @@ class MetricTracker:
 
         self.metric_factory = MetricFactory()
 
-#############
-# Add Funcs #
-#############
+    #############
+    # Add Funcs #
+    #############
 
     def __add__(self, other):
         """Merges other MetricTracker into this one and combines the data
@@ -54,17 +58,9 @@ class MetricTracker:
     def __radd__(self, other):
         return self.__add__(other)
 
-#############
-# CSV Funcs #
-#############
-
-    @property
-    def csv_headers(self) -> tuple[str, ...]:
-        """Returns headers used in CSV"""
-
-        data_key_fields = [field.name for field in fields(DataKey)]
-        other_fields = ["inner_label", "value"]
-        return tuple(data_key_fields + other_fields)
+    #############
+    # CSV Funcs #
+    #############
 
     def get_csv_rows(self) -> list[dict[str, Any]]:
         """Returns rows for a CSV"""
@@ -72,23 +68,38 @@ class MetricTracker:
         rows = list()
         for data_key, metric_list in self.data.items():
             agg_percents = sum(metric_list, start=metric_list[0]).percents
-            for inner_label, final_val in agg_percents.items():
-                values = list(asdict(data_key).values()) + [inner_label, final_val]
-                rows.append({k: v for k, v in zip(self.csv_headers, values)})
+            for inner_label, final_val_list in agg_percents.items():
+                # TODO: Cleanup
+                if len(final_val_list) > 1:
+                    yerr_num = 1.645 * 2 * stdev(final_val_list)
+                    yerr_denom = sqrt(len(final_val_list))
+                    final_val_yerr = float(yerr_num / yerr_denom)
+                else:
+                    final_val_yerr = 0
+
+                row = {
+                    "inner_label": inner_label,
+                    "percent_adopt": data_key.percent_adopt,
+                    "value": mean(final_val_list),
+                    "yerr": final_val_yerr,
+                    "propagation_round": data_key.propagation_round,
+                    "scenario_label": data_key.scenario_label,
+                }
+                rows.append(row)
         return rows
 
     def write_csv(self, path: Path) -> None:
         """Writes data to CSV"""
 
         with path.open("w") as f:
-            writer = csv.DictWriter(f, fieldnames=self.csv_headers)
+            rows = self.get_csv_rows()
+            writer = csv.DictWriter(f, fieldnames=list(rows[0].keys()))
             writer.writeheader()
-            writer.writerows(self.get_csv_rows())
+            writer.writerows(rows)
 
-
-######################
-# Track Metric Funcs #
-######################
+    ######################
+    # Track Metric Funcs #
+    ######################
 
     def track_trial_metrics(
         self,
@@ -140,10 +151,7 @@ class MetricTracker:
 
         metrics = self.metric_factory.get_metric_subclasses()
         self._populate_metrics(
-            metrics=metrics,
-            engine=engine,
-            scenario=scenario,
-            outcomes=outcomes
+            metrics=metrics, engine=engine, scenario=scenario, outcomes=outcomes
         )
         for metric in metrics:
             key = DataKey(
@@ -180,7 +188,7 @@ class MetricTracker:
                     engine=engine,
                     scenario=scenario,
                     ctrl_plane_outcome=ctrl_plane_outcomes[as_obj],
-                    data_plane_outcome=data_plane_outcomes[as_obj]
+                    data_plane_outcome=data_plane_outcomes[as_obj],
                 )
         # Only call this once or else it adds significant amounts of time
         for metric in metrics:

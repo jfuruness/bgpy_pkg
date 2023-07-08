@@ -1,9 +1,0 @@
-all_VICTIM_SUCCESS: 4
-all_VICTIM_SUCCESS_perc: 80.0
-etc_BGP Simple: 3
-etc_BGP Simple_VICTIM_SUCCESS: 3
-etc_BGP Simple_VICTIM_SUCCESS_percent: 100.0
-set: true
-stub_or_multihomed_BGP Simple: 1
-stub_or_multihomed_BGP Simple_VICTIM_SUCCESS: 1
-stub_or_multihomed_BGP Simple_VICTIM_SUCCESS_percent: 100.0

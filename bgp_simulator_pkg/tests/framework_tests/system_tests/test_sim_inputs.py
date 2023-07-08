@@ -73,7 +73,7 @@ def test_sim_inputs(
             ),
         ),
         num_trials=2,
-        output_path=tmp_path / "test_sim_inputs",
+        output_dir=tmp_path / "test_sim_inputs",
         parse_cpus=parse_cpus,
     )
     sim.run()
