@@ -1,3 +1,4 @@
+from frozendict import frozendict
 from copy import deepcopy
 
 
@@ -34,7 +35,7 @@ config_033 = EngineTestConfig(
         ScenarioCls=Custom33ValidPrefix,
         BaseASCls=BGPAS,
         override_victim_asns={2},
-        override_non_default_asn_cls_dict=dict(),
+        override_non_default_asn_cls_dict=frozendict(),
     ),
     graph=graph_047,
     propagation_rounds=3,

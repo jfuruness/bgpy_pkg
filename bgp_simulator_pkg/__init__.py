@@ -42,7 +42,11 @@ from .simulation_framework import SuperprefixPrefixHijack
 from .simulation_framework import ValidPrefix
 
 from .simulation_framework import GraphAnalyzer
+from .simulation_framework import DataKey
+from .simulation_framework import Metric
+from .simulation_framework import MetricKey
 from .simulation_framework import MetricTracker
+
 from .simulation_framework import Simulation
 
 # Test configs
@@ -115,6 +119,9 @@ __all__ = [
     "SuperprefixPrefixHijack",
     "ValidPrefix",
     "GraphAnalyzer",
+    "DataKey",
+    "Metric",
+    "MetricKey",
     "MetricTracker",
     "Simulation",
     "Announcement",

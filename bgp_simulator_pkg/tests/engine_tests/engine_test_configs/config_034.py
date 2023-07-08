@@ -1,3 +1,4 @@
+from frozendict import frozendict
 from copy import deepcopy
 
 from bgp_simulator_pkg.tests.engine_tests.graphs import graph_040
@@ -43,7 +44,7 @@ config_034 = EngineTestConfig(
         ScenarioCls=Custom34ValidPrefix,
         BaseASCls=BGPAS,
         override_victim_asns={2},
-        override_non_default_asn_cls_dict=dict(),
+        override_non_default_asn_cls_dict=frozendict(),
     ),
     graph=graph_040,
     propagation_rounds=4,

@@ -1,3 +1,4 @@
+from frozendict import frozendict
 from .config_001 import config_001
 from .config_002 import config_002
 from .config_003 import config_003

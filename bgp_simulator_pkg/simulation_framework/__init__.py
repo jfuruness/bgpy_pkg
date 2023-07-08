@@ -1,5 +1,9 @@
 from .graph_analyzer import GraphAnalyzer
+from .metric_tracker import DataKey
+from .metric_tracker import Metric
+from .metric_tracker import MetricKey
 from .metric_tracker import MetricTracker
+
 
 from .scenarios import ScenarioConfig
 from .scenarios import Scenario
@@ -16,6 +20,9 @@ from .simulation import Simulation
 
 __all__ = [
     "GraphAnalyzer",
+    "DataKey",
+    "Metric",
+    "MetricKey",
     "MetricTracker",
     "ScenarioConfig",
     "Scenario",

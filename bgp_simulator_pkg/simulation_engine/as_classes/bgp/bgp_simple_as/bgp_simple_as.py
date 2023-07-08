@@ -50,7 +50,7 @@ class BGPSimpleAS(AS):
         )
         assert len(set(cls.as_class_names)) == len(cls.as_class_names), msg
         cls.as_classes.append(cls)
-        if BGPSimpleAS not in cls.as_classes:
+        if cls not in cls.as_classes:
             cls.as_classes.append(BGPSimpleAS)
 
     def __init__(

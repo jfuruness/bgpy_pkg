@@ -1,3 +1,4 @@
+from frozendict import frozendict
 from bgp_simulator_pkg.tests.engine_tests.graphs import graph_040
 
 from bgp_simulator_pkg.tests.engine_tests.utils import EngineTestConfig
@@ -40,7 +41,7 @@ config_030 = EngineTestConfig(
         BaseASCls=BGPSimpleAS,
         override_victim_asns={1, 4, 3, 5},
         num_victims=4,
-        override_non_default_asn_cls_dict=dict(),
+        override_non_default_asn_cls_dict=frozendict(),
     ),
     graph=graph_040,
 )
