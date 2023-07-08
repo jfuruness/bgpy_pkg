@@ -34,7 +34,7 @@ class Metric:
             agg_percents = self.percents.copy()
             for metric_key, percent_list in other.percents.items():
                 agg_percents[metric_key].extend(percent_list)
-            return Metric(percents=agg_percents)
+            return Metric(metric_key=self.metric_key, percents=agg_percents)
         else:
             return NotImplemented
 

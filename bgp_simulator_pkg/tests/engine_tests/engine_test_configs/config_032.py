@@ -33,7 +33,7 @@ config_032 = EngineTestConfig(
     scenario_config=ScenarioConfig(
         ScenarioCls=Custom32ValidPrefix,
         BaseASCls=BGPAS,
-        override_victim_asns={2},
+        override_victim_asns=frozenset({2}),
         override_non_default_asn_cls_dict=frozendict(),
     ),
     graph=graph_040,

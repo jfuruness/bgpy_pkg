@@ -24,7 +24,7 @@ config_031 = EngineTestConfig(
     desc="Test loop prevention mechanism",
     scenario_config=ScenarioConfig(
         ScenarioCls=Custom31ValidPrefix,
-        override_victim_asns={4},
+        override_victim_asns=frozenset({4}),
         BaseASCls=BGPSimpleAS,
         override_non_default_asn_cls_dict=frozendict(),
     ),

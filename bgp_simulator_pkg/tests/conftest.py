@@ -30,7 +30,7 @@ def pytest_sessionfinish(session, exitstatus):
     # Only run in master thread after all other threads/tests have finished
     # Also runs when xdist isn't running
     if not hasattr(session.config, "workerinput"):
-        DiagramAggregator(DIAGRAM_PATH).aggregate_diagrams()
+        # DiagramAggregator(DIAGRAM_PATH).aggregate_diagrams()
         # Teardown stuff (open PDF for viewing)
         if session.config.getoption("view"):
             # https://stackoverflow.com/q/19453338/8903959

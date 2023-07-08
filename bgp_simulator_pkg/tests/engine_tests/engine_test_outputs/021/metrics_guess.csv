@@ -1,7 +1,7 @@
-inner_label,percent_adopt,value,yerr,propagation_round,scenario_label
-data_plane_multihomed_VICTIM_SUCCESS_ROVSimpleAS,0,100.0,0.0,0,ValidPrefix_PsuedoROVSimple_ROVSimple
-data_plane_stub_or_multihomed_VICTIM_SUCCESS_ROVSimpleAS,0,100.0,0.0,0,ValidPrefix_PsuedoROVSimple_ROVSimple
-data_plane_etc_VICTIM_SUCCESS_ROVSimpleAS,0,100.0,0.0,0,ValidPrefix_PsuedoROVSimple_ROVSimple
-control_plane_multihomed_VICTIM_SUCCESS_ROVSimpleAS,0,100.0,0.0,0,ValidPrefix_PsuedoROVSimple_ROVSimple
-control_plane_stub_or_multihomed_VICTIM_SUCCESS_ROVSimpleAS,0,100.0,0.0,0,ValidPrefix_PsuedoROVSimple_ROVSimple
-control_plane_etc_VICTIM_SUCCESS_ROVSimpleAS,0,100.0,0.0,0,ValidPrefix_PsuedoROVSimple_ROVSimple
+scenario_cls,adopting_as_cls,base_as_cls,outcome_type,as_group,outcome,percent_adopt,propagation_round,value,yerr,scenario_config_label
+ValidPrefix,PseudoROVSimple,ROVSimpleAS,data_plane,multihomed,1,0,0,100.0,0.0,
+ValidPrefix,PseudoROVSimple,ROVSimpleAS,data_plane,stub_or_multihomed,1,0,0,100.0,0.0,
+ValidPrefix,PseudoROVSimple,ROVSimpleAS,data_plane,etc,1,0,0,100.0,0.0,
+ValidPrefix,PseudoROVSimple,ROVSimpleAS,control_plane,multihomed,1,0,0,100.0,0.0,
+ValidPrefix,PseudoROVSimple,ROVSimpleAS,control_plane,stub_or_multihomed,1,0,0,100.0,0.0,
+ValidPrefix,PseudoROVSimple,ROVSimpleAS,control_plane,etc,1,0,0,100.0,0.0,

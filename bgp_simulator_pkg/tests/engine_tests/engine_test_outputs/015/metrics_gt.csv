@@ -1,3 +1,3 @@
-inner_label,percent_adopt,value,yerr,propagation_round,scenario_label
-data_plane_etc_VICTIM_SUCCESS_BGPSimpleAS,0,100.0,0.0,0,ValidPrefix_PsuedoBGPSimple_BGP Simple
-control_plane_etc_VICTIM_SUCCESS_BGPSimpleAS,0,100.0,0.0,0,ValidPrefix_PsuedoBGPSimple_BGP Simple
+scenario_cls,adopting_as_cls,base_as_cls,outcome_type,as_group,outcome,percent_adopt,propagation_round,value,yerr,scenario_config_label
+ValidPrefix,PseudoBGPSimple,BGPSimpleAS,data_plane,etc,1,0,0,100.0,0.0,
+ValidPrefix,PseudoBGPSimple,BGPSimpleAS,control_plane,etc,1,0,0,100.0,0.0,

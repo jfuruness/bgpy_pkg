@@ -1,3 +1,4 @@
+import abc
 from dataclasses import asdict, dataclass, field
 from typing import Any, Optional, TYPE_CHECKING
 
@@ -75,9 +76,11 @@ class ScenarioConfig:
             global pseudo_base_cls_dict  # type: ignore
             AdoptASCls = pseudo_base_cls_dict.get(self.BaseASCls)
             if not AdoptASCls:
-                name: str = f"Psuedo {self.BaseASCls.name}".replace(" ", "")
+                name: str = f"Pseudo {self.BaseASCls.name}".replace(" ", "")
                 PseudoBaseCls = type(name, (self.BaseASCls,), {"name": name})
                 pseudo_base_cls_dict[self.BaseASCls] = PseudoBaseCls
+                # Must set for pickling purposes
+                setattr(abc, name, PseudoBaseCls)
                 AdoptASCls = PseudoBaseCls
             object.__setattr__(self, "AdoptASCls", AdoptASCls)
 

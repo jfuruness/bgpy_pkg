@@ -13,7 +13,7 @@ config_027 = EngineTestConfig(
         ScenarioCls=ValidPrefix,
         BaseASCls=BGPSimpleAS,
         num_victims=3,
-        override_victim_asns={2, 3, 4},
+        override_victim_asns=frozenset({2, 3, 4}),
         override_non_default_asn_cls_dict=frozendict(),
     ),
     graph=graph_040,

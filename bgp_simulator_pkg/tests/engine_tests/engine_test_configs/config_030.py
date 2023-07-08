@@ -39,7 +39,7 @@ config_030 = EngineTestConfig(
     scenario_config=ScenarioConfig(
         ScenarioCls=Custom30MultiValidPrefix,
         BaseASCls=BGPSimpleAS,
-        override_victim_asns={1, 4, 3, 5},
+        override_victim_asns=frozenset({1, 4, 3, 5}),
         num_victims=4,
         override_non_default_asn_cls_dict=frozendict(),
     ),

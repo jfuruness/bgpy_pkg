@@ -111,7 +111,7 @@ class EngineTester:
 
         metric_tracker.write_data(
             csv_path=self.metrics_guess_path_csv,
-            pickle_path=self.metric_guess_path_pickle
+            pickle_path=self.metrics_guess_path_pickle
         )
         # Save metrics as ground truth if ground truth doesn't exist
         if ((not self.metrics_ground_truth_path_pickle.exists()
@@ -173,9 +173,9 @@ class EngineTester:
                 assert gt_lines == guess_lines, self.metrics_guess_path
 
         # Compare metrics YAML
-        with self.metrics_guess_path_yaml.open("rb") as f:
+        with self.metrics_guess_path_pickle.open("rb") as f:
             metrics_guess = pickle.load(f)
-        with self.metrics_ground_truth_path_yaml.open("rb") as f:
+        with self.metrics_ground_truth_path_pickle.open("rb") as f:
             metrics_gt = pickle.load(f)
         assert metrics_guess == metrics_gt
 
