@@ -5,15 +5,11 @@ import yaml
 
 from .simulator_loader import SimulatorLoader
 from bgp_simulator_pkg.enums import YamlAbleEnum
-from bgp_simulator_pkg.caida_collector.graph.base_as import AS
 
 # 2-way mappings between the types and the yaml tags
 types_to_yaml_tags = {X: X.yaml_suffix() for X in YamlAbleEnum.yamlable_enums()}
-types_to_yaml_tags.update(AS.subclass_to_name_dict)
-# as_class_types_to_yaml_tags = {ASCls:1}
 yaml_tags_to_types = {v: k for k, v in types_to_yaml_tags.items()}
-#for name, ASCls in AS.name_to_subclass_dict.items():
-#    yaml_tags_to_types["Pseudo" + name.replace(" ", "")] = ASCls
+
 
 class SimulatorCodec(YamlCodec):
     @classmethod

@@ -3,8 +3,6 @@ from typing import Any, Optional, TYPE_CHECKING
 
 from frozendict import frozendict
 
-from yamlable import YamlAble, yaml_info
-
 from bgp_simulator_pkg.caida_collector import AS
 from bgp_simulator_pkg.enums import ASGroups
 
@@ -22,9 +20,8 @@ class MISSINGAS(AS):
     pass
 
 
-@yaml_info(yaml_tag="ScenarioConfig")
 @dataclass(frozen=True)
-class ScenarioConfig(YamlAble):
+class ScenarioConfig:
     """Contains information required to set up a scenario/attack
 
     Is reused for multiple trials (thus, frozen)
@@ -89,23 +86,6 @@ class ScenarioConfig(YamlAble):
     ##############
 
     @property
-    def _yamlable_override_non_default_asn_cls_dict(self) -> dict[int, str]:
-        """Converts non default as cls dict to a yamlable dict of asn: name"""
-
-        return {
-            asn: AS.subclass_to_name_dict[ASCls]
-            for asn, ASCls in self.hardcoded_asn_cls_dict.items()
-        }
-
-    @staticmethod
-    def _get_override_non_default_asn_cls_dict_from_yaml(
-        yaml_dict
-    ) -> dict[int, type[AS]]:
-        """Converts yamlified non_default_as_cls_dict back to normal asn: class"""
-
-        return {asn: AS.name_to_subclass_dict[name] for asn, name in yaml_dict.items()}
-
-    @property
     def _yamlable_hardcoded_asn_cls_dict(self) -> dict[int, str]:
         """Converts non default as cls dict to a yamlable dict of asn: name"""
 
@@ -124,26 +104,11 @@ class ScenarioConfig(YamlAble):
         """This optional method is called when you call yaml.dump()"""
 
         yaml_dict = dict()
-        global pseudo_base_cls_dict
-
         for k, v in asdict(self).items():
             if k == "hardcoded_asn_cls_dict":
                 yaml_dict[k] = self._yamlable_hardcoded_asn_cls_dict
-            elif k == "override_non_default_asn_cls_dict":
-                yaml_dict[k] = self._yamlable_override_non_default_asn_cls_dict
-            elif isinstance(v, frozenset):
-                yaml_dict[k] = set(v)
-            elif isinstance(v, frozendict):
-                yaml_dict[k] = dict(v)
-            elif k == "AdoptASCls":
-                if v in pseudo_base_cls_dict.values():
-                    yaml_dict[k] = self.BaseASCls
-                yaml_dict[k] = AS.subclass_to_name_dict[v]
-            elif k == "BaseASCls":
-                yaml_dict[k] = AS.subclass_to_name_dict[v]
             else:
                 yaml_dict[k] = v
-
         return yaml_dict
 
     @classmethod
@@ -153,14 +118,4 @@ class ScenarioConfig(YamlAble):
         dct["hardcoded_asn_cls_dict"] = cls._get_hardcoded_asn_cls_dict_from_yaml(
             dct["hardcoded_asn_cls_dict"]
         )
-
-        dct["override_non_default_asn_cls_dict"] = (
-            cls._get_override_non_default_asn_cls_dict_from_yaml(
-                dct["override_non_default_asn_cls_dict"]
-            )
-        )
-
-        dct["AdoptASCls"] = AS.name_to_subclass_dict[dct["AdoptASCls"]]
-        dct["BaseASCls"] = AS.name_to_subclass_dict[dct["BaseASCls"]]
-
         return cls(**dct)

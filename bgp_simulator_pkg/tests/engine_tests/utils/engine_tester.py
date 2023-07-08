@@ -110,7 +110,7 @@ class EngineTester:
 
         metric_tracker.write_data(
             csv_path=self.metrics_guess_path_csv,
-            yaml_path=self.metrics_guess_path_yaml
+            yaml_path=self.metric_guess_path_yaml
         )
         # Save metrics as ground truth if ground truth doesn't exist
         if ((not self.metrics_ground_truth_path_yaml.exists()

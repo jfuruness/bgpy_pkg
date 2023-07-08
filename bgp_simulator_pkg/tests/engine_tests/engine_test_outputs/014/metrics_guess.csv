@@ -1,9 +1,9 @@
-scenario_cls,adopting_as_cls,base_as_cls,outcome_type,as_group,outcome,percent_adopt,propagation_round,value,yerr,scenario_config_label
-NonRoutedSuperprefixHijack,ROVAS,BGPSimpleAS,data_plane,stub,0,0,0,100.0,0.0,
-NonRoutedSuperprefixHijack,ROVAS,BGPSimpleAS,data_plane,stub_or_multihomed,0,0,0,100.0,0.0,
-NonRoutedSuperprefixHijack,ROVAS,BGPSimpleAS,data_plane,etc,0,0,0,100.0,0.0,
-NonRoutedSuperprefixHijack,ROVAS,BGPSimpleAS,data_plane,etc,0,0,0,100.0,0.0,
-NonRoutedSuperprefixHijack,ROVAS,BGPSimpleAS,control_plane,stub,0,0,0,100.0,0.0,
-NonRoutedSuperprefixHijack,ROVAS,BGPSimpleAS,control_plane,stub_or_multihomed,0,0,0,100.0,0.0,
-NonRoutedSuperprefixHijack,ROVAS,BGPSimpleAS,control_plane,etc,0,0,0,100.0,0.0,
-NonRoutedSuperprefixHijack,ROVAS,BGPSimpleAS,control_plane,etc,0,0,0,100.0,0.0,
+inner_label,percent_adopt,value,yerr,propagation_round,scenario_label
+data_plane_stub_ATTACKER_SUCCESS_BGPSimpleAS,0,100.0,0.0,0,NonRoutedSuperprefixHijack_ROV_BGP Simple
+data_plane_stub_or_multihomed_ATTACKER_SUCCESS_BGPSimpleAS,0,100.0,0.0,0,NonRoutedSuperprefixHijack_ROV_BGP Simple
+data_plane_etc_ATTACKER_SUCCESS_BGPSimpleAS,0,100.0,0.0,0,NonRoutedSuperprefixHijack_ROV_BGP Simple
+data_plane_etc_ATTACKER_SUCCESS_ROVAS,0,100.0,0.0,0,NonRoutedSuperprefixHijack_ROV_BGP Simple
+control_plane_stub_ATTACKER_SUCCESS_BGPSimpleAS,0,100.0,0.0,0,NonRoutedSuperprefixHijack_ROV_BGP Simple
+control_plane_stub_or_multihomed_ATTACKER_SUCCESS_BGPSimpleAS,0,100.0,0.0,0,NonRoutedSuperprefixHijack_ROV_BGP Simple
+control_plane_etc_ATTACKER_SUCCESS_BGPSimpleAS,0,100.0,0.0,0,NonRoutedSuperprefixHijack_ROV_BGP Simple
+control_plane_etc_ATTACKER_SUCCESS_ROVAS,0,100.0,0.0,0,NonRoutedSuperprefixHijack_ROV_BGP Simple

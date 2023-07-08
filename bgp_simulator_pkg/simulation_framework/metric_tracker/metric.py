@@ -2,8 +2,6 @@ from collections import defaultdict
 from dataclasses import replace
 from typing import Optional
 
-from yamlable import YamlAble, yaml_info
-
 from bgp_simulator_pkg.caida_collector.graph.base_as import AS
 from bgp_simulator_pkg.enums import Plane, Outcomes
 from bgp_simulator_pkg.simulation_engine import SimulationEngine
@@ -12,8 +10,7 @@ from bgp_simulator_pkg.simulation_framework.scenarios import Scenario
 from .metric_key import MetricKey
 
 
-@yaml_info(yaml_tag="Metric")
-class Metric(YamlAble):
+class Metric:
     """Tracks a single metric"""
 
     def __init__(
@@ -37,7 +34,7 @@ class Metric(YamlAble):
             agg_percents = self.percents.copy()
             for metric_key, percent_list in other.percents.items():
                 agg_percents[metric_key].extend(percent_list)
-            return Metric(metric_key=self.metric_key, percents=agg_percents)
+            return Metric(percents=agg_percents)
         else:
             return NotImplemented
 
