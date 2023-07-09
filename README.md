@@ -1,8 +1,8 @@
 [![Python 3.10](https://img.shields.io/badge/python-3.10-blue.svg)](https://www.python.org/downloads/release/python-3100/)
-![Tests](https://github.com/jfuruness/bgp_simulator_pkg/actions/workflows/tests.yml/badge.svg)
+![Tests](https://github.com/jfuruness/bgpy/actions/workflows/tests.yml/badge.svg)
 [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/charliermarsh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
 
-# bgp\_simulator\_pkg
+# bgpy
 This package simulates BGP, ROV, BGP propagation, various attack/defend scenarios, draws diagrams of the internet, etc
 
 * [Description](#package-description)
@@ -20,14 +20,14 @@ This package simulates BGP, ROV, BGP propagation, various attack/defend scenario
 TODO
 
 ## Usage
-* [bgp\_simulator\_pkg](#bgp_simulator_pkg)
+* [bgpy](#bgpy)
 
 Note: the simulator takes about 1-2GB per core. Make sure you don't run out of RAM!
 
 TODO
 
 ## Installation
-* [bgp\_simulator\_pkg](#bgp_simulator_pkg)
+* [bgpy](#bgpy)
 
 Install python and pip if you have not already. Then run:
 
@@ -41,15 +41,15 @@ pip3 install wheel
 For production:
 
 ```bash
-pip3 install git@github.com:jfuruness/bgp_simulator_pkg.git
+pip3 install git@github.com:jfuruness/bgpy.git
 ```
 
 This will install the package and all of it's python dependencies.
 
 If you want to install the project for development:
 ```bash
-git clone https://github.com/jfuruness/bgp_simulator_pkg.git
-cd bgp_simulator_pkg
+git clone https://github.com/jfuruness/bgpy.git
+cd bgpy
 pip3 install -e .[test]
 ```
 
@@ -57,27 +57,26 @@ To test the development package: [Testing](#testing)
 
 
 ## Testing
-* [bgp\_simulator\_pkg](#bgp_simulator_pkg)
+* [bgpy](#bgpy)
 
 To test the package after installation:
 
 ```
-cd bgp_simulator_pkg
-pytest bgp_simulator_pkg
-flake8 bgp_simulator_pkg
-mypy bgp_simulator_pkg
+cd bgpy
+ruff bgpy
+pytest bgpy
 ```
 
-If you want to run it across multiple environments, and have python 3.9 installed:
+If you want to run it across multiple environments, and have python 3.10 installed:
 
 ```
-cd bgp_simulator_pkg
+cd bgpy
 tox
 ```
 
 
 ## Development/Contributing
-* [bgp\_simulator\_pkg](#bgp_simulator_pkg)
+* [bgpy](#bgpy)
 
 1. Fork it!
 2. Create your feature branch: `git checkout -b my-new-feature`
@@ -89,8 +88,9 @@ tox
 9. Email me at jfuruness@gmail.com
 
 ## History
-* [bgp\_simulator\_pkg](#bgp_simulator_pkg)
+* [bgpy](#bgpy)
 
+* 1.0.0 First Major Release. Many changes for the conference version. Since prior to this point all changes were internal, won't list them all here, but will keep better records from now on.
 * 0.2.1 Various bug fixes. PRs from Cameron (Thank you!). input clique rounding up now. Victims/attackers no longer being counted. No more windows support.
 * 0.2.0 Fixed subgraph issues. Changed the -1 and 101% cases to be SpecialPercentAdoptions
 * 0.1.03 Fixed subgraph bug that resulted in incorrect graphs
@@ -102,7 +102,7 @@ tox
 * 0.0.1 Refactored package. Semi working version
 
 ## Credits
-* [bgp\_simulator\_pkg](#bgp_simulator_pkg)
+* [bgpy](#bgpy)
 
 Thanks to Cameron Morris for helping with extending the BGP policy to include withdrawals, RIBsIn, RIBsOut.
 
@@ -115,12 +115,12 @@ Thanks to Dr. Herzberg and Dr. Wang for employing me and allowing this project t
 Thanks to Matt Jaccino and Tony Zheng for assistance with the initial implementation of the Caida Collector
 
 ## License
-* [bgp\_simulator\_pkg](#bgp_simulator_pkg)
+* [bgpy](#bgpy)
 
 BSD License (see license file)
 
 ## TODO
-* [bgp\_simulator\_pkg](#bgp_simulator_pkg)
+* [bgpy](#bgpy)
 
 * Update the typing so that the AS class is either consistently coming from the CaidaCollector or the BGPSimpleAS, not this weird mix of both.
 * Imports should be reordered sensibly

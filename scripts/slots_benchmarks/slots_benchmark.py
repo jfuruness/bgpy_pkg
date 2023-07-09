@@ -5,9 +5,9 @@ import pstats  # noqa
 import time
 import pyprof2calltree
 
-from bgp_simulator_pkg import SpecialPercentAdoptions
-from bgp_simulator_pkg import ROVSimpleAS
-from bgp_simulator_pkg import Simulation, SubprefixHijack, ScenarioConfig
+from bgpy import SpecialPercentAdoptions
+from bgpy import ROVSimpleAS
+from bgpy import Simulation, SubprefixHijack, ScenarioConfig
 
 
 def main():

@@ -22,7 +22,7 @@ filterwarnings = [
 ]
 
 [tool.mypy]
-mypy_path = "bgp_simulator_pkg"
+mypy_path = "bgpy"
 check_untyped_defs = true
 disallow_any_generics = true
 ignore_missing_imports = true

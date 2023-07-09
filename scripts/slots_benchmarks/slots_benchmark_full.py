@@ -2,9 +2,9 @@ from multiprocessing import cpu_count
 from pathlib import Path
 import time
 
-from bgp_simulator_pkg import SpecialPercentAdoptions
-from bgp_simulator_pkg import ROVSimpleAS
-from bgp_simulator_pkg import Simulation, SubprefixHijack, ScenarioConfig
+from bgpy import SpecialPercentAdoptions
+from bgpy import ROVSimpleAS
+from bgpy import Simulation, SubprefixHijack, ScenarioConfig
 
 
 def main():

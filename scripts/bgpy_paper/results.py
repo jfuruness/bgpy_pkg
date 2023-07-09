@@ -1,9 +1,9 @@
 from pathlib import Path
 
-from bgp_simulator_pkg import SpecialPercentAdoptions
+from bgpy import SpecialPercentAdoptions
 
-# from bgp_simulator_pkg import ROVSimpleAS, RealPeerROVSimpleAS
-from bgp_simulator_pkg import Simulation  # , SubprefixHijack
+# from bgpy import ROVSimpleAS, RealPeerROVSimpleAS
+from bgpy import Simulation  # , SubprefixHijack
 
 
 def main():
