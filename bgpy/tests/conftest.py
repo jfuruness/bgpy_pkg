@@ -46,6 +46,8 @@ def overwrite(pytestconfig):
 # https://stackoverflow.com/a/66597438/8903959
 def pytest_addoption(parser):
     # View test PDF when complete
-    parser.addoption("--view", action="store_true", default=False)
+    # NOTE: This is temporarily down after v 1.0.0, will be fixed the
+    # week of July 17
+    # parser.addoption("--view", action="store_true", default=False)
     # Overwrite ground truth
     parser.addoption("--overwrite", action="store_true", default=False)

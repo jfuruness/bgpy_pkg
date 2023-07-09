@@ -1,3 +1,6 @@
+# NOTE: This documentation is slightly outdated. We have external documentation we are moving in the week of July 17th.
+
+
 [![Python 3.10](https://img.shields.io/badge/python-3.10-blue.svg)](https://www.python.org/downloads/release/python-3100/)
 ![Tests](https://github.com/jfuruness/bgpy/actions/workflows/tests.yml/badge.svg)
 [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/charliermarsh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
@@ -17,14 +20,20 @@ This package simulates BGP, ROV, BGP propagation, various attack/defend scenario
 
 ## Package Description
 
-TODO
+This package simulates BGP, ROV, BGP propagation, various attack/defend scenarios, draws diagrams of the internet, etc
 
 ## Usage
 * [bgpy](#bgpy)
 
 Note: the simulator takes about 1-2GB per core. Make sure you don't run out of RAM!
 
-TODO
+NOTE: This section is located within our external documentation, which we plan on moving into the repo the week of July 17, however, there are some examples below
+
+Some good examples for how to use this can be found in bgpy/bgpy/\_\_main\_\_.py, and can be run by running:
+
+```bash
+bgpy
+```
 
 ## Installation
 * [bgpy](#bgpy)
@@ -64,6 +73,7 @@ To test the package after installation:
 ```
 cd bgpy
 ruff bgpy
+black bgpy
 pytest bgpy
 ```
 
@@ -85,7 +95,7 @@ tox
 6. Commit your changes: `git commit -am 'Add some feature'`
 7. Push to the branch: `git push origin my-new-feature`
 8. Ensure github actions are passing tests
-9. Email me at jfuruness@gmail.com
+9. Email me at jfuruness@gmail.com in case I don't see the PR
 
 ## History
 * [bgpy](#bgpy)
