@@ -19,11 +19,11 @@ def main():
             0.8,
             SpecialPercentAdoptions.ALL_BUT_ONE,
         ),
-        # scenarios=(
-        #     SubprefixHijack(AdoptASCls=ROVSimpleAS),
-        #     SubprefixHijack(AdoptASCls=PeerROVSimpleAS),
-        # ),
-        output_path=Path("~/Desktop/paper_graphs").expanduser(),
+        scenario_configs=(
+            ScenarioConfig(ScenarioCls=SubprefixHijack, AdoptASCls=ROVSimpleAS),
+            ScenarioConfig(ScenarioCls=SubprefixHijack, AdoptASCls=PeerROVSimpleAS),
+        ),
+        output_dir=Path("~/Desktop/paper_graphs").expanduser(),
         num_trials=1000,
         parse_cpus=12,
     )
