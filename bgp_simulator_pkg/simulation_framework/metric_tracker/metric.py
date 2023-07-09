@@ -18,7 +18,6 @@ class Metric:
         metric_key: MetricKey,
         percents: Optional[defaultdict[str, list[float]]] = None,
     ) -> None:
-
         self.metric_key: MetricKey = metric_key
         self._numerators: defaultdict[type[AS], float] = defaultdict(float)
         self._denominators: defaultdict[type[AS], float] = defaultdict(float)

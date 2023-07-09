@@ -111,12 +111,13 @@ class EngineTester:
 
         metric_tracker.write_data(
             csv_path=self.metrics_guess_path_csv,
-            pickle_path=self.metrics_guess_path_pickle
+            pickle_path=self.metrics_guess_path_pickle,
         )
         # Save metrics as ground truth if ground truth doesn't exist
-        if ((not self.metrics_ground_truth_path_pickle.exists()
-             or not self.metrics_ground_truth_path_csv.exists())
-                or self.overwrite):
+        if (
+            not self.metrics_ground_truth_path_pickle.exists()
+            or not self.metrics_ground_truth_path_csv.exists()
+        ) or self.overwrite:
             metric_tracker.write_data(
                 csv_path=self.metrics_ground_truth_path_csv,
                 pickle_path=self.metrics_ground_truth_path_pickle,

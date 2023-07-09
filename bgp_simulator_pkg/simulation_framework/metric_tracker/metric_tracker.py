@@ -17,7 +17,6 @@ from bgp_simulator_pkg.enums import Plane, SpecialPercentAdoptions
 from bgp_simulator_pkg.simulation_engine import SimulationEngine
 from bgp_simulator_pkg.simulation_framework.scenarios import Scenario
 from bgp_simulator_pkg.simulation_framework.utils import get_all_metric_keys
-from bgp_simulator_pkg.tests.engine_tests.utils.simulator_codec import SimulatorCodec
 
 
 class MetricTracker:
@@ -69,7 +68,6 @@ class MetricTracker:
         self,
         csv_path: Path,
         pickle_path: Path,
-        pickle_codec=SimulatorCodec()
     ) -> None:
         """Writes data to CSV and pickles it"""
 
@@ -106,7 +104,6 @@ class MetricTracker:
         return rows
 
     def get_pickle_data(self):
-
         agg_data = list()
         for data_key, metric_list in self.data.items():
             agg_percents = sum(metric_list, start=metric_list[0]).percents

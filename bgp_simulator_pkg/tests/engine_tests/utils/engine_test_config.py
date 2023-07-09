@@ -2,9 +2,11 @@ from dataclasses import dataclass
 from typing import ClassVar
 
 from bgp_simulator_pkg.tests.engine_tests.graphs import GraphInfo
-from bgp_simulator_pkg.simulation_framework import ScenarioConfig
-from bgp_simulator_pkg.simulation_framework import MetricTracker
-from bgp_simulator_pkg.simulation_framework import GraphAnalyzer
+from bgp_simulator_pkg.simulation_framework.scenarios import ScenarioConfig
+from bgp_simulator_pkg.simulation_framework.metric_tracker.metric_tracker import (
+    MetricTracker,
+)
+from bgp_simulator_pkg.simulation_framework.graph_analyzer import GraphAnalyzer
 
 
 @dataclass(frozen=True, slots=True)

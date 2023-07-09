@@ -9,6 +9,7 @@ import os
 from bgp_simulator_pkg.caida_collector import CaidaCollector
 
 from .graph_analyzer import GraphAnalyzer
+from .graph_factory import GraphFactory
 from .metric_tracker import MetricTracker
 from .scenarios import Scenario
 from .scenarios import ScenarioConfig
@@ -280,10 +281,9 @@ class Simulation:
 
     def _graph_data(self) -> None:
         """Generates some default graphs"""
-        print("TODO")
-        # Write archive to temp dir then copy it to output path
-        #             make_archive(self.output_path, "zip", tmp_dir)
-        # print(f"\nWrote graphs to {self.output_path}.zip")
+
+        GraphFactory(self.pickle_path, self.output_dir / "graphs").generate_graphs()
+        print(f"\nWrote graphs to {self.output_dir / 'graphs'}")
 
     @property
     def graph_output_dir(self) -> Path:
