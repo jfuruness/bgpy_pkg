@@ -1,4 +1,4 @@
-Docs [here](https://github.com/jfuruness/lib_ddos_simulator/wiki)
+Docs [here](https://github.com/jfuruness/bgpy/wiki)
 
 Example system test on a small topology:
 ![system test](https://example.com/images/sunset.jpg)
