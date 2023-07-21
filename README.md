@@ -1,3 +1,21 @@
+Docs [here](https://github.com/jfuruness/lib_ddos_simulator/wiki)
+
+Example system test on a small topology:
+![system test](https://example.com/images/sunset.jpg)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 # NOTE: This documentation is slightly outdated. We have external documentation we are moving in the week of July 17th.
 
 
