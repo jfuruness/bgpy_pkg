@@ -171,7 +171,7 @@ class EngineTester:
             with self.metrics_ground_truth_path_csv.open() as ground_truth_f:
                 guess_lines = set([tuple(x) for x in csv.reader(guess_f)])
                 gt_lines = set([tuple(x) for x in csv.reader(ground_truth_f)])
-                assert gt_lines == guess_lines, self.metrics_guess_path
+                assert gt_lines == guess_lines, self.metrics_guess_path_csv
 
         # Compare metrics YAML
         with self.metrics_guess_path_pickle.open("rb") as f:

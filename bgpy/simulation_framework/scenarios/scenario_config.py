@@ -1,6 +1,6 @@
 import abc
 from dataclasses import asdict, dataclass, field
-from typing import Any, Optional, TYPE_CHECKING
+from typing import Any, Optional, Union, TYPE_CHECKING
 
 from frozendict import frozendict
 
@@ -54,7 +54,11 @@ class ScenarioConfig:
     # Only necessary if coming from YAML or the test suite
     override_attacker_asns: Optional[frozenset[int]] = None
     override_victim_asns: Optional[frozenset[int]] = None
-    override_non_default_asn_cls_dict: Optional[frozendict[int, type[AS]]] = None
+    # For some reason mypy has trouble with empty frozendicts
+    # So I've included that as a second option for typing purposes
+    # (specifically with the tests)
+    override_non_default_asn_cls_dict: Union[Optional[frozendict[int, type[AS]]],
+                                             frozendict[str, None]]= None
     override_announcements: tuple[Announcement, ...] = ()
     # If you'd like to add an extra CSV label you do so here
     csv_label: str = ""

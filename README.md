@@ -100,6 +100,7 @@ tox
 ## History
 * [bgpy](#bgpy)
 
+* 1.0.01 Fixed PDF aggregator (used in testing) and fixed a bunch of type issues with mypy
 * 1.0.0 First Major Release. Many changes for the conference version. Since prior to this point all changes were internal, won't list them all here, but will keep better records from now on.
 * 0.2.1 Various bug fixes. PRs from Cameron (Thank you!). input clique rounding up now. Victims/attackers no longer being counted. No more windows support.
 * 0.2.0 Fixed subgraph issues. Changed the -1 and 101% cases to be SpecialPercentAdoptions

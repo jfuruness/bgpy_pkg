@@ -84,10 +84,7 @@ def mock_caida_collector():
     Clears cache and tsv before yielding"""
 
     with patch(
-        (
-            "bgpy.caida_collector.caida_collector."
-            "html_funcs.requests.get"
-        ),
+        ("bgpy.caida_collector.caida_collector." "html_funcs.requests.get"),
         mocked_requests_get,
     ):
         with patch(
