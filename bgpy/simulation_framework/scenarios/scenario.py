@@ -179,10 +179,12 @@ class Scenario(ABC):
 
     def _get_non_default_asn_cls_dict(
         self,
-        override_non_default_asn_cls_dict: Union[Optional[frozendict[int, type[AS]]],
-                                                 # Must include due to mypy weirdness
-                                                 # about empty frozendicts
-                                                 frozendict[str, None]],
+        override_non_default_asn_cls_dict: Union[
+            Optional[frozendict[int, type[AS]]],
+            # Must include due to mypy weirdness
+            # about empty frozendicts
+            frozendict[str, None],
+        ],
         engine: Optional[SimulationEngine],
         prev_scenario: Optional["Scenario"],
     ) -> dict[int, type[AS]]:

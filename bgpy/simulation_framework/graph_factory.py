@@ -99,12 +99,7 @@ class GraphFactory:
 
         # Add the data from the lines
         for as_cls, graph_rows in as_cls_rows_dict.items():
-            graph_rows_sorted = list(
-                sorted(
-                    graph_rows,
-                    key=get_percent_adopt
-                )
-            )
+            graph_rows_sorted = list(sorted(graph_rows, key=get_percent_adopt))
             ax.errorbar(
                 [x["data_key"].percent_adopt * 100 for x in graph_rows_sorted],
                 [x["value"] for x in graph_rows_sorted],

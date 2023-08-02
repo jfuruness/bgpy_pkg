@@ -58,8 +58,9 @@ class ScenarioConfig:
     # For some reason mypy has trouble with empty frozendicts
     # So I've included that as a second option for typing purposes
     # (specifically with the tests)
-    override_non_default_asn_cls_dict: Union[Optional[frozendict[int, type[AS]]],
-                                             frozendict[str, None]]= None
+    override_non_default_asn_cls_dict: Union[
+        Optional[frozendict[int, type[AS]]], frozendict[str, None]
+    ] = None
     override_announcements: tuple[Announcement, ...] = ()
     # If you'd like to add an extra CSV label you do so here
     csv_label: str = ""

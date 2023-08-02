@@ -258,11 +258,13 @@ class TestScenario:
             ScenarioCls=SubprefixHijack,
             AdoptASCls=ROVSimpleAS,
             BaseASCls=BaseASCls,
-            override_non_default_asn_cls_dict=frozendict({
-                # 1: BaseASCls,
-                2: ROVAS,
-                3: ROVSimpleAS,
-            }),
+            override_non_default_asn_cls_dict=frozendict(
+                {
+                    # 1: BaseASCls,
+                    2: ROVAS,
+                    3: ROVSimpleAS,
+                }
+            ),
         )
         prev_scenario = SubprefixHijack(
             scenario_config=prev_scenario_config, engine=engine
@@ -294,11 +296,13 @@ class TestScenario:
         prev_scenario_config = ScenarioConfig(
             ScenarioCls=SubprefixHijack,
             BaseASCls=BGPSimpleAS,
-            override_non_default_asn_cls_dict=frozendict({
-                # 1: BaseASCls,
-                2: ROVAS,
-                # 3: BaseASCls,
-            }),
+            override_non_default_asn_cls_dict=frozendict(
+                {
+                    # 1: BaseASCls,
+                    2: ROVAS,
+                    # 3: BaseASCls,
+                }
+            ),
         )
         prev_scenario = SubprefixHijack(
             scenario_config=prev_scenario_config, engine=engine
