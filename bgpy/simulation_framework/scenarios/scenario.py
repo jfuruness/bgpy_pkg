@@ -7,6 +7,8 @@ from ipaddress import IPv4Network
 from ipaddress import IPv6Network
 from typing import Any, Optional, Union
 
+from frozendict import frozendict
+
 from bgpy.caida_collector import AS
 
 from .scenario_config import ScenarioConfig
@@ -40,11 +42,11 @@ class Scenario(ABC):
         self.scenario_config: ScenarioConfig = scenario_config
         self.percent_adoption: Union[float, SpecialPercentAdoptions] = percent_adoption
 
-        self.attacker_asns: set[int] = self._get_attacker_asns(
+        self.attacker_asns: frozenset[int] = self._get_attacker_asns(
             scenario_config.override_attacker_asns, engine, prev_scenario
         )
 
-        self.victim_asns: set[int] = self._get_victim_asns(
+        self.victim_asns: frozenset[int] = self._get_victim_asns(
             scenario_config.override_victim_asns, engine, prev_scenario
         )
 
@@ -72,10 +74,10 @@ class Scenario(ABC):
 
     def _get_attacker_asns(
         self,
-        override_attacker_asns: Optional[set[int]],
+        override_attacker_asns: Optional[frozenset[int]],
         engine: Optional[SimulationEngine],
         prev_scenario: Optional["Scenario"],
-    ) -> set[int]:
+    ) -> frozenset[int]:
         """Returns attacker ASN at random"""
 
         # This is coming from YAML, do not recalculate
@@ -91,7 +93,7 @@ class Scenario(ABC):
                 engine, self.percent_adoption, prev_scenario
             )
             # https://stackoverflow.com/a/15837796/8903959
-            attacker_asns = set(
+            attacker_asns = frozenset(
                 random.sample(
                     tuple(possible_attacker_asns), self.scenario_config.num_attackers
                 )
@@ -125,10 +127,10 @@ class Scenario(ABC):
 
     def _get_victim_asns(
         self,
-        override_victim_asns: Optional[set[int]],
+        override_victim_asns: Optional[frozenset[int]],
         engine: Optional[SimulationEngine],
         prev_scenario: Optional["Scenario"],
-    ) -> set[int]:
+    ) -> frozenset[int]:
         """Returns victim ASN at random"""
 
         # This is coming from YAML, do not recalculate
@@ -144,7 +146,7 @@ class Scenario(ABC):
                 engine, self.percent_adoption, prev_scenario
             )
             # https://stackoverflow.com/a/15837796/8903959
-            victim_asns = set(
+            victim_asns = frozenset(
                 random.sample(
                     tuple(possible_victim_asns), self.scenario_config.num_victims
                 )
@@ -177,7 +179,12 @@ class Scenario(ABC):
 
     def _get_non_default_asn_cls_dict(
         self,
-        override_non_default_asn_cls_dict: Optional[dict[int, type[AS]]],
+        override_non_default_asn_cls_dict: Union[
+            Optional[frozendict[int, type[AS]]],
+            # Must include due to mypy weirdness
+            # about empty frozendicts
+            frozendict[str, None],
+        ],
         engine: Optional[SimulationEngine],
         prev_scenario: Optional["Scenario"],
     ) -> dict[int, type[AS]]:
@@ -192,7 +199,8 @@ class Scenario(ABC):
         """
 
         if override_non_default_asn_cls_dict is not None:
-            return override_non_default_asn_cls_dict
+            # Must ignore type here since mypy doesn't understand frozendict
+            return override_non_default_asn_cls_dict  # type: ignore
         # By default, use the last engine input to maintain static
         # adoption across the graph
         elif prev_scenario:
@@ -272,19 +280,19 @@ class Scenario(ABC):
         return asn_cls_dict
 
     @property
-    def _default_adopters(self) -> set[int]:
+    def _default_adopters(self) -> frozenset[int]:
         """By default, victim always adopts"""
 
         return self.victim_asns
 
     @property
-    def _default_non_adopters(self) -> set[int]:
+    def _default_non_adopters(self) -> frozenset[int]:
         """By default, attacker always does not adopt"""
 
         return self.attacker_asns
 
     @property
-    def _preset_asns(self) -> set[int]:
+    def _preset_asns(self) -> frozenset[int]:
         """ASNs that have a preset adoption policy"""
 
         # Returns the union of default adopters and non adopters

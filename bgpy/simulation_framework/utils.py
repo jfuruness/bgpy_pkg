@@ -1,3 +1,5 @@
+from typing import Iterable
+
 from frozendict import frozendict
 
 from bgpy.caida_collector import CaidaCollector
@@ -37,10 +39,10 @@ def get_real_world_rov_asn_cls_dict(
             else:
                 raise NotImplementedError("ROV filtering case not accoutned for")
 
-    return frozendict(**asn_as_cls_dict)
+    return frozendict({int(k): v for k, v in asn_as_cls_dict.items()})
 
 
-def get_all_metric_keys() -> MetricKey:
+def get_all_metric_keys() -> Iterable[MetricKey]:
     """Returns all possible metric key combos"""
 
     for plane in Plane:

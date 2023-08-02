@@ -16,7 +16,7 @@ class Metric:
     def __init__(
         self,
         metric_key: MetricKey,
-        percents: Optional[defaultdict[str, list[float]]] = None,
+        percents: Optional[defaultdict[MetricKey, list[float]]] = None,
     ) -> None:
         self.metric_key: MetricKey = metric_key
         self._numerators: defaultdict[type[AS], float] = defaultdict(float)

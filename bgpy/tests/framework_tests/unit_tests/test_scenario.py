@@ -1,5 +1,6 @@
 import random
 
+from frozendict import frozendict
 import pytest
 
 from bgpy.enums import Prefixes
@@ -27,9 +28,9 @@ class TestScenario:
             BaseASCls=BGPSimpleAS,
             num_attackers=num_attackers,
             num_victims=num_victims,
-            override_attacker_asns=set(range(num_attackers)),
-            override_victim_asns=set(range(num_victims)),
-            override_non_default_asn_cls_dict={1: BGPAS},
+            override_attacker_asns=frozenset(range(num_attackers)),
+            override_victim_asns=frozenset(range(num_victims)),
+            override_non_default_asn_cls_dict=frozendict({1: BGPAS}),
         )
         SubprefixHijack(scenario_config=scenario_config)
 
@@ -40,7 +41,7 @@ class TestScenario:
             scenario_config = ScenarioConfig(
                 ScenarioCls=SubprefixHijack,
                 num_attackers=1,
-                override_attacker_asns={1, 2},
+                override_attacker_asns=frozenset({1, 2}),
             )
             SubprefixHijack(scenario_config=scenario_config)
 
@@ -51,7 +52,7 @@ class TestScenario:
             scenario_config = ScenarioConfig(
                 ScenarioCls=SubprefixHijack,
                 num_victims=1,
-                override_victim_asns={1, 2},
+                override_victim_asns=frozenset({1, 2}),
             )
             SubprefixHijack(scenario_config=scenario_config)
 
@@ -75,8 +76,8 @@ class TestScenario:
 
         prev_scenario_config = ScenarioConfig(
             ScenarioCls=SubprefixHijack,
-            override_attacker_asns={1},
-            override_victim_asns={2},
+            override_attacker_asns=frozenset({1}),
+            override_victim_asns=frozenset({2}),
         )
         prev_scenario = SubprefixHijack(
             scenario_config=prev_scenario_config, engine=engine
@@ -112,8 +113,8 @@ class TestScenario:
         and tests that they do change if they weren't preset
         """
 
-        attacker_asns = {1}
-        victim_asns = {2}
+        attacker_asns = frozenset({1})
+        victim_asns = frozenset({2})
         scenario = SubprefixHijack(
             scenario_config=ScenarioConfig(
                 ScenarioCls=SubprefixHijack,
@@ -257,11 +258,13 @@ class TestScenario:
             ScenarioCls=SubprefixHijack,
             AdoptASCls=ROVSimpleAS,
             BaseASCls=BaseASCls,
-            override_non_default_asn_cls_dict={
-                # 1: BaseASCls,
-                2: ROVAS,
-                3: ROVSimpleAS,
-            },
+            override_non_default_asn_cls_dict=frozendict(
+                {
+                    # 1: BaseASCls,
+                    2: ROVAS,
+                    3: ROVSimpleAS,
+                }
+            ),
         )
         prev_scenario = SubprefixHijack(
             scenario_config=prev_scenario_config, engine=engine
@@ -293,11 +296,13 @@ class TestScenario:
         prev_scenario_config = ScenarioConfig(
             ScenarioCls=SubprefixHijack,
             BaseASCls=BGPSimpleAS,
-            override_non_default_asn_cls_dict={
-                # 1: BaseASCls,
-                2: ROVAS,
-                # 3: BaseASCls,
-            },
+            override_non_default_asn_cls_dict=frozendict(
+                {
+                    # 1: BaseASCls,
+                    2: ROVAS,
+                    # 3: BaseASCls,
+                }
+            ),
         )
         prev_scenario = SubprefixHijack(
             scenario_config=prev_scenario_config, engine=engine
@@ -374,7 +379,7 @@ class TestScenario:
 
         assert SubprefixHijack(
             scenario_config=ScenarioConfig(
-                ScenarioCls=SubprefixHijack, override_victim_asns={1}
+                ScenarioCls=SubprefixHijack, override_victim_asns=frozenset({1})
             ),
             engine=engine,
         )._default_adopters == {1}
@@ -384,7 +389,7 @@ class TestScenario:
 
         assert SubprefixHijack(
             scenario_config=ScenarioConfig(
-                ScenarioCls=SubprefixHijack, override_attacker_asns={1}
+                ScenarioCls=SubprefixHijack, override_attacker_asns=frozenset({1})
             ),
             engine=engine,
         )._default_non_adopters == {1}
@@ -395,8 +400,8 @@ class TestScenario:
         hijack = SubprefixHijack(
             scenario_config=ScenarioConfig(
                 ScenarioCls=SubprefixHijack,
-                override_attacker_asns={1},
-                override_victim_asns={2},
+                override_attacker_asns=frozenset({1}),
+                override_victim_asns=frozenset({2}),
             ),
             engine=engine,
         )

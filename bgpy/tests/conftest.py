@@ -30,7 +30,7 @@ def pytest_sessionfinish(session, exitstatus):
     # Only run in master thread after all other threads/tests have finished
     # Also runs when xdist isn't running
     if not hasattr(session.config, "workerinput"):
-        # DiagramAggregator(DIAGRAM_PATH).aggregate_diagrams()
+        DiagramAggregator(DIAGRAM_PATH).aggregate_diagrams()
         # Teardown stuff (open PDF for viewing)
         if session.config.getoption("view"):
             # https://stackoverflow.com/q/19453338/8903959
@@ -46,8 +46,6 @@ def overwrite(pytestconfig):
 # https://stackoverflow.com/a/66597438/8903959
 def pytest_addoption(parser):
     # View test PDF when complete
-    # NOTE: This is temporarily down after v 1.0.0, will be fixed the
-    # week of July 17
-    # parser.addoption("--view", action="store_true", default=False)
+    parser.addoption("--view", action="store_true", default=False)
     # Overwrite ground truth
     parser.addoption("--overwrite", action="store_true", default=False)
