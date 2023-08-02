@@ -107,3 +107,9 @@ class SpecialPercentAdoptions(Enum):
 
     def __float__(self) -> float:
         return float(self.value)
+
+    def __lt__(self, other):
+        if isinstance(other, (SpecialPercentAdoptions, float)):
+            return float(self) == float(other)
+        else:
+            return NotImplemented

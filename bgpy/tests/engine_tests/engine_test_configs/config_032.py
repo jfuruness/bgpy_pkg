@@ -23,8 +23,8 @@ class Custom32ValidPrefix(ValidPrefix):
             object.__setattr__(ann, "seed_asn", 3)
             object.__setattr__(ann, "as_path", (3,))
             engine.as_dict[3]._local_rib.add_ann(ann)
-            Custom32ValidPrefix.victim_asns = {2, 3}
-            self.victim_asns = {2, 3}
+            Custom32ValidPrefix.victim_asns = frozenset({2, 3})
+            self.victim_asns = frozenset({2, 3})
 
 
 config_032 = EngineTestConfig(

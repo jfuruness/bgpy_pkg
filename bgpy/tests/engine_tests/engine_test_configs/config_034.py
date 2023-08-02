@@ -23,7 +23,7 @@ class Custom34ValidPrefix(ValidPrefix):
             object.__setattr__(ann, "seed_asn", 3)
             object.__setattr__(ann, "as_path", (3,))
             engine.as_dict[3]._local_rib.add_ann(ann)
-            Custom34ValidPrefix.victim_asns = {2, 3}
+            Custom34ValidPrefix.victim_asns = frozenset({2, 3})
 
         if propagation_round == 2:  # third round
             ann = deepcopy(engine.as_dict[3]._local_rib.get_ann(Prefixes.PREFIX.value))
@@ -34,7 +34,7 @@ class Custom34ValidPrefix(ValidPrefix):
             engine.as_dict[3]._local_rib.remove_ann(Prefixes.PREFIX.value)
             engine.as_dict[3]._ribs_out.remove_entry(1, Prefixes.PREFIX.value)
             engine.as_dict[3]._send_q.add_ann(1, ann)
-            Custom34ValidPrefix.victim_asns = {2}
+            Custom34ValidPrefix.victim_asns = frozenset({2})
 
 
 config_034 = EngineTestConfig(

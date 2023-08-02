@@ -49,7 +49,8 @@ class ScenarioConfig:
     victim_subcategory_attr: str = ASGroups.STUBS_OR_MH.value
     # ASes that are hardcoded to specific values
     hardcoded_asn_cls_dict: frozendict[int, type[AS]] = field(
-        default_factory=frozendict
+        # Mypy doesn't understand frozendict typing, just ignore it
+        default_factory=frozendict  # type: ignore
     )
     # Only necessary if coming from YAML or the test suite
     override_attacker_asns: Optional[frozenset[int]] = None
