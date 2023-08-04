@@ -209,7 +209,7 @@ class Diagram:
                         s.node(asn)
                         if previous_asn is not None:
                             # Add invisible edge to maintain static order
-                            s.edge(previous_asn, asn, style='invis')
+                            s.edge(previous_asn, asn, style='invis')  # type: ignore
                         previous_asn = asn
 
     def _render(self, path=None, view=False):

@@ -81,6 +81,8 @@ from .tests import config_032
 from .tests import config_033
 from .tests import config_034
 from .tests import config_035
+from .tests import config_036
+from .tests import config_037
 from .tests import engine_test_configs
 
 
@@ -186,5 +188,7 @@ __all__ = [
     "config_033",
     "config_034",
     "config_035",
+    "config_036",
+    "config_037",
     "engine_test_configs",
 ]

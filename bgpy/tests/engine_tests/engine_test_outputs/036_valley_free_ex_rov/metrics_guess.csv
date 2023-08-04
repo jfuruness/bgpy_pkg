@@ -1,0 +1,13 @@
+scenario_cls,adopting_as_cls,base_as_cls,outcome_type,as_group,outcome,percent_adopt,propagation_round,value,yerr,scenario_config_label
+SubprefixHijack,PseudoBGPSimple,BGPSimpleAS,data_plane,stub,0,0,0,50.0,0.0,
+SubprefixHijack,PseudoBGPSimple,BGPSimpleAS,data_plane,stub,1,0,0,50.0,0.0,
+SubprefixHijack,PseudoBGPSimple,BGPSimpleAS,data_plane,stub_or_multihomed,0,0,0,50.0,0.0,
+SubprefixHijack,PseudoBGPSimple,BGPSimpleAS,data_plane,stub_or_multihomed,1,0,0,50.0,0.0,
+SubprefixHijack,PseudoBGPSimple,BGPSimpleAS,data_plane,etc,0,0,0,83.33333333333333,0.0,
+SubprefixHijack,PseudoBGPSimple,BGPSimpleAS,data_plane,etc,1,0,0,16.666666666666668,0.0,
+SubprefixHijack,PseudoBGPSimple,BGPSimpleAS,data_plane,etc,1,0,0,100.0,0.0,
+SubprefixHijack,PseudoBGPSimple,BGPSimpleAS,control_plane,stub,1,0,0,100.0,0.0,
+SubprefixHijack,PseudoBGPSimple,BGPSimpleAS,control_plane,stub_or_multihomed,1,0,0,100.0,0.0,
+SubprefixHijack,PseudoBGPSimple,BGPSimpleAS,control_plane,etc,0,0,0,83.33333333333333,0.0,
+SubprefixHijack,PseudoBGPSimple,BGPSimpleAS,control_plane,etc,1,0,0,16.666666666666668,0.0,
+SubprefixHijack,PseudoBGPSimple,BGPSimpleAS,control_plane,etc,1,0,0,100.0,0.0,

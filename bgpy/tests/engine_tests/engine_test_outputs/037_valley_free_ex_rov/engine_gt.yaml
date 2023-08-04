@@ -214,7 +214,7 @@
   propagation_rank: 2
   providers: !!python/tuple
   - 10
-8: !yamlable/BGPSimpleAS
+8: !yamlable/RealPeerROVSimpleAS
   _local_rib: !yamlable/LocalRIB
     1.2.0.0/16: !yamlable/Announcement
       as_path: !!python/tuple

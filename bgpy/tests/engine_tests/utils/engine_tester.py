@@ -147,7 +147,7 @@ class EngineTester:
             assert set(list(engine_guess.as_dict.keys())) == set(hardcoded_rank_asns), err
             static_order = True
         else:
-            diagram_ranks = engine.propagation_ranks
+            diagram_ranks = engine_guess.propagation_ranks
             static_order = False
 
         # Write guess graph

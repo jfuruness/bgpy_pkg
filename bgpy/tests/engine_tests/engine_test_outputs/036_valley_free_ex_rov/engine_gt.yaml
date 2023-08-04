@@ -137,24 +137,6 @@
       timestamp: 0
       traceback_end: false
       withdraw: false
-    1.2.3.0/24: !yamlable/Announcement
-      as_path: !!python/tuple
-      - 4
-      - 8
-      - 5
-      - 1
-      - 666
-      communities: !!python/tuple []
-      prefix: 1.2.3.0/24
-      recv_relationship: !simulator_codec/Relationships
-        name: PROVIDERS
-        value: 1
-      roa_origin: 777
-      roa_valid_length: false
-      seed_asn: null
-      timestamp: 1
-      traceback_end: false
-      withdraw: false
   _recv_q: !yamlable/RecvQueue {}
   asn: 4
   customer_cone_size: 1
@@ -214,7 +196,7 @@
   propagation_rank: 2
   providers: !!python/tuple
   - 10
-8: !yamlable/BGPSimpleAS
+8: !yamlable/ROVSimpleAS
   _local_rib: !yamlable/LocalRIB
     1.2.0.0/16: !yamlable/Announcement
       as_path: !!python/tuple
@@ -230,23 +212,6 @@
       roa_valid_length: true
       seed_asn: null
       timestamp: 0
-      traceback_end: false
-      withdraw: false
-    1.2.3.0/24: !yamlable/Announcement
-      as_path: !!python/tuple
-      - 8
-      - 5
-      - 1
-      - 666
-      communities: !!python/tuple []
-      prefix: 1.2.3.0/24
-      recv_relationship: !simulator_codec/Relationships
-        name: PEERS
-        value: 2
-      roa_origin: 777
-      roa_valid_length: false
-      seed_asn: null
-      timestamp: 1
       traceback_end: false
       withdraw: false
   _recv_q: !yamlable/RecvQueue {}
@@ -451,8 +416,8 @@
     1.2.3.0/24: !yamlable/Announcement
       as_path: !!python/tuple
       - 777
-      - 4
-      - 8
+      - 9
+      - 10
       - 5
       - 1
       - 666

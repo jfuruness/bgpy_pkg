@@ -41,6 +41,8 @@ from .engine_test_configs import config_032
 from .engine_test_configs import config_033
 from .engine_test_configs import config_034
 from .engine_test_configs import config_035
+from .engine_test_configs import config_036
+from .engine_test_configs import config_037
 from .engine_test_configs import engine_test_configs
 
 # Graphs
@@ -139,6 +141,8 @@ __all__ = [
     "config_033",
     "config_034",
     "config_035",
+    "config_036",
+    "config_037",
     "engine_test_configs",
     "GraphInfo",
     "graph_001",
