@@ -45,4 +45,10 @@ graph_052 = GraphInfo(
             CPLink(provider_asn=7, customer_asn=6),
         ]
     ),
+    diagram_ranks=[
+        [ASNs.ATTACKER.value, ASNs.VICTIM.value],
+        [1, 2, 3],
+        [4, 5, 6],
+        [7],
+    ]
 )
