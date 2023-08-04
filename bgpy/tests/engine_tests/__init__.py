@@ -40,6 +40,9 @@ from .engine_test_configs import config_031
 from .engine_test_configs import config_032
 from .engine_test_configs import config_033
 from .engine_test_configs import config_034
+from .engine_test_configs import config_035
+from .engine_test_configs import config_036
+from .engine_test_configs import config_037
 from .engine_test_configs import engine_test_configs
 
 # Graphs
@@ -95,6 +98,7 @@ from .graphs import graph_048
 from .graphs import graph_049
 from .graphs import graph_050
 from .graphs import graph_051
+from .graphs import graph_052
 
 __all__ = [
     "Diagram",
@@ -136,6 +140,9 @@ __all__ = [
     "config_032",
     "config_033",
     "config_034",
+    "config_035",
+    "config_036",
+    "config_037",
     "engine_test_configs",
     "GraphInfo",
     "graph_001",
@@ -189,4 +196,5 @@ __all__ = [
     "graph_049",
     "graph_050",
     "graph_051",
+    "graph_052",
 ]

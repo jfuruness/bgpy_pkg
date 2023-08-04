@@ -56,6 +56,7 @@ from .engine_tests import graph_048
 from .engine_tests import graph_049
 from .engine_tests import graph_050
 from .engine_tests import graph_051
+from .engine_tests import graph_052
 
 # Test configs
 from .engine_tests import config_001
@@ -92,6 +93,9 @@ from .engine_tests import config_031
 from .engine_tests import config_032
 from .engine_tests import config_033
 from .engine_tests import config_034
+from .engine_tests import config_035
+from .engine_tests import config_036
+from .engine_tests import config_037
 from .engine_tests import engine_test_configs
 
 
@@ -136,6 +140,9 @@ __all__ = [
     "config_032",
     "config_033",
     "config_034",
+    "config_035",
+    "config_036",
+    "config_037",
     "engine_test_configs",
     "GraphInfo",
     "graph_001",
@@ -189,4 +196,5 @@ __all__ = [
     "graph_049",
     "graph_050",
     "graph_051",
+    "graph_052",
 ]

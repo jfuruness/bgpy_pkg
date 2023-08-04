@@ -19,13 +19,15 @@ class Diagram:
         traceback,
         description,
         metric_tracker,
+        diagram_ranks,
+        static_order: bool = False,
         path=None,
         view=False,
     ):
         self._add_legend(traceback)
         self._add_ases(engine, traceback, scenario)
         self._add_edges(engine)
-        self._add_propagation_ranks(engine)
+        self._add_diagram_ranks(diagram_ranks, static_order)
         # https://stackoverflow.com/a/57461245/8903959
         self.dot.attr(label=description)
         self._render(path=path, view=view)
@@ -187,13 +189,28 @@ class Diagram:
                         penwidth="2",
                     )
 
-    def _add_propagation_ranks(self, engine):
-        for i, rank in enumerate(engine.propagation_ranks):
-            g = Digraph(f"Propagation_rank_{i}")
-            g.attr()
-            for as_obj in rank:
-                g.node(str(as_obj.asn))
-            self.dot.subgraph(g)
+    def _add_diagram_ranks(self, diagram_ranks, static_order: bool):
+
+        # TODO: Refactor
+        if static_order is False:
+            for i, rank in enumerate(diagram_ranks):
+                g = Digraph(f"Propagation_rank_{i}")
+                g.attr(rank="same")
+                for as_obj in rank:
+                    g.node(str(as_obj.asn))
+                self.dot.subgraph(g)
+        else:
+            for i, rank in enumerate(diagram_ranks):
+                with self.dot.subgraph() as s:
+                    s.attr(rank='same')  # set all nodes to the same rank
+                    previous_asn = None
+                    for as_obj in rank:
+                        asn = str(as_obj.asn)
+                        s.node(asn)
+                        if previous_asn is not None:
+                            # Add invisible edge to maintain static order
+                            s.edge(previous_asn, asn, style='invis')  # type: ignore
+                        previous_asn = asn
 
     def _render(self, path=None, view=False):
         self.dot.render(path, view=view)
