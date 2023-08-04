@@ -32,6 +32,7 @@ from .config_031 import config_031
 from .config_032 import config_032
 from .config_033 import config_033
 from .config_034 import config_034
+from .config_035 import config_035
 
 __all__ = [
     "config_001",
@@ -68,6 +69,7 @@ __all__ = [
     "config_032",
     "config_033",
     "config_034",
+    "config_035",
 ]
 
 engine_test_configs = [
@@ -105,4 +107,5 @@ engine_test_configs = [
     config_032,
     config_033,
     config_034,
+    config_035,
 ]
