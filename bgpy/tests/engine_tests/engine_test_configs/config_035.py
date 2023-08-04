@@ -13,10 +13,14 @@ desc = (
     "AS 5, subprefix, shows peer > provider\n"
     "AS 7, prefix, shows shortest AS Path\n"
     "AS 4, subprefix, shows lowest ASN tiebreaker\n"
+    "AS 5, subprefix, shows anns from peers only export to customers\n"
+    "AS 6, subprefix, shows anns from providers only export to customers\n"
+    "(All ASes show exporting to cusotmers)\n"
 )
+desc = ""
 
 config_035 = EngineTestConfig(
-    name="035_valley_free_ex",
+    name="035_valley_free_ex_bgp",
     desc=desc,
     scenario_config=ScenarioConfig(
         ScenarioCls=SubprefixHijack,

@@ -10,14 +10,9 @@ This graph can highlight every example of Gao Rexford Valley Free Routing
 AS 666 announces subprefix
 AS 777 announces prefix
 
-At AS 5, for the prefix, customer > peer is demonstrated
-At AS 5, for subprefix, peer > provider is demonstrated
-At AS 7, for prefix, shortest AS path is demonstrated
-At AS 4, for subprefix, lowest ASN is demonstrated
-At AS 5, if it deploys ROV, then we see hidden hijacks
-At AS 5, if it deplosy PeerROV, we see it's failures
-      7
-    / | \
+(see config 035 for description)
+      7   8
+    / | \ |
    4--5--6
  / \  |  |
 3  2  3  |
@@ -43,12 +38,13 @@ graph_052 = GraphInfo(
             CPLink(provider_asn=7, customer_asn=4),
             CPLink(provider_asn=7, customer_asn=5),
             CPLink(provider_asn=7, customer_asn=6),
+            CPLink(provider_asn=8, customer_asn=6),
         ]
     ),
     diagram_ranks=[
         [ASNs.ATTACKER.value, ASNs.VICTIM.value],
         [1, 2, 3],
         [4, 5, 6],
-        [7],
+        [7, 8],
     ]
 )
