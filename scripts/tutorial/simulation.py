@@ -1,3 +1,4 @@
+from multiprocessing import cpu_count
 from pathlib import Path
 
 from subprefix_hijack import SubprefixHijack
@@ -25,8 +26,8 @@ def main():
             ScenarioConfig(ScenarioCls=SubprefixHijack, AdoptASCls=PeerROVAS),
         ),
         output_dir=Path("~/Desktop/tutorial_ex").expanduser(),
-        num_trials=2,
-        parse_cpus=2,
+        num_trials=100,
+        parse_cpus=cpu_count(),
     )
     sim.run()
 

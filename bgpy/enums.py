@@ -113,6 +113,3 @@ class SpecialPercentAdoptions(Enum):
             return float(self) == float(other)
         else:
             return NotImplemented
-
-    def __gt__(self, other):
-        return not self.__lt__(other)
