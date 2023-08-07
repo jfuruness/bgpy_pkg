@@ -14,12 +14,15 @@ def main():
     # Simulation for the paper
     sim = Simulation(
         percent_adoptions=(
-            SpecialPercentAdoptions.ONLY_ONE,
+            # NOTE: There is currently a slight issue with the SpecialPercentAdoptions
+            # SpecialPercentAdoptions.ONLY_ONE,
+            .01,
             0.1,
             0.2,
             0.4,
             0.8,
-            SpecialPercentAdoptions.ALL_BUT_ONE,
+            .99
+            # SpecialPercentAdoptions.ALL_BUT_ONE,
         ),
         scenario_configs=(
             ScenarioConfig(ScenarioCls=SubprefixHijack, AdoptASCls=ROVAS),

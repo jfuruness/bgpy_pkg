@@ -1,6 +1,6 @@
 from collections import defaultdict
 from dataclasses import replace
-from typing import Optional
+from typing import Optional, Type
 
 from bgpy.caida_collector.graph.base_as import AS
 from bgpy.enums import Plane, Outcomes
@@ -16,11 +16,13 @@ class Metric:
     def __init__(
         self,
         metric_key: MetricKey,
+        as_classes_used: frozenset[Type[AS]],
         percents: Optional[defaultdict[MetricKey, list[float]]] = None,
     ) -> None:
         self.metric_key: MetricKey = metric_key
-        self._numerators: defaultdict[type[AS], float] = defaultdict(float)
-        self._denominators: defaultdict[type[AS], float] = defaultdict(float)
+        self.as_classes_used: frozenset[Type[AS]] = as_classes_used
+        self._numerators: dict[type[AS], float] = {k: 0 for k in as_classes_used}
+        self._denominators: dict[type[AS], float] = {k: 0 for k in as_classes_used}
         if percents:
             self.percents: defaultdict[MetricKey, list[float]] = percents
         else:
@@ -33,7 +35,11 @@ class Metric:
             agg_percents = self.percents.copy()
             for metric_key, percent_list in other.percents.items():
                 agg_percents[metric_key].extend(percent_list)
-            return Metric(metric_key=self.metric_key, percents=agg_percents)
+            return Metric(
+                metric_key=self.metric_key,
+                as_classes_used=self.as_classes_used,
+                percents=agg_percents,
+            )
         else:
             return NotImplemented
 
@@ -41,11 +47,16 @@ class Metric:
         """Returns percentages to be added to all metrics"""
 
         percents = defaultdict(list)
-        for (as_cls, numerator), (_, denominator) in zip(
+        for (as_cls, numerator), (denom_as_cls, denominator) in zip(
             self._numerators.items(), self._denominators.items()
         ):
+            assert as_cls == denom_as_cls
             k = replace(self.metric_key, ASCls=as_cls)
-            percents[k] = [100 * numerator / denominator]
+            # Not pep8 but this case is way more common
+            if not (numerator == 0 and denominator == 0):
+                percents[k] = [100 * numerator / denominator]
+            else:
+                percents[k] = [0]
         self.percents = percents
 
     def add_data(

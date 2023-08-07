@@ -5,7 +5,7 @@ import random
 from ipaddress import ip_network
 from ipaddress import IPv4Network
 from ipaddress import IPv6Network
-from typing import Any, Optional, Union
+from typing import Any, Optional, Type, Union
 
 from frozendict import frozendict
 
@@ -67,6 +67,8 @@ class Scenario(ABC):
         self.ordered_prefix_subprefix_dict: dict[
             str, list[str]
         ] = self._get_ordered_prefix_subprefix_dict()
+
+        self.as_classes_used: frozenset[Type[AS]] = frozenset()
 
     #################
     # Get attackers #
@@ -323,14 +325,18 @@ class Scenario(ABC):
         and have each do half and half
         """
 
+        as_classes_used = set()
         # Done here to save as much time  as possible
         BaseASCls = self.scenario_config.BaseASCls
         for as_obj in engine:
             # set the AS class to be the proper type of AS
-            as_obj.__class__ = self.non_default_asn_cls_dict.get(as_obj.asn, BaseASCls)
+            cls = self.non_default_asn_cls_dict.get(as_obj.asn, BaseASCls)
+            as_obj.__class__ = cls
+            as_classes_used.add(cls)
             # Clears all RIBs, etc
             # Reset base is False to avoid overrides base AS info (peers, etc)
             as_obj.__init__(reset_base=False)
+        self.as_classes_used = frozenset(as_classes_used)
 
     def _seed_engine_announcements(
         self, engine: SimulationEngine, prev_scenario: Optional["Scenario"]
