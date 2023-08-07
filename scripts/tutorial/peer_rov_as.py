@@ -4,7 +4,7 @@ from bgpy import Relationships
 
 
 class PeerROVAS(BGPSimpleAS):
-    """An AS that deploys ROV"""
+    """An AS that deploys PeerROV"""
 
     name: str = "TutorialPeerROV"
 
