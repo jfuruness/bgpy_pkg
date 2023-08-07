@@ -22,11 +22,13 @@ AS 777 announces prefix
 
 
 graph_052 = GraphInfo(
-    peer_links=set({
-        PeerLink(5, 8),
-        PeerLink(8, 9),
-        PeerLink(8, 3),
-    }),
+    peer_links=set(
+        {
+            PeerLink(5, 8),
+            PeerLink(8, 9),
+            PeerLink(8, 3),
+        }
+    ),
     customer_provider_links=set(
         [
             CPLink(provider_asn=1, customer_asn=ASNs.ATTACKER.value),
@@ -47,5 +49,5 @@ graph_052 = GraphInfo(
         [1, 2, 3, 4],
         [5, 8, 9],
         [10, 11],
-    ]
+    ],
 )

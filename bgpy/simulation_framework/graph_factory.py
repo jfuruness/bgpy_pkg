@@ -2,7 +2,6 @@ from collections import defaultdict
 from itertools import product
 from pathlib import Path
 import pickle
-from typing import Union
 
 import matplotlib  # type: ignore
 import matplotlib.pyplot as plt  # type: ignore

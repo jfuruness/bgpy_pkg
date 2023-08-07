@@ -144,7 +144,9 @@ class EngineTester:
             for rank in self.conf.graph.diagram_ranks:
                 hardcoded_rank_asns.extend(rank)
             err = "Hardcoded rank ASNs do not match AS graph ASNs"
-            assert set(list(engine_guess.as_dict.keys())) == set(hardcoded_rank_asns), err
+            assert set(list(engine_guess.as_dict.keys())) == set(
+                hardcoded_rank_asns
+            ), err
             static_order = True
         else:
             diagram_ranks = engine_guess.propagation_ranks

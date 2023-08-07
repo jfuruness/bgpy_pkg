@@ -190,7 +190,6 @@ class Diagram:
                     )
 
     def _add_diagram_ranks(self, diagram_ranks, static_order: bool):
-
         # TODO: Refactor
         if static_order is False:
             for i, rank in enumerate(diagram_ranks):
@@ -202,14 +201,14 @@ class Diagram:
         else:
             for i, rank in enumerate(diagram_ranks):
                 with self.dot.subgraph() as s:
-                    s.attr(rank='same')  # set all nodes to the same rank
+                    s.attr(rank="same")  # set all nodes to the same rank
                     previous_asn = None
                     for as_obj in rank:
                         asn = str(as_obj.asn)
                         s.node(asn)
                         if previous_asn is not None:
                             # Add invisible edge to maintain static order
-                            s.edge(previous_asn, asn, style='invis')  # type: ignore
+                            s.edge(previous_asn, asn, style="invis")  # type: ignore
                         previous_asn = asn
 
     def _render(self, path=None, view=False):
