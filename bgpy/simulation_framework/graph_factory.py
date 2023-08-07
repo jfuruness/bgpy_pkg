@@ -87,7 +87,7 @@ class GraphFactory:
         plt.xlim(0, 100)
         plt.ylim(0, 100)
 
-        def get_percent_adopt(graph_row) -> Union[float, SpecialPercentAdoptions]:
+        def get_percent_adopt(graph_row) -> float:
             """Extractions percent adoption for sort comparison
 
             Need separate function for mypy puposes
@@ -95,13 +95,13 @@ class GraphFactory:
 
             percent_adopt = graph_row["data_key"].percent_adopt
             assert isinstance(percent_adopt, (float, SpecialPercentAdoptions))
-            return percent_adopt
+            return float(percent_adopt)
 
         # Add the data from the lines
         for as_cls, graph_rows in as_cls_rows_dict.items():
             graph_rows_sorted = list(sorted(graph_rows, key=get_percent_adopt))
             ax.errorbar(
-                [x["data_key"].percent_adopt * 100 for x in graph_rows_sorted],
+                [float(x["data_key"].percent_adopt) * 100 for x in graph_rows_sorted],
                 [x["value"] for x in graph_rows_sorted],
                 yerr=[x["yerr"] for x in graph_rows_sorted],
                 label=as_cls.name,
