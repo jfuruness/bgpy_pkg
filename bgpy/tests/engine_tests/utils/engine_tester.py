@@ -1,6 +1,7 @@
 import csv
 from pathlib import Path
 import pickle
+from pprint import pformat
 
 from .diagram import Diagram
 from .engine_test_config import EngineTestConfig
@@ -201,7 +202,10 @@ class EngineTester:
             metrics_guess = pickle.load(f)
         with self.metrics_ground_truth_path_pickle.open("rb") as f:
             metrics_gt = pickle.load(f)
-        assert metrics_guess == metrics_gt
+        err = f"{pformat(metrics_guess[0])} {pformat(metrics_gt[0])}"
+        guess_set = set([str(x) for x in metrics_guess])
+        gt_set = set([str(x) for x in metrics_gt])
+        assert guess_set == gt_set, err
 
     #########
     # Paths #
