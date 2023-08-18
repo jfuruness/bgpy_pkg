@@ -24,15 +24,6 @@ class Announcement(YamlAble):
     traceback_end: bool = False
     communities: tuple[str, ...] = ()
 
-    def __init_subclass__(cls, *args, **kwargs):
-        """This method essentially creates a list of all subclasses
-        This is allows us to easily assign yaml tags
-        """
-
-        super().__init_subclass__(*args, **kwargs)
-
-        yaml_info_decorate(cls, yaml_tag=cls.__name__)
-
     def prefix_path_attributes_eq(self, ann: Optional["Announcement"]) -> bool:
         """Checks prefix and as path equivalency"""
 
