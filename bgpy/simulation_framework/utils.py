@@ -33,10 +33,12 @@ def get_real_world_rov_asn_cls_dict(
         if as_.rov_confidence >= min_rov_confidence:
             if as_.rov_filtering == "all":
                 asn_as_cls_dict[as_.asn] = RealROVSimpleAS
-            elif as_.rov_filtering == "peer":
+            elif as_.rov_filtering == "peers":
                 asn_as_cls_dict[as_.asn] = RealPeerROVSimpleAS
             else:
-                raise NotImplementedError("ROV filtering case not accoutned for")
+                raise NotImplementedError(
+                    f"ROV filtering case not accounted for: {as_.rov_filtering}"
+                )
 
     return frozendict({int(k): v for k, v in asn_as_cls_dict.items()})
 
