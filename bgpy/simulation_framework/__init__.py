@@ -13,6 +13,8 @@ from .scenarios import ValidPrefix
 
 from .simulation import Simulation
 
+from .utils import get_real_world_rov_asn_cls_dict
+
 
 __all__ = [
     "GraphAnalyzer",
@@ -27,4 +29,5 @@ __all__ = [
     "NonRoutedSuperprefixPrefixHijack",
     "ValidPrefix",
     "Simulation",
+    "get_real_world_rov_asn_cls_dict",
 ]

@@ -44,6 +44,7 @@ from .simulation_framework import ValidPrefix
 from .simulation_framework import GraphAnalyzer
 from .simulation_framework import MetricTracker
 from .simulation_framework import Simulation
+from .simulation_framework import get_real_world_rov_asn_cls_dict
 
 # Test configs
 from .tests import config_001
@@ -120,6 +121,7 @@ __all__ = [
     "GraphAnalyzer",
     "MetricTracker",
     "Simulation",
+    "get_real_world_rov_asn_cls_dict",
     "Announcement",
     "AttackerSuccessAdoptingEtcSubgraph",
     "AttackerSuccessAdoptingInputCliqueSubgraph",
