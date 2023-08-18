@@ -13,7 +13,6 @@ from bgpy.simulation_framework.metric_tracker.metric_key import MetricKey
 
 
 def get_real_world_rov_asn_cls_dict(
-    self,
     min_rov_confidence: float = 0,
 ) -> frozendict[int, type[BGPSimpleAS]]:
     """Gets real world ROV ASes, and creates a dict of asn: AS Class
