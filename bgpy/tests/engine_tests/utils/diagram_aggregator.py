@@ -23,6 +23,7 @@ class DiagramAggregator:
         # readability
         # https://stackoverflow.com/a/47283224/8903959
         images = [Image.open(x) for x in self.image_paths]
+        assert images, "No images were present"
         converted_images = list()
         for img in images:
             if img.mode == "RGBA":
