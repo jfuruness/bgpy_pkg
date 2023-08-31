@@ -1,7 +1,7 @@
 from dataclasses import dataclass, asdict, replace
 from typing import Any, Optional
 
-from yamlable import YamlAble, yaml_info, yaml_info_decorate
+from yamlable import YamlAble, yaml_info
 
 from bgpy.enums import Relationships
 
