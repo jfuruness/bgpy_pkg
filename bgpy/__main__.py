@@ -10,15 +10,17 @@ def main():
     # Simulation for the paper
     sim = Simulation(
         percent_adoptions=(
+            0.1,
             0.2,
             0.5,
+            0.8
         ),
         scenario_configs=(
             ScenarioConfig(ScenarioCls=SubprefixHijack, AdoptASCls=ROVSimpleAS),
         ),
         output_dir=Path("~/Desktop/main_ex").expanduser(),
-        num_trials=2,
-        parse_cpus=2,
+        num_trials=100,
+        parse_cpus=10,
     )
     sim.run()
 

@@ -106,6 +106,11 @@ class SpecialPercentAdoptions(Enum):
     ONLY_ONE: float = 0
 
     def __float__(self) -> float:
+        raise NotImplementedError(
+            """There appears to be some bug with this.
+            Instead just use .000001 (it rounds up) and .99
+            """
+        )
         return float(self.value)
 
     def __lt__(self, other):

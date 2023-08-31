@@ -71,8 +71,8 @@ class GraphFactory:
             return
         graph_name = (
             f"{relevant_rows[0]['data_key'].scenario_config.ScenarioCls.__name__}"
-            f"_{metric_key.as_group.value}_adopting_is_{adopting}"
-            f"_{metric_key.outcome.name}"
+            f"/{metric_key.as_group.value}_adopting_is_{adopting}"
+            f"/{metric_key.outcome.name}"
             f"_{metric_key.plane.value}.png"
         ).replace(" ", "")
         as_cls_rows_dict = defaultdict(list)
@@ -114,6 +114,7 @@ class GraphFactory:
         ax.legend(handles, labels)
         plt.tight_layout()
         plt.rcParams.update({"font.size": 14, "lines.markersize": 10})
+        (self.graph_dir / graph_name).parent.mkdir(parents=True, exist_ok=True)
         plt.savefig(self.graph_dir / graph_name)
         # https://stackoverflow.com/a/33343289/8903959
         plt.close(fig)
