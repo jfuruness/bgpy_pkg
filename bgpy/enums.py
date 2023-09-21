@@ -99,6 +99,7 @@ class ASGroups(YamlAbleEnum):
     INPUT_CLIQUE: str = "input_clique"
     # Not stubs, multihomed, or input clique
     ETC: str = "etc"
+    ALL: str = "all"
 
 
 class SpecialPercentAdoptions(Enum):
@@ -111,7 +112,7 @@ class SpecialPercentAdoptions(Enum):
             Instead just use .000001 (it rounds up) and .99
             """
         )
-        return float(self.value)
+        # return float(self.value)
 
     def __lt__(self, other):
         if isinstance(other, (SpecialPercentAdoptions, float)):

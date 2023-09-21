@@ -158,12 +158,16 @@ class BGPDAG(YamlAble):
                 x for x in bgp_dag if not (x.stub or x.multihomed or x.input_clique)
             )
 
+        def all_filter(bgp_dag: "BGPDAG") -> set[AS]:
+            return set(list(bgp_dag))
+
         return {
             ASGroups.STUBS.value: stub_filter,
             ASGroups.MULTIHOMED.value: multihomed_filter,
             ASGroups.STUBS_OR_MH.value: stubs_or_multihomed_filter,
             ASGroups.INPUT_CLIQUE.value: input_clique_filter,
             ASGroups.ETC.value: etc_filter,
+            ASGroups.ALL.value: all_filter,
         }
 
     ##############

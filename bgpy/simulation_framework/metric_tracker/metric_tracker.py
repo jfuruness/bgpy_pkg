@@ -87,6 +87,7 @@ class MetricTracker:
         for data_key, metric_list in self.data.items():
             agg_percents = sum(metric_list, start=metric_list[0]).percents
             for metric_key, trial_data in agg_percents.items():
+                assert metric_key.ASCls
                 row = {
                     "scenario_cls": data_key.scenario_config.ScenarioCls.__name__,
                     "adopting_as_cls": data_key.scenario_config.AdoptASCls.__name__,
