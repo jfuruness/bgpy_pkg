@@ -56,5 +56,4 @@ class SubprefixHijack(Scenario):
                     recv_relationship=Relationships.ORIGIN,
                 )
             )
-
         return tuple(anns)

@@ -1,5 +1,3 @@
-from . import caida_collector
-
 from .simulation_engine import BGPAS
 from .simulation_engine import BGPSimpleAS
 from .simulation_engine import LocalRIB
@@ -86,6 +84,8 @@ from .tests import config_036
 from .tests import config_037
 from .tests import engine_test_configs
 
+
+from . import caida_collector
 
 __all__ = [
     "caida_collector",

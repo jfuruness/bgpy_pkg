@@ -85,15 +85,20 @@ class Scenario(ABC):
         # This is coming from YAML, do not recalculate
         if override_attacker_asns:
             attacker_asns = override_attacker_asns
+            branch = 0
         # Reuse the attacker from the last scenario for comparability
         elif prev_scenario:
             attacker_asns = prev_scenario.attacker_asns
+            branch = 1
         # This is being initialized for the first time
         else:
+            branch = 2
             assert engine
             possible_attacker_asns = self._get_possible_attacker_asns(
                 engine, self.percent_adoption, prev_scenario
             )
+
+            assert len(possible_attacker_asns) >= self.scenario_config.num_attackers
             # https://stackoverflow.com/a/15837796/8903959
             attacker_asns = frozenset(
                 random.sample(
@@ -102,7 +107,7 @@ class Scenario(ABC):
             )
 
         # Validate attacker asns
-        err = "Number of attackers is different from attacker length"
+        err = "Number of attackers is different from attacker length: Branch {branch}"
         assert len(attacker_asns) == self.scenario_config.num_attackers, err
 
         return attacker_asns
