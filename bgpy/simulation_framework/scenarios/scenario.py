@@ -107,7 +107,7 @@ class Scenario(ABC):
             )
 
         # Validate attacker asns
-        err = "Number of attackers is different from attacker length: Branch {branch}"
+        err = f"Number of attackers is different from attacker length: Branch {branch}"
         assert len(attacker_asns) == self.scenario_config.num_attackers, err
 
         return attacker_asns
