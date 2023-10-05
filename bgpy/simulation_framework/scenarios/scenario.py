@@ -87,7 +87,9 @@ class Scenario(ABC):
             attacker_asns = override_attacker_asns
             branch = 0
         # Reuse the attacker from the last scenario for comparability
-        elif prev_scenario:
+        elif (prev_scenario
+                and prev_scenario.scenario_config.num_attackers ==
+                self.scenario_config.num_attackers):
             attacker_asns = prev_scenario.attacker_asns
             branch = 1
         # This is being initialized for the first time
