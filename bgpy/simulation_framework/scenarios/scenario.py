@@ -92,9 +92,34 @@ class Scenario(ABC):
                 self.scenario_config.num_attackers):
             attacker_asns = prev_scenario.attacker_asns
             branch = 1
+        elif (prev_scenario
+                and prev_scenario.scenario_config.num_attackers <
+                self.scenario_config.num_attackers):
+            old_attacker_asns = prev_scenario.attacker_asns
+            branch = 2
+            assert engine
+            possible_attacker_asns = self._get_possible_attacker_asns(
+                engine, self.percent_adoption, prev_scenario
+            )
+            possible_attacker_asns = possible_attacker_asns.difference(
+                old_attacker_asns
+            )
+
+            assert len(possible_attacker_asns) >= (
+                self.scenario_config.num_attackers - len(old_attacker_asns)
+            )
+            # https://stackoverflow.com/a/15837796/8903959
+            new_attacker_asns = frozenset(
+                random.sample(
+                    tuple(possible_attacker_asns),
+                    self.scenario_config.num_attackers - len(old_attacker_asns)
+                )
+            )
+            attacker_asns = old_attacker_asns | new_attacker_asns
+
         # This is being initialized for the first time
         else:
-            branch = 2
+            branch = 3
             assert engine
             possible_attacker_asns = self._get_possible_attacker_asns(
                 engine, self.percent_adoption, prev_scenario
