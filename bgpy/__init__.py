@@ -92,6 +92,7 @@ from . import caida_collector
 from .__main__ import main
 
 __all__ = [
+    "main",
     "caida_collector",
     "BGPAS",
     "BGPSimpleAS",
