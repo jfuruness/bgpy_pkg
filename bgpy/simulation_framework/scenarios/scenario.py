@@ -87,14 +87,18 @@ class Scenario(ABC):
             attacker_asns = override_attacker_asns
             branch = 0
         # Reuse the attacker from the last scenario for comparability
-        elif (prev_scenario
-                and prev_scenario.scenario_config.num_attackers ==
-                self.scenario_config.num_attackers):
+        elif (
+            prev_scenario
+            and prev_scenario.scenario_config.num_attackers
+            == self.scenario_config.num_attackers
+        ):
             attacker_asns = prev_scenario.attacker_asns
             branch = 1
-        elif (prev_scenario
-                and prev_scenario.scenario_config.num_attackers <
-                self.scenario_config.num_attackers):
+        elif (
+            prev_scenario
+            and prev_scenario.scenario_config.num_attackers
+            < self.scenario_config.num_attackers
+        ):
             old_attacker_asns = prev_scenario.attacker_asns
             branch = 2
             assert engine
@@ -112,7 +116,7 @@ class Scenario(ABC):
             new_attacker_asns = frozenset(
                 random.sample(
                     tuple(possible_attacker_asns),
-                    self.scenario_config.num_attackers - len(old_attacker_asns)
+                    self.scenario_config.num_attackers - len(old_attacker_asns),
                 )
             )
             attacker_asns = old_attacker_asns | new_attacker_asns

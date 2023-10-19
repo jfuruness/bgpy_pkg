@@ -1,5 +1,3 @@
-
-
 from .simulation_engine import BGPAS
 from .simulation_engine import BGPSimpleAS
 from .simulation_engine import LocalRIB

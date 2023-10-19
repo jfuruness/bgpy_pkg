@@ -16,12 +16,22 @@ from bgpy.enums import SpecialPercentAdoptions
 class GraphFactory:
     """Automates graphing of default graphs"""
 
-    def __init__(self, pickle_path: Path, graph_dir: Path) -> None:
+    def __init__(
+        self,
+        pickle_path: Path,
+        graph_dir: Path,
+        # A nice way to substitute labels post run
+        label_replacement_dict=None,
+    ) -> None:
         self.pickle_path: Path = pickle_path
         with self.pickle_path.open("rb") as f:
             self.graph_rows = pickle.load(f)
         self.graph_dir: Path = graph_dir
         self.graph_dir.mkdir(parents=True, exist_ok=True)
+
+        if label_replacement_dict is None:
+            label_replacement_dict = dict()
+        self.label_replacement_dict = label_replacement_dict
 
     def generate_graphs(self) -> None:
         """Generates default graphs"""
@@ -103,7 +113,7 @@ class GraphFactory:
                 [float(x["data_key"].percent_adopt) * 100 for x in graph_rows_sorted],
                 [x["value"] for x in graph_rows_sorted],
                 yerr=[x["yerr"] for x in graph_rows_sorted],
-                label=as_cls.name,
+                label=self.label_replacement_dict.get(as_cls.name, as_cls.name),
             )
         # Set labels
         ax.set_ylabel(f"PERCENT {metric_key.outcome.name}".replace("_", " "))
