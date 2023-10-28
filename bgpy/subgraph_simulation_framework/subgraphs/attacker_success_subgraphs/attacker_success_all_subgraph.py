@@ -1,6 +1,6 @@
 from .attacker_success_subgraph import AttackerSuccessSubgraph
 from ....enums import Outcomes
-from ...scenarios import Scenario
+from bgpy.simulation_framework.scenarios import Scenario
 
 
 class AttackerSuccessAllSubgraph(AttackerSuccessSubgraph):

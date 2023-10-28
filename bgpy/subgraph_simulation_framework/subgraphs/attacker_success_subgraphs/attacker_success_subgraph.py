@@ -5,7 +5,7 @@ from ..subgraph import Subgraph
 
 
 if TYPE_CHECKING:
-    from ...scenarios import Scenario
+    from bgpy.simulation_framework.scenarios import Scenario
 
 
 class AttackerSuccessSubgraph(Subgraph):

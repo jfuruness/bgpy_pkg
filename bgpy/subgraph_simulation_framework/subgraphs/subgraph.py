@@ -7,14 +7,14 @@ import matplotlib  # type: ignore
 import matplotlib.pyplot as plt  # type: ignore
 
 from .line import Line
-from ...enums import ASGroups
-from ...enums import Outcomes
-from ...enums import SpecialPercentAdoptions
-from ...simulation_engine import SimulationEngine
-from ..scenarios import Scenario
-from ...simulation_engine.announcement import Announcement as Ann
+from bgpy.enums import ASGroups
+from bgpy.enums import Outcomes
+from bgpy.enums import SpecialPercentAdoptions
+from bgpy.simulation_engine import SimulationEngine
+from bgpy.simulation_framework.scenarios import Scenario
+from bgpy.simulation_engine.announcement import Announcement as Ann
 
-from caida_collector_pkg import AS
+from bgpy.caida_collector import AS
 
 
 # Must be module level in order to be picklable

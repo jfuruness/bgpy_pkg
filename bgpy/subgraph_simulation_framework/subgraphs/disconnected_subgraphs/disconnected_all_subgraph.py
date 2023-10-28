@@ -1,6 +1,6 @@
 from .disconnected_subgraph import DisconnectedSubgraph
 from ....enums import Outcomes
-from ...scenarios import Scenario
+from bgpy.simulation_framework.scenarios import Scenario
 
 
 class DisconnectedAllSubgraph(DisconnectedSubgraph):

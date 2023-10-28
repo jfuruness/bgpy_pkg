@@ -7,14 +7,13 @@ from tempfile import TemporaryDirectory
 from typing import Dict, Tuple
 import warnings
 
-
-from .subgraph import Subgraph
-
 from bgpy.enums import SpecialPercentAdoptions
 from bgpy.simulation_framework import MetricTracker
 from bgpy.simulation_framework import Scenario
 from bgpy.simulation_engine import SimulationEngine
 from bgpy.simulation_framework import Simulation
+
+from .subgraphs import Subgraph
 
 
 class SubgraphSimulation(Simulation):
@@ -23,7 +22,7 @@ class SubgraphSimulation(Simulation):
     def __init__(
         self,
         *args,
-        subgraphs: tuple[Subgraph, ...],
+        subgraphs: tuple[Subgraph, ...]=(),
         output_path: Path = Path("/tmp/graphs"),
         **kwargs,
     ) -> None:
@@ -40,9 +39,12 @@ class SubgraphSimulation(Simulation):
         self.output_path: Path = output_path
         # Overwrite this to return subgraphs
         # janky, but this is deprecated, no other way to do this
-        func = lambda: deepcopy(getattr(self, "subgraphs"))  # noqa
-        kwargs["MetricTrackerCls"] = func
+        kwargs["MetricTrackerCls"] = self._janky_subgraphs
         super().__init__(*args, **kwargs)
+
+    # Can't have as a lambda due to pickling issues
+    def _janky_subgraphs(self):
+        return deepcopy(getattr(self, "subgraphs"))
 
     def run(self):
         """Runs the simulation and write the data"""

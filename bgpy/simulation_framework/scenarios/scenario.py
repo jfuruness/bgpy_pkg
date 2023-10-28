@@ -511,6 +511,10 @@ class Scenario(ABC):
             percent_adoption=dct["percent_adoption"],
         )
 
+####################
+# Deprecated funcs #
+####################
+
     def determine_as_outcome(self, as_obj: AS, ann: Optional[Announcement]) -> Outcomes:
         """Determines the outcome at an AS
 
@@ -538,3 +542,19 @@ class Scenario(ABC):
             return Outcomes.DISCONNECTED
         else:
             return Outcomes.UNDETERMINED
+
+    @property
+    def graph_label(self) -> str:
+        """Label that will be used on the graph"""
+
+        warnings.warn(
+            "Deprecated, untested, please don't use. Leaving this until 2025"
+            " so that a few PhD students can graduate :)",
+            DeprecationWarning,
+        )
+
+        if self.scenario_config.AdoptASCls:
+            return f"{self.scenario_config.BaseASCls.name} ({self.scenario_config.AdoptASCls.name} adopting)"
+        else:
+            return f"{self.scenario_config.BaseASCls.name} (None adopting)"
+
