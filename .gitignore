@@ -10,6 +10,17 @@
 *.gv.png
 *guess.yaml
 
+# For whatever reason, git is not ignoring these
+#
+*metric_guess.csv
+*metric_guess.pickle
+*metrics_guess.csv
+*metrics_guess.pickle
+*gv
+*pdf
+*gv.png
+*guess.yaml
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
