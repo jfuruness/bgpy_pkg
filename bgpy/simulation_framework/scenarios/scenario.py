@@ -511,9 +511,9 @@ class Scenario(ABC):
             percent_adoption=dct["percent_adoption"],
         )
 
-####################
-# Deprecated funcs #
-####################
+    ####################
+    # Deprecated funcs #
+    ####################
 
     def determine_as_outcome(self, as_obj: AS, ann: Optional[Announcement]) -> Outcomes:
         """Determines the outcome at an AS
@@ -554,7 +554,9 @@ class Scenario(ABC):
         )
 
         if self.scenario_config.AdoptASCls:
-            return f"{self.scenario_config.BaseASCls.name} ({self.scenario_config.AdoptASCls.name} adopting)"
+            return (
+                f"{self.scenario_config.BaseASCls.name} "
+                f"({self.scenario_config.AdoptASCls.name} adopting)"
+            )
         else:
             return f"{self.scenario_config.BaseASCls.name} (None adopting)"
-

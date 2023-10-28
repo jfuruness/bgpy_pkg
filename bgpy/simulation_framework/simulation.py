@@ -40,6 +40,7 @@ class Simulation:
         parse_cpus: int = cpu_count(),
         python_hash_seed: Optional[int] = None,
         engine_kwargs: Optional[dict[Any, Any]] = None,
+        caida_run_kwargs: Optional[dict[Any, Any]] = None,
         GraphAnalyzerCls: type[GraphAnalyzer] = GraphAnalyzer,
         MetricTrackerCls: type[MetricTracker] = MetricTracker,
     ) -> None:
@@ -71,9 +72,14 @@ class Simulation:
                 "BaseASCls": BGPSimpleAS,
                 "GraphCls": SimulationEngine,
             }
+
+        if caida_run_kwargs:
+            self.caida_run_kwargs: dict[Any, Any] = caida_run_kwargs
+        else:
+            self.caida_run_kwargs = dict()
         # Done here so that the caida files are cached
         # So that multiprocessing doesn't interfere with one another
-        CaidaCollector().run()
+        CaidaCollector().run(**self.caida_run_kwargs)
 
         self.GraphAnalyzerCls = GraphAnalyzerCls
         self.MetricTrackerCls = MetricTrackerCls
@@ -164,7 +170,9 @@ class Simulation:
         # (after the multiprocess process has started)
         # Changing recursion depth does nothing
         # Making nothing a reference does nothing
-        engine = CaidaCollector(**self.engine_kwargs.copy()).run(tsv_path=None)
+        run_kwargs = self.caida_run_kwargs.copy()
+        run_kwargs["tsv_path"] = None
+        engine = CaidaCollector(**self.engine_kwargs.copy()).run(**run_kwargs)
 
         metric_tracker = self.MetricTrackerCls()
 

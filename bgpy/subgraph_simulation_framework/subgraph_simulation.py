@@ -4,6 +4,7 @@ from typing import Any, Union
 import json
 from shutil import make_archive
 from tempfile import TemporaryDirectory
+import time
 from typing import Dict, Tuple
 import warnings
 
@@ -22,7 +23,7 @@ class SubgraphSimulation(Simulation):
     def __init__(
         self,
         *args,
-        subgraphs: tuple[Subgraph, ...]=(),
+        subgraphs: tuple[Subgraph, ...] = (),
         output_path: Path = Path("/tmp/graphs"),
         **kwargs,
     ) -> None:
@@ -103,7 +104,8 @@ class SubgraphSimulation(Simulation):
             subgraph.aggregate_engine_run_data(
                 shared_data,
                 engine=engine,
-                percent_adopt=percent_adopt,
+                # Done to remove the SpecialPercentAdoptions
+                percent_adopt=float(percent_adopt),
                 trial=trial,
                 scenario=scenario,
                 propagation_round=propagation_round,

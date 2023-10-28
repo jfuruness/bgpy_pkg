@@ -12,5 +12,7 @@ class VictimSuccessNonAdoptingStubsAndMHSubgraph(VictimSuccessSubgraph):
         """Returns the key to be used in shared_data on the subgraph"""
 
         return self._get_as_type_pol_outcome_perc_k(
-            ASGroups.STUBS_OR_MH, scenario.scenario_config.BaseASCls, Outcomes.VICTIM_SUCCESS
+            ASGroups.STUBS_OR_MH,
+            scenario.scenario_config.BaseASCls,
+            Outcomes.VICTIM_SUCCESS,
         )
