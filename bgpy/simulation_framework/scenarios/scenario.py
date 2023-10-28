@@ -6,6 +6,7 @@ from ipaddress import ip_network
 from ipaddress import IPv4Network
 from ipaddress import IPv6Network
 from typing import Any, Optional, Type, Union
+import warnings
 
 from frozendict import frozendict
 
@@ -15,7 +16,7 @@ from .scenario_config import ScenarioConfig
 
 from bgpy.simulation_engine import Announcement
 from bgpy.simulation_engine import SimulationEngine
-from bgpy.enums import SpecialPercentAdoptions
+from bgpy.enums import SpecialPercentAdoptions, Outcomes, Relationships
 
 pseudo_base_cls_dict: dict[type[AS], type[AS]] = dict()
 
@@ -509,3 +510,32 @@ class Scenario(ABC):
             scenario_config=config_to_use,
             percent_adoption=dct["percent_adoption"],
         )
+
+    def determine_as_outcome(self,
+                             as_obj: AS,
+                             ann: Optional[Announcement]
+                             ) -> Outcomes:
+        """Determines the outcome at an AS
+
+        ann is most_specific_ann is the most specific prefix announcement
+        that exists at that AS
+        """
+
+        warnings.warn(
+            "Deprecated, untested, please don't use. Leaving this until 2025"
+            " so that a few PhD students can graduate :)",
+            DeprecationWarning,
+        )
+
+        if as_obj.asn in self.attacker_asns:
+            return Outcomes.ATTACKER_SUCCESS
+        elif as_obj.asn in self.victim_asns:
+            return Outcomes.VICTIM_SUCCESS
+        # End of traceback
+        elif (ann is None
+              or len(ann.as_path) == 1
+              or ann.recv_relationship == Relationships.ORIGIN
+              or ann.traceback_end):
+            return Outcomes.DISCONNECTED
+        else:
+            return Outcomes.UNDETERMINED

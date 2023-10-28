@@ -241,6 +241,32 @@ class Simulation:
             propagation_round=propagation_round,
         )
 
+        self._collect_engine_run_data(
+            engine,
+            percent_adopt,
+            trial,
+            scenario,
+            propagation_round,
+            metric_tracker,
+        )
+
+        # By default, this is a no op
+        scenario.post_propagation_hook(
+            engine=engine,
+            percent_adopt=percent_adopt,
+            trial=trial,
+            propagation_round=propagation_round,
+        )
+
+    def _collect_engine_run_data(
+        self,
+        engine: SimulationEngine,
+        percent_adopt: Union[float, SpecialPercentAdoptions],
+        trial: int,
+        scenario: Scenario,
+        propagation_round: int,
+        metric_tracker: MetricTracker,
+    ):
         # Save all engine run info
         # The reason we aggregate info right now, instead of saving
         # the engine and doing it later, is because doing it all
@@ -254,14 +280,8 @@ class Simulation:
             propagation_round=propagation_round,
             outcomes=outcomes,
         )
+        return outcomes
 
-        # By default, this is a no op
-        scenario.post_propagation_hook(
-            engine=engine,
-            percent_adopt=percent_adopt,
-            trial=trial,
-            propagation_round=propagation_round,
-        )
 
     ######################
     # Data Writing Funcs #
