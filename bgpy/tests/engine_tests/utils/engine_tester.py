@@ -109,7 +109,6 @@ class EngineTester:
             scenario=scenario,
             propagation_round=self.conf.propagation_rounds - 1,
             outcomes=outcomes,
-
         )
         # Store engine and traceback YAML
         self._store_data(engine, outcomes_yaml, metric_tracker)
@@ -139,7 +138,6 @@ class EngineTester:
         propagation_round: int,
         outcomes,
     ) -> MetricTracker:
-
         # Get stored metrics
         metric_tracker = self.conf.MetricTrackerCls()
         metric_tracker.track_trial_metrics(
@@ -172,7 +170,7 @@ class EngineTester:
         if self.compare_metrics:
             self._store_metrics(metric_tracker)
 
-    def store_metrics(self, metric_tracker: MetricTracker) -> None:
+    def _store_metrics(self, metric_tracker: MetricTracker) -> None:
         metric_tracker.write_data(
             csv_path=self.metrics_guess_path_csv,
             pickle_path=self.metrics_guess_path_pickle,

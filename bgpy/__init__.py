@@ -110,6 +110,7 @@ __all__ = [
     "Timestamps",
     "Prefixes",
     "ASNs",
+    "ASGroups",
     "Outcomes",
     "Relationships",
     "SpecialPercentAdoptions",
