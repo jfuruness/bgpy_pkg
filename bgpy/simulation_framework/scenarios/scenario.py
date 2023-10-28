@@ -511,10 +511,7 @@ class Scenario(ABC):
             percent_adoption=dct["percent_adoption"],
         )
 
-    def determine_as_outcome(self,
-                             as_obj: AS,
-                             ann: Optional[Announcement]
-                             ) -> Outcomes:
+    def determine_as_outcome(self, as_obj: AS, ann: Optional[Announcement]) -> Outcomes:
         """Determines the outcome at an AS
 
         ann is most_specific_ann is the most specific prefix announcement
@@ -532,10 +529,12 @@ class Scenario(ABC):
         elif as_obj.asn in self.victim_asns:
             return Outcomes.VICTIM_SUCCESS
         # End of traceback
-        elif (ann is None
-              or len(ann.as_path) == 1
-              or ann.recv_relationship == Relationships.ORIGIN
-              or ann.traceback_end):
+        elif (
+            ann is None
+            or len(ann.as_path) == 1
+            or ann.recv_relationship == Relationships.ORIGIN
+            or ann.traceback_end
+        ):
             return Outcomes.DISCONNECTED
         else:
             return Outcomes.UNDETERMINED

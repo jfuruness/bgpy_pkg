@@ -12,4 +12,5 @@ class DisconnectedNonAdoptingStubsAndMHSubgraph(DisconnectedSubgraph):
         """Returns the key to be used in shared_data on the subgraph"""
 
         return self._get_as_type_pol_outcome_perc_k(
-            ASTypes.STUBS_OR_MH, scenario.BaseASCls, Outcomes.DISCONNECTED)
+            ASTypes.STUBS_OR_MH, scenario.BaseASCls, Outcomes.DISCONNECTED
+        )

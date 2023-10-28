@@ -282,7 +282,6 @@ class Simulation:
         )
         return outcomes
 
-
     ######################
     # Data Writing Funcs #
     ######################

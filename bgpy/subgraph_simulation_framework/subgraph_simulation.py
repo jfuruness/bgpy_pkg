@@ -27,7 +27,6 @@ class SubgraphSimulation(Simulation):
         output_path: Path = Path("/tmp/graphs"),
         **kwargs,
     ) -> None:
-
         warnings.warn(
             "Deprecated, untested, please don't use. Leaving this until 2025"
             " so that a few PhD students can graduate :)",
@@ -36,9 +35,7 @@ class SubgraphSimulation(Simulation):
         if subgraphs:
             self.subgraphs: Tuple[Subgraph, ...] = subgraphs
         else:
-            self.subgraphs = tuple([
-                Cls() for Cls in
-                Subgraph.subclasses if Cls.name])
+            self.subgraphs = tuple([Cls() for Cls in Subgraph.subclasses if Cls.name])
 
         self.output_path: Path = output_path
         # Overwrite this to return subgraphs
@@ -68,8 +65,7 @@ class SubgraphSimulation(Simulation):
         # Results is a list of lists of subgraphs
         # This joins all results from all trials
         for result_subgraphs in results:
-            for self_subgraph, result_subgraph in zip(self.subgraphs,
-                                                      result_subgraphs):
+            for self_subgraph, result_subgraph in zip(self.subgraphs, result_subgraphs):
                 # Merges the trial subgraph into this subgraph
                 self_subgraph.add_trial_info(result_subgraph)
 
@@ -101,7 +97,7 @@ class SubgraphSimulation(Simulation):
                 percent_adopt=percent_adopt,
                 trial=trial,
                 scenario=scenario,
-                propagation_round=propagation_round
+                propagation_round=propagation_round,
             )
 
     def _write_data(self):
