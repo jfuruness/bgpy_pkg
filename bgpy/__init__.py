@@ -28,6 +28,7 @@ from .enums import ASNs
 from .enums import Outcomes
 from .enums import Relationships
 from .enums import SpecialPercentAdoptions
+from .enums import ASGroups
 
 from .simulation_framework import ScenarioConfig
 from .simulation_framework import Scenario
