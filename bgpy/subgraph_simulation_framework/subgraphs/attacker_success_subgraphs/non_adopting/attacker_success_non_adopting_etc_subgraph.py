@@ -1,5 +1,5 @@
 from ..attacker_success_subgraph import AttackerSuccessSubgraph
-from .....enums import ASTypes
+from .....enums import ASGroups
 from .....enums import Outcomes
 
 
@@ -12,5 +12,5 @@ class AttackerSuccessNonAdoptingEtcSubgraph(AttackerSuccessSubgraph):
         """Returns the key to be used in shared_data on the subgraph"""
 
         return self._get_as_type_pol_outcome_perc_k(
-            ASTypes.ETC, scenario.BaseASCls, Outcomes.ATTACKER_SUCCESS
+            ASGroups.ETC, scenario.BaseASCls, Outcomes.ATTACKER_SUCCESS
         )

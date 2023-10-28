@@ -7,7 +7,7 @@ import matplotlib  # type: ignore
 import matplotlib.pyplot as plt  # type: ignore
 
 from .line import Line
-from ...enums import ASTypes
+from ...enums import ASGroups
 from ...enums import Outcomes
 from ...enums import SpecialPercentAdoptions
 from ...simulation_engine import SimulationEngine
@@ -352,30 +352,30 @@ class Subgraph(ABC):
 
         shared["set"] = True
 
-    def _get_as_type(self, as_obj: AS) -> ASTypes:
+    def _get_as_type(self, as_obj: AS) -> ASGroups:
         """Returns the type of AS (stub_or_mh, input_clique, or etc)"""
 
         if as_obj.stub or as_obj.multihomed:
-            return ASTypes.STUBS_OR_MH
+            return ASGroups.STUBS_OR_MH
         elif as_obj.input_clique:
-            return ASTypes.INPUT_CLIQUE
+            return ASGroups.INPUT_CLIQUE
         else:
-            return ASTypes.ETC
+            return ASGroups.ETC
 
-    def _get_as_type_pol_k(self, as_type: ASTypes, ASCls: Type[AS]) -> str:
+    def _get_as_type_pol_k(self, as_type: ASGroups, ASCls: Type[AS]) -> str:
         """Returns AS type+policy key"""
 
         return f"{as_type.value}_{ASCls.name}"
 
     def _get_as_type_pol_outcome_k(
-        self, as_type: ASTypes, ASCls: Type[AS], outcome: Outcomes
+        self, as_type: ASGroups, ASCls: Type[AS], outcome: Outcomes
     ) -> str:
         """returns as type+policy+outcome key"""
 
         return f"{self._get_as_type_pol_k(as_type, ASCls)}_{outcome.name}"
 
     def _get_as_type_pol_outcome_perc_k(
-        self, as_type: ASTypes, ASCls: Type[AS], outcome: Outcomes
+        self, as_type: ASGroups, ASCls: Type[AS], outcome: Outcomes
     ) -> str:
         """returns as type+policy+outcome key as a percent"""
 
@@ -431,6 +431,7 @@ class Subgraph(ABC):
             assert outcome != Outcomes.UNDETERMINED, "Shouldn't be possible"
 
             outcomes[as_obj] = outcome
+            assert isinstance(outcome, Outcomes), "For mypy"
             return outcome
 
     def _get_most_specific_ann(

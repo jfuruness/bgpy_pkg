@@ -40,9 +40,9 @@ class SubgraphSimulation(Simulation):
         self.output_path: Path = output_path
         # Overwrite this to return subgraphs
         # janky, but this is deprecated, no other way to do this
-        kwargs.pop("MetricTrackerCls", None)
-        MetricTrackerCls = lambda: deepcopy(getattr(self, "subgraphs"))  # noqa
-        super().__init__(*args, MetricTrackerCls=MetricTrackerCls, **kwargs)
+        func = lambda: deepcopy(getattr(self, "subgraphs"))  # noqa
+        kwargs["MetricTrackerCls"] = func
+        super().__init__(*args, **kwargs)
 
     def run(self):
         """Runs the simulation and write the data"""
@@ -65,7 +65,9 @@ class SubgraphSimulation(Simulation):
         # Results is a list of lists of subgraphs
         # This joins all results from all trials
         for result_subgraphs in results:
-            for self_subgraph, result_subgraph in zip(self.subgraphs, result_subgraphs):
+            # Janky type ignore, had to do it this way to get deprecated working
+            zipped_vals = zip(self.subgraphs, result_subgraphs)  # type: ignore
+            for self_subgraph, result_subgraph in zipped_vals:
                 # Merges the trial subgraph into this subgraph
                 self_subgraph.add_trial_info(result_subgraph)
 
@@ -87,7 +89,8 @@ class SubgraphSimulation(Simulation):
         This is overriding another func to use this deprecated func
         """
 
-        subgraphs: Tuple[Subgraph, ...] = metric_tracker
+        # Had to do it this way due to deprecation
+        subgraphs: Tuple[Subgraph, ...] = metric_tracker  # type: ignore
 
         shared_data: Dict[Any, Any] = dict()
         for subgraph in subgraphs:
