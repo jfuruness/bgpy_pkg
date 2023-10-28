@@ -1,4 +1,4 @@
-from typing import Iterable
+from typing import Any, Iterable, Optional
 
 from frozendict import frozendict
 
@@ -14,6 +14,7 @@ from bgpy.simulation_framework.metric_tracker.metric_key import MetricKey
 
 def get_real_world_rov_asn_cls_dict(
     min_rov_confidence: float = 0,
+    caida_run_kwargs: Optional[dict[Any, Any]] = None
 ) -> frozendict[int, type[BGPSimpleAS]]:
     """Gets real world ROV ASes, and creates a dict of asn: AS Class
 
@@ -25,8 +26,13 @@ def get_real_world_rov_asn_cls_dict(
 
     asn_as_cls_dict = dict()
 
+    if caida_run_kwargs is None:
+        caida_run_kwargs={
+            "tsv_path": None
+        }
+
     engine = CaidaCollector(BaseASCls=BGPSimpleAS, GraphCls=SimulationEngine).run(
-        tsv_path=None
+        **caida_run_kwargs
     )
 
     for as_ in engine:
