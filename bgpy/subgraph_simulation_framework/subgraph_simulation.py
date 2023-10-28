@@ -46,11 +46,15 @@ class SubgraphSimulation(Simulation):
     def _janky_subgraphs(self):
         return deepcopy(getattr(self, "subgraphs"))
 
-    def run(self):
+    def run(self, metadata=None):
         """Runs the simulation and write the data"""
 
+        if metadata is None:
+            metadata = dict()
+        start = time.perf_counter()
         self._get_data()
-        self._write_data()
+        metadata["runtime_seconds"] = time.perf_counter() - start
+        self._write_data(metadata)
 
     def _get_data(self):
         """Runs trials for graph and aggregates data"""
@@ -105,7 +109,7 @@ class SubgraphSimulation(Simulation):
                 propagation_round=propagation_round,
             )
 
-    def _write_data(self):
+    def _write_data(self, metadata):
         """Writes subgraphs in graph_dir"""
 
         # init JSON and temporary directory
@@ -118,6 +122,11 @@ class SubgraphSimulation(Simulation):
             # Save the JSON
             with (Path(tmp_dir) / "results.json").open("w") as f:
                 json.dump(json_data, f, indent=4)
+
+            # Save metadata
+            if metadata:
+                with (Path(tmp_dir) / "metadata.json").open("w") as f:
+                    json.dump(metadata, f, indent=4)
 
             # Zip the data
             make_archive(self.output_path, "zip", tmp_dir)  # type: ignore
