@@ -47,7 +47,7 @@ class SubgraphSimulation(Simulation):
     def _janky_subgraphs(self):
         return deepcopy(getattr(self, "subgraphs"))
 
-    def run(self, metadata=None):
+    def run(self, metadata=None, include_graphs=True):
         """Runs the simulation and write the data"""
 
         if metadata is None:
@@ -55,7 +55,7 @@ class SubgraphSimulation(Simulation):
         start = time.perf_counter()
         self._get_data()
         metadata["runtime_seconds"] = time.perf_counter() - start
-        self._write_data(metadata)
+        self._write_data(metadata, include_graphs)
 
     def _get_data(self):
         """Runs trials for graph and aggregates data"""
@@ -111,24 +111,24 @@ class SubgraphSimulation(Simulation):
                 propagation_round=propagation_round,
             )
 
-    def _write_data(self, metadata):
+    def _write_data(self, metadata, include_graphs: bool):
         """Writes subgraphs in graph_dir"""
 
         # init JSON and temporary directory
         json_data = dict()
         with TemporaryDirectory() as tmp_dir:
-            # Write subgraph and add data to the JSON
-            for subgraph in self.subgraphs:
-                subgraph.write_graphs(Path(tmp_dir))
-                json_data[subgraph.name] = subgraph.data
+            if include_graphs:
+                # Write subgraph and add data to the JSON
+                for subgraph in self.subgraphs:
+                    subgraph.write_graphs(Path(tmp_dir))
+                    json_data[subgraph.name] = subgraph.data
             # Save the JSON
             with (Path(tmp_dir) / "results.json").open("w") as f:
                 json.dump(json_data, f, indent=4)
 
             # Save metadata
-            if metadata:
-                with (Path(tmp_dir) / "metadata.json").open("w") as f:
-                    json.dump(metadata, f, indent=4)
+            with (Path(tmp_dir) / "metadata.json").open("w") as f:
+                json.dump(metadata, f, indent=4)
 
             # Zip the data
             make_archive(self.output_path, "zip", tmp_dir)  # type: ignore
