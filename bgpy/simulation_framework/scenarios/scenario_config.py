@@ -64,6 +64,8 @@ class ScenarioConfig:
     override_announcements: tuple[Announcement, ...] = ()
     # If you'd like to add an extra CSV label you do so here
     csv_label: str = ""
+    # Deprecated param, don't use
+    scenario_label: str = ""
 
     def __post_init__(self):
         """sets AdoptASCls if it is None

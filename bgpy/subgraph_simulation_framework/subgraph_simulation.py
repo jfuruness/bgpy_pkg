@@ -43,6 +43,13 @@ class SubgraphSimulation(Simulation):
         kwargs["MetricTrackerCls"] = self._janky_subgraphs
         super().__init__(*args, **kwargs)
 
+        # Not used in newest version, but in this version the graph_label is
+        # used to store info. To change as a parameter, change the
+        # scenario_label in the scenario_config
+        scenarios = [x.ScenarioCls(scenario_config=x) for x in self.scenario_configs]
+        labels = [x.graph_label for x in scenarios]
+        assert len(labels) == len(set(labels)), "Scenario labels not unique"
+
     # Can't have as a lambda due to pickling issues
     def _janky_subgraphs(self):
         return deepcopy(getattr(self, "subgraphs"))

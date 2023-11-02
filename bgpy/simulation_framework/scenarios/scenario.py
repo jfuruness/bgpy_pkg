@@ -553,7 +553,9 @@ class Scenario(ABC):
             DeprecationWarning,
         )
 
-        if self.scenario_config.AdoptASCls:
+        if self.scenario_config.scenario_label:
+            return self.scenario_config.scenario_label
+        elif self.scenario_config.AdoptASCls:
             return (
                 f"{self.scenario_config.BaseASCls.name} "
                 f"({self.scenario_config.AdoptASCls.name} adopting)"
