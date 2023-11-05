@@ -1,5 +1,5 @@
 from .graph_analyzer import GraphAnalyzer
-from .graph_Factory import GraphFactory
+from .graph_factory import GraphFactory
 from .metric_tracker import MetricTracker
 
 from .scenarios import ScenarioConfig
