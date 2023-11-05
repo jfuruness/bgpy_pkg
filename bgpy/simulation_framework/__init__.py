@@ -1,4 +1,5 @@
 from .graph_analyzer import GraphAnalyzer
+from .graph_Factory import GraphFactory
 from .metric_tracker import MetricTracker
 
 from .scenarios import ScenarioConfig
@@ -18,6 +19,7 @@ from .utils import get_real_world_rov_asn_cls_dict
 
 __all__ = [
     "GraphAnalyzer",
+    "GraphFactory",
     "MetricTracker",
     "ScenarioConfig",
     "Scenario",

@@ -41,6 +41,7 @@ from .simulation_framework import SuperprefixPrefixHijack
 from .simulation_framework import ValidPrefix
 
 from .simulation_framework import GraphAnalyzer
+from .simulation_framework import GraphFactory
 from .simulation_framework import MetricTracker
 from .simulation_framework import Simulation
 from .simulation_framework import get_real_world_rov_asn_cls_dict
@@ -124,6 +125,7 @@ __all__ = [
     "SuperprefixPrefixHijack",
     "ValidPrefix",
     "GraphAnalyzer",
+    "GraphFactory",
     "MetricTracker",
     "Simulation",
     "get_real_world_rov_asn_cls_dict",
