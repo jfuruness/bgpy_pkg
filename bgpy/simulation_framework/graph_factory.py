@@ -1,4 +1,5 @@
 from collections import defaultdict
+from functools import cached_property
 from itertools import product
 from pathlib import Path
 import pickle
@@ -117,13 +118,15 @@ class GraphFactory:
             return float(percent_adopt)
 
         # Add the data from the lines
-        for as_cls, graph_rows in as_cls_rows_dict.items():
+        for i, (as_cls, graph_rows) in enumerate(as_cls_rows_dict.items()):
             graph_rows_sorted = list(sorted(graph_rows, key=get_percent_adopt))
             ax.errorbar(
                 [float(x["data_key"].percent_adopt) * 100 for x in graph_rows_sorted],
                 [x["value"] for x in graph_rows_sorted],
                 yerr=[x["yerr"] for x in graph_rows_sorted],
                 label=self.label_replacement_dict.get(as_cls.name, as_cls.name),
+                ls=self.line_styles[i],
+                markers=self.markers[i],
             )
         # Set labels
         default_y_label = f"PERCENT {metric_key.outcome.name}".replace("_", " ")
@@ -147,3 +150,19 @@ class GraphFactory:
         plt.savefig(self.graph_dir / graph_name)
         # https://stackoverflow.com/a/33343289/8903959
         plt.close(fig)
+
+    @cached_property
+    def markers(self) -> tuple[str, ...]:
+        # Leaving this as a list here for mypy
+        markers = [".", "1", "*", "x", "d", "2", "3", "4"]
+        markers += markers.copy()[0:-2:2]
+        markers += markers.copy()[::-1]
+        return tuple(markers)
+
+    @cached_property
+    def line_styles(self) -> tuple[str, ...]:
+        # Leaving this as a list here for mypy
+        styles = ["-", "--", "-.", ":", "solid", "dotted", "dashdot", "dashed"]
+        styles += styles.copy()[::-1]
+        styles += styles.copy()[0:-2:2]
+        return tuple(styles)
