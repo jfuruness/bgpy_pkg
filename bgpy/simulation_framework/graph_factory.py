@@ -22,6 +22,8 @@ class GraphFactory:
         graph_dir: Path,
         # A nice way to substitute labels post run
         label_replacement_dict=None,
+        y_axis_label_replacement_dict=None,
+        x_axis_label_replacement_dict=None,
     ) -> None:
         self.pickle_path: Path = pickle_path
         with self.pickle_path.open("rb") as f:
@@ -32,6 +34,14 @@ class GraphFactory:
         if label_replacement_dict is None:
             label_replacement_dict = dict()
         self.label_replacement_dict = label_replacement_dict
+
+        if x_axis_label_replacement_dict is None:
+            x_axis_label_replacement_dict = dict()
+        self.x_axis_label_replacement_dict = x_axis_label_replacement_dict
+
+        if y_axis_label_replacement_dict is None:
+            y_axis_label_replacement_dict = dict()
+        self.y_axis_label_replacement_dict = y_axis_label_replacement_dict
 
     def generate_graphs(self) -> None:
         """Generates default graphs"""
@@ -116,8 +126,17 @@ class GraphFactory:
                 label=self.label_replacement_dict.get(as_cls.name, as_cls.name),
             )
         # Set labels
-        ax.set_ylabel(f"PERCENT {metric_key.outcome.name}".replace("_", " "))
-        ax.set_xlabel("Percent Adoption")
+        default_y_label = f"PERCENT {metric_key.outcome.name}".replace("_", " ")
+        y_label = self.y_axis_label_replacement_dict.get(
+            default_y_label, default_y_label
+        )
+        ax.set_ylabel(y_label)
+
+        default_x_label = "Percent Adoption"
+        x_label = self.x_axis_label_replacement_dict.get(
+            default_x_label, default_x_label
+        )
+        ax.set_xlabel(x_label)
 
         # This is to avoid warnings
         handles, labels = ax.get_legend_handles_labels()

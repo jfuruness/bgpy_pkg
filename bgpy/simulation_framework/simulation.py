@@ -81,15 +81,19 @@ class Simulation:
         # So that multiprocessing doesn't interfere with one another
         CaidaCollector().run(**self.caida_run_kwargs)
 
-        self.GraphAnalyzerCls = GraphAnalyzerCls
-        self.MetricTrackerCls = MetricTrackerCls
+        self.GraphAnalyzerCls: type[GraphAnalyzer] = GraphAnalyzerCls
+        self.MetricTrackerCls: type[MetricTracker] = MetricTrackerCls
 
-    def run(self):
+    def run(
+        self,
+        GraphFactoryCls: type[GraphFactory] = GraphFactory,
+        graph_factory_kwargs=None,
+    ) -> None:
         """Runs the simulation and write the data"""
 
         metric_tracker = self._get_data()
         metric_tracker.write_data(csv_path=self.csv_path, pickle_path=self.pickle_path)
-        self._graph_data()
+        self._graph_data(GraphFactoryCls, graph_factory_kwargs)
 
     def _seed_random(self, seed_suffix: str = "") -> None:
         """Seeds randomness"""
@@ -306,11 +310,20 @@ class Simulation:
     # Graph Writing Funcs #
     #######################
 
-    def _graph_data(self) -> None:
+    def _graph_data(
+        self,
+        GraphFactoryCls: type[GraphFactory] = GraphFactory,
+        kwargs=None,
+    ) -> None:
         """Generates some default graphs"""
 
-        GraphFactory(self.pickle_path, self.output_dir / "graphs").generate_graphs()
-        print(f"\nWrote graphs to {self.output_dir / 'graphs'}")
+        if kwargs is None:
+            kwargs = dict()
+        # Set defaults for kwargs
+        kwargs["pickle_path"] = kwargs.pop("pickle_path", self.pickle_path)
+        kwargs["graph_dir"] = kwargs.pop("graph_dir", self.output_dir / "graphs")
+        GraphFactoryCls(**kwargs).generate_graphs()
+        print(f"\nWrote graphs to {kwargs['graph_dir']}")
 
     @property
     def graph_output_dir(self) -> Path:
