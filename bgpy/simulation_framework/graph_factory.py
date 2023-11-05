@@ -126,7 +126,7 @@ class GraphFactory:
                 yerr=[x["yerr"] for x in graph_rows_sorted],
                 label=self.label_replacement_dict.get(as_cls.name, as_cls.name),
                 ls=self.line_styles[i],
-                markers=self.markers[i],
+                marker=self.markers[i],
             )
         # Set labels
         default_y_label = f"PERCENT {metric_key.outcome.name}".replace("_", " ")
