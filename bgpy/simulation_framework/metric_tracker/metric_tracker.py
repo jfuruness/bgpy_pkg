@@ -1,5 +1,4 @@
 from collections import defaultdict
-from copy import deepcopy
 import csv
 from math import sqrt
 from pathlib import Path
@@ -50,9 +49,19 @@ class MetricTracker:
 
         if isinstance(other, MetricTracker):
             # Deepcopy is slow, but fine here since it's only called once after sims
-            new_data: defaultdict[DataKey, list[Metric]] = deepcopy(self.data)
-            for k, v in other.data.items():
-                new_data[k].extend(v)
+            # For BGPy __main__ using 100 trials, 3 percent adoptions, 1 scenario
+            # on a lenovo laptop
+            # 1.5s
+            # new_data: defaultdict[DataKey, list[Metric]] = deepcopy(self.data)
+            # .04s, but dangerous
+            # new_data: defaultdict[DataKey, list[Metric]] = self.data
+            # for k, v in other.data.items():
+            #     new_data[k].extend(v)
+            # .04s, not dangerous
+            new_data: defaultdict[DataKey, list[Metric]] = defaultdict(list)
+            for obj in (self, other):
+                for k, v in obj.data.items():
+                    new_data[k].extend(v)
             return self.__class__(data=new_data)
         else:
             return NotImplemented
