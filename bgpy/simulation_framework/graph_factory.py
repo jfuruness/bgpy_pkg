@@ -149,6 +149,12 @@ class GraphFactory:
         (self.graph_dir / graph_name).parent.mkdir(parents=True, exist_ok=True)
         plt.savefig(self.graph_dir / graph_name)
         # https://stackoverflow.com/a/33343289/8903959
+        ax.cla()
+        plt.cla()
+        plt.clf()
+        # If you just close the fig, on machines with many CPUs and trials,
+        # there is some sort of a memory leak that occurs. See stackoverflow
+        # comment above
         plt.close(fig)
 
     @cached_property
