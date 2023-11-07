@@ -54,7 +54,7 @@ class MetricTracker:
         keys = list(self.data)
         for k in keys:
             self.data.pop(k)
-            del k.scenario_config
+            # del k.scenario_config
             del k
         del self.data
 
