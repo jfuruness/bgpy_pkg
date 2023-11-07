@@ -104,7 +104,9 @@ class Simulation:
         # Must be done for pypy apparently
         # https://doc.pypy.org/en/latest/gc_info.html?highlight=garbage
         try:
-            gc.collect_step()
+            while True:
+                if gc.collect_step().major_is_done:
+                    break
         except AttributeError:
             pass
 
