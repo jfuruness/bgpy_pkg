@@ -143,7 +143,7 @@ class Simulation:
             del results
             return start
 
-           return sum(
+            return sum(
                 self._get_mp_results(self.parse_cpus), start=self.MetricTrackerCls()
             )
 
