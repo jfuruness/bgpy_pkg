@@ -116,8 +116,34 @@ class Simulation:
             )
         # Multiprocess
         else:
+            input("input to gc")
+            import gc
+            gc.disable()
+            def on_collect(unreachable):
+                print(f"Uncollectable objects: {unreachable}")
+            gc.callbacks.append(on_collect)
+            gc.collect()
+            gc.enable()
+            input("input after gc")
             # Results are a list of lists of metric trackers that we then sum
-            return sum(
+            results = self._get_mp_results(self.parse_cpus)
+            results = results * 1000
+            from pympler import asizeof
+            size_bytes = asizeof.asizeof(results)
+            size_gigabytes = size_bytes / (1024 ** 3)
+            print(size_gigabytes)
+            input()
+            start = self.MetricTrackerCls()
+            for i, result in results:
+                new_tracker = start + result
+                del start
+                results[i] = None
+                del result
+                start = new_tracker
+            del results
+            return start
+
+           return sum(
                 self._get_mp_results(self.parse_cpus), start=self.MetricTrackerCls()
             )
 
@@ -154,7 +180,7 @@ class Simulation:
         """Get results from multiprocessing"""
 
         # Pool is much faster than ProcessPoolExecutor
-        with Pool(parse_cpus, maxtasksperchild=1) as p:
+        with Pool(parse_cpus) as p:
             return p.starmap(self._run_chunk, enumerate(self._get_chunks(parse_cpus)))
 
     ############################
