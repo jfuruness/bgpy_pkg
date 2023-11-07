@@ -119,9 +119,9 @@ class Simulation:
             input("input to gc")
             import gc
             gc.disable()
-            def on_collect(unreachable):
-                print(f"Uncollectable objects: {unreachable}")
-            gc.callbacks.append(on_collect)
+            #def on_collect(unreachable):
+            #    print(f"Uncollectable objects: {unreachable}")
+            #gc.callbacks.append(on_collect)
             gc.collect()
             gc.enable()
             input("input after gc")
