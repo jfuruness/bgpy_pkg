@@ -127,12 +127,13 @@ class Simulation:
             input("input after gc")
             # Results are a list of lists of metric trackers that we then sum
             results = self._get_mp_results(self.parse_cpus)
+            input("pre * 1000")
             results = results * 1000
-            from pympler import asizeof
-            size_bytes = asizeof.asizeof(results)
-            size_gigabytes = size_bytes / (1024 ** 3)
-            print(size_gigabytes)
-            input()
+            #from pympler import asizeof
+            #size_bytes = asizeof.asizeof(results)
+            #size_gigabytes = size_bytes / (1024 ** 3)
+            #print(size_gigabytes)
+            input("no agg")
             start = self.MetricTrackerCls()
             for i, result in results:
                 new_tracker = start + result
@@ -141,6 +142,7 @@ class Simulation:
                 del result
                 start = new_tracker
             del results
+            input("fully agg")
             return start
 
             return sum(
