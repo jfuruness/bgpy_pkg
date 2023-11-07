@@ -135,7 +135,7 @@ class Simulation:
             #print(size_gigabytes)
             input("no agg")
             start = self.MetricTrackerCls()
-            for i, result in results:
+            for i, result in enumerate(results):
                 new_tracker = start + result
                 del start
                 results[i] = None
