@@ -89,16 +89,24 @@ class Simulation:
         self,
         GraphFactoryCls: type[GraphFactory] = GraphFactory,
         graph_factory_kwargs=None,
+        run_graphs: bool = True,
     ) -> None:
         """Runs the simulation and write the data"""
 
         metric_tracker = self._get_data()
         metric_tracker.write_data(csv_path=self.csv_path, pickle_path=self.pickle_path)
-        self._graph_data(GraphFactoryCls, graph_factory_kwargs)
+        if run_graphs:
+            self._graph_data(GraphFactoryCls, graph_factory_kwargs)
         # Must avoid memory leak if running multiple sims with multiple trials on a
         # machine with many CPUs
         del metric_tracker
         gc.collect()
+        # Must be done for pypy apparently
+        # https://doc.pypy.org/en/latest/gc_info.html?highlight=garbage
+        try:
+            gc.collect_step()
+        except AttributeError:
+            pass
 
     def _seed_random(self, seed_suffix: str = "") -> None:
         """Seeds randomness"""
