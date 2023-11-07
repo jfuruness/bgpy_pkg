@@ -116,7 +116,20 @@ class MetricTracker:
 
         rows = list()
         for data_key, metric_list in self.data.items():
-            agg_percents = sum(metric_list, start=metric_list[0]).percents
+            # agg_percents = sum(metric_list, start=metric_list[0]).percents
+            temp_metrics = list()
+            start = metric_list[0]
+            for i, result in enumerate(metric_list):
+                if i == 0:
+                    continue
+                temp = start + result
+                temp_metrics.append(temp)
+                start = temp
+            agg_percents = start.percents
+            for i, x in enumerate(temp_metrics):
+                del x
+                temp_metrics[i] = None  # type: ignore
+
             for metric_key, trial_data in agg_percents.items():
                 assert metric_key.ASCls
                 row = {
@@ -139,7 +152,20 @@ class MetricTracker:
     def get_pickle_data(self):
         agg_data = list()
         for data_key, metric_list in self.data.items():
-            agg_percents = sum(metric_list, start=metric_list[0]).percents
+            # agg_percents = sum(metric_list, start=metric_list[0]).percents
+            temp_metrics = list()
+            start = metric_list[0]
+            for i, result in enumerate(metric_list):
+                if i == 0:
+                    continue
+                temp = start + result
+                temp_metrics.append(temp)
+                start = temp
+            agg_percents = start.percents
+            for i, x in enumerate(temp_metrics):
+                del x
+                temp_metrics[i] = None  # type: ignore
+
             for metric_key, trial_data in agg_percents.items():
                 row = {
                     "data_key": data_key,

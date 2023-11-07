@@ -180,6 +180,16 @@ class Simulation:
     def _get_mp_results(self, parse_cpus: int) -> list[MetricTracker]:
         """Get results from multiprocessing"""
 
+        gc.collect()
+        # Must be done for pypy apparently
+        # https://doc.pypy.org/en/latest/gc_info.html?highlight=garbage
+        try:
+            while True:
+                if gc.collect_step().major_is_done:  # type: ignore
+                    break
+        except AttributeError:
+            pass
+
         # Pool is much faster than ProcessPoolExecutor
         with Pool(parse_cpus) as p:
             return p.starmap(self._run_chunk, enumerate(self._get_chunks(parse_cpus)))
