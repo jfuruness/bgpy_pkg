@@ -96,6 +96,22 @@ class Simulation:
         metric_tracker.write_data(csv_path=self.csv_path, pickle_path=self.pickle_path)
         self._graph_data(GraphFactoryCls, graph_factory_kwargs)
 
+        # If you are running one simulation after the other, matplotlib
+        # basically leaks memory. I couldn't find the original issue, but
+        # here is a note in one of their releases saying to just call the garbage
+        # collector: https://matplotlib.org/stable/users/prev_whats_new/
+        # whats_new_3.6.0.html#garbage-collection-is-no-longer-run-on-figure-close
+        # and here is the stackoverflow post on this topic:
+        # https://stackoverflow.com/a/33343289/8903959
+        # Even if this works without garbage collection in 3.5.2, that will break
+        # as soon as we upgrade to the latest matplotlib which no longer does
+        # If you run the simulations on a machine with many cores and lots of trials,
+        # this bug leaks enough memory to crash the server, so we must garbage collect
+        # ^ the above is true, but the memory leak
+        # collected in time
+        del metric_tracker
+        gc.collect()
+
     def _seed_random(self, seed_suffix: str = "") -> None:
         """Seeds randomness"""
 
