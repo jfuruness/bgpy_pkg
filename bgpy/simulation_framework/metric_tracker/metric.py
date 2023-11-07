@@ -28,6 +28,19 @@ class Metric:
         else:
             self.percents = defaultdict(list)
 
+    def __del__(self):
+        # For pypy garbage collection
+        for k, v in self.percents.items():
+            for i, item in enumerate(v):
+                del item
+                v[i] = None  # type: ignore
+            del v
+        del self.percents
+        del self._numerators
+        del self._denominators
+        del self.as_classes_used
+        del self.metric_key
+
     def __add__(self, other):
         """Adds metric classes together"""
 

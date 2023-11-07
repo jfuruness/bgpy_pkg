@@ -105,7 +105,7 @@ class Simulation:
         # https://doc.pypy.org/en/latest/gc_info.html?highlight=garbage
         try:
             while True:
-                if gc.collect_step().major_is_done:
+                if gc.collect_step().major_is_done:  # type: ignore
                     break
         except AttributeError:
             pass
@@ -125,15 +125,28 @@ class Simulation:
         # Single process
         if self.parse_cpus == 1:
             # Results are a list of lists of metric trackers that we then sum
-            return sum(
-                self._get_single_process_results(), start=self.MetricTrackerCls()
-            )
+            # return sum(
+            #     self._get_single_process_results(), start=self.MetricTrackerCls()
+            # )
+
+            results = self._get_single_process_results()
         # Multiprocess
         else:
             # Results are a list of lists of metric trackers that we then sum
-            return sum(
-                self._get_mp_results(self.parse_cpus), start=self.MetricTrackerCls()
-            )
+            # return sum(
+            #     self._get_mp_results(self.parse_cpus), start=self.MetricTrackerCls()
+            # )
+            results = self._get_mp_results(self.parse_cpus)
+        # pypy garbage collection needs this or it breaks on machines with large cores
+        # and large trials
+        start = self.MetricTrackerCls()
+        for i, result in enumerate(results):
+            temp = start + result
+            del start
+            del result
+            results[i] = None  # type: ignore
+            start = temp
+        return start
 
     ###########################
     # Multiprocessing Methods #

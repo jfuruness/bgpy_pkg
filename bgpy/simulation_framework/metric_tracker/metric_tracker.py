@@ -47,10 +47,15 @@ class MetricTracker:
 
         for data_key, metric_list in self.data.items():
             for i, metric in enumerate(metric_list):
-                metric_list[i] = None
+                metric_list[i] = None  # type: ignore
                 del metric
             del metric_list
         del self.metric_keys
+        keys = list(self.data)
+        for k in keys:
+            self.data.pop(k)
+            del k.scenario_config
+            del k
         del self.data
 
     #############
