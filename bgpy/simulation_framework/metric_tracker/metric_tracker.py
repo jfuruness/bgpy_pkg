@@ -36,6 +36,23 @@ class MetricTracker:
 
         self.metric_keys: list[MetricKey] = list(get_all_metric_keys())
 
+    def __del__(self):
+        """Must delete in this way or massive memory leak
+
+        I guess garbage collector struggles when objects
+        reference each other, and something in this object
+        must cause circular references. So much for python
+        managing memory for you
+        """
+
+        for data_key, metric_list in self.data.items():
+            for i, metric in enumerate(metric_list):
+                metric_list[i] = None
+                del metric
+            del metric_list
+        del self.metric_keys
+        del self.data
+
     #############
     # Add Funcs #
     #############

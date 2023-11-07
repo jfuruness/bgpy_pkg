@@ -95,6 +95,10 @@ class Simulation:
         metric_tracker = self._get_data()
         metric_tracker.write_data(csv_path=self.csv_path, pickle_path=self.pickle_path)
         self._graph_data(GraphFactoryCls, graph_factory_kwargs)
+        # Must avoid memory leak if running multiple sims with multiple trials on a
+        # machine with many CPUs
+        del metric_tracker
+        gc.collect()
 
     def _seed_random(self, seed_suffix: str = "") -> None:
         """Seeds randomness"""
@@ -116,35 +120,7 @@ class Simulation:
             )
         # Multiprocess
         else:
-            input("input to gc")
-            import gc
-            gc.disable()
-            #def on_collect(unreachable):
-            #    print(f"Uncollectable objects: {unreachable}")
-            #gc.callbacks.append(on_collect)
-            gc.collect()
-            gc.enable()
-            input("input after gc")
             # Results are a list of lists of metric trackers that we then sum
-            results = self._get_mp_results(self.parse_cpus)
-            input("pre * 1000")
-            results = results * 1000
-            #from pympler import asizeof
-            #size_bytes = asizeof.asizeof(results)
-            #size_gigabytes = size_bytes / (1024 ** 3)
-            #print(size_gigabytes)
-            input("no agg")
-            start = self.MetricTrackerCls()
-            for i, result in enumerate(results):
-                new_tracker = start + result
-                del start
-                results[i] = None
-                del result
-                start = new_tracker
-            del results
-            input("fully agg")
-            return start
-
             return sum(
                 self._get_mp_results(self.parse_cpus), start=self.MetricTrackerCls()
             )
