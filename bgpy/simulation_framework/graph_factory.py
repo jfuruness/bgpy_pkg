@@ -72,18 +72,6 @@ class GraphFactory:
                 ):
                     relevant_rows.append(row)
             self._generate_graph(metric_key, relevant_rows, adopting=adopting)
-        # If you are running one simulation after the other, matplotlib
-        # basically leaks memory. I couldn't find the original issue, but
-        # here is a note in one of their releases saying to just call the garbage
-        # collector: https://matplotlib.org/stable/users/prev_whats_new/
-        # whats_new_3.6.0.html#garbage-collection-is-no-longer-run-on-figure-close
-        # and here is the stackoverflow post on this topic:
-        # https://stackoverflow.com/a/33343289/8903959
-        # Even if this works without garbage collection in 3.5.2, that will break
-        # as soon as we upgrade to the latest matplotlib which no longer does
-        # If you run the simulations on a machine with many cores and lots of trials,
-        # this bug leaks enough memory to crash the server, so we must garbage collect
-        gc.collect()
 
     def _generate_graph(self, metric_key: MetricKey, relevant_rows, adopting) -> None:
         """Writes a graph to the graph dir"""
@@ -169,6 +157,18 @@ class GraphFactory:
         # there is some sort of a memory leak that occurs. See stackoverflow
         # comment above
         plt.close(fig)
+        # If you are running one simulation after the other, matplotlib
+        # basically leaks memory. I couldn't find the original issue, but
+        # here is a note in one of their releases saying to just call the garbage
+        # collector: https://matplotlib.org/stable/users/prev_whats_new/
+        # whats_new_3.6.0.html#garbage-collection-is-no-longer-run-on-figure-close
+        # and here is the stackoverflow post on this topic:
+        # https://stackoverflow.com/a/33343289/8903959
+        # Even if this works without garbage collection in 3.5.2, that will break
+        # as soon as we upgrade to the latest matplotlib which no longer does
+        # If you run the simulations on a machine with many cores and lots of trials,
+        # this bug leaks enough memory to crash the server, so we must garbage collect
+        gc.collect()
 
     @cached_property
     def markers(self) -> tuple[str, ...]:

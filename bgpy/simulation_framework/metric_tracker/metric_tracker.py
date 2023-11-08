@@ -36,28 +36,6 @@ class MetricTracker:
 
         self.metric_keys: list[MetricKey] = list(get_all_metric_keys())
 
-    def __del__(self):
-        """Must delete in this way or massive memory leak
-
-        I guess garbage collector struggles when objects
-        reference each other, and something in this object
-        must cause circular references. So much for python
-        managing memory for you
-        """
-
-        for data_key, metric_list in self.data.items():
-            for i, metric in enumerate(metric_list):
-                metric_list[i] = None  # type: ignore
-                del metric
-            del metric_list
-        del self.metric_keys
-        keys = list(self.data)
-        for k in keys:
-            self.data.pop(k)
-            # del k.scenario_config
-            del k
-        del self.data
-
     #############
     # Add Funcs #
     #############
@@ -116,20 +94,7 @@ class MetricTracker:
 
         rows = list()
         for data_key, metric_list in self.data.items():
-            # agg_percents = sum(metric_list, start=metric_list[0]).percents
-            temp_metrics = list()
-            start = metric_list[0]
-            for i, result in enumerate(metric_list):
-                if i == 0:
-                    continue
-                temp = start + result
-                temp_metrics.append(temp)
-                start = temp
-            agg_percents = start.percents
-            for i, x in enumerate(temp_metrics):
-                del x
-                temp_metrics[i] = None  # type: ignore
-
+            agg_percents = sum(metric_list, start=metric_list[0]).percents
             for metric_key, trial_data in agg_percents.items():
                 assert metric_key.ASCls
                 row = {
@@ -152,20 +117,7 @@ class MetricTracker:
     def get_pickle_data(self):
         agg_data = list()
         for data_key, metric_list in self.data.items():
-            # agg_percents = sum(metric_list, start=metric_list[0]).percents
-            temp_metrics = list()
-            start = metric_list[0]
-            for i, result in enumerate(metric_list):
-                if i == 0:
-                    continue
-                temp = start + result
-                temp_metrics.append(temp)
-                start = temp
-            agg_percents = start.percents
-            for i, x in enumerate(temp_metrics):
-                del x
-                temp_metrics[i] = None  # type: ignore
-
+            agg_percents = sum(metric_list, start=metric_list[0]).percents
             for metric_key, trial_data in agg_percents.items():
                 row = {
                     "data_key": data_key,

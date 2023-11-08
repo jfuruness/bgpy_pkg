@@ -89,26 +89,15 @@ class Simulation:
         self,
         GraphFactoryCls: type[GraphFactory] = GraphFactory,
         graph_factory_kwargs=None,
-        run_graphs: bool = True,
     ) -> None:
         """Runs the simulation and write the data"""
 
         metric_tracker = self._get_data()
         metric_tracker.write_data(csv_path=self.csv_path, pickle_path=self.pickle_path)
-        if run_graphs:
-            self._graph_data(GraphFactoryCls, graph_factory_kwargs)
-        # Must avoid memory leak if running multiple sims with multiple trials on a
-        # machine with many CPUs
+        self._graph_data(GraphFactoryCls, graph_factory_kwargs)
+        # This object holds a lot of memory, good to get rid of it
         del metric_tracker
         gc.collect()
-        # Must be done for pypy apparently
-        # https://doc.pypy.org/en/latest/gc_info.html?highlight=garbage
-        try:
-            while True:
-                if gc.collect_step().major_is_done:  # type: ignore
-                    break
-        except AttributeError:
-            pass
 
     def _seed_random(self, seed_suffix: str = "") -> None:
         """Seeds randomness"""
@@ -125,28 +114,15 @@ class Simulation:
         # Single process
         if self.parse_cpus == 1:
             # Results are a list of lists of metric trackers that we then sum
-            # return sum(
-            #     self._get_single_process_results(), start=self.MetricTrackerCls()
-            # )
-
-            results = self._get_single_process_results()
+            return sum(
+                self._get_single_process_results(), start=self.MetricTrackerCls()
+            )
         # Multiprocess
         else:
             # Results are a list of lists of metric trackers that we then sum
-            # return sum(
-            #     self._get_mp_results(self.parse_cpus), start=self.MetricTrackerCls()
-            # )
-            results = self._get_mp_results(self.parse_cpus)
-        # pypy garbage collection needs this or it breaks on machines with large cores
-        # and large trials
-        start = self.MetricTrackerCls()
-        for i, result in enumerate(results):
-            temp = start + result
-            del start
-            del result
-            results[i] = None  # type: ignore
-            start = temp
-        return start
+            return sum(
+                self._get_mp_results(self.parse_cpus), start=self.MetricTrackerCls()
+            )
 
     ###########################
     # Multiprocessing Methods #
@@ -179,16 +155,6 @@ class Simulation:
 
     def _get_mp_results(self, parse_cpus: int) -> list[MetricTracker]:
         """Get results from multiprocessing"""
-
-        gc.collect()
-        # Must be done for pypy apparently
-        # https://doc.pypy.org/en/latest/gc_info.html?highlight=garbage
-        try:
-            while True:
-                if gc.collect_step().major_is_done:  # type: ignore
-                    break
-        except AttributeError:
-            pass
 
         # Pool is much faster than ProcessPoolExecutor
         with Pool(parse_cpus) as p:
