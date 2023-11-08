@@ -45,9 +45,10 @@ class Metric:
         """Adds metric classes together"""
 
         if isinstance(other, Metric):
-            agg_percents = self.percents.copy()
-            for metric_key, percent_list in other.percents.items():
-                agg_percents[metric_key].extend(percent_list)
+            agg_percents = defaultdict(list)
+            for obj in (self, other):
+                for metric_key, percent_list in obj.percents.items():
+                    agg_percents[metric_key].extend(percent_list)
             return Metric(
                 metric_key=self.metric_key,
                 as_classes_used=self.as_classes_used,
