@@ -104,7 +104,7 @@ class Simulation:
 
         if self.python_hash_seed is not None:
             msg = "Not deterministic unless you also set PYTHONHASHSEED in the env"
-            if os.environ.get("PYTHONHASHSEED") != str(self.python_hash_seed)
+            if os.environ.get("PYTHONHASHSEED") != str(self.python_hash_seed):
                 raise Exception(msg)
             random.seed(str(self.python_hash_seed) + seed_suffix)
 
