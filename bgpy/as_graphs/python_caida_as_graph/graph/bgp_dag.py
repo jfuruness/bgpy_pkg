@@ -7,8 +7,8 @@ from yamlable import yaml_info, YamlAble, yaml_info_decorate
 from .base_as import AS
 
 from bgpy.enums import ASGroups
-from bgpy.caida_collector.links import CustomerProviderLink as CPLink
-from bgpy.caida_collector.links import PeerLink
+from bgpy.as_graphs.python_caida_as_graph.links import CustomerProviderLink as CPLink
+from bgpy.as_graphs.python_caida_as_graph.links import PeerLink
 
 
 # can't import into class due to mypy issue

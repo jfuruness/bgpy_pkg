@@ -3,12 +3,12 @@ from typing import Iterator, Optional
 
 from yamlable import YamlAble, yaml_info
 
-from bgpy.caida_collector import AS
+from bgpy.as_graphs.python_as_graph import AS
 
 
 from .ann_container import AnnContainer
 
-from bgpy.simulation_engine.announcement import Announcement as Ann
+from bgpy.simulation_engines.python_simulation_engine.announcement import Announcement as Ann
 
 
 @yaml_info(yaml_tag="SendInfo")

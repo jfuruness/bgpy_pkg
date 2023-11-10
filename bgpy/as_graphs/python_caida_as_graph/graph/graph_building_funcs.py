@@ -4,8 +4,8 @@ import csv
 from pathlib import Path
 
 from .base_as import AS
-from bgpy.caida_collector.links import CustomerProviderLink as CPLink
-from bgpy.caida_collector.links import PeerLink
+from bgpy.as_graphs.python_caida_as_graph.links import CustomerProviderLink as CPLink
+from bgpy.as_graphs.python_caida_as_graph.links import PeerLink
 
 
 def _gen_graph(
