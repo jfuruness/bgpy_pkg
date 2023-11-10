@@ -476,21 +476,25 @@ class Scenario(ABC):
     def _yamlable_non_default_asn_cls_dict(self) -> frozendict[int, str]:
         """Converts non default as cls dict to a yamlable dict of asn: name"""
 
-        return frozendict({
-            asn: BGPSimplePolicy.subclass_to_name_dict[PolicyCls]
-            for asn, PolicyCls in self.non_default_asn_cls_dict.items()
-        })
+        return frozendict(
+            {
+                asn: BGPSimplePolicy.subclass_to_name_dict[PolicyCls]
+                for asn, PolicyCls in self.non_default_asn_cls_dict.items()
+            }
+        )
 
     @staticmethod
     def _get_non_default_asn_cls_dict_from_yaml(
-        yaml_dict
+        yaml_dict,
     ) -> frozendict[int, type[BGPSimplePolicy]]:
         """Converts yamlified non_default_asn_cls_dict back to normal asn: class"""
 
-        return frozendict({
-            asn: BGPSimplePolicy.name_to_subclass_dict[name]
-            for asn, name in yaml_dict.items()
-        })
+        return frozendict(
+            {
+                asn: BGPSimplePolicy.name_to_subclass_dict[name]
+                for asn, name in yaml_dict.items()
+            }
+        )
 
     def __to_yaml_dict__(self) -> dict[Any, Any]:
         """This optional method is called when you call yaml.dump()"""

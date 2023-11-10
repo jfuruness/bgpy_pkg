@@ -58,7 +58,7 @@ class CaidaCollector:
         *,
         BaseASCls: type[AS] = AS,
         BasePolicyCls: type[BGPSimplePolicy] = BGPSimplePolicy,
-        GraphCls: type[BGPDAG] = BGPDAG
+        GraphCls: type[BGPDAG] = BGPDAG,
     ) -> None:
         # Base AS Class for the BGPDAG
         self.BaseASCls: type[AS] = BaseASCls

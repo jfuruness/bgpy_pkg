@@ -32,7 +32,7 @@ def _gen_graph(
             peers_setup_set=set(),
             customers_setup_set=set(),
             providers_setup_set=set(),
-            policy=BasePolicyCls()
+            policy=BasePolicyCls(),
         )
         assert as_.policy.as_ == as_, f"{BaseASCls} not setting policy.as_ correctly"
         return as_

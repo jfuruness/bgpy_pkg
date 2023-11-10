@@ -21,8 +21,12 @@ class Metric:
     ) -> None:
         self.metric_key: MetricKey = metric_key
         self.as_classes_used: frozenset[Type[BGPSimplePolicy]] = as_classes_used
-        self._numerators: dict[type[BGPSimplePolicy], float] = {k: 0 for k in as_classes_used}
-        self._denominators: dict[type[BGPSimplePolicy], float] = {k: 0 for k in as_classes_used}
+        self._numerators: dict[type[BGPSimplePolicy], float] = {
+            k: 0 for k in as_classes_used
+        }
+        self._denominators: dict[type[BGPSimplePolicy], float] = {
+            k: 0 for k in as_classes_used
+        }
         if percents:
             self.percents: defaultdict[MetricKey, list[float]] = percents
         else:

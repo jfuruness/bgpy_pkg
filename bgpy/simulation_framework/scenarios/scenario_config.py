@@ -64,10 +64,10 @@ class ScenarioConfig:
     # internal to frozendict. Either way, it doesn't matter, this is
     # pretty much only used within the tests, which would fail if this
     # was wrong anyways
-    #override_non_default_asn_cls_dict: Union[
+    # override_non_default_asn_cls_dict: Union[
     #    Optional[frozendict[int, type[BGPSimplePolicy]]],
     #    frozendict[str, None]
-    #] = None
+    # ] = None
     override_announcements: tuple[Announcement, ...] = ()
     # If you'd like to add an extra CSV label you do so here
     csv_label: str = ""
@@ -120,10 +120,15 @@ class ScenarioConfig:
         }
 
     @staticmethod
-    def _get_hardcoded_asn_cls_dict_from_yaml(yaml_dict) -> dict[int, type[BGPSimplePolicy]]:
+    def _get_hardcoded_asn_cls_dict_from_yaml(
+        yaml_dict,
+    ) -> dict[int, type[BGPSimplePolicy]]:
         """Converts yamlified non_default_as_cls_dict back to normal asn: class"""
 
-        return {asn: BGPSimplePolicy.name_to_subclass_dict[name] for asn, name in yaml_dict.items()}
+        return {
+            asn: BGPSimplePolicy.name_to_subclass_dict[name]
+            for asn, name in yaml_dict.items()
+        }
 
     def __to_yaml_dict__(self) -> dict[Any, Any]:
         """This optional method is called when you call yaml.dump()"""

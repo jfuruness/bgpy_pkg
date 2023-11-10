@@ -28,9 +28,9 @@ def get_real_world_rov_asn_cls_dict(
     if caida_run_kwargs is None:
         caida_run_kwargs = {"tsv_path": None}
 
-    engine = CaidaCollector(BasePolicyCls=BGPSimplePolicy, GraphCls=SimulationEngine).run(
-        **caida_run_kwargs
-    )
+    engine = CaidaCollector(
+        BasePolicyCls=BGPSimplePolicy, GraphCls=SimulationEngine
+    ).run(**caida_run_kwargs)
 
     for as_ in engine:
         if as_.rov_confidence >= min_rov_confidence:

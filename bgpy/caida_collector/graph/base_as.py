@@ -12,7 +12,6 @@ SETUP_REL = Optional[set[AStypeHint]]
 REL = tuple[AStypeHint, ...]
 
 
-
 @yaml_info(yaml_tag="AS")
 class AS(YamlAble):
     """Autonomous System class. Contains attributes of an AS"""
@@ -77,7 +76,6 @@ class AS(YamlAble):
         else:
             return NotImplemented
 
-
     def __hash__(self) -> int:
         return self.hashed_asn
 
@@ -115,9 +113,8 @@ class AS(YamlAble):
             "rov_confidence",
             "rov_source",
             "hashed_asn",
-        # Don't forget the properties
+            # Don't forget the properties
         ) + ("stubs", "stub", "multihomed", "transit")
-
 
     def __str__(self):
         return "\n".join(str(x) for x in self.db_row.items())

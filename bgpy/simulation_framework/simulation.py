@@ -33,7 +33,11 @@ class Simulation:
             0.8,
         ),
         scenario_configs: tuple[ScenarioConfig, ...] = tuple(
-            [ScenarioConfig(ScenarioCls=SubprefixHijack, AdoptPolicyCls=ROVSimplePolicy)]
+            [
+                ScenarioConfig(
+                    ScenarioCls=SubprefixHijack, AdoptPolicyCls=ROVSimplePolicy
+                )
+            ]
         ),
         num_trials: int = 2,
         propagation_rounds: int = 1,

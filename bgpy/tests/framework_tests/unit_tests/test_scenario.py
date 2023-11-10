@@ -275,7 +275,9 @@ class TestScenario:
             scenario_config=prev_scenario_config, engine=engine
         )
         scenario_config = ScenarioConfig(
-            ScenarioCls=SubprefixHijack, AdoptPolicyCls=BGPPolicy, BasePolicyCls=BasePolicyCls
+            ScenarioCls=SubprefixHijack,
+            AdoptPolicyCls=BGPPolicy,
+            BasePolicyCls=BasePolicyCls,
         )
         scenario = SubprefixHijack(scenario_config=scenario_config, engine=engine)
         non_default_asn_cls_dict = scenario._get_non_default_asn_cls_dict(
@@ -318,7 +320,9 @@ class TestScenario:
             scenario_config=prev_scenario_config, engine=engine
         )
         scenario_config = ScenarioConfig(
-            ScenarioCls=SubprefixHijack, AdoptPolicyCls=BGPPolicy, BasePolicyCls=BasePolicyCls
+            ScenarioCls=SubprefixHijack,
+            AdoptPolicyCls=BGPPolicy,
+            BasePolicyCls=BasePolicyCls,
         )
         scenario = SubprefixHijack(scenario_config=scenario_config, engine=engine)
         non_default_asn_cls_dict = scenario._get_non_default_asn_cls_dict(
@@ -342,7 +346,9 @@ class TestScenario:
         """
 
         scenario_config = ScenarioConfig(
-            ScenarioCls=SubprefixHijack, AdoptPolicyCls=ROVSimplePolicy, BasePolicyCls=BGPSimplePolicy
+            ScenarioCls=SubprefixHijack,
+            AdoptPolicyCls=ROVSimplePolicy,
+            BasePolicyCls=BGPSimplePolicy,
         )
         scenario = SubprefixHijack(
             scenario_config=scenario_config, percent_adoption=0.5, engine=engine

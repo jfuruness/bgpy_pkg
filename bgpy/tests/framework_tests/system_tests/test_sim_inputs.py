@@ -51,7 +51,13 @@ PARSE_CPUS = (1, 2)
     [
         x
         for x in product(
-            *[Policy_CLPolicySES, Policy_CLPolicySES, SCENARIOS, NUM_ATTACKERS, PARSE_CPUS]
+            *[
+                Policy_CLPolicySES,
+                Policy_CLPolicySES,
+                SCENARIOS,
+                NUM_ATTACKERS,
+                PARSE_CPUS,
+            ]
         )
         # Where BasePolicyCls != AdoptPolicyCls
         if x[0] != x[1]
