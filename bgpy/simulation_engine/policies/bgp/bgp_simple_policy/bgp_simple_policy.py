@@ -1,5 +1,7 @@
 from typing import Callable, Optional
 
+from yamlable import yaml_info_decorate
+
 
 # Propagation functionality
 from .propagate_funcs import propagate_to_providers
@@ -65,12 +67,11 @@ class BGPSimplePolicy:
         cls.subclass_to_name_dict[cls] = cls.__name__
         cls.name_to_subclass_dict[cls.__name__] = cls
 
-
     def __init__(
         self,
         _local_rib: Optional[LocalRIB] = None,
         _recv_q: Optional[RecvQueue] = None,
-        as_: Optional[AS]] = None,
+        as_: Optional[AS] = None,
     ):
         """Add local rib and data structures here
 

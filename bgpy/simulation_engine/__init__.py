@@ -6,12 +6,12 @@ from .ann_containers import RIBsOut
 from .ann_containers import SendQueue
 from .ann_containers import RecvQueue
 
-from .policies import BGPSimpleAS
-from .policies import BGPAS
-from .policies import ROVSimpleAS
-from .policies import RealROVSimpleAS
-from .policies import RealPeerROVSimpleAS
-from .policies import ROVAS
+from .policies import BGPSimplePolicy
+from .policies import BGPPolicy
+from .policies import ROVSimplePolicy
+from .policies import RealROVSimplePolicy
+from .policies import RealPeerROVSimplePolicy
+from .policies import ROVPolicy
 
 from .simulation_engine import SimulationEngine
 
@@ -22,11 +22,11 @@ __all__ = [
     "RIBsOut",
     "SendQueue",
     "RecvQueue",
-    "BGPSimpleAS",
-    "BGPAS",
-    "ROVSimpleAS",
-    "RealROVSimpleAS",
-    "RealPeerROVSimpleAS",
-    "ROVAS",
+    "BGPSimplePolicy",
+    "BGPPolicy",
+    "ROVSimplePolicy",
+    "RealROVSimplePolicy",
+    "RealPeerROVSimplePolicy",
+    "ROVPolicy",
     "SimulationEngine",
 ]
