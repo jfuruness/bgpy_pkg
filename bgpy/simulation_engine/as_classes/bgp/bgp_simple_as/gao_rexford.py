@@ -1,7 +1,7 @@
 from typing import Optional
 
 from bgpy.simulation_engine.announcement import Announcement as Ann
-from bgpy.enums import Relationships
+from bgpy.enums import GaoRexfordPref, Relationships
 
 
 def _new_ann_better(
@@ -34,76 +34,41 @@ def _new_ann_better(
     default_new_recv_rel: Relationship for if the ann is unprocessed
     """
 
-    # Can't assert this here due to passing new_ann as None
-    # msg = "Should have been removed in the validation func"
-    # assert self.asn not in new_ann.as_path, msg
+    # mypy says statement is unreachable, but this isn't true for subclasses
+    # In other repos
+    if current_ann is None:  # type: ignore
+        return True
+    elif new_ann is None:
+        # mypy says statement is unreachable but this isn't true for subclasses
+        # In other repos
+        return False  # type: ignore
 
-    # First check if new relationship is better
-    new_rel_better: Optional[bool] = self._new_rel_better(
-        current_ann,
-        current_processed,
-        default_current_recv_rel,
-        new_ann,
-        new_processed,
-        default_new_recv_rel,
-    )
-    # If new rel better is True or False, return it
-    if new_rel_better is not None:
-        return new_rel_better
-    else:
-        # Return the outcome of as path and tiebreaks
-        # mypy doesn't recognize that this is always a bool
-        return self._new_as_path_ties_better(  # type: ignore
-            current_ann, current_processed, new_ann, new_processed
+    # Inspiration for this func refactor came from bgpsecsim
+    for func in self._gao_rexford_funcs:
+        gao_rexford_pref = func(
+            current_ann,
+            current_processed,
+            default_current_recv_rel,
+            new_ann,
+            new_processed,
+            default_new_recv_rel,
         )
-
-
-def _new_as_path_ties_better(
-    self,
-    current_ann: Optional[Ann],
-    current_processed: bool,
-    new_ann: Ann,
-    new_processed: bool,
-) -> bool:
-    """Returns bool if new_ann > current_ann by gao rexford
-
-    Specifically relating to as path and tie breaks
-
-    current_ann: Announcement we are checking against
-    current_processed: True if announcement was processed (in local rib)
-        This means that the announcement has the current as preprended
-            to the AS path, and the proper recv_relationship set
-    new_ann: New announcement
-    new_processed: True if announcement was processed (in local rib)
-        This means that the announcement has the current AS prepended
-            to the AS path, and the proper recv_relationship set
-    """
-
-    # Determine if the new as path is shorter
-    new_as_path_shorter: Optional[bool] = self._new_as_path_shorter(
-        current_ann, current_processed, new_ann, new_processed
-    )
-
-    # If new_as_path_shorter is True or False, return it
-    if new_as_path_shorter is not None:
-        return new_as_path_shorter
-    # Otherwise it's a tie and we must tiebreak
-    else:
-        # Ignore type since mypy doesn't recognize that this is bool
-        return self._new_wins_ties(  # type: ignore
-            current_ann, current_processed, new_ann, new_processed
-        )
+        if gao_rexford_pref == GaoRexfordPref.NEW_ANN_BETTER:
+            return True
+        elif gao_rexford_pref == GaoRexfordPref.OLD_ANN_BETTER:
+            return False
+    raise Exception("No ann was chosen")
 
 
 def _new_rel_better(
     self,
-    current_ann: Optional[Ann],
+    current_ann: Ann,
     current_processed: bool,
     default_current_recv_rel: Relationships,
     new_ann: Ann,
     new_processed: bool,
     default_new_recv_rel: Relationships,
-) -> Optional[bool]:
+) -> GaoRexfordPref:
     """Determines if the new ann > current ann by Gao Rexford/relationship
 
     current_ann: Announcement we are checking against
@@ -118,42 +83,35 @@ def _new_rel_better(
     default_new_recv_rel: Relationship for if the ann is unprocessed
     """
 
-    # mypy says statement is unreachable, but this isn't true for subclasses
-    # In other repos
-    if current_ann is None:  # type: ignore
-        return True
-    elif new_ann is None:
-        # mypy says statement is unreachable but this isn't true for subclasses
-        # In other repos
-        return False  # type: ignore
+    # Get relationship of current ann
+    if current_processed:
+        current_rel: Relationships = current_ann.recv_relationship
     else:
-        # Get relationship of current ann
-        if current_processed:
-            current_rel: Relationships = current_ann.recv_relationship
-        else:
-            current_rel = default_current_recv_rel
+        current_rel = default_current_recv_rel
 
-        # Get relationship of new ann. Common case first
-        if not new_processed:
-            new_rel: Relationships = default_new_recv_rel
-        else:
-            new_rel = new_ann.recv_relationship
+    # Get relationship of new ann. Common case first
+    if not new_processed:
+        new_rel: Relationships = default_new_recv_rel
+    else:
+        new_rel = new_ann.recv_relationship
 
     if current_rel.value > new_rel.value:
-        return False
+        return GaoRexfordPref.OLD_ANN_BETTER
     elif current_rel.value < new_rel.value:
-        return True
+        return GaoRexfordPref.NEW_ANN_BETTER
     else:
-        return None
+        return GaoRexfordPref.NO_ANN_BETTER
 
 
 def _new_as_path_shorter(
     self,
     current_ann: Ann,
     current_processed: bool,
+    default_current_recv_rel: Relationships,
     new_ann: Ann,
     new_processed: bool,
-) -> Optional[bool]:
+    default_new_recv_rel: Relationships,
+) -> GaoRexfordPref:
     """Determines if the new ann > current ann by Gao Rexford for AS Path
 
     current_ann: Announcement we are checking against
@@ -171,20 +129,22 @@ def _new_as_path_shorter(
     current_as_path_len = len(current_ann.as_path) + int(not current_processed)
     new_as_path_len: int = len(new_ann.as_path) + int(not new_processed)
     if current_as_path_len < new_as_path_len:
-        return False
+        return GaoRexfordPref.OLD_ANN_BETTER
     elif current_as_path_len > new_as_path_len:
-        return True
+        return GaoRexfordPref.NEW_ANN_BETTER
     else:
-        return None
+        return GaoRexfordPref.NO_ANN_BETTER
 
 
 def _new_wins_ties(
     self,
     current_ann,
     current_processed,
+    default_current_recv_rel: Relationships,
     new_ann,
     new_processed,
-) -> bool:
+    default_new_recv_rel: Relationships,
+) -> GaoRexfordPref:
     """Determines if the new ann > current ann by Gao Rexford for ties
 
     This breaks ties by lowest asn
@@ -207,4 +167,7 @@ def _new_wins_ties(
     new_index = min(int(new_processed), len(new_ann.as_path) - 1)
 
     # mypy needs the bool wrapper
-    return bool(new_ann.as_path[new_index] < current_ann.as_path[cur_index])
+    if bool(new_ann.as_path[new_index] < current_ann.as_path[cur_index]):
+        return GaoRexfordPref.NEW_ANN_BETTER
+    else:
+        return GaoRexfordPref.OLD_ANN_BETTER

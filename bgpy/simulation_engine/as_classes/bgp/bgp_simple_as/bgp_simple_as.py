@@ -1,5 +1,4 @@
-from bgpy.caida_collector import AS
-from typing import Optional
+from typing import Callable, Optional
 
 # Propagation functionality
 from .propagate_funcs import propagate_to_providers
@@ -19,14 +18,20 @@ from .process_incoming_funcs import _reset_q
 
 # Gao rexford functions
 from .gao_rexford import _new_ann_better
-from .gao_rexford import _new_as_path_ties_better
 from .gao_rexford import _new_rel_better
 from .gao_rexford import _new_as_path_shorter
 from .gao_rexford import _new_wins_ties
 
-
+from bgpy.caida_collector import AS
+from bgpy.enums import Relationships, GaoRexfordPref
 from bgpy.simulation_engine.ann_containers import LocalRIB
 from bgpy.simulation_engine.ann_containers import RecvQueue
+from bgpy.simulation_engine.announcement import Announcement as Ann
+
+
+GAO_REXFORD_FUNC = Callable[
+    [Ann, bool, Relationships, Ann, bool, Relationships], GaoRexfordPref
+]
 
 
 class BGPSimpleAS(AS):
@@ -86,6 +91,14 @@ class BGPSimpleAS(AS):
         else:
             return NotImplemented
 
+    @property
+    def _gao_rexford_funcs(self) -> tuple[GAO_REXFORD_FUNC, ...]:
+        return (
+            self._new_rel_better,
+            self._new_as_path_shorter,
+            self._new_wins_ties,
+        )
+
     # https://stackoverflow.com/a/53519136/8903959
     __hash__ = AS.__hash__
 
@@ -107,7 +120,6 @@ class BGPSimpleAS(AS):
 
     # Gao rexford functions
     _new_ann_better = _new_ann_better
-    _new_as_path_ties_better = _new_as_path_ties_better
     _new_rel_better = _new_rel_better
     _new_as_path_shorter = _new_as_path_shorter
     _new_wins_ties = _new_wins_ties

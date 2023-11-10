@@ -102,7 +102,7 @@ class ASGroups(YamlAbleEnum):
     ALL: str = "all"
 
 
-class SpecialPercentAdoptions(Enum):
+class SpecialPercentAdoptions(YamlAbleEnum):
     ALL_BUT_ONE: float = 1
     ONLY_ONE: float = 0
 
@@ -119,3 +119,11 @@ class SpecialPercentAdoptions(Enum):
             return float(self) == float(other)
         else:
             return NotImplemented
+
+
+class GaoRexfordPref(YamlAbleEnum):
+    """Preferences for announcements for Gao Rexford"""
+
+    NEW_ANN_BETTER: int = 1
+    OLD_ANN_BETTER: int = 0
+    NO_ANN_BETTER: int = -1
