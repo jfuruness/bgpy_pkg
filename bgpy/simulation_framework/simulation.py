@@ -17,9 +17,9 @@ from .scenarios import ScenarioConfig
 from .scenarios import SubprefixHijack
 
 from bgpy.enums import SpecialPercentAdoptions
-from bgpy.simulation_engine import BGPSimpleAS
+from bgpy.simulation_engine import BGPSimplePolicy
 from bgpy.simulation_engine import SimulationEngine
-from bgpy.simulation_engine import ROVSimpleAS
+from bgpy.simulation_engine import ROVSimplePolicy
 
 
 class Simulation:
@@ -33,7 +33,7 @@ class Simulation:
             0.8,
         ),
         scenario_configs: tuple[ScenarioConfig, ...] = tuple(
-            [ScenarioConfig(ScenarioCls=SubprefixHijack, AdoptASCls=ROVSimpleAS)]
+            [ScenarioConfig(ScenarioCls=SubprefixHijack, AdoptPolicyCls=ROVSimplePolicy)]
         ),
         num_trials: int = 2,
         propagation_rounds: int = 1,
@@ -70,7 +70,7 @@ class Simulation:
             self.engine_kwargs: dict[Any, Any] = engine_kwargs
         else:
             self.engine_kwargs = {
-                "BaseASCls": BGPSimpleAS,
+                "BasePolicyCls": BGPSimplePolicy,
                 "GraphCls": SimulationEngine,
             }
 

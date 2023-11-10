@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from typing import Optional
 
 from bgpy.enums import ASGroups, Plane, Outcomes
-from bgpy.caida_collector.graph.base_as import AS
+from bgpy.simulation_engine import BGPSimplePolicy
 
 
 @dataclass(frozen=True, slots=True)
@@ -12,4 +12,4 @@ class MetricKey:
     plane: Plane
     as_group: ASGroups
     outcome: Outcomes
-    ASCls: Optional[type[AS]] = None
+    PolicyCls: Optional[type[BGPSimplePolicy]] = None

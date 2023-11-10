@@ -8,10 +8,10 @@ from bgpy.simulation_framework import ScenarioConfig
 from bgpy.simulation_framework import SubprefixHijack
 from bgpy.simulation_framework import NonRoutedPrefixHijack
 from bgpy.simulation_engine import Announcement
-from bgpy.simulation_engine import BGPSimpleAS
-from bgpy.simulation_engine import BGPAS
-from bgpy.simulation_engine import ROVSimpleAS
-from bgpy.simulation_engine import ROVAS
+from bgpy.simulation_engine import BGPSimplePolicy
+from bgpy.simulation_engine import BGPPolicy
+from bgpy.simulation_engine import ROVSimplePolicy
+from bgpy.simulation_engine import ROVPolicy
 
 
 @pytest.mark.framework
@@ -25,12 +25,12 @@ class TestScenario:
         scenario_config = ScenarioConfig(
             ScenarioCls=SubprefixHijack,
             AnnCls=Announcement,
-            BaseASCls=BGPSimpleAS,
+            BasePolicyCls=BGPSimplePolicy,
             num_attackers=num_attackers,
             num_victims=num_victims,
             override_attacker_asns=frozenset(range(num_attackers)),
             override_victim_asns=frozenset(range(num_victims)),
-            override_non_default_asn_cls_dict=frozendict({1: BGPAS}),
+            override_non_default_asn_cls_dict=frozendict({1: BGPPolicy}),
         )
         SubprefixHijack(scenario_config=scenario_config)
 
@@ -57,11 +57,11 @@ class TestScenario:
             SubprefixHijack(scenario_config=scenario_config)
 
     def test_init_adopt_as_cls(self):
-        """Tests the AdoptASCls is never None, and is the pseudo BaseAS"""
+        """Tests the AdoptPolicyCls is never None, and is the pseudo BaseAS"""
 
         conf = ScenarioConfig(ScenarioCls=SubprefixHijack)
 
-        assert issubclass(conf.AdoptASCls, conf.BaseASCls)
+        assert issubclass(conf.AdoptPolicyCls, conf.BasePolicyCls)
 
     ##############################################
     # set Attacker/Victim and Announcement Funcs #
@@ -252,22 +252,22 @@ class TestScenario:
 
         Old scenario must have mixed deployment to test that feature as well
         So old scenario must have three types of ASes:
-        BaseASCls
+        BasePolicyCls
         DefaultASCls
-        AdoptASCls
+        AdoptPolicyCls
         """
 
-        BaseASCls = BGPSimpleAS
+        BasePolicyCls = BGPSimplePolicy
 
         prev_scenario_config = ScenarioConfig(
             ScenarioCls=SubprefixHijack,
-            AdoptASCls=ROVSimpleAS,
-            BaseASCls=BaseASCls,
+            AdoptPolicyCls=ROVSimplePolicy,
+            BasePolicyCls=BasePolicyCls,
             override_non_default_asn_cls_dict=frozendict(
                 {
-                    # 1: BaseASCls,
-                    2: ROVAS,
-                    3: ROVSimpleAS,
+                    # 1: BasePolicyCls,
+                    2: ROVPolicy,
+                    3: ROVSimplePolicy,
                 }
             ),
         )
@@ -275,7 +275,7 @@ class TestScenario:
             scenario_config=prev_scenario_config, engine=engine
         )
         scenario_config = ScenarioConfig(
-            ScenarioCls=SubprefixHijack, AdoptASCls=BGPAS, BaseASCls=BaseASCls
+            ScenarioCls=SubprefixHijack, AdoptPolicyCls=BGPPolicy, BasePolicyCls=BasePolicyCls
         )
         scenario = SubprefixHijack(scenario_config=scenario_config, engine=engine)
         non_default_asn_cls_dict = scenario._get_non_default_asn_cls_dict(
@@ -284,7 +284,7 @@ class TestScenario:
             prev_scenario=prev_scenario,
         )
 
-        gt = {2: ROVAS, 3: BGPAS}  # 1: BaseASCls,
+        gt = {2: ROVPolicy, 3: BGPPolicy}  # 1: BasePolicyCls,
         assert non_default_asn_cls_dict == gt
 
     @pytest.mark.skip(
@@ -297,20 +297,20 @@ class TestScenario:
 
         Old scenario must have mixed deployment but no adopting ASes!
         So old scenario must have two types of ASes:
-        BaseASCls
+        BasePolicyCls
         DefaultASCls
         """
 
-        BaseASCls = BGPSimpleAS
+        BasePolicyCls = BGPSimplePolicy
 
         prev_scenario_config = ScenarioConfig(
             ScenarioCls=SubprefixHijack,
-            BaseASCls=BGPSimpleAS,
+            BasePolicyCls=BGPSimplePolicy,
             override_non_default_asn_cls_dict=frozendict(
                 {
-                    # 1: BaseASCls,
-                    2: ROVAS,
-                    # 3: BaseASCls,
+                    # 1: BasePolicyCls,
+                    2: ROVPolicy,
+                    # 3: BasePolicyCls,
                 }
             ),
         )
@@ -318,7 +318,7 @@ class TestScenario:
             scenario_config=prev_scenario_config, engine=engine
         )
         scenario_config = ScenarioConfig(
-            ScenarioCls=SubprefixHijack, AdoptASCls=BGPAS, BaseASCls=BaseASCls
+            ScenarioCls=SubprefixHijack, AdoptPolicyCls=BGPPolicy, BasePolicyCls=BasePolicyCls
         )
         scenario = SubprefixHijack(scenario_config=scenario_config, engine=engine)
         non_default_asn_cls_dict = scenario._get_non_default_asn_cls_dict(
@@ -328,9 +328,9 @@ class TestScenario:
         )
 
         gt = {
-            # 1: BaseASCls,
-            2: ROVAS,
-            # 3: BaseASCls
+            # 1: BasePolicyCls,
+            2: ROVPolicy,
+            # 3: BasePolicyCls
         }
         assert non_default_asn_cls_dict == gt
 
@@ -342,7 +342,7 @@ class TestScenario:
         """
 
         scenario_config = ScenarioConfig(
-            ScenarioCls=SubprefixHijack, AdoptASCls=ROVSimpleAS, BaseASCls=BGPSimpleAS
+            ScenarioCls=SubprefixHijack, AdoptPolicyCls=ROVSimplePolicy, BasePolicyCls=BGPSimplePolicy
         )
         scenario = SubprefixHijack(
             scenario_config=scenario_config, percent_adoption=0.5, engine=engine
@@ -351,12 +351,12 @@ class TestScenario:
             override_non_default_asn_cls_dict=None, engine=engine, prev_scenario=None
         )
 
-        assert ROVSimpleAS in list(non_default_asn_cls_dict.values())
-        assert BGPSimpleAS not in list(non_default_asn_cls_dict.values())
+        assert ROVSimplePolicy in list(non_default_asn_cls_dict.values())
+        assert BGPSimplePolicy not in list(non_default_asn_cls_dict.values())
 
     @pytest.mark.skip(reason="Covered by other unit tests")
     def test_get_non_default_asn_cls_dict_no_adoption_sequence(self):
-        """Tests the Pseudo AdoptASCls
+        """Tests the Pseudo AdoptPolicyCls
 
         # This is done to fix the following:
         # Scenario 1 has 3 BGP ASes and 1 AdoptCls
@@ -445,7 +445,7 @@ class TestScenario:
     def test_set_engine_as_classes(self):
         """Tests that the engine as classes are set properly
 
-        1. Ensures that non default AS class dict doesn't contain BaseASCls
+        1. Ensures that non default AS class dict doesn't contain BasePolicyCls
         2. Ensures that AS classes get reset
         3. Ensures that AS init gets called, but relationships remain
         """

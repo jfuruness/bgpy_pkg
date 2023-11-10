@@ -1,5 +1,6 @@
 from typing import Callable, Optional
 
+
 # Propagation functionality
 from .propagate_funcs import propagate_to_providers
 from .propagate_funcs import propagate_to_customers
@@ -38,6 +39,8 @@ class BGPSimplePolicy:
     name: str = "BGP Simple"
     as_class_names: list[str] = []
     as_classes: list[type[AS]] = []
+    subclass_to_name_dict: dict[type["BGPSimplePolicy"], str] = {}
+    name_to_subclass_dict: dict[str, type["BGPSimplePolicy"]] = {}
 
     def __init_subclass__(cls, *args, **kwargs):
         """This method essentially creates a list of all subclasses
@@ -57,6 +60,11 @@ class BGPSimplePolicy:
         cls.as_classes.append(cls)
         if BGPSimplePolicy not in cls.as_classes:
             cls.as_classes.append(BGPSimplePolicy)
+
+        yaml_info_decorate(cls, yaml_tag=cls.__name__)
+        cls.subclass_to_name_dict[cls] = cls.__name__
+        cls.name_to_subclass_dict[cls.__name__] = cls
+
 
     def __init__(
         self,
