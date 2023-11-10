@@ -245,14 +245,21 @@ class Scenario(ABC):
         elif prev_scenario:
             non_default_asn_cls_dict = dict()
             for asn, OldASCls in prev_scenario.non_default_asn_cls_dict.items():
+                HardcodedCls = self.scenario_config.hardcoded_asn_cls_dict.get(asn)
+                if HardcodedCls:
+                    non_default_asn_cls_dict[asn] = HardcodedCls
                 # If the ASN was of the adopting class of the last scenario,
                 # Update the adopting AS class for the new scenario
-                if OldASCls == prev_scenario.scenario_config.AdoptASCls:
+                elif OldASCls == prev_scenario.scenario_config.AdoptASCls:
                     non_default_asn_cls_dict[asn] = self.scenario_config.AdoptASCls
-                # Otherwise keep the AS class as it was
-                # This is useful for things like ROV, etc...
-                else:
-                    non_default_asn_cls_dict[asn] = OldASCls
+                # # Otherwise keep the AS class as it was
+                # # This is useful for things like ROV, etc...
+                # else:
+                #     non_default_asn_cls_dict[asn] = OldASCls
+                # If you are comparing two scenarios that have different hardcoded ASNs
+                # Then the commented out methodology above no longer works (and I think
+                # it was only set that way for older versions of BGPy, really it makes
+                # no sense for the latest versions of BGPy
         # Randomly get adopting ases if it hasn't been set yet
         else:
             assert engine, "either yaml, prev_scenario, or engine must be set"
