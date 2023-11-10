@@ -121,7 +121,7 @@ class EngineTester:
         """Creates and engine and sets it up for runs"""
 
         engine = self.SimulationEngineCls(
-            BaseASCls=self.conf.scenario_config.BaseASCls,
+            BasePolicyCls=self.conf.scenario_config.BasePolicyCls,
             peer_links=self.conf.graph.peer_links,  # type: ignore
             cp_links=self.conf.graph.customer_provider_links,  # type: ignore
         )  # type: ignore
