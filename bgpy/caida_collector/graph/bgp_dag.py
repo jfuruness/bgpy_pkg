@@ -1,6 +1,6 @@
 import logging
 from pathlib import Path
-from typing import Any, Callable, Optional
+from typing import Any, Callable, Optional, TYPE_CHECKING
 
 from yamlable import yaml_info, YamlAble, yaml_info_decorate
 
@@ -27,6 +27,9 @@ from .propagation_rank_funcs import _get_propagation_ranks
 # Customer cone funcs
 from .customer_cone_funcs import _get_customer_cone_size
 from .customer_cone_funcs import _get_cone_size_helper
+
+if TYPE_CHECKING:
+    from bgpy.simulation_engine import BGPSimplePolicy
 
 
 @yaml_info(yaml_tag="BGPDAG")
@@ -179,14 +182,12 @@ class BGPDAG(YamlAble):
     def __to_yaml_dict__(self) -> dict[int, AS]:  # type: ignore
         """Optional method called when yaml.dump is called"""
 
-        raise NotImplementedError("Must set the routing policy")
         return {asn: as_obj for asn, as_obj in self.as_dict.items()}
 
     @classmethod
     def __from_yaml_dict__(cls, dct, yaml_tag) -> Any:
         """Optional method called when yaml.load is called"""
 
-        raise NotImplementedError("Must set the routing policy")
         return cls(set(), set(), yaml_as_dict=dct)
 
     ##################

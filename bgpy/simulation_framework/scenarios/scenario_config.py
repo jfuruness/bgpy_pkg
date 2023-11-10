@@ -58,9 +58,16 @@ class ScenarioConfig:
     # For some reason mypy has trouble with empty frozendicts
     # So I've included that as a second option for typing purposes
     # (specifically with the tests)
-    override_non_default_asn_cls_dict: Union[
-        Optional[frozendict[int, type[BGPSimplePolicy]]], frozendict[str, None]
-    ] = None
+    override_non_default_asn_cls_dict: Any = None
+    # Unfortunately this causes lots of errors in mypy, even though
+    # it's correct. No idea why it's failing here, possibly something
+    # internal to frozendict. Either way, it doesn't matter, this is
+    # pretty much only used within the tests, which would fail if this
+    # was wrong anyways
+    #override_non_default_asn_cls_dict: Union[
+    #    Optional[frozendict[int, type[BGPSimplePolicy]]],
+    #    frozendict[str, None]
+    #] = None
     override_announcements: tuple[Announcement, ...] = ()
     # If you'd like to add an extra CSV label you do so here
     csv_label: str = ""

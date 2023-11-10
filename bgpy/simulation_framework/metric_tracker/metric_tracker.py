@@ -192,7 +192,7 @@ class MetricTracker:
         TODO: This should really be cleaned up, but good enough for now
         """
 
-        metrics = [Metric(x, scenario.as_classes_used) for x in self.metric_keys]
+        metrics = [Metric(x, scenario.policy_classes_used) for x in self.metric_keys]
         self._populate_metrics(
             metrics=metrics, engine=engine, scenario=scenario, outcomes=outcomes
         )

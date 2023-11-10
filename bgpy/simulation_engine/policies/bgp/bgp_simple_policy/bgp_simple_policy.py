@@ -40,7 +40,7 @@ GAO_REXFORD_FUNC = Callable[
 class BGPSimplePolicy:
     name: str = "BGP Simple"
     as_class_names: list[str] = []
-    as_classes: list[type[AS]] = []
+    as_classes: list[type[BGPSimplePolicy]] = []
     subclass_to_name_dict: dict[type["BGPSimplePolicy"], str] = {}
     name_to_subclass_dict: dict[str, type["BGPSimplePolicy"]] = {}
 
@@ -63,7 +63,8 @@ class BGPSimplePolicy:
         if BGPSimplePolicy not in cls.as_classes:
             cls.as_classes.append(BGPSimplePolicy)
 
-        yaml_info_decorate(cls, yaml_tag=cls.__name__)
+        # yamlable not up to date with mypy
+        yaml_info_decorate(cls, yaml_tag=cls.__name__)  # type: ignore
         cls.subclass_to_name_dict[cls] = cls.__name__
         cls.name_to_subclass_dict[cls.__name__] = cls
 

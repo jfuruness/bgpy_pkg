@@ -3,6 +3,7 @@ from dataclasses import replace
 from typing import Optional, Type
 
 from bgpy.enums import Plane, Outcomes
+from bgpy.caida_collector import AS
 from bgpy.simulation_engine import BGPSimplePolicy, SimulationEngine
 from bgpy.simulation_framework.scenarios import Scenario
 

@@ -4,7 +4,7 @@ from yamlable import yaml_info, YamlAble, yaml_info_decorate
 
 if TYPE_CHECKING:
     from .base_as import AS as AStypeHint
-    raise NotImplementedError("Import BGPSimplePolicy")
+    from bgpy.simulation_engine import BGPSimplePolicy
 else:
     AStypeHint = "AS"
 
@@ -61,6 +61,7 @@ class AS(YamlAble):
 
         self.hashed_asn = hash(self.asn)
 
+        assert policy, "This should never be None"
         self.policy: BGPSimplePolicy = policy
         self.policy.as_ = self
 

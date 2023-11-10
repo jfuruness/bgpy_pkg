@@ -1,3 +1,3 @@
-from .bgp_as import BGPAS
+from .bgp_policy import BGPPolicy
 
-__all__ = ["BGPAS"]
+__all__ = ["BGPPolicy"]

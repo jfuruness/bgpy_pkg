@@ -1,8 +1,8 @@
 import pytest
 
-from bgpy.caida_collector import CaidaCollector
+from bgpy.caida_collector import CaidaCollector, AS
 
-from ....simulation_engine import BGPSimpleAS
+from ....simulation_engine import BGPSimplePolicy
 from ....simulation_engine import SimulationEngine
 
 
@@ -13,6 +13,7 @@ def engine():
     # Changing recursion depth does nothing
     # Making nothing a reference does nothing
     return CaidaCollector(
-        BaseASCls=BGPSimpleAS,
+        BasePolicyCls=BGPSimplePolicy,
+        BaseASCls=AS,
         GraphCls=SimulationEngine,
     ).run(tsv_path=None)

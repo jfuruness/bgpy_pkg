@@ -7,7 +7,7 @@ from typing import Any, Optional, Union
 import random
 import os
 
-from bgpy.caida_collector import CaidaCollector
+from bgpy.caida_collector import CaidaCollector, AS
 
 from .graph_analyzer import GraphAnalyzer
 from .graph_factory import GraphFactory
@@ -70,6 +70,7 @@ class Simulation:
             self.engine_kwargs: dict[Any, Any] = engine_kwargs
         else:
             self.engine_kwargs = {
+                "BaseASCls": AS,
                 "BasePolicyCls": BGPSimplePolicy,
                 "GraphCls": SimulationEngine,
             }

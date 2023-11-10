@@ -44,7 +44,9 @@ class Announcement(YamlAble):
         if overwrite_default_kwargs:
             kwargs.update(overwrite_default_kwargs)
 
-        return replace(self, **kwargs)
+        # Mypy says it gets this wrong
+        # https://github.com/microsoft/pyright/issues/1047#issue-705124399
+        return replace(self, **kwargs)  # type: ignore
 
     @property
     def invalid_by_roa(self) -> bool:

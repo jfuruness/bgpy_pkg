@@ -136,4 +136,5 @@ class GraphAnalyzer:
     ################################
 
     def _get_other_as_outcome_hook(self, as_obj: AS) -> Outcomes:
-        pass
+        # Noop, this is just to satisfy mypy
+        return Outcomes.ATTACKER_SUCCESS

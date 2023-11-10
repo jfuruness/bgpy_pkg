@@ -2,10 +2,14 @@
 
 import csv
 from pathlib import Path
+from typing import TYPE_CHECKING
 
 from .base_as import AS
 from bgpy.caida_collector.links import CustomerProviderLink as CPLink
 from bgpy.caida_collector.links import PeerLink
+
+if TYPE_CHECKING:
+    from bgpy.simulation_engine import BGPSimplePolicy
 
 
 def _gen_graph(

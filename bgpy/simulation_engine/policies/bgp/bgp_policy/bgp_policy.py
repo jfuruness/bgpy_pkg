@@ -20,7 +20,7 @@ from bgpy.simulation_engine.announcement import Announcement as Ann
 from bgpy.enums import Relationships
 
 
-class BGPPolicyPolicy(BGPSimplePolicy):
+class BGPPolicy(BGPSimplePolicy):
     name = "BGP"
 
     def __init__(
