@@ -1,6 +1,6 @@
 from typing import Callable, Optional, TYPE_CHECKING
 
-from yamlable import yaml_info_decorate, YamlAble
+from yamlable import yaml_info_decorate, YamlAble, yaml_info
 
 
 # Propagation functionality
@@ -40,6 +40,7 @@ GAO_REXFORD_FUNC = Callable[
 ]
 
 
+@yaml_info(yaml_tag="BGPSimplePolicy")
 class BGPSimplePolicy(YamlAble):
     name: str = "BGP Simple"
     as_class_names: list[str] = []
@@ -152,4 +153,4 @@ class BGPSimplePolicy(YamlAble):
 
         # We can type ignore here because we add this in the AS class
         # Only way to do it, otherwise it's a circular reference
-        return cls({**dct, "as_": None})  # type: ignore
+        return cls(**dct)  # type: ignore

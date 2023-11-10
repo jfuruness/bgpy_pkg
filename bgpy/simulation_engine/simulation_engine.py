@@ -76,14 +76,14 @@ class SimulationEngine(BGPDAG):
             if i > 0:
                 # Process first because maybe it recv from lower ranks
                 for as_obj in rank:
-                    as_obj.process_incoming_anns(
+                    as_obj.policy.process_incoming_anns(
                         from_rel=Relationships.CUSTOMERS,
                         propagation_round=propagation_round,
                         scenario=scenario,
                     )
             # Send to the higher ranks
             for as_obj in rank:
-                as_obj.propagate_to_providers()
+                as_obj.policy.propagate_to_providers()
 
     def _propagate_to_peers(
         self, propagation_round: Optional[int], scenario: Optional["Scenario"]
@@ -96,9 +96,9 @@ class SimulationEngine(BGPDAG):
         # since different customers peer to different ranks
         # So first do customer to provider propagation, then peer propagation
         for as_obj in self:
-            as_obj.propagate_to_peers()
+            as_obj.policy.propagate_to_peers()
         for as_obj in self:
-            as_obj.process_incoming_anns(
+            as_obj.policy.process_incoming_anns(
                 from_rel=Relationships.PEERS,
                 propagation_round=propagation_round,
                 scenario=scenario,
@@ -116,10 +116,10 @@ class SimulationEngine(BGPDAG):
             # There are no incomming Anns at the top
             if i > 0:
                 for as_obj in rank:
-                    as_obj.process_incoming_anns(
+                    as_obj.policy.process_incoming_anns(
                         from_rel=Relationships.PROVIDERS,
                         propagation_round=propagation_round,
                         scenario=scenario,
                     )
             for as_obj in rank:
-                as_obj.propagate_to_customers()
+                as_obj.policy.propagate_to_customers()

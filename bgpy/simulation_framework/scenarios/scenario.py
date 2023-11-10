@@ -400,9 +400,9 @@ class Scenario(ABC):
             obj_to_seed = engine.as_dict[ann.seed_asn]  # type: ignore
             # Ensure we aren't replacing anything
             err = "Seeding conflict"
-            assert obj_to_seed._local_rib.get_ann(ann.prefix) is None, err
+            assert obj_to_seed.policy._local_rib.get_ann(ann.prefix) is None, err
             # Seed by placing in the local rib
-            obj_to_seed._local_rib.add_ann(ann)
+            obj_to_seed.policy._local_rib.add_ann(ann)
 
     ##################
     # Subclass Funcs #
