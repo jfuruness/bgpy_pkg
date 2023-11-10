@@ -64,6 +64,7 @@ class BGPDAG(YamlAble):
         ixps: Optional[set[int]] = None,
         input_clique: Optional[set[int]] = None,
         BaseASCls: type[AS] = AS,
+        BasePolicyCls: type[BGPSimplePolicy] = BGPSimplePolicy,
         yaml_as_dict: Optional[dict[int, AS]] = None,
         csv_path: Path = (Path(__file__).parent.parent / "combined.csv"),
         # Users can pass in any additional AS groups they want to keep track of
@@ -101,6 +102,7 @@ class BGPDAG(YamlAble):
                 ixps if ixps else set(),
                 input_clique if input_clique else set(),
                 BaseASCls,
+                BasePolicyCls,
             )
             logging.debug("gen graph done")
             # Adds references to all relationships
@@ -177,12 +179,14 @@ class BGPDAG(YamlAble):
     def __to_yaml_dict__(self) -> dict[int, AS]:  # type: ignore
         """Optional method called when yaml.dump is called"""
 
+        raise NotImplementedError("Must set the routing policy")
         return {asn: as_obj for asn, as_obj in self.as_dict.items()}
 
     @classmethod
     def __from_yaml_dict__(cls, dct, yaml_tag) -> Any:
         """Optional method called when yaml.load is called"""
 
+        raise NotImplementedError("Must set the routing policy")
         return cls(set(), set(), yaml_as_dict=dct)
 
     ##################

@@ -1,10 +1,10 @@
-from bgpy.simulation_engine.as_classes.bgp import BGPSimpleAS
+from bgpy.simulation_engine.as_classes.bgp import BGPSimplePolicy
 from bgpy.simulation_engine.announcement import Announcement as Ann
 from bgpy.enums import Relationships
 
 
-class RealPeerROVSimpleAS(BGPSimpleAS):
-    """An AS that deploys ROV in real life, but only filters peers"""
+class RealPeerROVSimplePolicy(BGPSimplePolicy):
+    """An Policy that deploys ROV in real life, but only filters peers"""
 
     name: str = "RealPeerROVSimple"
 
@@ -27,6 +27,6 @@ class RealPeerROVSimpleAS(BGPSimpleAS):
         # Use standard BGP to determine if the announcement is valid
         else:
             # Mypy doesn't map superclasses properly
-            return super(RealPeerROVSimpleAS, self)._valid_ann(  # type: ignore
+            return super(RealPeerROVSimplePolicy, self)._valid_ann(  # type: ignore
                 ann, *args, **kwargs
             )

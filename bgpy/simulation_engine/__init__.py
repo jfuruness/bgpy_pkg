@@ -6,12 +6,12 @@ from .ann_containers import RIBsOut
 from .ann_containers import SendQueue
 from .ann_containers import RecvQueue
 
-from .as_classes import BGPSimpleAS
-from .as_classes import BGPAS
-from .as_classes import ROVSimpleAS
-from .as_classes import RealROVSimpleAS
-from .as_classes import RealPeerROVSimpleAS
-from .as_classes import ROVAS
+from .policies import BGPSimpleAS
+from .policies import BGPAS
+from .policies import ROVSimpleAS
+from .policies import RealROVSimpleAS
+from .policies import RealPeerROVSimpleAS
+from .policies import ROVAS
 
 from .simulation_engine import SimulationEngine
 

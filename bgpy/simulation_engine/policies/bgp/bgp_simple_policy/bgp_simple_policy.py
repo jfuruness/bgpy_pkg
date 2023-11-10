@@ -34,7 +34,7 @@ GAO_REXFORD_FUNC = Callable[
 ]
 
 
-class BGPSimpleAS(AS):
+class BGPSimplePolicy:
     name: str = "BGP Simple"
     as_class_names: list[str] = []
     as_classes: list[type[AS]] = []
@@ -55,15 +55,13 @@ class BGPSimpleAS(AS):
         )
         assert len(set(cls.as_class_names)) == len(cls.as_class_names), msg
         cls.as_classes.append(cls)
-        if BGPSimpleAS not in cls.as_classes:
-            cls.as_classes.append(BGPSimpleAS)
+        if BGPSimplePolicy not in cls.as_classes:
+            cls.as_classes.append(BGPSimplePolicy)
 
     def __init__(
         self,
-        *args,
         _local_rib: Optional[LocalRIB] = None,
         _recv_q: Optional[RecvQueue] = None,
-        **kwargs,
     ):
         """Add local rib and data structures here
 
@@ -73,23 +71,25 @@ class BGPSimpleAS(AS):
         This is also useful for regenerating an AS from YAML
         """
 
-        if kwargs.get("reset_base", True):
-            super(BGPSimpleAS, self).__init__(*args, **kwargs)
         self._local_rib = _local_rib if _local_rib else LocalRIB()
         self._recv_q = _recv_q if _recv_q else RecvQueue()
 
     def __eq__(self, other) -> bool:
-        if isinstance(other, BGPSimpleAS):
-            # Ugh this is bad
-            for attr in [x for x in self.__dict__ if x not in self.base_slots]:
-                if not hasattr(self, attr) == hasattr(other, attr):
-                    return False
-                elif hasattr(self, attr):
-                    if not getattr(self, attr) == getattr(other, attr):
-                        return False
-            return True
-        else:
-            return NotImplemented
+        raise NotImplementedError(
+            "Not sure what this was used for, but it needs refactoring "
+            "since we've separated policies and AS classes this no longer works"
+        )
+        # if isinstance(other, BGPSimplePolicy):
+        #     # Ugh this is bad
+        #     for attr in [x for x in self.__dict__ if x not in self.base_slots]:
+        #         if not hasattr(self, attr) == hasattr(other, attr):
+        #             return False
+        #         elif hasattr(self, attr):
+        #             if not getattr(self, attr) == getattr(other, attr):
+        #                 return False
+        #     return True
+        # else:
+        #     return NotImplemented
 
     @property
     def _gao_rexford_funcs(self) -> tuple[GAO_REXFORD_FUNC, ...]:
@@ -130,13 +130,13 @@ class BGPSimpleAS(AS):
 
     def __to_yaml_dict__(self):
         """This optional method is called when you call yaml.dump()"""
+        raise NotImplementedError("Add policy class")
 
-        as_dict = super(BGPSimpleAS, self).__to_yaml_dict__()
-        as_dict.update({"_local_rib": self._local_rib, "_recv_q": self._recv_q})
-        return as_dict
+        return {"_local_rib": self._local_rib, "_recv_q": self._recv_q}
 
     @classmethod
     def __from_yaml_dict__(cls, dct, yaml_tag):
         """This optional method is called when you call yaml.load()"""
+        raise NotImplementedError("Add policy class")
 
         return cls(**dct)

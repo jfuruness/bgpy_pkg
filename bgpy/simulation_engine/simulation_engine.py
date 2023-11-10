@@ -3,7 +3,7 @@ from typing import Optional, TYPE_CHECKING
 
 from bgpy.caida_collector import BGPDAG, AS
 from bgpy.enums import Relationships
-from bgpy.simulation_engine.as_classes import BGPSimpleAS
+from bgpy.simulation_engine.as_classes import BGPSimplePolicy
 
 
 # https://stackoverflow.com/a/57005931/8903959
@@ -20,18 +20,10 @@ class SimulationEngine(BGPDAG):
     Then the run function can be called, and propagation occurs
     """
 
-    def __init__(
-        self,
-        *args,
-        # Default AS class in the BGPDAG
-        BaseASCls: type[AS] = BGPSimpleAS,
-        **kwargs,
-    ):
+    def __init__(self, *args, **kwargs):
         """Saves read_to_run_rund attr and inits superclass"""
 
-        super(SimulationEngine, self).__init__(
-            *args, BaseASCls=BaseASCls, **kwargs
-        )  # type: ignore
+        super(SimulationEngine, self).__init__(*args, **kwargs)  # type: ignore
         # This indicates whether or not the simulator has been set up for a run
         # We use a number instead of a bool so that we can indicate for
         # each round whether it is ready to run or not

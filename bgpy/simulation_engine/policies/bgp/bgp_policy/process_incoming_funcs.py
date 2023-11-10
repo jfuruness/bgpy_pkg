@@ -54,7 +54,7 @@ def process_incoming_anns(
                 assert (
                     self._ribs_in.get_unprocessed_ann_recv_rel(ann.as_path[0], prefix)
                     is None
-                ), (str(self.asn) + " " + str(ann) + err)
+                ), (str(self.as_.asn) + " " + str(ann) + err)
 
                 self._ribs_in.add_unprocessed_ann(ann, from_rel)
             # Process withdrawals even for invalid anns in the ribs_in
@@ -185,7 +185,7 @@ def _withdraw_ann_from_neighbors(self, withdraw_ann: Ann):
     # We may not have sent the ann yet, it may just be in the send queue
     # and not ribs out
     # We want to cancel out any anns in the send_queue that match the wdraw
-    for neighbor_obj in self.neighbors:
+    for neighbor_obj in self.as_.neighbors:
         send_info: Optional[SendInfo] = self._send_q.get_send_info(
             neighbor_obj, withdraw_ann.prefix
         )

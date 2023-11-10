@@ -15,6 +15,7 @@ def _gen_graph(
     ixps: set[int],
     input_clique: set[int],
     BaseAsCls: type[AS],
+    BasePolicyCls: type[BGPSimplePolicy],
 ):
     """Generates a graph of AS objects"""
 
@@ -27,6 +28,7 @@ def _gen_graph(
             peers_setup_set=set(),
             customers_setup_set=set(),
             providers_setup_set=set(),
+            policy=BasePolicyCls()
         )
 
     # Add all links to the graph

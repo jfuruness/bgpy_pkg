@@ -43,7 +43,7 @@ def _propagate(self, propagate_to: Relationships, send_rels: list[Relationships]
     send_rels is the relationships that are acceptable to send
     """
 
-    for neighbor in getattr(self, propagate_to.name.lower()):
+    for neighbor in getattr(self.as_, propagate_to.name.lower()):
         for prefix, ann in self._local_rib.prefix_anns():
             if ann.recv_relationship in send_rels and not self._prev_sent(
                 neighbor, ann
@@ -77,4 +77,4 @@ def _process_outgoing_ann(
     """Adds ann to the neighbors recv q"""
 
     # Add the new ann to the incoming anns for that prefix
-    neighbor.receive_ann(ann)
+    neighbor.policy.receive_ann(ann)

@@ -36,10 +36,10 @@ def _process_outgoing_ann(
 def _send_anns(self, propagate_to: Relationships):
     """Sends announcements and populates ribs out"""
 
-    neighbors: list[BGPSimpleAS] = getattr(self, propagate_to.name.lower())
+    neighbors: list[AS] = getattr(self.as_, propagate_to.name.lower())
 
     for neighbor, prefix, ann in self._send_q.info(neighbors):
-        neighbor.receive_ann(ann)
+        neighbor.policy.receive_ann(ann)
         # Update Ribs out if it's not a withdraw
         if not ann.withdraw:
             self._ribs_out.add_ann(neighbor.asn, ann)
