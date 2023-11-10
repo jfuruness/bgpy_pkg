@@ -102,7 +102,7 @@ class MetricTracker:
                     "AdoptingPolicyCls": (
                         data_key.scenario_config.AdoptPolicyCls.__name__
                     ),
-                    "BaseASCls": data_key.scenario_config.BasePolicyCls.__name__,
+                    "BasePolicyCls": data_key.scenario_config.BasePolicyCls.__name__,
                     "PolicyCls": metric_key.PolicyCls.__name__,
                     "outcome_type": metric_key.plane.value,
                     "as_group": metric_key.as_group.value,

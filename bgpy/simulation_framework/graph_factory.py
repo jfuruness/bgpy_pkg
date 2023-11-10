@@ -66,8 +66,8 @@ class GraphFactory:
                     and row["metric_key"].as_group == metric_key.as_group
                     and row["metric_key"].outcome == metric_key.outcome
                     and (
-                        (row["metric_key"].ASCls == BasePolicyCls and not adopting)
-                        or (row["metric_key"].ASCls == AdoptPolicyCls and adopting)
+                        (row["metric_key"].PolicyCls == BasePolicyCls and not adopting)
+                        or (row["metric_key"].PolicyCls == AdoptPolicyCls and adopting)
                     )
                 ):
                     relevant_rows.append(row)
@@ -85,7 +85,7 @@ class GraphFactory:
         #     Plane
         #     as_group
         #     outcome
-        #     ASCls
+        #     PolicyCls
         # Value: float
         # Yerr: yerr
 
