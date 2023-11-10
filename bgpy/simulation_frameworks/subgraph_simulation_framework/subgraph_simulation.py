@@ -9,15 +9,15 @@ from typing import Dict, Tuple
 import warnings
 
 from bgpy.enums import SpecialPercentAdoptions
-from bgpy.simulation_framework import MetricTracker
-from bgpy.simulation_framework import Scenario
-from bgpy.simulation_engine import SimulationEngine
-from bgpy.simulation_framework import Simulation
+from bgpy.simulation_frameworks.python_simulation_framework import MetricTracker
+from bgpy.simulation_frameworks.python_simulation_framework import Scenario
+from bgpy.simulation_engines.python_simulation_engine import PythonSimulationEngine
+from bgpy.simulation_frameworks.python_simulation_framework import PythonSimulation
 
 from .subgraphs import Subgraph
 
 
-class SubgraphSimulation(Simulation):
+class SubgraphSimulation(PythonSimulation):
     """Deprecated simulator that works off of subgraphs"""
 
     def __init__(
@@ -87,7 +87,7 @@ class SubgraphSimulation(Simulation):
 
     def _collect_engine_run_data(
         self,
-        engine: SimulationEngine,
+        engine: PythonSimulationEngine,
         percent_adopt: Union[float, SpecialPercentAdoptions],
         trial: int,
         scenario: Scenario,

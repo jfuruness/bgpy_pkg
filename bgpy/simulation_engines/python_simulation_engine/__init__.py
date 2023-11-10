@@ -13,7 +13,7 @@ from .as_classes import RealROVSimpleAS
 from .as_classes import RealPeerROVSimpleAS
 from .as_classes import ROVAS
 
-from .simulation_engine import SimulationEngine
+from .python_simulation_engine import PythonSimulationEngine
 
 __all__ = [
     "Announcement",
@@ -28,5 +28,5 @@ __all__ = [
     "RealROVSimpleAS",
     "RealPeerROVSimpleAS",
     "ROVAS",
-    "SimulationEngine",
+    "PythonSimulationEngine",
 ]

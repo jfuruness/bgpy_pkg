@@ -11,7 +11,7 @@ if TYPE_CHECKING:
     from bgpy.simulation_framework import Scenario
 
 
-class SimulationEngine(BGPDAG):
+class PythonSimulationEngine(BGPDAG):
     """BGPDAG subclass that supports announcement propogation
 
     This class must be first setup with the _setup function

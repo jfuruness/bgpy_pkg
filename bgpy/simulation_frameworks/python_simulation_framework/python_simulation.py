@@ -22,7 +22,7 @@ from bgpy.simulation_engine import SimulationEngine
 from bgpy.simulation_engine import ROVSimpleAS
 
 
-class Simulation:
+class PythonSimulation:
     """Runs simulations for BGP attack/defend scenarios"""
 
     def __init__(
