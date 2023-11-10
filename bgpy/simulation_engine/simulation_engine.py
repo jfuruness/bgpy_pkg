@@ -50,9 +50,7 @@ class SimulationEngine(BGPDAG):
         # Increment the ready to run round
         self.ready_to_run_round += 1
 
-    def _propagate(
-        self, propagation_round: int, scenario: "Scenario"
-    ):
+    def _propagate(self, propagation_round: int, scenario: "Scenario"):
         """Propogates announcements
 
         to stick with Gao Rexford, we propagate to
@@ -65,9 +63,7 @@ class SimulationEngine(BGPDAG):
         self._propagate_to_peers(propagation_round, scenario)
         self._propagate_to_customers(propagation_round, scenario)
 
-    def _propagate_to_providers(
-        self, propagation_round: int, scenario: "Scenario"
-    ):
+    def _propagate_to_providers(self, propagation_round: int, scenario: "Scenario"):
         """Propogate to providers"""
 
         # Propogation ranks go from stubs to input_clique in ascending order
@@ -105,9 +101,7 @@ class SimulationEngine(BGPDAG):
                 scenario=scenario,
             )
 
-    def _propagate_to_customers(
-        self, propagation_round: int, scenario: "Scenario"
-    ):
+    def _propagate_to_customers(self, propagation_round: int, scenario: "Scenario"):
         """Propagate to customers"""
 
         # Propogation ranks go from stubs to input_clique in ascending order
