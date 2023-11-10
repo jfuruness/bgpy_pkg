@@ -46,6 +46,8 @@ class Simulation:
         python_hash_seed: Optional[int] = None,
         engine_kwargs: Optional[dict[Any, Any]] = None,
         caida_run_kwargs: Optional[dict[Any, Any]] = None,
+        CaidaCollectorCls: type[CaidaCollector] = CaidaCollector,
+        SimulationEngineCls: type[SimulationEngine] = SimulationEngine,
         GraphAnalyzerCls: type[GraphAnalyzer] = GraphAnalyzer,
         MetricTrackerCls: type[MetricTracker] = MetricTracker,
     ) -> None:
@@ -76,7 +78,7 @@ class Simulation:
             self.engine_kwargs = {
                 "BaseASCls": AS,
                 "BasePolicyCls": BGPSimplePolicy,
-                "GraphCls": SimulationEngine,
+                "GraphCls": SimulationEngineCls,
             }
 
         if caida_run_kwargs:
@@ -85,7 +87,10 @@ class Simulation:
             self.caida_run_kwargs = dict()
         # Done here so that the caida files are cached
         # So that multiprocessing doesn't interfere with one another
-        CaidaCollector().run(**self.caida_run_kwargs)
+        self.CaidaCollectorCls: type[CaidaCollector] = CaidaCollectorCls
+        self.CaidaCollectorCls().run(**self.caida_run_kwargs)
+
+        self.SimulationEngineCls: type[SimulationEngine] = SimulationEngineCls
 
         self.GraphAnalyzerCls: type[GraphAnalyzer] = GraphAnalyzerCls
         self.MetricTrackerCls: type[MetricTracker] = MetricTrackerCls
@@ -185,7 +190,7 @@ class Simulation:
         # Making nothing a reference does nothing
         run_kwargs = self.caida_run_kwargs.copy()
         run_kwargs["tsv_path"] = None
-        engine = CaidaCollector(**self.engine_kwargs.copy()).run(**run_kwargs)
+        engine = self.CaidaCollectorCls(**self.engine_kwargs.copy()).run(**run_kwargs)
 
         metric_tracker = self.MetricTrackerCls()
 

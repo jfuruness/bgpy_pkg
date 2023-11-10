@@ -6,6 +6,10 @@ from yamlable import YamlAble, yaml_info
 from bgpy.enums import Relationships
 
 
+# Timing tests over a 2m period indicate that
+# slots offers basically no speedup here.
+# besides, YamlAble doesn't have slots, so this
+# doesn't matter
 @yaml_info(yaml_tag="Announcement")
 @dataclass(slots=True, frozen=True)
 class Announcement(YamlAble):

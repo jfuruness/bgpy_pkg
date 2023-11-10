@@ -13,7 +13,9 @@ from bgpy.simulation_framework.metric_tracker.metric_key import MetricKey
 
 
 def get_real_world_rov_asn_cls_dict(
-    min_rov_confidence: float = 0, caida_run_kwargs: Optional[dict[Any, Any]] = None
+    min_rov_confidence: float = 0,
+    caida_run_kwargs: Optional[dict[Any, Any]] = None,
+    CaidaCollectorCls=CaidaCollector,
 ) -> frozendict[int, type[BGPSimplePolicy]]:
     """Gets real world ROV Policyes, and creates a dict of asn: Policy Class
 
@@ -28,7 +30,7 @@ def get_real_world_rov_asn_cls_dict(
     if caida_run_kwargs is None:
         caida_run_kwargs = {"tsv_path": None}
 
-    engine = CaidaCollector(
+    engine = CaidaCollectorCls(
         BasePolicyCls=BGPSimplePolicy, GraphCls=SimulationEngine
     ).run(**caida_run_kwargs)
 
