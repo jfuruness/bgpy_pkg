@@ -17,19 +17,6 @@ REL = tuple[AStypeHint, ...]
 class AS(YamlAble):
     """Autonomous System class. Contains attributes of an AS"""
 
-    subclass_to_name_dict: dict[type[AStypeHint], str] = {}
-    name_to_subclass_dict: dict[str, type[AStypeHint]] = {}
-
-    def __init_subclass__(cls, *args, **kwargs):
-        """This method essentially creates a list of all subclasses
-        This is allows us to easily assign yaml tags
-        """
-
-        super().__init_subclass__(*args, **kwargs)
-        yaml_info_decorate(cls, yaml_tag=cls.__name__)
-        cls.subclass_to_name_dict[cls] = cls.__name__
-        cls.name_to_subclass_dict[cls.__name__] = cls
-
     def __init__(
         self,
         asn: Optional[int] = None,
@@ -75,6 +62,7 @@ class AS(YamlAble):
         self.hashed_asn = hash(self.asn)
 
         self.policy: BGPSimplePolicy = policy
+        self.policy.as_ = self
 
     def __lt__(self, as_obj: Any) -> bool:
         if isinstance(as_obj, AS):
@@ -169,7 +157,7 @@ class AS(YamlAble):
 
     def __to_yaml_dict__(self) -> dict[str, Any]:
         """This optional method is called when you call yaml.dump()"""
-        raise NotImplementedError("Add policy class")
+
         return {
             "asn": self.asn,
             "customers": tuple([x.asn for x in self.customers]),
@@ -179,12 +167,13 @@ class AS(YamlAble):
             "ixp": self.ixp,
             "customer_cone_size": self.customer_cone_size,
             "propagation_rank": self.propagation_rank,
+            "policy": self.policy,
         }
 
     @classmethod
     def __from_yaml_dict__(cls, dct: dict[Any, Any], yaml_tag: str):
         """This optional method is called when you call yaml.load()"""
-        raise NotImplementedError("Add policy class")
+
         return cls(**dct)
 
 

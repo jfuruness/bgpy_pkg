@@ -70,6 +70,7 @@ class BGPSimplePolicy:
         self,
         _local_rib: Optional[LocalRIB] = None,
         _recv_q: Optional[RecvQueue] = None,
+        as_: Optional[AS]] = None,
     ):
         """Add local rib and data structures here
 
@@ -81,6 +82,8 @@ class BGPSimplePolicy:
 
         self._local_rib = _local_rib if _local_rib else LocalRIB()
         self._recv_q = _recv_q if _recv_q else RecvQueue()
+        # This gets set within the AS class so it's fine
+        self.as_: type[AS] = as_  # type: ignore
 
     def __eq__(self, other) -> bool:
         raise NotImplementedError(
@@ -138,13 +141,13 @@ class BGPSimplePolicy:
 
     def __to_yaml_dict__(self):
         """This optional method is called when you call yaml.dump()"""
-        raise NotImplementedError("Add policy class")
 
         return {"_local_rib": self._local_rib, "_recv_q": self._recv_q}
 
     @classmethod
     def __from_yaml_dict__(cls, dct, yaml_tag):
         """This optional method is called when you call yaml.load()"""
-        raise NotImplementedError("Add policy class")
 
-        return cls(**dct)
+        # We can type ignore here because we add this in the AS class
+        # Only way to do it, otherwise it's a circular reference
+        return cls({**dct, "as_": None})  # type: ignore

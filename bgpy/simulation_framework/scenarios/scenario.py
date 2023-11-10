@@ -373,9 +373,11 @@ class Scenario(ABC):
         # Done here to save as much time  as possible
         BasePolicyCls = self.scenario_config.BasePolicyCls
         for as_obj in engine:
+            # Delete the old policy and remove references so that RAM can be reclaimed
+            del as_obj.policy.as_
             # set the AS class to be the proper type of AS
             Cls = self.non_default_asn_cls_dict.get(as_obj.asn, BasePolicyCls)
-            as_obj.policy = Cls()
+            as_obj.policy = Cls(as_=as_obj)
             policy_classes_used.add(Cls)
         self.policy_classes_used = frozenset(policy_classes_used)
 
