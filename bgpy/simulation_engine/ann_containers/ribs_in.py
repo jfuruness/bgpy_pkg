@@ -5,8 +5,8 @@ from yamlable import YamlAble, yaml_info
 
 from .ann_container import AnnContainer
 
-from bgpy.simulation_engines.python_simulation_engine.announcement import Announcement
-from bgpy.enums.python_enums import Relationships
+from bgpy.simulation_engine.announcement import Announcement
+from bgpy.enums import Relationships
 
 
 @yaml_info(yaml_tag="AnnInfo")

@@ -12,7 +12,7 @@ from .scenarios import NonRoutedSuperprefixHijack
 from .scenarios import NonRoutedSuperprefixPrefixHijack
 from .scenarios import ValidPrefix
 
-from .python_simulation import PythonSimulation
+from .simulation import Simulation
 
 from .utils import get_real_world_rov_asn_cls_dict
 

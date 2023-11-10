@@ -1,17 +1,17 @@
 from __future__ import annotations
 from typing import Optional, TYPE_CHECKING
 
-from bgpy.as_graphs.python_caida_as_graph import BGPDAG, AS
-from bgpy.enums.python_enums import Relationships
-from bgpy.simulation_engines.python_simulation_engine.routing_policies import BGPSimplePol
+from bgpy.caida_collector import BGPDAG, AS
+from bgpy.enums import Relationships
+from bgpy.simulation_engine.as_classes import BGPSimpleAS
 
 
 # https://stackoverflow.com/a/57005931/8903959
 if TYPE_CHECKING:
-    from bgpy.simulation_frameworks.python_simulation_framework import Scenario
+    from bgpy.simulation_framework import Scenario
 
 
-class PythonSimulationEngine(BGPDAG):
+class SimulationEngine(BGPDAG):
     """BGPDAG subclass that supports announcement propogation
 
     This class must be first setup with the _setup function
@@ -24,7 +24,7 @@ class PythonSimulationEngine(BGPDAG):
         self,
         *args,
         # Default AS class in the BGPDAG
-        BaseASCls: type[AS] = BGPSimplePol,
+        BaseASCls: type[AS] = BGPSimpleAS,
         **kwargs,
     ):
         """Saves read_to_run_rund attr and inits superclass"""

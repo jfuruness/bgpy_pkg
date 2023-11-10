@@ -1,5 +1,5 @@
-from bgpy.as_graphs.python_caida_as_graph.links import CustomerProviderLink as CPLink
-from bgpy.as_graphs.python_caida_as_graph.links import PeerLink
+from bgpy.caida_collector.links import CustomerProviderLink as CPLink
+from bgpy.caida_collector.links import PeerLink
 
 
 def _get_ases(

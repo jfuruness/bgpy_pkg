@@ -2,7 +2,7 @@ from typing import Optional
 
 from .ann_container import AnnContainer
 
-from bgpy.simulation_engines.python_simulation_engine.announcement import Announcement as Ann
+from bgpy.simulation_engine.announcement import Announcement as Ann
 
 
 class LocalRIB(AnnContainer):

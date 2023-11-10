@@ -6,7 +6,7 @@ import shutil
 from typing import Optional
 
 
-from bgpy.as_graphs.python_caida_as_graph.graph import AS, BGPDAG
+from bgpy.caida_collector.graph import AS, BGPDAG
 
 # Can't import into class due to mypy issue:
 # https://github.com/python/mypy/issues/7045
