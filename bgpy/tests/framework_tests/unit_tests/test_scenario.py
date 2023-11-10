@@ -242,6 +242,9 @@ class TestScenario:
     # Adopting ASNs funcs #
     #######################
 
+    @pytest.mark.skip(reason=(
+        "This test is very outdated, this is not how we do mixed deployment anymore"
+    ))
     def test_get_non_default_asn_cls_dict_prev_scenario_adopt(self, engine):
         """Tests that the non default as cls dict is set properly
 
@@ -282,6 +285,9 @@ class TestScenario:
         gt = {2: ROVAS, 3: BGPAS}  # 1: BaseASCls,
         assert non_default_asn_cls_dict == gt
 
+    @pytest.mark.skip(reason=(
+        "This test is very outdated, this is not how we do mixed deployment anymore"
+    ))
     def test_get_non_default_asn_cls_dict_prev_scenario_no_adopt(self, engine):
         """Tests that the non default as cls dict is set properly
 
