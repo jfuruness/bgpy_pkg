@@ -1,6 +1,6 @@
 from typing import Any, Optional, TYPE_CHECKING, Union
 
-from yamlable import yaml_info, YamlAble, yaml_info_decorate
+from yamlable import yaml_info, YamlAble
 
 if TYPE_CHECKING:
     from .base_as import AS as AStypeHint

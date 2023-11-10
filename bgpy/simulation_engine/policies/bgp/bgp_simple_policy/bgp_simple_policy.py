@@ -40,7 +40,7 @@ GAO_REXFORD_FUNC = Callable[
 class BGPSimplePolicy:
     name: str = "BGP Simple"
     as_class_names: list[str] = []
-    as_classes: list[type[BGPSimplePolicy]] = []
+    as_classes: list[type["BGPSimplePolicy"]] = []
     subclass_to_name_dict: dict[type["BGPSimplePolicy"], str] = {}
     name_to_subclass_dict: dict[str, type["BGPSimplePolicy"]] = {}
 

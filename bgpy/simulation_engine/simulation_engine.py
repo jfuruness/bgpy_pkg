@@ -1,9 +1,8 @@
 from __future__ import annotations
 from typing import Optional, TYPE_CHECKING
 
-from bgpy.caida_collector import BGPDAG, AS
+from bgpy.caida_collector import BGPDAG
 from bgpy.enums import Relationships
-from bgpy.simulation_engine.as_classes import BGPSimplePolicy
 
 
 # https://stackoverflow.com/a/57005931/8903959

@@ -1,10 +1,9 @@
 import abc
 from dataclasses import asdict, dataclass, field
-from typing import Any, Optional, Union, TYPE_CHECKING
+from typing import Any, Optional, TYPE_CHECKING
 
 from frozendict import frozendict
 
-from bgpy.caida_collector import AS
 from bgpy.enums import ASGroups
 
 from bgpy.simulation_engine import Announcement

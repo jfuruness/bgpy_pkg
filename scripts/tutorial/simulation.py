@@ -5,7 +5,7 @@ from subprefix_hijack import SubprefixHijack
 from peer_rov_as import PeerROVAS
 from rov_as import ROVAS
 
-from bgpy import Simulation, ScenarioConfig, SpecialPercentAdoptions
+from bgpy import Simulation, ScenarioConfig
 
 
 def main():
