@@ -91,6 +91,13 @@ class ScenarioConfig:
                 setattr(abc, name, PseudoBaseCls)
                 AdoptASCls = PseudoBaseCls
             object.__setattr__(self, "AdoptASCls", AdoptASCls)
+        # Better error messages when setting this var
+        if not isinstance(self.hardcoded_asn_cls_dict, frozendict):  # type: ignore
+            raise TypeError(
+                "hardcoded_asn_cls_dict of ScenarioConfig is not frozendict "
+                f"and is instead {type(self.hardcoded_asn_cls_dict)}. Please "
+                "change the type to frozendict so that it is hashable"
+            )
 
     ##############
     # Yaml Funcs #
