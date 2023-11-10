@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 import logging
 from pathlib import Path
 import shutil
-from typing import Optional, TYPE_CHECKING
+from typing import Optional
 
 
 from bgpy.caida_collector.graph import AS, BGPDAG

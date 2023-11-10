@@ -1,10 +1,10 @@
-beautifulsoup4==4.10.0
+beautifulsoup4==4.12.2
 requests==2.31.0
 frozendict==2.3.8
-graphviz==0.20
-pillow==9.2.0
-matplotlib==3.5.2
-pytest==7.1.2
+graphviz==0.20.1
+pillow==10.1.0
+matplotlib==3.8.1
+pytest==7.4.3
 PyYAML~=6.0
-tqdm==4.64.0
+tqdm==4.66.1
 yamlable==1.1.1

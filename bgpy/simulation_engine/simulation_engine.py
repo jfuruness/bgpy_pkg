@@ -44,13 +44,14 @@ class SimulationEngine(BGPDAG):
         # Ensure that the simulator is ready to run this round
         if self.ready_to_run_round != propagation_round:
             raise Exception(f"Engine not set up to run for {propagation_round} round")
+        assert scenario, "This can't be empty"
         # Propogate anns
         self._propagate(propagation_round, scenario)
         # Increment the ready to run round
         self.ready_to_run_round += 1
 
     def _propagate(
-        self, propagation_round: Optional[int], scenario: Optional["Scenario"]
+        self, propagation_round: int, scenario: "Scenario"
     ):
         """Propogates announcements
 
@@ -65,7 +66,7 @@ class SimulationEngine(BGPDAG):
         self._propagate_to_customers(propagation_round, scenario)
 
     def _propagate_to_providers(
-        self, propagation_round: Optional[int], scenario: Optional["Scenario"]
+        self, propagation_round: int, scenario: "Scenario"
     ):
         """Propogate to providers"""
 
@@ -86,7 +87,7 @@ class SimulationEngine(BGPDAG):
                 as_obj.policy.propagate_to_providers()
 
     def _propagate_to_peers(
-        self, propagation_round: Optional[int], scenario: Optional["Scenario"]
+        self, propagation_round: int, scenario: Optional["Scenario"]
     ):
         """Propagate to peers"""
 
@@ -105,7 +106,7 @@ class SimulationEngine(BGPDAG):
             )
 
     def _propagate_to_customers(
-        self, propagation_round: Optional[int], scenario: Optional["Scenario"]
+        self, propagation_round: int, scenario: "Scenario"
     ):
         """Propagate to customers"""
 

@@ -34,7 +34,6 @@ if TYPE_CHECKING:
     from bgpy.caida_collector import AS
 
 
-
 GAO_REXFORD_FUNC = Callable[
     [Ann, bool, Relationships, Ann, bool, Relationships], GaoRexfordPref
 ]

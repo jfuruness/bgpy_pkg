@@ -33,7 +33,7 @@ def _process_outgoing_ann(
     neighbor: BGPSimplePolicy,
     ann: Ann,
     propagate_to,
-    send_rels: list[Relationships]
+    send_rels: list[Relationships],
 ):
     self._send_q.add_ann(neighbor.asn, ann)
 
