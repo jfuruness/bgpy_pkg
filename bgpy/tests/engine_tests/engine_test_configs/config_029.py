@@ -3,7 +3,7 @@ from bgpy.tests.engine_tests.graphs import graph_040
 from bgpy.tests.engine_tests.utils import EngineTestConfig
 
 
-from bgpy.simulation_engine import BGPSimpleAS
+from bgpy.simulation_engine import BGPSimplePolicy
 from bgpy.simulation_framework import ValidPrefix, ScenarioConfig
 
 
@@ -30,7 +30,7 @@ config_029 = EngineTestConfig(
     desc="Test of path length preference",
     scenario_config=ScenarioConfig(
         ScenarioCls=Custom29MultiValidPrefix,
-        BaseASCls=BGPSimpleAS,
+        BasePolicyCls=BGPSimplePolicy,
         num_victims=2,
         override_victim_asns=frozenset({3, 5}),
         override_non_default_asn_cls_dict=frozendict(),

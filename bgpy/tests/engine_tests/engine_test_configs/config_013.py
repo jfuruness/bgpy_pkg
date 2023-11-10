@@ -2,7 +2,7 @@ from frozendict import frozendict
 from bgpy.tests.engine_tests.graphs import graph_006
 from bgpy.tests.engine_tests.utils import EngineTestConfig
 
-from bgpy.simulation_engine import BGPSimpleAS, ROVSimpleAS
+from bgpy.simulation_engine import BGPSimplePolicy, ROVSimplePolicy
 from bgpy.enums import ASNs
 from bgpy.simulation_framework import (
     ScenarioConfig,
@@ -15,11 +15,11 @@ config_013 = EngineTestConfig(
     desc="NonRouted Superprefix Hijack",
     scenario_config=ScenarioConfig(
         ScenarioCls=NonRoutedSuperprefixHijack,
-        AdoptASCls=ROVSimpleAS,
-        BaseASCls=BGPSimpleAS,
+        AdoptPolicyCls=ROVSimplePolicy,
+        BasePolicyCls=BGPSimplePolicy,
         override_attacker_asns=frozenset({ASNs.ATTACKER.value}),
         override_victim_asns=frozenset({ASNs.VICTIM.value}),
-        override_non_default_asn_cls_dict=frozendict({2: ROVSimpleAS}),
+        override_non_default_asn_cls_dict=frozendict({2: ROVSimplePolicy}),
     ),
     graph=graph_006,
 )

@@ -2,7 +2,7 @@ from frozendict import frozendict
 from bgpy.tests.engine_tests.graphs import graph_019
 from bgpy.tests.engine_tests.utils import EngineTestConfig
 
-from bgpy.simulation_engine import BGPAS
+from bgpy.simulation_engine import BGPPolicy
 from bgpy.enums import ASNs
 from bgpy.simulation_framework import ScenarioConfig, ValidPrefix
 
@@ -12,7 +12,7 @@ config_024 = EngineTestConfig(
     desc="Test of tiebreak preference",
     scenario_config=ScenarioConfig(
         ScenarioCls=ValidPrefix,
-        BaseASCls=BGPAS,
+        BasePolicyCls=BGPPolicy,
         override_attacker_asns=frozenset({ASNs.ATTACKER.value}),
         override_victim_asns=frozenset({ASNs.VICTIM.value}),
         override_non_default_asn_cls_dict=frozendict(),

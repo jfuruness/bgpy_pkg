@@ -5,7 +5,7 @@ from bgpy.tests.engine_tests.graphs import graph_040
 from bgpy.tests.engine_tests.utils import EngineTestConfig
 
 
-from bgpy.simulation_engine import BGPAS
+from bgpy.simulation_engine import BGPPolicy
 from bgpy.simulation_framework import ValidPrefix, ScenarioConfig
 from bgpy.enums import Prefixes
 
@@ -42,7 +42,7 @@ config_034 = EngineTestConfig(
     desc="Test withdrawal mechanism choosing next best announcement",
     scenario_config=ScenarioConfig(
         ScenarioCls=Custom34ValidPrefix,
-        BaseASCls=BGPAS,
+        BasePolicyCls=BGPPolicy,
         override_victim_asns=frozenset({2}),
         override_non_default_asn_cls_dict=frozendict(),
     ),
