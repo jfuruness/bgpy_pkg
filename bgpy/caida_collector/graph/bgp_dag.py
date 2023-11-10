@@ -28,8 +28,7 @@ from .propagation_rank_funcs import _get_propagation_ranks
 from .customer_cone_funcs import _get_customer_cone_size
 from .customer_cone_funcs import _get_cone_size_helper
 
-if TYPE_CHECKING:
-    from bgpy.simulation_engine import BGPSimplePolicy
+from bgpy.simulation_engine.policies.bgp import BGPSimplePolicy
 
 
 @yaml_info(yaml_tag="BGPDAG")

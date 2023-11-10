@@ -1,7 +1,11 @@
-from bgpy.caida_collector import AS
+from typing import TYPE_CHECKING
 
 from bgpy.simulation_engine.announcement import Announcement as Ann
 from bgpy.enums import Relationships
+
+
+if TYPE_CHECKING:
+    from bgpy.caida_collector.graph.base_as import AS
 
 
 def propagate_to_providers(self):
@@ -69,7 +73,7 @@ def _prev_sent(*args, **kwargs) -> bool:
 
 def _process_outgoing_ann(
     self,
-    neighbor: AS,
+    neighbor: "AS",
     ann: Ann,
     propagate_to: Relationships,
     send_rels: list[Relationships],

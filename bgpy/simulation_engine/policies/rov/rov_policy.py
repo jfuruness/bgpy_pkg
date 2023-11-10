@@ -1,6 +1,6 @@
 from .rov_simple_policy import ROVSimplePolicy
 
-from bgpy.simulation_engine.as_classes.bgp import BGPPolicy
+from bgpy.simulation_engine.policies.bgp import BGPPolicy
 
 
 class ROVPolicy(ROVSimplePolicy, BGPPolicy):

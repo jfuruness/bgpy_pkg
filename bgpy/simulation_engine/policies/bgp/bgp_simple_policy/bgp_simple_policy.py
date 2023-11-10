@@ -1,6 +1,6 @@
-from typing import Callable, Optional
+from typing import Callable, Optional, TYPE_CHECKING
 
-from yamlable import yaml_info_decorate
+from yamlable import yaml_info_decorate, YamlAble
 
 
 # Propagation functionality
@@ -25,11 +25,14 @@ from .gao_rexford import _new_rel_better
 from .gao_rexford import _new_as_path_shorter
 from .gao_rexford import _new_wins_ties
 
-from bgpy.caida_collector import AS
 from bgpy.enums import Relationships, GaoRexfordPref
 from bgpy.simulation_engine.ann_containers import LocalRIB
 from bgpy.simulation_engine.ann_containers import RecvQueue
 from bgpy.simulation_engine.announcement import Announcement as Ann
+
+if TYPE_CHECKING:
+    from bgpy.caida_collector import AS
+
 
 
 GAO_REXFORD_FUNC = Callable[
@@ -37,7 +40,7 @@ GAO_REXFORD_FUNC = Callable[
 ]
 
 
-class BGPSimplePolicy:
+class BGPSimplePolicy(YamlAble):
     name: str = "BGP Simple"
     as_class_names: list[str] = []
     as_classes: list[type["BGPSimplePolicy"]] = []
@@ -72,7 +75,7 @@ class BGPSimplePolicy:
         self,
         _local_rib: Optional[LocalRIB] = None,
         _recv_q: Optional[RecvQueue] = None,
-        as_: Optional[AS] = None,
+        as_: Optional["AS"] = None,
     ):
         """Add local rib and data structures here
 
@@ -85,7 +88,7 @@ class BGPSimplePolicy:
         self._local_rib = _local_rib if _local_rib else LocalRIB()
         self._recv_q = _recv_q if _recv_q else RecvQueue()
         # This gets set within the AS class so it's fine
-        self.as_: type[AS] = as_  # type: ignore
+        self.as_: type["AS"] = as_  # type: ignore
 
     def __eq__(self, other) -> bool:
         raise NotImplementedError(
@@ -111,9 +114,6 @@ class BGPSimplePolicy:
             self._new_as_path_shorter,
             self._new_wins_ties,
         )
-
-    # https://stackoverflow.com/a/53519136/8903959
-    __hash__ = AS.__hash__
 
     # Propagation functionality
     propagate_to_providers = propagate_to_providers

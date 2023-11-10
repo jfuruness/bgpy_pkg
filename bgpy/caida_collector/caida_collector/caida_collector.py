@@ -28,9 +28,7 @@ from .data_extraction_funcs import _extract_ixp_ases
 from .data_extraction_funcs import _extract_provider_customers
 from .data_extraction_funcs import _extract_peers
 
-
-if TYPE_CHECKING:
-    from bgpy.simulation_engine import BGPSimplePolicy
+from bgpy.simulation_engine import BGPSimplePolicy
 
 
 class CaidaCollector:

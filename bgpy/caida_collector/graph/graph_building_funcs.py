@@ -19,7 +19,7 @@ def _gen_graph(
     ixps: set[int],
     input_clique: set[int],
     BaseASCls: type[AS],
-    BasePolicyCls: type[BGPSimplePolicy],
+    BasePolicyCls: type["BGPSimplePolicy"],
 ):
     """Generates a graph of AS objects"""
 

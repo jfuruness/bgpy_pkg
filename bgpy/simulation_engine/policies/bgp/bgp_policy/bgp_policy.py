@@ -10,7 +10,7 @@ from .process_incoming_funcs import _process_incoming_withdrawal
 from .process_incoming_funcs import _withdraw_ann_from_neighbors
 from .process_incoming_funcs import _select_best_ribs_in
 
-from bgpy.simulation_engine.as_classes.bgp.bgp_simple_policy import BGPSimplePolicy
+from bgpy.simulation_engine.policies.bgp.bgp_simple_policy import BGPSimplePolicy
 
 from bgpy.simulation_engine.ann_containers import RIBsIn
 from bgpy.simulation_engine.ann_containers import RIBsOut

@@ -1,4 +1,4 @@
-from bgpy.simulation_engine.as_classes.bgp import BGPSimplePolicy
+from bgpy.simulation_engine.policies.bgp import BGPSimplePolicy
 from bgpy.simulation_engine.announcement import Announcement as Ann
 from bgpy.enums import Relationships
 

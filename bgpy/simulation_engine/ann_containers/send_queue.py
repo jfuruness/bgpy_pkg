@@ -1,14 +1,14 @@
 from dataclasses import dataclass
-from typing import Iterator, Optional
+from typing import Iterator, Optional, TYPE_CHECKING
 
 from yamlable import YamlAble, yaml_info
-
-from bgpy.caida_collector import AS
-
 
 from .ann_container import AnnContainer
 
 from bgpy.simulation_engine.announcement import Announcement as Ann
+
+if TYPE_CHECKING:
+    from bgpy.caida_collector import AS
 
 
 @yaml_info(yaml_tag="SendInfo")
@@ -82,12 +82,12 @@ class SendQueue(AnnContainer):
             # Add announcement
             send_info.ann = ann
 
-    def get_send_info(self, neighbor_obj: AS, prefix: str) -> Optional[Ann]:
+    def get_send_info(self, neighbor_obj: "AS", prefix: str) -> Optional[Ann]:
         """Returns the SendInfo for a neighbor AS and prefix"""
 
         return self._info.get(neighbor_obj.asn, dict()).get(prefix)
 
-    def info(self, neighbors: list[AS]) -> Iterator[tuple["AS", str, Ann]]:
+    def info(self, neighbors: list["AS"]) -> Iterator[tuple["AS", str, Ann]]:
         """Returns neighbor obj, prefix, announcement"""
 
         for neighbor_obj in neighbors:

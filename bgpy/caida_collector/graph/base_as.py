@@ -29,7 +29,7 @@ class AS(YamlAble):
         customers: REL = tuple(),
         customer_cone_size: Optional[int] = None,
         propagation_rank: Optional[int] = None,
-        policy: Optional[BGPSimplePolicy] = None,
+        policy: Optional["BGPSimplePolicy"] = None,
     ):
         if isinstance(asn, int):
             self.asn: int = asn
