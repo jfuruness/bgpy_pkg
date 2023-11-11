@@ -8,6 +8,7 @@ import time
 from typing import Dict, Tuple
 import warnings
 
+from bgpy.caida_collector import CaidaCollector
 from bgpy.enums import SpecialPercentAdoptions
 from bgpy.simulation_framework import MetricTracker
 from bgpy.simulation_framework import Scenario
@@ -46,9 +47,18 @@ class SubgraphSimulation(Simulation):
         # Not used in newest version, but in this version the graph_label is
         # used to store info. To change as a parameter, change the
         # scenario_label in the scenario_config
-        scenarios = [x.ScenarioCls(scenario_config=x) for x in self.scenario_configs]
-        labels = [x.graph_label for x in scenarios]
-        assert len(labels) == len(set(labels)), "Scenario labels not unique"
+        def assert_labels():
+            run_kwargs = self.caida_run_kwargs.copy()
+            run_kwargs["tsv_path"] = None
+            engine = CaidaCollector(**self.engine_kwargs.copy()).run(**run_kwargs)
+            scenarios = [
+                x.ScenarioCls(scenario_config=x, engine=engine)
+                for x in self.scenario_configs
+            ]
+            labels = [x.graph_label for x in scenarios]
+            assert len(labels) == len(set(labels)), "Scenario labels not unique"
+
+        assert_labels()
 
     # Can't have as a lambda due to pickling issues
     def _janky_subgraphs(self):
