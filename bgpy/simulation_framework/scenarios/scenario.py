@@ -6,7 +6,6 @@ from ipaddress import ip_network
 from ipaddress import IPv4Network
 from ipaddress import IPv6Network
 from typing import Any, Optional, Type, Union
-import warnings
 
 from frozendict import frozendict
 
@@ -518,9 +517,9 @@ class Scenario(ABC):
             percent_adoption=dct["percent_adoption"],
         )
 
-    ####################
-    # Deprecated funcs #
-    ####################
+    ###################################################################################
+    # Deprecated funcs, DO NOT USE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!#
+    ###################################################################################
 
     def determine_as_outcome(self, as_obj: AS, ann: Optional[Announcement]) -> Outcomes:
         """Determines the outcome at an AS
@@ -529,11 +528,12 @@ class Scenario(ABC):
         that exists at that AS
         """
 
-        warnings.warn(
-            "Deprecated, untested, please don't use. Leaving this until 2025"
-            " so that a few PhD students can graduate :)",
-            DeprecationWarning,
-        )
+        # This warning results in a ton of slowdowns, removing
+        # warnings.warn(
+        #     "Deprecated, untested, please don't use. Leaving this until 2025"
+        #     " so that a few PhD students can graduate :)",
+        #     DeprecationWarning,
+        # )
 
         if as_obj.asn in self.attacker_asns:
             return Outcomes.ATTACKER_SUCCESS
@@ -554,11 +554,12 @@ class Scenario(ABC):
     def graph_label(self) -> str:
         """Label that will be used on the graph"""
 
-        warnings.warn(
-            "Deprecated, untested, please don't use. Leaving this until 2025"
-            " so that a few PhD students can graduate :)",
-            DeprecationWarning,
-        )
+        # This surprisingly results in significant slowdowns, removing
+        # warnings.warn(
+        #     "Deprecated, untested, please don't use. Leaving this until 2025"
+        #     " so that a few PhD students can graduate :)",
+        #     DeprecationWarning,
+        # )
 
         if self.scenario_config.scenario_label:
             return self.scenario_config.scenario_label
