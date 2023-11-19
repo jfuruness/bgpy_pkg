@@ -1,6 +1,6 @@
 from collections import defaultdict
 from dataclasses import replace
-from typing import Optional, Type
+from typing import Any, Optional, Type
 
 from bgpy.enums import Plane, Outcomes
 from bgpy.caida_collector import AS
@@ -21,12 +21,15 @@ class Metric:
     ) -> None:
         self.metric_key: MetricKey = metric_key
         self.as_classes_used: frozenset[Type[BGPSimplePolicy]] = as_classes_used
-        self._numerators: dict[type[BGPSimplePolicy], float] = {
+        self._numerators: dict[type[BGPSimplePolicy] | Any, float] = {
             k: 0 for k in as_classes_used
         }
-        self._denominators: dict[type[BGPSimplePolicy], float] = {
+        self._denominators: dict[type[BGPSimplePolicy] | Any, float] = {
             k: 0 for k in as_classes_used
         }
+        # Used for aggregate statistics with any AS class
+        self._numerators[Any] = 0
+        self._denominators[Any] = 0
         if percents:
             self.percents: defaultdict[MetricKey, list[float]] = percents
         else:
@@ -110,7 +113,12 @@ class Metric:
 
         asn_group = engine.asn_groups[self.metric_key.as_group.value]
         if as_obj.asn in asn_group and outcome == self.metric_key.outcome:
+<<<<<<< HEAD
             self._numerators[as_obj.policy.__class__] += 1
+=======
+            self._numerators[as_obj.__class__] += 1
+            self._numerators[Any] += 1
+>>>>>>> master
 
     def _add_denominator(
         self,
@@ -124,7 +132,12 @@ class Metric:
         """Adds to the denominator if it is within the as group"""
 
         if as_obj.asn in engine.asn_groups[self.metric_key.as_group.value]:
+<<<<<<< HEAD
             self._denominators[as_obj.policy.__class__] += 1
+=======
+            self._denominators[as_obj.__class__] += 1
+            self._denominators[Any] += 1
+>>>>>>> master
             return True
         else:
             return False
