@@ -104,7 +104,7 @@ class MetricTracker:
                     ),
                     "BasePolicyCls": data_key.scenario_config.BasePolicyCls.__name__,
                     "PolicyCls": metric_key.PolicyCls.__name__,
-                    "outcome_type": metric_key.plane.value,
+                    "outcome_type": metric_key.plane.name,
                     "as_group": metric_key.as_group.value,
                     "outcome": metric_key.outcome.value,
                     "percent_adopt": data_key.percent_adopt,
