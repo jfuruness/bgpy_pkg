@@ -113,12 +113,8 @@ class Metric:
 
         asn_group = engine.asn_groups[self.metric_key.as_group.value]
         if as_obj.asn in asn_group and outcome == self.metric_key.outcome:
-<<<<<<< HEAD
             self._numerators[as_obj.policy.__class__] += 1
-=======
-            self._numerators[as_obj.__class__] += 1
             self._numerators[Any] += 1
->>>>>>> master
 
     def _add_denominator(
         self,
@@ -132,12 +128,8 @@ class Metric:
         """Adds to the denominator if it is within the as group"""
 
         if as_obj.asn in engine.asn_groups[self.metric_key.as_group.value]:
-<<<<<<< HEAD
             self._denominators[as_obj.policy.__class__] += 1
-=======
-            self._denominators[as_obj.__class__] += 1
             self._denominators[Any] += 1
->>>>>>> master
             return True
         else:
             return False

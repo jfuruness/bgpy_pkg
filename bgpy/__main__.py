@@ -1,6 +1,7 @@
 from pathlib import Path
 
 from .simulation_engine import ROVSimplePolicy
+from .enums import SpecialPercentAdoptions
 from .simulation_framework import Simulation, SubprefixHijack, ScenarioConfig
 
 
@@ -9,7 +10,14 @@ def main():
 
     # Simulation for the paper
     sim = Simulation(
-        percent_adoptions=(0.1, 0.2, 0.5, 0.8),
+        percent_adoptions=(
+            SpecialPercentAdoptions.ONLY_ONE,
+            0.1,
+            0.2,
+            0.5,
+            0.8,
+            SpecialPercentAdoptions.ALL_BUT_ONE,
+        ),
         scenario_configs=(
             ScenarioConfig(ScenarioCls=SubprefixHijack, AdoptPolicyCls=ROVSimplePolicy),
         ),
