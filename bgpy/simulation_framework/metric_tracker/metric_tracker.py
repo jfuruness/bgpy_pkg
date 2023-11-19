@@ -102,7 +102,7 @@ class MetricTracker:
                     "adopting_as_cls": data_key.scenario_config.AdoptASCls.__name__,
                     "base_as_cls": data_key.scenario_config.BaseASCls.__name__,
                     "as_cls": metric_key.ASCls.__name__,
-                    "outcome_type": metric_key.plane.value,
+                    "outcome_type": metric_key.plane.name,
                     "as_group": metric_key.as_group.value,
                     "outcome": metric_key.outcome.value,
                     "percent_adopt": data_key.percent_adopt,

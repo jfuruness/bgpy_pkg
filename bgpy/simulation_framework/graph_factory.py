@@ -69,10 +69,11 @@ class GraphFactory:
                     and (
                         (row["metric_key"].ASCls == BaseASCls and adopting is False)
                         or (row["metric_key"].ASCls == AdoptASCls and adopting is True)
-                        or (adopting is Any)
+                        or (row["metric_key"].ASCls == Any and adopting is Any)
                     )
                 ):
                     relevant_rows.append(row)
+
             self._generate_graph(metric_key, relevant_rows, adopting=adopting)
 
     def _generate_graph(self, metric_key: MetricKey, relevant_rows, adopting) -> None:
