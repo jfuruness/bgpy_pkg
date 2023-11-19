@@ -4,6 +4,7 @@ import gc
 from itertools import product
 from pathlib import Path
 import pickle
+from typing import Any
 
 import matplotlib  # type: ignore
 import matplotlib.pyplot as plt  # type: ignore
@@ -51,7 +52,7 @@ class GraphFactory:
         # Each metric key here contains plane, as group, and outcome
         # In other words, aech type of graph
 
-        graph_infos = list(product(get_all_metric_keys(), [True, False]))
+        graph_infos = list(product(get_all_metric_keys(), [True, False, Any]))
 
         for metric_key, adopting in tqdm(
             graph_infos, total=len(graph_infos), desc="Writing Graphs"
@@ -66,8 +67,9 @@ class GraphFactory:
                     and row["metric_key"].as_group == metric_key.as_group
                     and row["metric_key"].outcome == metric_key.outcome
                     and (
-                        (row["metric_key"].ASCls == BaseASCls and not adopting)
-                        or (row["metric_key"].ASCls == AdoptASCls and adopting)
+                        (row["metric_key"].ASCls == BaseASCls and adopting is False)
+                        or (row["metric_key"].ASCls == AdoptASCls and adopting is True)
+                        or (adopting is Any)
                     )
                 ):
                     relevant_rows.append(row)
@@ -91,11 +93,13 @@ class GraphFactory:
 
         if not relevant_rows:
             return
+        adopting_str = str(adopting) if isinstance(adopting, bool) else "Any"
         graph_name = (
             f"{relevant_rows[0]['data_key'].scenario_config.ScenarioCls.__name__}"
-            f"/{metric_key.as_group.value}_adopting_is_{adopting}"
-            f"/{metric_key.outcome.name}"
-            f"_{metric_key.plane.value}.png"
+            f"/{metric_key.as_group.value}"
+            f"/adopting_is_{adopting_str}"
+            f"/{metric_key.plane.value}"
+            f"/{metric_key.outcome.name}.png"
         ).replace(" ", "")
         as_cls_rows_dict = defaultdict(list)
         for row in relevant_rows:
@@ -103,7 +107,7 @@ class GraphFactory:
 
         matplotlib.use("Agg")
         fig, ax = plt.subplots()
-        fig.set_dpi(150)
+        fig.set_dpi(300)
         # Set X and Y axis size
         plt.xlim(0, 100)
         plt.ylim(0, 100)
