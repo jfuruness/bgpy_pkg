@@ -107,7 +107,13 @@ class MetricTracker:
                     "outcome": metric_key.outcome.name,
                     "percent_adopt": data_key.percent_adopt,
                     "propagation_round": data_key.propagation_round,
-                    "value": mean(trial_data),
+                    # trial_data can sometimes be empty
+                    # for example, if we have 1 adopting AS for stubs_and_multihomed
+                    # and that AS is multihomed, and not a stub, then for stubs,
+                    # no ASes adopt, and trial_data is empty
+                    # This is the proper way to do it, rather than defaulting trial_data
+                    # to [0], which skews results when aggregating trials
+                    "value": mean(trial_data) if trial_data else None,
                     "yerr": self._get_yerr(trial_data),
                     "scenario_config_label": data_key.scenario_config.csv_label,
                 }
@@ -122,7 +128,7 @@ class MetricTracker:
                 row = {
                     "data_key": data_key,
                     "metric_key": metric_key,
-                    "value": mean(trial_data),
+                    "value": mean(trial_data) if trial_data else None,
                     "yerr": self._get_yerr(trial_data),
                 }
                 agg_data.append(row)
