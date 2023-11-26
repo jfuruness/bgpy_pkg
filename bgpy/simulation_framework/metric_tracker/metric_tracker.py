@@ -95,6 +95,13 @@ class MetricTracker:
         rows = list()
         for data_key, metric_list in self.data.items():
             agg_percents = sum(metric_list, start=metric_list[0]).percents
+            # useful for debugging individual trials
+            # from pprint import pprint
+            # pprint(data_key)
+            # for x in metric_list:
+            #     pprint(x.metric_key)
+            #     pprint(x.percents)
+            # input("waiting")
             for metric_key, trial_data in agg_percents.items():
                 assert metric_key.ASCls
                 row = {
