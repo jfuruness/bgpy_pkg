@@ -10,6 +10,7 @@ class GraphInfo:
 
     customer_provider_links: set[CPLink] = field(default_factory=set)
     peer_links: set[PeerLink] = field(default_factory=set)
+    ixp_asns: set[int] = field(default_factory=set)
     # You can optionally add diagram ranks for graphviz here
     # By default, it just uses the propagation ranks
     diagram_ranks: Optional[list[list[int]]] = None

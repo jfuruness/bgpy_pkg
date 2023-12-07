@@ -124,6 +124,7 @@ class EngineTester:
             BaseASCls=self.conf.scenario_config.BaseASCls,
             peer_links=self.conf.graph.peer_links,  # type: ignore
             cp_links=self.conf.graph.customer_provider_links,  # type: ignore
+            ixp_asns=self.conf.graph.ixp_asns,
         )  # type: ignore
 
         scenario.setup_engine(engine, scenario)
