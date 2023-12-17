@@ -111,11 +111,11 @@ class CaidaCollector:
             cache_path = None
 
         file_lines: tuple[str, ...] = self.read_file(cache_path, dl_time)
-        (cp_links, peer_links, ixps, input_clique) = self._get_ases(file_lines)
+        (cp_links, peer_links, ixp_asns, input_clique) = self._get_ases(file_lines)
         bgp_dag: BGPDAG = self.GraphCls(
             cp_links,
             peer_links,
-            ixps=ixps,
+            ixp_asns=ixp_asns,
             input_clique=input_clique,
             BaseASCls=self.BaseASCls,
         )

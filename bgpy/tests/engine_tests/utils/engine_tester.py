@@ -81,12 +81,13 @@ class EngineTester:
             to the ground truth
         """
 
-        # Get a fresh copy of the scenario
-        scenario = self.conf.scenario_config.ScenarioCls(
-            scenario_config=self.conf.scenario_config
-        )
         # Get's an engine that has been set up
-        engine = self._get_engine(scenario)
+        # MUST BE DONE IN THIS ORDER so that scenario init get's passed the engine
+        engine = self._get_engine()
+        scenario = self.conf.scenario_config.ScenarioCls(
+            scenario_config=self.conf.scenario_config, engine=engine
+        )
+        scenario.setup_engine(engine, scenario)
         # Run engine
         for round_ in range(self.conf.propagation_rounds):  # type: ignore
             engine.run(propagation_round=round_, scenario=scenario)
@@ -117,16 +118,16 @@ class EngineTester:
         # Compare the YAML's together
         self._compare_data()
 
-    def _get_engine(self, scenario):
+    def _get_engine(self):
         """Creates and engine and sets it up for runs"""
 
         engine = self.SimulationEngineCls(
             BasePolicyCls=self.conf.scenario_config.BasePolicyCls,
             peer_links=self.conf.graph.peer_links,  # type: ignore
             cp_links=self.conf.graph.customer_provider_links,  # type: ignore
+            ixp_asns=self.conf.graph.ixp_asns,
         )  # type: ignore
 
-        scenario.setup_engine(engine, scenario)
         return engine
 
     def _get_trial_metrics(

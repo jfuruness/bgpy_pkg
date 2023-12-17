@@ -64,7 +64,7 @@ class Metric:
             if not (numerator == 0 and denominator == 0):
                 percents[k] = [100 * numerator / denominator]
             else:
-                percents[k] = [0]
+                percents[k] = []
         self.percents = percents
 
     def add_data(

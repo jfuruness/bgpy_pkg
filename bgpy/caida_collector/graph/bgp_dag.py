@@ -63,11 +63,12 @@ class BGPDAG(YamlAble):
         self,
         cp_links: set[CPLink],
         peer_links: set[PeerLink],
-        ixps: Optional[set[int]] = None,
+        ixp_asns: Optional[set[int]] = None,
         input_clique: Optional[set[int]] = None,
         BaseASCls: type[AS] = AS,
         BasePolicyCls: type[BGPSimplePolicy] = BGPSimplePolicy,
         yaml_as_dict: Optional[dict[int, AS]] = None,
+        yaml_ixp_asns: Optional[list[int]] = None,
         csv_path: Path = (Path(__file__).parent.parent / "combined.csv"),
         # Users can pass in any additional AS groups they want to keep track of
         additional_as_group_filters: Optional[
@@ -77,6 +78,8 @@ class BGPDAG(YamlAble):
         """Reads in relationship data from a TSV and generate graph"""
 
         if yaml_as_dict is not None:
+            assert yaml_ixp_asns is not None
+            self.ixp_asns: set[int] = set(yaml_ixp_asns)
             self.as_dict: dict[int, AS] = yaml_as_dict
             # Convert ASNs to refs
             for as_obj in self.as_dict.values():
@@ -95,13 +98,15 @@ class BGPDAG(YamlAble):
             ] = self._get_propagation_ranks()
 
         else:
+            assert ixp_asns is not None
+            self.ixp_asns = ixp_asns
             self.as_dict: dict[int, AS] = dict()  # type: ignore
             logging.debug("gen graph")
             # Just adds all ASes to the dict, and adds ixp/input_clique info
             self._gen_graph(
                 cp_links,
                 peer_links,
-                ixps if ixps else set(),
+                ixp_asns if ixp_asns else set(),
                 input_clique if input_clique else set(),
                 BaseASCls,
                 BasePolicyCls,
@@ -178,16 +183,21 @@ class BGPDAG(YamlAble):
     # Yaml funcs #
     ##############
 
-    def __to_yaml_dict__(self) -> dict[int, AS]:  # type: ignore
+    def __to_yaml_dict__(self) -> dict[str, Any]:  # type: ignore
         """Optional method called when yaml.dump is called"""
 
-        return {asn: as_obj for asn, as_obj in self.as_dict.items()}
+        return {
+            "as_dict": {asn: as_obj for asn, as_obj in self.as_dict.items()},
+            "ixp_asns": list(self.ixp_asns),
+        }
 
     @classmethod
     def __from_yaml_dict__(cls, dct, yaml_tag) -> Any:
         """Optional method called when yaml.load is called"""
 
-        return cls(set(), set(), yaml_as_dict=dct)
+        return cls(
+            set(), set(), yaml_as_dict=dct["as_dict"], yaml_ixp_asns=dct["ixp_asns"]
+        )
 
     ##################
     # Iterator funcs #

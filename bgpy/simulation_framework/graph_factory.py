@@ -129,6 +129,11 @@ class GraphFactory:
         # Add the data from the lines
         for i, (as_cls, graph_rows) in enumerate(as_cls_rows_dict.items()):
             graph_rows_sorted = list(sorted(graph_rows, key=get_percent_adopt))
+            # If no trial_data is present for a selection, value can be None
+            # For example, if no stubs are selected to adopt, the graph for adopting
+            # stub ASes will have no data points
+            # This is proper, rather than defaulting to 0 or 100, which causes problems
+            graph_rows_sorted = [x for x in graph_rows_sorted if x["value"] is not None]
             ax.errorbar(
                 [float(x["data_key"].percent_adopt) * 100 for x in graph_rows_sorted],
                 [x["value"] for x in graph_rows_sorted],

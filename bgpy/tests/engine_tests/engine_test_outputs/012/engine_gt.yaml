@@ -1,107 +1,109 @@
 !yamlable/SimulationEngine
-1: !yamlable/AS
-  asn: 1
-  customer_cone_size: 3
-  customers: !!python/tuple
-  - 666
-  - 2
-  input_clique: false
-  ixp: false
-  peers: !!python/tuple []
-  policy: !yamlable/BGPSimplePolicy
-    _local_rib: !yamlable/LocalRIB
-      1.2.0.0/16: !yamlable/Announcement
-        as_path: !!python/tuple
-        - 1
-        - 666
-        communities: !!python/tuple []
-        prefix: 1.2.0.0/16
-        recv_relationship: !simulator_codec/Relationships
-          name: CUSTOMERS
-          value: 3
-        roa_origin: 0
-        roa_valid_length: true
-        seed_asn: null
-        timestamp: 1
-        traceback_end: false
-        withdraw: false
-    _recv_q: !yamlable/RecvQueue {}
-  propagation_rank: 2
-  providers: !!python/tuple []
-2: !yamlable/AS
-  asn: 2
-  customer_cone_size: 1
-  customers: !!python/tuple
-  - 3
-  input_clique: false
-  ixp: false
-  peers: !!python/tuple []
-  policy: !yamlable/ROVPolicy
-    _local_rib: !yamlable/LocalRIB {}
-    _recv_q: !yamlable/RecvQueue {}
-    _ribs_in: !yamlable/RIBsIn
-      1:
-        1.2.0.0/16: !yamlable/AnnInfo
+as_dict:
+  1: !yamlable/AS
+    asn: 1
+    customer_cone_size: 3
+    customers: !!python/tuple
+    - 666
+    - 2
+    input_clique: false
+    ixp: false
+    peers: !!python/tuple []
+    policy: !yamlable/BGPSimplePolicy
+      _local_rib: !yamlable/LocalRIB
+        1.2.0.0/16: !yamlable/Announcement
+          as_path: !!python/tuple
+          - 1
+          - 666
+          communities: !!python/tuple []
+          prefix: 1.2.0.0/16
           recv_relationship: !simulator_codec/Relationships
-            name: PROVIDERS
-            value: 1
-          unprocessed_ann: !yamlable/Announcement
-            as_path: !!python/tuple
-            - 1
-            - 666
-            communities: !!python/tuple []
-            prefix: 1.2.0.0/16
+            name: CUSTOMERS
+            value: 3
+          roa_origin: 0
+          roa_valid_length: true
+          seed_asn: null
+          timestamp: 1
+          traceback_end: false
+          withdraw: false
+      _recv_q: !yamlable/RecvQueue {}
+    propagation_rank: 2
+    providers: !!python/tuple []
+  2: !yamlable/AS
+    asn: 2
+    customer_cone_size: 1
+    customers: !!python/tuple
+    - 3
+    input_clique: false
+    ixp: false
+    peers: !!python/tuple []
+    policy: !yamlable/ROVPolicy
+      _local_rib: !yamlable/LocalRIB {}
+      _recv_q: !yamlable/RecvQueue {}
+      _ribs_in: !yamlable/RIBsIn
+        1:
+          1.2.0.0/16: !yamlable/AnnInfo
             recv_relationship: !simulator_codec/Relationships
-              name: CUSTOMERS
-              value: 3
-            roa_origin: 0
-            roa_valid_length: true
-            seed_asn: null
-            timestamp: 1
-            traceback_end: false
-            withdraw: false
-    _ribs_out: !yamlable/RIBsOut {}
-    _send_q: !yamlable/SendQueue {}
-  propagation_rank: 1
-  providers: !!python/tuple
-  - 1
-3: !yamlable/AS
-  asn: 3
-  customer_cone_size: 0
-  customers: !!python/tuple []
-  input_clique: false
-  ixp: false
-  peers: !!python/tuple []
-  policy: !yamlable/BGPSimplePolicy
-    _local_rib: !yamlable/LocalRIB {}
-    _recv_q: !yamlable/RecvQueue {}
-  propagation_rank: 0
-  providers: !!python/tuple
-  - 2
-666: !yamlable/AS
-  asn: 666
-  customer_cone_size: 0
-  customers: !!python/tuple []
-  input_clique: false
-  ixp: false
-  peers: !!python/tuple []
-  policy: !yamlable/BGPSimplePolicy
-    _local_rib: !yamlable/LocalRIB
-      1.2.0.0/16: !yamlable/Announcement
-        as_path: !!python/tuple
-        - 666
-        communities: !!python/tuple []
-        prefix: 1.2.0.0/16
-        recv_relationship: !simulator_codec/Relationships
-          name: ORIGIN
-          value: 4
-        roa_origin: 0
-        roa_valid_length: true
-        seed_asn: 666
-        timestamp: 1
-        traceback_end: false
-        withdraw: false
-    _recv_q: !yamlable/RecvQueue {}
-  propagation_rank: 0
-  providers: !!python/tuple
-  - 1
+              name: PROVIDERS
+              value: 1
+            unprocessed_ann: !yamlable/Announcement
+              as_path: !!python/tuple
+              - 1
+              - 666
+              communities: !!python/tuple []
+              prefix: 1.2.0.0/16
+              recv_relationship: !simulator_codec/Relationships
+                name: CUSTOMERS
+                value: 3
+              roa_origin: 0
+              roa_valid_length: true
+              seed_asn: null
+              timestamp: 1
+              traceback_end: false
+              withdraw: false
+      _ribs_out: !yamlable/RIBsOut {}
+      _send_q: !yamlable/SendQueue {}
+    propagation_rank: 1
+    providers: !!python/tuple
+    - 1
+  3: !yamlable/AS
+    asn: 3
+    customer_cone_size: 0
+    customers: !!python/tuple []
+    input_clique: false
+    ixp: false
+    peers: !!python/tuple []
+    policy: !yamlable/BGPSimplePolicy
+      _local_rib: !yamlable/LocalRIB {}
+      _recv_q: !yamlable/RecvQueue {}
+    propagation_rank: 0
+    providers: !!python/tuple
+    - 2
+  666: !yamlable/AS
+    asn: 666
+    customer_cone_size: 0
+    customers: !!python/tuple []
+    input_clique: false
+    ixp: false
+    peers: !!python/tuple []
+    policy: !yamlable/BGPSimplePolicy
+      _local_rib: !yamlable/LocalRIB
+        1.2.0.0/16: !yamlable/Announcement
+          as_path: !!python/tuple
+          - 666
+          communities: !!python/tuple []
+          prefix: 1.2.0.0/16
+          recv_relationship: !simulator_codec/Relationships
+            name: ORIGIN
+            value: 4
+          roa_origin: 0
+          roa_valid_length: true
+          seed_asn: 666
+          timestamp: 1
+          traceback_end: false
+          withdraw: false
+      _recv_q: !yamlable/RecvQueue {}
+    propagation_rank: 0
+    providers: !!python/tuple
+    - 1
+ixp_asns: []
