@@ -1,15 +1,9 @@
-from typing import Any, Optional, TYPE_CHECKING, Union
+from typing import Any, Optional, TYPE_CHECKING
 
 from yamlable import yaml_info, YamlAble
 
 if TYPE_CHECKING:
-    from .base_as import AS as AStypeHint
     from bgpy.simulation_engine import BGPSimplePolicy
-else:
-    AStypeHint = "AS"
-
-SETUP_REL = Optional[set[AStypeHint]]
-REL = tuple[AStypeHint, ...]
 
 
 @yaml_info(yaml_tag="AS")
@@ -21,31 +15,19 @@ class AS(YamlAble):
         asn: Optional[int] = None,
         input_clique: bool = False,
         ixp: bool = False,
-        peers_setup_set: SETUP_REL = None,
-        providers_setup_set: SETUP_REL = None,
-        customers_setup_set: SETUP_REL = None,
-        peers: REL = tuple(),
-        providers: REL = tuple(),
-        customers: REL = tuple(),
+        peers: tuple["AS", ...] = tuple(),
+        providers: tuple["AS", ...] = tuple(),
+        customers: tuple["AS", ...] = tuple(),
         customer_cone_size: Optional[int] = None,
         propagation_rank: Optional[int] = None,
         policy: Optional["BGPSimplePolicy"] = None,
     ):
-        if isinstance(asn, int):
-            self.asn: int = asn
-        else:
-            raise Exception("ASN must be int")
+        # Make sure you're not accidentally passing in a string here
+        self.asn: int = int(asn)
 
-        # While setting up, use sets for speed
-        self.peers_setup_set: SETUP_REL = peers_setup_set
-        self.customers_setup_set: SETUP_REL = customers_setup_set
-        self.providers_setup_set: SETUP_REL = providers_setup_set
-
-        # Afterwards convert to tuples
-        # Copy over to a new attr due to mypy and readability
-        self.peers: REL = peers
-        self.providers: REL = providers
-        self.customers: REL = customers
+        self.peers: tuple["AS", ...] = peers
+        self.providers: tuple["AS", ...] = providers
+        self.customers: tuple["AS", ...] = customers
 
         # Read Caida's paper to understand these
         self.input_clique: bool = input_clique
@@ -54,10 +36,7 @@ class AS(YamlAble):
         # Propagation rank. Rank leaves to clique
         self.propagation_rank: Optional[int] = propagation_rank
 
-        self.rov_filtering: str = ""
-        self.rov_confidence: float = -1
-        self.rov_source: str = ""
-
+        # Hash in advance and only once since this gets called a lot
         self.hashed_asn = hash(self.asn)
 
         assert policy, "This should never be None"
@@ -81,13 +60,14 @@ class AS(YamlAble):
 
     @property
     def db_row(self) -> dict[str, str]:
-        def asns(as_objs: Union[list[AStypeHint], tuple[AStypeHint]]) -> str:
+        def asns(as_objs: tuple["AS", ...]) -> str:
             return "{" + ",".join(str(x.asn) for x in sorted(as_objs)) + "}"
 
         def _format(x: Any) -> str:
             if (isinstance(x, list) or isinstance(x, tuple)) and all(
                 [isinstance(y, AS) for y in x]
             ):
+                assert not isinstance(x, list), "these should all be tuples"
                 return asns(x)  # type: ignore
             elif x is None:
                 return ""
@@ -138,13 +118,13 @@ class AS(YamlAble):
         return len(self.customers) > 1
 
     @property
-    def stubs(self) -> tuple[AStypeHint, ...]:
+    def stubs(self) -> tuple["AS", ...]:
         """Returns a list of any stubs connected to that AS"""
 
         return tuple([x for x in self.customers if x.stub])
 
     @property
-    def neighbors(self) -> tuple[AStypeHint, ...]:
+    def neighbors(self) -> tuple["AS", ...]:
         """Returns customers + peers + providers"""
 
         return self.customers + self.peers + self.providers

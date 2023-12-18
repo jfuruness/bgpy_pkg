@@ -14,10 +14,7 @@ if TYPE_CHECKING:
 
 def _gen_graph(
     self,
-    cp_links: set[CPLink],
-    peer_links: set[PeerLink],
-    ixps: set[int],
-    input_clique: set[int],
+    as_graph_info: ASGraphInfo,
     BaseASCls: type[AS],
     BasePolicyCls: type["BGPSimplePolicy"],
 ):
@@ -29,18 +26,18 @@ def _gen_graph(
     def _gen_as(asn):
         as_ = BaseASCls(
             asn,
-            peers_setup_set=set(),
-            customers_setup_set=set(),
-            providers_setup_set=set(),
             policy=BasePolicyCls(),
         )
         assert as_.policy.as_ == as_, f"{BaseASCls} not setting policy.as_ correctly"
+        # Monkey patching these in here whilst generating the AS graph
+        as_.peers_setup_set=set()
+        as_.customers_setup_set=set()
+        as_.providers_setup_set=set()
         return as_
 
     # Add all links to the graph
-    for link in cp_links | peer_links:
-        for asn in link.asns:
-            self.as_dict[asn] = self.as_dict.get(asn, _gen_as(asn))
+    for asn in as_graph_info.asns:
+        self.as_dict[asn] = self.as_dict.get(asn, _gen_as(asn))
 
     # Add all IXPs to the graph
     for asn in ixps:
@@ -54,7 +51,11 @@ def _gen_graph(
 
 
 def _add_relationships(self, cp_links: set[CPLink], peer_links: set[PeerLink]):
-    """Adds relationships to the graph as references"""
+    """Adds relationships to the graph as references
+
+    NOTE: we monkey patch peers_setup_set while the AS Graph is being generated
+    for speed
+    """
 
     for cp_link in cp_links:
         # Extract customer and provider obj
@@ -74,7 +75,11 @@ def _add_relationships(self, cp_links: set[CPLink], peer_links: set[PeerLink]):
 
 
 def _make_relationships_tuples(self):
-    """Make relationships tuples"""
+    """Make relationships tuples
+
+    NOTE: we monkey patch peers_setup_set while the AS Graph is being generated
+    for speed
+    """
 
     rel_attrs = ("peers", "providers", "customers")
     setup_rel_attrs = ("peers_setup_set", "providers_setup_set", "customers_setup_set")
@@ -85,15 +90,3 @@ def _make_relationships_tuples(self):
             setattr(as_obj, rel_attr, tuple(getattr(as_obj, setup_rel_attr)))
             # Delete the setup attribute
             delattr(as_obj, setup_rel_attr)
-
-
-def _add_extra_csv_info(self, path: Path):
-    """Adds info from CSVs to ASNs"""
-
-    with path.open() as f:
-        for row in csv.DictReader(f):
-            as_ = self.as_dict.get(int(row["asn"]))
-            if as_ is not None:
-                as_.rov_filtering = row["filtering"]
-                as_.rov_confidence = float(row["confidence"])
-                as_.rov_source = row["source"]

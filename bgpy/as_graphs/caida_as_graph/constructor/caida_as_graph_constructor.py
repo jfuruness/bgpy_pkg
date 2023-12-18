@@ -6,7 +6,6 @@ class CAIDAASGraphConstructor(ASGraphConstructor):
     # Add an optional default to ASGraphCollectorCls and ASGraphCls
     def __init__(
         self,
-
         ASGraphCollectorCls: type[ASGraphCollector] = CAIDAASGraphCollector
         ASGraphCls: type[ASGraph] = CAIDAASGraph,
         as_graph_collector_kwargs = frozendict(),
@@ -53,10 +52,10 @@ class CAIDAASGraphConstructor(ASGraphConstructor):
                         self._extract_peers(line, peer_links)
 
         return ASGraphInfo(
-            customer_provider_links=cp_links,
-            peer_links=peer_links,
-            ixp_asns=ixp_asns,
-            input_clique_asns=input_clique_asns
+            customer_provider_links=frozenset(cp_links),
+            peer_links=frozenset(peer_links),
+            ixp_asns=frozenset(ixp_asns),
+            input_clique_asns=frozenset(input_clique_asns)
         )
 
     def _get_as_graph(self, as_graph_info: ASGraphInfo) -> ASGraph:
@@ -69,6 +68,7 @@ class CAIDAASGraphConstructor(ASGraphConstructor):
             input_clique=input_clique,
             **self.as_graph_kwargs
         )
+
     #################
     # Parsing funcs #
     #################

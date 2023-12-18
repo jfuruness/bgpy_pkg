@@ -1,11 +1,11 @@
+from . import as_graphs
 from . import simulation_engine
 from . import simulation_framework
 from . import tests
 from . import enums
-from . import caida_collector
 
 __all__ = [
-    "caida_collector",
+    "as_graphs",
     "simulation_engine",
     "simulation_framework",
     "tests",
