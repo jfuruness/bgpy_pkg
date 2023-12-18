@@ -1,5 +1,4 @@
 include README.md
 include LICENSE.txt
 include bgpy/py.typed
-include bgpy/caida_collector/combined.csv
 include tox.ini

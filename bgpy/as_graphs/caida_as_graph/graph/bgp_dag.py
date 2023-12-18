@@ -69,7 +69,6 @@ class BGPDAG(YamlAble):
         BasePolicyCls: type[BGPSimplePolicy] = BGPSimplePolicy,
         yaml_as_dict: Optional[dict[int, AS]] = None,
         yaml_ixp_asns: Optional[list[int]] = None,
-        csv_path: Path = (Path(__file__).parent.parent / "combined.csv"),
         # Users can pass in any additional AS groups they want to keep track of
         additional_as_group_filters: Optional[
             dict[str, Callable[[list[AS]], set[AS]]]

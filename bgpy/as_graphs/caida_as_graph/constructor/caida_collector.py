@@ -1,6 +1,5 @@
 from csv import DictWriter
 from datetime import datetime, timedelta
-import logging
 from pathlib import Path
 import shutil
 from typing import Optional
@@ -76,10 +75,7 @@ class CaidaCollector:
         try:
             return self._run(dl_time, cache_dir, tsv_path)
         except Exception as e:
-            logging.critical(
-                f"{e}: Potentially the result of a messed up"
-                "cache, which was just deleted. please try again"
-            )
+            print(f"Error {e}, deleting cached CAIDA file")
             # MAke sure no matter what don't create a messed up cache
             shutil.rmtree(cache_dir)
             raise
@@ -118,6 +114,7 @@ class CaidaCollector:
             ixp_asns=ixp_asns,
             input_clique=input_clique,
             BaseASCls=self.BaseASCls,
+            BasePolicyCls=self.BasePolicyCls
         )
         if tsv_path:
             self._write_tsv(bgp_dag, tsv_path)
@@ -139,7 +136,12 @@ class CaidaCollector:
     def _write_tsv(self, dag: BGPDAG, tsv_path: Path):
         """Writes BGP DAG info to a TSV"""
 
-        logging.info("Made graph. Now writing to TSV")
+        print(
+            f"Writing caida graph to {tsv_path} "
+            "if you want to save time and not do this, pass tsv_path=None "
+            "to the run function"
+        )
+
         with tsv_path.open(mode="w") as f:
             # Get columns
             cols: list[str] = list(next(iter(dag.as_dict.values())).db_row.keys())
@@ -147,4 +149,3 @@ class CaidaCollector:
             writer.writeheader()
             for x in dag.as_dict.values():
                 writer.writerow(x.db_row)
-        logging.debug("Wrote TSV")
