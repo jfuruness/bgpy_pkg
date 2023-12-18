@@ -15,7 +15,7 @@ class GraphAnalyzer:
         self._most_specific_ann_dict: dict[AS, Optional[Announcement]] = {
             # Get the most specific ann in the rib
             as_obj: self._get_most_specific_ann(as_obj)
-            for as_obj in engine
+            for as_obj in engine.as_graph
         }
         self._data_plane_outcomes: dict[AS, Outcomes] = dict()
         self._control_plane_outcomes: dict[AS, Outcomes] = dict()
@@ -41,7 +41,7 @@ class GraphAnalyzer:
     def analyze(self) -> dict[Any, Any]:
         """Takes in engine and outputs traceback for ctrl + data plane data"""
 
-        for as_obj in self.engine:
+        for as_obj in self.engine.as_graph:
             # Gets AS outcome and stores it in the outcomes dict
             self._get_as_outcome_data_plane(as_obj)
             self._get_as_outcome_ctrl_plane(as_obj)
@@ -65,7 +65,7 @@ class GraphAnalyzer:
                 # next as in the AS path to traceback to
                 # Ignore type because only way for this to be here
                 # Is if the most specific Ann was NOT None.
-                next_as = self.engine.as_dict[
+                next_as = self.engine.as_graph.as_dict[
                     most_specific_ann.as_path[1]  # type: ignore
                 ]  # type: ignore
                 outcome = self._get_as_outcome_data_plane(next_as)

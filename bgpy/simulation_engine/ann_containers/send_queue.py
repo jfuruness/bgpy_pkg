@@ -8,7 +8,7 @@ from .ann_container import AnnContainer
 from bgpy.simulation_engine.announcement import Announcement as Ann
 
 if TYPE_CHECKING:
-    from bgpy.caida_collector import AS
+    from bgpy.as_graphs import AS
 
 
 @yaml_info(yaml_tag="SendInfo")

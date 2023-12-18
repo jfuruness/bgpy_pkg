@@ -6,7 +6,7 @@ from bgpy.simulation_engine.announcement import Announcement as Ann
 from bgpy.enums import Relationships
 
 if TYPE_CHECKING:
-    from bgpy.caida_collector.graph.base_as import AS
+    from bgpy.as_graphs import AS
 
 
 def _propagate(self, propagate_to: Relationships, send_rels: list[Relationships]):

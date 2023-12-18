@@ -1,7 +1,7 @@
 from __future__ import annotations
 from typing import Optional, TYPE_CHECKING
 
-from bgpy.caida_collector import BGPDAG
+from bgpy.as_graphs import ASGraph, CAIDAASGraph  # noqa
 from bgpy.enums import Relationships
 
 
@@ -10,7 +10,7 @@ if TYPE_CHECKING:
     from bgpy.simulation_framework import Scenario
 
 
-class SimulationEngine(BGPDAG):
+class SimulationEngine:
     """BGPDAG subclass that supports announcement propogation
 
     This class must be first setup with the _setup function
@@ -19,10 +19,10 @@ class SimulationEngine(BGPDAG):
     Then the run function can be called, and propagation occurs
     """
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, as_graph: ASGraph):
         """Saves read_to_run_rund attr and inits superclass"""
 
-        super(SimulationEngine, self).__init__(*args, **kwargs)  # type: ignore
+        self.as_graph = as_graph
         # This indicates whether or not the simulator has been set up for a run
         # We use a number instead of a bool so that we can indicate for
         # each round whether it is ready to run or not
@@ -32,11 +32,83 @@ class SimulationEngine(BGPDAG):
         """Returns if two simulators contain the same BGPDAG's"""
 
         if isinstance(other, SimulationEngine):
-            rv = self.as_dict == other.as_dict
+            rv = self.as_graph.as_dict == other.as_graph.as_dict
             assert isinstance(rv, bool), "Make mypy happy"
             return rv
         else:
             return NotImplemented
+
+    ###############
+    # Setup funcs #
+    ###############
+
+    def setup(
+        self,
+        BasePolicyCls: type["BGPSimpleAS"] = BGPSimpleAS,
+        non_default_asn_cls_dict: dict[int, type["BGPSimplePolicy"],
+        prev_scenario: Optional["Scenario"] = None
+    ) -> frozenset["BGPSimplePolicy"]:
+        """Sets AS classes and seeds announcements"""
+
+        policies_used: frozenset["BGPSimplePolicy"] = self._set_as_classes(
+            BasePolicyCls,
+            non_default_asn_cls_dict,
+            prev_scenario
+        )
+        engine._seed_announcements(self.announcements, prev_scenario)
+        engine.ready_to_run_round = 0
+        return policies_used
+
+    def _set_as_classes(
+        self,
+        BasePolicyCls: type["BGPSimplePolicy"],
+        non_default_asn_cls_dict: dict[int, type["BGPSimplePolicy"],
+        prev_scenario: Optional["Scenario"] = None
+    ) -> frozenset["BGPSimplePolicy"]:
+        """Resets Engine ASes and changes their AS class
+
+        We do this here because we already seed from the scenario
+        to allow for easy overriding. If scenario controls seeding,
+        it doesn't make sense for engine to control resetting either
+        and have each do half and half
+        """
+
+        policy_classes_used = set()
+        # Done here to save as much time  as possible
+        BasePolicyCls = self.scenario_config.BasePolicyCls
+        for as_obj in engine:
+            # Delete the old policy and remove references so that RAM can be reclaimed
+            del as_obj.policy.as_
+            # set the AS class to be the proper type of AS
+            Cls = non_default_asn_cls_dict.get(as_obj.asn, BasePolicyCls)
+            as_obj.policy = Cls(as_=as_obj)
+            policy_classes_used.add(Cls)
+        return policy_classes_used = frozenset(policy_classes_used)
+
+
+    def _seed_announcements(
+        self, announcements: tuple[Announcement, ...], prev_scenario: Optional["Scenario"]
+    ) -> None:
+        """Seeds announcement at the proper AS
+
+        Since this is the simulator engine, we should
+        never have to worry about overlapping announcements
+        """
+
+        for ann in announcements:
+            assert ann.seed_asn is not None
+            # Get the AS object to seed at
+            # Must ignore type because it doesn't see assert above
+            obj_to_seed = engine.as_graph.as_dict[ann.seed_asn]  # type: ignore
+            # Ensure we aren't replacing anything
+            err = "Seeding conflict"
+            assert obj_to_seed.policy._local_rib.get_ann(ann.prefix) is None, err
+            # Seed by placing in the local rib
+            obj_to_seed.policy._local_rib.add_ann(ann)
+
+    #####################
+    # Propagation funcs #
+    #####################
 
     def run(self, propagation_round: int = 0, scenario: Optional["Scenario"] = None):
         """Propogates announcements and ensures proper setup"""
@@ -68,7 +140,7 @@ class SimulationEngine(BGPDAG):
 
         # Propogation ranks go from stubs to input_clique in ascending order
         # By customer provider pairs (peers are ignored for the ranks)
-        for i, rank in enumerate(self.propagation_ranks):
+        for i, rank in enumerate(self.as_graph.propagation_ranks):
             # Nothing to process at the start
             if i > 0:
                 # Process first because maybe it recv from lower ranks
@@ -92,9 +164,9 @@ class SimulationEngine(BGPDAG):
         # It'd be impossible to take into account peering
         # since different customers peer to different ranks
         # So first do customer to provider propagation, then peer propagation
-        for as_obj in self:
+        for as_obj in self.as_graph:
             as_obj.policy.propagate_to_peers()
-        for as_obj in self:
+        for as_obj in self.as_graph:
             as_obj.policy.process_incoming_anns(
                 from_rel=Relationships.PEERS,
                 propagation_round=propagation_round,
@@ -107,7 +179,7 @@ class SimulationEngine(BGPDAG):
         # Propogation ranks go from stubs to input_clique in ascending order
         # By customer provider pairs (peers are ignored for the ranks)
         # So here we start at the highest rank(input_clique) and propagate down
-        for i, rank in enumerate(reversed(self.propagation_ranks)):
+        for i, rank in enumerate(reversed(self.as_graph.propagation_ranks)):
             # There are no incomming Anns at the top
             if i > 0:
                 for as_obj in rank:

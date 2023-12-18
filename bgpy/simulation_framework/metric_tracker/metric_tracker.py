@@ -234,7 +234,7 @@ class MetricTracker:
         # Don't count these!
         uncountable_asns = scenario._preset_asns
 
-        for as_obj in engine:
+        for as_obj in engine.as_graph:
             # Don't count preset ASNs
             if as_obj.asn in uncountable_asns:
                 continue

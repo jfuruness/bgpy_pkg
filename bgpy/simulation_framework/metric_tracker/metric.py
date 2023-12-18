@@ -111,7 +111,7 @@ class Metric:
         else:
             raise NotImplementedError
 
-        asn_group = engine.asn_groups[self.metric_key.as_group.value]
+        asn_group = engine.as_graph.asn_groups[self.metric_key.as_group.value]
         if as_obj.asn in asn_group and outcome == self.metric_key.outcome:
             self._numerators[as_obj.policy.__class__] += 1
             self._numerators[Any] += 1
@@ -127,7 +127,7 @@ class Metric:
     ) -> bool:
         """Adds to the denominator if it is within the as group"""
 
-        if as_obj.asn in engine.asn_groups[self.metric_key.as_group.value]:
+        if as_obj.asn in engine.as_graph.asn_groups[self.metric_key.as_group.value]:
             self._denominators[as_obj.policy.__class__] += 1
             self._denominators[Any] += 1
             return True

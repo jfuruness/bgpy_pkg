@@ -9,14 +9,13 @@ from typing import Any, Optional, Type, Union
 
 from frozendict import frozendict
 
-from bgpy.caida_collector import AS
-
-from .scenario_config import ScenarioConfig
-
+from bgpy.as_graphs import AS
 from bgpy.simulation_engine import Announcement
 from bgpy.simulation_engine import SimulationEngine
 from bgpy.simulation_engine import BGPSimplePolicy
 from bgpy.enums import SpecialPercentAdoptions, Outcomes, Relationships
+
+from .scenario_config import ScenarioConfig
 
 pseudo_base_cls_dict: dict[type[BGPSimplePolicy], type[BGPSimplePolicy]] = dict()
 
@@ -154,7 +153,7 @@ class Scenario(ABC):
     ) -> set[int]:
         """Returns possible attacker ASNs, defaulted from config"""
 
-        possible_asns = engine.asn_groups[
+        possible_asns = engine.as_graph.asn_groups[
             self.scenario_config.attacker_subcategory_attr
         ]
         err = "Make mypy happy"
@@ -206,7 +205,7 @@ class Scenario(ABC):
     ) -> set[int]:
         """Returns possible victim ASNs, defaulted from config"""
 
-        possible_asns = engine.asn_groups[self.scenario_config.victim_subcategory_attr]
+        possible_asns = engine.as_graph.asn_groups[self.scenario_config.victim_subcategory_attr]
         err = "Make mypy happy"
         assert all(isinstance(x, int) for x in possible_asns), err
         assert isinstance(possible_asns, set), err
@@ -294,7 +293,7 @@ class Scenario(ABC):
 
         # Randomly adopt in all three subcategories
         for subcategory in self.scenario_config.adoption_subcategory_attrs:
-            asns = engine.asn_groups[subcategory]
+            asns = engine.as_graph.asn_groups[subcategory]
             # Remove ASes that are already pre-set
             # Ex: Attacker and victim
             # Ex: ROV Nodes (in certain situations)
@@ -351,57 +350,14 @@ class Scenario(ABC):
     # Engine Manipulation Funcs #
     #############################
 
-    def setup_engine(
-        self, engine: SimulationEngine, prev_scenario: Optional["Scenario"] = None
-    ) -> None:
-        """sets up engine input"""
+    def setup_engine(self, engine: SimulationEngine, prev_scenario: Optional["Scenario"]) -> None:
+        """Sets up engine"""
 
-        self._set_engine_as_classes(engine, prev_scenario)
-        self._seed_engine_announcements(engine, prev_scenario)
-        engine.ready_to_run_round = 0
-
-    def _set_engine_as_classes(
-        self, engine: SimulationEngine, prev_scenario: Optional["Scenario"]
-    ) -> None:
-        """Resets Engine ASes and changes their AS class
-
-        We do this here because we already seed from the scenario
-        to allow for easy overriding. If scenario controls seeding,
-        it doesn't make sense for engine to control resetting either
-        and have each do half and half
-        """
-
-        policy_classes_used = set()
-        # Done here to save as much time  as possible
-        BasePolicyCls = self.scenario_config.BasePolicyCls
-        for as_obj in engine:
-            # Delete the old policy and remove references so that RAM can be reclaimed
-            del as_obj.policy.as_
-            # set the AS class to be the proper type of AS
-            Cls = self.non_default_asn_cls_dict.get(as_obj.asn, BasePolicyCls)
-            as_obj.policy = Cls(as_=as_obj)
-            policy_classes_used.add(Cls)
-        self.policy_classes_used = frozenset(policy_classes_used)
-
-    def _seed_engine_announcements(
-        self, engine: SimulationEngine, prev_scenario: Optional["Scenario"]
-    ) -> None:
-        """Seeds announcement at the proper AS
-
-        Since this is the simulator engine, we should
-        never have to worry about overlapping announcements
-        """
-
-        for ann in self.announcements:
-            assert ann.seed_asn is not None
-            # Get the AS object to seed at
-            # Must ignore type because it doesn't see assert above
-            obj_to_seed = engine.as_dict[ann.seed_asn]  # type: ignore
-            # Ensure we aren't replacing anything
-            err = "Seeding conflict"
-            assert obj_to_seed.policy._local_rib.get_ann(ann.prefix) is None, err
-            # Seed by placing in the local rib
-            obj_to_seed.policy._local_rib.add_ann(ann)
+        self.policies_used = engine.setup(
+            self.scenario_config.BasePolicyCls,
+            self.non_default_asn_cls_dict,
+            prev_scenario
+        )
 
     ##################
     # Subclass Funcs #

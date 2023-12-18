@@ -44,9 +44,17 @@ class Simulation:
         output_dir: Path = Path("/tmp/sims"),
         parse_cpus: int = cpu_count(),
         python_hash_seed: Optional[int] = None,
-        engine_kwargs: Optional[dict[Any, Any]] = None,
-        caida_run_kwargs: Optional[dict[Any, Any]] = None,
-        CaidaCollectorCls: type[CaidaCollector] = CaidaCollector,
+        ASGraphConstructorCls: type[ASGraphConstructor] = CAIDAASGraphConstructor,
+        as_graph_constructor_kwargs = frozendict({
+            "as_graph_collector_kwargs": frozendict({
+                # dl_time: datetime(),
+                "cache_dir": Path("/tmp/as_graph_collector_cache"),
+            })
+            "as_graph_kwargs": frozendict({
+                "customer_cones": False
+            })
+            "tsv_path": None,
+        })
         SimulationEngineCls: type[SimulationEngine] = SimulationEngine,
         GraphAnalyzerCls: type[GraphAnalyzer] = GraphAnalyzer,
         MetricTrackerCls: type[MetricTracker] = MetricTracker,
@@ -72,23 +80,11 @@ class Simulation:
         self.python_hash_seed: Optional[int] = python_hash_seed
         self._seed_random()
 
-        if engine_kwargs:
-            self.engine_kwargs: dict[Any, Any] = engine_kwargs
-        else:
-            self.engine_kwargs = {
-                "BaseASCls": AS,
-                "BasePolicyCls": BGPSimplePolicy,
-                "GraphCls": SimulationEngineCls,
-            }
-
-        if caida_run_kwargs:
-            self.caida_run_kwargs: dict[Any, Any] = caida_run_kwargs
-        else:
-            self.caida_run_kwargs = dict()
         # Done here so that the caida files are cached
         # So that multiprocessing doesn't interfere with one another
-        self.CaidaCollectorCls: type[CaidaCollector] = CaidaCollectorCls
-        self.CaidaCollectorCls().run(**self.caida_run_kwargs)
+        self.ASGraphConstructorCls: type[ASGraphConstructor] = ASGraphConstructorCls
+        self.as_graph_constructor_kwargs = as_graph_constructor_kwargs
+        self.ASGraphConstructorCls(**as_graph_constructor_kwargs).run()
 
         self.SimulationEngineCls: type[SimulationEngine] = SimulationEngineCls
 
@@ -188,9 +184,10 @@ class Simulation:
         # (after the multiprocess process has started)
         # Changing recursion depth does nothing
         # Making nothing a reference does nothing
-        run_kwargs = self.caida_run_kwargs.copy()
-        run_kwargs["tsv_path"] = None
-        engine = self.CaidaCollectorCls(**self.engine_kwargs.copy()).run(**run_kwargs)
+        constructor_kwargs = self.as_graph_constructor_kwargs.copy()
+        constructor_kwargs["tsv_path"] = None
+        as_graph = self.ASGraphConstructorCls(**constructor_kwargs).run()
+        engine = SimulationEngine(as_graph)
 
         metric_tracker = self.MetricTrackerCls()
 

@@ -31,7 +31,7 @@ from bgpy.simulation_engine.ann_containers import RecvQueue
 from bgpy.simulation_engine.announcement import Announcement as Ann
 
 if TYPE_CHECKING:
-    from bgpy.caida_collector import AS
+    from bgpy.as_graphs import AS
 
 
 GAO_REXFORD_FUNC = Callable[
