@@ -61,10 +61,7 @@ class BGPDAG(YamlAble):
 
     def __init__(
         self,
-        cp_links: set[CPLink],
-        peer_links: set[PeerLink],
-        ixp_asns: Optional[set[int]] = None,
-        input_clique: Optional[set[int]] = None,
+        as_graph_info: ASGraphInfo,
         BaseASCls: type[AS] = AS,
         BasePolicyCls: type[BGPSimplePolicy] = BGPSimplePolicy,
         yaml_as_dict: Optional[dict[int, AS]] = None,

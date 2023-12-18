@@ -33,4 +33,6 @@ class CustomerProviderLink(Link):
     def asns(self) -> tuple[int, int]:
         """Returns asns associated with this link. Used for hashing"""
 
-        return tuple(sorted([self.customer_asn, self.provider_asn]))  # type: ignore
+        asns = list(sorted([self.customer_asn, self.provider_asn]))
+        assert len(asns) == 2, "mypy type check"
+        return asns
