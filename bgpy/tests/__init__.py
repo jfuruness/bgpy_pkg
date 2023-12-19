@@ -1,6 +1,5 @@
 from .conftest import pytest_addoption
 
-from .engine_tests import Diagram
 from .engine_tests import DiagramAggregator
 from .engine_tests import TestEngine
 from .engine_tests import EngineTester
@@ -14,7 +13,6 @@ from .engine_tests import (
 
 
 __all__ = [
-    "Diagram",
     "DiagramAggregator",
     "pytest_addoption",
     "EngineTester",
