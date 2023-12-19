@@ -1,4 +1,4 @@
-from bgpy.caida_collector import CustomerProviderLink as CPLink
+from bgpy.as_graphs.base.links import CustomerProviderLink as CPLink
 
 from bgpy.as_graphs import ASGraphInfo
 from bgpy.enums import ASNs

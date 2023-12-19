@@ -1,6 +1,6 @@
 from typing import Any, Optional
 
-from bgpy.caida_collector import AS
+from bgpy.as_graphs import AS
 from bgpy.enums import Outcomes, Plane, Relationships
 from bgpy.simulation_engine import Announcement, SimulationEngine
 from bgpy.simulation_framework.scenarios import Scenario

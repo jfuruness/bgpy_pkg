@@ -11,7 +11,7 @@ from .data_key import DataKey
 from .metric import Metric
 from .metric_key import MetricKey
 
-from bgpy.caida_collector.graph.base_as import AS
+from bgpy.as_graphs import AS
 from bgpy.enums import Plane, SpecialPercentAdoptions
 from bgpy.simulation_engine import SimulationEngine
 from bgpy.simulation_framework.scenarios import Scenario

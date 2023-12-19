@@ -13,22 +13,22 @@ if TYPE_CHECKING:
 class ASGraphConstructor(ABC):
     def __init__(
         self,
-        ASGraphCollectorCls: type[ASGraphCollector],
-        ASGraphCls: type[ASGraph],
+        ASGraphCollectorCls: type["ASGraphCollector"],
+        ASGraphCls: type["ASGraph"],
         as_graph_collector_kwargs=frozendict(),
         as_graph_kwargs=frozendict(),
         tsv_path: Optional[Path] = None,
     ) -> None:
         """Stores download time and cache_dir instance vars and creates dir"""
 
-        self.as_graph_collector: ASGraphCollector = ASGraphCollectorCls(
+        self.as_graph_collector: "ASGraphCollector" = ASGraphCollectorCls(
             **as_graph_collector_kwargs
         )
-        self.ASGraphCls: type[ASGraph] = ASGraphCls
+        self.ASGraphCls: type["ASGraph"] = ASGraphCls
         self.as_graph_kwargs = as_graph_kwargs
         self.tsv_path: Optional[Path] = tsv_path
 
-    def run(self) -> ASGraph:
+    def run(self) -> "ASGraph":
         """Generates AS graph in the following steps:
 
         1. download file from source using the GraphCollector
@@ -48,7 +48,7 @@ class ASGraphConstructor(ABC):
         self._write_tsv(as_graph)
         return as_graph
 
-    def _write_tsv(self, as_graph: ASGraph) -> None:
+    def _write_tsv(self, as_graph: "ASGraph") -> None:
         """Writes AS Graph to TSV"""
 
         if self.tsv_path:
@@ -69,7 +69,7 @@ class ASGraphConstructor(ABC):
                     writer.writerow(x.db_row)
 
     @abstractmethod
-    def _get_as_graph_info(self, dl_path: Path) -> ASGraphInfo:
+    def _get_as_graph_info(self, dl_path: Path) -> "ASGraphInfo":
         """Reads cached directory, gets AS graph info and returns ASGraphInfo
 
         dl_path is the Path to the downloaded file
@@ -77,6 +77,6 @@ class ASGraphConstructor(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    def _get_as_graph(self, as_graph_info: ASGraphInfo) -> ASGraph:
+    def _get_as_graph(self, as_graph_info: "ASGraphInfo") -> "ASGraph":
         """Returns AS Graph based on ASGraphInfo"""
         raise NotImplementedError

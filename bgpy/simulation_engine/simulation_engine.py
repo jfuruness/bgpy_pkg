@@ -2,14 +2,14 @@ from typing import Optional, TYPE_CHECKING
 
 from frozendict import frozendict
 
-from bgpy.as_graphs import ASGraph, CAIDAASGraph  # noqa
-from bgpy.enums import Relationships
 
+from bgpy.enums import Relationships
+from bgpy.simulation_engine.policies import BGPSimplePolicy
 
 # https://stackoverflow.com/a/57005931/8903959
 if TYPE_CHECKING:
+    from bgpy.as_graphs import ASGraph
     from bgpy.simulation_engine.announcement import Announcement
-    from bgpy.simulation_engine.policies import BGPSimplePolicy
     from bgpy.simulation_framework import Scenario
 
 
@@ -22,7 +22,7 @@ class SimulationEngine:
     Then the run function can be called, and propagation occurs
     """
 
-    def __init__(self, as_graph: ASGraph):
+    def __init__(self, as_graph: "ASGraph"):
         """Saves read_to_run_rund attr and inits superclass"""
 
         self.as_graph = as_graph
@@ -47,16 +47,16 @@ class SimulationEngine:
 
     def setup(
         self,
-        announcements: tuple[Announcement, ...],
-        BasePolicyCls: type["BGPSimplePolicy"] = BGPSimplePolicy,
-        non_default_asn_cls_dict: frozendict[int, type["BGPSimplePolicy"]] = (
+        announcements: tuple["Announcement", ...],
+        BasePolicyCls: type[BGPSimplePolicy] = BGPSimplePolicy,
+        non_default_asn_cls_dict: frozendict[int, type[BGPSimplePolicy]] = (
             frozendict()  # type: ignore
         ),
         prev_scenario: Optional["Scenario"] = None,
-    ) -> frozenset[type["BGPSimplePolicy"]]:
+    ) -> frozenset[type[BGPSimplePolicy]]:
         """Sets AS classes and seeds announcements"""
 
-        policies_used: frozenset[type["BGPSimplePolicy"]] = self._set_as_classes(
+        policies_used: frozenset[type[BGPSimplePolicy]] = self._set_as_classes(
             BasePolicyCls, non_default_asn_cls_dict, prev_scenario
         )
         self._seed_announcements(announcements, prev_scenario)
@@ -65,10 +65,10 @@ class SimulationEngine:
 
     def _set_as_classes(
         self,
-        BasePolicyCls: type["BGPSimplePolicy"],
-        non_default_asn_cls_dict: frozendict[int, type["BGPSimplePolicy"]],
+        BasePolicyCls: type[BGPSimplePolicy],
+        non_default_asn_cls_dict: frozendict[int, type[BGPSimplePolicy]],
         prev_scenario: Optional["Scenario"] = None,
-    ) -> frozenset[type["BGPSimplePolicy"]]:
+    ) -> frozenset[type[BGPSimplePolicy]]:
         """Resets Engine ASes and changes their AS class
 
         We do this here because we already seed from the scenario
@@ -90,7 +90,7 @@ class SimulationEngine:
 
     def _seed_announcements(
         self,
-        announcements: tuple[Announcement, ...],
+        announcements: tuple["Announcement", ...],
         prev_scenario: Optional["Scenario"],
     ) -> None:
         """Seeds announcement at the proper AS

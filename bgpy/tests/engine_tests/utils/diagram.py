@@ -27,8 +27,8 @@ class Diagram:
         scenario: Scenario,
         traceback: dict[int, Outcomes],
         description: str,
-        metric_tracker: MetricTracker,
-        diagram_ranks: tuple[tuple[AS, ...], ...],
+        metric_tracker: "MetricTracker",
+        diagram_ranks: tuple[tuple["AS", ...], ...],
         static_order: bool = False,
         path: Optional[Path] = None,
         view: bool = False,
@@ -88,7 +88,7 @@ class Diagram:
     def _encode_as_obj_as_node(
         self,
         subgraph: Digraph,
-        as_obj: AS,
+        as_obj: "AS",
         engine: SimulationEngine,
         traceback: dict[int, Outcomes],
         scenario: Scenario,
@@ -106,7 +106,7 @@ class Diagram:
         subgraph.node(str(as_obj.asn), html, **kwargs)
 
     def _get_html(
-        self, as_obj: AS, engine: SimulationEngine, scenario: Scenario
+        self, as_obj: "AS", engine: SimulationEngine, scenario: Scenario
     ) -> str:
         asn_str = str(as_obj.asn)
         if as_obj.asn in scenario.victim_asns:
@@ -160,7 +160,7 @@ class Diagram:
 
     def _get_kwargs(
         self,
-        as_obj: AS,
+        as_obj: "AS",
         engine: SimulationEngine,
         traceback: dict[int, Outcomes],
         scenario: Scenario,
@@ -219,7 +219,7 @@ class Diagram:
                     )
 
     def _add_diagram_ranks(
-        self, diagram_ranks: tuple[tuple[AS, ...], ...], static_order: bool
+        self, diagram_ranks: tuple[tuple["AS", ...], ...], static_order: bool
     ) -> None:
         # TODO: Refactor
         if static_order is False:

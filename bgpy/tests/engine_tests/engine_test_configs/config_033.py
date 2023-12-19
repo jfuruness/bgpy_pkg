@@ -2,7 +2,7 @@ from frozendict import frozendict
 from copy import deepcopy
 
 
-from bgpy.tests.engine_tests.graphs import as_graph_info_047
+from bgpy.tests.engine_tests.as_graph_infos import as_graph_info_047
 from bgpy.tests.engine_tests.utils import EngineTestConfig
 
 

@@ -11,7 +11,7 @@ if TYPE_CHECKING:
 
 def _gen_graph(
     self,
-    as_graph_info: ASGraphInfo,
+    as_graph_info: "ASGraphInfo",
     BaseASCls: type[AS],
     BasePolicyCls: type["BGPSimplePolicy"],
 ):
@@ -44,7 +44,7 @@ def _gen_graph(
         self.as_dict[asn].input_clique = True
 
 
-def _add_relationships(self, as_graph_info: ASGraphInfo) -> None:
+def _add_relationships(self, as_graph_info: "ASGraphInfo") -> None:
     """Adds relationships to the graph as references
 
     NOTE: we monkey patch peers_setup_set while the AS Graph is being generated

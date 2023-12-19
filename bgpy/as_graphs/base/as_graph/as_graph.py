@@ -26,8 +26,7 @@ from .customer_cone_funcs import _get_cone_size_helper
 
 from bgpy.simulation_engine.policies.bgp import BGPSimplePolicy
 
-if TYPE_CHECKING:
-    from ..as_graph_info import ASGraphInfo
+from ..as_graph_info import ASGraphInfo
 
 
 @yaml_info(yaml_tag="ASGraph")
@@ -59,13 +58,13 @@ class ASGraph(YamlAble):
 
     def __init__(
         self,
-        as_graph_info: ASGraphInfo,
+        as_graph_info: "ASGraphInfo",
         BaseASCls: type[AS] = AS,
         BasePolicyCls: type[BGPSimplePolicy] = BGPSimplePolicy,
         yaml_as_dict: Optional[frozendict[int, AS]] = None,
         yaml_ixp_asns: frozenset[int] = frozenset(),
         # Users can pass in any additional AS groups they want to keep track of
-        additional_as_group_filters: frozendict[str, Callable[[ASGraph], frozenset[AS]]] = frozendict(),
+        additional_as_group_filters: frozendict[str, Callable[["ASGraph"], frozenset[AS]]] = frozendict(),
     ):
         """Reads in relationship data from a TSV and generate graph"""
 
