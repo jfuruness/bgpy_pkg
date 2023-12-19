@@ -1,6 +1,7 @@
 """Gontains functions needed to build graph and it's references"""
 
 from typing import TYPE_CHECKING
+from weakref import proxy
 
 from .base_as import AS
 
@@ -22,7 +23,9 @@ def _gen_graph(
             asn,
             policy=BasePolicyCls(),
         )
-        assert as_.policy.as_ == as_, f"{BaseASCls} not setting policy.as_ correctly"
+        assert as_.policy.as_ == proxy(
+            as_
+        ), f"{BaseASCls} not setting policy.as_ correctly"
         # Monkey patching these in here whilst generating the AS graph
         as_.peers_setup_set = set()
         as_.customers_setup_set = set()
@@ -81,6 +84,10 @@ def _make_relationships_tuples(self):
     for as_obj in self:
         for rel_attr, setup_rel_attr in zip(rel_attrs, setup_rel_attrs):
             # Conver the setup attribute to tuple
-            setattr(as_obj, rel_attr, tuple(getattr(as_obj, setup_rel_attr)))
+            setattr(
+                as_obj,
+                rel_attr,
+                tuple([proxy(x) for x in getattr(as_obj, setup_rel_attr)]),
+            )
             # Delete the setup attribute
             delattr(as_obj, setup_rel_attr)

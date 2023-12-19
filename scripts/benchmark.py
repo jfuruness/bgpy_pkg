@@ -13,11 +13,12 @@ def main():
         scenario_configs=(
             ScenarioConfig(ScenarioCls=SubprefixHijack, AdoptPolicyCls=ROVSimplePolicy),
         ),
-        output_dir=Path("~/Desktop/main_ex").expanduser(),
-        num_trials=20,
+        output_dir=Path("~/Desktop/benchmark").expanduser(),
+        num_trials=5,
         parse_cpus=1,
+        python_hash_seed=0,
     )
-    sim.run()
+    sim._get_data()
 
 
 if __name__ == "__main__":

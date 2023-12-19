@@ -1,4 +1,5 @@
 from typing import Callable, Optional, TYPE_CHECKING
+from weakref import CallableProxyType
 
 from yamlable import yaml_info_decorate, YamlAble, yaml_info
 
@@ -88,7 +89,7 @@ class BGPSimplePolicy(YamlAble):
         self._local_rib = _local_rib if _local_rib else LocalRIB()
         self._recv_q = _recv_q if _recv_q else RecvQueue()
         # This gets set within the AS class so it's fine
-        self.as_: type["AS"] = as_  # type: ignore
+        self.as_: CallableProxyType["AS"] = as_  # type: ignore
 
     def __eq__(self, other) -> bool:
         raise NotImplementedError(

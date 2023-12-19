@@ -1,4 +1,5 @@
 from typing import Any, Optional, TYPE_CHECKING
+from weakref import proxy
 
 from yamlable import yaml_info, YamlAble
 
@@ -41,7 +42,7 @@ class AS(YamlAble):
 
         assert policy, "This should never be None"
         self.policy: BGPSimplePolicy = policy
-        self.policy.as_ = self
+        self.policy.as_ = proxy(self)
 
     def __lt__(self, as_obj: Any) -> bool:
         if isinstance(as_obj, AS):
