@@ -10,6 +10,8 @@ from .engine_tests import as_graph_infos, engine_test_configs
 
 
 __all__ = [
+    "as_graph_infos",
+    "engine_test_configs",
     "DiagramAggregator",
     "pytest_addoption",
     "EngineTester",

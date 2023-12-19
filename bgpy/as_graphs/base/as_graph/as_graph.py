@@ -1,4 +1,4 @@
-from typing import Any, Callable, Optional, TYPE_CHECKING
+from typing import Any, Callable, Optional
 
 from frozendict import frozendict
 from yamlable import yaml_info, YamlAble, yaml_info_decorate
