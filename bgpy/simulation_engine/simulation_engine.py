@@ -1,5 +1,6 @@
-from __future__ import annotations
 from typing import Optional, TYPE_CHECKING
+
+from frozendict import frozendict
 
 from bgpy.as_graphs import ASGraph, CAIDAASGraph  # noqa
 from bgpy.enums import Relationships
@@ -7,6 +8,8 @@ from bgpy.enums import Relationships
 
 # https://stackoverflow.com/a/57005931/8903959
 if TYPE_CHECKING:
+    from bgpy.simulation_engine.announcement import Announcement
+    from bgpy.simulation_engine.policies import BGPSimplePolicy
     from bgpy.simulation_framework import Scenario
 
 
@@ -44,8 +47,8 @@ class SimulationEngine:
 
     def setup(
         self,
-        BasePolicyCls: type["BGPSimpleAS"] = BGPSimpleAS,
-        non_default_asn_cls_dict: dict[int, type["BGPSimplePolicy"],
+        BasePolicyCls: type["BGPSimplePolicy"] = BGPSimplePolicy,
+        non_default_asn_cls_dict: dict[int, type["BGPSimplePolicy"]] = frozendict(),
         prev_scenario: Optional["Scenario"] = None
     ) -> frozenset["BGPSimplePolicy"]:
         """Sets AS classes and seeds announcements"""
@@ -55,14 +58,14 @@ class SimulationEngine:
             non_default_asn_cls_dict,
             prev_scenario
         )
-        engine._seed_announcements(self.announcements, prev_scenario)
-        engine.ready_to_run_round = 0
+        self._seed_announcements(self.announcements, prev_scenario)
+        self.ready_to_run_round = 0
         return policies_used
 
     def _set_as_classes(
         self,
         BasePolicyCls: type["BGPSimplePolicy"],
-        non_default_asn_cls_dict: dict[int, type["BGPSimplePolicy"],
+        non_default_asn_cls_dict: dict[int, type["BGPSimplePolicy"]],
         prev_scenario: Optional["Scenario"] = None
     ) -> frozenset["BGPSimplePolicy"]:
         """Resets Engine ASes and changes their AS class
@@ -76,14 +79,14 @@ class SimulationEngine:
         policy_classes_used = set()
         # Done here to save as much time  as possible
         BasePolicyCls = self.scenario_config.BasePolicyCls
-        for as_obj in engine:
+        for as_obj in self.as_graph:
             # Delete the old policy and remove references so that RAM can be reclaimed
             del as_obj.policy.as_
             # set the AS class to be the proper type of AS
             Cls = non_default_asn_cls_dict.get(as_obj.asn, BasePolicyCls)
             as_obj.policy = Cls(as_=as_obj)
             policy_classes_used.add(Cls)
-        return policy_classes_used = frozenset(policy_classes_used)
+        return frozenset(policy_classes_used)
 
 
     def _seed_announcements(
@@ -99,7 +102,7 @@ class SimulationEngine:
             assert ann.seed_asn is not None
             # Get the AS object to seed at
             # Must ignore type because it doesn't see assert above
-            obj_to_seed = engine.as_graph.as_dict[ann.seed_asn]  # type: ignore
+            obj_to_seed = self.as_graph.as_dict[ann.seed_asn]  # type: ignore
             # Ensure we aren't replacing anything
             err = "Seeding conflict"
             assert obj_to_seed.policy._local_rib.get_ann(ann.prefix) is None, err

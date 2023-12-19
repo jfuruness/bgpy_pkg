@@ -3,11 +3,14 @@ from itertools import product
 from multiprocessing import cpu_count
 from multiprocessing import Pool
 from pathlib import Path
-from typing import Any, Optional, Union
+from typing import Optional, Union
 import random
 import os
 
-from bgpy.caida_collector import CaidaCollector, AS
+from frozendict import frozendict
+
+from bgpy.as_graphs.base import ASGraphConstructor, ASGraph
+from bgpy.as_graphs.caida_as_graph import CAIDAASGraphConstructor
 
 from .graph_analyzer import GraphAnalyzer
 from .graph_factory import GraphFactory
@@ -35,7 +38,9 @@ class Simulation:
         scenario_configs: tuple[ScenarioConfig, ...] = tuple(
             [
                 ScenarioConfig(
-                    ScenarioCls=SubprefixHijack, AdoptPolicyCls=ROVSimplePolicy
+                    ScenarioCls=SubprefixHijack,
+                    AdoptPolicyCls=ROVSimplePolicy,
+                    BasePolicyCls=BGPSimplePolicy,
                 )
             ]
         ),
@@ -45,16 +50,16 @@ class Simulation:
         parse_cpus: int = cpu_count(),
         python_hash_seed: Optional[int] = None,
         ASGraphConstructorCls: type[ASGraphConstructor] = CAIDAASGraphConstructor,
-        as_graph_constructor_kwargs = frozendict({
+        as_graph_constructor_kwargs=frozendict({
             "as_graph_collector_kwargs": frozendict({
                 # dl_time: datetime(),
                 "cache_dir": Path("/tmp/as_graph_collector_cache"),
-            })
+            }),
             "as_graph_kwargs": frozendict({
                 "customer_cones": False
-            })
+            }),
             "tsv_path": None,
-        })
+        }),
         SimulationEngineCls: type[SimulationEngine] = SimulationEngine,
         GraphAnalyzerCls: type[GraphAnalyzer] = GraphAnalyzer,
         MetricTrackerCls: type[MetricTracker] = MetricTracker,
@@ -186,7 +191,7 @@ class Simulation:
         # Making nothing a reference does nothing
         constructor_kwargs = self.as_graph_constructor_kwargs.copy()
         constructor_kwargs["tsv_path"] = None
-        as_graph = self.ASGraphConstructorCls(**constructor_kwargs).run()
+        as_graph: ASGraph = self.ASGraphConstructorCls(**constructor_kwargs).run()
         engine = SimulationEngine(as_graph)
 
         metric_tracker = self.MetricTrackerCls()

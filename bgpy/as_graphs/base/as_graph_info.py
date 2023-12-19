@@ -1,7 +1,7 @@
 from dataclasses import dataclass, field
 from typing import Optional
 
-from .links import PeerLink, CustomerProviderLink as CPLink
+from .links import Link, PeerLink, CustomerProviderLink as CPLink
 
 
 @dataclass(frozen=True, slots=True)
@@ -17,6 +17,14 @@ class ASGraphInfo:
     # You can optionally add diagram ranks for graphviz here
     # By default, it just uses the propagation ranks
     diagram_ranks: Optional[tuple[tuple[int, ...], ...]] = None
+
+    def __post_init__(self, *args, **kwargs):
+        asn_tuples = list()
+        for link in self.link_sets:
+            asn_tuples.append(link.asns)
+
+        msg = "Shouldn't have a customer-provider that is also a peer!"
+        assert len(asn_tuples) == len(set(asn_tuples)), msg
 
     @property
     def asns(self) -> list[int]:

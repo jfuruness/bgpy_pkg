@@ -1,4 +1,19 @@
-from bgpy.as_graphs.base import ASGraphConstructor, ASGraphInfo
+from pathlib import Path
+from typing import Optional
+
+from frozendict import frozendict
+
+from bgpy.as_graphs.base import (
+    ASGraphCollector,
+    ASGraphConstructor,
+    ASGraphInfo,
+    ASGraph,
+    PeerLink,
+    CustomerProviderLink as CPLink
+)
+
+from .caida_as_graph_collector import CAIDAASGraphCollector
+from .caida_as_graph import CAIDAASGraph
 
 
 class CAIDAASGraphConstructor(ASGraphConstructor):
@@ -6,19 +21,19 @@ class CAIDAASGraphConstructor(ASGraphConstructor):
     # Add an optional default to ASGraphCollectorCls and ASGraphCls
     def __init__(
         self,
-        ASGraphCollectorCls: type[ASGraphCollector] = CAIDAASGraphCollector
+        ASGraphCollectorCls: type[ASGraphCollector] = CAIDAASGraphCollector,
         ASGraphCls: type[ASGraph] = CAIDAASGraph,
         as_graph_collector_kwargs = frozendict(),
-        as_graph_kwargs = frozendict()
+        as_graph_kwargs = frozendict(),
         tsv_path: Optional[Path] = None,
     ) -> None:
 
         super().__init__(
             ASGraphCollectorCls,
             ASGraphCls,
-            as_graph_collector_kwargs = as_graph_collector_kwargs
-            as_graph_kwargs = as_graph_kwargs
-            tsv_path: tsv_path,
+            as_graph_collector_kwargs=as_graph_collector_kwargs,
+            as_graph_kwargs=as_graph_kwargs,
+            tsv_path=tsv_path,
         )
 
     ####################
@@ -61,7 +76,7 @@ class CAIDAASGraphConstructor(ASGraphConstructor):
     def _get_as_graph(self, as_graph_info: ASGraphInfo) -> ASGraph:
         """Creates and returns the ASGraph"""
 
-        return = self.ASGraphCls(
+        return self.ASGraphCls(
             as_graph_info,
             **self.as_graph_kwargs
         )

@@ -58,7 +58,8 @@ class CAIDAASGraphCollector(ASGraphCollector):
         prepend: str = "http://data.caida.org/datasets/as-relationships/serial-2/"
         # Gets all URLs. Keeps only the link for the proper download time
         urls = [
-            prepend + x for x in self._get_hrefs(prepend)
+            prepend + x
+            for x in self._get_hrefs(prepend)
             if dl_time.strftime("%Y%m01") in x
         ]
         if len(urls) > 0:

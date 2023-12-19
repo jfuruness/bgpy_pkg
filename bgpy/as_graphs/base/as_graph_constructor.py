@@ -1,19 +1,22 @@
 from abc import ABC, abstractmethod
-from datetime import datetime
+import csv
 from frozendict import frozendict
-from functools import cached_property
 from pathlib import Path
-import shutil
-from typing import Optional
+from typing import Optional, TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from .as_graph_collector import ASGraphCollector
+    from .as_graph_info import ASGraphInfo
+    from .as_graph import ASGraph
 
 
 class ASGraphConstructor(ABC):
     def __init__(
         self,
-        ASGraphCollectorCls: type[ASGraphCollector]
+        ASGraphCollectorCls: type[ASGraphCollector],
         ASGraphCls: type[ASGraph],
         as_graph_collector_kwargs = frozendict(),
-        as_graph_kwargs = frozendict()
+        as_graph_kwargs = frozendict(),
         tsv_path: Optional[Path] = None,
     ) -> None:
         """Stores download time and cache_dir instance vars and creates dir"""
@@ -50,7 +53,7 @@ class ASGraphConstructor(ABC):
 
         if self.tsv_path:
             print(
-                f"Writing as graph to {tsv_path} "
+                f"Writing as graph to {self.tsv_path} "
                 "if you want to save time and not do this, pass tsv_path=None "
                 "to the run function"
             )
@@ -58,7 +61,7 @@ class ASGraphConstructor(ABC):
             with self.tsv_path.open(mode="w") as f:
                 # Get columns
                 cols: list[str] = list(next(iter(as_graph.as_dict.values())).db_row.keys())
-                writer = DictWriter(f, fieldnames=cols, delimiter="\t")
+                writer = csv.DictWriter(f, fieldnames=cols, delimiter="\t")
                 writer.writeheader()
                 for x in as_graph.as_dict.values():
                     writer.writerow(x.db_row)

@@ -205,7 +205,9 @@ class Scenario(ABC):
     ) -> set[int]:
         """Returns possible victim ASNs, defaulted from config"""
 
-        possible_asns = engine.as_graph.asn_groups[self.scenario_config.victim_subcategory_attr]
+        possible_asns = engine.as_graph.asn_groups[
+            self.scenario_config.victim_subcategory_attr
+        ]
         err = "Make mypy happy"
         assert all(isinstance(x, int) for x in possible_asns), err
         assert isinstance(possible_asns, set), err
@@ -350,13 +352,15 @@ class Scenario(ABC):
     # Engine Manipulation Funcs #
     #############################
 
-    def setup_engine(self, engine: SimulationEngine, prev_scenario: Optional["Scenario"]) -> None:
+    def setup_engine(
+        self, engine: SimulationEngine, prev_scenario: Optional["Scenario"]
+    ) -> None:
         """Sets up engine"""
 
         self.policies_used = engine.setup(
             self.scenario_config.BasePolicyCls,
             self.non_default_asn_cls_dict,
-            prev_scenario
+            prev_scenario,
         )
 
     ##################

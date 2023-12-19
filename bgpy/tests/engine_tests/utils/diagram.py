@@ -1,3 +1,6 @@
+from pathlib import Path
+from typing import Optional, TYPE_CHECKING
+
 from graphviz import Digraph
 import ipaddress
 
@@ -6,6 +9,11 @@ from bgpy.simulation_engine import BGPPolicy
 from bgpy.simulation_engine import BGPSimplePolicy
 from bgpy.simulation_engine import SimulationEngine
 from bgpy.simulation_framework import Scenario
+
+if TYPE_CHECKING:
+    from bgpy.as_graphs.base.as_graph import AS
+    from bgpy.simulation_framework.metric_tracker import MetricTracker
+
 
 
 class Diagram:
@@ -68,12 +76,24 @@ class Diagram:
         kwargs = {"color": "black", "style": "filled", "fillcolor": "white"}
         self.dot.node("Legend", html, shape="plaintext", **kwargs)
 
-    def _add_ases(self, engine: SimulationEngine, traceback: dict[int, Outcomes], scenario: Scenario) -> None:
+    def _add_ases(
+        self,
+        engine: SimulationEngine,
+        traceback: dict[int, Outcomes],
+        scenario: Scenario,
+    ) -> None:
         # First add all nodes to the graph
         for as_obj in engine.as_graph:
             self._encode_as_obj_as_node(self.dot, as_obj, engine, traceback, scenario)
 
-    def _encode_as_obj_as_node(self, subgraph: Digraph, as_obj: AS, engine: SimulationEngine, traceback: dict[int, Outcomes], scenario: Scenario) -> None:
+    def _encode_as_obj_as_node(
+        self,
+        subgraph: Digraph,
+        as_obj: AS,
+        engine: SimulationEngine,
+        traceback: dict[int, Outcomes],
+        scenario: Scenario,
+    ) -> None:
         kwargs = dict()
         # if False:
         #     kwargs = {"style": "filled,dashed",
@@ -86,7 +106,9 @@ class Diagram:
 
         subgraph.node(str(as_obj.asn), html, **kwargs)
 
-    def _get_html(self, as_obj: AS, engine: SimulationEngine, scenario: Scenario) -> str:
+    def _get_html(
+        self, as_obj: AS, engine: SimulationEngine, scenario: Scenario
+    ) -> str:
         asn_str = str(as_obj.asn)
         if as_obj.asn in scenario.victim_asns:
             asn_str = "&#128519;" + asn_str + "&#128519;"
@@ -137,7 +159,13 @@ class Diagram:
         html += "</TABLE>>"
         return html
 
-    def _get_kwargs(self, as_obj: AS, engine: SimulationEngine, traceback: dict[int, Outcomes], scenario: Scenario) -> dict[str, str]:
+    def _get_kwargs(
+        self,
+        as_obj: AS,
+        engine: SimulationEngine,
+        traceback: dict[int, Outcomes],
+        scenario: Scenario,
+    ) -> dict[str, str]:
         kwargs = {
             "color": "black",
             "style": "filled",
@@ -191,7 +219,9 @@ class Diagram:
                         penwidth="2",
                     )
 
-    def _add_diagram_ranks(self, diagram_ranks: tuple[tuple[int, ...], ...], static_order: bool) -> None:
+    def _add_diagram_ranks(
+        self, diagram_ranks: tuple[tuple[int, ...], ...], static_order: bool
+    ) -> None:
         # TODO: Refactor
         if static_order is False:
             for i, rank in enumerate(diagram_ranks):

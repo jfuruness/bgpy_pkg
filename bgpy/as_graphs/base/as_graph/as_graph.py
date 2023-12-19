@@ -1,14 +1,11 @@
-import logging
-from pathlib import Path
-from typing import Any, Callable, Optional
+from typing import Any, Callable, Optional, TYPE_CHECKING
 
+from frozendict import frozendict
 from yamlable import yaml_info, YamlAble, yaml_info_decorate
 
 from .base_as import AS
 
 from bgpy.enums import ASGroups
-from bgpy.caida_collector.links import CustomerProviderLink as CPLink
-from bgpy.caida_collector.links import PeerLink
 
 
 # can't import into class due to mypy issue
@@ -28,6 +25,9 @@ from .customer_cone_funcs import _get_customer_cone_size
 from .customer_cone_funcs import _get_cone_size_helper
 
 from bgpy.simulation_engine.policies.bgp import BGPSimplePolicy
+
+if TYPE_CHECKING:
+    from ..as_graph_info import ASGraphInfo
 
 
 @yaml_info(yaml_tag="ASGraph")
@@ -85,6 +85,7 @@ class ASGraph(YamlAble):
     ##############
 
     def _set_yaml_attrs(
+        self,
         yaml_as_dict: Optional[frozendict[int, AS]] = None,
         yaml_ixp_asns: Optional[frozenset[int]] = None,
     ) -> None:
@@ -96,12 +97,8 @@ class ASGraph(YamlAble):
         # Convert ASNs to refs
         for as_obj in self.as_dict.values():
             as_obj.peers = tuple([self.as_dict[asn] for asn in as_obj.peers])
-            as_obj.customers = tuple(
-                [self.as_dict[asn] for asn in as_obj.customers]
-            )
-            as_obj.providers = tuple(
-                [self.as_dict[asn] for asn in as_obj.providers]
-            )
+            as_obj.customers = tuple([self.as_dict[asn] for asn in as_obj.customers])
+            as_obj.providers = tuple([self.as_dict[asn] for asn in as_obj.providers])
 
         # Used for iteration
         self.ases: tuple[AS, ...] = tuple(self.as_dict.values())
@@ -113,7 +110,7 @@ class ASGraph(YamlAble):
         self,
         as_graph_info: ASGraphInfo,
         BaseASCls: type["AS"],
-        BasePolicyCls: type["BGPSimplePolicy"]
+        BasePolicyCls: type["BGPSimplePolicy"],
     ) -> None:
         """Generates the AS graph normally (not from YAML)"""
 
@@ -130,7 +127,7 @@ class ASGraph(YamlAble):
         # as group filters will be broken then
         self.as_dict = frozendict(self.as_dict)
         # Adds references to all relationships
-        self._add_relationships(cp_links, peer_links)
+        self._add_relationships(as_graph_info)
         # Used for iteration
         self.ases: tuple[AS, ...] = tuple(self.as_dict.values())  # type: ignore
         # Remove duplicates from relationships and sort
@@ -144,12 +141,12 @@ class ASGraph(YamlAble):
 
     def _set_as_groups(
         self,
-        additional_as_group_filters: Optional[dict[str, Callable[[list[AS]], set[AS]]]]
+        additional_as_group_filters: Optional[dict[str, Callable[[list[AS]], set[AS]]]],
     ) -> None:
         """Sets the AS Groups"""
 
         self.as_group_filters: frozendict[
-            str, Callable[["BGPDAG"], frozenset[AS]]
+            str, Callable[["ASGraph"], frozenset[AS]]
         ] = self._default_as_group_filters
 
         if additional_as_group_filters:
@@ -168,37 +165,41 @@ class ASGraph(YamlAble):
         self.asn_groups: frozendict[str, frozenset[int]] = frozendict(asn_groups)
 
     @property
-    def _default_as_group_filters(self) -> frozendict[str, Callable[["BGPDAG"], set[AS]]]:
+    def _default_as_group_filters(
+        self,
+    ) -> frozendict[str, Callable[["ASGraph"], set[AS]]]:
         """Returns the default filter functions for AS groups"""
 
-        def stub_filter(bgp_dag: "BGPDAG") -> frozenset[AS]:
-            return frozenset(x for x in bgp_dag if x.stub)
+        def stub_filter(as_graph: "ASGraph") -> frozenset[AS]:
+            return frozenset(x for x in as_graph if x.stub)
 
-        def multihomed_filter(bgp_dag: "BGPDAG") -> frozenset[AS]:
-            return frozenset(x for x in bgp_dag if x.multihomed)
+        def multihomed_filter(as_graph: "ASGraph") -> frozenset[AS]:
+            return frozenset(x for x in as_graph if x.multihomed)
 
-        def stubs_or_multihomed_filter(bgp_dag: "BGPDAG") -> frozenset[AS]:
-            return frozenset(x for x in bgp_dag if x.stub or x.multihomed)
+        def stubs_or_multihomed_filter(as_graph: "ASGraph") -> frozenset[AS]:
+            return frozenset(x for x in as_graph if x.stub or x.multihomed)
 
-        def input_clique_filter(bgp_dag: "BGPDAG") -> frozenset[AS]:
-            return frozenset(x for x in bgp_dag if x.input_clique)
+        def input_clique_filter(as_graph: "ASGraph") -> frozenset[AS]:
+            return frozenset(x for x in as_graph if x.input_clique)
 
-        def etc_filter(bgp_dag: "BGPDAG") -> frozenset[AS]:
+        def etc_filter(as_graph: "ASGraph") -> frozenset[AS]:
             return frozenset(
-                x for x in bgp_dag if not (x.stub or x.multihomed or x.input_clique)
+                x for x in as_graph if not (x.stub or x.multihomed or x.input_clique)
             )
 
-        def all_filter(bgp_dag: "BGPDAG") -> frozenset[AS]:
-            return set(list(bgp_dag))
+        def all_filter(as_graph: "ASGraph") -> frozenset[AS]:
+            return set(list(as_graph))
 
-        return frozendict({
-            ASGroups.STUBS.value: stub_filter,
-            ASGroups.MULTIHOMED.value: multihomed_filter,
-            ASGroups.STUBS_OR_MH.value: stubs_or_multihomed_filter,
-            ASGroups.INPUT_CLIQUE.value: input_clique_filter,
-            ASGroups.ETC.value: etc_filter,
-            ASGroups.ALL.value: all_filter,
-        })
+        return frozendict(
+            {
+                ASGroups.STUBS.value: stub_filter,
+                ASGroups.MULTIHOMED.value: multihomed_filter,
+                ASGroups.STUBS_OR_MH.value: stubs_or_multihomed_filter,
+                ASGroups.INPUT_CLIQUE.value: input_clique_filter,
+                ASGroups.ETC.value: etc_filter,
+                ASGroups.ALL.value: all_filter,
+            }
+        )
 
     ##############
     # Yaml funcs #
@@ -217,7 +218,9 @@ class ASGraph(YamlAble):
         """Optional method called when yaml.load is called"""
 
         return cls(
-            ASGraphInfo(), yaml_as_dict=frozendict(dct["as_dict"]), yaml_ixp_asns=frozenset(dct["ixp_asns"])
+            ASGraphInfo(),
+            yaml_as_dict=frozendict(dct["as_dict"]),
+            yaml_ixp_asns=frozenset(dct["ixp_asns"]),
         )
 
     ##################

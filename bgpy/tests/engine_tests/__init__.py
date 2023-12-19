@@ -17,5 +17,5 @@ __all__ = [
     "EngineTester",
     "TestEngine",
     "engine_test_configs",
-    "graphs",
+    "as_graph_infos",
 ]

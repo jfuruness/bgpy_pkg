@@ -11,7 +11,6 @@ from bgpy.simulation_engine import Announcement
 from bgpy.simulation_engine import BGPSimplePolicy
 from bgpy.simulation_engine import BGPPolicy
 from bgpy.simulation_engine import ROVSimplePolicy
-from bgpy.simulation_engine import ROVPolicy
 
 
 @pytest.mark.framework

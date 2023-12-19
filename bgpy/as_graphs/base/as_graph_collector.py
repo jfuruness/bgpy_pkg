@@ -10,7 +10,7 @@ class ASGraphCollector(ABC):
     def __init__(
         self,
         dl_time: Optional[datetime] = None,
-        cache_dir: Path = Path("/tmp/as_graph_collector_cache")
+        cache_dir: Path = Path("/tmp/as_graph_collector_cache"),
     ) -> None:
         """Stores download time and cache_dir instance vars and creates dir"""
 

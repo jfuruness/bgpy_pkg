@@ -3,7 +3,6 @@ from pathlib import Path
 import pickle
 from pprint import pformat
 
-from .diagram import Diagram
 from .engine_test_config import EngineTestConfig
 from .simulator_codec import SimulatorCodec
 from bgpy.simulation_engine import SimulationEngine
@@ -21,9 +20,6 @@ class EngineTester:
         conf: EngineTestConfig,
         overwrite: bool = False,
         codec: SimulatorCodec = SimulatorCodec(),
-        DiagramCls: type[Diagram] = Diagram,
-        ASGraphCls: type[ASGraph] = CAIDAASGraph,
-        SimulationEngineCls: type[SimulationEngine] = SimulationEngine,
         compare_metrics: bool = False,
     ):
         """Regarding the compare_metrics kwarg:
@@ -63,10 +59,6 @@ class EngineTester:
         # Creates directory for this specific test
         self.test_dir: Path = self.base_dir / self.conf.name  # type: ignore
         self.test_dir.mkdir(exist_ok=True)
-
-        self.DiagramCls: type[Diagram] = DiagramCls
-        self.ASGraphCls: type[ASGraphCls] = ASGraphCls
-        self.SimulationEngineCls: type[SimulationEngine] = SimulationEngineCls
 
         self.compare_metrics: bool = compare_metrics
 
@@ -127,11 +119,11 @@ class EngineTester:
     def _get_engine(self) -> SimulationEngine:
         """Creates and engine and sets it up for runs"""
 
-        as_graph = ASGraphCls(
-            as_graph_info=self.conf.as_graph_info
+        as_graph = self.conf.ASGraphCls(
+            as_graph_info=self.conf.as_graph_info,
             BasePolicyCls=self.conf.scenario_config.BasePolicyCls,
         )
-        return self.SimulationEngineCls(as_graph)
+        return self.conf.SimulationEngineCls(as_graph)
 
     def _get_trial_metrics(
         self,
@@ -219,7 +211,7 @@ class EngineTester:
             static_order = False
 
         # Write guess graph
-        self.DiagramCls().generate_as_graph(
+        self.conf.DiagramCls().generate_as_graph(
             engine_guess,
             scenario,  # type: ignore
             outcomes_guess,
@@ -231,7 +223,7 @@ class EngineTester:
             view=False,
         )
         # Write ground truth graph
-        self.DiagramCls().generate_as_graph(
+        self.conf.DiagramCls().generate_as_graph(
             engine_gt,
             scenario,  # type: ignore
             outcomes_gt,

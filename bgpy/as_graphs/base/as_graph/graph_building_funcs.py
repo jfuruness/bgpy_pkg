@@ -1,14 +1,11 @@
 """Gontains functions needed to build graph and it's references"""
 
-import csv
-from pathlib import Path
 from typing import TYPE_CHECKING
 
 from .base_as import AS
-from bgpy.caida_collector.links import CustomerProviderLink as CPLink
-from bgpy.caida_collector.links import PeerLink
 
 if TYPE_CHECKING:
+    from bgpy.as_graphs import ASGraphInfo
     from bgpy.simulation_engine import BGPSimplePolicy
 
 
@@ -20,9 +17,6 @@ def _gen_graph(
 ):
     """Generates a graph of AS objects"""
 
-    msg = "Shouldn't have a customer-provider that is also a peer!"
-    assert len(cp_links) + len(peer_links) == len(cp_links | peer_links), msg
-
     def _gen_as(asn):
         as_ = BaseASCls(
             asn,
@@ -30,9 +24,9 @@ def _gen_graph(
         )
         assert as_.policy.as_ == as_, f"{BaseASCls} not setting policy.as_ correctly"
         # Monkey patching these in here whilst generating the AS graph
-        as_.peers_setup_set=set()
-        as_.customers_setup_set=set()
-        as_.providers_setup_set=set()
+        as_.peers_setup_set = set()
+        as_.customers_setup_set = set()
+        as_.providers_setup_set = set()
         return as_
 
     # Add all links to the graph
@@ -40,24 +34,24 @@ def _gen_graph(
         self.as_dict[asn] = self.as_dict.get(asn, _gen_as(asn))
 
     # Add all IXPs to the graph
-    for asn in ixps:
+    for asn in as_graph_info.ixp_asns:
         self.as_dict[asn] = self.as_dict.get(asn, _gen_as(asn))
         self.as_dict[asn].ixp = True
 
     # Add all input cliques to the graph
-    for asn in input_clique:
+    for asn in as_graph_info.input_clique_asns:
         self.as_dict[asn] = self.as_dict.get(asn, _gen_as(asn))
         self.as_dict[asn].input_clique = True
 
 
-def _add_relationships(self, cp_links: set[CPLink], peer_links: set[PeerLink]):
+def _add_relationships(self, as_graph_info: ASGraphInfo) -> None:
     """Adds relationships to the graph as references
 
     NOTE: we monkey patch peers_setup_set while the AS Graph is being generated
     for speed
     """
 
-    for cp_link in cp_links:
+    for cp_link in as_graph_info.customer_provider_links:
         # Extract customer and provider obj
         customer = self.as_dict[cp_link.customer_asn]
         provider = self.as_dict[cp_link.provider_asn]
@@ -65,7 +59,7 @@ def _add_relationships(self, cp_links: set[CPLink], peer_links: set[PeerLink]):
         customer.providers_setup_set.add(provider)
         provider.customers_setup_set.add(customer)
 
-    for peer_link in peer_links:
+    for peer_link in as_graph_info.peer_links:
         # Extract as objects for peers
         asn1, asn2 = peer_link.asns
         p1, p2 = self.as_dict[asn1], self.as_dict[asn2]
