@@ -15,7 +15,6 @@ if TYPE_CHECKING:
     from bgpy.simulation_framework.metric_tracker import MetricTracker
 
 
-
 class Diagram:
     def __init__(self):
         self.dot: Digraph = Digraph(format="png")

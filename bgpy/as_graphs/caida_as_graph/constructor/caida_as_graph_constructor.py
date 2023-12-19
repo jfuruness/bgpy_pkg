@@ -9,7 +9,7 @@ from bgpy.as_graphs.base import (
     ASGraphInfo,
     ASGraph,
     PeerLink,
-    CustomerProviderLink as CPLink
+    CustomerProviderLink as CPLink,
 )
 
 from .caida_as_graph_collector import CAIDAASGraphCollector
@@ -17,17 +17,15 @@ from .caida_as_graph import CAIDAASGraph
 
 
 class CAIDAASGraphConstructor(ASGraphConstructor):
-
     # Add an optional default to ASGraphCollectorCls and ASGraphCls
     def __init__(
         self,
         ASGraphCollectorCls: type[ASGraphCollector] = CAIDAASGraphCollector,
         ASGraphCls: type[ASGraph] = CAIDAASGraph,
-        as_graph_collector_kwargs = frozendict(),
-        as_graph_kwargs = frozendict(),
+        as_graph_collector_kwargs=frozendict(),
+        as_graph_kwargs=frozendict(),
         tsv_path: Optional[Path] = None,
     ) -> None:
-
         super().__init__(
             ASGraphCollectorCls,
             ASGraphCls,
@@ -70,22 +68,21 @@ class CAIDAASGraphConstructor(ASGraphConstructor):
             customer_provider_links=frozenset(cp_links),
             peer_links=frozenset(peer_links),
             ixp_asns=frozenset(ixp_asns),
-            input_clique_asns=frozenset(input_clique_asns)
+            input_clique_asns=frozenset(input_clique_asns),
         )
 
     def _get_as_graph(self, as_graph_info: ASGraphInfo) -> ASGraph:
         """Creates and returns the ASGraph"""
 
-        return self.ASGraphCls(
-            as_graph_info,
-            **self.as_graph_kwargs
-        )
+        return self.ASGraphCls(as_graph_info, **self.as_graph_kwargs)
 
     #################
     # Parsing funcs #
     #################
 
-    def _extract_input_clique_asns(self, line: str, input_clique_asns: set[int]) -> None:
+    def _extract_input_clique_asns(
+        self, line: str, input_clique_asns: set[int]
+    ) -> None:
         """Adds all ASNs within input clique line to ases dict"""
 
         # Gets all input ASes for clique

@@ -49,14 +49,12 @@ class SimulationEngine:
         self,
         BasePolicyCls: type["BGPSimplePolicy"] = BGPSimplePolicy,
         non_default_asn_cls_dict: dict[int, type["BGPSimplePolicy"]] = frozendict(),
-        prev_scenario: Optional["Scenario"] = None
+        prev_scenario: Optional["Scenario"] = None,
     ) -> frozenset["BGPSimplePolicy"]:
         """Sets AS classes and seeds announcements"""
 
         policies_used: frozenset["BGPSimplePolicy"] = self._set_as_classes(
-            BasePolicyCls,
-            non_default_asn_cls_dict,
-            prev_scenario
+            BasePolicyCls, non_default_asn_cls_dict, prev_scenario
         )
         self._seed_announcements(self.announcements, prev_scenario)
         self.ready_to_run_round = 0
@@ -66,7 +64,7 @@ class SimulationEngine:
         self,
         BasePolicyCls: type["BGPSimplePolicy"],
         non_default_asn_cls_dict: dict[int, type["BGPSimplePolicy"]],
-        prev_scenario: Optional["Scenario"] = None
+        prev_scenario: Optional["Scenario"] = None,
     ) -> frozenset["BGPSimplePolicy"]:
         """Resets Engine ASes and changes their AS class
 
@@ -88,9 +86,10 @@ class SimulationEngine:
             policy_classes_used.add(Cls)
         return frozenset(policy_classes_used)
 
-
     def _seed_announcements(
-        self, announcements: tuple[Announcement, ...], prev_scenario: Optional["Scenario"]
+        self,
+        announcements: tuple[Announcement, ...],
+        prev_scenario: Optional["Scenario"],
     ) -> None:
         """Seeds announcement at the proper AS
 

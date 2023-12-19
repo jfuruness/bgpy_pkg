@@ -50,16 +50,18 @@ class Simulation:
         parse_cpus: int = cpu_count(),
         python_hash_seed: Optional[int] = None,
         ASGraphConstructorCls: type[ASGraphConstructor] = CAIDAASGraphConstructor,
-        as_graph_constructor_kwargs=frozendict({
-            "as_graph_collector_kwargs": frozendict({
-                # dl_time: datetime(),
-                "cache_dir": Path("/tmp/as_graph_collector_cache"),
-            }),
-            "as_graph_kwargs": frozendict({
-                "customer_cones": False
-            }),
-            "tsv_path": None,
-        }),
+        as_graph_constructor_kwargs=frozendict(
+            {
+                "as_graph_collector_kwargs": frozendict(
+                    {
+                        # dl_time: datetime(),
+                        "cache_dir": Path("/tmp/as_graph_collector_cache"),
+                    }
+                ),
+                "as_graph_kwargs": frozendict({"customer_cones": False}),
+                "tsv_path": None,
+            }
+        ),
         SimulationEngineCls: type[SimulationEngine] = SimulationEngine,
         GraphAnalyzerCls: type[GraphAnalyzer] = GraphAnalyzer,
         MetricTrackerCls: type[MetricTracker] = MetricTracker,

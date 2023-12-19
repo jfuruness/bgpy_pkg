@@ -15,8 +15,8 @@ class ASGraphConstructor(ABC):
         self,
         ASGraphCollectorCls: type[ASGraphCollector],
         ASGraphCls: type[ASGraph],
-        as_graph_collector_kwargs = frozendict(),
-        as_graph_kwargs = frozendict(),
+        as_graph_collector_kwargs=frozendict(),
+        as_graph_kwargs=frozendict(),
         tsv_path: Optional[Path] = None,
     ) -> None:
         """Stores download time and cache_dir instance vars and creates dir"""
@@ -60,7 +60,9 @@ class ASGraphConstructor(ABC):
 
             with self.tsv_path.open(mode="w") as f:
                 # Get columns
-                cols: list[str] = list(next(iter(as_graph.as_dict.values())).db_row.keys())
+                cols: list[str] = list(
+                    next(iter(as_graph.as_dict.values())).db_row.keys()
+                )
                 writer = csv.DictWriter(f, fieldnames=cols, delimiter="\t")
                 writer.writeheader()
                 for x in as_graph.as_dict.values():
