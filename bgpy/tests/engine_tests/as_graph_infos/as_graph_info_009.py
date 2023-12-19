@@ -10,7 +10,9 @@ It has ASNs.ATTACKER.value ASes.
 """
 
 as_graph_info_009 = ASGraphInfo(
-    peer_links=frozenset([PeerLink(1, 2), PeerLink(3, 2), PeerLink(2, 4), PeerLink(2, 5)]),
+    peer_links=frozenset(
+        [PeerLink(1, 2), PeerLink(3, 2), PeerLink(2, 4), PeerLink(2, 5)]
+    ),
     customer_provider_links=frozenset(
         [
             CPLink(provider_asn=6, customer_asn=2),

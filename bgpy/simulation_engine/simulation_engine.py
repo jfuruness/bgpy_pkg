@@ -23,11 +23,7 @@ class SimulationEngine(YamlAble):
     Then the run function can be called, and propagation occurs
     """
 
-    def __init__(
-        self,
-        as_graph: "ASGraph",
-        ready_to_run_round: int = -1
-    ) -> None:
+    def __init__(self, as_graph: "ASGraph", ready_to_run_round: int = -1) -> None:
         """Saves read_to_run_rund attr and inits superclass"""
 
         self.as_graph = as_graph

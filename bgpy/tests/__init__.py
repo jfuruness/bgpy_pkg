@@ -6,10 +6,7 @@ from .engine_tests import EngineTester
 from .engine_tests import EngineTestConfig
 
 # Graphs
-from .engine_tests import (
-    as_graph_infos,
-    engine_test_configs
-)
+from .engine_tests import as_graph_infos, engine_test_configs
 
 
 __all__ = [

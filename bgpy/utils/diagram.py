@@ -17,6 +17,7 @@ if TYPE_CHECKING:
 
 class Diagram:
     """Creates a diagram of an AS graph with traceback"""
+
     def __init__(self):
         self.dot: Digraph = Digraph(format="png")
         # purple is cooler but I guess that's not paper worthy

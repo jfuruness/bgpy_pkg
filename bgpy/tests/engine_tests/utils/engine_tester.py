@@ -55,8 +55,10 @@ class EngineTester(EngineRunner):
         # Don't store metrics if we don't use them
         # TODO: do this in a way mypy won't explode at
         if not self.compare_metrics:
+
             def noop(*args, **kwargs):
                 pass
+
             self._store_metrics = noop  # type: ignore
 
     def test_engine(self):
@@ -80,7 +82,12 @@ class EngineTester(EngineRunner):
         # Compare the YAML's together
         self._compare_data()
 
-    def _store_gt_data(self, engine: SimulationEngine, outcomes: dict[int, Outcomes], metric_tracker: MetricTracker) -> None:
+    def _store_gt_data(
+        self,
+        engine: SimulationEngine,
+        outcomes: dict[int, Outcomes],
+        metric_tracker: MetricTracker,
+    ) -> None:
         """Stores GROUND TRUTH YAML for the engine, outcomes, and CSV for metrics.
 
         If ground truth doesn't exist, create it
@@ -107,7 +114,9 @@ class EngineTester(EngineRunner):
                 pickle_path=self.metrics_ground_truth_path_pickle,
             )
 
-    def _generate_gt_diagrams(self, scenario: Scenario, metric_tracker: MetricTracker) -> None:
+    def _generate_gt_diagrams(
+        self, scenario: Scenario, metric_tracker: MetricTracker
+    ) -> None:
         """Generates diagrams for ground truth"""
 
         # Load engines

@@ -65,7 +65,9 @@ class ASGraph(YamlAble):
         yaml_as_dict: Optional[frozendict[int, AS]] = None,
         yaml_ixp_asns: frozenset[int] = frozenset(),
         # Users can pass in any additional AS groups they want to keep track of
-        additional_as_group_filters: frozendict[str, Callable[["ASGraph"], frozenset[AS]]] = frozendict(),
+        additional_as_group_filters: frozendict[
+            str, Callable[["ASGraph"], frozenset[AS]]
+        ] = frozendict(),
     ):
         """Reads in relationship data from a TSV and generate graph"""
 
@@ -74,7 +76,9 @@ class ASGraph(YamlAble):
             self._set_yaml_attrs(yaml_as_dict, yaml_ixp_asns)
         else:
             # init as normal, through the as_graph_info
-            self._set_non_yaml_attrs(as_graph_info, BaseASCls, BasePolicyCls, customer_cones)
+            self._set_non_yaml_attrs(
+                as_graph_info, BaseASCls, BasePolicyCls, customer_cones
+            )
         # Set the AS and ASN group groups
         self._set_as_groups(additional_as_group_filters)
 
@@ -150,9 +154,9 @@ class ASGraph(YamlAble):
     ) -> None:
         """Sets the AS Groups"""
 
-        as_group_filters: dict[
-            str, Callable[["ASGraph"], frozenset[AS]]
-        ] = dict(self._default_as_group_filters)
+        as_group_filters: dict[str, Callable[["ASGraph"], frozenset[AS]]] = dict(
+            self._default_as_group_filters
+        )
 
         if additional_as_group_filters:
             as_group_filters.update(additional_as_group_filters)
@@ -160,7 +164,6 @@ class ASGraph(YamlAble):
         self.as_group_filters: frozendict[
             str, Callable[["ASGraph"], frozenset[AS]]
         ] = frozendict(as_group_filters)
-
 
         # Some helpful sets of ases for faster loops
         as_groups: dict[str, frozenset[AS]] = dict()

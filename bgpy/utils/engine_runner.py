@@ -19,7 +19,6 @@ class EngineRunner:
         conf: EngineRunConfig,
         codec: SimulatorCodec = SimulatorCodec(),
     ) -> None:
-
         self.conf: EngineRunConfig = conf
         self.codec: SimulatorCodec = codec
         # Needed to aggregate all diagrams
@@ -107,7 +106,12 @@ class EngineRunner:
         )
         return metric_tracker
 
-    def _store_data(self, engine: SimulationEngine, outcomes: dict[int, Outcomes], metric_tracker: MetricTracker):
+    def _store_data(
+        self,
+        engine: SimulationEngine,
+        outcomes: dict[int, Outcomes],
+        metric_tracker: MetricTracker,
+    ):
         """Stores YAML for the engine, outcomes, and CSV for metrics.
 
         If ground truth doesn't exist, create it
@@ -125,7 +129,9 @@ class EngineRunner:
             pickle_path=self.metrics_guess_path_pickle,
         )
 
-    def _generate_diagrams(self, scenario: Scenario, metric_tracker: MetricTracker) -> tuple[SimulationEngine, dict[int, Outcomes], tuple[tuple["AS", ...], ...]]:
+    def _generate_diagrams(
+        self, scenario: Scenario, metric_tracker: MetricTracker
+    ) -> tuple[SimulationEngine, dict[int, Outcomes], tuple[tuple["AS", ...], ...]]:
         """Generates diagrams"""
 
         # Load engines
@@ -151,7 +157,9 @@ class EngineRunner:
 
         return engine_guess, outcomes_guess, diagram_obj_ranks
 
-    def _get_diagram_obj_ranks(self, engine_guess: SimulationEngine) -> tuple[tuple[AS, ...], ...]:
+    def _get_diagram_obj_ranks(
+        self, engine_guess: SimulationEngine
+    ) -> tuple[tuple[AS, ...], ...]:
         """Returns diagram ranks as AS objects
 
         First from diagram_ranks if set in the config
@@ -162,7 +170,9 @@ class EngineRunner:
         if self.conf.as_graph_info.diagram_ranks:
             diagram_obj_ranks_mut = list()
             for rank in self.conf.as_graph_info.diagram_ranks:
-                diagram_obj_ranks_mut.append([engine_guess.as_graph.as_dict[asn] for asn in rank])
+                diagram_obj_ranks_mut.append(
+                    [engine_guess.as_graph.as_dict[asn] for asn in rank]
+                )
 
             # Assert that you weren't missing any ASNs
             hardcoded_rank_asns: list[int] = list()
@@ -174,7 +184,9 @@ class EngineRunner:
             ), err
         else:
             # Done this way to satisfy mypy
-            diagram_obj_ranks_mut = [list(x) for x in engine_guess.as_graph.propagation_ranks]
+            diagram_obj_ranks_mut = [
+                list(x) for x in engine_guess.as_graph.propagation_ranks
+            ]
 
         return tuple([tuple(x) for x in diagram_obj_ranks_mut])
 
