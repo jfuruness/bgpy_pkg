@@ -2,7 +2,7 @@ from frozendict import frozendict
 from copy import deepcopy
 
 
-from bgpy.tests.engine_tests.graphs import graph_047
+from bgpy.tests.engine_tests.graphs import as_graph_info_047
 from bgpy.tests.engine_tests.utils import EngineTestConfig
 
 
@@ -39,6 +39,6 @@ config_033 = EngineTestConfig(
         override_victim_asns=frozenset({2}),
         override_non_default_asn_cls_dict=frozendict(),
     ),
-    graph=graph_047,
+    as_as_graph_info_info=as_graph_info_047,
     propagation_rounds=3,
 )

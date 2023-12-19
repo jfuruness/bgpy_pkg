@@ -1,5 +1,5 @@
 from frozendict import frozendict
-from bgpy.tests.engine_tests.graphs import graph_003
+from bgpy.tests.engine_tests.graphs import as_graph_info_003
 from bgpy.tests.engine_tests.utils import EngineTestConfig
 
 from bgpy.simulation_engine import ROVSimplePolicy, BGPSimplePolicy
@@ -20,5 +20,5 @@ config_007 = EngineTestConfig(
             {3: ROVSimplePolicy, 4: ROVSimplePolicy}
         ),
     ),
-    graph=graph_003,
+    as_as_graph_info_info=as_graph_info_003,
 )

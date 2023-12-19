@@ -11,7 +11,7 @@ import requests
 from bgpy.as_graphs.base import ASGraphCollector
 
 
-class CaidaASGraphCollector(ASGraphCollector):
+class CAIDAASGraphCollector(ASGraphCollector):
     """Downloads relationships from CAIDA and caches file"""
 
     def _run(self) -> Path:

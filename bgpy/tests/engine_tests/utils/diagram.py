@@ -4,25 +4,27 @@ import ipaddress
 from bgpy.enums import Outcomes
 from bgpy.simulation_engine import BGPPolicy
 from bgpy.simulation_engine import BGPSimplePolicy
+from bgpy.simulation_engine import SimulationEngine
+from bgpy.simulation_framework import Scenario
 
 
 class Diagram:
     def __init__(self):
-        self.dot = Digraph(format="png")
+        self.dot: Digraph = Digraph(format="png")
         # purple is cooler but I guess that's not paper worthy
         # self.dot.attr(bgcolor='purple:pink')
 
     def generate_as_graph(
         self,
-        engine,
-        scenario,
-        traceback,
-        description,
-        metric_tracker,
-        diagram_ranks,
+        engine: SimulationEngine,
+        scenario: Scenario,
+        traceback: dict[int, Outcomes],
+        description: str,
+        metric_tracker: MetricTracker,
+        diagram_ranks: tuple[tuple[int, ...], ...],
         static_order: bool = False,
-        path=None,
-        view=False,
+        path: Optional[Path] = None,
+        view: bool = False,
     ):
         self._add_legend(traceback)
         self._add_ases(engine, traceback, scenario)
@@ -32,7 +34,7 @@ class Diagram:
         self.dot.attr(label=description)
         self._render(path=path, view=view)
 
-    def _add_legend(self, traceback):
+    def _add_legend(self, traceback: dict[int, Outcomes]) -> None:
         """Adds legend to the graph with outcome counts"""
 
         attacker_success_count = sum(
@@ -66,12 +68,12 @@ class Diagram:
         kwargs = {"color": "black", "style": "filled", "fillcolor": "white"}
         self.dot.node("Legend", html, shape="plaintext", **kwargs)
 
-    def _add_ases(self, engine, traceback, scenario):
+    def _add_ases(self, engine: SimulationEngine, traceback: dict[int, Outcomes], scenario: Scenario) -> None:
         # First add all nodes to the graph
-        for as_obj in engine:
+        for as_obj in engine.as_graph:
             self._encode_as_obj_as_node(self.dot, as_obj, engine, traceback, scenario)
 
-    def _encode_as_obj_as_node(self, subgraph, as_obj, engine, traceback, scenario):
+    def _encode_as_obj_as_node(self, subgraph: Digraph, as_obj: AS, engine: SimulationEngine, traceback: dict[int, Outcomes], scenario: Scenario) -> None:
         kwargs = dict()
         # if False:
         #     kwargs = {"style": "filled,dashed",
@@ -84,7 +86,7 @@ class Diagram:
 
         subgraph.node(str(as_obj.asn), html, **kwargs)
 
-    def _get_html(self, as_obj, engine, scenario):
+    def _get_html(self, as_obj: AS, engine: SimulationEngine, scenario: Scenario) -> str:
         asn_str = str(as_obj.asn)
         if as_obj.asn in scenario.victim_asns:
             asn_str = "&#128519;" + asn_str + "&#128519;"
@@ -135,7 +137,7 @@ class Diagram:
         html += "</TABLE>>"
         return html
 
-    def _get_kwargs(self, as_obj, engine, traceback, scenario):
+    def _get_kwargs(self, as_obj: AS, engine: SimulationEngine, traceback: dict[int, Outcomes], scenario: Scenario) -> dict[str, str]:
         kwargs = {
             "color": "black",
             "style": "filled",
@@ -170,10 +172,10 @@ class Diagram:
                 kwargs["shape"] = "octagon"
         return kwargs
 
-    def _add_edges(self, engine):
+    def _add_edges(self, engine: SimulationEngine):
         # Then add all connections to the graph
         # Starting with provider to customer
-        for as_obj in engine:
+        for as_obj in engine.as_graph:
             # Add provider customer edges
             for customer_obj in as_obj.customers:
                 self.dot.edge(str(as_obj.asn), str(customer_obj.asn))
@@ -189,7 +191,7 @@ class Diagram:
                         penwidth="2",
                     )
 
-    def _add_diagram_ranks(self, diagram_ranks, static_order: bool):
+    def _add_diagram_ranks(self, diagram_ranks: tuple[tuple[int, ...], ...], static_order: bool) -> None:
         # TODO: Refactor
         if static_order is False:
             for i, rank in enumerate(diagram_ranks):
@@ -211,5 +213,5 @@ class Diagram:
                             s.edge(previous_asn, asn, style="invis")  # type: ignore
                         previous_asn = asn
 
-    def _render(self, path=None, view=False):
+    def _render(self, path: Optional[Path] = None, view: bool = False):
         self.dot.render(path, view=view)

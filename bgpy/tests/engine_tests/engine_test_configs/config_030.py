@@ -1,5 +1,5 @@
 from frozendict import frozendict
-from bgpy.tests.engine_tests.graphs import graph_040
+from bgpy.tests.engine_tests.graphs import as_graph_info_040
 
 from bgpy.tests.engine_tests.utils import EngineTestConfig
 
@@ -43,5 +43,5 @@ config_030 = EngineTestConfig(
         num_victims=4,
         override_non_default_asn_cls_dict=frozendict(),
     ),
-    graph=graph_040,
+    as_as_graph_info_info=as_graph_info_040,
 )

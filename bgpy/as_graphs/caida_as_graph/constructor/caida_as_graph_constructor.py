@@ -62,10 +62,7 @@ class CAIDAASGraphConstructor(ASGraphConstructor):
         """Creates and returns the ASGraph"""
 
         return = self.ASGraphCls(
-            cp_links,
-            peer_links,
-            ixp_asns=ixp_asns,
-            input_clique=input_clique,
+            as_graph_info,
             **self.as_graph_kwargs
         )
 

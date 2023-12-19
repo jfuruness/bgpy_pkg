@@ -1,5 +1,5 @@
 from frozendict import frozendict
-from bgpy.tests.engine_tests.graphs import graph_003
+from bgpy.tests.engine_tests.graphs import as_graph_info_003
 from bgpy.tests.engine_tests.utils import EngineTestConfig
 
 from bgpy.simulation_engine import BGPSimplePolicy
@@ -17,5 +17,5 @@ config_010 = EngineTestConfig(
         override_victim_asns=frozenset({ASNs.VICTIM.value}),
         override_non_default_asn_cls_dict=frozendict(),
     ),
-    graph=graph_003,
+    as_as_graph_info_info=as_graph_info_003,
 )

@@ -242,102 +242,6 @@ class TestScenario:
     # Adopting ASNs funcs #
     #######################
 
-    @pytest.mark.skip(
-        reason=(
-            "This test is very outdated, this is not how we do mixed deployment anymore"
-        )
-    )
-    def test_get_non_default_asn_cls_dict_prev_scenario_adopt(self, engine):
-        """Tests that the non default as cls dict is set properly
-
-        Old scenario must have mixed deployment to test that feature as well
-        So old scenario must have three types of ASes:
-        BasePolicyCls
-        DefaultASCls
-        AdoptPolicyCls
-        """
-
-        BasePolicyCls = BGPSimplePolicy
-
-        prev_scenario_config = ScenarioConfig(
-            ScenarioCls=SubprefixHijack,
-            AdoptPolicyCls=ROVSimplePolicy,
-            BasePolicyCls=BasePolicyCls,
-            override_non_default_asn_cls_dict=frozendict(
-                {
-                    # 1: BasePolicyCls,
-                    2: ROVPolicy,
-                    3: ROVSimplePolicy,
-                }
-            ),
-        )
-        prev_scenario = SubprefixHijack(
-            scenario_config=prev_scenario_config, engine=engine
-        )
-        scenario_config = ScenarioConfig(
-            ScenarioCls=SubprefixHijack,
-            AdoptPolicyCls=BGPPolicy,
-            BasePolicyCls=BasePolicyCls,
-        )
-        scenario = SubprefixHijack(scenario_config=scenario_config, engine=engine)
-        non_default_asn_cls_dict = scenario._get_non_default_asn_cls_dict(
-            override_non_default_asn_cls_dict=None,
-            engine=engine,
-            prev_scenario=prev_scenario,
-        )
-
-        gt = {2: ROVPolicy, 3: BGPPolicy}  # 1: BasePolicyCls,
-        assert non_default_asn_cls_dict == gt
-
-    @pytest.mark.skip(
-        reason=(
-            "This test is very outdated, this is not how we do mixed deployment anymore"
-        )
-    )
-    def test_get_non_default_asn_cls_dict_prev_scenario_no_adopt(self, engine):
-        """Tests that the non default as cls dict is set properly
-
-        Old scenario must have mixed deployment but no adopting ASes!
-        So old scenario must have two types of ASes:
-        BasePolicyCls
-        DefaultASCls
-        """
-
-        BasePolicyCls = BGPSimplePolicy
-
-        prev_scenario_config = ScenarioConfig(
-            ScenarioCls=SubprefixHijack,
-            BasePolicyCls=BGPSimplePolicy,
-            override_non_default_asn_cls_dict=frozendict(
-                {
-                    # 1: BasePolicyCls,
-                    2: ROVPolicy,
-                    # 3: BasePolicyCls,
-                }
-            ),
-        )
-        prev_scenario = SubprefixHijack(
-            scenario_config=prev_scenario_config, engine=engine
-        )
-        scenario_config = ScenarioConfig(
-            ScenarioCls=SubprefixHijack,
-            AdoptPolicyCls=BGPPolicy,
-            BasePolicyCls=BasePolicyCls,
-        )
-        scenario = SubprefixHijack(scenario_config=scenario_config, engine=engine)
-        non_default_asn_cls_dict = scenario._get_non_default_asn_cls_dict(
-            override_non_default_asn_cls_dict=None,
-            engine=engine,
-            prev_scenario=prev_scenario,
-        )
-
-        gt = {
-            # 1: BasePolicyCls,
-            2: ROVPolicy,
-            # 3: BasePolicyCls
-        }
-        assert non_default_asn_cls_dict == gt
-
     def test_get_non_default_asn_cls_dict_no_prev_scenario_no_adopt(self, engine):
         """Tests that the non default as cls dict is set properly
 
@@ -359,36 +263,6 @@ class TestScenario:
 
         assert ROVSimplePolicy in list(non_default_asn_cls_dict.values())
         assert BGPSimplePolicy not in list(non_default_asn_cls_dict.values())
-
-    @pytest.mark.skip(reason="Covered by other unit tests")
-    def test_get_non_default_asn_cls_dict_no_adoption_sequence(self):
-        """Tests the Pseudo AdoptPolicyCls
-
-        # This is done to fix the following:
-        # Scenario 1 has 3 BGP ASes and 1 AdoptCls
-        # Scenario 2 has no adopt classes, so 4 BGP
-        # Scenario 3 we want to run ROV++, but what were the adopting ASes from
-        # scenario 1? We don't know anymore.
-        # Instead for scenario 2, we have 3 BGP ASes and 1 Psuedo BGP AS
-        # Then scenario 3 will still work as expected
-        """
-
-        raise NotImplementedError
-
-    @pytest.mark.skip(reason="Low priority, clearly working through graphs")
-    def test_get_adopting_asns_dict(self):
-        """Tests the get adopting asns function
-
-        Tests that for each subcategory they adopt at the proper percentages
-        Tests that the adoption is random
-        Tests for zero adoption that adoption is 1
-        Tests for 100% adoption adoption is 100% - 1
-        Tests that adopters can't be preset ASNs
-        Tests that the default adopters always adopt
-        Tests that the default_non_adopters don't always adopt
-        """
-
-        raise NotImplementedError
 
     def test_default_adopters(self, engine):
         """Ensures that the default adopters returns the victims"""
@@ -422,51 +296,6 @@ class TestScenario:
             engine=engine,
         )
         assert hijack._preset_asns == {1, 2}
-
-    @pytest.mark.skip(reason="Covered by vast amount of system tests")
-    def test_determine_as_outcome(self):
-        """Tests every possible condition for AS outcomes
-
-        Probably split this into multiple tests
-        """
-
-        raise NotImplementedError
-
-    #############################
-    # Engine Manipulation Funcs #
-    #############################
-
-    @pytest.mark.skip(reason="Covered by vast amount of system tests")
-    def test_setup_engine(self):
-        """Tests setup_engine func
-
-        1. Ensures attackers and victims are set properly
-        2. Ensures the engines AS classes are correcct
-        3. Ensures the announcements are seeded
-        """
-
-        raise NotImplementedError
-
-    @pytest.mark.skip(reason="Covered by vast amount of system tests")
-    def test_set_engine_as_classes(self):
-        """Tests that the engine as classes are set properly
-
-        1. Ensures that non default AS class dict doesn't contain BasePolicyCls
-        2. Ensures that AS classes get reset
-        3. Ensures that AS init gets called, but relationships remain
-        """
-
-        raise NotImplementedError
-
-    @pytest.mark.skip(reason="Covered by vast amount of system tests")
-    def test_seed_engine_announcements(self):
-        """Tests the seeding of engine announcements
-
-        1. Ensure you can't replace seeded announcements
-        2. Ensure an AS has recieved the announcement
-        """
-
-        raise NotImplementedError
 
     def test_post_propagation_hook(self, engine):
         """Test that the post_propagation_hook doesn't error"""

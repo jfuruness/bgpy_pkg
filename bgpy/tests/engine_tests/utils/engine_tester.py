@@ -22,6 +22,7 @@ class EngineTester:
         overwrite: bool = False,
         codec: SimulatorCodec = SimulatorCodec(),
         DiagramCls: type[Diagram] = Diagram,
+        ASGraphCls: type[ASGraph] = CAIDAASGraph,
         SimulationEngineCls: type[SimulationEngine] = SimulationEngine,
         compare_metrics: bool = False,
     ):
@@ -64,6 +65,7 @@ class EngineTester:
         self.test_dir.mkdir(exist_ok=True)
 
         self.DiagramCls: type[Diagram] = DiagramCls
+        self.ASGraphCls: type[ASGraphCls] = ASGraphCls
         self.SimulationEngineCls: type[SimulationEngine] = SimulationEngineCls
 
         self.compare_metrics: bool = compare_metrics
@@ -87,7 +89,11 @@ class EngineTester:
         scenario = self.conf.scenario_config.ScenarioCls(
             scenario_config=self.conf.scenario_config, engine=engine
         )
-        scenario.setup_engine(engine, scenario)
+        engine.setup(
+            engine,
+            BasePolicyCls=scenario.scenario_config.BasePolicyCls,
+            non_default_asn_cls_dict=scenario.non_default_asn_cls_dict,
+        )
         # Run engine
         for round_ in range(self.conf.propagation_rounds):  # type: ignore
             engine.run(propagation_round=round_, scenario=scenario)
@@ -118,17 +124,14 @@ class EngineTester:
         # Compare the YAML's together
         self._compare_data()
 
-    def _get_engine(self):
+    def _get_engine(self) -> SimulationEngine:
         """Creates and engine and sets it up for runs"""
 
-        engine = self.SimulationEngineCls(
+        as_graph = ASGraphCls(
+            as_graph_info=self.conf.as_graph_info
             BasePolicyCls=self.conf.scenario_config.BasePolicyCls,
-            peer_links=self.conf.graph.peer_links,  # type: ignore
-            cp_links=self.conf.graph.customer_provider_links,  # type: ignore
-            ixp_asns=self.conf.graph.ixp_asns,
-        )  # type: ignore
-
-        return engine
+        )
+        return self.SimulationEngineCls(as_graph)
 
     def _get_trial_metrics(
         self,

@@ -3,7 +3,7 @@ import subprocess
 
 import pytest
 
-from bgpy.caida_collector import CaidaCollector
+from bgpy.as_graphs import CAIDAASGraphCollector
 
 from .engine_tests import DiagramAggregator
 
@@ -18,7 +18,7 @@ def pytest_configure(config):
     # Prevent workers from running the same code
     if not hasattr(config, "workerinput"):
         # Caches CAIDA downloaded file only once before tests run
-        CaidaCollector().run(tsv_path=None)
+        CAIDAASGraphCollector().run()
 
 
 def pytest_sessionfinish(session, exitstatus):

@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from typing import ClassVar
 
-from bgpy.tests.engine_tests.graphs import GraphInfo
+from bgpy.as_graphs import ASGraphInfo
 from bgpy.simulation_framework.scenarios import ScenarioConfig
 from bgpy.simulation_framework.metric_tracker.metric_tracker import (
     MetricTracker,
@@ -16,7 +16,7 @@ class EngineTestConfig:
     name: str
     desc: str
     scenario_config: ScenarioConfig
-    graph: GraphInfo
+    as_graph_info: ASGraphInfo
     propagation_rounds: int = 1
     MetricTrackerCls: type[MetricTracker] = MetricTracker
     GraphAnalyzerCls: type[GraphAnalyzer] = GraphAnalyzer
