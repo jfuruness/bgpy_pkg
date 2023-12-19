@@ -17,7 +17,7 @@ r"""v1 example with ROV
 """
 
 as_graph_info_003 = ASGraphInfo(
-    customer_provider_links=set(
+    customer_provider_links=frozenset(
         [
             CPLink(provider_asn=1, customer_asn=3),
             CPLink(provider_asn=1, customer_asn=4),

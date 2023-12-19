@@ -50,7 +50,7 @@ class Scenario(ABC):
             scenario_config.override_victim_asns, engine, prev_scenario
         )
 
-        POLICY_CLS_DCT = dict[int, type[BGPSimplePolicy]]
+        POLICY_CLS_DCT = frozendict[int, type[BGPSimplePolicy]]
         self.non_default_asn_cls_dict: POLICY_CLS_DCT = (
             self._get_non_default_asn_cls_dict(
                 scenario_config.override_non_default_asn_cls_dict, engine, prev_scenario
@@ -150,7 +150,7 @@ class Scenario(ABC):
         engine: SimulationEngine,
         percent_adoption: Union[float, SpecialPercentAdoptions],
         prev_scenario: Optional["Scenario"],
-    ) -> set[int]:
+    ) -> frozenset[int]:
         """Returns possible attacker ASNs, defaulted from config"""
 
         possible_asns = engine.as_graph.asn_groups[
@@ -158,7 +158,7 @@ class Scenario(ABC):
         ]
         err = "Make mypy happy"
         assert all(isinstance(x, int) for x in possible_asns), err
-        assert isinstance(possible_asns, set), err
+        assert isinstance(possible_asns, frozenset), err
         return possible_asns
 
     ###############
@@ -202,7 +202,7 @@ class Scenario(ABC):
         engine: SimulationEngine,
         percent_adoption: Union[float, SpecialPercentAdoptions],
         prev_scenario: Optional["Scenario"],
-    ) -> set[int]:
+    ) -> frozenset[int]:
         """Returns possible victim ASNs, defaulted from config"""
 
         possible_asns = engine.as_graph.asn_groups[
@@ -210,7 +210,7 @@ class Scenario(ABC):
         ]
         err = "Make mypy happy"
         assert all(isinstance(x, int) for x in possible_asns), err
-        assert isinstance(possible_asns, set), err
+        assert isinstance(possible_asns, frozenset), err
         # Remove attackers from possible victims
         possible_asns = possible_asns.difference(self.attacker_asns)
         return possible_asns
@@ -229,7 +229,7 @@ class Scenario(ABC):
         ],
         engine: Optional[SimulationEngine],
         prev_scenario: Optional["Scenario"],
-    ) -> dict[int, type[BGPSimplePolicy]]:
+    ) -> frozendict[int, type[BGPSimplePolicy]]:
         """Returns as class dict
 
         non_default_asn_cls_dict is a dict of asn: AdoptPolicyCls
@@ -276,7 +276,7 @@ class Scenario(ABC):
         for asn, PolicyCls in non_default_asn_cls_dict.items():
             assert PolicyCls != self.scenario_config.BasePolicyCls, "No defaults!"
 
-        return non_default_asn_cls_dict
+        return frozendict(non_default_asn_cls_dict)
 
     def _get_randomized_non_default_asn_cls_dict(
         self,
@@ -358,6 +358,7 @@ class Scenario(ABC):
         """Sets up engine"""
 
         self.policies_used = engine.setup(
+            self.announcements,
             self.scenario_config.BasePolicyCls,
             self.non_default_asn_cls_dict,
             prev_scenario,

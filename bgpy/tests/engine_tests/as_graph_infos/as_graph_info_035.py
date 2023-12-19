@@ -10,7 +10,7 @@ with 10 being a provider of AS 4. This makes AS 4 multihomed.
 """
 
 as_graph_info_035 = ASGraphInfo(
-    customer_provider_links=set(
+    customer_provider_links=frozenset(
         [
             CPLink(provider_asn=1, customer_asn=4),
             CPLink(provider_asn=1, customer_asn=2),

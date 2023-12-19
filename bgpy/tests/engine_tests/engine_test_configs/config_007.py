@@ -20,5 +20,5 @@ config_007 = EngineTestConfig(
             {3: ROVSimplePolicy, 4: ROVSimplePolicy}
         ),
     ),
-    as_as_graph_info_info=as_graph_info_003,
+    as_graph_info=as_graph_info_003,
 )

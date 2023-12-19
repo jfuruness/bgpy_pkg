@@ -15,8 +15,8 @@ Figure 1a in our ROV++ paper
 """
 
 as_graph_info_001 = ASGraphInfo(
-    peer_links=set([PeerLink(2, 3)]),
-    customer_provider_links=set(
+    peer_links=frozenset([PeerLink(2, 3)]),
+    customer_provider_links=frozenset(
         [
             CPLink(provider_asn=1, customer_asn=2),
             CPLink(provider_asn=2, customer_asn=ASNs.VICTIM.value),

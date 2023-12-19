@@ -21,7 +21,7 @@ class EngineTestConfig:
     scenario_config: ScenarioConfig
     as_graph_info: ASGraphInfo
     propagation_rounds: int = 1
-    ASGraphCls: type[ASGraph] = (CAIDAASGraph,)
+    ASGraphCls: type[ASGraph] = CAIDAASGraph
     SimulationEngineCls: type[SimulationEngine] = SimulationEngine
     MetricTrackerCls: type[MetricTracker] = MetricTracker
     GraphAnalyzerCls: type[GraphAnalyzer] = GraphAnalyzer

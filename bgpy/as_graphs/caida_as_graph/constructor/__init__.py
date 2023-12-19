@@ -1,3 +1,3 @@
-from .caida_as_graph_constructor import CaidaASGraphConstructor
+from .caida_as_graph_constructor import CAIDAASGraphConstructor
 
-__all__ = ["CaidaASGraphConstructor"]
+__all__ = ["CAIDAASGraphConstructor"]

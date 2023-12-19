@@ -32,5 +32,5 @@ class Link(ABC):
 
     @property
     @abstractmethod
-    def asns(self) -> tuple[int, int]:
+    def asns(self) -> tuple[int, ...]:
         raise NotImplementedError

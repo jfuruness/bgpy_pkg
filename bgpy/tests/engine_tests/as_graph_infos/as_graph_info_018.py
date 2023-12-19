@@ -18,8 +18,8 @@ Test path length preference in gao_rexford.py.
 """
 
 as_graph_info_018 = ASGraphInfo(
-    peer_links=set([]),
-    customer_provider_links=set(
+    peer_links=frozenset([]),
+    customer_provider_links=frozenset(
         [
             CPLink(provider_asn=1, customer_asn=2),
             CPLink(provider_asn=1, customer_asn=3),

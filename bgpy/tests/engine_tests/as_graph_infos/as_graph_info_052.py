@@ -22,14 +22,14 @@ AS 777 announces prefix
 
 
 as_graph_info_052 = ASGraphInfo(
-    peer_links=set(
+    peer_links=frozenset(
         {
             PeerLink(5, 8),
             PeerLink(8, 9),
             PeerLink(8, 3),
         }
     ),
-    customer_provider_links=set(
+    customer_provider_links=frozenset(
         [
             CPLink(provider_asn=1, customer_asn=ASNs.ATTACKER.value),
             CPLink(provider_asn=2, customer_asn=ASNs.ATTACKER.value),
@@ -44,10 +44,10 @@ as_graph_info_052 = ASGraphInfo(
             CPLink(provider_asn=11, customer_asn=9),
         ]
     ),
-    diagram_ranks=[
-        [ASNs.ATTACKER.value, ASNs.VICTIM.value],
-        [1, 2, 3, 4],
-        [5, 8, 9],
-        [10, 11],
-    ],
+    diagram_ranks=(
+        (ASNs.ATTACKER.value, ASNs.VICTIM.value),
+        (1, 2, 3, 4),
+        (5, 8, 9),
+        (10, 11),
+    ),
 )

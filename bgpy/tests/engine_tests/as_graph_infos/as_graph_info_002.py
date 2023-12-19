@@ -19,8 +19,8 @@ Starting propagation at 5, all ASes should see the announcement.
 """
 
 as_graph_info_002 = ASGraphInfo(
-    peer_links=set([PeerLink(2, 3), PeerLink(ASNs.VICTIM.value, 5)]),
-    customer_provider_links=set(
+    peer_links=frozenset([PeerLink(2, 3), PeerLink(ASNs.VICTIM.value, 5)]),
+    customer_provider_links=frozenset(
         [
             CPLink(provider_asn=1, customer_asn=2),
             CPLink(provider_asn=2, customer_asn=4),

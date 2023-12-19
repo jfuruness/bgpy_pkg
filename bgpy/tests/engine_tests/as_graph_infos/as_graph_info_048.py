@@ -10,12 +10,12 @@ between AS 1 and 4.
 """
 
 as_graph_info_048 = ASGraphInfo(
-    peer_links=set(
+    peer_links=frozenset(
         [
             PeerLink(1, 4),
         ]
     ),
-    customer_provider_links=set(
+    customer_provider_links=frozenset(
         [
             CPLink(provider_asn=1, customer_asn=3),
             CPLink(provider_asn=1, customer_asn=ASNs.ATTACKER.value),

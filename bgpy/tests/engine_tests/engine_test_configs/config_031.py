@@ -28,5 +28,5 @@ config_031 = EngineTestConfig(
         BasePolicyCls=BGPSimplePolicy,
         override_non_default_asn_cls_dict=frozendict(),
     ),
-    as_as_graph_info_info=as_graph_info_040,
+    as_graph_info=as_graph_info_040,
 )

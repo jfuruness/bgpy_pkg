@@ -1,13 +1,15 @@
 from .as_graph import ASGraph, AS
 from .as_graph_collector import ASGraphCollector
-from .graph_info import GraphInfo
+from .as_graph_constructor import ASGraphConstructor
+from .as_graph_info import ASGraphInfo
 from .links import CustomerProviderLink, Link, PeerLink
 
 __all__ = [
     "ASGraph",
     "AS",
     "ASGraphCollector",
-    "GraphInfo",
+    "ASGraphConstructor",
+    "ASGraphInfo",
     "CustomerProviderLink",
     "Link",
     "PeerLink",

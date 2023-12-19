@@ -47,25 +47,28 @@ class SimulationEngine:
 
     def setup(
         self,
+        announcements: tuple[Announcement, ...],
         BasePolicyCls: type["BGPSimplePolicy"] = BGPSimplePolicy,
-        non_default_asn_cls_dict: dict[int, type["BGPSimplePolicy"]] = frozendict(),
+        non_default_asn_cls_dict: frozendict[int, type["BGPSimplePolicy"]] = (
+            frozendict()  # type: ignore
+        ),
         prev_scenario: Optional["Scenario"] = None,
-    ) -> frozenset["BGPSimplePolicy"]:
+    ) -> frozenset[type["BGPSimplePolicy"]]:
         """Sets AS classes and seeds announcements"""
 
-        policies_used: frozenset["BGPSimplePolicy"] = self._set_as_classes(
+        policies_used: frozenset[type["BGPSimplePolicy"]] = self._set_as_classes(
             BasePolicyCls, non_default_asn_cls_dict, prev_scenario
         )
-        self._seed_announcements(self.announcements, prev_scenario)
+        self._seed_announcements(announcements, prev_scenario)
         self.ready_to_run_round = 0
         return policies_used
 
     def _set_as_classes(
         self,
         BasePolicyCls: type["BGPSimplePolicy"],
-        non_default_asn_cls_dict: dict[int, type["BGPSimplePolicy"]],
+        non_default_asn_cls_dict: frozendict[int, type["BGPSimplePolicy"]],
         prev_scenario: Optional["Scenario"] = None,
-    ) -> frozenset["BGPSimplePolicy"]:
+    ) -> frozenset[type["BGPSimplePolicy"]]:
         """Resets Engine ASes and changes their AS class
 
         We do this here because we already seed from the scenario
@@ -76,7 +79,6 @@ class SimulationEngine:
 
         policy_classes_used = set()
         # Done here to save as much time  as possible
-        BasePolicyCls = self.scenario_config.BasePolicyCls
         for as_obj in self.as_graph:
             # Delete the old policy and remove references so that RAM can be reclaimed
             del as_obj.policy.as_

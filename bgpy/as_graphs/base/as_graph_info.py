@@ -1,5 +1,4 @@
 from dataclasses import dataclass, field
-from typing import Optional
 
 from .links import Link, PeerLink, CustomerProviderLink as CPLink
 
@@ -16,12 +15,13 @@ class ASGraphInfo:
     input_clique_asns: frozenset[int] = field(default_factory=frozenset)
     # You can optionally add diagram ranks for graphviz here
     # By default, it just uses the propagation ranks
-    diagram_ranks: Optional[tuple[tuple[int, ...], ...]] = None
+    diagram_ranks: tuple[tuple[int, ...], ...] = ()
 
     def __post_init__(self, *args, **kwargs):
         asn_tuples = list()
-        for link in self.link_sets:
-            asn_tuples.append(link.asns)
+        for link_set in self.link_sets:
+            for link in link_set:
+                asn_tuples.append(link.asns)
 
         msg = "Shouldn't have a customer-provider that is also a peer!"
         assert len(asn_tuples) == len(set(asn_tuples)), msg
@@ -35,7 +35,7 @@ class ASGraphInfo:
         return list(sorted(set(asns)))
 
     @property
-    def link_sets(self) -> tuple[set[Link], ...]:
+    def link_sets(self) -> tuple[frozenset[Link], ...]:
         """Returns all the link sets
 
         This way this variable is not hardcoded elsewhere

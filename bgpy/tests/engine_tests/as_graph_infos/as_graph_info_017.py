@@ -20,8 +20,8 @@ This tests all three possible relationship preference scenarios.
 """
 
 as_graph_info_017 = ASGraphInfo(
-    peer_links=set([PeerLink(1, 2), PeerLink(ASNs.VICTIM.value, 3)]),
-    customer_provider_links=set(
+    peer_links=frozenset([PeerLink(1, 2), PeerLink(ASNs.VICTIM.value, 3)]),
+    customer_provider_links=frozenset(
         [
             CPLink(provider_asn=1, customer_asn=4),
             CPLink(provider_asn=1, customer_asn=ASNs.VICTIM.value),

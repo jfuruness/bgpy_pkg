@@ -6,8 +6,8 @@ from bgpy.enums import ASNs
 
 
 as_graph_info_042 = ASGraphInfo(
-    peer_links=set([]),
-    customer_provider_links=set(
+    peer_links=frozenset([]),
+    customer_provider_links=frozenset(
         [
             CPLink(provider_asn=32, customer_asn=25),
             CPLink(provider_asn=77, customer_asn=32),

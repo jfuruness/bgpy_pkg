@@ -29,5 +29,5 @@ config_037 = EngineTestConfig(
         override_victim_asns=frozenset({ASNs.VICTIM.value}),
         override_non_default_asn_cls_dict=frozendict({8: RealPeerROVSimplePolicy}),
     ),
-    as_as_graph_info_info=as_graph_info_052,
+    as_graph_info=as_graph_info_052,
 )

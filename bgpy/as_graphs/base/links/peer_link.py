@@ -19,7 +19,7 @@ class PeerLink(Link):
         return self.__peer_asns
 
     @property
-    def asns(self) -> tuple[int, int]:
+    def asns(self) -> tuple[int, ...]:
         """Returns asns associated with this link"""
 
         return tuple(sorted(self.__peer_asns))  # type: ignore

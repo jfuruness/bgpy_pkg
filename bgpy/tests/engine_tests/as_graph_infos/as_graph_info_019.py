@@ -19,8 +19,8 @@ The lower ASN, 2, should be preferred by 1.
 """
 
 as_graph_info_019 = ASGraphInfo(
-    peer_links=set([]),
-    customer_provider_links=set(
+    peer_links=frozenset([]),
+    customer_provider_links=frozenset(
         [
             CPLink(provider_asn=1, customer_asn=2),
             CPLink(provider_asn=1, customer_asn=3),

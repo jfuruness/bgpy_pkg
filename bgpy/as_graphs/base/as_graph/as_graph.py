@@ -63,11 +63,9 @@ class ASGraph(YamlAble):
         BaseASCls: type[AS] = AS,
         BasePolicyCls: type[BGPSimplePolicy] = BGPSimplePolicy,
         yaml_as_dict: Optional[frozendict[int, AS]] = None,
-        yaml_ixp_asns: Optional[frozenset[int]] = None,
+        yaml_ixp_asns: frozenset[int] = frozenset(),
         # Users can pass in any additional AS groups they want to keep track of
-        additional_as_group_filters: Optional[
-            dict[str, Callable[[list[AS]], set[AS]]]
-        ] = None,
+        additional_as_group_filters: frozendict[str, Callable[[ASGraph], frozenset[AS]]] = frozendict(),
     ):
         """Reads in relationship data from a TSV and generate graph"""
 
@@ -86,12 +84,11 @@ class ASGraph(YamlAble):
 
     def _set_yaml_attrs(
         self,
-        yaml_as_dict: Optional[frozendict[int, AS]] = None,
-        yaml_ixp_asns: Optional[frozenset[int]] = None,
+        yaml_as_dict: frozendict[int, AS],
+        yaml_ixp_asns: frozenset[int],
     ) -> None:
         """Generates the AS Graph from YAML"""
 
-        assert yaml_ixp_asns is not None
         self.ixp_asns: frozenset[int] = yaml_ixp_asns
         self.as_dict: frozendict[int, AS] = yaml_as_dict
         # Convert ASNs to refs
@@ -116,7 +113,9 @@ class ASGraph(YamlAble):
 
         assert as_graph_info.ixp_asns is not None
         self.ixp_asns = as_graph_info.ixp_asns
-        self.as_dict = dict()
+        # Probably there is a better way to do this, but for now we
+        # store this as a dict then later make frozendict, thus the type ignore
+        self.as_dict = dict()  # type: ignore
         # Just adds all ASes to the dict, and adds ixp/input_clique info
         self._gen_graph(
             as_graph_info,
@@ -141,24 +140,31 @@ class ASGraph(YamlAble):
 
     def _set_as_groups(
         self,
-        additional_as_group_filters: Optional[dict[str, Callable[[list[AS]], set[AS]]]],
+        additional_as_group_filters: Optional[
+            frozendict[str, Callable[["ASGraph"], frozenset[AS]]]
+        ],
     ) -> None:
         """Sets the AS Groups"""
 
-        self.as_group_filters: frozendict[
+        as_group_filters: dict[
             str, Callable[["ASGraph"], frozenset[AS]]
-        ] = self._default_as_group_filters
+        ] = dict(self._default_as_group_filters)
 
         if additional_as_group_filters:
-            self.as_group_filters.update(additional_as_group_filters)
+            as_group_filters.update(additional_as_group_filters)
+
+        self.as_group_filters: frozendict[
+            str, Callable[["ASGraph"], frozenset[AS]]
+        ] = frozendict(as_group_filters)
+
 
         # Some helpful sets of ases for faster loops
         as_groups: dict[str, frozenset[AS]] = dict()
         asn_groups: dict[str, frozenset[int]] = dict()
 
         for as_group_key, filter_func in self.as_group_filters.items():
-            self.as_groups[as_group_key] = filter_func(self)
-            self.asn_groups[as_group_key] = set(x.asn for x in filter_func(self))
+            as_groups[as_group_key] = filter_func(self)
+            asn_groups[as_group_key] = frozenset(x.asn for x in filter_func(self))
 
         # Turn these into frozen dicts. They shouldn't be modified
         self.as_groups: frozendict[str, frozenset[AS]] = frozendict(as_groups)
@@ -167,7 +173,7 @@ class ASGraph(YamlAble):
     @property
     def _default_as_group_filters(
         self,
-    ) -> frozendict[str, Callable[["ASGraph"], set[AS]]]:
+    ) -> frozendict[str, Callable[["ASGraph"], frozenset[AS]]]:
         """Returns the default filter functions for AS groups"""
 
         def stub_filter(as_graph: "ASGraph") -> frozenset[AS]:
@@ -188,7 +194,7 @@ class ASGraph(YamlAble):
             )
 
         def all_filter(as_graph: "ASGraph") -> frozenset[AS]:
-            return set(list(as_graph))
+            return frozenset(list(as_graph))
 
         return frozendict(
             {

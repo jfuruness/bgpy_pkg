@@ -10,7 +10,7 @@ between AS 1 and 4.
 """
 
 as_graph_info_034 = ASGraphInfo(
-    customer_provider_links=set(
+    customer_provider_links=frozenset(
         [
             CPLink(provider_asn=1, customer_asn=3),
             CPLink(provider_asn=4, customer_asn=1),

@@ -82,7 +82,7 @@ class EngineTester:
             scenario_config=self.conf.scenario_config, engine=engine
         )
         engine.setup(
-            engine,
+            scenario.announcements,
             BasePolicyCls=scenario.scenario_config.BasePolicyCls,
             non_default_asn_cls_dict=scenario.non_default_asn_cls_dict,
         )
@@ -192,14 +192,14 @@ class EngineTester:
         outcomes_gt = self.codec.load(self.outcomes_ground_truth_path)
 
         # You can hardcode particular propagation ranks for diagrams
-        if self.conf.graph.diagram_ranks:
-            diagram_ranks = list()
-            for rank in self.conf.graph.diagram_ranks:
-                diagram_ranks.append([engine_guess.as_dict[asn] for asn in rank])
+        if self.conf.as_graph_info.diagram_ranks:
+            diagram_obj_ranks_mut = list()
+            for rank in self.conf.as_graph_info.diagram_ranks:
+                diagram_obj_ranks_mut.append([engine_guess.as_dict[asn] for asn in rank])
 
             # Assert that you weren't missing any ASNs
-            hardcoded_rank_asns = list()
-            for rank in self.conf.graph.diagram_ranks:
+            hardcoded_rank_asns: list[int] = list()
+            for rank in self.conf.as_graph_info.diagram_ranks:
                 hardcoded_rank_asns.extend(rank)
             err = "Hardcoded rank ASNs do not match AS graph ASNs"
             assert set(list(engine_guess.as_dict.keys())) == set(
@@ -207,8 +207,10 @@ class EngineTester:
             ), err
             static_order = True
         else:
-            diagram_ranks = engine_guess.propagation_ranks
+            diagram_obj_ranks_mut = engine_guess.propagation_ranks
             static_order = False
+
+        diagram_obj_ranks = tuple([tuple(x) for x in diagram_obj_ranks_mut])
 
         # Write guess graph
         self.conf.DiagramCls().generate_as_graph(
@@ -217,7 +219,7 @@ class EngineTester:
             outcomes_guess,
             f"({self.conf.name} Guess)\n{self.conf.desc}",  # type: ignore
             metric_tracker,
-            diagram_ranks,
+            diagram_obj_ranks,
             static_order=static_order,
             path=self.test_dir / "guess.gv",
             view=False,
@@ -230,7 +232,7 @@ class EngineTester:
             f"({self.conf.name} Ground Truth)\n"  # type: ignore
             f"{self.conf.desc}",  # type: ignore
             metric_tracker,
-            diagram_ranks,
+            diagram_obj_ranks,
             static_order=static_order,
             path=self.test_dir / "ground_truth.gv",
             view=False,

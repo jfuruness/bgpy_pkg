@@ -18,5 +18,5 @@ config_008 = EngineTestConfig(
         override_victim_asns=frozenset({ASNs.VICTIM.value}),
         override_non_default_asn_cls_dict=frozendict({3: ROVPolicy, 4: ROVPolicy}),
     ),
-    as_as_graph_info_info=as_graph_info_003,
+    as_graph_info=as_graph_info_003,
 )

@@ -12,7 +12,7 @@ class AS(YamlAble):
 
     def __init__(
         self,
-        asn: Optional[int] = None,
+        asn: int,
         input_clique: bool = False,
         ixp: bool = False,
         peers: tuple["AS", ...] = tuple(),
@@ -21,7 +21,7 @@ class AS(YamlAble):
         customer_cone_size: Optional[int] = None,
         propagation_rank: Optional[int] = None,
         policy: Optional["BGPSimplePolicy"] = None,
-    ):
+    ) -> None:
         # Make sure you're not accidentally passing in a string here
         self.asn: int = int(asn)
 

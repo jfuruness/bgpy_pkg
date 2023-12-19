@@ -28,7 +28,7 @@ class Diagram:
         traceback: dict[int, Outcomes],
         description: str,
         metric_tracker: MetricTracker,
-        diagram_ranks: tuple[tuple[int, ...], ...],
+        diagram_ranks: tuple[tuple[AS, ...], ...],
         static_order: bool = False,
         path: Optional[Path] = None,
         view: bool = False,
@@ -219,7 +219,7 @@ class Diagram:
                     )
 
     def _add_diagram_ranks(
-        self, diagram_ranks: tuple[tuple[int, ...], ...], static_order: bool
+        self, diagram_ranks: tuple[tuple[AS, ...], ...], static_order: bool
     ) -> None:
         # TODO: Refactor
         if static_order is False:

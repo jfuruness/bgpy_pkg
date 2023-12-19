@@ -4,7 +4,7 @@ from bgpy.as_graphs import ASGraphInfo
 
 
 as_graph_info_021 = ASGraphInfo(
-    peer_links=set(
+    peer_links=frozenset(
         [
             PeerLink(34927, 8966),
             PeerLink(34927, 9269),
@@ -398,7 +398,7 @@ as_graph_info_021 = ASGraphInfo(
             PeerLink(134823, 23673),
         ]
     ),
-    customer_provider_links=set(
+    customer_provider_links=frozenset(
         [
             CPLink(provider_asn=34927, customer_asn=42394),
             CPLink(provider_asn=34927, customer_asn=21158),
