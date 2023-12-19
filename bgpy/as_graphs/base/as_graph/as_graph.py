@@ -61,6 +61,7 @@ class ASGraph(YamlAble):
         as_graph_info: "ASGraphInfo",
         BaseASCls: type[AS] = AS,
         BasePolicyCls: type[BGPSimplePolicy] = BGPSimplePolicy,
+        customer_cones: bool = False,
         yaml_as_dict: Optional[frozendict[int, AS]] = None,
         yaml_ixp_asns: frozenset[int] = frozenset(),
         # Users can pass in any additional AS groups they want to keep track of
@@ -73,7 +74,7 @@ class ASGraph(YamlAble):
             self._set_yaml_attrs(yaml_as_dict, yaml_ixp_asns)
         else:
             # init as normal, through the as_graph_info
-            self._set_non_yaml_attrs(as_graph_info, BaseASCls, BasePolicyCls)
+            self._set_non_yaml_attrs(as_graph_info, BaseASCls, BasePolicyCls, customer_cones)
         # Set the AS and ASN group groups
         self._set_as_groups(additional_as_group_filters)
 
@@ -107,6 +108,7 @@ class ASGraph(YamlAble):
         as_graph_info: ASGraphInfo,
         BaseASCls: type["AS"],
         BasePolicyCls: type["BGPSimplePolicy"],
+        customer_cones: bool,
     ) -> None:
         """Generates the AS graph normally (not from YAML)"""
 
@@ -134,8 +136,11 @@ class ASGraph(YamlAble):
         self._assign_propagation_ranks()
         # Get the ranks for the graph
         self.propagation_ranks = self._get_propagation_ranks()
-        # Determine customer cones of all ases
-        self._get_customer_cone_size()
+        # We don't run this every time since it has the runtime greater than the
+        # entire graph generation
+        if customer_cones:
+            # Determine customer cones of all ases
+            self._get_customer_cone_size()
 
     def _set_as_groups(
         self,

@@ -191,7 +191,7 @@ class Simulation:
         # (after the multiprocess process has started)
         # Changing recursion depth does nothing
         # Making nothing a reference does nothing
-        constructor_kwargs = self.as_graph_constructor_kwargs.copy()
+        constructor_kwargs = dict(self.as_graph_constructor_kwargs)
         constructor_kwargs["tsv_path"] = None
         as_graph: ASGraph = self.ASGraphConstructorCls(**constructor_kwargs).run()
         engine = SimulationEngine(as_graph)

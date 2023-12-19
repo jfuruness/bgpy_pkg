@@ -3,7 +3,7 @@ as_graph: !yamlable/CAIDAASGraph
   as_dict:
     1: !yamlable/AS
       asn: 1
-      customer_cone_size: 6
+      customer_cone_size: null
       customers: !!python/tuple
       - 777
       - 666
@@ -214,7 +214,7 @@ as_graph: !yamlable/CAIDAASGraph
       providers: !!python/tuple []
     2: !yamlable/AS
       asn: 2
-      customer_cone_size: 4
+      customer_cone_size: null
       customers: !!python/tuple
       - 4
       - 5
@@ -301,7 +301,7 @@ as_graph: !yamlable/CAIDAASGraph
       providers: !!python/tuple []
     3: !yamlable/AS
       asn: 3
-      customer_cone_size: 1
+      customer_cone_size: null
       customers: !!python/tuple
       - 7
       input_clique: false
@@ -390,7 +390,7 @@ as_graph: !yamlable/CAIDAASGraph
       - 1
     4: !yamlable/AS
       asn: 4
-      customer_cone_size: 1
+      customer_cone_size: null
       customers: !!python/tuple
       - 8
       input_clique: false
@@ -501,7 +501,7 @@ as_graph: !yamlable/CAIDAASGraph
       - 2
     5: !yamlable/AS
       asn: 5
-      customer_cone_size: 1
+      customer_cone_size: null
       customers: !!python/tuple
       - 777
       input_clique: false
@@ -605,7 +605,7 @@ as_graph: !yamlable/CAIDAASGraph
       - 2
     7: !yamlable/AS
       asn: 7
-      customer_cone_size: 0
+      customer_cone_size: null
       customers: !!python/tuple []
       input_clique: false
       ixp: false
@@ -659,7 +659,7 @@ as_graph: !yamlable/CAIDAASGraph
       - 3
     8: !yamlable/AS
       asn: 8
-      customer_cone_size: 0
+      customer_cone_size: null
       customers: !!python/tuple []
       input_clique: false
       ixp: false
@@ -713,7 +713,7 @@ as_graph: !yamlable/CAIDAASGraph
       - 4
     666: !yamlable/AS
       asn: 666
-      customer_cone_size: 0
+      customer_cone_size: null
       customers: !!python/tuple []
       input_clique: false
       ixp: false
@@ -794,7 +794,7 @@ as_graph: !yamlable/CAIDAASGraph
       - 1
     777: !yamlable/AS
       asn: 777
-      customer_cone_size: 0
+      customer_cone_size: null
       customers: !!python/tuple []
       input_clique: false
       ixp: false

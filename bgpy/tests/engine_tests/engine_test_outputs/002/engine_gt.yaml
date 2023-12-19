@@ -3,7 +3,7 @@ as_graph: !yamlable/CAIDAASGraph
   as_dict:
     1: !yamlable/AS
       asn: 1
-      customer_cone_size: 0
+      customer_cone_size: null
       customers: !!python/tuple
       - 2
       input_clique: false
@@ -72,7 +72,7 @@ as_graph: !yamlable/CAIDAASGraph
       providers: !!python/tuple []
     2: !yamlable/AS
       asn: 2
-      customer_cone_size: 1
+      customer_cone_size: null
       customers: !!python/tuple
       - 777
       input_clique: false
@@ -245,7 +245,7 @@ as_graph: !yamlable/CAIDAASGraph
       - 1
     3: !yamlable/AS
       asn: 3
-      customer_cone_size: 1
+      customer_cone_size: null
       customers: !!python/tuple
       - 666
       input_clique: false
@@ -380,7 +380,7 @@ as_graph: !yamlable/CAIDAASGraph
       providers: !!python/tuple []
     666: !yamlable/AS
       asn: 666
-      customer_cone_size: 0
+      customer_cone_size: null
       customers: !!python/tuple []
       input_clique: false
       ixp: false
@@ -463,7 +463,7 @@ as_graph: !yamlable/CAIDAASGraph
       - 3
     777: !yamlable/AS
       asn: 777
-      customer_cone_size: 0
+      customer_cone_size: null
       customers: !!python/tuple []
       input_clique: false
       ixp: false

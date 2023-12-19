@@ -67,12 +67,12 @@ class GraphFactory:
                     and row["metric_key"].as_group == metric_key.as_group
                     and row["metric_key"].outcome == metric_key.outcome
                     and (
-                        (row["metric_key"].ASCls == BasePolicyCls and adopting is False)
+                        (row["metric_key"].PolicyCls == BasePolicyCls and adopting is False)
                         or (
-                            row["metric_key"].ASCls == AdoptPolicyCls
+                            row["metric_key"].PolicyCls == AdoptPolicyCls
                             and adopting is True
                         )
-                        or (row["metric_key"].ASCls == Any and adopting is Any)
+                        or (row["metric_key"].PolicyCls == Any and adopting is Any)
                     )
                 ):
                     relevant_rows.append(row)
