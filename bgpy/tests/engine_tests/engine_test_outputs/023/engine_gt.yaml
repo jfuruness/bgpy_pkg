@@ -176,7 +176,7 @@ as_graph: !yamlable/CAIDAASGraph
         _recv_q: !yamlable/RecvQueue {}
       propagation_rank: 0
       providers: !!python/tuple
-      - 4
       - 5
+      - 4
   ixp_asns: []
 ready_to_run_round: 1

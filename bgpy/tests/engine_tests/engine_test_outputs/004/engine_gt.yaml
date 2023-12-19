@@ -74,8 +74,8 @@ as_graph: !yamlable/CAIDAASGraph
       asn: 2
       customer_cone_size: null
       customers: !!python/tuple
-      - 777
       - 4
+      - 777
       input_clique: false
       ixp: false
       peers: !!python/tuple

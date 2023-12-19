@@ -3,25 +3,23 @@ from pathlib import Path
 import pickle
 from pprint import pformat
 
-from .engine_test_config import EngineTestConfig
-from .simulator_codec import SimulatorCodec
+from bgpy.enums import Outcomes
 from bgpy.simulation_engine import SimulationEngine
 from bgpy.simulation_framework import Scenario
 from bgpy.simulation_framework import MetricTracker
-from bgpy.enums import Plane, SpecialPercentAdoptions
+from bgpy.utils import EngineRunner
 
 
-class EngineTester:
+class EngineTester(EngineRunner):
     """Tests an engine run"""
 
     def __init__(
         self,
-        base_dir: Path,
-        conf: EngineTestConfig,
+        *args,
         overwrite: bool = False,
-        codec: SimulatorCodec = SimulatorCodec(),
         compare_metrics: bool = False,
-    ):
+        **kwargs,
+    ) -> None:
         """Regarding the compare_metrics kwarg:
 
         There was quite a debate on whether or not the engine tester
@@ -50,17 +48,15 @@ class EngineTester:
         other projects could implement their own versions of it.
         """
 
-        self.conf = conf
-        self.overwrite = overwrite
-        self.codec = codec
-        # Needed to aggregate all diagrams
-        self.base_dir: Path = base_dir
-        self.base_dir.mkdir(parents=True, exist_ok=True)
-        # Creates directory for this specific test
-        self.test_dir: Path = self.base_dir / self.conf.name  # type: ignore
-        self.test_dir.mkdir(exist_ok=True)
-
+        self.overwrite: bool = overwrite
         self.compare_metrics: bool = compare_metrics
+        super().__init__(*args, **kwargs)
+
+        # Don't store metrics if we don't use them
+        if not self.compare_metrics:
+            def noop(*args, **kwargs):
+                pass
+            self._store_metrics = noop
 
     def test_engine(self):
         """Tests an engine run
@@ -75,99 +71,31 @@ class EngineTester:
             to the ground truth
         """
 
-        # Get's an engine that has been set up
-        # MUST BE DONE IN THIS ORDER so that scenario init get's passed the engine
-        engine = self._get_engine()
-        scenario = self.conf.scenario_config.ScenarioCls(
-            scenario_config=self.conf.scenario_config, engine=engine
-        )
-        scenario.setup_engine(engine)
-
-        # Run engine
-        for round_ in range(self.conf.propagation_rounds):  # type: ignore
-            engine.run(propagation_round=round_, scenario=scenario)
-            # By default, these are both no ops
-            for func in (scenario.pre_aggregation_hook, scenario.post_propagation_hook):
-                func(engine=engine, propagation_round=round_, trial=0, percent_adopt=0)
-
-        # Get traceback results {AS: Outcome}
-        analyzer = self.conf.GraphAnalyzerCls(engine=engine, scenario=scenario)
-        outcomes = analyzer.analyze()
-        data_plane_outcomes = outcomes[Plane.DATA.value]
-        # Convert this to just be {ASN: Outcome} (Not the AS object)
-        outcomes_yaml = {
-            as_obj.asn: result for as_obj, result in data_plane_outcomes.items()
-        }
-        metric_tracker = self._get_trial_metrics(
-            engine=engine,
-            percent_adopt=0,
-            trial=0,
-            scenario=scenario,
-            propagation_round=self.conf.propagation_rounds - 1,
-            outcomes=outcomes,
-        )
+        engine, outcomes_yaml, metric_tracker, scenario = self.run_engine()
         # Store engine and traceback YAML
-        self._store_data(engine, outcomes_yaml, metric_tracker)
+        self._store_gt_data(engine, outcomes_yaml, metric_tracker)
         # Create diagrams before the test can fail
-        self._generate_diagrams(scenario, metric_tracker)
+        self._generate_gt_diagrams(scenario, metric_tracker)
         # Compare the YAML's together
         self._compare_data()
 
-    def _get_engine(self) -> SimulationEngine:
-        """Creates and engine and sets it up for runs"""
-
-        as_graph = self.conf.ASGraphCls(
-            as_graph_info=self.conf.as_graph_info,
-            BasePolicyCls=self.conf.scenario_config.BasePolicyCls,
-        )
-        return self.conf.SimulationEngineCls(as_graph)
-
-    def _get_trial_metrics(
-        self,
-        engine: SimulationEngine,
-        percent_adopt: float | SpecialPercentAdoptions,
-        trial: int,
-        scenario: Scenario,
-        propagation_round: int,
-        outcomes,
-    ) -> MetricTracker:
-        # Get stored metrics
-        metric_tracker = self.conf.MetricTrackerCls()
-        metric_tracker.track_trial_metrics(
-            engine=engine,
-            percent_adopt=0,
-            trial=0,
-            scenario=scenario,
-            propagation_round=self.conf.propagation_rounds - 1,
-            outcomes=outcomes,
-        )
-        return metric_tracker
-
-    def _store_data(self, engine, outcomes, metric_tracker):
-        """Stores YAML for the engine, outcomes, and CSV for metrics.
+    def _store_gt_data(self, engine: SimulationEngine, outcomes: dict[int, Outcomes], metric_tracker: MetricTracker) -> None:
+        """Stores GROUND TRUTH YAML for the engine, outcomes, and CSV for metrics.
 
         If ground truth doesn't exist, create it
         """
 
-        # Save engine
-        self.codec.dump(engine, path=self.engine_guess_path)
         # Save engine as ground truth if ground truth doesn't exist
         if not self.engine_ground_truth_path.exists() or self.overwrite:
             self.codec.dump(engine, path=self.engine_ground_truth_path)
-        # Save outcomes
-        self.codec.dump(outcomes, path=self.outcomes_guess_path)
         # Save outcomes as ground truth if ground truth doesn't exist
         if not self.outcomes_ground_truth_path.exists() or self.overwrite:
             self.codec.dump(outcomes, path=self.outcomes_ground_truth_path)
 
-        if self.compare_metrics:
-            self._store_metrics(metric_tracker)
+        self._store_gt_metrics(metric_tracker)
 
-    def _store_metrics(self, metric_tracker: MetricTracker) -> None:
-        metric_tracker.write_data(
-            csv_path=self.metrics_guess_path_csv,
-            pickle_path=self.metrics_guess_path_pickle,
-        )
+    def _store_gt_metrics(self, metric_tracker: MetricTracker) -> None:
+        """Stores metric ground truth"""
         # Save metrics as ground truth if ground truth doesn't exist
         if (
             not self.metrics_ground_truth_path_pickle.exists()
@@ -178,49 +106,17 @@ class EngineTester:
                 pickle_path=self.metrics_ground_truth_path_pickle,
             )
 
-    def _generate_diagrams(self, scenario, metric_tracker):
-        """Generates diagrams"""
+    def _generate_gt_diagrams(self, scenario: Scenario, metric_tracker: MetricTracker) -> None:
+        """Generates diagrams for ground truth"""
 
         # Load engines
-        engine_guess = self.codec.load(self.engine_guess_path)
         engine_gt = self.codec.load(self.engine_ground_truth_path)
         # Load outcomes
-        outcomes_guess = self.codec.load(self.outcomes_guess_path)
         outcomes_gt = self.codec.load(self.outcomes_ground_truth_path)
 
-        # You can hardcode particular propagation ranks for diagrams
-        if self.conf.as_graph_info.diagram_ranks:
-            diagram_obj_ranks_mut = list()
-            for rank in self.conf.as_graph_info.diagram_ranks:
-                diagram_obj_ranks_mut.append([engine_guess.as_graph.as_dict[asn] for asn in rank])
+        static_order = bool(self.conf.as_graph_info.diagram_ranks)
+        diagram_obj_ranks = self._get_diagram_obj_ranks(engine_gt)
 
-            # Assert that you weren't missing any ASNs
-            hardcoded_rank_asns: list[int] = list()
-            for rank in self.conf.as_graph_info.diagram_ranks:
-                hardcoded_rank_asns.extend(rank)
-            err = "Hardcoded rank ASNs do not match AS graph ASNs"
-            assert set(list(engine_guess.as_graph.as_dict.keys())) == set(
-                hardcoded_rank_asns
-            ), err
-            static_order = True
-        else:
-            diagram_obj_ranks_mut = engine_guess.as_graph.propagation_ranks
-            static_order = False
-
-        diagram_obj_ranks = tuple([tuple(x) for x in diagram_obj_ranks_mut])
-
-        # Write guess graph
-        self.conf.DiagramCls().generate_as_graph(
-            engine_guess,
-            scenario,  # type: ignore
-            outcomes_guess,
-            f"({self.conf.name} Guess)\n{self.conf.desc}",  # type: ignore
-            metric_tracker,
-            diagram_obj_ranks,
-            static_order=static_order,
-            path=self.test_dir / "guess.gv",
-            view=False,
-        )
         # Write ground truth graph
         self.conf.DiagramCls().generate_as_graph(
             engine_gt,
@@ -231,11 +127,11 @@ class EngineTester:
             metric_tracker,
             diagram_obj_ranks,
             static_order=static_order,
-            path=self.test_dir / "ground_truth.gv",
+            path=self.storage_dir / "ground_truth.gv",
             view=False,
         )
 
-    def _compare_data(self):
+    def _compare_data(self) -> None:
         """Compares YAML for ground truth vs guess for engine and outcomes"""
 
         # Compare Engine
@@ -250,7 +146,7 @@ class EngineTester:
         if self.compare_metrics:
             self._compare_metrics_to_gt()
 
-    def _compare_metrics_to_gt(self):
+    def _compare_metrics_to_gt(self) -> None:
         # Compare metrics CSV
         with self.metrics_guess_path_csv.open() as guess_f:
             with self.metrics_ground_truth_path_csv.open() as ground_truth_f:
@@ -276,46 +172,22 @@ class EngineTester:
     def engine_ground_truth_path(self) -> Path:
         """Returns the path to the engine's ground truth YAML"""
 
-        return self.test_dir / "engine_gt.yaml"
-
-    @property
-    def engine_guess_path(self) -> Path:
-        """Returns the path to the engine's guess YAML"""
-
-        return self.test_dir / "engine_guess.yaml"
+        return self.storage_dir / "engine_gt.yaml"
 
     @property
     def outcomes_ground_truth_path(self) -> Path:
         """Returns the path to the outcomes ground truth YAML"""
 
-        return self.test_dir / "outcomes_gt.yaml"
-
-    @property
-    def outcomes_guess_path(self) -> Path:
-        """Returns the path to the outcomes guess YAML"""
-
-        return self.test_dir / "outcomes_guess.yaml"
+        return self.storage_dir / "outcomes_gt.yaml"
 
     @property
     def metrics_ground_truth_path_csv(self) -> Path:
         """Returns the path to the metrics ground truth YAML"""
 
-        return self.test_dir / "metrics_gt.csv"
-
-    @property
-    def metrics_guess_path_csv(self) -> Path:
-        """Returns the path to the metrics guess YAML"""
-
-        return self.test_dir / "metrics_guess.csv"
+        return self.storage_dir / "metrics_gt.csv"
 
     @property
     def metrics_ground_truth_path_pickle(self) -> Path:
         """Returns the path to the metrics ground truth YAML"""
 
-        return self.test_dir / "metrics_gt.pickle"
-
-    @property
-    def metrics_guess_path_pickle(self) -> Path:
-        """Returns the path to the metrics guess YAML"""
-
-        return self.test_dir / "metrics_guess.pickle"
+        return self.storage_dir / "metrics_gt.pickle"

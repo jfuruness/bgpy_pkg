@@ -16,6 +16,7 @@ if TYPE_CHECKING:
 
 
 class Diagram:
+    """Creates a diagram of an AS graph with traceback"""
     def __init__(self):
         self.dot: Digraph = Digraph(format="png")
         # purple is cooler but I guess that's not paper worthy
@@ -25,6 +26,7 @@ class Diagram:
         self,
         engine: SimulationEngine,
         scenario: Scenario,
+        # Just the data plane
         traceback: dict[int, Outcomes],
         description: str,
         metric_tracker: "MetricTracker",
@@ -32,7 +34,7 @@ class Diagram:
         static_order: bool = False,
         path: Optional[Path] = None,
         view: bool = False,
-    ):
+    ) -> None:
         self._add_legend(traceback)
         self._add_ases(engine, traceback, scenario)
         self._add_edges(engine)
