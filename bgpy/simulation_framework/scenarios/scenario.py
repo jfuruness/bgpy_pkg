@@ -353,11 +353,11 @@ class Scenario(ABC):
     #############################
 
     def setup_engine(
-        self, engine: SimulationEngine, prev_scenario: Optional["Scenario"]
+        self, engine: SimulationEngine, prev_scenario: Optional["Scenario"] = None
     ) -> None:
         """Sets up engine"""
 
-        self.policies_used = engine.setup(
+        self.policy_classes_used = engine.setup(
             self.announcements,
             self.scenario_config.BasePolicyCls,
             self.non_default_asn_cls_dict,

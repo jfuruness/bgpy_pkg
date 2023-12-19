@@ -1,7 +1,7 @@
-from typing import Optional, TYPE_CHECKING
+from typing import Any, Optional, TYPE_CHECKING
 
 from frozendict import frozendict
-
+from yamlable import YamlAble, yaml_info
 
 from bgpy.enums import Relationships
 from bgpy.simulation_engine.policies import BGPSimplePolicy
@@ -13,7 +13,8 @@ if TYPE_CHECKING:
     from bgpy.simulation_framework import Scenario
 
 
-class SimulationEngine:
+@yaml_info(yaml_tag="SimulationEngine")
+class SimulationEngine(YamlAble):
     """BGPDAG subclass that supports announcement propogation
 
     This class must be first setup with the _setup function
@@ -22,14 +23,18 @@ class SimulationEngine:
     Then the run function can be called, and propagation occurs
     """
 
-    def __init__(self, as_graph: "ASGraph"):
+    def __init__(
+        self,
+        as_graph: "ASGraph",
+        ready_to_run_round: int = -1
+    ) -> None:
         """Saves read_to_run_rund attr and inits superclass"""
 
         self.as_graph = as_graph
         # This indicates whether or not the simulator has been set up for a run
         # We use a number instead of a bool so that we can indicate for
         # each round whether it is ready to run or not
-        self.ready_to_run_round: int = -1
+        self.ready_to_run_round: int = ready_to_run_round
 
     def __eq__(self, other) -> bool:
         """Returns if two simulators contain the same BGPDAG's"""
@@ -194,3 +199,20 @@ class SimulationEngine:
                     )
             for as_obj in rank:
                 as_obj.policy.propagate_to_customers()
+
+    ##############
+    # Yaml funcs #
+    ##############
+
+    def __to_yaml_dict__(self) -> dict[str, Any]:
+        """This optional method is called when you call yaml.dump()"""
+
+        return vars(self)
+
+    @classmethod
+    def __from_yaml_dict__(
+        cls: type["SimulationEngine"], dct: dict[str, Any], yaml_tag: Any
+    ) -> "Announcement":
+        """This optional method is called when you call yaml.load()"""
+
+        return cls(**dct)

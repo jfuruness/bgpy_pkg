@@ -81,11 +81,8 @@ class EngineTester:
         scenario = self.conf.scenario_config.ScenarioCls(
             scenario_config=self.conf.scenario_config, engine=engine
         )
-        engine.setup(
-            scenario.announcements,
-            BasePolicyCls=scenario.scenario_config.BasePolicyCls,
-            non_default_asn_cls_dict=scenario.non_default_asn_cls_dict,
-        )
+        scenario.setup_engine(engine)
+
         # Run engine
         for round_ in range(self.conf.propagation_rounds):  # type: ignore
             engine.run(propagation_round=round_, scenario=scenario)
@@ -195,19 +192,19 @@ class EngineTester:
         if self.conf.as_graph_info.diagram_ranks:
             diagram_obj_ranks_mut = list()
             for rank in self.conf.as_graph_info.diagram_ranks:
-                diagram_obj_ranks_mut.append([engine_guess.as_dict[asn] for asn in rank])
+                diagram_obj_ranks_mut.append([engine_guess.as_graph.as_dict[asn] for asn in rank])
 
             # Assert that you weren't missing any ASNs
             hardcoded_rank_asns: list[int] = list()
             for rank in self.conf.as_graph_info.diagram_ranks:
                 hardcoded_rank_asns.extend(rank)
             err = "Hardcoded rank ASNs do not match AS graph ASNs"
-            assert set(list(engine_guess.as_dict.keys())) == set(
+            assert set(list(engine_guess.as_graph.as_dict.keys())) == set(
                 hardcoded_rank_asns
             ), err
             static_order = True
         else:
-            diagram_obj_ranks_mut = engine_guess.propagation_ranks
+            diagram_obj_ranks_mut = engine_guess.as_graph.propagation_ranks
             static_order = False
 
         diagram_obj_ranks = tuple([tuple(x) for x in diagram_obj_ranks_mut])
