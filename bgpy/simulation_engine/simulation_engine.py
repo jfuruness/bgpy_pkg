@@ -207,7 +207,7 @@ class SimulationEngine(YamlAble):
     def __to_yaml_dict__(self) -> dict[str, Any]:
         """This optional method is called when you call yaml.dump()"""
 
-        return vars(self)
+        return dict(vars(self))
 
     @classmethod
     def __from_yaml_dict__(

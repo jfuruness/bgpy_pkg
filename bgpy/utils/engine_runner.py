@@ -25,7 +25,7 @@ class EngineRunner:
         # Needed to aggregate all diagrams
         self.base_dir: Path = base_dir
 
-        self.storage_dir = self.base_dir / self.conf.name
+        self.storage_dir: Path = self.base_dir / self.conf.name
         self.storage_dir.mkdir(parents=True, exist_ok=True)
 
     def run_engine(self):
@@ -93,7 +93,7 @@ class EngineRunner:
         trial: int,
         scenario: Scenario,
         propagation_round: int,
-        outcomes: dict[int, Outcomes],
+        outcomes: dict[str, dict[AS, Outcomes]],
     ) -> MetricTracker:
         # Get stored metrics
         metric_tracker = self.conf.MetricTrackerCls()
@@ -173,7 +173,8 @@ class EngineRunner:
                 hardcoded_rank_asns
             ), err
         else:
-            diagram_obj_ranks_mut = engine_guess.as_graph.propagation_ranks
+            # Done this way to satisfy mypy
+            diagram_obj_ranks_mut = [list(x) for x in engine_guess.as_graph.propagation_ranks]
 
         return tuple([tuple(x) for x in diagram_obj_ranks_mut])
 

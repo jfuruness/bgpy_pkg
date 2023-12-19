@@ -53,10 +53,11 @@ class EngineTester(EngineRunner):
         super().__init__(*args, **kwargs)
 
         # Don't store metrics if we don't use them
+        # TODO: do this in a way mypy won't explode at
         if not self.compare_metrics:
             def noop(*args, **kwargs):
                 pass
-            self._store_metrics = noop
+            self._store_metrics = noop  # type: ignore
 
     def test_engine(self):
         """Tests an engine run
