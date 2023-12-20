@@ -42,7 +42,9 @@ def _get_best_ann_by_as_path(self, current_ann: Ann, new_ann: Ann) -> Optional[A
         return new_ann
 
 
-def _get_best_ann_by_lowest_neighbor_asn_tiebreaker(self, current_ann: Ann, new_ann: Ann) -> Ann:
+def _get_best_ann_by_lowest_neighbor_asn_tiebreaker(
+    self, current_ann: Ann, new_ann: Ann
+) -> Ann:
     """Determines if the new ann > current ann by Gao Rexford for ties
 
     This breaks ties by lowest asn of the neighbor sending the announcement
