@@ -13,7 +13,6 @@ as_graph: !yamlable/CAIDAASGraph
         _local_rib: !yamlable/LocalRIB
           1.2.0.0/16: !yamlable/Announcement
             as_path: !!python/tuple
-            - 1
             - 2
             - 777
             communities: !!python/tuple []

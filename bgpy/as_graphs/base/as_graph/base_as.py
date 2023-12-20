@@ -52,7 +52,7 @@ class AS(YamlAble):
 
     def __eq__(self, as_obj: Any) -> bool:
         if isinstance(as_obj, AS):
-            return self.asn == as_obj.asn
+            return self.__to_yaml_dict__() == other.__to_yaml_dict__()
         else:
             return NotImplemented
 

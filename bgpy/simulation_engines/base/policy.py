@@ -38,6 +38,12 @@ class Policy(YamlAble, metaclass=ABCMeta):
         cls.subclass_to_name_dict[cls] = cls.__name__
         cls.name_to_subclass_dict[cls.__name__] = cls
 
+    def __eq__(self, other) -> bool:
+        if isinstance(other, Policy):
+            return self.__to_yaml_dict__() == other.__to_yaml_dict__()
+        else:
+            return NotImplemented
+
     ##########################
     # Process incoming funcs #
     ##########################

@@ -41,6 +41,10 @@ class SimulationEngine(YamlAble, ABC):
         # each round whether it is ready to run or not
         self.ready_to_run_round: int = ready_to_run_round
 
+    @abstractmethod
+    def __eq__(self, other) -> bool:
+        raise NotImplementedError
+
     ###############
     # Setup funcs #
     ###############

@@ -56,23 +56,6 @@ class BGPSimplePolicy(Policy):
         # This gets set within the AS class so it's fine
         self.as_: CallableProxyType["AS"] = as_  # type: ignore
 
-    def __eq__(self, other) -> bool:
-        raise NotImplementedError(
-            "Not sure what this was used for, but it needs refactoring "
-            "since we've separated policies and AS classes this no longer works"
-        )
-        # if isinstance(other, BGPSimplePolicy):
-        #     # Ugh this is bad
-        #     for attr in [x for x in self.__dict__ if x not in self.base_slots]:
-        #         if not hasattr(self, attr) == hasattr(other, attr):
-        #             return False
-        #         elif hasattr(self, attr):
-        #             if not getattr(self, attr) == getattr(other, attr):
-        #                 return False
-        #     return True
-        # else:
-        #     return NotImplemented
-
     @property
     def _gao_rexford_funcs(self) -> tuple[Callable[[Ann, Ann], Optional[Ann]], ...]:
         return (
