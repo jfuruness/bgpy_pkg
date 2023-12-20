@@ -6,6 +6,7 @@ from .propagate_funcs import _prev_sent
 from .propagate_funcs import _send_anns
 
 from .process_incoming_funcs import process_incoming_anns
+from .process_incoming_funcs import _new_ann_better
 from .process_incoming_funcs import _process_incoming_withdrawal
 from .process_incoming_funcs import _withdraw_ann_from_neighbors
 from .process_incoming_funcs import _select_best_ribs_in
@@ -54,6 +55,7 @@ class BGPPolicy(BGPSimplePolicy):
 
     # Process incoming funcs
     process_incoming_anns = process_incoming_anns
+    _new_ann_better = _new_ann_better
     _process_incoming_withdrawal = _process_incoming_withdrawal
     _withdraw_ann_from_neighbors = _withdraw_ann_from_neighbors
     _select_best_ribs_in = _select_best_ribs_in
