@@ -38,11 +38,11 @@ def process_incoming_anns(
         if getattr(current_ann, "seed_asn", None) is not None:
             continue
         # For each announcement that was incoming
-        for ann in ann_list:
-            new_ann_processed = self._copy_and_process(new_ann, from_rel)
+        for new_ann in ann_list:
             # Make sure there are no loops
             # In ROV subclass also check roa validity
-            if self._valid_ann(ann, from_rel):
+            if self._valid_ann(new_ann, from_rel):
+                new_ann_processed = self._copy_and_process(new_ann, from_rel)
                 # Determine if the new ann is better
                 new_better: bool = self._new_ann_better(current_ann, new_ann_processed)
                 # If new ann is better, replace the current_ann with it

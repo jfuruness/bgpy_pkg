@@ -23,7 +23,6 @@ from .gao_rexford import _get_best_ann_by_local_pref
 from .gao_rexford import _get_best_ann_by_as_path
 from .gao_rexford import _get_best_ann_by_lowest_neighbor_asn_tiebreaker
 
-from bgpy.enums import Relationships, GaoRexfordPref
 from bgpy.simulation_engines.base import Policy
 from bgpy.simulation_engines.py_simulation_engine.ann_containers import LocalRIB
 from bgpy.simulation_engines.py_simulation_engine.ann_containers import RecvQueue

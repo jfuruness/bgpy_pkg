@@ -155,9 +155,9 @@ def _new_ann_better(
         # In other repos
         return False  # type: ignore
 
-    if not current_ann_processed:
+    if not current_processed:
         current_ann = self._copy_and_process(current_ann, default_current_recv_rel)
-    if not new_ann_processed:
+    if not new_processed:
         new_ann = self._copy_and_process(new_ann, default_new_recv_rel)
 
     return self._get_best_ann_by_gao_rexford(current_ann, new_ann) == new_ann
