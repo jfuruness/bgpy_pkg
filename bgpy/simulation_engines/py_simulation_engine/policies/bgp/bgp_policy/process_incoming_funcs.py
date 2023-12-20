@@ -116,6 +116,53 @@ def process_incoming_anns(
     self._reset_q(reset_q)
 
 
+def _new_ann_better(
+    self,
+    # Current announcement to check against
+    current_ann: Optional[Ann],
+    # Whether or not current ann has been processed local rib
+    # or if it resides in the ribs in
+    current_processed: bool,
+    # Default recv relationship if current ann is unprocessed
+    default_current_recv_rel: Relationships,
+    # New announcement
+    new_ann: Ann,
+    # If new announcement is in local rib, this is True
+    new_processed: Relationships,
+    # Default recv rel if new ann is unprocessed
+    default_new_recv_rel: Relationships,
+) -> bool:
+    """Determines if the new ann > current ann by Gao Rexford
+
+    current_ann: Announcement we are checking against
+    current_processed: True if announcement was processed (in local rib)
+        This means that the announcement has the current as preprended
+            to the AS path, and the proper recv_relationship set
+    default_current_recv_rel:: Relationship for if the ann is unprocessed
+    new_ann: New announcement
+    new_processed: True if announcement was processed (in local rib)
+        This means that the announcement has the current AS prepended
+            to the AS path, and the proper recv_relationship set
+    default_new_recv_rel: Relationship for if the ann is unprocessed
+    """
+
+    # mypy says statement is unreachable, but this isn't true for subclasses
+    # In other repos
+    if current_ann is None:  # type: ignore
+        return True
+    elif new_ann is None:
+        # mypy says statement is unreachable but this isn't true for subclasses
+        # In other repos
+        return False  # type: ignore
+
+    if not current_ann_processed:
+        current_ann = self._copy_and_process(current_ann, default_current_recv_rel)
+    if not new_ann_processed:
+        new_ann = self._copy_and_process(new_ann, default_new_recv_rel)
+
+    return self._get_best_ann_by_gao_rexford(current_ann, new_ann) == new_ann
+
+
 def _process_incoming_withdrawal(
     self, ann: Ann, recv_relationship: Relationships
 ) -> bool:

@@ -1,4 +1,4 @@
-from typing import Callable, Optional, TYPE_CHECKING
+from typing import Any, Callable, Optional, TYPE_CHECKING
 from weakref import CallableProxyType
 
 # Propagation functionality
@@ -18,10 +18,10 @@ from .process_incoming_funcs import _copy_and_process
 from .process_incoming_funcs import _reset_q
 
 # Gao rexford functions
-from .gao_rexford import _new_ann_better
-from .gao_rexford import _new_rel_better
-from .gao_rexford import _new_as_path_shorter
-from .gao_rexford import _new_wins_ties
+from .gao_rexford import _get_best_ann_by_gao_rexford
+from .gao_rexford import _get_best_ann_by_local_pref
+from .gao_rexford import _get_best_ann_by_as_path
+from .gao_rexford import _get_best_ann_by_lowest_neighbor_asn_tiebreaker
 
 from bgpy.enums import Relationships, GaoRexfordPref
 from bgpy.simulation_engines.base import Policy
@@ -35,11 +35,6 @@ if TYPE_CHECKING:
     from bgpy.as_graphs import AS
 
 
-GAO_REXFORD_FUNC = Callable[
-    [Ann, bool, Relationships, Ann, bool, Relationships], GaoRexfordPref
-]
-
-
 class BGPSimplePolicy(Policy):
     name: str = "BGP Simple"
 
@@ -48,7 +43,7 @@ class BGPSimplePolicy(Policy):
         _local_rib: Optional[LocalRIB] = None,
         _recv_q: Optional[RecvQueue] = None,
         as_: Optional["AS"] = None,
-    ):
+    ) -> None:
         """Add local rib and data structures here
 
         This way they can be easily cleared later without having to redo
@@ -80,11 +75,11 @@ class BGPSimplePolicy(Policy):
         #     return NotImplemented
 
     @property
-    def _gao_rexford_funcs(self) -> tuple[GAO_REXFORD_FUNC, ...]:
+    def _gao_rexford_funcs(self) -> tuple[Callable[[Ann, Ann], Ann], ...]:
         return (
-            self._new_rel_better,
-            self._new_as_path_shorter,
-            self._new_wins_ties,
+            self._get_best_ann_by_local_pref,
+            self._get_best_ann_by_as_path,
+            self._get_best_ann_by_lowest_neighbor_asn_tiebreaker,
         )
 
     # Propagation functionality
@@ -104,22 +99,24 @@ class BGPSimplePolicy(Policy):
     _reset_q = _reset_q
 
     # Gao rexford functions
-    _new_ann_better = _new_ann_better
-    _new_rel_better = _new_rel_better
-    _new_as_path_shorter = _new_as_path_shorter
-    _new_wins_ties = _new_wins_ties
+    _get_best_ann_by_gao_rexford = _get_best_ann_by_gao_rexford
+    _get_best_ann_by_local_pref = _get_best_ann_by_local_pref
+    _get_best_ann_by_as_path = _get_best_ann_by_as_path
+    _get_best_ann_by_lowest_neighbor_asn_tiebreaker = (
+        _get_best_ann_by_lowest_neighbor_asn_tiebreaker
+    )
 
     ##############
     # Yaml funcs #
     ##############
 
-    def __to_yaml_dict__(self):
+    def __to_yaml_dict__(self) -> dict[Any, Any]:
         """This optional method is called when you call yaml.dump()"""
 
         return {"_local_rib": self._local_rib, "_recv_q": self._recv_q}
 
     @classmethod
-    def __from_yaml_dict__(cls, dct, yaml_tag):
+    def __from_yaml_dict__(cls, dct, yaml_tag) -> Policy:
         """This optional method is called when you call yaml.load()"""
 
         # We can type ignore here because we add this in the AS class

@@ -114,11 +114,3 @@ class SpecialPercentAdoptions(YamlAbleEnum):
             return float(self) == float(other)
         else:
             return NotImplemented
-
-
-class GaoRexfordPref(YamlAbleEnum):
-    """Preferences for announcements for Gao Rexford"""
-
-    NEW_ANN_BETTER: int = 1
-    OLD_ANN_BETTER: int = 0
-    NO_ANN_BETTER: int = -1
