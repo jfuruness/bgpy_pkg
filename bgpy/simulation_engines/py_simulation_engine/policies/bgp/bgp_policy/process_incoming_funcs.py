@@ -160,7 +160,7 @@ def _new_ann_better(
     if not new_processed:
         new_ann = self._copy_and_process(new_ann, default_new_recv_rel)
 
-    return self._get_best_ann_by_gao_rexford(current_ann, new_ann) == new_ann
+    return bool(self._get_best_ann_by_gao_rexford(current_ann, new_ann) == new_ann)
 
 
 def _process_incoming_withdrawal(

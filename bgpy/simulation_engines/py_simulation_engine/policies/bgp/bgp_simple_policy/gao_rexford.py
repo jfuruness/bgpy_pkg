@@ -17,6 +17,7 @@ def _get_best_ann_by_gao_rexford(self, current_ann: Optional[Ann], new_ann: Ann)
         for func in self._gao_rexford_funcs:
             best_ann = func(current_ann, new_ann)
             if best_ann is not None:
+                assert isinstance(best_ann, Ann), "type check for mypy"
                 return best_ann
         raise Exception("No ann was chosen")
 
@@ -28,6 +29,8 @@ def _get_best_ann_by_local_pref(self, current_ann: Ann, new_ann: Ann) -> Optiona
         return current_ann
     elif current_ann.recv_relationship.value < new_ann.recv_relationship.value:
         return new_ann
+    else:
+        return None
 
 
 def _get_best_ann_by_as_path(self, current_ann: Ann, new_ann: Ann) -> Optional[Ann]:
@@ -40,6 +43,8 @@ def _get_best_ann_by_as_path(self, current_ann: Ann, new_ann: Ann) -> Optional[A
         return current_ann
     elif len(current_ann.as_path) > len(new_ann.as_path):
         return new_ann
+    else:
+        return None
 
 
 def _get_best_ann_by_lowest_neighbor_asn_tiebreaker(
