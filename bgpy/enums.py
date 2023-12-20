@@ -93,13 +93,15 @@ class ASNs(YamlAbleEnum):
 class ASGroups(YamlAbleEnum):
     """AS types"""
 
+    IXPS: str = "ixp"
+    # NOTE: only the IXP group has IXPs
     STUBS: str = "stub"
     MULTIHOMED: str = "multihomed"
     STUBS_OR_MH: str = "stub_or_multihomed"
     INPUT_CLIQUE: str = "input_clique"
     # Not stubs, multihomed, or input clique
     ETC: str = "etc"
-    ALL: str = "all"
+    ALL_WOUT_IXPS: str = "all_wout_ixps"
 
 
 class SpecialPercentAdoptions(YamlAbleEnum):

@@ -184,34 +184,38 @@ class ASGraph(YamlAble):
     ) -> frozendict[str, Callable[["ASGraph"], frozenset[AS]]]:
         """Returns the default filter functions for AS groups"""
 
-        def stub_filter(as_graph: "ASGraph") -> frozenset[AS]:
-            return frozenset(x for x in as_graph if x.stub)
+        def ixp_filter(as_graph: "ASGraph") -> frozenset[AS]:
+            return frozenset(x for x in as_graph if x.ixp)
 
-        def multihomed_filter(as_graph: "ASGraph") -> frozenset[AS]:
-            return frozenset(x for x in as_graph if x.multihomed)
+        def stub_no_ixp_filter(as_graph: "ASGraph") -> frozenset[AS]:
+            return frozenset(x for x in as_graph if x.stub and not x.ixp)
 
-        def stubs_or_multihomed_filter(as_graph: "ASGraph") -> frozenset[AS]:
-            return frozenset(x for x in as_graph if x.stub or x.multihomed)
+        def multihomed_no_ixp_filter(as_graph: "ASGraph") -> frozenset[AS]:
+            return frozenset(x for x in as_graph if x.multihomed and not x.ixp)
 
-        def input_clique_filter(as_graph: "ASGraph") -> frozenset[AS]:
-            return frozenset(x for x in as_graph if x.input_clique)
+        def stubs_or_multihomed_no_ixp_filter(as_graph: "ASGraph") -> frozenset[AS]:
+            return frozenset(x for x in as_graph if (x.stub or x.multihomed) and not x.ixp)
 
-        def etc_filter(as_graph: "ASGraph") -> frozenset[AS]:
+        def input_clique_no_ixp_filter(as_graph: "ASGraph") -> frozenset[AS]:
+            return frozenset(x for x in as_graph if x.input_clique and not x.ixp)
+
+        def etc_no_ixp_filter(as_graph: "ASGraph") -> frozenset[AS]:
             return frozenset(
-                x for x in as_graph if not (x.stub or x.multihomed or x.input_clique)
+                x for x in as_graph if not (x.stub or x.multihomed or x.input_clique or x.ixp)
             )
 
-        def all_filter(as_graph: "ASGraph") -> frozenset[AS]:
+        def all_no_ixp_filter(as_graph: "ASGraph") -> frozenset[AS]:
             return frozenset(list(as_graph))
 
         return frozendict(
             {
-                ASGroups.STUBS.value: stub_filter,
-                ASGroups.MULTIHOMED.value: multihomed_filter,
-                ASGroups.STUBS_OR_MH.value: stubs_or_multihomed_filter,
-                ASGroups.INPUT_CLIQUE.value: input_clique_filter,
-                ASGroups.ETC.value: etc_filter,
-                ASGroups.ALL.value: all_filter,
+                ASGroups.IXPS.value: ixp_filter,
+                ASGroups.STUBS.value: stub_no_ixp_filter,
+                ASGroups.MULTIHOMED.value: multihomed_no_ixp_filter,
+                ASGroups.STUBS_OR_MH.value: stubs_or_multihomed_no_ixp_filter,
+                ASGroups.INPUT_CLIQUE.value: input_clique_no_ixp_filter,
+                ASGroups.ETC.value: etc_no_ixp_filter,
+                ASGroups.ALL_WOUT_IXPS.value: all_no_ixp_filter,
             }
         )
 
