@@ -1,4 +1,4 @@
-!yamlable/SimulationEngine
+!yamlable/PySimulationEngine
 as_graph: !yamlable/CAIDAASGraph
   as_dict:
     1: !yamlable/AS

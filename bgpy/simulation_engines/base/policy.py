@@ -1,4 +1,4 @@
-from abc import ABC, abstractmethod
+from abc import ABCMeta, abstractmethod
 from typing import Any, TYPE_CHECKING
 
 from yamlable import YamlAble, yaml_info_decorate
@@ -9,7 +9,7 @@ if TYPE_CHECKING:
     from bgpy.simulation_framework import Scenario
 
 
-class Policy(YamlAble, ABC):
+class Policy(YamlAble, metaclass=ABCMeta):
     name: str = "AbstractPolicy"
     as_class_names: list[str] = []
     as_classes: list[type["Policy"]] = []
@@ -32,8 +32,6 @@ class Policy(YamlAble, ABC):
         )
         assert len(set(cls.as_class_names)) == len(cls.as_class_names), msg
         cls.as_classes.append(cls)
-        if Policy not in cls.as_classes:
-            cls.as_classes.append(Policy)
 
         # yamlable not up to date with mypy
         yaml_info_decorate(cls, yaml_tag=cls.__name__)  # type: ignore

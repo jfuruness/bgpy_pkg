@@ -1,14 +1,14 @@
-!yamlable/SimulationEngine
+!yamlable/PySimulationEngine
 as_graph: !yamlable/CAIDAASGraph
   as_dict:
     1: !yamlable/AS
       asn: 1
       customer_cone_size: null
       customers: !!python/tuple
-      - 3
-      - 4
       - 777
       - 666
+      - 3
+      - 4
       input_clique: false
       ixp: false
       peers: !!python/tuple []

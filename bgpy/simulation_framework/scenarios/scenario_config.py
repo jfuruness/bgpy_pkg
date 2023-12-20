@@ -35,7 +35,7 @@ class ScenarioConfig:
     AnnCls: type[Announcement] = Announcement
     BasePolicyCls: type[Policy] = BGPSimplePolicy
     # Fixed in post init, but can't show mypy for some reason
-    AdoptPolicyCls: type[Policy] = MISSINGPolicy
+    AdoptPolicyCls: type[Policy] = MISSINGPolicy  # type: ignore
     num_attackers: int = 1
     num_victims: int = 1
     # Adoption is equal across these atributes of the engine

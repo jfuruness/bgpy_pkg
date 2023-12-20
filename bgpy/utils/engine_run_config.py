@@ -3,6 +3,7 @@ from dataclasses import dataclass
 from bgpy.as_graphs import ASGraphInfo, ASGraph, CAIDAASGraph
 from bgpy.simulation_framework.scenarios import ScenarioConfig
 from bgpy.simulation_engines.base import SimulationEngine
+from bgpy.simulation_engines.py_simulation_engine import PySimulationEngine
 from bgpy.simulation_framework.metric_tracker.metric_tracker import (
     MetricTracker,
 )
@@ -24,7 +25,7 @@ class EngineRunConfig:
     as_graph_info: ASGraphInfo
     propagation_rounds: int = 1
     ASGraphCls: type[ASGraph] = CAIDAASGraph
-    SimulationEngineCls: type[SimulationEngine] = SimulationEngine
+    SimulationEngineCls: type[SimulationEngine] = PySimulationEngine
     MetricTrackerCls: type[MetricTracker] = MetricTracker
     GraphAnalyzerCls: type[GraphAnalyzer] = GraphAnalyzer
     DiagramCls: type[Diagram] = Diagram

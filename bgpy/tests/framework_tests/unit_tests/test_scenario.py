@@ -7,10 +7,10 @@ from bgpy.enums import Prefixes
 from bgpy.simulation_framework import ScenarioConfig
 from bgpy.simulation_framework import SubprefixHijack
 from bgpy.simulation_framework import NonRoutedPrefixHijack
-from bgpy.simulation_engine import Announcement
-from bgpy.simulation_engine import BGPSimplePolicy
-from bgpy.simulation_engine import BGPPolicy
-from bgpy.simulation_engine import ROVSimplePolicy
+from bgpy.simulation_engines.py_simulation_engine import Announcement
+from bgpy.simulation_engines.py_simulation_engine import BGPSimplePolicy
+from bgpy.simulation_engines.py_simulation_engine import BGPPolicy
+from bgpy.simulation_engines.py_simulation_engine import ROVSimplePolicy
 
 
 @pytest.mark.framework

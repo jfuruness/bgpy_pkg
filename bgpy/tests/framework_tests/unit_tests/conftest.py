@@ -2,7 +2,7 @@ import pytest
 
 from bgpy.as_graphs import CAIDAASGraphConstructor
 
-from bgpy.simulation_engine import SimulationEngine
+from bgpy.simulation_engines.py_simulation_engine import PySimulationEngine
 
 
 @pytest.fixture(scope="session")
@@ -12,4 +12,4 @@ def engine():
     # Changing recursion depth does nothing
     # Making nothing a reference does nothing
     as_graph = CAIDAASGraphConstructor().run()
-    return SimulationEngine(as_graph)
+    return PySimulationEngine(as_graph)

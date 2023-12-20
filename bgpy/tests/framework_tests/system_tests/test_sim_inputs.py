@@ -2,8 +2,8 @@ from pathlib import Path
 
 import pytest
 
-from bgpy.simulation_engine import BGPSimplePolicy
-from bgpy.simulation_engine import ROVSimplePolicy
+from bgpy.simulation_engines.py_simulation_engine import BGPSimplePolicy
+from bgpy.simulation_engines.py_simulation_engine import ROVSimplePolicy
 from bgpy.simulation_framework import SubprefixHijack
 from bgpy.simulation_framework import ScenarioConfig
 from bgpy.simulation_framework import Simulation
