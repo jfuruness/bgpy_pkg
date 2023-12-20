@@ -45,8 +45,7 @@ def process_incoming_anns(
                 new_ann_processed = self._copy_and_process(new_ann, from_rel)
 
                 current_ann = self._get_best_ann_by_gao_rexford(
-                    current_ann,
-                    new_ann_processed
+                    current_ann, new_ann_processed
                 )
 
         # This is a new best ann. Process it and add it to the local rib

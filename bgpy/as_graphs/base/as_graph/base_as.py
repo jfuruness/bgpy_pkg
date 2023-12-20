@@ -50,8 +50,8 @@ class AS(YamlAble):
         else:
             return NotImplemented
 
-    def __eq__(self, as_obj: Any) -> bool:
-        if isinstance(as_obj, AS):
+    def __eq__(self, other: Any) -> bool:
+        if isinstance(other, AS):
             return self.__to_yaml_dict__() == other.__to_yaml_dict__()
         else:
             return NotImplemented

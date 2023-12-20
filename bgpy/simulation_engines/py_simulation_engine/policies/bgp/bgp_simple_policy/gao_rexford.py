@@ -59,7 +59,7 @@ def _get_best_ann_by_lowest_neighbor_asn_tiebreaker(
     current_neighbor_asn = current_ann.as_path[min(len(current_ann.as_path), 1)]
     new_neighbor_asn = new_ann.as_path[min(len(new_ann.as_path), 1)]
 
-    if current_neighbor_asn >= new_neighbor_asn:
+    if current_neighbor_asn <= new_neighbor_asn:
         return current_ann
     else:
         return new_ann
