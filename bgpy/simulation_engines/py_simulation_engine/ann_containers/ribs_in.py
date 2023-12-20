@@ -5,7 +5,7 @@ from yamlable import YamlAble, yaml_info
 
 from .ann_container import AnnContainer
 
-from bgpy.simulation_engine.announcement import Announcement
+from bgpy.simulation_engines.py_simulation_engine.announcement import Announcement
 from bgpy.enums import Relationships
 
 

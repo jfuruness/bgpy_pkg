@@ -4,7 +4,7 @@ from typing import Any, Optional, Type
 
 from bgpy.enums import Plane, Outcomes
 from bgpy.as_graphs import AS
-from bgpy.simulation_engine import BGPSimplePolicy, SimulationEngine
+from bgpy.simulation_engines.base import Policy, SimulationEngine
 from bgpy.simulation_framework.scenarios import Scenario
 
 from .metric_key import MetricKey
@@ -16,15 +16,15 @@ class Metric:
     def __init__(
         self,
         metric_key: MetricKey,
-        as_classes_used: frozenset[Type[BGPSimplePolicy]],
+        as_classes_used: frozenset[Type[Policy]],
         percents: Optional[defaultdict[MetricKey, list[float]]] = None,
     ) -> None:
         self.metric_key: MetricKey = metric_key
-        self.as_classes_used: frozenset[Type[BGPSimplePolicy]] = as_classes_used
-        self._numerators: dict[type[BGPSimplePolicy] | Any, float] = {
+        self.as_classes_used: frozenset[Type[Policy]] = as_classes_used
+        self._numerators: dict[type[Policy] | Any, float] = {
             k: 0 for k in as_classes_used
         }
-        self._denominators: dict[type[BGPSimplePolicy] | Any, float] = {
+        self._denominators: dict[type[Policy] | Any, float] = {
             k: 0 for k in as_classes_used
         }
         # Used for aggregate statistics with any AS class

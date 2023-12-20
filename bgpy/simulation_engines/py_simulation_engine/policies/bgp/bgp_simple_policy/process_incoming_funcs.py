@@ -1,15 +1,16 @@
-from __future__ import annotations
 from typing import Any, Optional, TYPE_CHECKING
 
-from bgpy.simulation_engine.announcement import Announcement as Ann
-from bgpy.simulation_engine.ann_containers import RecvQueue
+from bgpy.simulation_engines.py_simulation_engine.announcement import (
+    Announcement as Ann
+)
+from bgpy.simulation_engines.py_simulation_engine.ann_containers import RecvQueue
 from bgpy.enums import Relationships
 
 if TYPE_CHECKING:
     from bgpy.simulation_framework import Scenario
 
 
-def receive_ann(self, ann: Ann, accept_withdrawals: bool = False):
+def receive_ann(self, ann: Ann, accept_withdrawals: bool = False) -> None:
     """Function for recieving announcements, adds to recv_q"""
 
     if ann.withdraw and not accept_withdrawals:
@@ -24,7 +25,7 @@ def process_incoming_anns(
     propagation_round: int,
     scenario: "Scenario",
     reset_q: bool = True,
-):
+) -> None:
     """Process all announcements that were incoming from a specific rel"""
 
     # For each prefix, get all anns recieved

@@ -13,7 +13,7 @@ from .metric_key import MetricKey
 
 from bgpy.as_graphs import AS
 from bgpy.enums import Plane, SpecialPercentAdoptions
-from bgpy.simulation_engine import SimulationEngine
+from bgpy.simulation_engines.base import SimulationEngine
 from bgpy.simulation_framework.scenarios import Scenario
 from bgpy.simulation_framework.utils import get_all_metric_keys
 

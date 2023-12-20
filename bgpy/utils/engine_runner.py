@@ -4,7 +4,7 @@ from .engine_run_config import EngineRunConfig
 from .simulator_codec import SimulatorCodec
 
 from bgpy.as_graphs.base import AS
-from bgpy.simulation_engine import SimulationEngine
+from bgpy.simulation_engines.base import SimulationEngine
 from bgpy.simulation_framework import Scenario
 from bgpy.simulation_framework import MetricTracker
 from bgpy.enums import Plane, SpecialPercentAdoptions, Outcomes

@@ -7,14 +7,14 @@ from .base_as import AS
 
 if TYPE_CHECKING:
     from bgpy.as_graphs import ASGraphInfo
-    from bgpy.simulation_engine import BGPSimplePolicy
+    from bgpy.simulation_engines.base import Policy
 
 
 def _gen_graph(
     self,
     as_graph_info: "ASGraphInfo",
     BaseASCls: type[AS],
-    BasePolicyCls: type["BGPSimplePolicy"],
+    BasePolicyCls: type["Policy"],
 ):
     """Generates a graph of AS objects"""
 

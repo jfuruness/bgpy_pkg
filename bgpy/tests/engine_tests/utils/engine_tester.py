@@ -4,7 +4,7 @@ import pickle
 from pprint import pformat
 
 from bgpy.enums import Outcomes
-from bgpy.simulation_engine import SimulationEngine
+from bgpy.simulation_engines.base import SimulationEngine
 from bgpy.simulation_framework import Scenario
 from bgpy.simulation_framework import MetricTracker
 from bgpy.utils import EngineRunner

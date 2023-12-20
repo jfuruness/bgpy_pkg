@@ -20,9 +20,10 @@ from .scenarios import ScenarioConfig
 from .scenarios import SubprefixHijack
 
 from bgpy.enums import SpecialPercentAdoptions
-from bgpy.simulation_engine import BGPSimplePolicy
-from bgpy.simulation_engine import SimulationEngine
-from bgpy.simulation_engine import ROVSimplePolicy
+from bgpy.simulation_engines.base import SimulationEngine
+from bgpy.simulation_engines.py_simulation_engine import BGPSimplePolicy
+from bgpy.simulation_engines.py_simulation_engine import PySimulationEngine
+from bgpy.simulation_engines.py_simulation_engine import ROVSimplePolicy
 
 
 class Simulation:
@@ -62,7 +63,7 @@ class Simulation:
                 "tsv_path": None,
             }
         ),
-        SimulationEngineCls: type[SimulationEngine] = SimulationEngine,
+        SimulationEngineCls: type[SimulationEngine] = PySimulationEngine,
         GraphAnalyzerCls: type[GraphAnalyzer] = GraphAnalyzer,
         MetricTrackerCls: type[MetricTracker] = MetricTracker,
     ) -> None:
@@ -194,7 +195,7 @@ class Simulation:
         constructor_kwargs = dict(self.as_graph_constructor_kwargs)
         constructor_kwargs["tsv_path"] = None
         as_graph: ASGraph = self.ASGraphConstructorCls(**constructor_kwargs).run()
-        engine = SimulationEngine(as_graph)
+        engine = self.SimulationEngineCls(as_graph)
 
         metric_tracker = self.MetricTrackerCls()
 

@@ -2,7 +2,8 @@ from typing import Any, Optional
 
 from bgpy.as_graphs import AS
 from bgpy.enums import Outcomes, Plane, Relationships
-from bgpy.simulation_engine import Announcement, SimulationEngine
+from bgpy.simulation_engines.base import SimulationEngine
+from bgpy.simulation_engines.py_simulation_engine import Announcement
 from bgpy.simulation_framework.scenarios import Scenario
 
 

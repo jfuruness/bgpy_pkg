@@ -7,7 +7,7 @@ from bgpy.enums import Timestamps
 
 
 if TYPE_CHECKING:
-    from bgpy.simulation_engine import Announcement
+    from bgpy.simulation_engines.py_simulation_engine import Announcement
 
 
 class SuperprefixPrefixHijack(Scenario):

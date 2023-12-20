@@ -6,17 +6,19 @@ from frozendict import frozendict
 
 from bgpy.enums import ASGroups
 
-from bgpy.simulation_engine import Announcement
-from bgpy.simulation_engine import BGPSimplePolicy
+from bgpy.simulation_engines.py_simulation_engine import Announcement
+from bgpy.simulation_engines.base import Policy
+from bgpy.simulation_engines.py_simulation_engine import BGPSimplePolicy
 
 
 if TYPE_CHECKING:
     from .scenario_trial import Scenario
 
-pseudo_base_cls_dict: dict[type[BGPSimplePolicy], type[BGPSimplePolicy]] = dict()
+pseudo_base_cls_dict: dict[type[Policy], type[Policy]] = dict()
 
 
-class MISSINGPolicy(BGPSimplePolicy):
+class MISSINGPolicy(Policy):
+    name: str = "missing"
     pass
 
 
@@ -31,9 +33,9 @@ class ScenarioConfig:
     # This is the base type of announcement for this class
     # You can specify a different base ann
     AnnCls: type[Announcement] = Announcement
-    BasePolicyCls: type[BGPSimplePolicy] = BGPSimplePolicy
+    BasePolicyCls: type[Policy] = BGPSimplePolicy
     # Fixed in post init, but can't show mypy for some reason
-    AdoptPolicyCls: type[BGPSimplePolicy] = MISSINGPolicy
+    AdoptPolicyCls: type[Policy] = MISSINGPolicy
     num_attackers: int = 1
     num_victims: int = 1
     # Adoption is equal across these atributes of the engine
@@ -47,7 +49,7 @@ class ScenarioConfig:
     # Victims can be chosen from this attribute of the engine
     victim_subcategory_attr: str = ASGroups.STUBS_OR_MH.value
     # ASes that are hardcoded to specific values
-    hardcoded_asn_cls_dict: frozendict[int, type[BGPSimplePolicy]] = field(
+    hardcoded_asn_cls_dict: frozendict[int, type[Policy]] = field(
         # Mypy doesn't understand frozendict typing, just ignore it
         default_factory=frozendict  # type: ignore
     )
@@ -64,7 +66,7 @@ class ScenarioConfig:
     # pretty much only used within the tests, which would fail if this
     # was wrong anyways
     # override_non_default_asn_cls_dict: Union[
-    #    Optional[frozendict[int, type[BGPSimplePolicy]]],
+    #    Optional[frozendict[int, type[Policy]]],
     #    frozendict[str, None]
     # ] = None
     override_announcements: tuple[Announcement, ...] = ()
@@ -114,18 +116,18 @@ class ScenarioConfig:
         """Converts non default as cls dict to a yamlable dict of asn: name"""
 
         return {
-            asn: BGPSimplePolicy.subclass_to_name_dict[PolicyCls]
+            asn: Policy.subclass_to_name_dict[PolicyCls]
             for asn, PolicyCls in self.hardcoded_asn_cls_dict.items()
         }
 
     @staticmethod
     def _get_hardcoded_asn_cls_dict_from_yaml(
         yaml_dict,
-    ) -> dict[int, type[BGPSimplePolicy]]:
+    ) -> dict[int, type[Policy]]:
         """Converts yamlified non_default_as_cls_dict back to normal asn: class"""
 
         return {
-            asn: BGPSimplePolicy.name_to_subclass_dict[name]
+            asn: Policy.name_to_subclass_dict[name]
             for asn, name in yaml_dict.items()
         }
 

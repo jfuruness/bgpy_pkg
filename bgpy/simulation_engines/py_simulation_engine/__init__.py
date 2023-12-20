@@ -13,7 +13,7 @@ from .policies import RealROVSimplePolicy
 from .policies import RealPeerROVSimplePolicy
 from .policies import ROVPolicy
 
-from .simulation_engine import SimulationEngine
+from .py_simulation_engine import PySimulationEngine
 
 __all__ = [
     "Announcement",
@@ -28,5 +28,5 @@ __all__ = [
     "RealROVSimplePolicy",
     "RealPeerROVSimplePolicy",
     "ROVPolicy",
-    "SimulationEngine",
+    "PySimulationEngine",
 ]

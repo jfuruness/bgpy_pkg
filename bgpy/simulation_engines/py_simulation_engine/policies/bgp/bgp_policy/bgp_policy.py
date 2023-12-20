@@ -10,13 +10,15 @@ from .process_incoming_funcs import _process_incoming_withdrawal
 from .process_incoming_funcs import _withdraw_ann_from_neighbors
 from .process_incoming_funcs import _select_best_ribs_in
 
-from bgpy.simulation_engine.policies.bgp.bgp_simple_policy import BGPSimplePolicy
+from bgpy.simulation_engines.py_simulation_engine.policies.bgp import BGPSimplePolicy
 
-from bgpy.simulation_engine.ann_containers import RIBsIn
-from bgpy.simulation_engine.ann_containers import RIBsOut
-from bgpy.simulation_engine.ann_containers import SendQueue
+from bgpy.simulation_engines.py_simulation_engine.ann_containers import RIBsIn
+from bgpy.simulation_engines.py_simulation_engine.ann_containers import RIBsOut
+from bgpy.simulation_engines.py_simulation_engine.ann_containers import SendQueue
 
-from bgpy.simulation_engine.announcement import Announcement as Ann
+from bgpy.simulation_engines.py_simulation_engine.announcement import (
+    Announcement as Ann
+)
 from bgpy.enums import Relationships
 
 

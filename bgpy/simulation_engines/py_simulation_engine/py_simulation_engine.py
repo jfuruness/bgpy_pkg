@@ -1,36 +1,20 @@
 from typing import Any, Optional, TYPE_CHECKING
 
 from frozendict import frozendict
-from yamlable import YamlAble, yaml_info
 
 from bgpy.enums import Relationships
-from bgpy.simulation_engine.policies import BGPSimplePolicy
+from bgpy.simulation_engines.base import SimulationEngine
+from bgpy.simulation_engines.base import Policy
+from bgpy.simulation_engines.py_simulation_engine.policies import BGPSimplePolicy
 
 # https://stackoverflow.com/a/57005931/8903959
 if TYPE_CHECKING:
-    from bgpy.as_graphs import ASGraph
     from bgpy.simulation_engine.announcement import Announcement
     from bgpy.simulation_framework import Scenario
 
 
-@yaml_info(yaml_tag="SimulationEngine")
-class SimulationEngine(YamlAble):
-    """BGPDAG subclass that supports announcement propogation
-
-    This class must be first setup with the _setup function
-    This resets all the ASes to their base state, and changes
-    the classes to be adopting specific defensive policies
-    Then the run function can be called, and propagation occurs
-    """
-
-    def __init__(self, as_graph: "ASGraph", ready_to_run_round: int = -1) -> None:
-        """Saves read_to_run_rund attr and inits superclass"""
-
-        self.as_graph = as_graph
-        # This indicates whether or not the simulator has been set up for a run
-        # We use a number instead of a bool so that we can indicate for
-        # each round whether it is ready to run or not
-        self.ready_to_run_round: int = ready_to_run_round
+class PySimulationEngine(SimulationEngine):
+    """Python simulation engine representation"""
 
     def __eq__(self, other) -> bool:
         """Returns if two simulators contain the same BGPDAG's"""
@@ -48,16 +32,16 @@ class SimulationEngine(YamlAble):
 
     def setup(
         self,
-        announcements: tuple["Announcement", ...],
-        BasePolicyCls: type[BGPSimplePolicy] = BGPSimplePolicy,
-        non_default_asn_cls_dict: frozendict[int, type[BGPSimplePolicy]] = (
+        announcements: tuple["Announcement", ...] = (),
+        BasePolicyCls: type[Policy] = BGPSimplePolicy,
+        non_default_asn_cls_dict: frozendict[int, type[Policy]] = (
             frozendict()  # type: ignore
         ),
         prev_scenario: Optional["Scenario"] = None,
-    ) -> frozenset[type[BGPSimplePolicy]]:
+    ) -> frozenset[type[Policy]]:
         """Sets AS classes and seeds announcements"""
 
-        policies_used: frozenset[type[BGPSimplePolicy]] = self._set_as_classes(
+        policies_used: frozenset[type[Policy]] = self._set_as_classes(
             BasePolicyCls, non_default_asn_cls_dict, prev_scenario
         )
         self._seed_announcements(announcements, prev_scenario)
@@ -66,10 +50,10 @@ class SimulationEngine(YamlAble):
 
     def _set_as_classes(
         self,
-        BasePolicyCls: type[BGPSimplePolicy],
-        non_default_asn_cls_dict: frozendict[int, type[BGPSimplePolicy]],
+        BasePolicyCls: type[Policy],
+        non_default_asn_cls_dict: frozendict[int, type[Policy]],
         prev_scenario: Optional["Scenario"] = None,
-    ) -> frozenset[type[BGPSimplePolicy]]:
+    ) -> frozenset[type[Policy]]:
         """Resets Engine ASes and changes their AS class
 
         We do this here because we already seed from the scenario
@@ -91,8 +75,8 @@ class SimulationEngine(YamlAble):
 
     def _seed_announcements(
         self,
-        announcements: tuple["Announcement", ...],
-        prev_scenario: Optional["Scenario"],
+        announcements: tuple["Announcement", ...] = (),
+        prev_scenario: Optional["Scenario"] = None,
     ) -> None:
         """Seeds announcement at the proper AS
 

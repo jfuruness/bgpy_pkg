@@ -1,6 +1,8 @@
 from typing import TYPE_CHECKING
 
-from bgpy.simulation_engine.announcement import Announcement as Ann
+from bgpy.simulation_engines.py_simulation_engine.announcement import (
+    Announcement as Ann
+)
 from bgpy.enums import Relationships
 
 
@@ -8,7 +10,7 @@ if TYPE_CHECKING:
     from bgpy.as_graphs import AS
 
 
-def propagate_to_providers(self):
+def propagate_to_providers(self) -> None:
     """Propogates to providers
 
     Propogate ann's that have a recv_rel of origin or customer to providers
@@ -18,7 +20,7 @@ def propagate_to_providers(self):
     self._propagate(Relationships.PROVIDERS, send_rels)
 
 
-def propagate_to_customers(self):
+def propagate_to_customers(self) -> None:
     """Propogates to customers"""
 
     # Anns that have any of these as recv_rel get propogated
@@ -33,7 +35,7 @@ def propagate_to_customers(self):
     self._propagate(Relationships.CUSTOMERS, send_rels)
 
 
-def propagate_to_peers(self):
+def propagate_to_peers(self) -> None:
     """Propogates to peers"""
 
     # Anns that have any of these as recv_rel get propogated
@@ -41,7 +43,7 @@ def propagate_to_peers(self):
     self._propagate(Relationships.PEERS, send_rels)
 
 
-def _propagate(self, propagate_to: Relationships, send_rels: list[Relationships]):
+def _propagate(self, propagate_to: Relationships, send_rels: list[Relationships]) -> None:
     """Propogates announcements from local rib to other ASes
 
     send_rels is the relationships that are acceptable to send

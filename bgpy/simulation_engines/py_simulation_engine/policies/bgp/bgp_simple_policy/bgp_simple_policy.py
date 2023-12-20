@@ -1,9 +1,6 @@
 from typing import Callable, Optional, TYPE_CHECKING
 from weakref import CallableProxyType
 
-from yamlable import yaml_info_decorate, YamlAble, yaml_info
-
-
 # Propagation functionality
 from .propagate_funcs import propagate_to_providers
 from .propagate_funcs import propagate_to_customers
@@ -27,9 +24,12 @@ from .gao_rexford import _new_as_path_shorter
 from .gao_rexford import _new_wins_ties
 
 from bgpy.enums import Relationships, GaoRexfordPref
-from bgpy.simulation_engine.ann_containers import LocalRIB
-from bgpy.simulation_engine.ann_containers import RecvQueue
-from bgpy.simulation_engine.announcement import Announcement as Ann
+from bgpy.simulation_engines.base import Policy
+from bgpy.simulation_engines.py_simulation_engine.ann_containers import LocalRIB
+from bgpy.simulation_engines.py_simulation_engine.ann_containers import RecvQueue
+from bgpy.simulation_engines.py_simulation_engine.announcement import (
+    Announcement as Ann
+)
 
 if TYPE_CHECKING:
     from bgpy.as_graphs import AS
@@ -40,37 +40,8 @@ GAO_REXFORD_FUNC = Callable[
 ]
 
 
-@yaml_info(yaml_tag="BGPSimplePolicy")
-class BGPSimplePolicy(YamlAble):
+class BGPSimplePolicy(Policy):
     name: str = "BGP Simple"
-    as_class_names: list[str] = []
-    as_classes: list[type["BGPSimplePolicy"]] = []
-    subclass_to_name_dict: dict[type["BGPSimplePolicy"], str] = {}
-    name_to_subclass_dict: dict[str, type["BGPSimplePolicy"]] = {}
-
-    def __init_subclass__(cls, *args, **kwargs):
-        """This method essentially creates a list of all subclasses
-
-        This is allows us to know all AS types that have been created
-        """
-
-        super().__init_subclass__(*args, **kwargs)
-        assert hasattr(cls, "name"), "Policy must have a name"
-        cls.as_class_names.append(cls.name)
-        msg: str = (
-            f"Duplicate name {cls.name} with {cls.__name__}."
-            "Please make a class attr "
-            "name for the policy something else"
-        )
-        assert len(set(cls.as_class_names)) == len(cls.as_class_names), msg
-        cls.as_classes.append(cls)
-        if BGPSimplePolicy not in cls.as_classes:
-            cls.as_classes.append(BGPSimplePolicy)
-
-        # yamlable not up to date with mypy
-        yaml_info_decorate(cls, yaml_tag=cls.__name__)  # type: ignore
-        cls.subclass_to_name_dict[cls] = cls.__name__
-        cls.name_to_subclass_dict[cls.__name__] = cls
 
     def __init__(
         self,

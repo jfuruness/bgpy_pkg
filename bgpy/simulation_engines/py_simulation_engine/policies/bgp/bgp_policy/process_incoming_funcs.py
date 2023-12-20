@@ -1,9 +1,14 @@
 from typing import Optional, TYPE_CHECKING
 
 
-from bgpy.simulation_engine.ann_containers import AnnInfo, SendInfo
+from bgpy.simulation_engines.py_simulation_engine.ann_containers import (
+    AnnInfo,
+    SendInfo
+)
 
-from bgpy.simulation_engine.announcement import Announcement as Ann
+from bgpy.simulation_engines.py_simulation_engine.announcement import (
+    Announcement as Ann
+)
 from bgpy.enums import Relationships
 
 

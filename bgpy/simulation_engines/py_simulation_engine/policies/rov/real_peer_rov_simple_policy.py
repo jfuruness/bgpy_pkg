@@ -1,5 +1,7 @@
-from bgpy.simulation_engine.policies.bgp import BGPSimplePolicy
-from bgpy.simulation_engine.announcement import Announcement as Ann
+from bgpy.simulation_engines.py_simulation_engine.policies.bgp import BGPSimplePolicy
+from bgpy.simulation_engines.py_simulation_engine.announcement import (
+    Announcement as Ann,
+)
 from bgpy.enums import Relationships
 
 

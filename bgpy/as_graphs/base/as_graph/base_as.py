@@ -4,7 +4,7 @@ from weakref import proxy
 from yamlable import yaml_info, YamlAble
 
 if TYPE_CHECKING:
-    from bgpy.simulation_engine import BGPSimplePolicy
+    from bgpy.simulation_engines.base import Policy
 
 
 @yaml_info(yaml_tag="AS")
@@ -21,7 +21,7 @@ class AS(YamlAble):
         customers: tuple["AS", ...] = tuple(),
         customer_cone_size: Optional[int] = None,
         propagation_rank: Optional[int] = None,
-        policy: Optional["BGPSimplePolicy"] = None,
+        policy: Optional["Policy"] = None,
     ) -> None:
         # Make sure you're not accidentally passing in a string here
         self.asn: int = int(asn)
@@ -41,7 +41,7 @@ class AS(YamlAble):
         self.hashed_asn = hash(self.asn)
 
         assert policy, "This should never be None"
-        self.policy: BGPSimplePolicy = policy
+        self.policy: Policy = policy
         self.policy.as_ = proxy(self)
 
     def __lt__(self, as_obj: Any) -> bool:

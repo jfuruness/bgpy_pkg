@@ -1,8 +1,10 @@
 from typing import Optional, TYPE_CHECKING
 
-from bgpy.simulation_engine.policies.bgp.bgp_simple_policy import BGPSimplePolicy
+from bgpy.simulation_engines.base import Policy
 
-from bgpy.simulation_engine.announcement import Announcement as Ann
+from bgpy.simulation_engines.py_simulation_engine.announcement import (
+    Announcement as Ann
+)
 from bgpy.enums import Relationships
 
 if TYPE_CHECKING:
@@ -30,7 +32,7 @@ def _prev_sent(self, neighbor: "AS", ann: Ann) -> bool:
 
 def _process_outgoing_ann(
     self,
-    neighbor: BGPSimplePolicy,
+    neighbor: Policy,
     ann: Ann,
     propagate_to,
     send_rels: list[Relationships],

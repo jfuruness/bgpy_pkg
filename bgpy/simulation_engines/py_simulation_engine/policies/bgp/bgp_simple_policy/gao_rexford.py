@@ -1,6 +1,8 @@
 from typing import Optional
 
-from bgpy.simulation_engine.announcement import Announcement as Ann
+from bgpy.simulation_engines.py_simulation_engine.announcement import (
+    Announcement as Ann
+)
 from bgpy.enums import GaoRexfordPref, Relationships
 
 

@@ -2,7 +2,7 @@ from dataclasses import dataclass
 
 from bgpy.as_graphs import ASGraphInfo, ASGraph, CAIDAASGraph
 from bgpy.simulation_framework.scenarios import ScenarioConfig
-from bgpy.simulation_engine import SimulationEngine
+from bgpy.simulation_engines.base import SimulationEngine
 from bgpy.simulation_framework.metric_tracker.metric_tracker import (
     MetricTracker,
 )

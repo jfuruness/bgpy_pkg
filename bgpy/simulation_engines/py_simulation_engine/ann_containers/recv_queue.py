@@ -1,7 +1,7 @@
 from typing import ItemsView, Optional
 
 from .ann_container import AnnContainer
-from bgpy.simulation_engine.announcement import Announcement as Ann
+from bgpy.simulation_engines.py_simulation_engine import Announcement as Ann
 
 
 class RecvQueue(AnnContainer):

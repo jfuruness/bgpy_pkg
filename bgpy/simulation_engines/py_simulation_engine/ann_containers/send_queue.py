@@ -5,7 +5,7 @@ from yamlable import YamlAble, yaml_info
 
 from .ann_container import AnnContainer
 
-from bgpy.simulation_engine.announcement import Announcement as Ann
+from bgpy.simulation_engines.py_simulation_engine import Announcement as Ann
 
 if TYPE_CHECKING:
     from bgpy.as_graphs import AS

@@ -10,14 +10,14 @@ from typing import Any, Optional, Type, Union
 from frozendict import frozendict
 
 from bgpy.as_graphs import AS
-from bgpy.simulation_engine import Announcement
-from bgpy.simulation_engine import SimulationEngine
-from bgpy.simulation_engine import BGPSimplePolicy
+from bgpy.simulation_engines.py_simulation_engine import Announcement
+from bgpy.simulation_engines.base import SimulationEngine
+from bgpy.simulation_engines.base import Policy
 from bgpy.enums import SpecialPercentAdoptions, Outcomes, Relationships
 
 from .scenario_config import ScenarioConfig
 
-pseudo_base_cls_dict: dict[type[BGPSimplePolicy], type[BGPSimplePolicy]] = dict()
+pseudo_base_cls_dict: dict[type[Policy], type[Policy]] = dict()
 
 
 class Scenario(ABC):
@@ -50,7 +50,7 @@ class Scenario(ABC):
             scenario_config.override_victim_asns, engine, prev_scenario
         )
 
-        POLICY_CLS_DCT = frozendict[int, type[BGPSimplePolicy]]
+        POLICY_CLS_DCT = frozendict[int, type[Policy]]
         self.non_default_asn_cls_dict: POLICY_CLS_DCT = (
             self._get_non_default_asn_cls_dict(
                 scenario_config.override_non_default_asn_cls_dict, engine, prev_scenario
@@ -70,7 +70,7 @@ class Scenario(ABC):
             str, list[str]
         ] = self._get_ordered_prefix_subprefix_dict()
 
-        self.policy_classes_used: frozenset[Type[BGPSimplePolicy]] = frozenset()
+        self.policy_classes_used: frozenset[Type[Policy]] = frozenset()
 
     #################
     # Get attackers #
@@ -222,14 +222,14 @@ class Scenario(ABC):
     def _get_non_default_asn_cls_dict(
         self,
         override_non_default_asn_cls_dict: Union[
-            Optional[frozendict[int, type[BGPSimplePolicy]]],
+            Optional[frozendict[int, type[Policy]]],
             # Must include due to mypy weirdness
             # about empty frozendicts
             frozendict[str, None],
         ],
         engine: Optional[SimulationEngine],
         prev_scenario: Optional["Scenario"],
-    ) -> frozendict[int, type[BGPSimplePolicy]]:
+    ) -> frozendict[int, type[Policy]]:
         """Returns as class dict
 
         non_default_asn_cls_dict is a dict of asn: AdoptPolicyCls
@@ -252,7 +252,7 @@ class Scenario(ABC):
                 if HardcodedCls:
                     non_default_asn_cls_dict[asn] = HardcodedCls
                 # If the ASN was of the adopting class of the last scenario,
-                # Update the adopting BGPSimplePolicy class for the new scenario
+                # Update the adopting Policy class for the new scenario
                 elif OldPolicyCls == prev_scenario.scenario_config.AdoptPolicyCls:
                     non_default_asn_cls_dict[asn] = self.scenario_config.AdoptPolicyCls
                 # # Otherwise keep the AS class as it was
@@ -281,7 +281,7 @@ class Scenario(ABC):
     def _get_randomized_non_default_asn_cls_dict(
         self,
         engine: SimulationEngine,
-    ) -> dict[int, type[BGPSimplePolicy]]:
+    ) -> dict[int, type[Policy]]:
         """Get adopting ASNs and non default ASNs
 
         By default, to get even adoption, adopt in each of the three
@@ -438,7 +438,7 @@ class Scenario(ABC):
 
         return frozendict(
             {
-                asn: BGPSimplePolicy.subclass_to_name_dict[PolicyCls]
+                asn: Policy.subclass_to_name_dict[PolicyCls]
                 for asn, PolicyCls in self.non_default_asn_cls_dict.items()
             }
         )
@@ -446,12 +446,12 @@ class Scenario(ABC):
     @staticmethod
     def _get_non_default_asn_cls_dict_from_yaml(
         yaml_dict,
-    ) -> frozendict[int, type[BGPSimplePolicy]]:
+    ) -> frozendict[int, type[Policy]]:
         """Converts yamlified non_default_asn_cls_dict back to normal asn: class"""
 
         return frozendict(
             {
-                asn: BGPSimplePolicy.name_to_subclass_dict[name]
+                asn: Policy.name_to_subclass_dict[name]
                 for asn, name in yaml_dict.items()
             }
         )

@@ -5,9 +5,9 @@ from graphviz import Digraph
 import ipaddress
 
 from bgpy.enums import Outcomes
-from bgpy.simulation_engine import BGPPolicy
-from bgpy.simulation_engine import BGPSimplePolicy
-from bgpy.simulation_engine import SimulationEngine
+from bgpy.simulation_engines.py_simulation_engine import BGPPolicy
+from bgpy.simulation_engines.py_simulation_engine import BGPSimplePolicy
+from bgpy.simulation_engines.base import SimulationEngine
 from bgpy.simulation_framework import Scenario
 
 if TYPE_CHECKING:
