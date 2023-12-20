@@ -127,8 +127,7 @@ class ScenarioConfig:
         """Converts yamlified non_default_as_cls_dict back to normal asn: class"""
 
         return {
-            asn: Policy.name_to_subclass_dict[name]
-            for asn, name in yaml_dict.items()
+            asn: Policy.name_to_subclass_dict[name] for asn, name in yaml_dict.items()
         }
 
     def __to_yaml_dict__(self) -> dict[Any, Any]:

@@ -17,7 +17,7 @@ from bgpy.simulation_engines.py_simulation_engine.ann_containers import RIBsOut
 from bgpy.simulation_engines.py_simulation_engine.ann_containers import SendQueue
 
 from bgpy.simulation_engines.py_simulation_engine.announcement import (
-    Announcement as Ann
+    Announcement as Ann,
 )
 from bgpy.enums import Relationships
 

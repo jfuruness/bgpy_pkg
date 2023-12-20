@@ -1,7 +1,7 @@
 from typing import Any, Optional, TYPE_CHECKING
 
 from bgpy.simulation_engines.py_simulation_engine.announcement import (
-    Announcement as Ann
+    Announcement as Ann,
 )
 from bgpy.simulation_engines.py_simulation_engine.ann_containers import RecvQueue
 from bgpy.enums import Relationships

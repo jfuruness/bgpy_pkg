@@ -28,7 +28,7 @@ from bgpy.simulation_engines.base import Policy
 from bgpy.simulation_engines.py_simulation_engine.ann_containers import LocalRIB
 from bgpy.simulation_engines.py_simulation_engine.ann_containers import RecvQueue
 from bgpy.simulation_engines.py_simulation_engine.announcement import (
-    Announcement as Ann
+    Announcement as Ann,
 )
 
 if TYPE_CHECKING:

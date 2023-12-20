@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING
 
 from bgpy.simulation_engines.py_simulation_engine.announcement import (
-    Announcement as Ann
+    Announcement as Ann,
 )
 from bgpy.enums import Relationships
 
@@ -43,7 +43,9 @@ def propagate_to_peers(self) -> None:
     self._propagate(Relationships.PEERS, send_rels)
 
 
-def _propagate(self, propagate_to: Relationships, send_rels: list[Relationships]) -> None:
+def _propagate(
+    self, propagate_to: Relationships, send_rels: list[Relationships]
+) -> None:
     """Propogates announcements from local rib to other ASes
 
     send_rels is the relationships that are acceptable to send
