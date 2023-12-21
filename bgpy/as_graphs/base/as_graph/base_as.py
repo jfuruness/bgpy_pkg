@@ -90,10 +90,6 @@ class AS(YamlAble):
             "ixp",
             "customer_cone_size",
             "propagation_rank",
-            "rov_filtering",
-            "rov_confidence",
-            "rov_source",
-            "hashed_asn",
             # Don't forget the properties
         ) + ("stubs", "stub", "multihomed", "transit")
 

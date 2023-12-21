@@ -1,5 +1,7 @@
 from typing import Optional
 
+from frozendict import frozendict
+
 from .ann_container import AnnContainer
 
 from bgpy.simulation_engines.py_simulation_engine import Announcement as Ann
@@ -8,7 +10,7 @@ from bgpy.simulation_engines.py_simulation_engine import Announcement as Ann
 class LocalRIB(AnnContainer):
     """Local RIB for a BGP AS"""
 
-    def __init__(self, _info: Optional[dict[str, Ann]] = None):
+    def __init__(self, _info: dict[str, Ann] = frozendict()):
         """Stores _info dict which contains local ribs
 
         This is passed in so that we can regenerate this class from yaml
@@ -17,7 +19,7 @@ class LocalRIB(AnnContainer):
         yamlable using the yamlable library
         """
 
-        self._info: dict[str, Ann] = _info if _info is not None else dict()
+        self._info: dict[str, Ann] = _info
 
     def get_ann(self, prefix: str, default: Optional[Ann] = None) -> Optional[Ann]:
         """Returns announcement or none from the local rib by prefix"""

@@ -60,7 +60,7 @@ class Simulation:
                     }
                 ),
                 "as_graph_kwargs": frozendict({"customer_cones": False}),
-                "tsv_path": None,
+                "tsv_path": None,  # Path.home() / "Desktop" / "caida.tsv",
             }
         ),
         SimulationEngineCls: type[SimulationEngine] = PySimulationEngine,
