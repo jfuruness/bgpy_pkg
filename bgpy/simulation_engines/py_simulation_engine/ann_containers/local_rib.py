@@ -1,7 +1,5 @@
 from typing import Optional
 
-from frozendict import frozendict
-
 from .ann_container import AnnContainer
 
 from bgpy.simulation_engines.py_simulation_engine import Announcement as Ann
