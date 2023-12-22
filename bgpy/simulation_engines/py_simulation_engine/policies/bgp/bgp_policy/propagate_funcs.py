@@ -11,7 +11,7 @@ if TYPE_CHECKING:
     from bgpy.as_graphs import AS
 
 
-def _propagate(self, propagate_to: Relationships, send_rels: list[Relationships]):
+def _propagate(self, propagate_to: Relationships, send_rels: set[Relationships]):
     """Propogates announcements to other ASes
 
     send_rels is the relationships that are acceptable to send
@@ -35,7 +35,7 @@ def _process_outgoing_ann(
     neighbor: Policy,
     ann: Ann,
     propagate_to,
-    send_rels: list[Relationships],
+    send_rels: set[Relationships],
 ):
     self._send_q.add_ann(neighbor.asn, ann)
 

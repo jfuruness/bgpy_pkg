@@ -48,7 +48,7 @@ class BGPPolicy(BGPSimplePolicy):
     # Must add this func here since it refers to BGPPolicy
     # Could use super but want to avoid additional func calls
     def _populate_send_q(
-        self, propagate_to: Relationships, send_rels: list[Relationships]
+        self, propagate_to: Relationships, send_rels: set[Relationships]
     ) -> None:
         # Process outging ann is oerriden so this just adds to send q
         super(BGPPolicy, self)._propagate(propagate_to, send_rels)
