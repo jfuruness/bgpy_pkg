@@ -133,12 +133,7 @@ class SimulationEngine(YamlAble, ABC):
         """Dumps basic info from local RIBs to CSV"""
 
         with path.open("w") as f:
-            fieldnames = (
-                "prefix",
-                "origin",
-                "timestamp",
-                "as_path"
-            )
+            fieldnames = ("prefix", "origin", "timestamp", "as_path")
             writer = csv.DictWriter(f, fieldnames=fieldnames)
             writer.writeheader()
             raise NotImplementedError
@@ -146,13 +141,11 @@ class SimulationEngine(YamlAble, ABC):
             # unfortunately, his only output origin, as path, timestamp. Didn't even
             # have the relationship. Unfortunately I need to redo.
             for asn, as_obj in sorted(
-                self.as_graph.as_dict.items(),
-                key=lambda x: x[0]
+                self.as_graph.as_dict.items(), key=lambda x: x[0]
             ):
                 for ann in as_obj._local_rib.prefix_anns():
                     row = {
                         "dumping_asn": asn,
                         "as_path": ann.as_path,
-
                     }
                     writer.writerow(row)

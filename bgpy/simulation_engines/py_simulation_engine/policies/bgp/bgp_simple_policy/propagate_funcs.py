@@ -44,33 +44,47 @@ def propagate_to_peers(self) -> None:
 
 
 def _propagate(
-    self, propagate_to: Relationships, send_rels: list[Relationships]
+    self, propagate_to: Relationships, send_rels: set[Relationships]
 ) -> None:
     """Propogates announcements from local rib to other ASes
 
     send_rels is the relationships that are acceptable to send
     """
 
-    for neighbor in getattr(self.as_, propagate_to.name.lower()):
+    if propagate_to == Relationships.PROVIDERS:
+        neighbors = self.as_.providers
+    elif propagate_to == Relationships.PEERS:
+        neighbors = self.as_.peers
+    elif propagate_to == Relationships.CUSTOMERS:
+        neighbors = self.as_.customers
+    else:
+        raise NotImplementedError
+
+    for neighbor in neighbors:
         for prefix, ann in self._local_rib.prefix_anns():
             if ann.recv_relationship in send_rels and not self._prev_sent(
                 neighbor, ann
             ):
-                propagate_args = [neighbor, ann, propagate_to, send_rels]
                 # Policy took care of it's own propagation for this ann
-                if self._policy_propagate(*propagate_args):
+                if self._policy_propagate(neighbor, ann, propagate_to, send_rels):
                     continue
                 else:
-                    self._process_outgoing_ann(*propagate_args)
+                    self._process_outgoing_ann(neighbor, ann, propagate_to, send_rels)
 
 
-def _policy_propagate(*args, **kwargs) -> bool:
+def _policy_propagate(
+    self,
+    neighbor: "AS",
+    ann: Ann,
+    propagate_to: Relationships,
+    send_rels: set[Relationships],
+) -> bool:
     """Custom policy propagation that can be overriden"""
 
     return False
 
 
-def _prev_sent(*args, **kwargs) -> bool:
+def _prev_sent(self, neighbor: "AS", ann: Ann) -> bool:
     """Don't resend anything for BGPAS. For this class it doesn't matter"""
     return False
 
@@ -80,7 +94,7 @@ def _process_outgoing_ann(
     neighbor: "AS",
     ann: Ann,
     propagate_to: Relationships,
-    send_rels: list[Relationships],
+    send_rels: set[Relationships],
 ):
     """Adds ann to the neighbors recv q"""
 

@@ -194,14 +194,18 @@ class ASGraph(YamlAble):
             return frozenset(x for x in as_graph if x.multihomed and not x.ixp)
 
         def stubs_or_multihomed_no_ixp_filter(as_graph: "ASGraph") -> frozenset[AS]:
-            return frozenset(x for x in as_graph if (x.stub or x.multihomed) and not x.ixp)
+            return frozenset(
+                x for x in as_graph if (x.stub or x.multihomed) and not x.ixp
+            )
 
         def input_clique_no_ixp_filter(as_graph: "ASGraph") -> frozenset[AS]:
             return frozenset(x for x in as_graph if x.input_clique and not x.ixp)
 
         def etc_no_ixp_filter(as_graph: "ASGraph") -> frozenset[AS]:
             return frozenset(
-                x for x in as_graph if not (x.stub or x.multihomed or x.input_clique or x.ixp)
+                x
+                for x in as_graph
+                if not (x.stub or x.multihomed or x.input_clique or x.ixp)
             )
 
         def all_no_ixp_filter(as_graph: "ASGraph") -> frozenset[AS]:
