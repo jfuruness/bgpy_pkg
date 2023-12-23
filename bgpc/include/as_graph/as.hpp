@@ -3,9 +3,7 @@
 
 #include <memory>
 #include <vector>
-
-// Forward declarations
-class Policy;
+#include "policy.hpp"
 
 class AS : public std::enable_shared_from_this<AS> {
 public:
