@@ -74,6 +74,8 @@ PYBIND11_MODULE(bgpc, m) {
         .export_values();
 
     py::class_<CPPSimulationEngine>(m, "CPPSimulationEngine")
+        .def("setup", &CPPSimulationEngine::setup, py::arg("announcements"), py::arg("base_policy_class_str") = "BGPSimplePolicy", py::arg("non_default_asn_cls_str_dict") = std::map<int, std::string>{})
+        /*
         .def("setup", [](CPPSimulationEngine& engine, const std::vector<std::shared_ptr<Announcement>>& announcements, const std::string& base_policy_class_str, const std::map<int, std::string>& non_default_asn_cls_str_dict) {
             // Debug: Print the number of announcements
             std::cout << "Setting up engine with " << announcements.size() << " announcements." << std::endl;
@@ -84,10 +86,10 @@ PYBIND11_MODULE(bgpc, m) {
                     throw std::runtime_error("Null announcement in the list");
                 }
             }
-
             // Call the actual setup method
             engine.setup(announcements, base_policy_class_str, non_default_asn_cls_str_dict);
         }, py::arg("announcements"), py::arg("base_policy_class_str") = "BGPSimplePolicy", py::arg("non_default_asn_cls_str_dict") = std::map<int, std::string>{})
+       */
         .def("run", &CPPSimulationEngine::run,
              py::arg("propagation_round") = 0);
 

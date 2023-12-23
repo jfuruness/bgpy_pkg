@@ -195,7 +195,10 @@ class Simulation:
         constructor_kwargs = dict(self.as_graph_constructor_kwargs)
         constructor_kwargs["tsv_path"] = None
         as_graph: ASGraph = self.ASGraphConstructorCls(**constructor_kwargs).run()
-        engine = self.SimulationEngineCls(as_graph)
+        engine = self.SimulationEngineCls(
+            as_graph,
+            cached_as_graph_tsv_path=self.as_graph_constructor_kwargs.get("tsv_path"),
+        )
 
         metric_tracker = self.MetricTrackerCls()
 

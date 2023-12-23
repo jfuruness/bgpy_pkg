@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from pathlib import Path
 from typing import Any, Optional, TYPE_CHECKING
 
 from frozendict import frozendict
@@ -32,10 +33,18 @@ class SimulationEngine(YamlAble, ABC):
         # Fix this later once the system test framework is updated
         yaml_info_decorate(cls, yaml_tag=cls.__name__)
 
-    def __init__(self, as_graph: "ASGraph", ready_to_run_round: int = -1) -> None:
+    def __init__(
+        self,
+        as_graph: "ASGraph",
+        # Useful for C++ Engine
+        cached_as_graph_tsv_path: Optional[Path] = None,
+        ready_to_run_round: int = -1,
+    ) -> None:
         """Saves read_to_run_rund attr and inits superclass"""
 
         self.as_graph = as_graph
+        # Useful for C++ version
+        self.cached_as_graph_tsv_path: Path = cached_as_graph_tsv_path
         # This indicates whether or not the simulator has been set up for a run
         # We use a number instead of a bool so that we can indicate for
         # each round whether it is ready to run or not
@@ -118,7 +127,7 @@ class SimulationEngine(YamlAble, ABC):
     @abstractmethod
     def __from_yaml_dict__(
         cls: type["SimulationEngine"], dct: dict[str, Any], yaml_tag: Any
-    ) -> "Announcement":
+    ) -> "SimulationEngine":
         """This optional method is called when you call yaml.load()"""
 
         raise NotImplementedError
