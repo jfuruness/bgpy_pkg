@@ -1,5 +1,5 @@
 from abc import ABCMeta, abstractmethod
-from typing import Any, TYPE_CHECKING
+from typing import Any, TYPE_CHECKING, Union
 
 from yamlable import YamlAble, yaml_info_decorate
 
@@ -51,7 +51,7 @@ class Policy(YamlAble, metaclass=ABCMeta):
 
     @abstractmethod
     def receive_ann(
-        self, ann: "PyAnn" | "CPPAnn", accept_withdrawals: bool = False
+        self, ann: Union["PyAnn", "CPPAnn"], accept_withdrawals: bool = False
     ) -> None:
         """Function for recieving announcements"""
 
@@ -61,7 +61,7 @@ class Policy(YamlAble, metaclass=ABCMeta):
     def process_incoming_anns(
         self,
         *,
-        from_rel: "PyRelationships" | "CPPRelationships",
+        from_rel: Union["PyRelationships", "CPPRelationships"],
         propagation_round: int,
         scenario: "Scenario",
         reset_q: bool = True,
