@@ -1,3 +1,7 @@
+scikit-build-core>=0.3.3
+pybind11~=2.11
+setuptools==68.0.0
+wheel==0.40.0
 beautifulsoup4==4.12.2
 requests==2.31.0
 frozendict==2.3.8
