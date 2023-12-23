@@ -64,6 +64,7 @@ set(BGPC_SOURCES
     bgpc/src/as_graph/as_graph.cpp
     bgpc/src/cpp_simulation_engine/cpp_simulation_engine.cpp
     bgpc/src/utils.cpp
+    bgpc/src/cpp_simulation_framework/as_graph_analyzer.cpp
     bgpc/src/main.cpp
 )
 
@@ -111,6 +112,7 @@ target_include_directories(bgpc PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/bgpc/include/cpp_simulation_engine/policies
     ${CMAKE_CURRENT_SOURCE_DIR}/bgpc/include/as_graph
     ${CMAKE_CURRENT_SOURCE_DIR}/bgpc/include/cpp_simulation_engine
+    ${CMAKE_CURRENT_SOURCE_DIR}/bgpc/include/cpp_simulation_framework
 )
 ######################################################################
 

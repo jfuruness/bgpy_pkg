@@ -32,8 +32,9 @@ class Outcomes(YamlAbleEnum):
 
 
 class Plane(YamlAbleEnum):
-    DATA: str = "data_plane"
-    CTRL: str = "control_plane"
+    # Changing to integers so that this is compatible with c++
+    DATA: int = 0  # "data_plane"
+    CTRL: int = 1  # "control_plane"
 
 
 class Relationships(YamlAbleEnum):

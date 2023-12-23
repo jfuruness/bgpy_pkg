@@ -4,7 +4,7 @@
 #include <string>
 #include <vector>
 #include <optional>
-#include <relationships.hpp>
+#include <enums.hpp>
 
 class Announcement {
 public:

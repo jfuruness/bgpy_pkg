@@ -2,7 +2,7 @@
 #define POLICY_HPP
 
 #include <memory>
-#include "relationships.hpp"
+#include "enums.hpp"
 #include "local_rib.hpp"
 #include "recv_queue.hpp"
 #include "announcement.hpp"
