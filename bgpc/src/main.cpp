@@ -1,7 +1,7 @@
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
 //#include <pybind11/optional.h>
-#include "relationships.hpp"
+#include "enums.hpp"
 #include "announcement.hpp"
 #include "local_rib.hpp"
 #include "recv_queue.hpp"
@@ -11,6 +11,7 @@
 #include "as_graph.hpp"
 #include "cpp_simulation_engine.hpp"
 #include "utils.hpp"
+#include "as_graph_analyzer.hpp"
 
 
 #include <iostream>

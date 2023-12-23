@@ -22,7 +22,7 @@ public:
                   const std::unordered_set<int>& victim_asns,
                   const std::unordered_set<int>& attacker_asns);
 
-    std::unordered_map<int, std::unordered_map<std::shared_ptr<AS>, Outcomes>> analyze();
+    std::unordered_map<int, std::unordered_map<int, Outcomes>> analyze();
 
 private:
     std::shared_ptr<CPPSimulationEngine> engine;

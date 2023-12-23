@@ -1,7 +1,7 @@
 #include "announcement.hpp"
 #include "as.hpp"
 #include "cpp_simulation_engine.hpp"
-#include "graph_analyzer.hpp"
+#include "as_graph_analyzer.hpp"
 
 
 ASGraphAnalyzer::ASGraphAnalyzer(std::shared_ptr<CPPSimulationEngine> engine,
@@ -11,13 +11,14 @@ ASGraphAnalyzer::ASGraphAnalyzer(std::shared_ptr<CPPSimulationEngine> engine,
     : engine(engine),
       victim_asns(victim_asns),
       attacker_asns(attacker_asns) {
-    for (auto& as_obj : engine->as_graph) {
+    for (auto& as_obj_pair : engine->as_graph->as_dict) {
+        auto& as_obj = as_obj_pair.second;
         most_specific_ann_dict[as_obj->asn] = get_most_specific_ann(as_obj, ordered_prefixes);
     }
 }
 
 std::unordered_map<int, std::unordered_map<int, Outcomes>> ASGraphAnalyzer::analyze() {
-    for (auto& as_obj_pair : engine->as_graph) {
+    for (auto& as_obj_pair : engine->as_graph->as_dict) {
         auto as_obj = as_obj_pair.second; // Assuming as_graph is a map from IDs to AS shared_ptrs
 
         // Data Plane Analysis
@@ -32,19 +33,18 @@ std::unordered_map<int, std::unordered_map<int, Outcomes>> ASGraphAnalyzer::anal
     // Using integer values from the Plane enum as keys
     outcomes[static_cast<int>(Plane::DATA)] = data_plane_outcomes;
     outcomes[static_cast<int>(Plane::CTRL)] = control_plane_outcomes;
-    return outcomes
+    return outcomes;
 }
 
 
 std::optional<std::shared_ptr<Announcement>> ASGraphAnalyzer::get_most_specific_ann(std::shared_ptr<AS> as_obj, const std::vector<std::string>& ordered_prefixes) {
     for (const auto& prefix : ordered_prefixes) {
-        std::shared_ptr<Announcement> most_specific_ann = as_obj->policy->localRIB->get_ann(prefix);
+        std::shared_ptr<Announcement> most_specific_ann = as_obj->policy->localRIB.get_ann(prefix);
         if (most_specific_ann) {
             return most_specific_ann;
         }
     }
     return std::nullopt;  // Return empty optional if no announcement is found
-}
 }
 
 Outcomes ASGraphAnalyzer::get_as_outcome_data_plane(std::shared_ptr<AS> as_obj) {
@@ -62,7 +62,7 @@ Outcomes ASGraphAnalyzer::get_as_outcome_data_plane(std::shared_ptr<AS> as_obj) 
 
     // Handle undetermined cases, potentially involving recursion
     if (outcome == Outcomes::UNDETERMINED && most_specific_ann) {
-        auto next_as = engine->as_graph[(*most_specific_ann)->as_path[1]]; // Example of getting the next AS in the path
+        auto next_as = engine->as_graph->as_dict[(*most_specific_ann)->as_path[1]]; // Example of getting the next AS in the path
         outcome = get_as_outcome_data_plane(next_as); // Recursively determine the outcome
     }
 
@@ -71,7 +71,6 @@ Outcomes ASGraphAnalyzer::get_as_outcome_data_plane(std::shared_ptr<AS> as_obj) 
     // Store and return the determined outcome
     data_plane_outcomes[as_obj->asn] = outcome;
     return outcome;
-}
 }
 
 Outcomes ASGraphAnalyzer::determine_as_outcome_data_plane(std::shared_ptr<AS> as_obj, std::optional<std::shared_ptr<Announcement>> most_specific_ann) {
