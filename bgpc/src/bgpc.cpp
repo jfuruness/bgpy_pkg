@@ -1,6 +1,8 @@
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
 //#include <pybind11/optional.h>
+#include <relationships.hpp>
+#include <announcement.hpp>
 
 
 
@@ -30,80 +32,7 @@
 //Still, for good design, since I'm terrible at C++, I'm keeping it
 //esp since it's probably negligable since this timing test
 //was with 100000000U times
-//#define BOOST_DISABLE_THREADS
-
-enum class Relationships {
-    PROVIDERS = 1,
-    PEERS = 2,
-    CUSTOMERS = 3,
-    ORIGIN = 4,
-    UNKNOWN = 5
-};
-
-
-class Announcement {
-public:
-    const std::string prefix;
-    const std::vector<int> as_path;
-    const int timestamp;
-    const std::optional<int> seed_asn;
-    const std::optional<bool> roa_valid_length;
-    const std::optional<int> roa_origin;
-    const Relationships recv_relationship;
-    const bool withdraw;
-    const bool traceback_end;
-    const std::vector<std::string> communities;
-
-    // Constructor
-    Announcement(const std::string& prefix, const std::vector<int>& as_path, int timestamp,
-                 const std::optional<int>& seed_asn, const std::optional<bool>& roa_valid_length,
-                 const std::optional<int>& roa_origin, Relationships recv_relationship,
-                 bool withdraw = false, bool traceback_end = false,
-                 const std::vector<std::string>& communities = {})
-        : prefix(prefix), as_path(as_path), timestamp(timestamp),
-          seed_asn(seed_asn), roa_valid_length(roa_valid_length), roa_origin(roa_origin),
-          recv_relationship(recv_relationship), withdraw(withdraw),
-          traceback_end(traceback_end), communities(communities) {}
-
-    // Methods
-    bool prefix_path_attributes_eq(const Announcement* ann) const {
-        if (!ann) {
-            return false;
-        }
-        return ann->prefix == this->prefix && ann->as_path == this->as_path;
-    }
-
-    bool invalid_by_roa() const {
-        if (!roa_origin.has_value()) {
-            return false;
-        }
-        return origin() != roa_origin.value() || !roa_valid_length.value();
-    }
-
-    bool valid_by_roa() const {
-        return roa_origin.has_value() && origin() == roa_origin.value() && roa_valid_length.value();
-    }
-
-    bool unknown_by_roa() const {
-        return !invalid_by_roa() && !valid_by_roa();
-    }
-
-    bool covered_by_roa() const {
-        return !unknown_by_roa();
-    }
-
-    bool roa_routed() const {
-        return roa_origin.has_value() && roa_origin.value() != 0;
-    }
-
-    int origin() const {
-        if (!as_path.empty()) {
-            return as_path.back();
-        }
-        return -1; // Or another appropriate default value
-    }
-};
-
+#define BOOST_DISABLE_THREADS
 
 class LocalRIB {
 protected:
@@ -696,7 +625,6 @@ public:
             if (std::getline(iss, token, '\t') && !token.empty()) {
                 int rel_value = std::stoi(token);
                 switch (rel_value) {
-                    case 0: recv_relationship = Relationships::ORIGIN; break;
                     case 1: recv_relationship = Relationships::PROVIDERS; break;
                     case 2: recv_relationship = Relationships::PEERS; break;
                     case 3: recv_relationship = Relationships::CUSTOMERS; break;

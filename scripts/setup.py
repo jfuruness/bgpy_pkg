@@ -1,3 +1,9 @@
+"""Old setup.py when bgpc was just a single file
+
+This has been moved to use scikit_build_core.build as a backend
+"""
+
+
 from setuptools import setup
 
 from pybind11.setup_helpers import Pybind11Extension  # , build_ext

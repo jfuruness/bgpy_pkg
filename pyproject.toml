@@ -1,6 +1,93 @@
 [build-system]
-requires = ["setuptools>=51.0", "wheel", "pybind11~=2.11"]
-build-backend = "setuptools.build_meta"
+requires = ["setuptools>=51.0", "wheel", "scikit-build-core>=0.3.3", "pybind11~=2.11"]
+build-backend = "scikit_build_core.build"
+
+[project]
+name = "bgpy_pkg"
+version = "3.0.0"
+description = "Simulates BGP and ROV"
+readme = "README.md"
+authors = [
+    {name = "Justin Furuness", email = "jfuruness@gmail.com"},
+    {name = "Cameron Morris"},
+    {name = "Reynaldo Morillo"}
+]
+license = {file = "LICENSE.txt"}
+keywords = [
+    "BGPy",
+    "bgpy",
+    "bgpc",
+    "bgpy_pkg",
+    "BGP",
+    "Caida",
+    "CAIDA",
+    "Peers",
+    "Providers",
+    "Relationships",
+    "AS-Serial",
+    "Customers",
+    "Simulation",
+    "ROV",
+    "Furuness"
+]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Environment :: Console",
+    "License :: OSI Approved :: BSD License",
+    "Intended Audience :: Developers"
+]
+dependencies = [
+    "beautifulsoup4==4.12.2",
+    "requests==2.31.0",
+    "frozendict==2.3.8",
+    "graphviz==0.20.1",
+    "pillow==10.1.0",
+    "matplotlib==3.8.1",
+    "pytest==7.4.3",
+    "PyYAML~=6.0",
+    "tqdm==4.66.1",
+    "yamlable==1.1.1",
+]
+
+[project.urls]
+Homepage = "https://github.com/jfuruness/bgpy_pkg"
+Documentation = "https://github.com/jfuruness/bgpy/wiki"
+
+[project.scripts]
+bgpy = "bgpy.__main__:main"
+
+[project.optional-dependencies]
+test = [
+    "black==23.11.0",
+    "pre-commit==3.5.0",
+    "types-requests==2.31.0.10",
+    "types-PyYAML==6.0.12.12",
+    "mypy==1.7.0",
+    "flake8==6.1.0",
+    "tox==4.11.3",
+    "pytest-xdist==3.3.1",
+    "ruff==0.1.5"
+]
+
+[tool.setuptools.dynamic]
+python_requires = ">= 3.10"
+packages = {find = true}
+zip_safe = false
+include_package_data = true
+
+# https://stackoverflow.com/a/76214408/8903959
+[tool.setuptools.package-data]
+"bgpy" = ["py.typed"]
+
+# https://stackoverflow.com/a/76214408/8903959
+[tool.setuptools.packages.find]
+where = ["bgpy"]
+
+[tool.scikit-build]
+wheel.expand-macos-universal-tags = true
+
+[tool.cibuildwheel]
+build-verbosity = 1
 
 [tool.pytest.ini_options]
 python_files = ["test*.py"]
@@ -34,3 +121,24 @@ warn_return_any = true
 warn_unreachable = true
 warn_unused_configs = true
 no_implicit_reexport = true
+
+[tool.flake8]
+max-line-length = 88
+
+[tool.coverage.run]
+branch = true
+omit = [
+    "*tests*",
+    "*__init__*"
+]
+
+[tool.coverage.report]
+show_missing = true
+exclude_lines = [
+    # Excludes lines overrides pragma: no cover, so add it back
+    "pragma: no cover",
+    # Code below this is not meant to be tested
+    "raise NotImplementedError",
+    # Code that isn't meant to be run
+    "if __name__ == .__main__.:"
+]
