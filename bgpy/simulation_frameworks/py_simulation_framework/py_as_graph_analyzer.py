@@ -7,7 +7,7 @@ from bgpy.simulation_engines.py_simulation_engine import Announcement
 from bgpy.simulation_framework.scenarios import Scenario
 
 
-class GraphAnalyzer:
+class PyASGraphAnalyzer(GraphAnalyzer):
     """Takes in a SimulationEngine and outputs metrics"""
 
     def __init__(self, engine: SimulationEngine, scenario: Scenario):
@@ -20,12 +20,12 @@ class GraphAnalyzer:
         }
         self._data_plane_outcomes: dict[AS, Outcomes] = dict()
         self._control_plane_outcomes: dict[AS, Outcomes] = dict()
-        self.outcomes: dict[str, dict[AS, Any]] = {
+        self.outcomes: dict[int, dict[AS, Any]] = {
             Plane.DATA.value: self._data_plane_outcomes,
             Plane.CTRL.value: self._control_plane_outcomes,
         }
 
-    def _get_most_specific_ann(self, as_obj) -> Optional[Announcement]:
+    def _get_most_specific_ann(self, as_obj: AS) -> Optional[Announcement]:
         """Returns the most specific announcement that exists in a rib
 
         as_obj is the as
@@ -39,7 +39,7 @@ class GraphAnalyzer:
                 return most_specific_ann  # type: ignore
         return None
 
-    def analyze(self) -> dict[Any, Any]:
+    def analyze(self) -> dict[int, dict[int, Outcomes]]:
         """Takes in engine and outputs traceback for ctrl + data plane data"""
 
         for as_obj in self.engine.as_graph:

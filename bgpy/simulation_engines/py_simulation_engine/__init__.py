@@ -1,4 +1,4 @@
-from .announcement import Announcement
+from .py_announcement import PyAnnouncement
 
 from .ann_containers import LocalRIB
 from .ann_containers import RIBsIn
@@ -16,7 +16,7 @@ from .policies import ROVPolicy
 from .py_simulation_engine import PySimulationEngine
 
 __all__ = [
-    "Announcement",
+    "PyAnnouncement",
     "LocalRIB",
     "RIBsIn",
     "RIBsOut",

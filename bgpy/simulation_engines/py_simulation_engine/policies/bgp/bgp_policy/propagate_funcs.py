@@ -2,16 +2,22 @@ from typing import Optional, TYPE_CHECKING
 
 from bgpy.simulation_engines.base import Policy
 
-from bgpy.simulation_engines.py_simulation_engine.announcement import (
-    Announcement as Ann,
-)
-from bgpy.enums import Relationships
-
 if TYPE_CHECKING:
     from bgpy.as_graphs import AS
 
+    from bgpy.simulation_frameworks.py_simulation_framework import Scenario
 
-def _propagate(self, propagate_to: Relationships, send_rels: set[Relationships]):
+    from bgpy.simulation_engines.cpp_simulation_engine.cpp_announcement import (
+        CPPAnnouncement as CPPAnn,
+    )
+
+    from bgpy.simulation_engines.py_simulation_engine.py_announcement import (
+        PyAnnouncement as PyAnn,
+    )
+    from bgpy.enums import PyRelationships, CPPRelationships
+
+
+def _propagate(self, propagate_to: PyRelationships | CPPRelationships, send_rels: set[PyRelationships | CPPRelationships]):
     """Propogates announcements to other ASes
 
     send_rels is the relationships that are acceptable to send
@@ -24,23 +30,23 @@ def _propagate(self, propagate_to: Relationships, send_rels: set[Relationships])
     self._send_anns(propagate_to)
 
 
-def _prev_sent(self, neighbor: "AS", ann: Ann) -> bool:
+def _prev_sent(self, neighbor: "AS", ann: PyAnn | CPPAnn) -> bool:
     """Don't send what we've already sent"""
-    ribs_out_ann: Optional[Ann] = self._ribs_out.get_ann(neighbor.asn, ann.prefix)
+    ribs_out_ann: Optional[PyAnn | CPPAnn] = self._ribs_out.get_ann(neighbor.asn, ann.prefix)
     return ann.prefix_path_attributes_eq(ribs_out_ann)
 
 
 def _process_outgoing_ann(
     self,
     neighbor: Policy,
-    ann: Ann,
+    ann: PyAnn | CPPAnn,
     propagate_to,
-    send_rels: set[Relationships],
+    send_rels: set[PyRelationships | CPPRelationships],
 ):
     self._send_q.add_ann(neighbor.asn, ann)
 
 
-def _send_anns(self, propagate_to: Relationships):
+def _send_anns(self, propagate_to: PyRelationships | CPPRelationships):
     """Sends announcements and populates ribs out"""
 
     neighbors: list[AS] = getattr(self.as_, propagate_to.name.lower())

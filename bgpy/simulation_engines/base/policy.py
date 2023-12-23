@@ -4,9 +4,10 @@ from typing import Any, TYPE_CHECKING
 from yamlable import YamlAble, yaml_info_decorate
 
 if TYPE_CHECKING:
-    from bgpy.enums import Relationships
-    from bgpy.simulation_engines.py_simulation_engine import Announcement as Ann
-    from bgpy.simulation_framework import Scenario
+    from bgpy.enums import PyRelationships, CPPRelationships
+    from bgpy.simulation_engines.py_simulation_engine import PyAnnouncement as PyAnn
+    from bgpy.simulation_engines.cpp_simulation_engine import CPPAnnouncement as CPPAnn
+    from bgpy.simulation_frameworks.py_simulation_framework import Scenario
 
 
 class Policy(YamlAble, metaclass=ABCMeta):
@@ -49,7 +50,7 @@ class Policy(YamlAble, metaclass=ABCMeta):
     ##########################
 
     @abstractmethod
-    def receive_ann(self, ann: "Ann", accept_withdrawals: bool = False) -> None:
+    def receive_ann(self, ann: "PyAnn" | "CPPAnn", accept_withdrawals: bool = False) -> None:
         """Function for recieving announcements"""
 
         raise NotImplementedError
@@ -58,7 +59,7 @@ class Policy(YamlAble, metaclass=ABCMeta):
     def process_incoming_anns(
         self,
         *,
-        from_rel: "Relationships",
+        from_rel: "PyRelationships" | "CPPRelationships",
         propagation_round: int,
         scenario: "Scenario",
         reset_q: bool = True,

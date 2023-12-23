@@ -1,13 +1,19 @@
 from typing import TYPE_CHECKING
 
-from bgpy.simulation_engines.py_simulation_engine.announcement import (
-    Announcement as Ann,
-)
-from bgpy.enums import Relationships
+from bgpy.enums import PyRelationships
 
 
 if TYPE_CHECKING:
     from bgpy.as_graphs import AS
+
+    from bgpy.simulation_engines.cpp_simulation_engine.cpp_announcement import (
+        CPPAnnouncement as CPPAnn,
+    )
+
+    from bgpy.simulation_engines.py_simulation_engine.py_announcement import (
+        PyAnnouncement as PyAnn,
+    )
+    from bgpy.enums import CPPRelationships
 
 
 def propagate_to_providers(self) -> None:
@@ -16,46 +22,46 @@ def propagate_to_providers(self) -> None:
     Propogate ann's that have a recv_rel of origin or customer to providers
     """
 
-    send_rels: set[Relationships] = set([Relationships.ORIGIN, Relationships.CUSTOMERS])
-    self._propagate(Relationships.PROVIDERS, send_rels)
+    send_rels: set[PyRelationships | CPPRelationships] = set([PyRelationships.ORIGIN, PyRelationships.CUSTOMERS])
+    self._propagate(PyRelationships.PROVIDERS, send_rels)
 
 
 def propagate_to_customers(self) -> None:
     """Propogates to customers"""
 
     # Anns that have any of these as recv_rel get propogated
-    send_rels: set[Relationships] = set(
+    send_rels: set[PyRelationships | CPPRelationships] = set(
         [
-            Relationships.ORIGIN,
-            Relationships.CUSTOMERS,
-            Relationships.PEERS,
-            Relationships.PROVIDERS,
+            PyRelationships.ORIGIN,
+            PyRelationships.CUSTOMERS,
+            PyRelationships.PEERS,
+            PyRelationships.PROVIDERS,
         ]
     )
-    self._propagate(Relationships.CUSTOMERS, send_rels)
+    self._propagate(PyRelationships.CUSTOMERS, send_rels)
 
 
 def propagate_to_peers(self) -> None:
     """Propogates to peers"""
 
     # Anns that have any of these as recv_rel get propogated
-    send_rels: set[Relationships] = set([Relationships.ORIGIN, Relationships.CUSTOMERS])
-    self._propagate(Relationships.PEERS, send_rels)
+    send_rels: set[PyRelationships | CPPRelationships] = set([PyRelationships.ORIGIN, PyRelationships.CUSTOMERS])
+    self._propagate(PyRelationships.PEERS, send_rels)
 
 
 def _propagate(
-    self, propagate_to: Relationships, send_rels: set[Relationships]
+    self, propagate_to: PyRelationships | CPPRelationships, send_rels: set[PyRelationships | CPPRelationships]
 ) -> None:
     """Propogates announcements from local rib to other ASes
 
     send_rels is the relationships that are acceptable to send
     """
 
-    if propagate_to == Relationships.PROVIDERS:
+    if propagate_to == PyRelationships.PROVIDERS:
         neighbors = self.as_.providers
-    elif propagate_to == Relationships.PEERS:
+    elif propagate_to == PyRelationships.PEERS:
         neighbors = self.as_.peers
-    elif propagate_to == Relationships.CUSTOMERS:
+    elif propagate_to == PyRelationships.CUSTOMERS:
         neighbors = self.as_.customers
     else:
         raise NotImplementedError
@@ -75,16 +81,16 @@ def _propagate(
 def _policy_propagate(
     self,
     neighbor: "AS",
-    ann: Ann,
-    propagate_to: Relationships,
-    send_rels: set[Relationships],
+    ann: PyAnn | CPPAnn,
+    propagate_to: PyRelationships | CPPRelationships,
+    send_rels: set[PyRelationships | CPPRelationships],
 ) -> bool:
     """Custom policy propagation that can be overriden"""
 
     return False
 
 
-def _prev_sent(self, neighbor: "AS", ann: Ann) -> bool:
+def _prev_sent(self, neighbor: "AS", ann: PyAnn | CPPAnn) -> bool:
     """Don't resend anything for BGPAS. For this class it doesn't matter"""
     return False
 
@@ -92,9 +98,9 @@ def _prev_sent(self, neighbor: "AS", ann: Ann) -> bool:
 def _process_outgoing_ann(
     self,
     neighbor: "AS",
-    ann: Ann,
-    propagate_to: Relationships,
-    send_rels: set[Relationships],
+    ann: PyAnn | CPPAnn,
+    propagate_to: PyRelationships | CPPRelationships,
+    send_rels: set[PyRelationships | CPPRelationships],
 ):
     """Adds ann to the neighbors recv q"""
 

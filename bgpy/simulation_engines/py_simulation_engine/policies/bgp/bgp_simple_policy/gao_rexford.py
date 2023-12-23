@@ -1,11 +1,17 @@
-from typing import Optional
-
-from bgpy.simulation_engines.py_simulation_engine.announcement import (
-    Announcement as Ann,
-)
+from typing import Optional, TYPE_CHECKING
 
 
-def _get_best_ann_by_gao_rexford(self, current_ann: Optional[Ann], new_ann: Ann) -> Ann:
+if TYPE_CHECKING:
+    from bgpy.simulation_engines.cpp_simulation_engine.cpp_announcement import (
+        CPPAnnouncement as CPPAnn,
+    )
+
+    from bgpy.simulation_engines.py_simulation_engine.py_announcement import (
+        PyAnnouncement as PyAnn,
+    )
+
+
+def _get_best_ann_by_gao_rexford(self, current_ann: Optional[PyAnn | CPPAnn], new_ann: PyAnn | CPPAnn) -> PyAnn | CPPAnn:
     """Determines if the new ann > current ann by Gao Rexford"""
 
     assert new_ann is not None, "New announcement can't be None"
@@ -17,12 +23,12 @@ def _get_best_ann_by_gao_rexford(self, current_ann: Optional[Ann], new_ann: Ann)
         for func in self._gao_rexford_funcs:
             best_ann = func(current_ann, new_ann)
             if best_ann is not None:
-                assert isinstance(best_ann, Ann), "type check for mypy"
+                assert isinstance(best_ann, [PyAnn, CPPAnn]), "type check for mypy"
                 return best_ann
         raise Exception("No ann was chosen")
 
 
-def _get_best_ann_by_local_pref(self, current_ann: Ann, new_ann: Ann) -> Optional[Ann]:
+def _get_best_ann_by_local_pref(self, current_ann: PyAnn | CPPAnn, new_ann: PyAnn | CPPAnn) -> Optional[PyAnn | CPPAnn]:
     """Returns best announcement by local pref, or None if tie"""
 
     if current_ann.recv_relationship.value > new_ann.recv_relationship.value:
@@ -33,7 +39,7 @@ def _get_best_ann_by_local_pref(self, current_ann: Ann, new_ann: Ann) -> Optiona
         return None
 
 
-def _get_best_ann_by_as_path(self, current_ann: Ann, new_ann: Ann) -> Optional[Ann]:
+def _get_best_ann_by_as_path(self, current_ann: PyAnn | CPPAnn, new_ann: PyAnn | CPPAnn) -> Optional[PyAnn | CPPAnn]:
     """Returns best announcement by as path length, or None if tie
 
     Shorter AS Paths are better
@@ -48,8 +54,8 @@ def _get_best_ann_by_as_path(self, current_ann: Ann, new_ann: Ann) -> Optional[A
 
 
 def _get_best_ann_by_lowest_neighbor_asn_tiebreaker(
-    self, current_ann: Ann, new_ann: Ann
-) -> Ann:
+    self, current_ann: PyAnn | CPPAnn, new_ann: PyAnn | CPPAnn
+) -> PyAnn | CPPAnn:
     """Determines if the new ann > current ann by Gao Rexford for ties
 
     This breaks ties by lowest asn of the neighbor sending the announcement

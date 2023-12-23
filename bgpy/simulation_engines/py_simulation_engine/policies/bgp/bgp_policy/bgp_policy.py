@@ -17,10 +17,17 @@ from bgpy.simulation_engines.py_simulation_engine.ann_containers import RIBsIn
 from bgpy.simulation_engines.py_simulation_engine.ann_containers import RIBsOut
 from bgpy.simulation_engines.py_simulation_engine.ann_containers import SendQueue
 
-from bgpy.simulation_engines.py_simulation_engine.announcement import (
-    Announcement as Ann,
-)
-from bgpy.enums import Relationships
+
+if TYPE_CHECKING:
+    from bgpy.simulation_engines.cpp_simulation_engine.cpp_announcement import (
+        CPPAnnouncement as CPPAnn,
+    )
+
+    from bgpy.simulation_engines.py_simulation_engine.py_announcement import (
+        PyAnnouncement as PyAnn,
+    )
+    from bgpy.enums import PyRelationships, CPPRelationships
+
 
 
 class BGPPolicy(BGPSimplePolicy):
@@ -48,7 +55,7 @@ class BGPPolicy(BGPSimplePolicy):
     # Must add this func here since it refers to BGPPolicy
     # Could use super but want to avoid additional func calls
     def _populate_send_q(
-        self, propagate_to: Relationships, send_rels: set[Relationships]
+        self, propagate_to: PyRelationships | CPPRelationships, send_rels: set[PyRelationships | CPPRelationships]
     ) -> None:
         # Process outging ann is oerriden so this just adds to send q
         super(BGPPolicy, self)._propagate(propagate_to, send_rels)
@@ -64,7 +71,7 @@ class BGPPolicy(BGPSimplePolicy):
     # Could just use super but want to avoid the additional func calls
     # mypy doesn't understand the func definition
     def receive_ann(  # type: ignore
-        self, ann: Ann, accept_withdrawals: bool = True
+        self, ann: PyAnn | CPPAnn, accept_withdrawals: bool = True
     ) -> None:
         super(BGPPolicy, self).receive_ann(ann, accept_withdrawals=True)
 

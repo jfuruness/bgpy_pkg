@@ -24,20 +24,14 @@ class YamlAbleEnum(Enum):
         return yamlable_enums
 
 
-class Outcomes(YamlAbleEnum):
+class PyOutcomes(YamlAbleEnum):
     ATTACKER_SUCCESS: int = 0
     VICTIM_SUCCESS: int = 1
     DISCONNECTED: int = 2
     UNDETERMINED: int = 3
 
 
-class Plane(YamlAbleEnum):
-    # Changing to integers so that this is compatible with c++
-    DATA: int = 0  # "data_plane"
-    CTRL: int = 1  # "control_plane"
-
-
-class Relationships(YamlAbleEnum):
+class PyRelationships(YamlAbleEnum):
     # Must start at one for the priority
     PROVIDERS: int = 1
     PEERS: int = 2
@@ -48,6 +42,12 @@ class Relationships(YamlAbleEnum):
     ORIGIN: int = 4
     # Unknown for external programs like extrapoaltor
     UNKNOWN: int = 5
+
+
+class Plane(YamlAbleEnum):
+    # Changing to integers so that this is compatible with c++
+    DATA: int = 0  # "data_plane"
+    CTRL: int = 1  # "control_plane"
 
 
 class ROAValidity(YamlAbleEnum):

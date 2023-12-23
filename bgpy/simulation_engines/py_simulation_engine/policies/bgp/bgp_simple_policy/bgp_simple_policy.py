@@ -26,12 +26,18 @@ from .gao_rexford import _get_best_ann_by_lowest_neighbor_asn_tiebreaker
 from bgpy.simulation_engines.base import Policy
 from bgpy.simulation_engines.py_simulation_engine.ann_containers import LocalRIB
 from bgpy.simulation_engines.py_simulation_engine.ann_containers import RecvQueue
-from bgpy.simulation_engines.py_simulation_engine.announcement import (
-    Announcement as Ann,
-)
 
 if TYPE_CHECKING:
     from bgpy.as_graphs import AS
+
+    from bgpy.simulation_engines.cpp_simulation_engine.cpp_announcement import (
+        CPPAnnouncement as CPPAnn,
+    )
+
+    from bgpy.simulation_engines.py_simulation_engine.py_announcement import (
+        PyAnnouncement as PyAnn,
+    )
+
 
 
 class BGPSimplePolicy(Policy):
@@ -57,7 +63,7 @@ class BGPSimplePolicy(Policy):
         self.as_: CallableProxyType["AS"] = as_  # type: ignore
 
     @property
-    def _gao_rexford_funcs(self) -> tuple[Callable[[Ann, Ann], Optional[Ann]], ...]:
+    def _gao_rexford_funcs(self) -> tuple[Callable[[PyAnn | CPPAnn, PyAnn | CPPAnn], Optional[PyAnn | CPPAnn]], ...]:
         return (
             self._get_best_ann_by_local_pref,
             self._get_best_ann_by_as_path,

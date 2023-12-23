@@ -11,7 +11,7 @@ from bgpy.simulation_engines.py_simulation_engine.policies import BGPSimplePolic
 # https://stackoverflow.com/a/57005931/8903959
 if TYPE_CHECKING:
     from .cpp_announcement import CPPAnnouncement
-    from bgpy.simulation_framework import Scenario
+    from bgpy.simulation_frameworks.py_simulation_framework import Scenario
 
 
 class CPPSimulationEngine(SimulationEngine):

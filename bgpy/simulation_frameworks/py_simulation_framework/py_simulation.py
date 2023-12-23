@@ -12,12 +12,16 @@ from frozendict import frozendict
 from bgpy.as_graphs.base import ASGraphConstructor, ASGraph
 from bgpy.as_graphs.caida_as_graph import CAIDAASGraphConstructor
 
-from .graph_analyzer import GraphAnalyzer
+
+from .py_as_graph_analyzer import PyASGraphAnalyzer
 from .graph_factory import GraphFactory
 from .metric_tracker import MetricTracker
 from .scenarios import Scenario
 from .scenarios import ScenarioConfig
 from .scenarios import SubprefixHijack
+
+from bgpy.simulation_frameworks.base import GraphAnalyzer
+from bgpy.simulation_frameworks.base import Simulation
 
 from bgpy.enums import SpecialPercentAdoptions
 from bgpy.simulation_engines.base import SimulationEngine
@@ -26,7 +30,7 @@ from bgpy.simulation_engines.py_simulation_engine import PySimulationEngine
 from bgpy.simulation_engines.py_simulation_engine import ROVSimplePolicy
 
 
-class Simulation:
+class PySimulation(Simulation):
     """Runs simulations for BGP attack/defend scenarios"""
 
     def __init__(
@@ -64,7 +68,7 @@ class Simulation:
             }
         ),
         SimulationEngineCls: type[SimulationEngine] = PySimulationEngine,
-        GraphAnalyzerCls: type[GraphAnalyzer] = GraphAnalyzer,
+        GraphAnalyzerCls: type[GraphAnalyzer] = PyGraphAnalyzer,
         MetricTrackerCls: type[MetricTracker] = MetricTracker,
     ) -> None:
         """Downloads relationship data, runs simulation

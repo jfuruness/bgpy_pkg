@@ -1,16 +1,22 @@
 from typing import Any, Optional, TYPE_CHECKING
 
-from bgpy.simulation_engines.py_simulation_engine.announcement import (
-    Announcement as Ann,
-)
 from bgpy.simulation_engines.py_simulation_engine.ann_containers import RecvQueue
-from bgpy.enums import Relationships
 
 if TYPE_CHECKING:
     from bgpy.simulation_framework import Scenario
 
+    from bgpy.simulation_engines.cpp_simulation_engine.cpp_announcement import (
+        CPPAnnouncement as CPPAnn,
+    )
 
-def receive_ann(self, ann: Ann, accept_withdrawals: bool = False) -> None:
+    from bgpy.simulation_engines.py_simulation_engine.py_announcement import (
+        PyAnnouncement as PyAnn,
+    )
+    from bgpy.enums import PyRelationships, CPPRelationships
+
+
+
+def receive_ann(self, ann: PyAnn | CPPAnn, accept_withdrawals: bool = False) -> None:
     """Function for recieving announcements, adds to recv_q"""
 
     if ann.withdraw and not accept_withdrawals:
@@ -21,7 +27,7 @@ def receive_ann(self, ann: Ann, accept_withdrawals: bool = False) -> None:
 def process_incoming_anns(
     self,
     *,
-    from_rel: Relationships,
+    from_rel: PyRelationships | CPPRelationships,
     propagation_round: int,
     scenario: "Scenario",
     reset_q: bool = True,
@@ -31,7 +37,7 @@ def process_incoming_anns(
     # For each prefix, get all anns recieved
     for prefix, ann_list in self._recv_q.prefix_anns():
         # Get announcement currently in local rib
-        current_ann: Ann = self._local_rib.get_ann(prefix)
+        current_ann: PyAnn | CPPAnn = self._local_rib.get_ann(prefix)
         og_ann = current_ann
 
         # Seeded Ann will never be overriden, so continue
@@ -56,7 +62,7 @@ def process_incoming_anns(
     self._reset_q(reset_q)
 
 
-def _valid_ann(self, ann: Ann, recv_relationship: Relationships) -> bool:
+def _valid_ann(self, ann: PyAnn | CPPAnn, recv_relationship: PyRelationships | CPPRelationships) -> bool:
     """Determine if an announcement is valid or should be dropped"""
 
     # BGP Loop Prevention Check
@@ -65,10 +71,10 @@ def _valid_ann(self, ann: Ann, recv_relationship: Relationships) -> bool:
 
 def _copy_and_process(
     self,
-    ann: Ann,
-    recv_relationship: Relationships,
+    ann: PyAnn | CPPAnn,
+    recv_relationship: PyRelationships | CPPRelationships,
     overwrite_default_kwargs: Optional[dict[Any, Any]] = None,
-) -> Ann:
+) -> PyAnn | CPPAnn:
     """Deep copies ann and modifies attrs
 
     Prepends AS to AS Path and sets recv_relationship

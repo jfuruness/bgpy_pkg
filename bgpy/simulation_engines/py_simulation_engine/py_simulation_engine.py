@@ -9,7 +9,8 @@ from bgpy.simulation_engines.py_simulation_engine.policies import BGPSimplePolic
 
 # https://stackoverflow.com/a/57005931/8903959
 if TYPE_CHECKING:
-    from bgpy.simulation_engine.announcement import Announcement
+    from bgpy.simulation_engines.cpp_simulation_engine import CPPAnnouncement as CPPAnn
+    from bgpy.simulation_engines.py_simulation_engine import PyAnnouncement as PyAnn
     from bgpy.simulation_framework import Scenario
 
 
@@ -32,7 +33,7 @@ class PySimulationEngine(SimulationEngine):
 
     def setup(
         self,
-        announcements: tuple["Announcement", ...] = (),
+        announcements: tuple["PyAnn" | "CPPAnn", ...] = (),
         BasePolicyCls: type[Policy] = BGPSimplePolicy,
         non_default_asn_cls_dict: frozendict[int, type[Policy]] = (
             frozendict()  # type: ignore
@@ -75,7 +76,7 @@ class PySimulationEngine(SimulationEngine):
 
     def _seed_announcements(
         self,
-        announcements: tuple["Announcement", ...] = (),
+        announcements: tuple["PyAnn" | "CPPAnn", ...] = (),
         prev_scenario: Optional["Scenario"] = None,
     ) -> None:
         """Seeds announcement at the proper AS
@@ -192,7 +193,7 @@ class PySimulationEngine(SimulationEngine):
     @classmethod
     def __from_yaml_dict__(
         cls: type["SimulationEngine"], dct: dict[str, Any], yaml_tag: Any
-    ) -> "Announcement":
+    ) -> "PyAnn" | "CPPAnn":
         """This optional method is called when you call yaml.load()"""
 
         return cls(**dct)

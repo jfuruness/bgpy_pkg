@@ -10,7 +10,8 @@ from .policy import Policy
 # https://stackoverflow.com/a/57005931/8903959
 if TYPE_CHECKING:
     from bgpy.as_graphs import ASGraph
-    from bgpy.simulation_engines.py_simulation_engine.announcement import Announcement
+    from bgpy.simulation_engines.py_simulation_engine.py_announcement import PyAnnouncement as PyAnn
+    from bgcpp.simulation_engines.cpp_simulation_engine.cpp_announcement import CPPAnnouncement as CPPAnn
     from bgpy.simulation_framework import Scenario
 
 
@@ -61,7 +62,7 @@ class SimulationEngine(YamlAble, ABC):
     @abstractmethod
     def setup(
         self,
-        announcements: tuple["Announcement", ...] = (),
+        announcements: tuple["PyAnn | CPPAnn", ...] = (),
         BasePolicyCls: type[Policy] = Policy,
         non_default_asn_cls_dict: frozendict[int, type[Policy]] = (
             frozendict()  # type: ignore
@@ -91,7 +92,7 @@ class SimulationEngine(YamlAble, ABC):
 
     def _seed_announcements(
         self,
-        announcements: tuple["Announcement", ...] = (),
+        announcements: tuple["PyAnn | CPPAnn", ...] = (),
         prev_scenario: Optional["Scenario"] = None,
     ) -> None:
         """Seeds announcement at the proper AS

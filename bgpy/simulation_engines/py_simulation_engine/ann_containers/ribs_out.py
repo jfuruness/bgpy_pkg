@@ -2,7 +2,8 @@ from typing import Iterator, Optional
 
 from .ann_container import AnnContainer
 
-from bgpy.simulation_engines.py_simulation_engine import Announcement as Ann
+from bgpy.simulation_engines.py_simulation_engine import PyAnnouncement as PyAnn
+from bgpy.simulation_engines.cpp_simulation_engine import CPPAnnouncement as CPAnn
 
 
 class RIBsOut(AnnContainer):
@@ -11,7 +12,7 @@ class RIBsOut(AnnContainer):
     neighbor: {prefix: announcement}
     """
 
-    def __init__(self, _info: Optional[dict[int, dict[str, Ann]]] = None):
+    def __init__(self, _info: Optional[dict[int, dict[str, PyAnn | CPPAnn]]] = None):
         """Stores _info dict which contains ribs in
 
         This is passed in so that we can regenerate this class from yaml
@@ -21,14 +22,14 @@ class RIBsOut(AnnContainer):
         """
 
         # {neighbor: {prefix: announcement}}
-        self._info: dict[int, dict[str, Ann]] = _info if _info is not None else dict()
+        self._info: dict[int, dict[str, PyAnn | CPPAnn]] = _info if _info is not None else dict()
 
-    def get_ann(self, neighbor_asn: int, prefix: str) -> Optional[Ann]:
+    def get_ann(self, neighbor_asn: int, prefix: str) -> Optional[PyAnn | CPPAnn]:
         """Returns Ann for a given neighbor asn and prefix"""
 
         return self._info.get(neighbor_asn, dict()).get(prefix)
 
-    def add_ann(self, neighbor_asn: int, ann: Ann) -> None:
+    def add_ann(self, neighbor_asn: int, ann: PyAnn | CPPAnn) -> None:
         """Adds announcement to the ribs out"""
 
         if neighbor_asn in self._info:

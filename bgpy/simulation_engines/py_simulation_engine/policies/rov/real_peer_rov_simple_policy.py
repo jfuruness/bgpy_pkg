@@ -1,8 +1,15 @@
 from bgpy.simulation_engines.py_simulation_engine.policies.bgp import BGPSimplePolicy
-from bgpy.simulation_engines.py_simulation_engine.announcement import (
-    Announcement as Ann,
-)
-from bgpy.enums import Relationships
+
+
+if TYPE_CHECKING:
+    from bgpy.simulation_engines.cpp_simulation_engine.cpp_announcement import (
+        CPPAnnouncement as CPPAnn,
+    )
+
+    from bgpy.simulation_engines.py_simulation_engine.py_announcement import (
+        PyAnnouncement as PyAnn,
+    )
+    from bgpy.enums import CPPRelationships, PyRelationships
 
 
 class RealPeerROVSimplePolicy(BGPSimplePolicy):
@@ -11,7 +18,7 @@ class RealPeerROVSimplePolicy(BGPSimplePolicy):
     name: str = "RealPeerROVSimple"
 
     # mypy doesn't understand that this func is valid
-    def _valid_ann(self, ann: Ann, *args, **kwargs) -> bool:  # type: ignore
+    def _valid_ann(self, ann: PyAnn | CPPAnn, *args, **kwargs) -> bool:  # type: ignore
         """Returns announcement validity
 
         Returns false if invalid by roa,

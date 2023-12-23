@@ -5,7 +5,8 @@ from yamlable import YamlAble, yaml_info
 
 from .ann_container import AnnContainer
 
-from bgpy.simulation_engines.py_simulation_engine import Announcement as Ann
+from bgpy.simulation_engines.cpp_simulation_engine import CPPAnnouncement as CPPAnn
+from bgpy.simulation_engines.py_simulation_engine import PyAnnouncement as PyAnn
 
 if TYPE_CHECKING:
     from bgpy.as_graphs import AS
@@ -14,8 +15,8 @@ if TYPE_CHECKING:
 @yaml_info(yaml_tag="SendInfo")
 @dataclass
 class SendInfo(YamlAble):
-    withdrawal_ann: Optional[Ann] = None
-    ann: Optional[Ann] = None
+    withdrawal_ann: Optional[PyAnn | CPPAnn] = None
+    ann: Optional[PyAnn | CPPAnn] = None
 
     @property
     def anns(self):
@@ -45,7 +46,7 @@ class SendQueue(AnnContainer):
             _info if _info is not None else dict()
         )
 
-    def add_ann(self, neighbor_asn: int, ann: Ann):
+    def add_ann(self, neighbor_asn: int, ann: PyAnn | CPPAnn):
         """Adds Ann to be sent"""
 
         # Used to be done by the defaultdict
@@ -82,12 +83,12 @@ class SendQueue(AnnContainer):
             # Add announcement
             send_info.ann = ann
 
-    def get_send_info(self, neighbor_obj: "AS", prefix: str) -> Optional[Ann]:
+    def get_send_info(self, neighbor_obj: "AS", prefix: str) -> Optional[PyAnn | CPPAnn]:
         """Returns the SendInfo for a neighbor AS and prefix"""
 
         return self._info.get(neighbor_obj.asn, dict()).get(prefix)
 
-    def info(self, neighbors: list["AS"]) -> Iterator[tuple["AS", str, Ann]]:
+    def info(self, neighbors: list["AS"]) -> Iterator[tuple["AS", str, PyAnn | CPPAnn]]:
         """Returns neighbor obj, prefix, announcement"""
 
         for neighbor_obj in neighbors:

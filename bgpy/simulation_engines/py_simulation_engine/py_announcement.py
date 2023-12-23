@@ -1,9 +1,10 @@
 from dataclasses import dataclass, asdict, replace
-from typing import Any, Optional
+from typing import Any, Optional, TYPE_CHECKING
 
 from yamlable import YamlAble, yaml_info
 
-from bgpy.enums import Relationships
+if TYPE_CHECKING:
+    from bgpy.enums import CPPRelationships, PyRelationships
 
 
 # Timing tests over a 2m period indicate that
@@ -12,7 +13,7 @@ from bgpy.enums import Relationships
 # doesn't matter
 @yaml_info(yaml_tag="Announcement")
 @dataclass(slots=True, frozen=True)
-class Announcement(YamlAble):
+class PyAnnouncement(YamlAble):
     """BGP Announcement"""
 
     # MUST use slots for speed
@@ -23,7 +24,7 @@ class Announcement(YamlAble):
     seed_asn: Optional[int]
     roa_valid_length: Optional[bool]
     roa_origin: Optional[int]
-    recv_relationship: Relationships
+    recv_relationship: CPPRelationships | PyRelationships
     withdraw: bool = False
     traceback_end: bool = False
     communities: tuple[str, ...] = ()
