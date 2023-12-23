@@ -131,7 +131,11 @@ class EngineRunner:
 
     def _generate_diagrams(
         self, scenario: Scenario, metric_tracker: MetricTracker
-    ) -> tuple[SimulationEngine, dict[int, PyOutcomes | CPPOutcomes], tuple[tuple["AS", ...], ...]]:
+    ) -> tuple[
+        SimulationEngine,
+        dict[int, PyOutcomes | CPPOutcomes],
+        tuple[tuple["AS", ...], ...],
+    ]:
         """Generates diagrams"""
 
         # Load engines

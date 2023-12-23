@@ -11,7 +11,9 @@ if TYPE_CHECKING:
     )
 
 
-def _get_best_ann_by_gao_rexford(self, current_ann: Optional[PyAnn | CPPAnn], new_ann: PyAnn | CPPAnn) -> PyAnn | CPPAnn:
+def _get_best_ann_by_gao_rexford(
+    self, current_ann: Optional[PyAnn | CPPAnn], new_ann: PyAnn | CPPAnn
+) -> PyAnn | CPPAnn:
     """Determines if the new ann > current ann by Gao Rexford"""
 
     assert new_ann is not None, "New announcement can't be None"
@@ -28,7 +30,9 @@ def _get_best_ann_by_gao_rexford(self, current_ann: Optional[PyAnn | CPPAnn], ne
         raise Exception("No ann was chosen")
 
 
-def _get_best_ann_by_local_pref(self, current_ann: PyAnn | CPPAnn, new_ann: PyAnn | CPPAnn) -> Optional[PyAnn | CPPAnn]:
+def _get_best_ann_by_local_pref(
+    self, current_ann: PyAnn | CPPAnn, new_ann: PyAnn | CPPAnn
+) -> Optional[PyAnn | CPPAnn]:
     """Returns best announcement by local pref, or None if tie"""
 
     if current_ann.recv_relationship.value > new_ann.recv_relationship.value:
@@ -39,7 +43,9 @@ def _get_best_ann_by_local_pref(self, current_ann: PyAnn | CPPAnn, new_ann: PyAn
         return None
 
 
-def _get_best_ann_by_as_path(self, current_ann: PyAnn | CPPAnn, new_ann: PyAnn | CPPAnn) -> Optional[PyAnn | CPPAnn]:
+def _get_best_ann_by_as_path(
+    self, current_ann: PyAnn | CPPAnn, new_ann: PyAnn | CPPAnn
+) -> Optional[PyAnn | CPPAnn]:
     """Returns best announcement by as path length, or None if tie
 
     Shorter AS Paths are better

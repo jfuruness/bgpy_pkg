@@ -1,6 +1,8 @@
 from typing import TYPE_CHECKING
 
-from bgpy.simulation_frameworks.py_simulation_framework.scenarios.scenario import Scenario
+from bgpy.simulation_frameworks.py_simulation_framework.scenarios.scenario import (
+    Scenario,
+)
 from bgpy.enums import Prefixes
 from bgpy.enums import CPPRelationships
 from bgpy.enums import Timestamps
@@ -9,7 +11,6 @@ from bgpy.enums import Timestamps
 if TYPE_CHECKING:
     from bgpy.simulation_engines.cpp_simulation_engine import CPPAnnouncement as CPPAnn
     from bgpy.simulation_engines.py_simulation_engine import PyAnnouncement as PyAnn
-
 
 
 class NonRoutedSuperprefixHijack(Scenario):

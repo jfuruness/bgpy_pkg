@@ -29,7 +29,6 @@ if TYPE_CHECKING:
     from bgpy.enums import PyRelationships, CPPRelationships
 
 
-
 class BGPPolicy(BGPSimplePolicy):
     name = "BGP"
 
@@ -55,7 +54,9 @@ class BGPPolicy(BGPSimplePolicy):
     # Must add this func here since it refers to BGPPolicy
     # Could use super but want to avoid additional func calls
     def _populate_send_q(
-        self, propagate_to: PyRelationships | CPPRelationships, send_rels: set[PyRelationships | CPPRelationships]
+        self,
+        propagate_to: PyRelationships | CPPRelationships,
+        send_rels: set[PyRelationships | CPPRelationships],
     ) -> None:
         # Process outging ann is oerriden so this just adds to send q
         super(BGPPolicy, self)._propagate(propagate_to, send_rels)

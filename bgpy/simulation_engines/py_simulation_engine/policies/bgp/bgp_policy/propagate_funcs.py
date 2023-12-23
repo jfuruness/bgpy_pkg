@@ -15,7 +15,11 @@ if TYPE_CHECKING:
     from bgpy.enums import PyRelationships, CPPRelationships
 
 
-def _propagate(self, propagate_to: PyRelationships | CPPRelationships, send_rels: set[PyRelationships | CPPRelationships]):
+def _propagate(
+    self,
+    propagate_to: PyRelationships | CPPRelationships,
+    send_rels: set[PyRelationships | CPPRelationships],
+):
     """Propogates announcements to other ASes
 
     send_rels is the relationships that are acceptable to send
@@ -30,7 +34,9 @@ def _propagate(self, propagate_to: PyRelationships | CPPRelationships, send_rels
 
 def _prev_sent(self, neighbor: "AS", ann: PyAnn | CPPAnn) -> bool:
     """Don't send what we've already sent"""
-    ribs_out_ann: Optional[PyAnn | CPPAnn] = self._ribs_out.get_ann(neighbor.asn, ann.prefix)
+    ribs_out_ann: Optional[PyAnn | CPPAnn] = self._ribs_out.get_ann(
+        neighbor.asn, ann.prefix
+    )
     return ann.prefix_path_attributes_eq(ribs_out_ann)
 
 

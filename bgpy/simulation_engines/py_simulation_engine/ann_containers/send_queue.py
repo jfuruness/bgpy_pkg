@@ -83,7 +83,9 @@ class SendQueue(AnnContainer):
             # Add announcement
             send_info.ann = ann
 
-    def get_send_info(self, neighbor_obj: "AS", prefix: str) -> Optional[PyAnn | CPPAnn]:
+    def get_send_info(
+        self, neighbor_obj: "AS", prefix: str
+    ) -> Optional[PyAnn | CPPAnn]:
         """Returns the SendInfo for a neighbor AS and prefix"""
 
         return self._info.get(neighbor_obj.asn, dict()).get(prefix)

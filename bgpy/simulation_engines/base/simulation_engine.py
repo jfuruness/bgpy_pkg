@@ -10,8 +10,12 @@ from .policy import Policy
 # https://stackoverflow.com/a/57005931/8903959
 if TYPE_CHECKING:
     from bgpy.as_graphs import ASGraph
-    from bgpy.simulation_engines.py_simulation_engine.py_announcement import PyAnnouncement as PyAnn
-    from bgcpp.simulation_engines.cpp_simulation_engine.cpp_announcement import CPPAnnouncement as CPPAnn
+    from bgpy.simulation_engines.py_simulation_engine.py_announcement import (
+        PyAnnouncement as PyAnn,
+    )
+    from bgcpp.simulation_engines.cpp_simulation_engine.cpp_announcement import (
+        CPPAnnouncement as CPPAnn,
+    )
     from bgpy.simulation_framework import Scenario
 
 

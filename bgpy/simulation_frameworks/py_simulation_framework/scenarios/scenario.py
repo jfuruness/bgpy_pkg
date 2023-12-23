@@ -14,7 +14,13 @@ from bgpy.simulation_engines.cpp_simulation_engine import CPPAnnouncement as CPP
 from bgpy.simulation_engines.py_simulation_engine import PyAnnouncement as PyAnn
 from bgpy.simulation_engines.base import SimulationEngine
 from bgpy.simulation_engines.base import Policy
-from bgpy.enums import SpecialPercentAdoptions, CPPOutcomes, PyOutcomes, CPPRelationships, PyRelationships
+from bgpy.enums import (
+    SpecialPercentAdoptions,
+    CPPOutcomes,
+    PyOutcomes,
+    CPPRelationships,
+    PyRelationships,
+)
 
 from .scenario_config import ScenarioConfig
 
@@ -495,7 +501,9 @@ class Scenario(ABC):
     # Deprecated funcs, DO NOT USE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!#
     ###################################################################################
 
-    def determine_as_outcome(self, as_obj: AS, ann: Optional["CPPAnn" | "PyAnn"]) -> PyOutcomes | CPPOutcomes:
+    def determine_as_outcome(
+        self, as_obj: AS, ann: Optional["CPPAnn" | "PyAnn"]
+    ) -> PyOutcomes | CPPOutcomes:
         """Determines the outcome at an AS
 
         ann is most_specific_ann is the most specific prefix announcement
@@ -517,7 +525,8 @@ class Scenario(ABC):
         elif (
             ann is None
             or len(ann.as_path) == 1
-            or ann.recv_relationship in (CPPRelationships.ORIGIN, PyRelationships.ORIGIN)
+            or ann.recv_relationship
+            in (CPPRelationships.ORIGIN, PyRelationships.ORIGIN)
             or ann.traceback_end
         ):
             return PyOutcomes.DISCONNECTED

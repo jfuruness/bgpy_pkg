@@ -48,7 +48,9 @@ class Diagram:
         """Adds legend to the graph with outcome counts"""
 
         attacker_success_count = sum(
-            1 for x in traceback.values() if x.value == PyOutcomes.ATTACKER_SUCCESS.value
+            1
+            for x in traceback.values()
+            if x.value == PyOutcomes.ATTACKER_SUCCESS.value
         )
         victim_success_count = sum(
             1 for x in traceback.values() if x.value == PyOutcomes.VICTIM_SUCCESS.value

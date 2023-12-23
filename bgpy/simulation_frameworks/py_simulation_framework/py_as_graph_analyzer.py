@@ -13,7 +13,6 @@ if TYPE_CHECKING:
     from bgpy.simulation_engines.cpp_simulation_engine import CPPAnnouncement as CPPAnn
 
 
-
 class PyASGraphAnalyzer(ASGraphAnalyzer):
     """Takes in a SimulationEngine and outputs metrics"""
 

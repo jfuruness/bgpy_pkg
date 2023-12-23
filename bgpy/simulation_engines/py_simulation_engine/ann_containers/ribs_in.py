@@ -57,7 +57,9 @@ class RIBsIn(AnnContainer):
         return self._info.get(neighbor_asn, dict()).get(prefix)
 
     def add_unprocessed_ann(
-        self, unprocessed_ann: PyAnn | CPPAnn, recv_relationship: PyRelationships | CPPRelationships
+        self,
+        unprocessed_ann: PyAnn | CPPAnn,
+        recv_relationship: PyRelationships | CPPRelationships,
     ):
         """Adds an unprocessed ann to ribs in
 

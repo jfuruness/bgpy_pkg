@@ -12,7 +12,6 @@ if TYPE_CHECKING:
     )
 
 
-
 class ROVSimplePolicy(BGPSimplePolicy):
     """An Policy that deploys ROV"""
 

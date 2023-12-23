@@ -3,7 +3,9 @@ from pathlib import Path
 from bgpy.simulation_engines.py_simulation_engine import ROVSimplePolicy
 from bgpy.enums import SpecialPercentAdoptions
 from bgpy.simulation_frameworks.py_simulation_framework import (
-    PySimulation, SubprefixHijack, ScenarioConfig
+    PySimulation,
+    SubprefixHijack,
+    ScenarioConfig,
 )
 
 

@@ -8,7 +8,9 @@ from bgpy.simulation_framework.py_simulation_frameworks.metric_tracker.metric_tr
     MetricTracker,
 )
 from bgpy.simulation_frameworks.base.as_graph_analyzer import ASGraphAnalyzer
-from bgpy.simulation_frameworks.py_simulation_framework.py_as_graph_analyzer import PyASGraphAnalyzer
+from bgpy.simulation_frameworks.py_simulation_framework.py_as_graph_analyzer import (
+    PyASGraphAnalyzer,
+)
 
 from .diagram import Diagram
 

@@ -50,7 +50,9 @@ class Policy(YamlAble, metaclass=ABCMeta):
     ##########################
 
     @abstractmethod
-    def receive_ann(self, ann: "PyAnn" | "CPPAnn", accept_withdrawals: bool = False) -> None:
+    def receive_ann(
+        self, ann: "PyAnn" | "CPPAnn", accept_withdrawals: bool = False
+    ) -> None:
         """Function for recieving announcements"""
 
         raise NotImplementedError

@@ -22,7 +22,9 @@ class RIBsOut(AnnContainer):
         """
 
         # {neighbor: {prefix: announcement}}
-        self._info: dict[int, dict[str, PyAnn | CPPAnn]] = _info if _info is not None else dict()
+        self._info: dict[int, dict[str, PyAnn | CPPAnn]] = (
+            _info if _info is not None else dict()
+        )
 
     def get_ann(self, neighbor_asn: int, prefix: str) -> Optional[PyAnn | CPPAnn]:
         """Returns Ann for a given neighbor asn and prefix"""

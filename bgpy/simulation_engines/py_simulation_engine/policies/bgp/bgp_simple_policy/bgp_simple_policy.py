@@ -39,7 +39,6 @@ if TYPE_CHECKING:
     )
 
 
-
 class BGPSimplePolicy(Policy):
     name: str = "BGP Simple"
 
@@ -63,7 +62,11 @@ class BGPSimplePolicy(Policy):
         self.as_: CallableProxyType["AS"] = as_  # type: ignore
 
     @property
-    def _gao_rexford_funcs(self) -> tuple[Callable[[PyAnn | CPPAnn, PyAnn | CPPAnn], Optional[PyAnn | CPPAnn]], ...]:
+    def _gao_rexford_funcs(
+        self,
+    ) -> tuple[
+        Callable[[PyAnn | CPPAnn, PyAnn | CPPAnn], Optional[PyAnn | CPPAnn]], ...
+    ]:
         return (
             self._get_best_ann_by_local_pref,
             self._get_best_ann_by_as_path,

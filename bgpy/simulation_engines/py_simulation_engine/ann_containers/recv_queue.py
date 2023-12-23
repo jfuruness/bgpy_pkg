@@ -21,7 +21,9 @@ class RecvQueue(AnnContainer):
         yamlable using the yamlable library
         """
 
-        self._info: dict[str, list[PyAnn | CPPAnn]] = _info if _info is not None else dict()
+        self._info: dict[str, list[PyAnn | CPPAnn]] = (
+            _info if _info is not None else dict()
+        )
 
     def add_ann(self, ann: PyAnn | CPPAnn):
         """Appends ann to the list of recieved ann for that prefix

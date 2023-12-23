@@ -70,7 +70,9 @@ def process_incoming_anns(
             if ann.withdraw:
                 if self._process_incoming_withdrawal(ann, from_rel):
                     # the above will return true if the local rib is changed
-                    updated_loc_rib_ann: PyAnn | CPPAnn = self._local_rib.get_ann(prefix)
+                    updated_loc_rib_ann: PyAnn | CPPAnn = self._local_rib.get_ann(
+                        prefix
+                    )
                     if current_processed:
                         current_ann = updated_loc_rib_ann
                     else:

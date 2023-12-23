@@ -15,7 +15,6 @@ if TYPE_CHECKING:
     from bgpy.enums import PyRelationships, CPPRelationships
 
 
-
 def receive_ann(self, ann: PyAnn | CPPAnn, accept_withdrawals: bool = False) -> None:
     """Function for recieving announcements, adds to recv_q"""
 
@@ -62,7 +61,9 @@ def process_incoming_anns(
     self._reset_q(reset_q)
 
 
-def _valid_ann(self, ann: PyAnn | CPPAnn, recv_relationship: PyRelationships | CPPRelationships) -> bool:
+def _valid_ann(
+    self, ann: PyAnn | CPPAnn, recv_relationship: PyRelationships | CPPRelationships
+) -> bool:
     """Determine if an announcement is valid or should be dropped"""
 
     # BGP Loop Prevention Check
