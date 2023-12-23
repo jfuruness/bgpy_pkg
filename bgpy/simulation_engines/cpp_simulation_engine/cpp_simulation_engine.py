@@ -1,3 +1,4 @@
+from pathlib import Path
 from tempfile import TemporaryDirectory
 from typing import Any, Optional, TYPE_CHECKING
 
@@ -32,8 +33,13 @@ class CPPSimulationEngine(SimulationEngine):
             # TODO: fix circular imports
             with TemporaryDirectory() as tmp_dir:
                 tsv_path = Path(tmp_dir) / "caida.tsv"
-                bgpy.as_graphs.base.ASGraphConstructor.write_tsv(as_graph, tsv_path)
-                self._cpp_simulation_engine = get_engine(str(tsv_path))
+                bgpy.as_graphs.base.ASGraphConstructor.write_tsv(self.as_graph, tsv_path)
+                try:
+                    self._cpp_simulation_engine = get_engine(str(tsv_path))
+                except ValueError as e:
+                    msg = f"is customer_cones set to False? {e}"
+                    print(msg)
+                    raise
 
     def __eq__(self, other) -> bool:
         """Returns if two simulators contain the same BGPDAG's"""

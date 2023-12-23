@@ -70,10 +70,11 @@ ASGraph readASGraph(const std::string& filename) {
         // Shared between as_dict and propagation_ranks
         auto as = std::make_shared<AS>(asn);
         as->initialize();
-
+        std::cout<<"a"<<std::endl;
         parseASNList(asGraph.as_dict, tokens[1], as->peers);
         parseASNList(asGraph.as_dict, tokens[2], as->customers);
         parseASNList(asGraph.as_dict, tokens[3], as->providers);
+        std::cout<<"b"<<std::endl;
 
         as->input_clique = (tokens[4] == "True");
         as->ixp = (tokens[5] == "True");
@@ -82,6 +83,7 @@ ASGraph readASGraph(const std::string& filename) {
         as->stub = (tokens[9] == "True");
         as->multihomed = (tokens[10] == "True");
         as->transit = (tokens[11] == "True");
+        std::cout<<"c"<<std::endl;
 
         asGraph.as_dict[asn] = as;
     }

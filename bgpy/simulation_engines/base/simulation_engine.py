@@ -77,36 +77,6 @@ class SimulationEngine(YamlAble, ABC):
 
         raise NotImplementedError
 
-    @abstractmethod
-    def _set_as_classes(
-        self,
-        BasePolicyCls: type[Policy],
-        non_default_asn_cls_dict: frozendict[int, type[Policy]],
-        prev_scenario: Optional["Scenario"] = None,
-    ) -> frozenset[type[Policy]]:
-        """Resets Engine ASes and changes their AS class
-
-        We do this here because we already seed from the scenario
-        to allow for easy overriding. If scenario controls seeding,
-        it doesn't make sense for engine to control resetting either
-        and have each do half and half
-        """
-
-        raise NotImplementedError
-
-    def _seed_announcements(
-        self,
-        announcements: tuple["PyAnn | CPPAnn", ...] = (),
-        prev_scenario: Optional["Scenario"] = None,
-    ) -> None:
-        """Seeds announcement at the proper AS
-
-        Since this is the simulator engine, we should
-        never have to worry about overlapping announcements
-        """
-
-        raise NotImplementedError
-
     #####################
     # Propagation funcs #
     #####################

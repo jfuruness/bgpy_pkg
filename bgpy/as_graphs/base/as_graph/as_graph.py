@@ -62,7 +62,7 @@ class ASGraph(YamlAble):
         as_graph_info: "ASGraphInfo",
         BaseASCls: type[AS] = AS,
         BasePolicyCls: type[Policy] = BGPSimplePolicy,
-        customer_cones: bool = False,
+        customer_cones: bool = True,
         yaml_as_dict: Optional[frozendict[int, AS]] = None,
         yaml_ixp_asns: frozenset[int] = frozenset(),
         # Users can pass in any additional AS groups they want to keep track of
