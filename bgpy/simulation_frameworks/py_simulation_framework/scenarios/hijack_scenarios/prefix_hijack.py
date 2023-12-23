@@ -16,7 +16,9 @@ if TYPE_CHECKING:
 class PrefixHijack(Scenario):
     """Prefix hijack where both attacker and victim compete for a prefix"""
 
-    def _get_announcements(self, *args, **kwargs) -> tuple[Union["CPPAnn", "PyAnn"], ...]:
+    def _get_announcements(
+        self, *args, **kwargs
+    ) -> tuple[Union["CPPAnn", "PyAnn"], ...]:
         """Returns the two announcements seeded for this engine input
 
         This engine input is for a prefix hijack,

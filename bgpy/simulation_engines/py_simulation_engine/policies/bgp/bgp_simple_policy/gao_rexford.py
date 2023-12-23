@@ -12,7 +12,9 @@ if TYPE_CHECKING:
 
 
 def _get_best_ann_by_gao_rexford(
-    self, current_ann: Optional[Union["PyAnn", "CPPAnn"]], new_ann: Union["PyAnn", "CPPAnn"]
+    self,
+    current_ann: Optional[Union["PyAnn", "CPPAnn"]],
+    new_ann: Union["PyAnn", "CPPAnn"],
 ) -> Union["PyAnn", "CPPAnn"]:
     """Determines if the new ann > current ann by Gao Rexford"""
 

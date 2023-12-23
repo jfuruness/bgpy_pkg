@@ -33,7 +33,9 @@ def process_incoming_anns(
 
     for prefix, anns in self._recv_q.prefix_anns():
         # Get announcement currently in local rib
-        _local_rib_ann: Optional[Union["PyAnn", "CPPAnn"]] = self._local_rib.get_ann(prefix)
+        _local_rib_ann: Optional[Union["PyAnn", "CPPAnn"]] = self._local_rib.get_ann(
+            prefix
+        )
         current_ann: Optional[Union["PyAnn", "CPPAnn"]] = _local_rib_ann
         current_processed: bool = True
 
@@ -70,9 +72,9 @@ def process_incoming_anns(
             if ann.withdraw:
                 if self._process_incoming_withdrawal(ann, from_rel):
                     # the above will return true if the local rib is changed
-                    updated_loc_rib_ann: Union["PyAnn", "CPPAnn"] = self._local_rib.get_ann(
-                        prefix
-                    )
+                    updated_loc_rib_ann: Union[
+                        "PyAnn", "CPPAnn"
+                    ] = self._local_rib.get_ann(prefix)
                     if current_processed:
                         current_ann = updated_loc_rib_ann
                     else:
@@ -170,7 +172,9 @@ def _new_ann_better(
 
 
 def _process_incoming_withdrawal(
-    self, ann: Union["PyAnn", "CPPAnn"], recv_relationship: Union["PyRelationships", "CPPRelationships"]
+    self,
+    ann: Union["PyAnn", "CPPAnn"],
+    recv_relationship: Union["PyRelationships", "CPPRelationships"],
 ) -> bool:
     prefix: str = ann.prefix
     neighbor: int = ann.as_path[0]
@@ -260,7 +264,9 @@ def _select_best_ribs_in(self, prefix: str) -> Optional[Union["PyAnn", "CPPAnn"]
 
     # Get the best announcement
     best_unprocessed_ann: Optional[Union["PyAnn", "CPPAnn"]] = None
-    best_recv_relationship: Optional[Union["PyRelationships", "CPPRelationships"]] = None
+    best_recv_relationship: Optional[
+        Union["PyRelationships", "CPPRelationships"]
+    ] = None
     for ann_info in self._ribs_in.get_ann_infos(prefix):
         new_unprocessed_ann = ann_info.unprocessed_ann
         new_recv_relationship = ann_info.recv_relationship

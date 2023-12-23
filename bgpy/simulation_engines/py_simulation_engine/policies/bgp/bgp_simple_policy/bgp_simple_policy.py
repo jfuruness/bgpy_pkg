@@ -65,7 +65,11 @@ class BGPSimplePolicy(Policy):
     def _gao_rexford_funcs(
         self,
     ) -> tuple[
-        Callable[[Union["PyAnn", "CPPAnn"], Union["PyAnn", "CPPAnn"]], Optional[Union["PyAnn", "CPPAnn"]]], ...
+        Callable[
+            [Union["PyAnn", "CPPAnn"], Union["PyAnn", "CPPAnn"]],
+            Optional[Union["PyAnn", "CPPAnn"]],
+        ],
+        ...,
     ]:
         return (
             self._get_best_ann_by_local_pref,

@@ -21,7 +21,9 @@ class SubprefixHijack(Scenario):
     invalid by roa by length and origin
     """
 
-    def _get_announcements(self, *args, **kwargs) -> tuple[Union["CPPAnn", "PyAnn"], ...]:
+    def _get_announcements(
+        self, *args, **kwargs
+    ) -> tuple[Union["CPPAnn", "PyAnn"], ...]:
         """Returns victim and attacker anns for subprefix hijack
 
         for subclasses of this EngineInput, you can set AnnCls equal to

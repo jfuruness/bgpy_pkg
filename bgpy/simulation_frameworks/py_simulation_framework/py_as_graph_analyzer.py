@@ -24,8 +24,12 @@ class PyASGraphAnalyzer(ASGraphAnalyzer):
             as_obj: self._get_most_specific_ann(as_obj)
             for as_obj in engine.as_graph
         }
-        self._data_plane_outcomes: dict[int, Union["CPPOutcomes", "PyOutcomes"]] = dict()
-        self._control_plane_outcomes: dict[int, Union["CPPOutcomes", "PyOutcomes"]] = dict()
+        self._data_plane_outcomes: dict[
+            int, Union["CPPOutcomes", "PyOutcomes"]
+        ] = dict()
+        self._control_plane_outcomes: dict[
+            int, Union["CPPOutcomes", "PyOutcomes"]
+        ] = dict()
         self.outcomes: dict[int, dict[int, Any]] = {
             Plane.DATA.value: self._data_plane_outcomes,
             Plane.CTRL.value: self._control_plane_outcomes,
@@ -59,7 +63,9 @@ class PyASGraphAnalyzer(ASGraphAnalyzer):
     # Data plane funcs #
     ####################
 
-    def _get_as_outcome_data_plane(self, as_obj: AS) -> Union["CPPOutcomes", "PyOutcomes"]:
+    def _get_as_outcome_data_plane(
+        self, as_obj: AS
+    ) -> Union["CPPOutcomes", "PyOutcomes"]:
         """Recursively returns the as outcome"""
 
         if as_obj in self._data_plane_outcomes:
@@ -110,7 +116,9 @@ class PyASGraphAnalyzer(ASGraphAnalyzer):
     # Control Plane Funcs #
     #######################
 
-    def _get_as_outcome_ctrl_plane(self, as_obj: AS) -> Union["CPPOutcomes", "PyOutcomes"]:
+    def _get_as_outcome_ctrl_plane(
+        self, as_obj: AS
+    ) -> Union["CPPOutcomes", "PyOutcomes"]:
         """Stores and returns the AS outcome from the control plane"""
 
         most_specific_ann = self._most_specific_ann_dict[as_obj]
@@ -142,6 +150,8 @@ class PyASGraphAnalyzer(ASGraphAnalyzer):
     # Hook funcs for other metrics #
     ################################
 
-    def _get_other_as_outcome_hook(self, as_obj: AS) -> Union["CPPOutcomes", "PyOutcomes"]:
+    def _get_other_as_outcome_hook(
+        self, as_obj: AS
+    ) -> Union["CPPOutcomes", "PyOutcomes"]:
         # Noop, this is just to satisfy mypy
         return PyOutcomes.ATTACKER_SUCCESS

@@ -23,7 +23,9 @@ class SuperprefixPrefixHijack(Scenario):
     and the victim announces their own prefix
     """
 
-    def _get_announcements(self, *args, **kwargs) -> tuple[Union["CPPAnn", "PyAnn"], ...]:
+    def _get_announcements(
+        self, *args, **kwargs
+    ) -> tuple[Union["CPPAnn", "PyAnn"], ...]:
         """Returns victim+attacker prefix ann, attacker superprefix ann
 
         for subclasses of this EngineInput, you can set AnnCls equal to

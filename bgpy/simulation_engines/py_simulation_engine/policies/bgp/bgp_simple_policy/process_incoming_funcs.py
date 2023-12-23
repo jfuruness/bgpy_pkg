@@ -15,7 +15,9 @@ if TYPE_CHECKING:
     from bgpy.enums import PyRelationships, CPPRelationships
 
 
-def receive_ann(self, ann: Union["PyAnn", "CPPAnn"], accept_withdrawals: bool = False) -> None:
+def receive_ann(
+    self, ann: Union["PyAnn", "CPPAnn"], accept_withdrawals: bool = False
+) -> None:
     """Function for recieving announcements, adds to recv_q"""
 
     if ann.withdraw and not accept_withdrawals:
@@ -62,7 +64,9 @@ def process_incoming_anns(
 
 
 def _valid_ann(
-    self, ann: Union["PyAnn", "CPPAnn"], recv_relationship: Union["PyRelationships", "CPPRelationships"]
+    self,
+    ann: Union["PyAnn", "CPPAnn"],
+    recv_relationship: Union["PyRelationships", "CPPRelationships"],
 ) -> bool:
     """Determine if an announcement is valid or should be dropped"""
 
