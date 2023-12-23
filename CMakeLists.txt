@@ -14,21 +14,71 @@ project(
   VERSION ${SKBUILD_PROJECT_VERSION}
   LANGUAGES CXX)
 
-### Personal modifications:
+### Personal modifications##############################
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
+
+# Set the default build type to Release if not specified
+#if(NOT CMAKE_BUILD_TYPE)
+  set(CMAKE_BUILD_TYPE Release)
+#endif()
+set(CMAKE_CXX_FLAGS_RELEASE "-O3 -march=native")
+
+################################################################
 
 # Find the module development requirements (requires FindPython from 3.17 or
 # scikit-build-core's built-in backport)
 find_package(Python REQUIRED COMPONENTS Interpreter Development.Module)
 find_package(pybind11 CONFIG REQUIRED)
 
+##################modification
+# Check for LTO support and enable it if possible
+include(CheckIPOSupported)
+check_ipo_supported(RESULT lto_supported)
+if(lto_supported)
+  message(STATUS "LTO supported")
+else()
+  message(STATUS "LTO not supported")
+endif()
+#####################################
+
+
 # Add a library using FindPython's tooling (pybind11 also provides a helper like
 # this)
-python_add_library(bgpc MODULE bgpc/src/main.cpp bgpc/src/announcement.cpp WITH_SOABI)
+############################################################################
+# Automatically include all .cpp files in bgpc/src and its subdirectories
+file(GLOB_RECURSE BGPC_SOURCES "bgpc/src/*.cpp")
+# python_add_library(bgpc MODULE bgpc/src/main.cpp bgpc/src/announcement.cpp bgpc/src/ann_containers/local_rib.cpp WITH_SOABI)
+python_add_library(bgpc MODULE ${BGPC_SOURCES} WITH_SOABI)
+##############################################################################
+
+########################modification
+if(lto_supported)
+  set_property(TARGET bgpc PROPERTY INTERPROCEDURAL_OPTIMIZATION TRUE)
+endif()
+####################################
 
 # Add the directory where the header files are located
-target_include_directories(bgpc PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/bgpc/include)
+# Also include the new directory for ann_containers
+# Old way:
+# target_include_directories(bgpc PRIVATE
+#   ${CMAKE_CURRENT_SOURCE_DIR}/bgpc/include
+#   ${CMAKE_CURRENT_SOURCE_DIR}/bgpc/include/ann_containers
+# )
+#######################################################################
+# New Way:
+# Get all subdirectories in bgpc/include
+file(GLOB children RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}/bgpc/include ${CMAKE_CURRENT_SOURCE_DIR}/bgpc/include/*)
+set(include_dirs "")
+foreach(child ${children})
+    if(IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/bgpc/include/${child})
+        list(APPEND include_dirs ${CMAKE_CURRENT_SOURCE_DIR}/bgpc/include/${child})
+    endif()
+endforeach()
+
+# Now include these directories
+target_include_directories(bgpc PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/bgpc/include ${include_dirs})
+######################################################################
 
 target_link_libraries(bgpc PRIVATE pybind11::headers)
 

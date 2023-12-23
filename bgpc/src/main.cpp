@@ -1,8 +1,10 @@
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
 //#include <pybind11/optional.h>
-#include <relationships.hpp>
-#include <announcement.hpp>
+#include "relationships.hpp"
+#include "announcement.hpp"
+#include "local_rib.hpp"
+#include "recv_queue.hpp"
 
 
 
@@ -33,69 +35,6 @@
 //esp since it's probably negligable since this timing test
 //was with 100000000U times
 #define BOOST_DISABLE_THREADS
-
-class LocalRIB {
-protected:
-    std::map<std::string, std::shared_ptr<Announcement>> _info;
-
-public:
-    LocalRIB() {}
-
-    std::shared_ptr<Announcement> get_ann(const std::string& prefix, const std::shared_ptr<Announcement>& default_ann = nullptr) const {
-        // Returns announcement or nullptr from the local rib by prefix
-        auto it = _info.find(prefix);
-        if (it != _info.end()) {
-            return it->second;
-        }
-        return default_ann;
-    }
-
-    void add_ann(const std::shared_ptr<Announcement>& ann) {
-        // Adds an announcement to local rib with prefix as key
-        _info[ann->prefix] = ann;
-    }
-
-    void remove_ann(const std::string& prefix) {
-        // Removes announcement from local rib based on prefix
-        _info.erase(prefix);
-    }
-
-    const std::map<std::string, std::shared_ptr<Announcement>>& prefix_anns() const {
-        // Returns all prefixes and announcements zipped
-        return _info;
-    }
-};
-
-
-class RecvQueue {
-protected:
-    std::map<std::string, std::vector<std::shared_ptr<Announcement>>> _info;
-
-public:
-    RecvQueue() {}
-
-    void add_ann(const std::shared_ptr<Announcement>& ann) {
-        // Appends ann to the list of received announcements for that prefix
-        _info[ann->prefix].push_back(ann);
-    }
-
-    const std::map<std::string, std::vector<std::shared_ptr<Announcement>>>& prefix_anns() const {
-        // Returns all prefixes and announcement lists
-        return _info;
-    }
-
-    const std::vector<std::shared_ptr<Announcement>>& get_ann_list(const std::string& prefix) const {
-        // Returns received announcement list for a given prefix
-        static const std::vector<std::shared_ptr<Announcement>> empty; // To return in case of no match
-        auto it = _info.find(prefix);
-        if (it != _info.end()) {
-            return it->second;
-        }
-        return empty;
-    }
-};
-
-
 
 class AS; // Forward declaration
 
