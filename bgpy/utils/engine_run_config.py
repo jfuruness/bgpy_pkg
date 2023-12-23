@@ -28,7 +28,7 @@ class EngineRunConfig:
     as_graph_info: ASGraphInfo
     propagation_rounds: int = 1
     ASGraphCls: type[ASGraph] = CAIDAASGraph
-    SimulationEngineCls: type[SimulationEngine] = PySimulationEngine
+    SimulationEngineCls: type[SimulationEngine] = PySimulationEngine  # type: ignore
     MetricTrackerCls: type[MetricTracker] = MetricTracker
     GraphAnalyzerCls: type[ASGraphAnalyzer] = PyASGraphAnalyzer
     DiagramCls: type[Diagram] = Diagram

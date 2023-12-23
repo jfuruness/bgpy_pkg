@@ -25,7 +25,7 @@ def _get_best_ann_by_gao_rexford(
         for func in self._gao_rexford_funcs:
             best_ann = func(current_ann, new_ann)
             if best_ann is not None:
-                assert isinstance(best_ann, [PyAnn, CPPAnn]), "type check for mypy"
+                assert isinstance(best_ann, (PyAnn, CPPAnn)), "type check for mypy"
                 return best_ann
         raise Exception("No ann was chosen")
 

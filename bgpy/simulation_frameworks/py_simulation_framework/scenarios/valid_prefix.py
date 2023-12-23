@@ -8,7 +8,7 @@ from bgpy.enums import Timestamps
 
 if TYPE_CHECKING:
     from bgpy.simulation_engines.cpp_simulation_engine import CPPAnnouncement as CPPAnn
-    from bgpy.simulation_engines.py_simulation_engine import Announcement as PyAnn
+    from bgpy.simulation_engines.py_simulation_engine import PyAnnouncement as PyAnn
 
 
 class ValidPrefix(Scenario):

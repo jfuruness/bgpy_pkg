@@ -1,6 +1,7 @@
 from .cpp_enums import CPPRelationships, CPPOutcomes
 from .py_enums import (
     yamlable_enums,
+    YamlAbleEnum,
     PyOutcomes,
     PyRelationships,
     Plane,
@@ -22,6 +23,7 @@ __all__ = [
     "CPPRelationships",
     "CPPOutcomes",
     "yamlable_enums",
+    "YamlAbleEnum",
     "PyOutcomes",
     "PyRelationships",
     "Plane",

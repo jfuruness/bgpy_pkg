@@ -57,10 +57,9 @@ class EngineRunner:
         analyzer = self.conf.GraphAnalyzerCls(engine=engine, scenario=scenario)
         outcomes = analyzer.analyze()
         data_plane_outcomes = outcomes[Plane.DATA.value]
+        # This comment is no longer relevant, we just store the ASN
         # Convert this to just be {ASN: Outcome} (Not the AS object)
-        outcomes_yaml = {
-            as_obj.asn: result for as_obj, result in data_plane_outcomes.items()
-        }
+        outcomes_yaml = dict(data_plane_outcomes)
         metric_tracker = self._get_trial_metrics(
             engine=engine,
             percent_adopt=0,
@@ -92,7 +91,7 @@ class EngineRunner:
         trial: int,
         scenario: Scenario,
         propagation_round: int,
-        outcomes: dict[str, dict[AS, PyOutcomes | CPPOutcomes]],
+        outcomes: dict[int, dict[int, PyOutcomes | CPPOutcomes]],
     ) -> MetricTracker:
         # Get stored metrics
         metric_tracker = self.conf.MetricTrackerCls()
@@ -104,6 +103,7 @@ class EngineRunner:
             propagation_round=self.conf.propagation_rounds - 1,
             outcomes=outcomes,
         )
+        assert isinstance(metric_tracker, MetricTracker)
         return metric_tracker
 
     def _store_data(

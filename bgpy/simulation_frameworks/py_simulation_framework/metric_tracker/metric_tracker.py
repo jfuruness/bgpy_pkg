@@ -12,7 +12,7 @@ from .metric import Metric
 from .metric_key import MetricKey
 
 from bgpy.as_graphs import AS
-from bgpy.enums import Plane, SpecialPercentAdoptions
+from bgpy.enums import Plane, SpecialPercentAdoptions, PyOutcomes, CPPOutcomes
 from bgpy.simulation_engines.base import SimulationEngine
 from bgpy.simulation_frameworks.py_simulation_framework.scenarios import Scenario
 from bgpy.simulation_frameworks.py_simulation_framework.utils import get_all_metric_keys
@@ -165,7 +165,7 @@ class MetricTracker:
         trial: int,
         scenario: Scenario,
         propagation_round: int,
-        outcomes: dict[str, dict[AS, Any]],
+        outcomes: dict[int, dict[int, CPPOutcomes | PyOutcomes]],
     ) -> None:
         """Tracks all metrics from a single trial, adding to self.data
 

@@ -12,7 +12,7 @@ from .scenarios import NonRoutedSuperprefixHijack
 from .scenarios import NonRoutedSuperprefixPrefixHijack
 from .scenarios import ValidPrefix
 
-from .simulation import Simulation
+from .py_simulation import PySimulation
 
 
 __all__ = [
@@ -28,6 +28,6 @@ __all__ = [
     "NonRoutedSuperprefixHijack",
     "NonRoutedSuperprefixPrefixHijack",
     "ValidPrefix",
-    "Simulation",
+    "PySimulation",
     "get_real_world_rov_asn_cls_dict",
 ]

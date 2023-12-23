@@ -7,7 +7,7 @@ from bgpy.enums import Prefixes
 from bgpy.simulation_frameworks.py_simulation_frameworks import ScenarioConfig
 from bgpy.simulation_frameworks.py_simulation_frameworks import SubprefixHijack
 from bgpy.simulation_frameworks.py_simulation_frameworks import NonRoutedPrefixHijack
-from bgpy.simulation_engines.py_simulation_engine import Announcement
+from bgpy.simulation_engines.py_simulation_engine import PyAnnouncement
 from bgpy.simulation_engines.py_simulation_engine import BGPSimplePolicy
 from bgpy.simulation_engines.py_simulation_engine import BGPPolicy
 from bgpy.simulation_engines.py_simulation_engine import ROVSimplePolicy
@@ -23,7 +23,7 @@ class TestScenario:
         num_victims = 1
         scenario_config = ScenarioConfig(
             ScenarioCls=SubprefixHijack,
-            AnnCls=Announcement,
+            AnnCls=PyAnnouncement,
             BasePolicyCls=BGPSimplePolicy,
             num_attackers=num_attackers,
             num_victims=num_victims,
@@ -63,7 +63,7 @@ class TestScenario:
         assert issubclass(conf.AdoptPolicyCls, conf.BasePolicyCls)
 
     ##############################################
-    # set Attacker/Victim and Announcement Funcs #
+    # set Attacker/Victim and PyAnnouncement Funcs #
     ##############################################
 
     def test_set_attackers_victims_anns_w_prev_scenario(self, engine):

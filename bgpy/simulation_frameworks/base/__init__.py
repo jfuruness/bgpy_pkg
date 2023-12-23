@@ -1,4 +1,4 @@
-from .graph_analyzer import GraphAnalyzer
+from .as_graph_analyzer import ASGraphAnalyzer
 from .graph_factory import GraphFactory
 from .metric_tracker import MetricTracker
 
@@ -16,7 +16,7 @@ from .simulation import Simulation
 
 
 __all__ = [
-    "GraphAnalyzer",
+    "ASGraphAnalyzer",
     "GraphFactory",
     "MetricTracker",
     "ScenarioConfig",

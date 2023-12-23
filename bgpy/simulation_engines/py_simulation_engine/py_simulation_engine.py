@@ -2,7 +2,7 @@ from typing import Any, Optional, TYPE_CHECKING
 
 from frozendict import frozendict
 
-from bgpy.enums import Relationships
+from bgpy.enums import PyRelationships
 from bgpy.simulation_engines.base import SimulationEngine
 from bgpy.simulation_engines.base import Policy
 from bgpy.simulation_engines.py_simulation_engine.policies import BGPSimplePolicy
@@ -136,7 +136,7 @@ class PySimulationEngine(SimulationEngine):
                 # Process first because maybe it recv from lower ranks
                 for as_obj in rank:
                     as_obj.policy.process_incoming_anns(
-                        from_rel=Relationships.CUSTOMERS,
+                        from_rel=PyRelationships.CUSTOMERS,
                         propagation_round=propagation_round,
                         scenario=scenario,
                     )
@@ -158,7 +158,7 @@ class PySimulationEngine(SimulationEngine):
             as_obj.policy.propagate_to_peers()
         for as_obj in self.as_graph:
             as_obj.policy.process_incoming_anns(
-                from_rel=Relationships.PEERS,
+                from_rel=PyRelationships.PEERS,
                 propagation_round=propagation_round,
                 scenario=scenario,
             )
@@ -174,7 +174,7 @@ class PySimulationEngine(SimulationEngine):
             if i > 0:
                 for as_obj in rank:
                     as_obj.policy.process_incoming_anns(
-                        from_rel=Relationships.PROVIDERS,
+                        from_rel=PyRelationships.PROVIDERS,
                         propagation_round=propagation_round,
                         scenario=scenario,
                     )
