@@ -12,79 +12,10 @@ as_graph: !yamlable/CAIDAASGraph
       - 3
       - 5
       policy: !yamlable/BGPPolicy
-        _local_rib: !yamlable/LocalRIB
-          1.2.0.0/16: !yamlable/Announcement
-            as_path: !!python/tuple
-            - 1
-            - 3
-            communities: !!python/tuple []
-            prefix: 1.2.0.0/16
-            recv_relationship: !simulator_codec/Relationships
-              name: PEERS
-              value: 2
-            roa_origin: 2
-            roa_valid_length: true
-            seed_asn: null
-            timestamp: 0
-            traceback_end: false
-            withdraw: false
+        _local_rib: !yamlable/LocalRIB {}
         _recv_q: !yamlable/RecvQueue {}
-        _ribs_in: !yamlable/RIBsIn
-          2:
-            1.2.0.0/16: !yamlable/AnnInfo
-              recv_relationship: !simulator_codec/Relationships
-                name: PROVIDERS
-                value: 1
-              unprocessed_ann: !yamlable/Announcement
-                as_path: !!python/tuple
-                - 2
-                communities: !!python/tuple []
-                prefix: 1.2.0.0/16
-                recv_relationship: !simulator_codec/Relationships
-                  name: ORIGIN
-                  value: 4
-                roa_origin: 2
-                roa_valid_length: true
-                seed_asn: 2
-                timestamp: 0
-                traceback_end: false
-                withdraw: false
-          3:
-            1.2.0.0/16: !yamlable/AnnInfo
-              recv_relationship: !simulator_codec/Relationships
-                name: PEERS
-                value: 2
-              unprocessed_ann: !yamlable/Announcement
-                as_path: !!python/tuple
-                - 3
-                communities: !!python/tuple []
-                prefix: 1.2.0.0/16
-                recv_relationship: !simulator_codec/Relationships
-                  name: ORIGIN
-                  value: 4
-                roa_origin: 2
-                roa_valid_length: true
-                seed_asn: 3
-                timestamp: 0
-                traceback_end: false
-                withdraw: false
-        _ribs_out: !yamlable/RIBsOut
-          4:
-            1.2.0.0/16: !yamlable/Announcement
-              as_path: !!python/tuple
-              - 1
-              - 3
-              communities: !!python/tuple []
-              prefix: 1.2.0.0/16
-              recv_relationship: !simulator_codec/Relationships
-                name: PEERS
-                value: 2
-              roa_origin: 2
-              roa_valid_length: true
-              seed_asn: null
-              timestamp: 0
-              traceback_end: false
-              withdraw: false
+        _ribs_in: !yamlable/RIBsIn {}
+        _ribs_out: !yamlable/RIBsOut {}
         _send_q: !yamlable/SendQueue {}
       propagation_rank: 1
       providers: !!python/tuple
@@ -99,7 +30,7 @@ as_graph: !yamlable/CAIDAASGraph
       peers: !!python/tuple []
       policy: !yamlable/BGPPolicy
         _local_rib: !yamlable/LocalRIB
-          1.2.0.0/16: !yamlable/Announcement
+          1.2.0.0/16: !yamlable/PyAnnouncement
             as_path: !!python/tuple
             - 2
             communities: !!python/tuple []
@@ -115,22 +46,7 @@ as_graph: !yamlable/CAIDAASGraph
             withdraw: false
         _recv_q: !yamlable/RecvQueue {}
         _ribs_in: !yamlable/RIBsIn {}
-        _ribs_out: !yamlable/RIBsOut
-          1:
-            1.2.0.0/16: !yamlable/Announcement
-              as_path: !!python/tuple
-              - 2
-              communities: !!python/tuple []
-              prefix: 1.2.0.0/16
-              recv_relationship: !simulator_codec/Relationships
-                name: ORIGIN
-                value: 4
-              roa_origin: 2
-              roa_valid_length: true
-              seed_asn: 2
-              timestamp: 0
-              traceback_end: false
-              withdraw: false
+        _ribs_out: !yamlable/RIBsOut {}
         _send_q: !yamlable/SendQueue {}
       propagation_rank: 2
       providers: !!python/tuple []
@@ -144,7 +60,7 @@ as_graph: !yamlable/CAIDAASGraph
       - 1
       policy: !yamlable/BGPPolicy
         _local_rib: !yamlable/LocalRIB
-          1.2.0.0/16: !yamlable/Announcement
+          1.2.0.0/16: !yamlable/PyAnnouncement
             as_path: !!python/tuple
             - 3
             communities: !!python/tuple []
@@ -160,22 +76,7 @@ as_graph: !yamlable/CAIDAASGraph
             withdraw: false
         _recv_q: !yamlable/RecvQueue {}
         _ribs_in: !yamlable/RIBsIn {}
-        _ribs_out: !yamlable/RIBsOut
-          1:
-            1.2.0.0/16: !yamlable/Announcement
-              as_path: !!python/tuple
-              - 3
-              communities: !!python/tuple []
-              prefix: 1.2.0.0/16
-              recv_relationship: !simulator_codec/Relationships
-                name: ORIGIN
-                value: 4
-              roa_origin: 2
-              roa_valid_length: true
-              seed_asn: 3
-              timestamp: 0
-              traceback_end: false
-              withdraw: false
+        _ribs_out: !yamlable/RIBsOut {}
         _send_q: !yamlable/SendQueue {}
       propagation_rank: 0
       providers: !!python/tuple []
@@ -187,45 +88,9 @@ as_graph: !yamlable/CAIDAASGraph
       ixp: false
       peers: !!python/tuple []
       policy: !yamlable/BGPPolicy
-        _local_rib: !yamlable/LocalRIB
-          1.2.0.0/16: !yamlable/Announcement
-            as_path: !!python/tuple
-            - 4
-            - 1
-            - 3
-            communities: !!python/tuple []
-            prefix: 1.2.0.0/16
-            recv_relationship: !simulator_codec/Relationships
-              name: PROVIDERS
-              value: 1
-            roa_origin: 2
-            roa_valid_length: true
-            seed_asn: null
-            timestamp: 0
-            traceback_end: false
-            withdraw: false
+        _local_rib: !yamlable/LocalRIB {}
         _recv_q: !yamlable/RecvQueue {}
-        _ribs_in: !yamlable/RIBsIn
-          1:
-            1.2.0.0/16: !yamlable/AnnInfo
-              recv_relationship: !simulator_codec/Relationships
-                name: PROVIDERS
-                value: 1
-              unprocessed_ann: !yamlable/Announcement
-                as_path: !!python/tuple
-                - 1
-                - 3
-                communities: !!python/tuple []
-                prefix: 1.2.0.0/16
-                recv_relationship: !simulator_codec/Relationships
-                  name: PEERS
-                  value: 2
-                roa_origin: 2
-                roa_valid_length: true
-                seed_asn: null
-                timestamp: 0
-                traceback_end: false
-                withdraw: false
+        _ribs_in: !yamlable/RIBsIn {}
         _ribs_out: !yamlable/RIBsOut {}
         _send_q: !yamlable/SendQueue {}
       propagation_rank: 0
@@ -248,4 +113,5 @@ as_graph: !yamlable/CAIDAASGraph
       propagation_rank: 0
       providers: !!python/tuple []
   ixp_asns: []
+cached_as_graph_tsv_path: null
 ready_to_run_round: 3

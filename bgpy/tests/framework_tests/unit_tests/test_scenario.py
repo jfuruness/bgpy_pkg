@@ -4,9 +4,9 @@ from frozendict import frozendict
 import pytest
 
 from bgpy.enums import Prefixes
-from bgpy.simulation_frameworks.py_simulation_frameworks import ScenarioConfig
-from bgpy.simulation_frameworks.py_simulation_frameworks import SubprefixHijack
-from bgpy.simulation_frameworks.py_simulation_frameworks import NonRoutedPrefixHijack
+from bgpy.simulation_frameworks.py_simulation_framework import ScenarioConfig
+from bgpy.simulation_frameworks.py_simulation_framework import SubprefixHijack
+from bgpy.simulation_frameworks.py_simulation_framework import NonRoutedPrefixHijack
 from bgpy.simulation_engines.py_simulation_engine import PyAnnouncement
 from bgpy.simulation_engines.py_simulation_engine import BGPSimplePolicy
 from bgpy.simulation_engines.py_simulation_engine import BGPPolicy
