@@ -1,18 +1,18 @@
 1: !simulator_codec/PyOutcomes
-  name: DISCONNECTED
-  value: 2
+  name: VICTIM_SUCCESS
+  value: 1
 2: !simulator_codec/PyOutcomes
-  name: DISCONNECTED
-  value: 2
+  name: VICTIM_SUCCESS
+  value: 1
 3: !simulator_codec/PyOutcomes
-  name: DISCONNECTED
-  value: 2
+  name: VICTIM_SUCCESS
+  value: 1
 4: !simulator_codec/PyOutcomes
-  name: DISCONNECTED
-  value: 2
+  name: VICTIM_SUCCESS
+  value: 1
 5: !simulator_codec/PyOutcomes
-  name: DISCONNECTED
-  value: 2
+  name: VICTIM_SUCCESS
+  value: 1
 777: !simulator_codec/PyOutcomes
   name: VICTIM_SUCCESS
   value: 1

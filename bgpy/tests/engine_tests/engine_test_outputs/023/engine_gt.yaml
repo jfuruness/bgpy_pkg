@@ -11,7 +11,24 @@ as_graph: !yamlable/CAIDAASGraph
       ixp: false
       peers: !!python/tuple []
       policy: !yamlable/BGPSimplePolicy
-        _local_rib: !yamlable/LocalRIB {}
+        _local_rib: !yamlable/LocalRIB
+          1.2.0.0/16: !yamlable/PyAnnouncement
+            as_path: !!python/tuple
+            - 1
+            - 2
+            - 5
+            - 777
+            communities: !!python/tuple []
+            prefix: 1.2.0.0/16
+            recv_relationship: !simulator_codec/PyRelationships
+              name: CUSTOMERS
+              value: 3
+            roa_origin: 777
+            roa_valid_length: true
+            seed_asn: null
+            timestamp: 0
+            traceback_end: false
+            withdraw: false
         _recv_q: !yamlable/RecvQueue {}
       propagation_rank: 3
       providers: !!python/tuple []
@@ -24,7 +41,23 @@ as_graph: !yamlable/CAIDAASGraph
       ixp: false
       peers: !!python/tuple []
       policy: !yamlable/BGPSimplePolicy
-        _local_rib: !yamlable/LocalRIB {}
+        _local_rib: !yamlable/LocalRIB
+          1.2.0.0/16: !yamlable/PyAnnouncement
+            as_path: !!python/tuple
+            - 2
+            - 5
+            - 777
+            communities: !!python/tuple []
+            prefix: 1.2.0.0/16
+            recv_relationship: !simulator_codec/PyRelationships
+              name: CUSTOMERS
+              value: 3
+            roa_origin: 777
+            roa_valid_length: true
+            seed_asn: null
+            timestamp: 0
+            traceback_end: false
+            withdraw: false
         _recv_q: !yamlable/RecvQueue {}
       propagation_rank: 2
       providers: !!python/tuple
@@ -38,7 +71,23 @@ as_graph: !yamlable/CAIDAASGraph
       ixp: false
       peers: !!python/tuple []
       policy: !yamlable/BGPSimplePolicy
-        _local_rib: !yamlable/LocalRIB {}
+        _local_rib: !yamlable/LocalRIB
+          1.2.0.0/16: !yamlable/PyAnnouncement
+            as_path: !!python/tuple
+            - 3
+            - 4
+            - 777
+            communities: !!python/tuple []
+            prefix: 1.2.0.0/16
+            recv_relationship: !simulator_codec/PyRelationships
+              name: CUSTOMERS
+              value: 3
+            roa_origin: 777
+            roa_valid_length: true
+            seed_asn: null
+            timestamp: 0
+            traceback_end: false
+            withdraw: false
         _recv_q: !yamlable/RecvQueue {}
       propagation_rank: 2
       providers: !!python/tuple
@@ -52,7 +101,22 @@ as_graph: !yamlable/CAIDAASGraph
       ixp: false
       peers: !!python/tuple []
       policy: !yamlable/BGPSimplePolicy
-        _local_rib: !yamlable/LocalRIB {}
+        _local_rib: !yamlable/LocalRIB
+          1.2.0.0/16: !yamlable/PyAnnouncement
+            as_path: !!python/tuple
+            - 4
+            - 777
+            communities: !!python/tuple []
+            prefix: 1.2.0.0/16
+            recv_relationship: !simulator_codec/PyRelationships
+              name: CUSTOMERS
+              value: 3
+            roa_origin: 777
+            roa_valid_length: true
+            seed_asn: null
+            timestamp: 0
+            traceback_end: false
+            withdraw: false
         _recv_q: !yamlable/RecvQueue {}
       propagation_rank: 1
       providers: !!python/tuple
@@ -66,7 +130,22 @@ as_graph: !yamlable/CAIDAASGraph
       ixp: false
       peers: !!python/tuple []
       policy: !yamlable/BGPSimplePolicy
-        _local_rib: !yamlable/LocalRIB {}
+        _local_rib: !yamlable/LocalRIB
+          1.2.0.0/16: !yamlable/PyAnnouncement
+            as_path: !!python/tuple
+            - 5
+            - 777
+            communities: !!python/tuple []
+            prefix: 1.2.0.0/16
+            recv_relationship: !simulator_codec/PyRelationships
+              name: CUSTOMERS
+              value: 3
+            roa_origin: 777
+            roa_valid_length: true
+            seed_asn: null
+            timestamp: 0
+            traceback_end: false
+            withdraw: false
         _recv_q: !yamlable/RecvQueue {}
       propagation_rank: 1
       providers: !!python/tuple

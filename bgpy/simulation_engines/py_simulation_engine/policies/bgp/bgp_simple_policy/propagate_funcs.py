@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING, Union
 
-from bgpy.enums import PyRelationships
+from bgpy.enums import PyRelationships, CPPRelationships
 
 
 if TYPE_CHECKING:
@@ -13,7 +13,6 @@ if TYPE_CHECKING:
     from bgpy.simulation_engines.py_simulation_engine.py_announcement import (
         PyAnnouncement as PyAnn,
     )
-    from bgpy.enums import CPPRelationships
 
 
 def propagate_to_providers(self) -> None:
@@ -23,7 +22,9 @@ def propagate_to_providers(self) -> None:
     """
 
     send_rels: set[Union["PyRelationships", "CPPRelationships"]] = set(
-        [PyRelationships.ORIGIN, PyRelationships.CUSTOMERS]
+        [PyRelationships.ORIGIN, PyRelationships.CUSTOMERS,
+         CPPRelationships.ORIGIN, CPPRelationships.CUSTOMERS,
+        ]
     )
     self._propagate(PyRelationships.PROVIDERS, send_rels)
 
@@ -38,6 +39,10 @@ def propagate_to_customers(self) -> None:
             PyRelationships.CUSTOMERS,
             PyRelationships.PEERS,
             PyRelationships.PROVIDERS,
+            CPPRelationships.ORIGIN,
+            CPPRelationships.CUSTOMERS,
+            CPPRelationships.PEERS,
+            CPPRelationships.PROVIDERS,
         ]
     )
     self._propagate(PyRelationships.CUSTOMERS, send_rels)
@@ -48,7 +53,8 @@ def propagate_to_peers(self) -> None:
 
     # Anns that have any of these as recv_rel get propogated
     send_rels: set[Union["PyRelationships", "CPPRelationships"]] = set(
-        [PyRelationships.ORIGIN, PyRelationships.CUSTOMERS]
+        [PyRelationships.ORIGIN, PyRelationships.CUSTOMERS,
+        CPPRelationships.ORIGIN, CPPRelationships.CUSTOMERS]
     )
     self._propagate(PyRelationships.PEERS, send_rels)
 
@@ -63,20 +69,22 @@ def _propagate(
     send_rels is the relationships that are acceptable to send
     """
 
-    if propagate_to == PyRelationships.PROVIDERS:
+    if propagate_to.value == PyRelationships.PROVIDERS.value:
         neighbors = self.as_.providers
-    elif propagate_to == PyRelationships.PEERS:
+    elif propagate_to.value == PyRelationships.PEERS.value:
         neighbors = self.as_.peers
-    elif propagate_to == PyRelationships.CUSTOMERS:
+    elif propagate_to.value == PyRelationships.CUSTOMERS.value:
         neighbors = self.as_.customers
     else:
         raise NotImplementedError
 
     for neighbor in neighbors:
         for prefix, ann in self._local_rib.prefix_anns():
+
             if ann.recv_relationship in send_rels and not self._prev_sent(
                 neighbor, ann
             ):
+
                 # Policy took care of it's own propagation for this ann
                 if self._policy_propagate(neighbor, ann, propagate_to, send_rels):
                     continue

@@ -12,7 +12,22 @@ as_graph: !yamlable/CAIDAASGraph
       - 3
       - 5
       policy: !yamlable/BGPSimplePolicy
-        _local_rib: !yamlable/LocalRIB {}
+        _local_rib: !yamlable/LocalRIB
+          1.2.0.0/16: !yamlable/PyAnnouncement
+            as_path: !!python/tuple
+            - 1
+            - 4
+            communities: !!python/tuple []
+            prefix: 1.2.0.0/16
+            recv_relationship: !simulator_codec/PyRelationships
+              name: CUSTOMERS
+              value: 3
+            roa_origin: 4
+            roa_valid_length: true
+            seed_asn: null
+            timestamp: 0
+            traceback_end: false
+            withdraw: false
         _recv_q: !yamlable/RecvQueue {}
       propagation_rank: 1
       providers: !!python/tuple
@@ -107,7 +122,23 @@ as_graph: !yamlable/CAIDAASGraph
       peers: !!python/tuple
       - 1
       policy: !yamlable/BGPSimplePolicy
-        _local_rib: !yamlable/LocalRIB {}
+        _local_rib: !yamlable/LocalRIB
+          1.2.0.0/16: !yamlable/PyAnnouncement
+            as_path: !!python/tuple
+            - 5
+            - 1
+            - 4
+            communities: !!python/tuple []
+            prefix: 1.2.0.0/16
+            recv_relationship: !simulator_codec/PyRelationships
+              name: PEERS
+              value: 2
+            roa_origin: 4
+            roa_valid_length: true
+            seed_asn: null
+            timestamp: 0
+            traceback_end: false
+            withdraw: false
         _recv_q: !yamlable/RecvQueue {}
       propagation_rank: 0
       providers: !!python/tuple []

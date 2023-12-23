@@ -1,12 +1,12 @@
 1: !simulator_codec/PyOutcomes
-  name: DISCONNECTED
-  value: 2
+  name: ATTACKER_SUCCESS
+  value: 0
 2: !simulator_codec/PyOutcomes
-  name: DISCONNECTED
-  value: 2
+  name: ATTACKER_SUCCESS
+  value: 0
 3: !simulator_codec/PyOutcomes
-  name: DISCONNECTED
-  value: 2
+  name: ATTACKER_SUCCESS
+  value: 0
 666: !simulator_codec/PyOutcomes
   name: ATTACKER_SUCCESS
   value: 0

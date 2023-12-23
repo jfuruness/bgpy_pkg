@@ -1,14 +1,14 @@
 from typing import Any, Optional, TYPE_CHECKING, Union
 
 from bgpy.as_graphs import AS
-from bgpy.enums import Plane, CPPOutcomes, PyOutcomes
+from bgpy.enums import Plane, CPPOutcomes, PyOutcomes, PyRelationships
 from bgpy.simulation_engines.base import SimulationEngine
 from bgpy.simulation_frameworks.base import ASGraphAnalyzer
 
 from .scenarios import Scenario
 
 if TYPE_CHECKING:
-    from bgpy.enums import PyRelationships
+
     from bgpy.simulation_engines.py_simulation_engine import PyAnnouncement as PyAnn
     from bgpy.simulation_engines.cpp_simulation_engine import CPPAnnouncement as CPPAnn
 

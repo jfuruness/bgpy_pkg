@@ -1,14 +1,13 @@
-from typing import Optional, TYPE_CHECKING, Union
+from typing import Optional, Union
 
 
-if TYPE_CHECKING:
-    from bgpy.simulation_engines.cpp_simulation_engine.cpp_announcement import (
-        CPPAnnouncement as CPPAnn,
-    )
+from bgpy.simulation_engines.cpp_simulation_engine.cpp_announcement import (
+    CPPAnnouncement as CPPAnn,
+)
 
-    from bgpy.simulation_engines.py_simulation_engine.py_announcement import (
-        PyAnnouncement as PyAnn,
-    )
+from bgpy.simulation_engines.py_simulation_engine.py_announcement import (
+    PyAnnouncement as PyAnn,
+)
 
 
 def _get_best_ann_by_gao_rexford(
