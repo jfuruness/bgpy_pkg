@@ -74,19 +74,6 @@ PYBIND11_MODULE(bgpc, m) {
         .export_values();
 
     py::class_<CPPSimulationEngine>(m, "CPPSimulationEngine")
-        //.def(py::init<ASGraph&, int>(), py::arg("as_graph"), py::arg("ready_to_run_round") = -1)
-        //.def("setup", &CPPSimulationEngine::setup,
-        //     py::arg("announcements"),
-        //     py::arg("base_policy_class_str") = "BGPSimplePolicy",
-        //     py::arg("non_default_asn_cls_str_dict") = std::map<int, std::string>{})
-        //.def("setup", [](CPPSimulationEngine& engine, const std::vector<py::object>& py_announcements, const std::string& base_policy_class_str, const std::map<int, std::string>& non_default_asn_cls_str_dict) {
-        //    std::vector<std::shared_ptr<Announcement>> announcements;
-        //    for (auto& py_ann : py_announcements) {
-        //        announcements.push_back(py_ann.cast<std::shared_ptr<Announcement>>());
-        //    }
-        //    engine.setup(announcements, base_policy_class_str, non_default_asn_cls_str_dict);
-        //}, py::arg("announcements"), py::arg("base_policy_class_str") = "BGPSimplePolicy", py::arg("non_default_asn_cls_str_dict") = std::map<int, std::string>{})
-
         .def("setup", [](CPPSimulationEngine& engine, const std::vector<std::shared_ptr<Announcement>>& announcements, const std::string& base_policy_class_str, const std::map<int, std::string>& non_default_asn_cls_str_dict) {
             // Debug: Print the number of announcements
             std::cout << "Setting up engine with " << announcements.size() << " announcements." << std::endl;
