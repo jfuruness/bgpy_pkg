@@ -9,8 +9,8 @@ description = "Simulates BGP and ROV"
 readme = "README.md"
 authors = [
     {name = "Justin Furuness", email = "jfuruness@gmail.com"},
-    {name = "Cameron Morris"},
-    {name = "Reynaldo Morillo"}
+    {name = "Cameron Morris", email = ""},
+    {name = "Reynaldo Morillo", email = "reynaldo.morillo@uconn.edu"}
 ]
 license = {file = "LICENSE.txt"}
 keywords = [

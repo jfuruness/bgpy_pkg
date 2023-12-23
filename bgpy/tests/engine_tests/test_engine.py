@@ -1,11 +1,31 @@
+from dataclasses import replace
 from pathlib import Path
 
 import pytest
+
+from bgpy.simulation_engines.cpp_simulation_engine import (
+    CPPSimulationEngine, CPPAnnouncement
+)
+from bgpy.simulation_frameworks.cpp_simulation_framework import CPPASGraphAnalyzer
 
 from .engine_test_configs import engine_test_configs
 from .utils import EngineTester
 from .utils import EngineTestConfig
 
+
+cpp_configs = []
+for engine_test_config in engine_test_configs:
+    cpp_configs.append(
+        replace(
+            engine_test_config,
+            name="cpp_" + engine_test_config.name,
+            desc="C++ Sim of " + engine_test_config.desc,
+            SimulationEngineCls=CPPSimulationEngine,
+            scenario_config=replace(engine_test_config.scenario_config, AnnCls=CPPAnnouncement),
+            ASGraphAnalyzerCls=CPPASGraphAnalyzer,
+        )
+    )
+engine_test_configs = cpp_configs + engine_test_configs
 
 @pytest.mark.engine
 class TestEngine:

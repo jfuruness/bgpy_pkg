@@ -30,5 +30,5 @@ class EngineRunConfig:
     ASGraphCls: type[ASGraph] = CAIDAASGraph
     SimulationEngineCls: type[SimulationEngine] = PySimulationEngine  # type: ignore
     MetricTrackerCls: type[MetricTracker] = MetricTracker
-    GraphAnalyzerCls: type[ASGraphAnalyzer] = PyASGraphAnalyzer
+    ASGraphAnalyzerCls: type[ASGraphAnalyzer] = PyASGraphAnalyzer
     DiagramCls: type[Diagram] = Diagram

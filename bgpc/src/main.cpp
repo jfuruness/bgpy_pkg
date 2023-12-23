@@ -99,6 +99,16 @@ PYBIND11_MODULE(bgpc, m) {
         .def("run", &CPPSimulationEngine::run,
              py::arg("propagation_round") = 0);
 
+    py::class_<ASGraphAnalyzer>(m, "ASGraphAnalyzer")
+        .def(py::init<std::shared_ptr<CPPSimulationEngine>,
+                      const std::vector<std::string>&,
+                      const std::unordered_set<int>&,
+                      const std::unordered_set<int>&>(),
+             py::arg("engine"),
+             py::arg("ordered_prefixes"),
+             py::arg("victim_asns"),
+             py::arg("attacker_asns"))
+        .def("analyze", &ASGraphAnalyzer::analyze);
     py::class_<Announcement, std::shared_ptr<Announcement>>(m, "Announcement")
         .def(py::init<const std::string&, const std::vector<int>&, int,
                       const std::optional<int>&, const std::optional<bool>&,

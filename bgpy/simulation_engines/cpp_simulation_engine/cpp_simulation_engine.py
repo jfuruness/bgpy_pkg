@@ -1,3 +1,4 @@
+from tempfile import TemporaryDirectory
 from typing import Any, Optional, TYPE_CHECKING
 
 from frozendict import frozendict
@@ -5,6 +6,7 @@ from frozendict import frozendict
 from bgpy.bgpc import get_engine
 from bgpy.bgpc import CPPSimulationEngine as _CPPSimulationEngine
 
+import bgpy
 from bgpy.enums import CPPRelationships
 from bgpy.simulation_engines.base import SimulationEngine
 from bgpy.simulation_engines.base import Policy
@@ -21,12 +23,17 @@ class CPPSimulationEngine(SimulationEngine):
 
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
-        msg = "Must cache the initial TSV for CPPSimulationEngine"
-        assert self.cached_as_graph_tsv_path, msg
-        assert self.cached_as_graph_tsv.exists()
-        self._cpp_simulation_engine: _CPPSimulationEngine = get_engine(
-            str(self.cached_as_graph_tsv)
-        )
+
+        if self.cached_as_graph_tsv_path and self.cached_as_graph_tsv_path.exists():
+            self._cpp_simulation_engine: _CPPSimulationEngine = get_engine(
+                str(self.cached_as_graph_tsv)
+            )
+        else:
+            # TODO: fix circular imports
+            with TemporaryDirectory() as tmp_dir:
+                tsv_path = Path(tmp_dir) / "caida.tsv"
+                bgpy.as_graphs.base.ASGraphConstructor.write_tsv(as_graph, tsv_path)
+                self._cpp_simulation_engine = get_engine(str(tsv_path))
 
     def __eq__(self, other) -> bool:
         """Returns if two simulators contain the same BGPDAG's"""

@@ -54,7 +54,7 @@ class EngineRunner:
                 func(engine=engine, propagation_round=round_, trial=0, percent_adopt=0)
 
         # Get traceback results {AS: Outcome}
-        analyzer = self.conf.GraphAnalyzerCls(engine=engine, scenario=scenario)
+        analyzer = self.conf.ASGraphAnalyzerCls(engine=engine, scenario=scenario)
         outcomes = analyzer.analyze()
         data_plane_outcomes = outcomes[Plane.DATA.value]
         # This comment is no longer relevant, we just store the ASN
@@ -82,6 +82,7 @@ class EngineRunner:
             as_graph_info=self.conf.as_graph_info,
             BasePolicyCls=self.conf.scenario_config.BasePolicyCls,
         )
+
         return self.conf.SimulationEngineCls(as_graph)
 
     def _get_trial_metrics(
