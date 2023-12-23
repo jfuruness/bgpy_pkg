@@ -47,7 +47,9 @@ class SimulatorCodec(YamlCodec):
     def to_yaml_dict(cls, obj) -> tuple[str, Any]:
         """Converts objects to yaml dicts"""
 
-        if isinstance(obj, YamlAbleEnum) or isinstance(obj, (CPPOutcomes, CPPRelationships)):
+        if isinstance(obj, YamlAbleEnum) or isinstance(
+            obj, (CPPOutcomes, CPPRelationships)
+        ):
             return types_to_yaml_tags[type(obj)], {"value": obj.value, "name": obj.name}
         else:
             # Encode the given object and also return the tag it should have

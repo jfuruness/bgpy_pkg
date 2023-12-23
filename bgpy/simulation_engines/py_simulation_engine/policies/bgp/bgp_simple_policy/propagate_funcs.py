@@ -22,8 +22,11 @@ def propagate_to_providers(self) -> None:
     """
 
     send_rels: set[Union["PyRelationships", "CPPRelationships"]] = set(
-        [PyRelationships.ORIGIN, PyRelationships.CUSTOMERS,
-         CPPRelationships.ORIGIN, CPPRelationships.CUSTOMERS,
+        [
+            PyRelationships.ORIGIN,
+            PyRelationships.CUSTOMERS,
+            CPPRelationships.ORIGIN,
+            CPPRelationships.CUSTOMERS,
         ]
     )
     self._propagate(PyRelationships.PROVIDERS, send_rels)
@@ -53,8 +56,12 @@ def propagate_to_peers(self) -> None:
 
     # Anns that have any of these as recv_rel get propogated
     send_rels: set[Union["PyRelationships", "CPPRelationships"]] = set(
-        [PyRelationships.ORIGIN, PyRelationships.CUSTOMERS,
-        CPPRelationships.ORIGIN, CPPRelationships.CUSTOMERS]
+        [
+            PyRelationships.ORIGIN,
+            PyRelationships.CUSTOMERS,
+            CPPRelationships.ORIGIN,
+            CPPRelationships.CUSTOMERS,
+        ]
     )
     self._propagate(PyRelationships.PEERS, send_rels)
 
@@ -80,11 +87,9 @@ def _propagate(
 
     for neighbor in neighbors:
         for prefix, ann in self._local_rib.prefix_anns():
-
             if ann.recv_relationship in send_rels and not self._prev_sent(
                 neighbor, ann
             ):
-
                 # Policy took care of it's own propagation for this ann
                 if self._policy_propagate(neighbor, ann, propagate_to, send_rels):
                     continue

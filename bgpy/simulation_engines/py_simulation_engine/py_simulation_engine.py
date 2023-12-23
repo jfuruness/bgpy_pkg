@@ -133,7 +133,6 @@ class PySimulationEngine(SimulationEngine):
         for i, rank in enumerate(self.as_graph.propagation_ranks):
             # Nothing to process at the start
             if i > 0:
-
                 # Process first because maybe it recv from lower ranks
                 for as_obj in rank:
                     as_obj.policy.process_incoming_anns(

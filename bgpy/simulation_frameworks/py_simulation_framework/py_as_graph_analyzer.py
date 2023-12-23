@@ -8,7 +8,6 @@ from bgpy.simulation_frameworks.base import ASGraphAnalyzer
 from .scenarios import Scenario
 
 if TYPE_CHECKING:
-
     from bgpy.simulation_engines.py_simulation_engine import PyAnnouncement as PyAnn
     from bgpy.simulation_engines.cpp_simulation_engine import CPPAnnouncement as CPPAnn
 
