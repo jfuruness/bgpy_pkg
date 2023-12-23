@@ -2,10 +2,10 @@ from collections import defaultdict
 from dataclasses import replace
 from typing import Any, Optional, Type
 
-from bgpy.enums import Plane, Outcomes
+from bgpy.enums import Plane, CPPOutcomes, PyOutcomes
 from bgpy.as_graphs import AS
 from bgpy.simulation_engines.base import Policy, SimulationEngine
-from bgpy.simulation_framework.scenarios import Scenario
+from bgpy.simulation_frameworks.py_simulation_frameworks.scenarios import Scenario
 
 from .metric_key import MetricKey
 
@@ -73,8 +73,8 @@ class Metric:
         as_obj: AS,
         engine: SimulationEngine,
         scenario: Scenario,
-        ctrl_plane_outcome: Outcomes,
-        data_plane_outcome: Outcomes,
+        ctrl_plane_outcome: PyOutcomes | CPPOutcomes,
+        data_plane_outcome: PyOutcomes | CPPOutcomes,
     ):
         within_denom = self._add_denominator(
             as_obj=as_obj,
@@ -99,8 +99,8 @@ class Metric:
         as_obj: AS,
         engine: SimulationEngine,
         scenario: Scenario,
-        ctrl_plane_outcome: Outcomes,
-        data_plane_outcome: Outcomes,
+        ctrl_plane_outcome: PyOutcomes | CPPOutcomes,
+        data_plane_outcome: PyOutcomes | CPPOutcomes,
     ) -> None:
         """Adds to numerator if it is within the as group and the outcome is correct"""
 
@@ -122,8 +122,8 @@ class Metric:
         as_obj: AS,
         engine: SimulationEngine,
         scenario: Scenario,
-        ctrl_plane_outcome: Outcomes,
-        data_plane_outcome: Outcomes,
+        ctrl_plane_outcome: PyOutcomes | CPPOutcomes,
+        data_plane_outcome: PyOutcomes | CPPOutcomes,
     ) -> bool:
         """Adds to the denominator if it is within the as group"""
 

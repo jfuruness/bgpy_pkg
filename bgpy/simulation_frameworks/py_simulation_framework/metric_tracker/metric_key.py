@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from typing import Any, Optional, Union
 
-from bgpy.enums import ASGroups, Plane, Outcomes
+from bgpy.enums import ASGroups, Plane, PyOutcomes, CPPOutcomes
 from bgpy.simulation_engines.base import Policy
 
 
@@ -11,5 +11,5 @@ class MetricKey:
 
     plane: Plane
     as_group: ASGroups
-    outcome: Outcomes
+    outcome: CPPOutcomes | PyOutcomes
     PolicyCls: Union[Optional[type[Policy]], Any] = None

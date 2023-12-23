@@ -1,20 +1,22 @@
-from __future__ import annotations
 from typing import TYPE_CHECKING
 
-from bgpy.simulation_framework.scenarios.scenario import Scenario
+from bgpy.simulation_frameworks.py_simulation_framework.scenarios.scenario import Scenario
 from bgpy.enums import Prefixes
-from bgpy.enums import Relationships
+from bgpy.enums import CPPRelationships
 from bgpy.enums import Timestamps
 
 
 if TYPE_CHECKING:
-    from bgpy.simulation_engines.py_simulation_engine import Announcement
+    from bgpy.simulation_engines.cpp_simulation_engine import CPPAnnouncement as CPPAnn
+    from bgpy.simulation_engines.py_simulation_engine import PyAnnouncement as PyAnn
+
+
 
 
 class NonRoutedPrefixHijack(Scenario):
     """Non routed prefix hijack (ROA of AS 0)"""
 
-    def _get_announcements(self, *args, **kwargs) -> tuple["Announcement", ...]:
+    def _get_announcements(self, *args, **kwargs) -> tuple["CPPAnn" | "PyAnn", ...]:
         """Returns non routed prefix announcement from attacker
 
         for subclasses of this EngineInput, you can set AnnCls equal to
@@ -31,7 +33,7 @@ class NonRoutedPrefixHijack(Scenario):
                     seed_asn=attacker_asn,
                     roa_valid_length=True,
                     roa_origin=0,
-                    recv_relationship=Relationships.ORIGIN,
+                    recv_relationship=CPPRelationships.ORIGIN,
                 )
             )
         return tuple(anns)

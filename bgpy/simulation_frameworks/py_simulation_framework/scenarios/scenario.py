@@ -10,10 +10,11 @@ from typing import Any, Optional, Type, Union
 from frozendict import frozendict
 
 from bgpy.as_graphs import AS
-from bgpy.simulation_engines.py_simulation_engine import Announcement
+from bgpy.simulation_engines.cpp_simulation_engine import CPPAnnouncement as CPPAnn
+from bgpy.simulation_engines.py_simulation_engine import PyAnnouncement as PyAnn
 from bgpy.simulation_engines.base import SimulationEngine
 from bgpy.simulation_engines.base import Policy
-from bgpy.enums import SpecialPercentAdoptions, Outcomes, Relationships
+from bgpy.enums import SpecialPercentAdoptions, CPPOutcomes, PyOutcomes, CPPRelationships, PyRelationships
 
 from .scenario_config import ScenarioConfig
 
@@ -59,7 +60,7 @@ class Scenario(ABC):
 
         if self.scenario_config.override_announcements:
             self.announcements: tuple[
-                "Announcement", ...
+                "CPPAnn" | "PyAnn", ...
             ] = self.scenario_config.override_announcements
         else:
             self.announcements = self._get_announcements(
@@ -494,7 +495,7 @@ class Scenario(ABC):
     # Deprecated funcs, DO NOT USE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!#
     ###################################################################################
 
-    def determine_as_outcome(self, as_obj: AS, ann: Optional[Announcement]) -> Outcomes:
+    def determine_as_outcome(self, as_obj: AS, ann: Optional["CPPAnn" | "PyAnn"]) -> PyOutcomes | CPPOutcomes:
         """Determines the outcome at an AS
 
         ann is most_specific_ann is the most specific prefix announcement
@@ -509,19 +510,19 @@ class Scenario(ABC):
         # )
 
         if as_obj.asn in self.attacker_asns:
-            return Outcomes.ATTACKER_SUCCESS
+            return PyOutcomes.ATTACKER_SUCCESS
         elif as_obj.asn in self.victim_asns:
-            return Outcomes.VICTIM_SUCCESS
+            return PyOutcomes.VICTIM_SUCCESS
         # End of traceback
         elif (
             ann is None
             or len(ann.as_path) == 1
-            or ann.recv_relationship == Relationships.ORIGIN
+            or ann.recv_relationship in (CPPRelationships.ORIGIN, PyRelationships.ORIGIN)
             or ann.traceback_end
         ):
-            return Outcomes.DISCONNECTED
+            return PyOutcomes.DISCONNECTED
         else:
-            return Outcomes.UNDETERMINED
+            return PyOutcomes.UNDETERMINED
 
     @property
     def graph_label(self) -> str:

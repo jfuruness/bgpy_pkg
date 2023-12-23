@@ -6,13 +6,14 @@ from frozendict import frozendict
 
 from bgpy.enums import ASGroups
 
-from bgpy.simulation_engines.py_simulation_engine import Announcement
+from bgpy.simulation_engines.cpp_simulation_engine import CPPAnnouncement as CPPAnn
+from bgpy.simulation_engines.py_simulation_engine import PyAnnouncement as PyAnn
 from bgpy.simulation_engines.base import Policy
 from bgpy.simulation_engines.py_simulation_engine import BGPSimplePolicy
 
 
 if TYPE_CHECKING:
-    from .scenario_trial import Scenario
+    from .scenario import Scenario
 
 pseudo_base_cls_dict: dict[type[Policy], type[Policy]] = dict()
 
@@ -32,7 +33,7 @@ class ScenarioConfig:
     ScenarioCls: type["Scenario"]
     # This is the base type of announcement for this class
     # You can specify a different base ann
-    AnnCls: type[Announcement] = Announcement
+    AnnCls: type["CPPAnn" | "PyAnn"] = PyAnnouncement
     BasePolicyCls: type[Policy] = BGPSimplePolicy
     # Fixed in post init, but can't show mypy for some reason
     AdoptPolicyCls: type[Policy] = MISSINGPolicy  # type: ignore
@@ -69,7 +70,7 @@ class ScenarioConfig:
     #    Optional[frozendict[int, type[Policy]]],
     #    frozendict[str, None]
     # ] = None
-    override_announcements: tuple[Announcement, ...] = ()
+    override_announcements: tuple["CPPAnn" | "PyAnn", ...] = ()
     # If you'd like to add an extra CSV label you do so here
     csv_label: str = ""
     # Deprecated param, don't use
