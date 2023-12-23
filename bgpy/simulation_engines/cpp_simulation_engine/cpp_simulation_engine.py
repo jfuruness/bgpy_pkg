@@ -59,7 +59,10 @@ class CPPSimulationEngine(SimulationEngine):
         self._cpp_simulation_engine.setup(
             announcements,
             BasePolicyCls.name,
-            {asn: PolicyCls.name for asn, PolicyCls in non_default_asn_cls_dict.items()},
+            {
+                asn: PolicyCls.name
+                for asn, PolicyCls in non_default_asn_cls_dict.items()
+            },
         )
         self.ready_to_run_round += 1
 
