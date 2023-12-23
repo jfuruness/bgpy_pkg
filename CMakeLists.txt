@@ -47,8 +47,26 @@ endif()
 # this)
 ############################################################################
 # Automatically include all .cpp files in bgpc/src and its subdirectories
-file(GLOB_RECURSE BGPC_SOURCES "bgpc/src/*.cpp")
+# file(GLOB_RECURSE BGPC_SOURCES "bgpc/src/*.cpp")
 # python_add_library(bgpc MODULE bgpc/src/main.cpp bgpc/src/announcement.cpp bgpc/src/ann_containers/local_rib.cpp WITH_SOABI)
+# python_add_library(bgpc MODULE ${BGPC_SOURCES} WITH_SOABI)
+
+set(BGPC_SOURCES
+    bgpc/src/cpp_simulation_engine/announcement.cpp
+    bgpc/src/cpp_simulation_engine/ann_containers/local_rib.cpp
+    bgpc/src/cpp_simulation_engine/ann_containers/recv_queue.cpp
+    bgpc/src/cpp_simulation_engine/policies/policy.cpp
+    bgpc/src/cpp_simulation_engine/policies/bgp_simple_policy/bgp_simple_policy.cpp
+    bgpc/src/cpp_simulation_engine/policies/bgp_simple_policy/gao_rexford_funcs.cpp
+    bgpc/src/cpp_simulation_engine/policies/bgp_simple_policy/process_incoming_funcs.cpp
+    bgpc/src/cpp_simulation_engine/policies/bgp_simple_policy/propagate_funcs.cpp
+    bgpc/src/as_graph/as.cpp
+    bgpc/src/as_graph/as_graph.cpp
+    bgpc/src/cpp_simulation_engine/cpp_simulation_engine.cpp
+    bgpc/src/utils.cpp
+    bgpc/src/main.cpp
+)
+
 python_add_library(bgpc MODULE ${BGPC_SOURCES} WITH_SOABI)
 ##############################################################################
 
@@ -68,16 +86,32 @@ endif()
 #######################################################################
 # New Way:
 # Get all subdirectories in bgpc/include
-file(GLOB children RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}/bgpc/include ${CMAKE_CURRENT_SOURCE_DIR}/bgpc/include/*)
-set(include_dirs "")
-foreach(child ${children})
-    if(IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/bgpc/include/${child})
-        list(APPEND include_dirs ${CMAKE_CURRENT_SOURCE_DIR}/bgpc/include/${child})
-    endif()
-endforeach()
+# file(GLOB children RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}/bgpc/include ${CMAKE_CURRENT_SOURCE_DIR}/bgpc/include/*)
+# set(include_dirs "")
+# foreach(child ${children})
+#     if(IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/bgpc/include/${child})
+#         list(APPEND include_dirs ${CMAKE_CURRENT_SOURCE_DIR}/bgpc/include/${child})
+#     endif()
+# endforeach()
+
+# Print out include directories for debugging
+# foreach(dir ${include_dirs})
+#     message(STATUS "Including directory: ${dir}")
+# endforeach()
 
 # Now include these directories
-target_include_directories(bgpc PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/bgpc/include ${include_dirs})
+# target_include_directories(bgpc PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/bgpc/include ${include_dirs})
+
+# Going back to og
+
+# Manually include directories
+target_include_directories(bgpc PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}/bgpc/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/bgpc/include/cpp_simulation_engine/ann_containers
+    ${CMAKE_CURRENT_SOURCE_DIR}/bgpc/include/cpp_simulation_engine/policies
+    ${CMAKE_CURRENT_SOURCE_DIR}/bgpc/include/as_graph
+    ${CMAKE_CURRENT_SOURCE_DIR}/bgpc/include/cpp_simulation_engine
+)
 ######################################################################
 
 target_link_libraries(bgpc PRIVATE pybind11::headers)
