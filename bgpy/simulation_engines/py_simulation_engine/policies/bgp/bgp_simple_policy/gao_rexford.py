@@ -1,4 +1,4 @@
-from typing import Optional, TYPE_CHECKING
+from typing import Optional, TYPE_CHECKING, Union
 
 
 if TYPE_CHECKING:
@@ -12,8 +12,8 @@ if TYPE_CHECKING:
 
 
 def _get_best_ann_by_gao_rexford(
-    self, current_ann: Optional[PyAnn | CPPAnn], new_ann: PyAnn | CPPAnn
-) -> PyAnn | CPPAnn:
+    self, current_ann: Optional[Union["PyAnn", "CPPAnn"]], new_ann: Union["PyAnn", "CPPAnn"]
+) -> Union["PyAnn", "CPPAnn"]:
     """Determines if the new ann > current ann by Gao Rexford"""
 
     assert new_ann is not None, "New announcement can't be None"
@@ -31,8 +31,8 @@ def _get_best_ann_by_gao_rexford(
 
 
 def _get_best_ann_by_local_pref(
-    self, current_ann: PyAnn | CPPAnn, new_ann: PyAnn | CPPAnn
-) -> Optional[PyAnn | CPPAnn]:
+    self, current_ann: Union["PyAnn", "CPPAnn"], new_ann: Union["PyAnn", "CPPAnn"]
+) -> Optional[Union["PyAnn", "CPPAnn"]]:
     """Returns best announcement by local pref, or None if tie"""
 
     if current_ann.recv_relationship.value > new_ann.recv_relationship.value:
@@ -44,8 +44,8 @@ def _get_best_ann_by_local_pref(
 
 
 def _get_best_ann_by_as_path(
-    self, current_ann: PyAnn | CPPAnn, new_ann: PyAnn | CPPAnn
-) -> Optional[PyAnn | CPPAnn]:
+    self, current_ann: Union["PyAnn", "CPPAnn"], new_ann: Union["PyAnn", "CPPAnn"]
+) -> Optional[Union["PyAnn", "CPPAnn"]]:
     """Returns best announcement by as path length, or None if tie
 
     Shorter AS Paths are better
@@ -60,8 +60,8 @@ def _get_best_ann_by_as_path(
 
 
 def _get_best_ann_by_lowest_neighbor_asn_tiebreaker(
-    self, current_ann: PyAnn | CPPAnn, new_ann: PyAnn | CPPAnn
-) -> PyAnn | CPPAnn:
+    self, current_ann: Union["PyAnn", "CPPAnn"], new_ann: Union["PyAnn", "CPPAnn"]
+) -> Union["PyAnn", "CPPAnn"]:
     """Determines if the new ann > current ann by Gao Rexford for ties
 
     This breaks ties by lowest asn of the neighbor sending the announcement

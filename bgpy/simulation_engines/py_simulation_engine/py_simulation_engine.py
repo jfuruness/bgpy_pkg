@@ -1,4 +1,4 @@
-from typing import Any, Optional, TYPE_CHECKING
+from typing import Any, Optional, TYPE_CHECKING, Union
 
 from frozendict import frozendict
 
@@ -33,7 +33,7 @@ class PySimulationEngine(SimulationEngine):
 
     def setup(
         self,
-        announcements: tuple["PyAnn" | "CPPAnn", ...] = (),
+        announcements: tuple[Union["PyAnn", "CPPAnn"], ...] = (),
         BasePolicyCls: type[Policy] = BGPSimplePolicy,
         non_default_asn_cls_dict: frozendict[int, type[Policy]] = (
             frozendict()  # type: ignore
@@ -76,7 +76,7 @@ class PySimulationEngine(SimulationEngine):
 
     def _seed_announcements(
         self,
-        announcements: tuple["PyAnn" | "CPPAnn", ...] = (),
+        announcements: tuple[Union["PyAnn", "CPPAnn"], ...] = (),
         prev_scenario: Optional["Scenario"] = None,
     ) -> None:
         """Seeds announcement at the proper AS
@@ -193,7 +193,7 @@ class PySimulationEngine(SimulationEngine):
     @classmethod
     def __from_yaml_dict__(
         cls: type["SimulationEngine"], dct: dict[str, Any], yaml_tag: Any
-    ) -> "PyAnn" | "CPPAnn":
+    ) -> Union["PyAnn", "CPPAnn"]:
         """This optional method is called when you call yaml.load()"""
 
         return cls(**dct)

@@ -1,4 +1,4 @@
-from typing import Optional, TYPE_CHECKING
+from typing import Optional, TYPE_CHECKING, Union
 
 from .propagate_funcs import _propagate
 from .propagate_funcs import _process_outgoing_ann
@@ -55,8 +55,8 @@ class BGPPolicy(BGPSimplePolicy):
     # Could use super but want to avoid additional func calls
     def _populate_send_q(
         self,
-        propagate_to: PyRelationships | CPPRelationships,
-        send_rels: set[PyRelationships | CPPRelationships],
+        propagate_to: Union["PyRelationships", "CPPRelationships"],
+        send_rels: set[Union["PyRelationships", "CPPRelationships"]],
     ) -> None:
         # Process outging ann is oerriden so this just adds to send q
         super(BGPPolicy, self)._propagate(propagate_to, send_rels)
@@ -72,7 +72,7 @@ class BGPPolicy(BGPSimplePolicy):
     # Could just use super but want to avoid the additional func calls
     # mypy doesn't understand the func definition
     def receive_ann(  # type: ignore
-        self, ann: PyAnn | CPPAnn, accept_withdrawals: bool = True
+        self, ann: Union["PyAnn", "CPPAnn"], accept_withdrawals: bool = True
     ) -> None:
         super(BGPPolicy, self).receive_ann(ann, accept_withdrawals=True)
 

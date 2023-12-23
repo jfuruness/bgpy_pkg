@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Union
 
 from bgpy.simulation_frameworks.py_simulation_framework.scenarios.scenario import (
     Scenario,
@@ -21,7 +21,7 @@ class SubprefixHijack(Scenario):
     invalid by roa by length and origin
     """
 
-    def _get_announcements(self, *args, **kwargs) -> tuple["CPPAnn" | "PyAnn", ...]:
+    def _get_announcements(self, *args, **kwargs) -> tuple[Union["CPPAnn", "PyAnn"], ...]:
         """Returns victim and attacker anns for subprefix hijack
 
         for subclasses of this EngineInput, you can set AnnCls equal to

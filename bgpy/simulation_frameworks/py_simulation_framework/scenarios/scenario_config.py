@@ -1,6 +1,6 @@
 import abc
 from dataclasses import asdict, dataclass, field
-from typing import Any, Optional, TYPE_CHECKING
+from typing import Any, Optional, TYPE_CHECKING, Union
 
 from frozendict import frozendict
 
@@ -33,7 +33,7 @@ class ScenarioConfig:
     ScenarioCls: type["Scenario"]
     # This is the base type of announcement for this class
     # You can specify a different base ann
-    AnnCls: type["CPPAnn" | "PyAnn"] = PyAnn
+    AnnCls: type[Union["CPPAnn", "PyAnn"]] = PyAnn
     BasePolicyCls: type[Policy] = BGPSimplePolicy
     # Fixed in post init, but can't show mypy for some reason
     AdoptPolicyCls: type[Policy] = MISSINGPolicy  # type: ignore
@@ -70,7 +70,7 @@ class ScenarioConfig:
     #    Optional[frozendict[int, type[Policy]]],
     #    frozendict[str, None]
     # ] = None
-    override_announcements: tuple["CPPAnn" | "PyAnn", ...] = ()
+    override_announcements: tuple[Union["CPPAnn", "PyAnn"], ...] = ()
     # If you'd like to add an extra CSV label you do so here
     csv_label: str = ""
     # Deprecated param, don't use

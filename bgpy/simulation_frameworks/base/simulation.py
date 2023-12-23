@@ -7,7 +7,7 @@ if TYPE_CHECKING:
 
     from bgpy.enums import SpecialPercentAdoptions
 
-    from bgpy.simulation_frameworks.py_simulation_framework import GraphAnalyzer
+    from bgpy.simulation_frameworks.py_simulation_framework import ASGraphAnalyzer
     from bgpy.simulation_frameworks.py_simulation_framework import GraphFactory
     from bgpy.simulation_frameworks.py_simulation_framework import MetricTracker
     from bgpy.simulation_frameworks.py_simulation_framework import ScenarioConfig
@@ -21,18 +21,18 @@ class Simulation(ABC):
     @abstractmethod
     def __init__(
         self,
-        percent_adoptions: tuple[Union[float, SpecialPercentAdoptions], ...],
-        scenario_configs: tuple[ScenarioConfig, ...],
+        percent_adoptions: tuple[Union[float, "SpecialPercentAdoptions"], ...],
+        scenario_configs: tuple["ScenarioConfig", ...],
         num_trials: int,
         propagation_rounds: int,
         output_dir: Path,
         parse_cpus: int,
         python_hash_seed: Optional[int],
-        ASGraphConstructorCls: type[ASGraphConstructor],
+        ASGraphConstructorCls: type["ASGraphConstructor"],
         as_graph_constructor_kwargs,
-        SimulationEngineCls: type[SimulationEngine],
-        GraphAnalyzerCls: type[GraphAnalyzer],
-        MetricTrackerCls: type[MetricTracker],
+        SimulationEngineCls: type["SimulationEngine"],
+        ASGraphAnalyzerCls: type["ASGraphAnalyzer"],
+        MetricTrackerCls: type["MetricTracker"],
     ) -> None:
         """Downloads relationship data, runs simulation"""
 
@@ -41,7 +41,7 @@ class Simulation(ABC):
     @abstractmethod
     def run(
         self,
-        GraphFactoryCls: type[GraphFactory],
+        GraphFactoryCls: type["GraphFactory"],
         graph_factory_kwargs=None,
     ) -> None:
         """Runs the simulation and write the data"""

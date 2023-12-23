@@ -5,7 +5,7 @@ from typing import Any, Optional, Type
 from bgpy.enums import Plane, CPPOutcomes, PyOutcomes
 from bgpy.as_graphs import AS
 from bgpy.simulation_engines.base import Policy, SimulationEngine
-from bgpy.simulation_frameworks.py_simulation_frameworks.scenarios import Scenario
+from bgpy.simulation_frameworks.py_simulation_framework.scenarios import Scenario
 
 from .metric_key import MetricKey
 

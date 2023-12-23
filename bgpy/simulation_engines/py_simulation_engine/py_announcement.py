@@ -1,5 +1,5 @@
 from dataclasses import dataclass, asdict, replace
-from typing import Any, Optional, TYPE_CHECKING
+from typing import Any, Optional, TYPE_CHECKING, Union
 
 from yamlable import YamlAble, yaml_info
 
@@ -24,7 +24,7 @@ class PyAnnouncement(YamlAble):
     seed_asn: Optional[int]
     roa_valid_length: Optional[bool]
     roa_origin: Optional[int]
-    recv_relationship: CPPRelationships | PyRelationships
+    recv_relationship: Union["CPPRelationships", "PyRelationships"]
     withdraw: bool = False
     traceback_end: bool = False
     communities: tuple[str, ...] = ()

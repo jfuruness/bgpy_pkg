@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Union
 
 if TYPE_CHECKING:
     from bgpy.enums import CPPOutcomes, PyOutcomes
@@ -15,7 +15,7 @@ class ASGraphAnalyzer(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    def analyze(self) -> dict[int, dict[int, "CPPOutcomes" | "PyOutcomes"]]:
+    def analyze(self) -> dict[int, dict[int, Union["CPPOutcomes", "PyOutcomes"]]]:
         """Takes in engine and outputs traceback for ctrl + data plane data"""
 
         raise NotImplementedError

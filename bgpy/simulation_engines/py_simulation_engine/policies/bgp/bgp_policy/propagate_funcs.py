@@ -1,4 +1,4 @@
-from typing import Optional, TYPE_CHECKING
+from typing import Optional, TYPE_CHECKING, Union
 
 from bgpy.simulation_engines.base import Policy
 
@@ -17,8 +17,8 @@ if TYPE_CHECKING:
 
 def _propagate(
     self,
-    propagate_to: PyRelationships | CPPRelationships,
-    send_rels: set[PyRelationships | CPPRelationships],
+    propagate_to: Union["PyRelationships", "CPPRelationships"],
+    send_rels: set[Union["PyRelationships", "CPPRelationships"]],
 ):
     """Propogates announcements to other ASes
 
@@ -32,9 +32,9 @@ def _propagate(
     self._send_anns(propagate_to)
 
 
-def _prev_sent(self, neighbor: "AS", ann: PyAnn | CPPAnn) -> bool:
+def _prev_sent(self, neighbor: "AS", ann: Union["PyAnn", "CPPAnn"]) -> bool:
     """Don't send what we've already sent"""
-    ribs_out_ann: Optional[PyAnn | CPPAnn] = self._ribs_out.get_ann(
+    ribs_out_ann: Optional[Union["PyAnn", "CPPAnn"]] = self._ribs_out.get_ann(
         neighbor.asn, ann.prefix
     )
     return ann.prefix_path_attributes_eq(ribs_out_ann)
@@ -43,14 +43,14 @@ def _prev_sent(self, neighbor: "AS", ann: PyAnn | CPPAnn) -> bool:
 def _process_outgoing_ann(
     self,
     neighbor: Policy,
-    ann: PyAnn | CPPAnn,
+    ann: Union["PyAnn", "CPPAnn"],
     propagate_to,
-    send_rels: set[PyRelationships | CPPRelationships],
+    send_rels: set[Union["PyRelationships", "CPPRelationships"]],
 ):
     self._send_q.add_ann(neighbor.asn, ann)
 
 
-def _send_anns(self, propagate_to: PyRelationships | CPPRelationships):
+def _send_anns(self, propagate_to: Union["PyRelationships", "CPPRelationships"]):
     """Sends announcements and populates ribs out"""
 
     neighbors: list[AS] = getattr(self.as_, propagate_to.name.lower())

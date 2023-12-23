@@ -4,7 +4,7 @@ from bgpy.as_graphs import ASGraphInfo, ASGraph, CAIDAASGraph
 from bgpy.simulation_frameworks.py_simulation_framework.scenarios import ScenarioConfig
 from bgpy.simulation_engines.base import SimulationEngine
 from bgpy.simulation_engines.py_simulation_engine import PySimulationEngine
-from bgpy.simulation_framework.py_simulation_frameworks.metric_tracker.metric_tracker import (
+from bgpy.simulation_frameworks.py_simulation_framework.metric_tracker.metric_tracker import (
     MetricTracker,
 )
 from bgpy.simulation_frameworks.base.as_graph_analyzer import ASGraphAnalyzer

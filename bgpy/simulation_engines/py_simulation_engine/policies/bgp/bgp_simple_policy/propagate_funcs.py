@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Union
 
 from bgpy.enums import PyRelationships
 
@@ -22,7 +22,7 @@ def propagate_to_providers(self) -> None:
     Propogate ann's that have a recv_rel of origin or customer to providers
     """
 
-    send_rels: set[PyRelationships | CPPRelationships] = set(
+    send_rels: set[Union["PyRelationships", "CPPRelationships"]] = set(
         [PyRelationships.ORIGIN, PyRelationships.CUSTOMERS]
     )
     self._propagate(PyRelationships.PROVIDERS, send_rels)
@@ -32,7 +32,7 @@ def propagate_to_customers(self) -> None:
     """Propogates to customers"""
 
     # Anns that have any of these as recv_rel get propogated
-    send_rels: set[PyRelationships | CPPRelationships] = set(
+    send_rels: set[Union["PyRelationships", "CPPRelationships"]] = set(
         [
             PyRelationships.ORIGIN,
             PyRelationships.CUSTOMERS,
@@ -47,7 +47,7 @@ def propagate_to_peers(self) -> None:
     """Propogates to peers"""
 
     # Anns that have any of these as recv_rel get propogated
-    send_rels: set[PyRelationships | CPPRelationships] = set(
+    send_rels: set[Union["PyRelationships", "CPPRelationships"]] = set(
         [PyRelationships.ORIGIN, PyRelationships.CUSTOMERS]
     )
     self._propagate(PyRelationships.PEERS, send_rels)
@@ -55,8 +55,8 @@ def propagate_to_peers(self) -> None:
 
 def _propagate(
     self,
-    propagate_to: PyRelationships | CPPRelationships,
-    send_rels: set[PyRelationships | CPPRelationships],
+    propagate_to: Union["PyRelationships", "CPPRelationships"],
+    send_rels: set[Union["PyRelationships", "CPPRelationships"]],
 ) -> None:
     """Propogates announcements from local rib to other ASes
 
@@ -87,16 +87,16 @@ def _propagate(
 def _policy_propagate(
     self,
     neighbor: "AS",
-    ann: PyAnn | CPPAnn,
-    propagate_to: PyRelationships | CPPRelationships,
-    send_rels: set[PyRelationships | CPPRelationships],
+    ann: Union["PyAnn", "CPPAnn"],
+    propagate_to: Union["PyRelationships", "CPPRelationships"],
+    send_rels: set[Union["PyRelationships", "CPPRelationships"]],
 ) -> bool:
     """Custom policy propagation that can be overriden"""
 
     return False
 
 
-def _prev_sent(self, neighbor: "AS", ann: PyAnn | CPPAnn) -> bool:
+def _prev_sent(self, neighbor: "AS", ann: Union["PyAnn", "CPPAnn"]) -> bool:
     """Don't resend anything for BGPAS. For this class it doesn't matter"""
     return False
 
@@ -104,9 +104,9 @@ def _prev_sent(self, neighbor: "AS", ann: PyAnn | CPPAnn) -> bool:
 def _process_outgoing_ann(
     self,
     neighbor: "AS",
-    ann: PyAnn | CPPAnn,
-    propagate_to: PyRelationships | CPPRelationships,
-    send_rels: set[PyRelationships | CPPRelationships],
+    ann: Union["PyAnn", "CPPAnn"],
+    propagate_to: Union["PyRelationships", "CPPRelationships"],
+    send_rels: set[Union["PyRelationships", "CPPRelationships"]],
 ):
     """Adds ann to the neighbors recv q"""
 

@@ -66,7 +66,7 @@ class Scenario(ABC):
 
         if self.scenario_config.override_announcements:
             self.announcements: tuple[
-                "CPPAnn" | "PyAnn", ...
+                Union["CPPAnn", "PyAnn"], ...
             ] = self.scenario_config.override_announcements
         else:
             self.announcements = self._get_announcements(
@@ -502,7 +502,7 @@ class Scenario(ABC):
     ###################################################################################
 
     def determine_as_outcome(
-        self, as_obj: AS, ann: Optional["CPPAnn" | "PyAnn"]
+        self, as_obj: AS, ann: Optional[Union["CPPAnn", "PyAnn"]]
     ) -> PyOutcomes | CPPOutcomes:
         """Determines the outcome at an AS
 

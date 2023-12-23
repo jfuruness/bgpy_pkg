@@ -1,4 +1,4 @@
-from typing import Any, Callable, Optional, TYPE_CHECKING
+from typing import Any, Callable, Optional, TYPE_CHECKING, Union
 from weakref import CallableProxyType
 
 # Propagation functionality
@@ -65,7 +65,7 @@ class BGPSimplePolicy(Policy):
     def _gao_rexford_funcs(
         self,
     ) -> tuple[
-        Callable[[PyAnn | CPPAnn, PyAnn | CPPAnn], Optional[PyAnn | CPPAnn]], ...
+        Callable[[Union["PyAnn", "CPPAnn"], Union["PyAnn", "CPPAnn"]], Optional[Union["PyAnn", "CPPAnn"]]], ...
     ]:
         return (
             self._get_best_ann_by_local_pref,

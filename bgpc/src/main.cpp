@@ -72,6 +72,12 @@ PYBIND11_MODULE(bgpc, m) {
         .value("ORIGIN", Relationships::ORIGIN)
         .value("UNKNOWN", Relationships::UNKNOWN)
         .export_values();
+    py::enum_<Outcomes>(m, "Outcomes")
+        .value("ATTACKER_SUCCESS", Outcomes::ATTACKER_SUCCESS)
+        .value("VICTIM_SUCCESS", Outcomes::VICTIM_SUCCESS)
+        .value("DISCONNECTED", Outcomes::DISCONNECTED)
+        .value("UNDETERMINED", Outcomes::UNDETERMINED)
+        .export_values();
 
     py::class_<CPPSimulationEngine>(m, "CPPSimulationEngine")
         .def("setup", &CPPSimulationEngine::setup, py::arg("announcements"), py::arg("base_policy_class_str") = "BGPSimplePolicy", py::arg("non_default_asn_cls_str_dict") = std::map<int, std::string>{})

@@ -2,6 +2,7 @@ from typing import Any, Optional, TYPE_CHECKING
 
 from frozendict import frozendict
 
+from bgpy.bgpc import get_engine
 from bgpy.bgpc import CPPSimulationEngine as _CPPSimulationEngine
 
 from bgpy.enums import CPPRelationships
@@ -20,7 +21,12 @@ class CPPSimulationEngine(SimulationEngine):
 
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
-        self._cpp_simulation_engine: _CPPSimulationEngine = _CPPSimulationEngine()
+        msg = "Must cache the initial TSV for CPPSimulationEngine"
+        assert self.cached_as_graph_tsv_path, msg
+        assert self.cached_as_graph_tsv.exists()
+        self._cpp_simulation_engine: _CPPSimulationEngine = get_engine(
+            str(self.cached_as_graph_tsv)
+        )
 
     def __eq__(self, other) -> bool:
         """Returns if two simulators contain the same BGPDAG's"""

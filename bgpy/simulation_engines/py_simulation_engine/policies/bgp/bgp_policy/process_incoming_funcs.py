@@ -1,4 +1,4 @@
-from typing import Optional, TYPE_CHECKING
+from typing import Optional, TYPE_CHECKING, Union
 
 
 from bgpy.simulation_engines.py_simulation_engine.ann_containers import (
@@ -23,7 +23,7 @@ if TYPE_CHECKING:
 def process_incoming_anns(
     self,
     *,
-    from_rel: PyRelationships | CPPRelationships,
+    from_rel: Union["PyRelationships", "CPPRelationships"],
     propagation_round: int,
     # Usually None for attack
     scenario: "Scenario",
@@ -33,8 +33,8 @@ def process_incoming_anns(
 
     for prefix, anns in self._recv_q.prefix_anns():
         # Get announcement currently in local rib
-        _local_rib_ann: Optional[PyAnn | CPPAnn] = self._local_rib.get_ann(prefix)
-        current_ann: Optional[PyAnn | CPPAnn] = _local_rib_ann
+        _local_rib_ann: Optional[Union["PyAnn", "CPPAnn"]] = self._local_rib.get_ann(prefix)
+        current_ann: Optional[Union["PyAnn", "CPPAnn"]] = _local_rib_ann
         current_processed: bool = True
 
         # Announcement will never be overriden, so continue
@@ -70,7 +70,7 @@ def process_incoming_anns(
             if ann.withdraw:
                 if self._process_incoming_withdrawal(ann, from_rel):
                     # the above will return true if the local rib is changed
-                    updated_loc_rib_ann: PyAnn | CPPAnn = self._local_rib.get_ann(
+                    updated_loc_rib_ann: Union["PyAnn", "CPPAnn"] = self._local_rib.get_ann(
                         prefix
                     )
                     if current_processed:
@@ -102,7 +102,7 @@ def process_incoming_anns(
         if _local_rib_ann is not None and _local_rib_ann is not current_ann:
             # Best ann has already been processed
 
-            withdraw_ann: PyAnn | CPPAnn = _local_rib_ann.copy(
+            withdraw_ann: Union["PyAnn", "CPPAnn"] = _local_rib_ann.copy(
                 overwrite_default_kwargs={"withdraw": True}
             )
 
@@ -125,22 +125,22 @@ def process_incoming_anns(
 def _new_ann_better(
     self,
     # Current announcement to check against
-    current_ann: Optional[PyAnn | CPPAnn],
+    current_ann: Optional[Union["PyAnn", "CPPAnn"]],
     # Whether or not current ann has been processed local rib
     # or if it resides in the ribs in
     current_processed: bool,
     # Default recv relationship if current ann is unprocessed
-    default_current_recv_rel: PyRelationships | CPPRelationships,
+    default_current_recv_rel: Union["PyRelationships", "CPPRelationships"],
     # New announcement
-    new_ann: PyAnn | CPPAnn,
+    new_ann: Union["PyAnn", "CPPAnn"],
     # If new announcement is in local rib, this is True
-    new_processed: PyRelationships | CPPRelationships,
+    new_processed: Union["PyRelationships", "CPPRelationships"],
     # Default recv rel if new ann is unprocessed
-    default_new_recv_rel: PyRelationships | CPPRelationships,
+    default_new_recv_rel: Union["PyRelationships", "CPPRelationships"],
 ) -> bool:
     """Determines if the new ann > current ann by Gao Rexford
 
-    current_ann: PyAnn | CPPAnnouncement we are checking against
+    current_ann: Union["PyAnn", "CPPAnn"]ouncement we are checking against
     current_processed: True if announcement was processed (in local rib)
         This means that the announcement has the current as preprended
             to the AS path, and the proper recv_relationship set
@@ -170,7 +170,7 @@ def _new_ann_better(
 
 
 def _process_incoming_withdrawal(
-    self, ann: PyAnn | CPPAnn, recv_relationship: PyRelationships | CPPRelationships
+    self, ann: Union["PyAnn", "CPPAnn"], recv_relationship: Union["PyRelationships", "CPPRelationships"]
 ) -> bool:
     prefix: str = ann.prefix
     neighbor: int = ann.as_path[0]
@@ -201,7 +201,7 @@ def _process_incoming_withdrawal(
     self._ribs_in.remove_entry(neighbor, prefix)
 
     # Remove ann from local rib
-    withdraw_ann: PyAnn | CPPAnn = self._copy_and_process(
+    withdraw_ann: Union["PyAnn", "CPPAnn"] = self._copy_and_process(
         ann, recv_relationship, overwrite_default_kwargs={"withdraw": True}
     )
     if withdraw_ann.prefix_path_attributes_eq(self._local_rib.get_ann(prefix)):
@@ -209,7 +209,7 @@ def _process_incoming_withdrawal(
         # Also remove from neighbors
         self._withdraw_ann_from_neighbors(withdraw_ann)
 
-        best_ann: Optional[PyAnn | CPPAnn] = self._select_best_ribs_in(prefix)
+        best_ann: Optional[Union["PyAnn", "CPPAnn"]] = self._select_best_ribs_in(prefix)
 
         # Put new ann in local rib
         if best_ann is not None:
@@ -221,7 +221,7 @@ def _process_incoming_withdrawal(
     return False
 
 
-def _withdraw_ann_from_neighbors(self, withdraw_ann: PyAnn | CPPAnn):
+def _withdraw_ann_from_neighbors(self, withdraw_ann: Union["PyAnn", "CPPAnn"]):
     """Withdraw a route from all neighbors.
 
     This function will not remove an announcement from the local rib, that
@@ -253,14 +253,14 @@ def _withdraw_ann_from_neighbors(self, withdraw_ann: PyAnn | CPPAnn):
             send_info.ann = None
 
 
-def _select_best_ribs_in(self, prefix: str) -> Optional[PyAnn | CPPAnn]:
+def _select_best_ribs_in(self, prefix: str) -> Optional[Union["PyAnn", "CPPAnn"]]:
     """Selects best ann from ribs in
 
     Remember, ribs in anns are NOT deep copied"""
 
     # Get the best announcement
-    best_unprocessed_ann: Optional[PyAnn | CPPAnn] = None
-    best_recv_relationship: Optional[PyRelationships | CPPRelationships] = None
+    best_unprocessed_ann: Optional[Union["PyAnn", "CPPAnn"]] = None
+    best_recv_relationship: Optional[Union["PyRelationships", "CPPRelationships"]] = None
     for ann_info in self._ribs_in.get_ann_infos(prefix):
         new_unprocessed_ann = ann_info.unprocessed_ann
         new_recv_relationship = ann_info.recv_relationship

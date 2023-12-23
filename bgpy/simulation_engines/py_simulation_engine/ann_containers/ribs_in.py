@@ -1,5 +1,5 @@
 import dataclasses
-from typing import Iterator, Optional, TYPE_CHECKING
+from typing import Iterator, Optional, TYPE_CHECKING, Union
 
 from yamlable import YamlAble, yaml_info
 
@@ -22,8 +22,8 @@ class AnnInfo(YamlAble):
     from the last AS and has not yet been updated)
     """
 
-    unprocessed_ann: Optional[PyAnn | CPPAnn]
-    recv_relationship: Optional[PyRelationships | CPPRelationships]
+    unprocessed_ann: Optional[Union["PyAnn", "CPPAnn"]]
+    recv_relationship: Optional[Union["PyRelationships", "CPPRelationships"]]
 
 
 class RIBsIn(AnnContainer):
@@ -58,8 +58,8 @@ class RIBsIn(AnnContainer):
 
     def add_unprocessed_ann(
         self,
-        unprocessed_ann: PyAnn | CPPAnn,
-        recv_relationship: PyRelationships | CPPRelationships,
+        unprocessed_ann: Union["PyAnn", "CPPAnn"],
+        recv_relationship: Union["PyRelationships", "CPPRelationships"],
     ):
         """Adds an unprocessed ann to ribs in
 

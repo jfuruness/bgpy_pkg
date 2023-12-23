@@ -1,14 +1,14 @@
-from typing import Any, Optional, TYPE_CHECKING
+from typing import Any, Optional, TYPE_CHECKING, Union
 
 from bgpy.as_graphs import AS
-from bgpy.enums import Plane, PyOutcomes
+from bgpy.enums import Plane, CPPOutcomes, PyOutcomes
 from bgpy.simulation_engines.base import SimulationEngine
 from bgpy.simulation_frameworks.base import ASGraphAnalyzer
 
 from .scenarios import Scenario
 
 if TYPE_CHECKING:
-    from bgpy.enums import CPPOutcomes, PyRelationships
+    from bgpy.enums import PyRelationships
     from bgpy.simulation_engines.py_simulation_engine import PyAnnouncement as PyAnn
     from bgpy.simulation_engines.cpp_simulation_engine import CPPAnnouncement as CPPAnn
 
@@ -19,19 +19,19 @@ class PyASGraphAnalyzer(ASGraphAnalyzer):
     def __init__(self, engine: SimulationEngine, scenario: Scenario):
         self.engine: SimulationEngine = engine
         self.scenario: Scenario = scenario
-        self._most_specific_ann_dict: dict[AS, Optional[PyAnn | CPPAnn]] = {
+        self._most_specific_ann_dict: dict[AS, Optional[Union["PyAnn", "CPPAnn"]]] = {
             # Get the most specific ann in the rib
             as_obj: self._get_most_specific_ann(as_obj)
             for as_obj in engine.as_graph
         }
-        self._data_plane_outcomes: dict[int, CPPOutcomes | PyOutcomes] = dict()
-        self._control_plane_outcomes: dict[int, CPPOutcomes | PyOutcomes] = dict()
+        self._data_plane_outcomes: dict[int, Union["CPPOutcomes", "PyOutcomes"]] = dict()
+        self._control_plane_outcomes: dict[int, Union["CPPOutcomes", "PyOutcomes"]] = dict()
         self.outcomes: dict[int, dict[int, Any]] = {
             Plane.DATA.value: self._data_plane_outcomes,
             Plane.CTRL.value: self._control_plane_outcomes,
         }
 
-    def _get_most_specific_ann(self, as_obj: AS) -> Optional[PyAnn | CPPAnn]:
+    def _get_most_specific_ann(self, as_obj: AS) -> Optional[Union["PyAnn", "CPPAnn"]]:
         """Returns the most specific announcement that exists in a rib
 
         as_obj is the as
@@ -45,7 +45,7 @@ class PyASGraphAnalyzer(ASGraphAnalyzer):
                 return most_specific_ann  # type: ignore
         return None
 
-    def analyze(self) -> dict[int, dict[int, CPPOutcomes | PyOutcomes]]:
+    def analyze(self) -> dict[int, dict[int, Union["CPPOutcomes", "PyOutcomes"]]]:
         """Takes in engine and outputs traceback for ctrl + data plane data"""
 
         for as_obj in self.engine.as_graph:
@@ -59,7 +59,7 @@ class PyASGraphAnalyzer(ASGraphAnalyzer):
     # Data plane funcs #
     ####################
 
-    def _get_as_outcome_data_plane(self, as_obj: AS) -> CPPOutcomes | PyOutcomes:
+    def _get_as_outcome_data_plane(self, as_obj: AS) -> Union["CPPOutcomes", "PyOutcomes"]:
         """Recursively returns the as outcome"""
 
         if as_obj in self._data_plane_outcomes:
@@ -79,12 +79,12 @@ class PyASGraphAnalyzer(ASGraphAnalyzer):
             assert outcome != PyOutcomes.UNDETERMINED, "Shouldn't be possible"
 
             self._data_plane_outcomes[as_obj.asn] = outcome
-            assert isinstance(outcome, CPPOutcomes | PyOutcomes), "For mypy"
+            assert isinstance(outcome, (CPPOutcomes, PyOutcomes)), "For mypy"
             return outcome
 
     def _determine_as_outcome_data_plane(
-        self, as_obj: AS, most_specific_ann: Optional[PyAnn | CPPAnn]
-    ) -> CPPOutcomes | PyOutcomes:
+        self, as_obj: AS, most_specific_ann: Optional[Union["PyAnn", "CPPAnn"]]
+    ) -> Union["CPPOutcomes", "PyOutcomes"]:
         """Determines the outcome at an AS
 
         ann is most_specific_ann is the most specific prefix announcement
@@ -110,19 +110,19 @@ class PyASGraphAnalyzer(ASGraphAnalyzer):
     # Control Plane Funcs #
     #######################
 
-    def _get_as_outcome_ctrl_plane(self, as_obj: AS) -> CPPOutcomes | PyOutcomes:
+    def _get_as_outcome_ctrl_plane(self, as_obj: AS) -> Union["CPPOutcomes", "PyOutcomes"]:
         """Stores and returns the AS outcome from the control plane"""
 
         most_specific_ann = self._most_specific_ann_dict[as_obj]
         outcome = self._determine_as_outcome_ctrl_plane(as_obj, most_specific_ann)
         assert outcome != PyOutcomes.UNDETERMINED, "Shouldn't be possible"
         self._control_plane_outcomes[as_obj.asn] = outcome
-        assert isinstance(outcome, CPPOutcomes | PyOutcomes), "For mypy"
+        assert isinstance(outcome, (CPPOutcomes, PyOutcomes)), "For mypy"
         return outcome
 
     def _determine_as_outcome_ctrl_plane(
-        self, as_obj: AS, ann: Optional[PyAnn | CPPAnn]
-    ) -> CPPOutcomes | PyOutcomes:
+        self, as_obj: AS, ann: Optional[Union["PyAnn", "CPPAnn"]]
+    ) -> Union["CPPOutcomes", "PyOutcomes"]:
         """Determines the outcome at an AS on the control plane
 
         ann is most_specific_ann is the most specific prefix announcement
@@ -142,6 +142,6 @@ class PyASGraphAnalyzer(ASGraphAnalyzer):
     # Hook funcs for other metrics #
     ################################
 
-    def _get_other_as_outcome_hook(self, as_obj: AS) -> CPPOutcomes | PyOutcomes:
+    def _get_other_as_outcome_hook(self, as_obj: AS) -> Union["CPPOutcomes", "PyOutcomes"]:
         # Noop, this is just to satisfy mypy
         return PyOutcomes.ATTACKER_SUCCESS

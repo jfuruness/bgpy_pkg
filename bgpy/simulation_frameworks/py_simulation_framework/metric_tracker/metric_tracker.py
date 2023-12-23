@@ -242,8 +242,8 @@ class MetricTracker:
                     as_obj=as_obj,
                     engine=engine,
                     scenario=scenario,
-                    ctrl_plane_outcome=ctrl_plane_outcomes[as_obj],
-                    data_plane_outcome=data_plane_outcomes[as_obj],
+                    ctrl_plane_outcome=ctrl_plane_outcomes[as_obj.asn],
+                    data_plane_outcome=data_plane_outcomes[as_obj.asn],
                 )
         # Only call this once or else it adds significant amounts of time
         for metric in metrics:

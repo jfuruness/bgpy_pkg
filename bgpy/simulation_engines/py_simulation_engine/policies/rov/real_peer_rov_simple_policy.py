@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Union
 
 from bgpy.simulation_engines.py_simulation_engine.policies.bgp import BGPSimplePolicy
 from bgpy.enums import PyRelationships
@@ -20,7 +20,7 @@ class RealPeerROVSimplePolicy(BGPSimplePolicy):
     name: str = "RealPeerROVSimple"
 
     # mypy doesn't understand that this func is valid
-    def _valid_ann(self, ann: PyAnn | CPPAnn, *args, **kwargs) -> bool:  # type: ignore
+    def _valid_ann(self, ann: Union["PyAnn", "CPPAnn"], *args, **kwargs) -> bool:  # type: ignore
         """Returns announcement validity
 
         Returns false if invalid by roa,

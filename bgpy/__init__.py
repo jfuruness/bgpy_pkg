@@ -1,4 +1,3 @@
-from . import __main__
 from . import as_graphs
 from . import simulation_engines
 from . import simulation_frameworks

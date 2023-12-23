@@ -1,4 +1,4 @@
-from typing import Any, Optional, TYPE_CHECKING
+from typing import Any, Optional, TYPE_CHECKING, Union
 
 from bgpy.simulation_engines.py_simulation_engine.ann_containers import RecvQueue
 
@@ -15,7 +15,7 @@ if TYPE_CHECKING:
     from bgpy.enums import PyRelationships, CPPRelationships
 
 
-def receive_ann(self, ann: PyAnn | CPPAnn, accept_withdrawals: bool = False) -> None:
+def receive_ann(self, ann: Union["PyAnn", "CPPAnn"], accept_withdrawals: bool = False) -> None:
     """Function for recieving announcements, adds to recv_q"""
 
     if ann.withdraw and not accept_withdrawals:
@@ -26,7 +26,7 @@ def receive_ann(self, ann: PyAnn | CPPAnn, accept_withdrawals: bool = False) -> 
 def process_incoming_anns(
     self,
     *,
-    from_rel: PyRelationships | CPPRelationships,
+    from_rel: Union["PyRelationships", "CPPRelationships"],
     propagation_round: int,
     scenario: "Scenario",
     reset_q: bool = True,
@@ -36,7 +36,7 @@ def process_incoming_anns(
     # For each prefix, get all anns recieved
     for prefix, ann_list in self._recv_q.prefix_anns():
         # Get announcement currently in local rib
-        current_ann: PyAnn | CPPAnn = self._local_rib.get_ann(prefix)
+        current_ann: Union["PyAnn", "CPPAnn"] = self._local_rib.get_ann(prefix)
         og_ann = current_ann
 
         # Seeded Ann will never be overriden, so continue
@@ -62,7 +62,7 @@ def process_incoming_anns(
 
 
 def _valid_ann(
-    self, ann: PyAnn | CPPAnn, recv_relationship: PyRelationships | CPPRelationships
+    self, ann: Union["PyAnn", "CPPAnn"], recv_relationship: Union["PyRelationships", "CPPRelationships"]
 ) -> bool:
     """Determine if an announcement is valid or should be dropped"""
 
@@ -72,10 +72,10 @@ def _valid_ann(
 
 def _copy_and_process(
     self,
-    ann: PyAnn | CPPAnn,
-    recv_relationship: PyRelationships | CPPRelationships,
+    ann: Union["PyAnn", "CPPAnn"],
+    recv_relationship: Union["PyRelationships", "CPPRelationships"],
     overwrite_default_kwargs: Optional[dict[Any, Any]] = None,
-) -> PyAnn | CPPAnn:
+) -> Union["PyAnn", "CPPAnn"]:
     """Deep copies ann and modifies attrs
 
     Prepends AS to AS Path and sets recv_relationship

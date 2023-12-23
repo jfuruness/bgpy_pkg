@@ -1,7 +1,7 @@
 from typing import Iterable
 
 from bgpy.enums import ASGroups, Plane, PyOutcomes
-from bgpy.simulation_framework.metric_tracker.metric_key import MetricKey
+from bgpy.simulation_frameworks.py_simulation_framework.metric_tracker.metric_key import MetricKey
 
 
 def get_all_metric_keys() -> Iterable[MetricKey]:

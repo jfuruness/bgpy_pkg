@@ -49,8 +49,6 @@ class SimulationEngine(YamlAble, ABC):
 
         self.as_graph = as_graph
         # Useful for C++ version
-        msg = "Must cache the initial TSV for CPPSimulationEngine"
-        assert cached_as_graph_tsv_path, msg
         self.cached_as_graph_tsv_path: Path = cached_as_graph_tsv_path
         # This indicates whether or not the simulator has been set up for a run
         # We use a number instead of a bool so that we can indicate for

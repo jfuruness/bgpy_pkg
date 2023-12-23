@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Union
 
 from .scenario import Scenario
 from bgpy.enums import Prefixes
@@ -14,7 +14,7 @@ if TYPE_CHECKING:
 class ValidPrefix(Scenario):
     """A valid prefix engine input, mainly for testing"""
 
-    def _get_announcements(self, *args, **kwargs) -> tuple["CPPAnn" | "PyAnn", ...]:
+    def _get_announcements(self, *args, **kwargs) -> tuple[Union["CPPAnn", "PyAnn"], ...]:
         """Returns a valid prefix announcement
 
         for subclasses of this EngineInput, you can set AnnCls equal to
