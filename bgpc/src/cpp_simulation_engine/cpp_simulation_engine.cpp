@@ -22,13 +22,10 @@ CPPSimulationEngine::CPPSimulationEngine(std::unique_ptr<ASGraph> as_graph, int 
 void CPPSimulationEngine::setup(const std::vector<std::shared_ptr<Announcement>>& announcements,
            const std::string& base_policy_class_str,
            const std::map<int, std::string>& non_default_asn_cls_str_dict) {
-    std::cout<<"in here"<<std::endl;
     set_as_classes(base_policy_class_str, non_default_asn_cls_str_dict);
 
-    std::cout<<"here"<<std::endl;
     seed_announcements(announcements);
 
-    std::cout<<"out here"<<std::endl;
     ready_to_run_round = 0;
 }
 
@@ -61,46 +58,35 @@ void CPPSimulationEngine::register_policy_factory(const std::string& name, const
 void CPPSimulationEngine::register_policies() {
     // Example of registering a base policy
     register_policy_factory("BGPSimplePolicy", []() -> std::unique_ptr<Policy>{
-        std::cout <<"in register_policy"<<std::endl;
         return std::make_unique<BGPSimplePolicy>();
     });
     // Register other policies similarly
     // e.g., register_policy_factory("SpecificPolicy", ...);
 }
 void CPPSimulationEngine::set_as_classes(const std::string& base_policy_class_str, const std::map<int, std::string>& non_default_asn_cls_str_dict) {
-    std::cout << "in set_as_classes" << std::endl;
     for (auto& [asn, as_obj] : as_graph->as_dict) {
 
-            std::cout << "in set_as_classes loop" << std::endl;
         // Determine the policy class string to use
         auto cls_str_it = non_default_asn_cls_str_dict.find(as_obj->asn);
 
-        std::cout << "a" << std::endl;
         std::string policy_class_str = (cls_str_it != non_default_asn_cls_str_dict.end()) ? cls_str_it->second : base_policy_class_str;
-        std::cout << "b" << std::endl;
 
         // Find the factory function in the dictionary
         auto factory_it = name_to_policy_func_dict.find(policy_class_str);
 
-        std::cout << "c" << std::endl;
         if (factory_it == name_to_policy_func_dict.end()) {
             throw std::runtime_error("Policy class not implemented: " + policy_class_str);
         }
 
-        std::cout << "d" << std::endl;
         // Create and set the new policy object
 
         // Create the policy object using the factory function
         auto policy_object = factory_it->second();
-        std::cout << "Policy object created" << std::endl; // Print statement
         // Assign the created policy object to as_obj->policy
         as_obj->policy = std::move(policy_object);
 
-        std::cout << "g" << std::endl;
         //set the reference to the AS
         as_obj->policy->as = std::weak_ptr<AS>(as_obj->shared_from_this());
-
-        std::cout << "f" << std::endl;
     }
 }
 void CPPSimulationEngine::seed_announcements(const std::vector<std::shared_ptr<Announcement>>& announcements) {

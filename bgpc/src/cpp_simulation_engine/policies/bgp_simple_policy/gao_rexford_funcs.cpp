@@ -8,14 +8,12 @@
 
 void BGPSimplePolicy::initialize_gao_rexford_functions() {
 
-    std::cout<<"in init gao"<<std::endl;
     gao_rexford_functions = {
         std::bind(&BGPSimplePolicy::get_best_ann_by_local_pref, this, std::placeholders::_1, std::placeholders::_2),
         std::bind(&BGPSimplePolicy::get_best_ann_by_as_path, this, std::placeholders::_1, std::placeholders::_2),
         std::bind(&BGPSimplePolicy::get_best_ann_by_lowest_neighbor_asn_tiebreaker, this, std::placeholders::_1, std::placeholders::_2)
     };
 
-    std::cout<<"end init gao"<<std::endl;
 }
 std::shared_ptr<Announcement> BGPSimplePolicy::get_best_ann_by_gao_rexford(const std::shared_ptr<Announcement>& current_ann, const std::shared_ptr<Announcement>& new_ann) {
     if (!new_ann) {
