@@ -33,7 +33,7 @@ class ScenarioConfig:
     ScenarioCls: type["Scenario"]
     # This is the base type of announcement for this class
     # You can specify a different base ann
-    AnnCls: type["CPPAnn" | "PyAnn"] = PyAnnouncement
+    AnnCls: type["CPPAnn" | "PyAnn"] = PyAnn
     BasePolicyCls: type[Policy] = BGPSimplePolicy
     # Fixed in post init, but can't show mypy for some reason
     AdoptPolicyCls: type[Policy] = MISSINGPolicy  # type: ignore

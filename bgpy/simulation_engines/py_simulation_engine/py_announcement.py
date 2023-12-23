@@ -11,7 +11,7 @@ if TYPE_CHECKING:
 # slots offers basically no speedup here.
 # besides, YamlAble doesn't have slots, so this
 # doesn't matter
-@yaml_info(yaml_tag="Announcement")
+@yaml_info(yaml_tag="PyAnnouncement")
 @dataclass(slots=True, frozen=True)
 class PyAnnouncement(YamlAble):
     """BGP Announcement"""
@@ -29,19 +29,19 @@ class PyAnnouncement(YamlAble):
     traceback_end: bool = False
     communities: tuple[str, ...] = ()
 
-    def prefix_path_attributes_eq(self, ann: Optional["Announcement"]) -> bool:
+    def prefix_path_attributes_eq(self, ann: Optional["PyAnnouncement"]) -> bool:
         """Checks prefix and as path equivalency"""
 
         if ann is None:
             return False
-        elif isinstance(ann, Announcement):
+        elif isinstance(ann, PyAnnouncement):
             return (ann.prefix, ann.as_path) == (self.prefix, self.as_path)
         else:
             raise NotImplementedError
 
     def copy(
         self, overwrite_default_kwargs: Optional[dict[Any, Any]] = None
-    ) -> "Announcement":
+    ) -> "PyAnnouncement":
         """Creates a new ann with proper sim attrs"""
 
         # Replace seed asn and traceback end every time by default
@@ -118,8 +118,8 @@ class PyAnnouncement(YamlAble):
 
     @classmethod
     def __from_yaml_dict__(
-        cls: type["Announcement"], dct: dict[str, Any], yaml_tag: Any
-    ) -> "Announcement":
+        cls: type["PyAnnouncement"], dct: dict[str, Any], yaml_tag: Any
+    ) -> "PyAnnouncement":
         """This optional method is called when you call yaml.load()"""
 
         return cls(**dct)

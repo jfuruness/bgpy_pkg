@@ -184,7 +184,7 @@ def _process_incoming_withdrawal(
         )
     ), err
 
-    ann_info: Optional[PyAnn | CPPAnnInfo] = self._ribs_in.get_unprocessed_ann_recv_rel(
+    ann_info: Optional[AnnInfo] = self._ribs_in.get_unprocessed_ann_recv_rel(
         neighbor, prefix
     )
     current_ann_ribs_in = ann_info.unprocessed_ann  # type: ignore

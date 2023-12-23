@@ -3,7 +3,7 @@ from typing import Iterator, Optional
 from .ann_container import AnnContainer
 
 from bgpy.simulation_engines.py_simulation_engine import PyAnnouncement as PyAnn
-from bgpy.simulation_engines.cpp_simulation_engine import CPPAnnouncement as CPAnn
+from bgpy.simulation_engines.cpp_simulation_engine import CPPAnnouncement as CPPAnn
 
 
 class RIBsOut(AnnContainer):

@@ -4,7 +4,7 @@ from typing import Any, Iterable
 import yaml
 
 from .simulator_loader import SimulatorLoader
-from bgpy.enums import YamlAbleEnum
+from bgpy.enums import CPPRelationships, CPPOutcomes, YamlAbleEnum
 
 # 2-way mappings between the types and the yaml tags
 types_to_yaml_tags = {X: X.yaml_suffix() for X in YamlAbleEnum.yamlable_enums()}

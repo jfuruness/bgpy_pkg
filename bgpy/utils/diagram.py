@@ -193,9 +193,9 @@ class Diagram:
         else:
             if traceback[as_obj.asn].value == PyOutcomes.ATTACKER_SUCCESS.value:
                 kwargs.update({"fillcolor": "#ff6060:yellow"})
-            elif traceback[as_obj.asn].value == Outcomes.VICTIM_SUCCESS.value:
+            elif traceback[as_obj.asn].value == PyOutcomes.VICTIM_SUCCESS.value:
                 kwargs.update({"fillcolor": "#90ee90:white"})
-            elif traceback[as_obj.asn].value == Outcomes.DISCONNECTED.value:
+            elif traceback[as_obj.asn].value == PyOutcomes.DISCONNECTED.value:
                 kwargs.update({"fillcolor": "grey:white"})
 
             if as_obj.policy.__class__ not in [BGPPolicy, BGPSimplePolicy]:

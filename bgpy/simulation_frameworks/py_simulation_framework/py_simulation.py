@@ -20,7 +20,7 @@ from .scenarios import Scenario
 from .scenarios import ScenarioConfig
 from .scenarios import SubprefixHijack
 
-from bgpy.simulation_frameworks.base import GraphAnalyzer
+from bgpy.simulation_frameworks.base import ASGraphAnalyzer
 from bgpy.simulation_frameworks.base import Simulation
 
 from bgpy.enums import SpecialPercentAdoptions
@@ -68,7 +68,7 @@ class PySimulation(Simulation):
             }
         ),
         SimulationEngineCls: type[SimulationEngine] = PySimulationEngine,
-        GraphAnalyzerCls: type[GraphAnalyzer] = PyGraphAnalyzer,
+        ASGraphAnalyzerCls: type[ASGraphAnalyzer] = PyASGraphAnalyzer,
         MetricTrackerCls: type[MetricTracker] = MetricTracker,
     ) -> None:
         """Downloads relationship data, runs simulation
@@ -100,7 +100,7 @@ class PySimulation(Simulation):
 
         self.SimulationEngineCls: type[SimulationEngine] = SimulationEngineCls
 
-        self.GraphAnalyzerCls: type[GraphAnalyzer] = GraphAnalyzerCls
+        self.ASGraphAnalyzerCls: type[ASGraphAnalyzer] = ASGraphAnalyzerCls
         self.MetricTrackerCls: type[MetricTracker] = MetricTrackerCls
 
     def run(
@@ -309,7 +309,7 @@ class PySimulation(Simulation):
         # The reason we aggregate info right now, instead of saving
         # the engine and doing it later, is because doing it all
         # in RAM is MUCH faster, and speed is important
-        outcomes = self.GraphAnalyzerCls(engine=engine, scenario=scenario).analyze()
+        outcomes = self.ASGraphAnalyzerCls(engine=engine, scenario=scenario).analyze()
         metric_tracker.track_trial_metrics(
             engine=engine,
             percent_adopt=percent_adopt,

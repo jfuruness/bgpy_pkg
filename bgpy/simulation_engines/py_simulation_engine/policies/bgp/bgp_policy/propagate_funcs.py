@@ -5,8 +5,6 @@ from bgpy.simulation_engines.base import Policy
 if TYPE_CHECKING:
     from bgpy.as_graphs import AS
 
-    from bgpy.simulation_frameworks.py_simulation_framework import Scenario
-
     from bgpy.simulation_engines.cpp_simulation_engine.cpp_announcement import (
         CPPAnnouncement as CPPAnn,
     )

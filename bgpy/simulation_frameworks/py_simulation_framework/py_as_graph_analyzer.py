@@ -3,17 +3,18 @@ from typing import Any, Optional, TYPE_CHECKING
 from bgpy.as_graphs import AS
 from bgpy.enums import Plane, PyOutcomes
 from bgpy.simulation_engines.base import SimulationEngine
+from bgpy.simulation_frameworks.base import ASGraphAnalyzer
 
 from .scenarios import Scenario
 
 if TYPE_CHECKING:
-    from bgpy.enums import CPPOutcomes, CPPRelationships, PyRelationships
+    from bgpy.enums import CPPOutcomes, PyRelationships
     from bgpy.simulation_engines.py_simulation_engine import PyAnnouncement as PyAnn
     from bgpy.simulation_engines.cpp_simulation_engine import CPPAnnouncement as CPPAnn
 
 
 
-class PyASGraphAnalyzer(GraphAnalyzer):
+class PyASGraphAnalyzer(ASGraphAnalyzer):
     """Takes in a SimulationEngine and outputs metrics"""
 
     def __init__(self, engine: SimulationEngine, scenario: Scenario):
@@ -99,7 +100,7 @@ class PyASGraphAnalyzer(GraphAnalyzer):
         elif (
             most_specific_ann is None
             or len(most_specific_ann.as_path) == 1
-            or most_specific_ann.recv_relationship == Relationships.ORIGIN
+            or most_specific_ann.recv_relationship.value == PyRelationships.ORIGIN.value
             or most_specific_ann.traceback_end
         ):
             return PyOutcomes.DISCONNECTED

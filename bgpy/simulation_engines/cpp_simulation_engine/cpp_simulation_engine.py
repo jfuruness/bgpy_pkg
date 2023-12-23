@@ -4,6 +4,7 @@ from frozendict import frozendict
 
 from bgpy.bgpc import CPPSimulationEngine as _CPPSimulationEngine
 
+from bgpy.enums import CPPRelationships
 from bgpy.simulation_engines.base import SimulationEngine
 from bgpy.simulation_engines.base import Policy
 from bgpy.simulation_engines.py_simulation_engine.policies import BGPSimplePolicy
@@ -45,6 +46,9 @@ class CPPSimulationEngine(SimulationEngine):
 
         if not all(isinstance(x, CPPAnnouncement) for x in announcements):
             raise TypeError("Not using CPPAnnouncement with CPPSimulationEngine")
+        if not all(isinstance(x.recv_relationship, CPPRelationships) for x in announcements):
+            raise TypeError("Not using CPPRelationship in CPPAnnouncement with CPPSimulationEngine")
+
 
         policies_used: set[type[Policy]] = set(non_default_asn_cls_dict.values())
         policies_used.add(BasePolicyCls)

@@ -1,4 +1,7 @@
+from typing import TYPE_CHECKING
+
 from bgpy.simulation_engines.py_simulation_engine.policies.bgp import BGPSimplePolicy
+from bgpy.enums import PyRelationships
 
 
 if TYPE_CHECKING:
@@ -9,7 +12,7 @@ if TYPE_CHECKING:
     from bgpy.simulation_engines.py_simulation_engine.py_announcement import (
         PyAnnouncement as PyAnn,
     )
-    from bgpy.enums import CPPRelationships, PyRelationships
+
 
 
 class RealPeerROVSimplePolicy(BGPSimplePolicy):
@@ -31,7 +34,7 @@ class RealPeerROVSimplePolicy(BGPSimplePolicy):
 
         # Invalid by ROA is not valid by ROV
         # Since this type of real world ROV only does peer filtering, only peers here
-        if ann.invalid_by_roa and ann.recv_relationship == Relationships.PEERS:
+        if ann.invalid_by_roa and ann.recv_relationship.value == PyRelationships.PEERS.value:
             return False
         # Use standard BGP to determine if the announcement is valid
         else:
