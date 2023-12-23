@@ -5,9 +5,9 @@ from .simulator_codec import SimulatorCodec
 
 from bgpy.as_graphs.base import AS
 from bgpy.simulation_engines.base import SimulationEngine
-from bgpy.simulation_framework import Scenario
-from bgpy.simulation_framework import MetricTracker
-from bgpy.enums import Plane, SpecialPercentAdoptions, Outcomes
+from bgpy.simulation_frameworks.py_simulation_framework import Scenario
+from bgpy.simulation_frameworks.py_simulation_framework import MetricTracker
+from bgpy.enums import Plane, SpecialPercentAdoptions, PyOutcomes, CPPOutcomes
 
 
 class EngineRunner:
@@ -92,7 +92,7 @@ class EngineRunner:
         trial: int,
         scenario: Scenario,
         propagation_round: int,
-        outcomes: dict[str, dict[AS, Outcomes]],
+        outcomes: dict[str, dict[AS, PyOutcomes | CPPOutcomes]],
     ) -> MetricTracker:
         # Get stored metrics
         metric_tracker = self.conf.MetricTrackerCls()
@@ -109,7 +109,7 @@ class EngineRunner:
     def _store_data(
         self,
         engine: SimulationEngine,
-        outcomes: dict[int, Outcomes],
+        outcomes: dict[int, PyOutcomes | CPPOutcomes],
         metric_tracker: MetricTracker,
     ):
         """Stores YAML for the engine, outcomes, and CSV for metrics.
@@ -131,7 +131,7 @@ class EngineRunner:
 
     def _generate_diagrams(
         self, scenario: Scenario, metric_tracker: MetricTracker
-    ) -> tuple[SimulationEngine, dict[int, Outcomes], tuple[tuple["AS", ...], ...]]:
+    ) -> tuple[SimulationEngine, dict[int, PyOutcomes | CPPOutcomes], tuple[tuple["AS", ...], ...]]:
         """Generates diagrams"""
 
         # Load engines

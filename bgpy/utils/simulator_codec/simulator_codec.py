@@ -8,6 +8,8 @@ from bgpy.enums import YamlAbleEnum
 
 # 2-way mappings between the types and the yaml tags
 types_to_yaml_tags = {X: X.yaml_suffix() for X in YamlAbleEnum.yamlable_enums()}
+types_to_yaml_tags[CPPOutcomes] = CPPOutcomes.__name__
+types_to_yaml_tags[CPPRelationships] = CPPRelationships.__name__
 yaml_tags_to_types = {v: k for k, v in types_to_yaml_tags.items()}
 
 
@@ -35,7 +37,7 @@ class SimulatorCodec(YamlCodec):
         """Creates object related to the given tag, from decoded dict"""
 
         typ = yaml_tags_to_types[yaml_tag_suffix]
-        if issubclass(typ, YamlAbleEnum):
+        if issubclass(typ, YamlAbleEnum) or typ in (CPPOutcomes, CPPRelationships):
             # Don't use unessecary name
             return typ(value=dct["value"])
         else:

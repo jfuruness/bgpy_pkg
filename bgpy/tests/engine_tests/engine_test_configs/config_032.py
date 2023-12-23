@@ -6,7 +6,7 @@ from bgpy.tests.engine_tests.utils import EngineTestConfig
 
 
 from bgpy.simulation_engines.py_simulation_engine import BGPPolicy
-from bgpy.simulation_framework import ValidPrefix, ScenarioConfig
+from bgpy.simulation_frameworks.py_simulation_framework import ValidPrefix, ScenarioConfig
 from bgpy.enums import Prefixes
 
 
