@@ -23,7 +23,7 @@ class Custom29MultiValidPrefix(ValidPrefix):
                 # longer path for AS 5 to test path length preference
                 # vic_anns[i].as_path = (vic_anns[i].origin, vic_anns[i].origin)
                 object.__setattr__(
-                    vic_anns[i], "as_path", (vic_anns[i].origin, vic_anns[i].origin)
+                    vic_anns[i], "as_path", [vic_anns[i].origin, vic_anns[i].origin]
                 )
         return vic_anns
 

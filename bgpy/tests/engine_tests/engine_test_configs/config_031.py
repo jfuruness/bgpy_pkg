@@ -18,7 +18,7 @@ class Custom31ValidPrefix(ValidPrefix):
         # Add 1 to the path so AS 1 rejects this
         # vic_ann.as_path = (vic_ann.origin, 1, vic_ann.origin)
 
-        object.__setattr__(vic_ann, "as_path", (vic_ann.origin, 1, vic_ann.origin))
+        object.__setattr__(vic_ann, "as_path", [vic_ann.origin, 1, vic_ann.origin])
         return (vic_ann,)
 
 
