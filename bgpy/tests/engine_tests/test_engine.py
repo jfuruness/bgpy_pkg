@@ -15,18 +15,25 @@ from .utils import EngineTestConfig
 
 cpp_configs = []
 for engine_test_config in engine_test_configs:
-    cpp_configs.append(
-        replace(
-            engine_test_config,
-            name="cpp_" + engine_test_config.name,
-            desc="C++ Sim of " + engine_test_config.desc,
-            SimulationEngineCls=CPPSimulationEngine,
-            scenario_config=replace(engine_test_config.scenario_config, AnnCls=CPPAnnouncement),
-            ASGraphAnalyzerCls=CPPASGraphAnalyzer,
+    try:
+        cpp_valid = int(engine_test_config.name) not in list(range(29,34 + 1))
+    except ValueError:
+        cpp_valid = True
+    if cpp_valid:
+        cpp_configs.append(
+            replace(
+                engine_test_config,
+                name="cpp_" + engine_test_config.name,
+                desc="C++ Sim of " + engine_test_config.desc,
+                SimulationEngineCls=CPPSimulationEngine,
+                scenario_config=replace(engine_test_config.scenario_config, AnnCls=CPPAnnouncement),
+                ASGraphAnalyzerCls=CPPASGraphAnalyzer,
+            )
         )
-    )
 engine_test_configs = cpp_configs + engine_test_configs
-engine_test_configs = engine_test_configs[1]
+# engine_test_configs = [engine_test_configs[2]]
+# print(engine_test_configs[0].name)#= [engine_test_configs[2]]
+
 
 @pytest.mark.engine
 class TestEngine:

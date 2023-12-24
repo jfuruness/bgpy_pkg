@@ -38,7 +38,9 @@ void parseASNList(std::map<int, std::shared_ptr<AS>>& asGraph, const std::string
     std::string asn_str;
     while (std::getline(iss, asn_str, ',')) {
         int asn = std::stoi(asn_str);
-        if (asGraph.find(asn) != asGraph.end()) {
+        if (asGraph.find(asn) == asGraph.end()) {
+            throw std::runtime_error("ASN " + std::to_string(asn) + " doesn't exist within the graph");
+        } else{
             list.push_back(asGraph[asn]);
         }
     }
@@ -57,6 +59,7 @@ ASGraph readASGraph(const std::string& filename) {
         throw std::runtime_error("File header does not start with the expected format.");
     }
 
+    // First pass: add all ASNs to as_dict
     while (std::getline(file, line)) {
         std::istringstream iss(line);
         std::vector<std::string> tokens;
@@ -67,14 +70,32 @@ ASGraph readASGraph(const std::string& filename) {
         }
 
         int asn = std::stoi(tokens[0]);
-        // Shared between as_dict and propagation_ranks
         auto as = std::make_shared<AS>(asn);
         as->initialize();
-        std::cout<<"a"<<std::endl;
+        asGraph.as_dict[asn] = as;
+    }
+
+    // Reset file stream to read the file again
+    file.clear();
+    file.seekg(0);
+    std::getline(file, line); // Skip the header line
+
+    // Second pass: add peers, customers, and providers
+    while (std::getline(file, line)) {
+        std::istringstream iss(line);
+        std::vector<std::string> tokens;
+        std::string token;
+
+        while (std::getline(iss, token, '\t')) {
+            tokens.push_back(token);
+        }
+
+        int asn = std::stoi(tokens[0]);
+        auto as = asGraph.as_dict[asn];
+
         parseASNList(asGraph.as_dict, tokens[1], as->peers);
         parseASNList(asGraph.as_dict, tokens[2], as->customers);
         parseASNList(asGraph.as_dict, tokens[3], as->providers);
-        std::cout<<"b"<<std::endl;
 
         as->input_clique = (tokens[4] == "True");
         as->ixp = (tokens[5] == "True");
@@ -83,9 +104,6 @@ ASGraph readASGraph(const std::string& filename) {
         as->stub = (tokens[9] == "True");
         as->multihomed = (tokens[10] == "True");
         as->transit = (tokens[11] == "True");
-        std::cout<<"c"<<std::endl;
-
-        asGraph.as_dict[asn] = as;
     }
     asGraph.calculatePropagationRanks();
 

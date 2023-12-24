@@ -69,6 +69,9 @@ void CPPSimulationEngine::register_policies() {
     register_policy_factory("ROV", []() -> std::unique_ptr<Policy>{
         return std::make_unique<BGPSimplePolicy>();
     });
+    register_policy_factory("RealPeerROVSimple", []() -> std::unique_ptr<Policy>{
+        return std::make_unique<BGPSimplePolicy>();
+    });
 
 
     // Register other policies similarly
@@ -196,6 +199,7 @@ void CPPSimulationEngine::dump_local_ribs_to_tsv(const std::string& tsv_path) {
         const auto& as = asPair.second;
         const auto& policy = as->policy;
         const auto& localRIB = policy->localRIB;
+
 
         // Get announcements from the local RIB
         for (const auto& annPair : localRIB.prefix_anns()) {

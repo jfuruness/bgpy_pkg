@@ -43,7 +43,6 @@ void BGPSimplePolicy::propagate(Relationships propagate_to, const std::set<Relat
         default:
             throw std::runtime_error("Unsupported relationship type.");
     }
-
     for (const auto& neighbor_weak : neighbors) {
         for (const auto& [prefix, ann] : localRIB.prefix_anns()) {
             if (send_rels.find(ann->recv_relationship) != send_rels.end() && !prev_sent(neighbor_weak, ann)) {
@@ -52,6 +51,7 @@ void BGPSimplePolicy::propagate(Relationships propagate_to, const std::set<Relat
                 } else {
                     process_outgoing_ann(neighbor_weak, ann, propagate_to, send_rels);
                 }
+
             }
         }
     }

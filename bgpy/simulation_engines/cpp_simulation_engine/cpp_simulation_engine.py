@@ -24,24 +24,27 @@ if TYPE_CHECKING:
 class CPPSimulationEngine(SimulationEngine):
     """Wrapper around the C++ SimulationEngine to make it compatible with BGPy"""
 
-    def __init__(self, *args, **kwargs) -> None:
+    def __init__(self, *args, create_cpp_engine=True, **kwargs) -> None:
         super().__init__(*args, **kwargs)
 
-        if self.cached_as_graph_tsv_path and self.cached_as_graph_tsv_path.exists():
-            self._cpp_simulation_engine: _CPPSimulationEngine = get_engine(
-                str(self.cached_as_graph_tsv)
-            )
-        else:
-            # TODO: fix circular imports
-            with TemporaryDirectory() as tmp_dir:
-                tsv_path = Path(tmp_dir) / "caida.tsv"
-                bgpy.as_graphs.base.ASGraphConstructor.write_tsv(self.as_graph, tsv_path)
-                try:
-                    self._cpp_simulation_engine = get_engine(str(tsv_path))
-                except ValueError as e:
-                    msg = f"is customer_cones set to False? {e}"
-                    print(msg)
-                    raise
+        # This can be turned off during testing to reduce debug output
+        if create_cpp_engine:
+            if self.cached_as_graph_tsv_path and self.cached_as_graph_tsv_path.exists():
+                self._cpp_simulation_engine: _CPPSimulationEngine = get_engine(
+                    str(self.cached_as_graph_tsv)
+                )
+            else:
+                # TODO: fix circular imports
+                with TemporaryDirectory() as tmp_dir:
+                    tsv_path = Path(tmp_dir) / "caida.tsv"
+                    bgpy.as_graphs.base.ASGraphConstructor.write_tsv(self.as_graph, tsv_path)
+
+                    try:
+                        self._cpp_simulation_engine = get_engine(str(tsv_path))
+                    except ValueError as e:
+                        msg = f"is customer_cones set to False? {e}"
+                        print(msg)
+                        raise
 
     ###############
     # Setup funcs #
@@ -95,6 +98,7 @@ class CPPSimulationEngine(SimulationEngine):
         assert scenario, "This can't be empty"
         # Propogate anns
         self._cpp_simulation_engine.run(propagation_round)
+        self._cpp_simulation_engine.dump_local_ribs_to_tsv("/home/anon/local_ribs.tsv")
         # Increment the ready to run round
         self.ready_to_run_round += 1
 
@@ -127,4 +131,4 @@ class CPPSimulationEngine(SimulationEngine):
     ) -> "CPPSimulationEngine":
         """This optional method is called when you call yaml.load()"""
 
-        return cls(**dct)
+        return cls(create_cpp_engine=False, **dct)

@@ -77,7 +77,23 @@ as_graph: !yamlable/CAIDAASGraph
       peers: !!python/tuple
       - 2
       policy: !yamlable/ROVPolicy
-        _local_rib: !yamlable/LocalRIB {}
+        _local_rib: !yamlable/LocalRIB
+          1.2.0.0/16: !simulator_codec/Announcement
+            as_path:
+            - 3
+            - 2
+            - 777
+            communities: []
+            prefix: 1.2.0.0/16
+            recv_relationship: !simulator_codec/Relationships
+              name: PEERS
+              value: 2
+            roa_origin: 777
+            roa_valid_length: true
+            seed_asn: 777
+            timestamp: 0
+            traceback_end: false
+            withdraw: false
         _recv_q: !yamlable/RecvQueue {}
         _ribs_in: !yamlable/RIBsIn {}
         _ribs_out: !yamlable/RIBsOut {}
@@ -92,7 +108,23 @@ as_graph: !yamlable/CAIDAASGraph
       ixp: false
       peers: !!python/tuple []
       policy: !yamlable/ROVPolicy
-        _local_rib: !yamlable/LocalRIB {}
+        _local_rib: !yamlable/LocalRIB
+          1.2.0.0/16: !simulator_codec/Announcement
+            as_path:
+            - 4
+            - 2
+            - 777
+            communities: []
+            prefix: 1.2.0.0/16
+            recv_relationship: !simulator_codec/Relationships
+              name: PROVIDERS
+              value: 1
+            roa_origin: 777
+            roa_valid_length: true
+            seed_asn: 777
+            timestamp: 0
+            traceback_end: false
+            withdraw: false
         _recv_q: !yamlable/RecvQueue {}
         _ribs_in: !yamlable/RIBsIn {}
         _ribs_out: !yamlable/RIBsOut {}
@@ -139,7 +171,24 @@ as_graph: !yamlable/CAIDAASGraph
       ixp: false
       peers: !!python/tuple []
       policy: !yamlable/ROVPolicy
-        _local_rib: !yamlable/LocalRIB {}
+        _local_rib: !yamlable/LocalRIB
+          1.2.0.0/16: !simulator_codec/Announcement
+            as_path:
+            - 6
+            - 3
+            - 2
+            - 777
+            communities: []
+            prefix: 1.2.0.0/16
+            recv_relationship: !simulator_codec/Relationships
+              name: PROVIDERS
+              value: 1
+            roa_origin: 777
+            roa_valid_length: true
+            seed_asn: 777
+            timestamp: 0
+            traceback_end: false
+            withdraw: false
         _recv_q: !yamlable/RecvQueue {}
         _ribs_in: !yamlable/RIBsIn {}
         _ribs_out: !yamlable/RIBsOut {}

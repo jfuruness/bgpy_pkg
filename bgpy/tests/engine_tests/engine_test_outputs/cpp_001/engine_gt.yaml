@@ -87,6 +87,22 @@ as_graph: !yamlable/CAIDAASGraph
       - 2
       policy: !yamlable/BGPSimplePolicy
         _local_rib: !yamlable/LocalRIB
+          1.2.0.0/16: !simulator_codec/Announcement
+            as_path:
+            - 3
+            - 2
+            - 777
+            communities: []
+            prefix: 1.2.0.0/16
+            recv_relationship: !simulator_codec/Relationships
+              name: PEERS
+              value: 2
+            roa_origin: 777
+            roa_valid_length: true
+            seed_asn: 777
+            timestamp: 0
+            traceback_end: false
+            withdraw: false
           1.2.3.0/24: !simulator_codec/Announcement
             as_path:
             - 3
@@ -114,6 +130,23 @@ as_graph: !yamlable/CAIDAASGraph
       peers: !!python/tuple []
       policy: !yamlable/BGPSimplePolicy
         _local_rib: !yamlable/LocalRIB
+          1.2.0.0/16: !simulator_codec/Announcement
+            as_path:
+            - 666
+            - 3
+            - 2
+            - 777
+            communities: []
+            prefix: 1.2.0.0/16
+            recv_relationship: !simulator_codec/Relationships
+              name: PROVIDERS
+              value: 1
+            roa_origin: 777
+            roa_valid_length: true
+            seed_asn: 777
+            timestamp: 0
+            traceback_end: false
+            withdraw: false
           1.2.3.0/24: !simulator_codec/Announcement
             as_path:
             - 666
@@ -153,6 +186,23 @@ as_graph: !yamlable/CAIDAASGraph
             roa_valid_length: true
             seed_asn: 777
             timestamp: 0
+            traceback_end: false
+            withdraw: false
+          1.2.3.0/24: !simulator_codec/Announcement
+            as_path:
+            - 777
+            - 2
+            - 3
+            - 666
+            communities: []
+            prefix: 1.2.3.0/24
+            recv_relationship: !simulator_codec/Relationships
+              name: PROVIDERS
+              value: 1
+            roa_origin: 777
+            roa_valid_length: false
+            seed_asn: 666
+            timestamp: 1
             traceback_end: false
             withdraw: false
         _recv_q: !yamlable/RecvQueue {}

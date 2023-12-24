@@ -122,7 +122,23 @@ as_graph: !yamlable/CAIDAASGraph
       peers: !!python/tuple
       - 1
       policy: !yamlable/BGPSimplePolicy
-        _local_rib: !yamlable/LocalRIB {}
+        _local_rib: !yamlable/LocalRIB
+          1.2.0.0/16: !simulator_codec/Announcement
+            as_path:
+            - 5
+            - 1
+            - 4
+            communities: []
+            prefix: 1.2.0.0/16
+            recv_relationship: !simulator_codec/Relationships
+              name: PEERS
+              value: 2
+            roa_origin: 4
+            roa_valid_length: true
+            seed_asn: 4
+            timestamp: 0
+            traceback_end: false
+            withdraw: false
         _recv_q: !yamlable/RecvQueue {}
       propagation_rank: 0
       providers: !!python/tuple []
