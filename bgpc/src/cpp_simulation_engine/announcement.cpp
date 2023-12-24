@@ -12,6 +12,20 @@ Announcement::Announcement(const std::string& prefix, const std::vector<int>& as
       recv_relationship(recv_relationship), withdraw(withdraw),
       traceback_end(traceback_end), communities(communities) {}
 
+// Equality comparison operator
+bool Announcement::operator==(const Announcement& other) const {
+    return prefix == other.prefix
+        && as_path == other.as_path
+        && timestamp == other.timestamp
+        && seed_asn == other.seed_asn
+        && roa_valid_length == other.roa_valid_length
+        && roa_origin == other.roa_origin
+        && recv_relationship == other.recv_relationship
+        && withdraw == other.withdraw
+        && traceback_end == other.traceback_end
+        && communities == other.communities;
+}
+
 // Methods
 bool Announcement::prefix_path_attributes_eq(const Announcement* ann) const {
     if (!ann) {

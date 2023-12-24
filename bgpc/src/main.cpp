@@ -140,5 +140,8 @@ PYBIND11_MODULE(bgpc, m) {
         .def_property_readonly("unknown_by_roa", &Announcement::unknown_by_roa)
         .def_property_readonly("covered_by_roa", &Announcement::covered_by_roa)
         .def_property_readonly("roa_routed", &Announcement::roa_routed)
-        .def_property_readonly("origin", &Announcement::origin);
+        .def_property_readonly("origin", &Announcement::origin)
+        .def("__eq__", [](const Announcement &self, const Announcement &other) {
+            return self == other;
+        });
 }

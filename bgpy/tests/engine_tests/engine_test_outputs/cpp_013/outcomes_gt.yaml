@@ -1,0 +1,12 @@
+1: !simulator_codec/Outcomes
+  name: ATTACKER_SUCCESS
+  value: 0
+2: !simulator_codec/Outcomes
+  name: DISCONNECTED
+  value: 2
+3: !simulator_codec/Outcomes
+  name: DISCONNECTED
+  value: 2
+666: !simulator_codec/Outcomes
+  name: ATTACKER_SUCCESS
+  value: 0

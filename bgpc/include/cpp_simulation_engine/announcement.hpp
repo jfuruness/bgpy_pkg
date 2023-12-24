@@ -25,6 +25,8 @@ public:
                  bool withdraw = false, bool traceback_end = false,
                  const std::vector<std::string>& communities = {});
 
+    bool operator==(const Announcement& other) const;
+
     bool prefix_path_attributes_eq(const Announcement* ann) const;
     bool invalid_by_roa() const;
     bool valid_by_roa() const;
