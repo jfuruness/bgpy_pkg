@@ -135,10 +135,10 @@ PYBIND11_MODULE(bgpc, m) {
         .def_readonly("traceback_end", &Announcement::traceback_end)
         .def_readonly("communities", &Announcement::communities)
         .def("prefix_path_attributes_eq", &Announcement::prefix_path_attributes_eq)
-        .def("invalid_by_roa", &Announcement::invalid_by_roa)
-        .def("valid_by_roa", &Announcement::valid_by_roa)
-        .def("unknown_by_roa", &Announcement::unknown_by_roa)
-        .def("covered_by_roa", &Announcement::covered_by_roa)
-        .def("roa_routed", &Announcement::roa_routed)
-        .def("origin", &Announcement::origin);
+        .def_property_readonly("invalid_by_roa", &Announcement::invalid_by_roa)
+        .def_property_readonly("valid_by_roa", &Announcement::valid_by_roa)
+        .def_property_readonly("unknown_by_roa", &Announcement::unknown_by_roa)
+        .def_property_readonly("covered_by_roa", &Announcement::covered_by_roa)
+        .def_property_readonly("roa_routed", &Announcement::roa_routed)
+        .def_property_readonly("origin", &Announcement::origin);
 }

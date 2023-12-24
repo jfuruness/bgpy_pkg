@@ -43,13 +43,6 @@ class CPPSimulationEngine(SimulationEngine):
                     print(msg)
                     raise
 
-    def __eq__(self, other) -> bool:
-        """Returns if two simulators contain the same BGPDAG's"""
-
-        # TODO: Read in announcements and add to ASGraph's local RIBs
-        # Since this is just for testing, it doesn't need to be fast
-        raise NotImplementedError
-
     ###############
     # Setup funcs #
     ###############
