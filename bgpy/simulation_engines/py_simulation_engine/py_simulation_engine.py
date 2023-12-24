@@ -97,8 +97,12 @@ class PySimulationEngine(SimulationEngine):
         if self.ready_to_run_round != propagation_round:
             raise Exception(f"Engine not set up to run for {propagation_round} round")
         assert scenario, "This can't be empty"
+
+        import time
+        start = time.perf_counter()
         # Propogate anns
         self._propagate(propagation_round, scenario)
+        print(f"prop time {time.perf_counter() - start}")
         # Increment the ready to run round
         self.ready_to_run_round += 1
 

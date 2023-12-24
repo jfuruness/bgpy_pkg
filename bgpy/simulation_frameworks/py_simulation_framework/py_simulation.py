@@ -63,7 +63,7 @@ class PySimulation(Simulation):
                         "cache_dir": Path("/tmp/as_graph_collector_cache"),
                     }
                 ),
-                "as_graph_kwargs": frozendict({"customer_cones": False}),
+                "as_graph_kwargs": frozendict({"customer_cones": True}),
                 "tsv_path": None,  # Path.home() / "Desktop" / "caida.tsv",
             }
         ),
@@ -212,6 +212,8 @@ class PySimulation(Simulation):
             for scenario_config in self.scenario_configs:
                 # Create the scenario for this trial
                 assert scenario_config.ScenarioCls, "ScenarioCls is None"
+                import time
+                start = time.perf_counter()
                 scenario = scenario_config.ScenarioCls(
                     scenario_config=scenario_config,
                     percent_adoption=percent_adopt,
@@ -223,7 +225,7 @@ class PySimulation(Simulation):
 
                 # Change AS Classes, seed announcements before propagation
                 scenario.setup_engine(engine, prev_scenario)
-
+                print(f"setup scenario {time.perf_counter() - start}")
                 # For each round of propagation run the engine
                 for propagation_round in range(self.propagation_rounds):
                     self._single_engine_run(
@@ -269,7 +271,11 @@ class PySimulation(Simulation):
         """Single engine run"""
 
         # Run the engine
+        import time
+        start = time.perf_counter()
         engine.run(propagation_round=propagation_round, scenario=scenario)
+
+        print(f"py propo time {time.perf_counter() - start}")
 
         # Pre-aggregation Hook
         scenario.pre_aggregation_hook(
@@ -309,7 +315,13 @@ class PySimulation(Simulation):
         # The reason we aggregate info right now, instead of saving
         # the engine and doing it later, is because doing it all
         # in RAM is MUCH faster, and speed is important
+        import time
+        start = time.perf_counter()
+
         outcomes = self.ASGraphAnalyzerCls(engine=engine, scenario=scenario).analyze()
+        print(f"analyze time {time.perf_counter() - start}")
+
+        start = time.perf_counter()
         metric_tracker.track_trial_metrics(
             engine=engine,
             percent_adopt=percent_adopt,
@@ -318,6 +330,7 @@ class PySimulation(Simulation):
             propagation_round=propagation_round,
             outcomes=outcomes,
         )
+        print(f"tracked trial metrics in {time.perf_counter() - start}")
         return outcomes
 
     ######################

@@ -5,7 +5,7 @@
 #include "policy.hpp"
 #include "bgp_simple_policy.hpp"
 #include "as.hpp"
-
+/*
 ///////////BGPSimple implementation. Done outside of the class to avoid circular ref with AS
 void BGPSimplePolicy::process_incoming_anns(Relationships from_rel, int propagation_round, bool reset_q) {
     // Process all announcements that were incoming from a specific relationship
@@ -37,6 +37,121 @@ void BGPSimplePolicy::process_incoming_anns(Relationships from_rel, int propagat
             // Save to local RIB
             localRIB.add_ann(current_ann);
         }
+    }
+
+    reset_queue(reset_q);
+}
+*/
+///////////BGPSimple implementation. Done outside of the class to avoid circular ref with AS
+void BGPSimplePolicy::process_incoming_anns(Relationships from_rel, int propagation_round, bool reset_q) {
+    // Process all announcements that were incoming from a specific relationship
+
+    // For each prefix, get all announcements received
+    for (const auto& [prefix, ann_list] : recvQueue.prefix_anns()) {
+        // Get announcement currently in local RIB
+        auto current_ann = localRIB.get_ann(prefix);
+
+        /*
+        std::shared_ptr<Announcement> og_ann = current_ann;
+
+        // For each announcement that was incoming
+        for (const auto& new_ann : ann_list) {
+            // Make sure there are no loops
+            if (valid_ann(new_ann, from_rel)) {
+                auto new_ann_processed = copy_and_process(new_ann, from_rel);
+
+                current_ann = get_best_ann_by_gao_rexford(current_ann, new_ann_processed);
+            }
+        }
+
+        // This is a new best announcement. Process it and add it to the local RIB
+        if (og_ann != current_ann) {
+            // Save to local RIB
+            localRIB.add_ann(current_ann);
+        }
+        */
+        bool current_ann_processed = true;
+        // For each announcement that was incoming
+        for (const auto& new_ann : ann_list) {
+            // Make sure there are no loops
+            if (valid_ann(new_ann, from_rel)) {
+                if (!current_ann){
+                    current_ann = new_ann;
+                    current_ann_processed = false;
+                    continue;
+                }
+
+                if (current_ann_processed){
+                    if (current_ann->recv_relationship > from_rel) {
+                        continue;
+                    } else if (current_ann->recv_relationship < from_rel) {
+                        current_ann = new_ann;
+                        current_ann_processed = false;
+                        continue;
+                    }
+                }
+
+                if (current_ann_processed){
+                     if (current_ann->as_path.size() < new_ann->as_path.size() + 1) {
+                        continue;
+                    } else if (current_ann->as_path.size() > new_ann->as_path.size() + 1) {
+                        current_ann = new_ann;
+                        current_ann_processed = false;
+                        continue;
+                    }
+                }
+                else{
+                     if (current_ann->as_path.size() < new_ann->as_path.size()) {
+                        continue;
+                    } else if (current_ann->as_path.size() > new_ann->as_path.size()) {
+                        current_ann = new_ann;
+                        current_ann_processed = false;
+                        continue;
+                    }
+
+                }
+
+                if (current_ann_processed){
+                    int current_neighbor_asn = current_ann->as_path.size() > 1 ? current_ann->as_path[1] : current_ann->as_path[0];
+                    int new_neighbor_asn = new_ann->as_path.size() > 1 ? new_ann->as_path[1] : new_ann->as_path[0];
+
+                    if (current_neighbor_asn <= new_neighbor_asn) {
+                        continue;
+                    } else {
+                        current_ann = new_ann;
+                        current_ann_processed = false;
+                        continue;
+
+                    }
+                } else {
+                    int current_neighbor_asn = current_ann->as_path[0];
+                    int new_neighbor_asn = new_ann->as_path[0];
+
+                    if (current_neighbor_asn <= new_neighbor_asn) {
+                        continue;
+                    } else {
+                        current_ann = new_ann;
+                        current_ann_processed = false;
+                        continue;
+
+                    }
+
+                }
+
+                throw std::runtime_error("you shouldnt reach this pt");
+
+
+                //current_ann = get_best_ann_by_gao_rexford(current_ann, new_ann_processed);
+            }
+        }
+
+        // This is a new best announcement. Process it and add it to the local RIB
+        if (!current_ann_processed) {
+            // Save to local RIB
+            localRIB.add_ann(copy_and_process(current_ann, from_rel));
+        }
+
+
     }
 
     reset_queue(reset_q);

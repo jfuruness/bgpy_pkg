@@ -227,7 +227,10 @@ class MetricTracker:
     ) -> None:
         """Populates all metrics with data"""
 
-        ctrl_plane_outcomes = outcomes[Plane.CTRL.value]
+        try:
+            ctrl_plane_outcomes = outcomes[Plane.CTRL.value]
+        except KeyError:
+            pass
         data_plane_outcomes = outcomes[Plane.DATA.value]
 
         # Don't count these!
@@ -242,7 +245,7 @@ class MetricTracker:
                     as_obj=as_obj,
                     engine=engine,
                     scenario=scenario,
-                    ctrl_plane_outcome=ctrl_plane_outcomes[as_obj.asn],
+                    ctrl_plane_outcome=PyOutcomes.UNDETERMINED.value,  # ctrl_plane_outcomes[as_obj.asn],
                     data_plane_outcome=data_plane_outcomes[as_obj.asn],
                 )
         # Only call this once or else it adds significant amounts of time

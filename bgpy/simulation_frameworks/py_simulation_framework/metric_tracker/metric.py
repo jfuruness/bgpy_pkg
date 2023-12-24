@@ -112,7 +112,7 @@ class Metric:
             raise NotImplementedError
 
         asn_group = engine.as_graph.asn_groups[self.metric_key.as_group.value]
-        if as_obj.asn in asn_group and outcome.value == self.metric_key.outcome.value:
+        if as_obj.asn in asn_group and outcome == self.metric_key.outcome.value:
             self._numerators[as_obj.policy.__class__] += 1
             self._numerators[Any] += 1
 

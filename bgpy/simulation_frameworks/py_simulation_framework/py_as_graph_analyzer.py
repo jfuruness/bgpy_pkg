@@ -24,12 +24,12 @@ class PyASGraphAnalyzer(ASGraphAnalyzer):
             for as_obj in engine.as_graph
         }
         self._data_plane_outcomes: dict[
-            int, Union["CPPOutcomes", "PyOutcomes"]
+            int, int
         ] = dict()
         self._control_plane_outcomes: dict[
-            int, Union["CPPOutcomes", "PyOutcomes"]
+            int, int
         ] = dict()
-        self.outcomes: dict[int, dict[int, Any]] = {
+        self.outcomes: dict[int, dict[int, int]] = {
             Plane.DATA.value: self._data_plane_outcomes,
             Plane.CTRL.value: self._control_plane_outcomes,
         }
@@ -48,13 +48,13 @@ class PyASGraphAnalyzer(ASGraphAnalyzer):
                 return most_specific_ann  # type: ignore
         return None
 
-    def analyze(self) -> dict[int, dict[int, Union["CPPOutcomes", "PyOutcomes"]]]:
+    def analyze(self) -> dict[int, dict[int, int]]:
         """Takes in engine and outputs traceback for ctrl + data plane data"""
 
         for as_obj in self.engine.as_graph:
             # Gets AS outcome and stores it in the outcomes dict
             self._get_as_outcome_data_plane(as_obj)
-            self._get_as_outcome_ctrl_plane(as_obj)
+            # self._get_as_outcome_ctrl_plane(as_obj)
             self._get_other_as_outcome_hook(as_obj)
         return self.outcomes
 
@@ -73,7 +73,7 @@ class PyASGraphAnalyzer(ASGraphAnalyzer):
             most_specific_ann = self._most_specific_ann_dict[as_obj]
             outcome = self._determine_as_outcome_data_plane(as_obj, most_specific_ann)
             # We haven't traced back all the way on the AS path
-            if outcome == PyOutcomes.UNDETERMINED:
+            if outcome == PyOutcomes.UNDETERMINED.value:
                 # next as in the AS path to traceback to
                 # Ignore type because only way for this to be here
                 # Is if the most specific Ann was NOT None.
@@ -81,10 +81,9 @@ class PyASGraphAnalyzer(ASGraphAnalyzer):
                     most_specific_ann.as_path[1]  # type: ignore
                 ]  # type: ignore
                 outcome = self._get_as_outcome_data_plane(next_as)
-            assert outcome != PyOutcomes.UNDETERMINED, "Shouldn't be possible"
+            assert outcome != PyOutcomes.UNDETERMINED.value, "Shouldn't be possible"
 
             self._data_plane_outcomes[as_obj.asn] = outcome
-            assert isinstance(outcome, (CPPOutcomes, PyOutcomes)), "For mypy"
             return outcome
 
     def _determine_as_outcome_data_plane(
@@ -97,9 +96,9 @@ class PyASGraphAnalyzer(ASGraphAnalyzer):
         """
 
         if as_obj.asn in self.scenario.attacker_asns:
-            return PyOutcomes.ATTACKER_SUCCESS
+            return PyOutcomes.ATTACKER_SUCCESS.value
         elif as_obj.asn in self.scenario.victim_asns:
-            return PyOutcomes.VICTIM_SUCCESS
+            return PyOutcomes.VICTIM_SUCCESS.value
         # End of traceback
         elif (
             most_specific_ann is None
@@ -107,9 +106,9 @@ class PyASGraphAnalyzer(ASGraphAnalyzer):
             or most_specific_ann.recv_relationship.value == PyRelationships.ORIGIN.value
             or most_specific_ann.traceback_end
         ):
-            return PyOutcomes.DISCONNECTED
+            return PyOutcomes.DISCONNECTED.value
         else:
-            return PyOutcomes.UNDETERMINED
+            return PyOutcomes.UNDETERMINED.value
 
     #######################
     # Control Plane Funcs #
@@ -122,9 +121,8 @@ class PyASGraphAnalyzer(ASGraphAnalyzer):
 
         most_specific_ann = self._most_specific_ann_dict[as_obj]
         outcome = self._determine_as_outcome_ctrl_plane(as_obj, most_specific_ann)
-        assert outcome != PyOutcomes.UNDETERMINED, "Shouldn't be possible"
+        assert outcome != PyOutcomes.UNDETERMINED.value, "Shouldn't be possible"
         self._control_plane_outcomes[as_obj.asn] = outcome
-        assert isinstance(outcome, (CPPOutcomes, PyOutcomes)), "For mypy"
         return outcome
 
     def _determine_as_outcome_ctrl_plane(
@@ -137,13 +135,13 @@ class PyASGraphAnalyzer(ASGraphAnalyzer):
         """
 
         if not ann:
-            return PyOutcomes.DISCONNECTED
+            return PyOutcomes.DISCONNECTED.value
         elif ann.origin in self.scenario.attacker_asns:
-            return PyOutcomes.ATTACKER_SUCCESS
+            return PyOutcomes.ATTACKER_SUCCESS.value
         elif ann.origin in self.scenario.victim_asns:
-            return PyOutcomes.VICTIM_SUCCESS
+            return PyOutcomes.VICTIM_SUCCESS.value
         else:
-            return PyOutcomes.DISCONNECTED
+            return PyOutcomes.DISCONNECTED.value
 
     ################################
     # Hook funcs for other metrics #
@@ -153,4 +151,4 @@ class PyASGraphAnalyzer(ASGraphAnalyzer):
         self, as_obj: AS
     ) -> Union["CPPOutcomes", "PyOutcomes"]:
         # Noop, this is just to satisfy mypy
-        return PyOutcomes.ATTACKER_SUCCESS
+        return PyOutcomes.ATTACKER_SUCCESS.value

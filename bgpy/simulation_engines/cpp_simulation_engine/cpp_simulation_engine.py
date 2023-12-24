@@ -31,7 +31,7 @@ class CPPSimulationEngine(SimulationEngine):
         if create_cpp_engine:
             if self.cached_as_graph_tsv_path and self.cached_as_graph_tsv_path.exists():
                 self._cpp_simulation_engine: _CPPSimulationEngine = get_engine(
-                    str(self.cached_as_graph_tsv)
+                    str(self.cached_as_graph_tsv_path)
                 )
             else:
                 # TODO: fix circular imports
@@ -81,7 +81,8 @@ class CPPSimulationEngine(SimulationEngine):
                 for asn, PolicyCls in non_default_asn_cls_dict.items()
             },
         )
-        self.ready_to_run_round += 1
+
+        self.ready_to_run_round = 0
 
         return frozenset(policies_used)
 
