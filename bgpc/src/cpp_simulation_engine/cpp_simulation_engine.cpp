@@ -60,6 +60,10 @@ void CPPSimulationEngine::register_policies() {
     register_policy_factory("BGP Simple", []() -> std::unique_ptr<Policy>{
         return std::make_unique<BGPSimplePolicy>();
     });
+    register_policy_factory("BGPSimplePolicy", []() -> std::unique_ptr<Policy>{
+        return std::make_unique<BGPSimplePolicy>();
+    });
+
     register_policy_factory("BGP", []() -> std::unique_ptr<Policy>{
         return std::make_unique<BGPSimplePolicy>();
     });
