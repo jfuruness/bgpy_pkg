@@ -1,4 +1,4 @@
-from dataclasses import dataclass, asdict, replace
+from dataclasses import dataclass, asdict, replace, field
 from typing import Any, Optional, TYPE_CHECKING, Union
 
 from yamlable import YamlAble, yaml_info
@@ -19,7 +19,8 @@ class PyAnnouncement(YamlAble):
     # MUST use slots for speed
     # Since anns get copied across 70k ASes
     prefix: str
-    as_path: tuple[int, ...]
+    # NOTE: must use list here for C++ compatability
+    as_path: list[int]
     timestamp: int
     seed_asn: Optional[int]
     roa_valid_length: Optional[bool]
@@ -27,7 +28,8 @@ class PyAnnouncement(YamlAble):
     recv_relationship: Union["CPPRelationships", "PyRelationships"]
     withdraw: bool = False
     traceback_end: bool = False
-    communities: tuple[str, ...] = ()
+    # NOTE: must use list here for C++ compatability
+    communities: list[str] = field(default_factory=list)
 
     def prefix_path_attributes_eq(self, ann: Optional["PyAnnouncement"]) -> bool:
         """Checks prefix and as path equivalency"""

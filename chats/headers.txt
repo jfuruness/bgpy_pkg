@@ -1,0 +1,207 @@
+Please extend the CPPSimulationEngine class to be able to dump announcements to a CSV. For context, I've included the headers of some of the other classes involved
+
+enum class Relationships {
+    PROVIDERS = 1,
+    PEERS = 2,
+    CUSTOMERS = 3,
+    ORIGIN = 4,
+    UNKNOWN = 5
+};
+
+
+enum class Outcomes {
+    ATTACKER_SUCCESS = 0,
+    VICTIM_SUCCESS = 1,
+    DISCONNECTED = 2,
+    UNDETERMINED = 3
+};
+
+
+enum class Plane {
+    DATA = 0,
+    CTRL = 1
+};
+
+
+
+class Announcement {
+public:
+    const std::string prefix;
+    const std::vector<int> as_path;
+    const int timestamp;
+    const std::optional<int> seed_asn;
+    const std::optional<bool> roa_valid_length;
+    const std::optional<int> roa_origin;
+    const Relationships recv_relationship;
+    const bool withdraw;
+    const bool traceback_end;
+    const std::vector<std::string> communities;
+
+    Announcement(const std::string& prefix, const std::vector<int>& as_path, int timestamp,
+                 const std::optional<int>& seed_asn, const std::optional<bool>& roa_valid_length,
+                 const std::optional<int>& roa_origin, Relationships recv_relationship,
+                 bool withdraw = false, bool traceback_end = false,
+                 const std::vector<std::string>& communities = {});
+
+    bool prefix_path_attributes_eq(const Announcement* ann) const;
+    bool invalid_by_roa() const;
+    bool valid_by_roa() const;
+    bool unknown_by_roa() const;
+    bool covered_by_roa() const;
+    bool roa_routed() const;
+    int origin() const;
+};
+
+class LocalRIB {
+public:
+    LocalRIB();
+
+    std::shared_ptr<Announcement> get_ann(const std::string& prefix, const std::shared_ptr<Announcement>& default_ann = nullptr) const;
+
+    void add_ann(const std::shared_ptr<Announcement>& ann);
+
+    void remove_ann(const std::string& prefix);
+
+    const std::map<std::string, std::shared_ptr<Announcement>>& prefix_anns() const;
+
+protected:
+    std::map<std::string, std::shared_ptr<Announcement>> _info;
+};
+
+class RecvQueue {
+protected:
+    std::map<std::string, std::vector<std::shared_ptr<Announcement>>> _info;
+
+public:
+    RecvQueue();
+
+    void add_ann(const std::shared_ptr<Announcement>& ann);
+
+    const std::map<std::string, std::vector<std::shared_ptr<Announcement>>>& prefix_anns() const;
+
+    const std::vector<std::shared_ptr<Announcement>>& get_ann_list(const std::string& prefix) const;
+};
+
+
+class Policy {
+public:
+    std::weak_ptr<AS> as;
+    LocalRIB localRIB;
+    RecvQueue recvQueue;
+
+    Policy();
+    // You need virtual destructors in base class or else derived classes
+    // won't clean up properly
+    virtual ~Policy() = default; // Virtual and uses the default implementation
+
+    virtual void receive_ann(const std::shared_ptr<Announcement>& ann) = 0;
+    virtual void process_incoming_anns(Relationships from_rel, int propagation_round, bool reset_q = true) = 0;
+    virtual void propagate_to_providers() = 0;
+    virtual void propagate_to_customers() = 0;
+    virtual void propagate_to_peers() = 0;
+};
+
+
+class BGPSimplePolicy : public Policy {
+public:
+    BGPSimplePolicy();
+    virtual ~BGPSimplePolicy() override = default;
+
+    void process_incoming_anns(Relationships from_rel, int propagation_round, bool reset_q = true) override;
+    void propagate_to_providers() override;
+    void propagate_to_customers() override;
+    void propagate_to_peers() override;
+    void receive_ann(const std::shared_ptr<Announcement>& ann) override;
+
+protected:
+    std::vector<std::function<std::shared_ptr<Announcement>(const std::shared_ptr<Announcement>&, const std::shared_ptr<Announcement>&)>> gao_rexford_functions;
+
+    bool valid_ann(const std::shared_ptr<Announcement>& ann, Relationships recv_relationship) const;
+    std::shared_ptr<Announcement> copy_and_process(const std::shared_ptr<Announcement>& ann, Relationships recv_relationship);
+    void reset_queue(bool reset_q);
+    void initialize_gao_rexford_functions();
+    std::shared_ptr<Announcement> get_best_ann_by_gao_rexford(const std::shared_ptr<Announcement>& current_ann, const std::shared_ptr<Announcement>& new_ann);
+    std::shared_ptr<Announcement> get_best_ann_by_local_pref(const std::shared_ptr<Announcement>& current_ann, const std::shared_ptr<Announcement>& new_ann);
+    std::shared_ptr<Announcement> get_best_ann_by_as_path(const std::shared_ptr<Announcement>& current_ann, const std::shared_ptr<Announcement>& new_ann);
+    std::shared_ptr<Announcement> get_best_ann_by_lowest_neighbor_asn_tiebreaker(const std::shared_ptr<Announcement>& current_ann, const std::shared_ptr<Announcement>& new_ann);
+    void propagate(Relationships propagate_to, const std::set<Relationships>& send_rels);
+    bool policy_propagate(const std::weak_ptr<AS>& neighbor_weak, const std::shared_ptr<Announcement>& ann, Relationships propagate_to, const std::set<Relationships>& send_rels);
+    bool prev_sent(const std::weak_ptr<AS>& neighbor_weak, const std::shared_ptr<Announcement>& ann);
+    void process_outgoing_ann(const std::weak_ptr<AS>& neighbor_weak, const std::shared_ptr<Announcement>& ann, Relationships propagate_to, const std::set<Relationships>& send_rels);
+};
+
+
+class AS : public std::enable_shared_from_this<AS> {
+public:
+    int asn;
+    std::unique_ptr<Policy> policy;
+    std::vector<std::weak_ptr<AS>> peers;
+    std::vector<std::weak_ptr<AS>> customers;
+    std::vector<std::weak_ptr<AS>> providers;
+    bool input_clique;
+    bool ixp;
+    bool stub;
+    bool multihomed;
+    bool transit;
+    long long customer_cone_size;
+    long long propagation_rank;
+
+    AS(int asn);
+    void initialize();
+
+    // Add other methods and members as needed
+};
+
+
+class ASGraph {
+public:
+    std::map<int, std::shared_ptr<AS>> as_dict;
+    std::vector<std::vector<std::shared_ptr<AS>>> propagation_ranks;
+
+    ASGraph();
+    ~ASGraph();
+
+    void calculatePropagationRanks();
+};
+
+void parseASNList(std::map<int, std::shared_ptr<AS>>& asGraph, const std::string& data, std::vector<std::weak_ptr<AS>>& list);
+ASGraph readASGraph(const std::string& filename);
+
+// Factory function type for creating Policy objects
+using PolicyFactoryFunc = std::function<std::unique_ptr<Policy>()>;
+
+class CPPSimulationEngine {
+public:
+    std::unique_ptr<ASGraph> as_graph;
+    int ready_to_run_round;
+
+    CPPSimulationEngine(std::unique_ptr<ASGraph> as_graph, int ready_to_run_round = -1);
+
+    // Disable copy semantics
+    CPPSimulationEngine(const CPPSimulationEngine&) = delete;
+    CPPSimulationEngine& operator=(const CPPSimulationEngine&) = delete;
+
+    // Enable move semantics
+    CPPSimulationEngine(CPPSimulationEngine&&) = default;
+    CPPSimulationEngine& operator=(CPPSimulationEngine&&) = default;
+
+    void setup(const std::vector<std::shared_ptr<Announcement>>& announcements,
+               const std::string& base_policy_class_str = "BGPSimplePolicy",
+               const std::map<int, std::string>& non_default_asn_cls_str_dict = {});
+
+    void run(int propagation_round = 0);
+
+protected:
+    std::map<std::string, PolicyFactoryFunc> name_to_policy_func_dict;
+
+    void register_policy_factory(const std::string& name, const PolicyFactoryFunc& factory);
+    void register_policies();
+    void set_as_classes(const std::string& base_policy_class_str, const std::map<int, std::string>& non_default_asn_cls_str_dict);
+    void seed_announcements(const std::vector<std::shared_ptr<Announcement>>& announcements);
+
+    void propagate(int propagation_round);
+    void propagate_to_providers(int propagation_round);
+    void propagate_to_peers(int propagation_round);
+    void propagate_to_customers(int propagation_round);
+};
+

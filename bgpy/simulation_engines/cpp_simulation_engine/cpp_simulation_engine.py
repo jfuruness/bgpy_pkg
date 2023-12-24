@@ -13,6 +13,8 @@ from bgpy.simulation_engines.base import SimulationEngine
 from bgpy.simulation_engines.base import Policy
 from bgpy.simulation_engines.py_simulation_engine.policies import BGPSimplePolicy
 
+from .cpp_announcement import CPPAnnouncement
+
 # https://stackoverflow.com/a/57005931/8903959
 if TYPE_CHECKING:
     from .cpp_announcement import CPPAnnouncement
@@ -107,9 +109,19 @@ class CPPSimulationEngine(SimulationEngine):
     # Yaml funcs #
     ##############
 
+    def dump_local_ribs_to_tsv(self, tsv_path: Path) -> None:
+        """Dumps anns to TSV"""
+
+        self._cpp_simulation_engine.dump_local_ribs_to_tsv(str(tsv_path))
+
     def __to_yaml_dict__(self) -> dict[str, Any]:
         """This optional method is called when you call yaml.dump()"""
 
+        # asdfasdfasdf
+        with TemporaryDirectory() as tmp_dir:
+            tsv_path = Path(tmp_dir) / "local_ribs.tsv"
+            self.dump_local_ribs_to_tsv(tsv_path)
+            input(tsv_path)
         raise NotImplementedError
         # return dict(vars(self))
 

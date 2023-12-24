@@ -24,6 +24,8 @@ public:
 
     CPPSimulationEngine(std::unique_ptr<ASGraph> as_graph, int ready_to_run_round = -1);
 
+    void dump_local_ribs_to_tsv(const std::string& tsv_path);
+
     // Disable copy semantics
     CPPSimulationEngine(const CPPSimulationEngine&) = delete;
     CPPSimulationEngine& operator=(const CPPSimulationEngine&) = delete;
@@ -50,6 +52,15 @@ protected:
     void propagate_to_providers(int propagation_round);
     void propagate_to_peers(int propagation_round);
     void propagate_to_customers(int propagation_round);
+
+    // CSV Helper functions
+    template <typename T>
+    std::string join(const std::vector<T>& vec, const std::string& sep);
+
+    template <typename T>
+    std::string optionalToString(const std::optional<T>& opt);
+
+    std::string booleanToString(const std::optional<bool>& opt, bool capitalize = false);
 };
 
 #endif // CPP_SIMULATION_ENGINE_HPP

@@ -37,7 +37,7 @@ class SuperprefixPrefixHijack(Scenario):
             anns.append(
                 self.scenario_config.AnnCls(
                     prefix=Prefixes.PREFIX.value,
-                    as_path=(victim_asn,),
+                    as_path=[victim_asn,],
                     timestamp=Timestamps.VICTIM.value,
                     seed_asn=victim_asn,
                     roa_valid_length=True,
@@ -55,7 +55,7 @@ class SuperprefixPrefixHijack(Scenario):
             anns.append(
                 self.scenario_config.AnnCls(
                     prefix=Prefixes.PREFIX.value,
-                    as_path=(attacker_asn,),
+                    as_path=[attacker_asn,],
                     timestamp=Timestamps.ATTACKER.value,
                     seed_asn=attacker_asn,
                     roa_valid_length=True,
@@ -66,7 +66,7 @@ class SuperprefixPrefixHijack(Scenario):
             anns.append(
                 self.scenario_config.AnnCls(
                     prefix=Prefixes.SUPERPREFIX.value,
-                    as_path=(attacker_asn,),
+                    as_path=[attacker_asn,],
                     timestamp=Timestamps.ATTACKER.value,
                     seed_asn=attacker_asn,
                     roa_valid_length=None,

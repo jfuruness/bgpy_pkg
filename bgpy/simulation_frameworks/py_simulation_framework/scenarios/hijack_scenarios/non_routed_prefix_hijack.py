@@ -30,7 +30,7 @@ class NonRoutedPrefixHijack(Scenario):
             anns.append(
                 self.scenario_config.AnnCls(
                     prefix=Prefixes.PREFIX.value,
-                    as_path=(attacker_asn,),
+                    as_path=[attacker_asn,],
                     timestamp=Timestamps.ATTACKER.value,
                     seed_asn=attacker_asn,
                     roa_valid_length=True,

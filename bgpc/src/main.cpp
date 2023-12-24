@@ -79,8 +79,12 @@ PYBIND11_MODULE(bgpc, m) {
         .value("UNDETERMINED", Outcomes::UNDETERMINED)
         .export_values();
 
-    py::class_<CPPSimulationEngine>(m, "CPPSimulationEngine")
+    py::class_<CPPSimulationEngine, std::shared_ptr<CPPSimulationEngine>>(m, "CPPSimulationEngine")
         .def("setup", &CPPSimulationEngine::setup, py::arg("announcements"), py::arg("base_policy_class_str") = "BGPSimplePolicy", py::arg("non_default_asn_cls_str_dict") = std::map<int, std::string>{})
+        .def("run", &CPPSimulationEngine::run,
+             py::arg("propagation_round") = 0)
+        .def("dump_local_ribs_to_tsv", &CPPSimulationEngine::dump_local_ribs_to_tsv,
+             py::arg("tsv_path"));
         /*
         .def("setup", [](CPPSimulationEngine& engine, const std::vector<std::shared_ptr<Announcement>>& announcements, const std::string& base_policy_class_str, const std::map<int, std::string>& non_default_asn_cls_str_dict) {
             // Debug: Print the number of announcements
@@ -96,8 +100,6 @@ PYBIND11_MODULE(bgpc, m) {
             engine.setup(announcements, base_policy_class_str, non_default_asn_cls_str_dict);
         }, py::arg("announcements"), py::arg("base_policy_class_str") = "BGPSimplePolicy", py::arg("non_default_asn_cls_str_dict") = std::map<int, std::string>{})
        */
-        .def("run", &CPPSimulationEngine::run,
-             py::arg("propagation_round") = 0);
 
     py::class_<ASGraphAnalyzer>(m, "ASGraphAnalyzer")
         .def(py::init<std::shared_ptr<CPPSimulationEngine>,
@@ -109,11 +111,18 @@ PYBIND11_MODULE(bgpc, m) {
              py::arg("victim_asns"),
              py::arg("attacker_asns"))
         .def("analyze", &ASGraphAnalyzer::analyze);
-    py::class_<Announcement, std::shared_ptr<Announcement>>(m, "Announcement")
-        .def(py::init<const std::string&, const std::vector<int>&, int,
-                      const std::optional<int>&, const std::optional<bool>&,
-                      const std::optional<int>&, Relationships, bool, bool,
-                      const std::vector<std::string>&>())
+	py::class_<Announcement, std::shared_ptr<Announcement>>(m, "Announcement")
+		.def(py::init<const std::string&, const std::vector<int>&, int,
+					  const std::optional<int>&, const std::optional<bool>&,
+					  const std::optional<int>&, Relationships, bool, bool,
+					  const std::vector<std::string>&>(),
+			 py::arg("prefix"), py::arg("as_path"), py::arg("timestamp"),
+			 py::arg("seed_asn") = std::nullopt, py::arg("roa_valid_length") = std::nullopt,
+			 py::arg("roa_origin") = std::nullopt,
+			 py::arg("recv_relationship") = Relationships::UNKNOWN,  // Default value for recv_relationship
+			 py::arg("withdraw") = false,                             // Default value for withdraw
+			 py::arg("traceback_end") = false,                        // Default value for traceback_end
+			 py::arg("communities") = std::vector<std::string>{})     // Default value for communities
         .def_readonly("prefix", &Announcement::prefix)
         .def_readonly("as_path", &Announcement::as_path)
         .def_readonly("timestamp", &Announcement::timestamp)
