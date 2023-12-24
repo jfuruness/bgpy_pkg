@@ -117,11 +117,11 @@ class CPPSimulationEngine(SimulationEngine):
     def __to_yaml_dict__(self) -> dict[str, Any]:
         """This optional method is called when you call yaml.dump()"""
 
-        # asdfasdfasdf
-        with TemporaryDirectory() as tmp_dir:
-            tsv_path = Path(tmp_dir) / "local_ribs.tsv"
-            self.dump_local_ribs_to_tsv(tsv_path)
-            input(tsv_path)
+        announcements = self._cpp_simulation_engine.get_announcements()
+        # with TemporaryDirectory() as tmp_dir:
+        #     tsv_path = Path(tmp_dir) / "local_ribs.tsv"
+        #     self.dump_local_ribs_to_tsv(tsv_path)
+        #     input(tsv_path)
         raise NotImplementedError
         # return dict(vars(self))
 

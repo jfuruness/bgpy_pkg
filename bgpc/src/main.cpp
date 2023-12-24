@@ -84,7 +84,8 @@ PYBIND11_MODULE(bgpc, m) {
         .def("run", &CPPSimulationEngine::run,
              py::arg("propagation_round") = 0)
         .def("dump_local_ribs_to_tsv", &CPPSimulationEngine::dump_local_ribs_to_tsv,
-             py::arg("tsv_path"));
+             py::arg("tsv_path"))
+        .def("get_announcements", &CPPSimulationEngine::get_announcements);
         /*
         .def("setup", [](CPPSimulationEngine& engine, const std::vector<std::shared_ptr<Announcement>>& announcements, const std::string& base_policy_class_str, const std::map<int, std::string>& non_default_asn_cls_str_dict) {
             // Debug: Print the number of announcements

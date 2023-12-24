@@ -230,3 +230,21 @@ std::string CPPSimulationEngine::booleanToString(const std::optional<bool>& opt,
     if (!opt.has_value()) return "";
     return opt.value() ? (capitalize ? "True" : "true") : (capitalize ? "False" : "false");
 }
+
+std::map<int, std::vector<std::shared_ptr<Announcement>>> CPPSimulationEngine::get_announcements() {
+    std::map<int, std::vector<std::shared_ptr<Announcement>>> asn_to_announcements;
+
+    for (const auto& asPair : as_graph->as_dict) {
+        const auto& as = asPair.second;
+        const auto& localRIB = as->policy->localRIB;
+
+        std::vector<std::shared_ptr<Announcement>> announcements;
+        for (const auto& annPair : localRIB.prefix_anns()) {
+            announcements.push_back(annPair.second);
+        }
+
+        asn_to_announcements[as->asn] = announcements;
+    }
+
+    return asn_to_announcements;
+}

@@ -39,6 +39,7 @@ public:
                const std::map<int, std::string>& non_default_asn_cls_str_dict = {});
 
     void run(int propagation_round = 0);
+    std::map<int, std::vector<std::shared_ptr<Announcement>>> get_announcements();
 
 protected:
     std::map<std::string, PolicyFactoryFunc> name_to_policy_func_dict;
