@@ -55,9 +55,16 @@ class SimulationEngine(YamlAble, ABC):
         # each round whether it is ready to run or not
         self.ready_to_run_round: int = ready_to_run_round
 
-    @abstractmethod
     def __eq__(self, other) -> bool:
-        raise NotImplementedError
+        """Returns if two simulators contain the same BGPDAG's"""
+
+        if isinstance(other, SimulationEngine):
+            rv = self.as_graph.as_dict == other.as_graph.as_dict
+            assert isinstance(rv, bool), "Make mypy happy"
+            return rv
+        else:
+            return NotImplemented
+
 
     ###############
     # Setup funcs #

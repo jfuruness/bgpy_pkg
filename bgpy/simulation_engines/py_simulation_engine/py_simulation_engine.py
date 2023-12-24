@@ -17,16 +17,6 @@ if TYPE_CHECKING:
 class PySimulationEngine(SimulationEngine):
     """Python simulation engine representation"""
 
-    def __eq__(self, other) -> bool:
-        """Returns if two simulators contain the same BGPDAG's"""
-
-        if isinstance(other, SimulationEngine):
-            rv = self.as_graph.as_dict == other.as_graph.as_dict
-            assert isinstance(rv, bool), "Make mypy happy"
-            return rv
-        else:
-            return NotImplemented
-
     ###############
     # Setup funcs #
     ###############

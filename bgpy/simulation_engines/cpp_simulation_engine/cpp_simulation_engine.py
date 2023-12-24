@@ -115,15 +115,18 @@ class CPPSimulationEngine(SimulationEngine):
         self._cpp_simulation_engine.dump_local_ribs_to_tsv(str(tsv_path))
 
     def __to_yaml_dict__(self) -> dict[str, Any]:
-        """This optional method is called when you call yaml.dump()"""
+        """This optional method is called when you call yaml.dump()
 
+        NOTE: Since this is just used for testing, it's okay to be slow here
+        so I'm just going to do this the slow way
+        """
+
+        # {asn: [anns_at_local_rib]}
         announcements = self._cpp_simulation_engine.get_announcements()
-        # with TemporaryDirectory() as tmp_dir:
-        #     tsv_path = Path(tmp_dir) / "local_ribs.tsv"
-        #     self.dump_local_ribs_to_tsv(tsv_path)
-        #     input(tsv_path)
-        raise NotImplementedError
-        # return dict(vars(self))
+        for asn, as_obj in self.as_graph.as_dict.items():
+            for announcement in announcements[asn]:
+                as_obj.policy._local_rib.add_ann(announcement)
+        return {"as_graph": self.as_graph, "ready_to_run_round": self.ready_to_run_round}
 
     @classmethod
     def __from_yaml_dict__(
@@ -131,5 +134,4 @@ class CPPSimulationEngine(SimulationEngine):
     ) -> "CPPSimulationEngine":
         """This optional method is called when you call yaml.load()"""
 
-        raise NotImplementedError
-        # return cls(**dct)
+        return cls(**dct)
