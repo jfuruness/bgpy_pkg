@@ -9,23 +9,26 @@ ASGraphAnalyzer::ASGraphAnalyzer(std::shared_ptr<CPPSimulationEngine> engine,
                              const std::unordered_set<int>& victim_asns,
                              const std::unordered_set<int>& attacker_asns)
     : engine(engine),
+      ordered_prefix_block_ids(ordered_prefix_block_ids),
       victim_asns(victim_asns),
       attacker_asns(attacker_asns) {
 
     // Reserve sizes for speed
     control_plane_outcomes.reserve(ordered_prefix_block_ids.size());
     data_plane_outcomes.reserve(ordered_prefix_block_ids.size());
+    /*
     most_specific_ann_dict.reserve(engine->as_graph->as_dict.size());
 
     for (auto& as_obj_pair : engine->as_graph->as_dict) {
         auto& as_obj = as_obj_pair.second;
         most_specific_ann_dict[as_obj->asn] = get_most_specific_ann(as_obj, ordered_prefix_block_ids);
     }
+    */
 }
 
 std::unordered_map<int, std::unordered_map<int, int>> ASGraphAnalyzer::analyze() {
     for (auto& as_obj_pair : engine->as_graph->as_dict) {
-        auto as_obj = as_obj_pair.second; // Assuming as_graph is a map from IDs to AS shared_ptrs
+        auto& as_obj = as_obj_pair.second; // Assuming as_graph is a map from IDs to AS shared_ptrs
 
         // Data Plane Analysis
         int data_outcome = get_as_outcome_data_plane(as_obj);
@@ -61,7 +64,17 @@ int ASGraphAnalyzer::get_as_outcome_data_plane(std::shared_ptr<AS> as_obj) {
     }
 
     // Get the most specific announcement for the AS
-    std::optional<std::shared_ptr<Announcement>> most_specific_ann = most_specific_ann_dict[as_obj->asn];
+    // std::optional<std::shared_ptr<Announcement>> most_specific_ann = most_specific_ann_dict[as_obj->asn];
+    // NOTE: doing this here and avoiding a dict makes this 1.5x faster at least
+    // This is essential for the python runtimes
+    std::optional<std::shared_ptr<Announcement>> most_specific_ann = std::nullopt;
+    for (const auto& prefix_block_id : ordered_prefix_block_ids) {
+        std::shared_ptr<Announcement> most_specific_ann = as_obj->policy->localRIB.get_ann(prefix_block_id);
+        if (most_specific_ann) {
+            break;
+        }
+    }
+
 
     // Determine the outcome based on the most specific announcement
     int outcome = determine_as_outcome_data_plane(as_obj, most_specific_ann);

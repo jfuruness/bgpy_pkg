@@ -26,6 +26,7 @@ public:
 
 private:
     std::shared_ptr<CPPSimulationEngine> engine;
+    std::vector<unsigned short int> ordered_prefix_block_ids;
     std::unordered_set<int> victim_asns;
     std::unordered_set<int> attacker_asns;
     std::unordered_map<int, std::optional<std::shared_ptr<Announcement>>> most_specific_ann_dict;
