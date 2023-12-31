@@ -85,7 +85,7 @@ PYBIND11_MODULE(bgpc, m) {
         .export_values();
 
     py::class_<CPPSimulationEngine, std::shared_ptr<CPPSimulationEngine>>(m, "CPPSimulationEngine")
-        .def("setup", &CPPSimulationEngine::setup, py::arg("announcements"), py::arg("base_policy_class_str") = "BGPSimplePolicy", py::arg("non_default_asn_cls_str_dict") = std::map<int, std::string>{}, py::arg("max_prefix_block_id") = 0)
+        .def("setup", &CPPSimulationEngine::setup, py::arg("announcements"), py::arg("base_policy_class_str") = "BGPSimplePolicy", py::arg("non_default_asn_cls_str_dict") = std::unordered_map<int, std::string>{}, py::arg("max_prefix_block_id") = 0)
         .def("run", &CPPSimulationEngine::run,
              py::arg("propagation_round") = 0)
         .def("dump_local_ribs_to_tsv", &CPPSimulationEngine::dump_local_ribs_to_tsv,
