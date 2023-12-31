@@ -12,7 +12,7 @@ protected:
     std::unordered_map<unsigned short int, std::vector<std::shared_ptr<Announcement>>> _info;
 
 public:
-    RecvQueue();
+    RecvQueue(int max_prefix_block_id);
 
     void add_ann(const std::shared_ptr<Announcement>& ann);
 

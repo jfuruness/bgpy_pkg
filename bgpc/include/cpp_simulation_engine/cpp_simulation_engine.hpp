@@ -15,7 +15,7 @@
 
 
 // Factory function type for creating Policy objects
-using PolicyFactoryFunc = std::function<std::unique_ptr<Policy>()>;
+using PolicyFactoryFunc = std::function<std::unique_ptr<Policy>(int max_prefix_block_id)>;
 
 class CPPSimulationEngine {
 public:
@@ -36,7 +36,8 @@ public:
 
     void setup(const std::vector<std::shared_ptr<Announcement>>& announcements,
                const std::string& base_policy_class_str = "BGPSimplePolicy",
-               const std::map<int, std::string>& non_default_asn_cls_str_dict = {});
+               const std::unordered_map<int, std::string>& non_default_asn_cls_str_dict = {},
+               int max_prefix_block_id = 0);
 
     void run(int propagation_round = 0);
     std::map<int, std::vector<std::shared_ptr<Announcement>>> get_announcements();
@@ -46,7 +47,7 @@ protected:
 
     void register_policy_factory(const std::string& name, const PolicyFactoryFunc& factory);
     void register_policies();
-    void set_as_classes(const std::string& base_policy_class_str, const std::map<int, std::string>& non_default_asn_cls_str_dict);
+    void set_as_classes(const std::string& base_policy_class_str, const std::unordered_map<int, std::string>& non_default_asn_cls_str_dict, const int max_prefix_block_id);
     void seed_announcements(const std::vector<std::shared_ptr<Announcement>>& announcements);
 
     void propagate(int propagation_round);

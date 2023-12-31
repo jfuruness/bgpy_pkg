@@ -49,7 +49,12 @@ int main() {
         // Get announcements from TSV file
         std::vector<std::shared_ptr<Announcement>> announcements = get_announcements_from_tsv();
         // Setup the engine with the loaded announcements
-        engine.setup(announcements);
+        engine.setup(
+            announcements,
+            "BGPSimplePolicy",
+            {},
+            1000
+        );
         engine.run();
         std::cout << "done" << std::endl;
     } catch (const std::runtime_error& e) {
@@ -80,7 +85,7 @@ PYBIND11_MODULE(bgpc, m) {
         .export_values();
 
     py::class_<CPPSimulationEngine, std::shared_ptr<CPPSimulationEngine>>(m, "CPPSimulationEngine")
-        .def("setup", &CPPSimulationEngine::setup, py::arg("announcements"), py::arg("base_policy_class_str") = "BGPSimplePolicy", py::arg("non_default_asn_cls_str_dict") = std::map<int, std::string>{})
+        .def("setup", &CPPSimulationEngine::setup, py::arg("announcements"), py::arg("base_policy_class_str") = "BGPSimplePolicy", py::arg("non_default_asn_cls_str_dict") = std::map<int, std::string>{}, py::arg("max_prefix_block_id") = 0)
         .def("run", &CPPSimulationEngine::run,
              py::arg("propagation_round") = 0)
         .def("dump_local_ribs_to_tsv", &CPPSimulationEngine::dump_local_ribs_to_tsv,

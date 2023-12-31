@@ -15,8 +15,9 @@ public:
     std::weak_ptr<AS> as;
     LocalRIB localRIB;
     RecvQueue recvQueue;
+    const int max_prefix_block_id;
 
-    Policy();
+    explicit Policy(int max_prefix_block_id);
     // You need virtual destructors in base class or else derived classes
     // won't clean up properly
     virtual ~Policy() = default; // Virtual and uses the default implementation

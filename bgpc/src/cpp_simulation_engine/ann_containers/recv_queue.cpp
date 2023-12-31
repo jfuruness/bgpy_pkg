@@ -1,8 +1,8 @@
 #include "announcement.hpp"
 #include "recv_queue.hpp"
 
-RecvQueue::RecvQueue() {
-    _info.reserve(1000);
+RecvQueue::RecvQueue(int max_prefix_block_id) {
+    _info.reserve(max_prefix_block_id);
 }
 
 void RecvQueue::add_ann(const std::shared_ptr<Announcement>& ann) {

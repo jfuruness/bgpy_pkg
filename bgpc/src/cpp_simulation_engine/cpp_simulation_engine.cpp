@@ -19,10 +19,15 @@ CPPSimulationEngine::CPPSimulationEngine(std::unique_ptr<ASGraph> as_graph, int 
     register_policies();
 }
 
-void CPPSimulationEngine::setup(const std::vector<std::shared_ptr<Announcement>>& announcements,
-           const std::string& base_policy_class_str,
-           const std::map<int, std::string>& non_default_asn_cls_str_dict) {
-    set_as_classes(base_policy_class_str, non_default_asn_cls_str_dict);
+void CPPSimulationEngine::setup(
+        const std::vector<std::shared_ptr<Announcement>>& announcements,
+        const std::string& base_policy_class_str,
+        const std::unordered_map<int, std::string>& non_default_asn_cls_str_dict,
+        int max_prefix_block_id) {
+    if(max_prefix_block_id == 0){
+        max_prefix_block_id = announcements.size();
+    }
+    set_as_classes(base_policy_class_str, non_default_asn_cls_str_dict, max_prefix_block_id);
 
     seed_announcements(announcements);
 
@@ -57,31 +62,31 @@ void CPPSimulationEngine::register_policy_factory(const std::string& name, const
 // Method to register all policies
 void CPPSimulationEngine::register_policies() {
     // Example of registering a base policy
-    register_policy_factory("BGP Simple", []() -> std::unique_ptr<Policy>{
-        return std::make_unique<BGPSimplePolicy>();
+    register_policy_factory("BGP Simple", [](int max_prefix_block_id) -> std::unique_ptr<Policy>{
+        return std::make_unique<BGPSimplePolicy>(max_prefix_block_id);
     });
-    register_policy_factory("BGPSimplePolicy", []() -> std::unique_ptr<Policy>{
-        return std::make_unique<BGPSimplePolicy>();
+    register_policy_factory("BGPSimplePolicy", [](int max_prefix_block_id) -> std::unique_ptr<Policy>{
+        return std::make_unique<BGPSimplePolicy>(max_prefix_block_id);
     });
 
-    register_policy_factory("BGP", []() -> std::unique_ptr<Policy>{
-        return std::make_unique<BGPSimplePolicy>();
+    register_policy_factory("BGP", [](int max_prefix_block_id) -> std::unique_ptr<Policy>{
+        return std::make_unique<BGPSimplePolicy>(max_prefix_block_id);
     });
-    register_policy_factory("ROVSimple", []() -> std::unique_ptr<Policy>{
-        return std::make_unique<BGPSimplePolicy>();
+    register_policy_factory("ROVSimple", [](int max_prefix_block_id) -> std::unique_ptr<Policy>{
+        return std::make_unique<BGPSimplePolicy>(max_prefix_block_id);
     });
-    register_policy_factory("ROV", []() -> std::unique_ptr<Policy>{
-        return std::make_unique<BGPSimplePolicy>();
+    register_policy_factory("ROV", [](int max_prefix_block_id) -> std::unique_ptr<Policy>{
+        return std::make_unique<BGPSimplePolicy>(max_prefix_block_id);
     });
-    register_policy_factory("RealPeerROVSimple", []() -> std::unique_ptr<Policy>{
-        return std::make_unique<BGPSimplePolicy>();
+    register_policy_factory("RealPeerROVSimple", [](int max_prefix_block_id) -> std::unique_ptr<Policy>{
+        return std::make_unique<BGPSimplePolicy>(max_prefix_block_id);
     });
 
 
     // Register other policies similarly
     // e.g., register_policy_factory("SpecificPolicy", ...);
 }
-void CPPSimulationEngine::set_as_classes(const std::string& base_policy_class_str, const std::map<int, std::string>& non_default_asn_cls_str_dict) {
+void CPPSimulationEngine::set_as_classes(const std::string& base_policy_class_str, const std::unordered_map<int, std::string>& non_default_asn_cls_str_dict, const int max_prefix_block_id){
     for (auto& [asn, as_obj] : as_graph->as_dict) {
 
         // Determine the policy class string to use
@@ -99,7 +104,7 @@ void CPPSimulationEngine::set_as_classes(const std::string& base_policy_class_st
         // Create and set the new policy object
 
         // Create the policy object using the factory function
-        auto policy_object = factory_it->second();
+        auto policy_object = factory_it->second(max_prefix_block_id);
         // Assign the created policy object to as_obj->policy
         as_obj->policy = std::move(policy_object);
 

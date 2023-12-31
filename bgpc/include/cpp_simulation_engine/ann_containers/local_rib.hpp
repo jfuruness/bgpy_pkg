@@ -9,7 +9,7 @@
 
 class LocalRIB {
 public:
-    LocalRIB();
+    LocalRIB(int max_prefix_block_id);
 
     std::shared_ptr<Announcement> get_ann(const unsigned short int prefix_block_id, const std::shared_ptr<Announcement>& default_ann = nullptr) const;
 

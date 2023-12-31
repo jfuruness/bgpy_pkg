@@ -10,7 +10,9 @@
 #include "as_graph.hpp"
 
 
-ASGraph::ASGraph() {}
+ASGraph::ASGraph() {
+    as_dict.reserve(90000);
+}
 
 ASGraph::~ASGraph() {}
 
@@ -33,7 +35,7 @@ void ASGraph::calculatePropagationRanks() {
     }
 }
 
-void parseASNList(std::map<int, std::shared_ptr<AS>>& asGraph, const std::string& data, std::vector<std::weak_ptr<AS>>& list) {
+void parseASNList(std::unordered_map<int, std::shared_ptr<AS>>& asGraph, const std::string& data, std::vector<std::weak_ptr<AS>>& list) {
     std::istringstream iss(data.substr(1, data.size() - 2)); // Remove braces
     std::string asn_str;
     while (std::getline(iss, asn_str, ',')) {

@@ -4,7 +4,7 @@
 
 AS::AS(int asn)
     : asn(asn),
-      policy(std::make_unique<BGPSimplePolicy>()),
+      policy(std::make_unique<BGPSimplePolicy>(0)),
       input_clique(false),
       ixp(false),
       stub(false),
