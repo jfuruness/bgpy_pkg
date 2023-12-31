@@ -19,6 +19,7 @@ public:
 
     const std::vector<std::shared_ptr<Announcement>>& prefix_anns() const;
 
+    void reset(int max_prefix_block_id);
 private:
     std::vector<std::shared_ptr<Announcement>> _info;
 };

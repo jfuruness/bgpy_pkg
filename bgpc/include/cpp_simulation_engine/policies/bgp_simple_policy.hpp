@@ -16,6 +16,7 @@ class AS;
 class BGPSimplePolicy : public Policy {
 public:
     explicit BGPSimplePolicy(int max_prefix_block_id);
+    explicit BGPSimplePolicy(int max_prefix_block_id, LocalRIB&& local_rib, RecvQueue&& recv_queue);
     virtual ~BGPSimplePolicy() override = default;
 
     void process_incoming_anns(Relationships from_rel, int propagation_round, bool reset_q = true) override;

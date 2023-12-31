@@ -26,7 +26,7 @@ set(CMAKE_CXX_FLAGS_RELEASE "-O3 -march=native")
 
 
 # TODO
-# NOTE: tried it, didn't seem to make more than 1s of difference
+# NOTE: tried it, seems to make only about 1s worth of difference
 # but I'll keep it just in case
 # set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fprofile-generate")
 

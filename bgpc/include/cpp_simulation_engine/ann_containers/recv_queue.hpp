@@ -19,6 +19,8 @@ public:
     const std::vector<std::vector<std::shared_ptr<Announcement>>>& prefix_anns() const;
 
     const std::vector<std::shared_ptr<Announcement>>& get_ann_list(const unsigned short int prefix_block_id) const;
+
+    void reset(int max_prefix_block_id);
 };
 
 #endif // RECV_QUEUE_HPP

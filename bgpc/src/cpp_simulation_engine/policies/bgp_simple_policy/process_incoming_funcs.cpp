@@ -202,6 +202,6 @@ std::shared_ptr<Announcement> BGPSimplePolicy::copy_and_process(const std::share
 void BGPSimplePolicy::reset_queue(bool reset_q) {
     if (reset_q) {
         // Reset the recvQueue by replacing it with a new instance
-        recvQueue = RecvQueue(max_prefix_block_id);
+        recvQueue.reset(max_prefix_block_id);// = RecvQueue(max_prefix_block_id);
     }
 }

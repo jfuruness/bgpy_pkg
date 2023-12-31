@@ -78,24 +78,24 @@ void CPPSimulationEngine::register_policy_factory(const std::string& name, const
 // Method to register all policies
 void CPPSimulationEngine::register_policies() {
     // Example of registering a base policy
-    register_policy_factory("BGP Simple", [](int max_prefix_block_id) -> std::unique_ptr<Policy>{
-        return std::make_unique<BGPSimplePolicy>(max_prefix_block_id);
+    register_policy_factory("BGP Simple", [](int max_prefix_block_id, LocalRIB&& local_rib, RecvQueue&& recv_queue) -> std::unique_ptr<Policy>{
+        return std::make_unique<BGPSimplePolicy>(max_prefix_block_id, std::move(local_rib), std::move(recv_queue));
     });
-    register_policy_factory("BGPSimplePolicy", [](int max_prefix_block_id) -> std::unique_ptr<Policy>{
-        return std::make_unique<BGPSimplePolicy>(max_prefix_block_id);
+    register_policy_factory("BGPSimplePolicy", [](int max_prefix_block_id, LocalRIB&& local_rib, RecvQueue&& recv_queue) -> std::unique_ptr<Policy>{
+        return std::make_unique<BGPSimplePolicy>(max_prefix_block_id, std::move(local_rib), std::move(recv_queue));
     });
 
-    register_policy_factory("BGP", [](int max_prefix_block_id) -> std::unique_ptr<Policy>{
-        return std::make_unique<BGPSimplePolicy>(max_prefix_block_id);
+    register_policy_factory("BGP", [](int max_prefix_block_id, LocalRIB&& local_rib, RecvQueue&& recv_queue) -> std::unique_ptr<Policy>{
+        return std::make_unique<BGPSimplePolicy>(max_prefix_block_id, std::move(local_rib), std::move(recv_queue));
     });
-    register_policy_factory("ROVSimple", [](int max_prefix_block_id) -> std::unique_ptr<Policy>{
-        return std::make_unique<ROVSimplePolicy>(max_prefix_block_id);
+    register_policy_factory("ROVSimple", [](int max_prefix_block_id, LocalRIB&& local_rib, RecvQueue&& recv_queue) -> std::unique_ptr<Policy>{
+        return std::make_unique<ROVSimplePolicy>(max_prefix_block_id, std::move(local_rib), std::move(recv_queue));
     });
-    register_policy_factory("ROV", [](int max_prefix_block_id) -> std::unique_ptr<Policy>{
-        return std::make_unique<ROVSimplePolicy>(max_prefix_block_id);
+    register_policy_factory("ROV", [](int max_prefix_block_id, LocalRIB&& local_rib, RecvQueue&& recv_queue) -> std::unique_ptr<Policy>{
+        return std::make_unique<ROVSimplePolicy>(max_prefix_block_id, std::move(local_rib), std::move(recv_queue));
     });
-    register_policy_factory("RealPeerROVSimple", [](int max_prefix_block_id) -> std::unique_ptr<Policy>{
-        return std::make_unique<ROVSimplePolicy>(max_prefix_block_id);
+    register_policy_factory("RealPeerROVSimple", [](int max_prefix_block_id, LocalRIB&& local_rib, RecvQueue&& recv_queue) -> std::unique_ptr<Policy>{
+        return std::make_unique<ROVSimplePolicy>(max_prefix_block_id, std::move(local_rib), std::move(recv_queue));
     });
 
 
@@ -122,7 +122,10 @@ void CPPSimulationEngine::set_as_classes(const std::string& base_policy_class_st
         // Create and set the new policy object
 
         // Create the policy object using the factory function
-        auto policy_object = factory_it->second(max_prefix_block_id);
+        // In a 30s python run from pga.py, setting up the AS classes takes 6s
+        // merely because it is reinitializing the localrib and recvqueue
+        // this should fix that
+        auto policy_object = factory_it->second(max_prefix_block_id, std::move(as_obj->policy->localRIB), std::move(as_obj->policy->recvQueue));
         // Assign the created policy object to as_obj->policy
         as_obj->policy = std::move(policy_object);
 

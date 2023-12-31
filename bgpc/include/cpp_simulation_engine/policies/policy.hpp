@@ -17,6 +17,8 @@ public:
     RecvQueue recvQueue;
     const int max_prefix_block_id;
 
+
+    explicit Policy(int max_prefix_block_id, LocalRIB&& rib, RecvQueue&& queue);
     explicit Policy(int max_prefix_block_id);
     // You need virtual destructors in base class or else derived classes
     // won't clean up properly

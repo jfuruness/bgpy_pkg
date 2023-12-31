@@ -15,7 +15,7 @@
 
 
 // Factory function type for creating Policy objects
-using PolicyFactoryFunc = std::function<std::unique_ptr<Policy>(int max_prefix_block_id)>;
+using PolicyFactoryFunc = std::function<std::unique_ptr<Policy>(int max_prefix_block_id, LocalRIB&& local_rib, RecvQueue&& recv_queue)>;
 
 class CPPSimulationEngine {
 public:

@@ -5,4 +5,13 @@ Policy::Policy(int max_prefix_block_id) : max_prefix_block_id(max_prefix_block_i
 
 }
 
+Policy::Policy(int max_prefix_block_id, LocalRIB&& rib, RecvQueue&& queue)
+    : max_prefix_block_id(max_prefix_block_id),
+      localRIB(std::move(rib)),
+      recvQueue(std::move(queue)) {
+    // Constructor implementation to clear out old anns
+    localRIB.reset(max_prefix_block_id);
+    recvQueue.reset(max_prefix_block_id);
+}
+
 // No other implementations are needed here as the methods are pure virtual

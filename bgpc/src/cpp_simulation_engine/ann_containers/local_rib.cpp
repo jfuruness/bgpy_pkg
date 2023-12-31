@@ -30,3 +30,13 @@ void LocalRIB::remove_ann(const unsigned short int prefix_block_id) {
 const std::vector<std::shared_ptr<Announcement>>& LocalRIB::prefix_anns() const {
     return _info;
 }
+
+void LocalRIB::reset(int max_prefix_block_id_param){
+    if (max_prefix_block_id_param != _info.size()){
+        // This will happen the first time this gets initialized
+        _info.resize(max_prefix_block_id_param, nullptr);
+        //throw std::out_of_range("resetting with a different max prefix block id");
+    }
+
+    std::fill(_info.begin(), _info.end(), nullptr); // Set each element to nullptr
+}

@@ -23,3 +23,15 @@ const std::vector<std::shared_ptr<Announcement>>& RecvQueue::get_ann_list(const 
     }
     return _info[prefix_block_id];
 }
+
+void RecvQueue::reset(int max_prefix_block_id_param){
+    if (max_prefix_block_id_param != _info.size()){
+        // This will happen the first time this gets initialized
+
+        _info.resize(max_prefix_block_id_param); // Resizing the vector to hold max_prefix_block_id empty vectors
+        //throw std::out_of_range("resetting with a different max prefix block id");
+    }
+    for (auto& ann_list : _info) {
+        ann_list.clear(); // Clear each list in the vector
+    }
+}
