@@ -18,7 +18,7 @@
 class ASGraphAnalyzer {
 public:
     ASGraphAnalyzer(std::shared_ptr<CPPSimulationEngine> engine,
-                  const std::vector<unsigned short int>& ordered_prefixes,
+                  const std::vector<unsigned short int>& ordered_prefix_block_ids,
                   const std::unordered_set<int>& victim_asns,
                   const std::unordered_set<int>& attacker_asns);
 

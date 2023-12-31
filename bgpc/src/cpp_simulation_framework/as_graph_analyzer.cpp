@@ -11,6 +11,12 @@ ASGraphAnalyzer::ASGraphAnalyzer(std::shared_ptr<CPPSimulationEngine> engine,
     : engine(engine),
       victim_asns(victim_asns),
       attacker_asns(attacker_asns) {
+
+    // Reserve sizes for speed
+    control_plane_outcomes.reserve(ordered_prefix_block_ids.size());
+    data_plane_outcomes.reserve(ordered_prefix_block_ids.size());
+    most_specific_ann_dict.reserve(engine->as_graph->as_dict.size());
+
     for (auto& as_obj_pair : engine->as_graph->as_dict) {
         auto& as_obj = as_obj_pair.second;
         most_specific_ann_dict[as_obj->asn] = get_most_specific_ann(as_obj, ordered_prefix_block_ids);
