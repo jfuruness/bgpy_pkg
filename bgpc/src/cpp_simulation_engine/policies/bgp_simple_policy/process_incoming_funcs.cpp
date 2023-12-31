@@ -186,8 +186,8 @@ std::shared_ptr<Announcement> BGPSimplePolicy::copy_and_process(const std::share
         ann->staticData,
         new_as_path,
         recv_relationship,
-        ann->traceback_end,
-        ann->communities
+        ann->traceback_end
+        //ann->communities
     );
 }
 

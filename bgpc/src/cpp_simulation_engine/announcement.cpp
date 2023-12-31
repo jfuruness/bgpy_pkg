@@ -22,8 +22,8 @@ Announcement::Announcement(
              bool withdraw, bool traceback_end, const std::vector<std::string>& communities)
     : prefix_block_id(prefix_block_id), as_path(as_path),
       staticData(std::make_shared<StaticData>(prefix, timestamp, seed_asn, roa_valid_length, roa_origin, withdraw)),
-      recv_relationship(recv_relationship), traceback_end(traceback_end),
-      communities(communities) {}
+      recv_relationship(recv_relationship), traceback_end(traceback_end) {}
+      //communities(communities) {}
 
 
 
@@ -32,8 +32,8 @@ Announcement::Announcement(unsigned short int prefix_block_id,
                            Relationships recv_relationship, bool traceback_end,
                            const std::vector<std::string>& communities)
     : prefix_block_id(prefix_block_id), staticData(staticData), as_path(as_path),
-      recv_relationship(recv_relationship), traceback_end(traceback_end),
-      communities(communities) {}
+      recv_relationship(recv_relationship), traceback_end(traceback_end) {}
+      //communities(communities) {}
 
 std::string Announcement::prefix() const {
     return staticData->prefix;
@@ -70,8 +70,8 @@ bool Announcement::operator==(const Announcement& other) const {
         && roa_origin() == other.roa_origin()
         && recv_relationship == other.recv_relationship
         && withdraw() == other.withdraw()
-        && traceback_end == other.traceback_end
-        && communities == other.communities;
+        && traceback_end == other.traceback_end;
+        //&& communities == other.communities;
 }
 
 // Methods

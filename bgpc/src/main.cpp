@@ -169,7 +169,7 @@ PYBIND11_MODULE(bgpc, m) {
         .def_readonly("recv_relationship", &Announcement::recv_relationship)
         .def_property_readonly("withdraw", &Announcement::withdraw)
         .def_readonly("traceback_end", &Announcement::traceback_end)
-        .def_readonly("communities", &Announcement::communities)
+        //.def_readonly("communities", &Announcement::communities)
         .def("prefix_path_attributes_eq", &Announcement::prefix_path_attributes_eq)
         .def_property_readonly("invalid_by_roa", &Announcement::invalid_by_roa)
         .def_property_readonly("valid_by_roa", &Announcement::valid_by_roa)

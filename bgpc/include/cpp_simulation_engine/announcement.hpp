@@ -67,7 +67,7 @@ public:
     const std::vector<int> as_path;
     const Relationships recv_relationship;
     const bool traceback_end;
-    const std::vector<std::string> communities;
+    //const std::vector<std::string> communities;
     const std::shared_ptr<StaticData> staticData;
 
     Announcement(unsigned short int prefix_block_id,
