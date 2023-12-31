@@ -110,17 +110,17 @@ void CPPSimulationEngine::set_as_classes(const std::string& base_policy_class_st
 void CPPSimulationEngine::seed_announcements(const std::vector<std::shared_ptr<Announcement>>& announcements) {
     auto start = std::chrono::high_resolution_clock::now();
     for (const auto& ann : announcements) {
-        if (!ann || !ann->seed_asn.has_value()) {
+        if (!ann || !ann->seed_asn().has_value()) {
             throw std::runtime_error("Announcement seed ASN is not set.");
         }
 
-        auto as_it = as_graph->as_dict.find(ann->seed_asn.value());
+        auto as_it = as_graph->as_dict.find(ann->seed_asn().value());
         if (as_it == as_graph->as_dict.end()) {
             throw std::runtime_error("AS object not found in ASGraph.");
         }
 
         auto& obj_to_seed = as_it->second;
-        if (obj_to_seed->policy->localRIB.get_ann(ann->prefix)) {
+        if (obj_to_seed->policy->localRIB.get_ann(ann->prefix_block_id)) {
             throw std::runtime_error("Seeding conflict: Announcement already exists in the local RIB.");
         }
 
@@ -210,10 +210,10 @@ void CPPSimulationEngine::dump_local_ribs_to_tsv(const std::string& tsv_path) {
             const auto& ann = annPair.second;
 
             // Write each announcement's details to the TSV file
-            file << std::to_string(asPair.first) << "\t" << ann->prefix << "\t{" << join(ann->as_path, ",") << "}\t" << ann->timestamp << "\t"
-                 << optionalToString(ann->seed_asn) << "\t" << booleanToString(ann->roa_valid_length) << "\t"
-                 << optionalToString(ann->roa_origin) << "\t" << static_cast<int>(ann->recv_relationship) << "\t"
-                 << booleanToString(ann->withdraw, true) << "\t" << booleanToString(ann->traceback_end, true) << "\t"
+            file << std::to_string(asPair.first) << "\t" << ann->prefix() << "\t{" << join(ann->as_path, ",") << "}\t" << ann->timestamp() << "\t"
+                 << optionalToString(ann->seed_asn()) << "\t" << booleanToString(ann->roa_valid_length()) << "\t"
+                 << optionalToString(ann->roa_origin()) << "\t" << static_cast<int>(ann->recv_relationship) << "\t"
+                 << booleanToString(ann->withdraw(), true) << "\t" << booleanToString(ann->traceback_end, true) << "\t"
                  << join(ann->communities, " ") << "\n";
         }
     }

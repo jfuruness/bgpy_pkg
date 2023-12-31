@@ -4,6 +4,7 @@
 #include <optional>
 #include <memory>
 #include <string>
+#include <climits>
 
 #include "announcement.hpp"
 #include "utils.hpp"
@@ -20,7 +21,7 @@ std::vector<std::shared_ptr<Announcement>> get_announcements_from_tsv(const std:
 
     // Skip the header line
     std::getline(file, line);
-    std::string expectedHeaderStart = "prefix\tas_path\ttimestamp\tseed_asn\troa_valid_length\troa_origin\trecv_relationship\twithdraw\ttraceback_end\tcommunities";
+    std::string expectedHeaderStart = "prefix_block_id\tprefix\tas_path\ttimestamp\tseed_asn\troa_valid_length\troa_origin\trecv_relationship\twithdraw\ttraceback_end\tcommunities";
     if (line.find(expectedHeaderStart) != 0) {
         throw std::runtime_error("TSV file header does not start with the expected format.");
     }
@@ -31,6 +32,7 @@ std::vector<std::shared_ptr<Announcement>> get_announcements_from_tsv(const std:
         std::istringstream iss(line);
         std::string token;
 
+        unsigned short int prefix_block_id;
         std::string prefix;
         std::vector<int> as_path;
         int timestamp;
@@ -43,6 +45,17 @@ std::vector<std::shared_ptr<Announcement>> get_announcements_from_tsv(const std:
         std::vector<std::string> communities;
 
         // Parse each field
+        std::getline(iss, token, '\t');
+        errno = 0;  // Clear errno
+        unsigned long temp = std::strtoul(token.c_str(), nullptr, 10);  // Using base 10 for decimal
+
+        if (errno == ERANGE || temp > USHRT_MAX) {
+            // Handle error: Value out of range for unsigned short
+            throw std::runtime_error("Invalid prefix_block_id: " + token);
+        } else {
+            prefix_block_id = static_cast<unsigned short>(temp);
+        }
+
         std::getline(iss, prefix, '\t');
 
         // Parse as_path
@@ -107,7 +120,7 @@ std::vector<std::shared_ptr<Announcement>> get_announcements_from_tsv(const std:
         }
 
         std::shared_ptr<Announcement> ann = std::make_shared<Announcement>(
-            prefix, as_path, timestamp, seed_asn, roa_valid_length,
+            prefix_block_id, prefix, as_path, timestamp, seed_asn, roa_valid_length,
             roa_origin, recv_relationship, withdraw, traceback_end, communities
         );
         announcements.push_back(ann);

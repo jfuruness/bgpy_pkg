@@ -47,9 +47,9 @@ void BGPSimplePolicy::process_incoming_anns(Relationships from_rel, int propagat
     // Process all announcements that were incoming from a specific relationship
 
     // For each prefix, get all announcements received
-    for (const auto& [prefix, ann_list] : recvQueue.prefix_anns()) {
+    for (const auto& [prefix_block_id, ann_list] : recvQueue.prefix_anns()) {
         // Get announcement currently in local RIB
-        auto current_ann = localRIB.get_ann(prefix);
+        auto current_ann = localRIB.get_ann(prefix_block_id);
 
         /*
         std::shared_ptr<Announcement> og_ann = current_ann;
@@ -182,14 +182,10 @@ std::shared_ptr<Announcement> BGPSimplePolicy::copy_and_process(const std::share
 
     // Return a new Announcement object with the modified AS path and recv_relationship
     return std::make_shared<Announcement>(
-        ann->prefix,
+        ann->prefix_block_id,
+        ann->staticData,
         new_as_path,
-        ann->timestamp,
-        ann->seed_asn,
-        ann->roa_valid_length,
-        ann->roa_origin,
         recv_relationship,
-        ann->withdraw,
         ann->traceback_end,
         ann->communities
     );

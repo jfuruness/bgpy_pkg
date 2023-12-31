@@ -9,16 +9,16 @@
 
 class RecvQueue {
 protected:
-    std::map<std::string, std::vector<std::shared_ptr<Announcement>>> _info;
+    std::map<unsigned short int, std::vector<std::shared_ptr<Announcement>>> _info;
 
 public:
     RecvQueue();
 
     void add_ann(const std::shared_ptr<Announcement>& ann);
 
-    const std::map<std::string, std::vector<std::shared_ptr<Announcement>>>& prefix_anns() const;
+    const std::map<unsigned short int, std::vector<std::shared_ptr<Announcement>>>& prefix_anns() const;
 
-    const std::vector<std::shared_ptr<Announcement>>& get_ann_list(const std::string& prefix) const;
+    const std::vector<std::shared_ptr<Announcement>>& get_ann_list(const unsigned short int prefix_block_id) const;
 };
 
 #endif // RECV_QUEUE_HPP

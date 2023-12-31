@@ -5,7 +5,7 @@
 
 
 ASGraphAnalyzer::ASGraphAnalyzer(std::shared_ptr<CPPSimulationEngine> engine,
-                             const std::vector<std::string>& ordered_prefixes,
+                             const std::vector<unsigned short int>& ordered_prefix_block_ids,
                              const std::unordered_set<int>& victim_asns,
                              const std::unordered_set<int>& attacker_asns)
     : engine(engine),
@@ -13,7 +13,7 @@ ASGraphAnalyzer::ASGraphAnalyzer(std::shared_ptr<CPPSimulationEngine> engine,
       attacker_asns(attacker_asns) {
     for (auto& as_obj_pair : engine->as_graph->as_dict) {
         auto& as_obj = as_obj_pair.second;
-        most_specific_ann_dict[as_obj->asn] = get_most_specific_ann(as_obj, ordered_prefixes);
+        most_specific_ann_dict[as_obj->asn] = get_most_specific_ann(as_obj, ordered_prefix_block_ids);
     }
 }
 
@@ -37,9 +37,9 @@ std::unordered_map<int, std::unordered_map<int, int>> ASGraphAnalyzer::analyze()
 }
 
 
-std::optional<std::shared_ptr<Announcement>> ASGraphAnalyzer::get_most_specific_ann(std::shared_ptr<AS> as_obj, const std::vector<std::string>& ordered_prefixes) {
-    for (const auto& prefix : ordered_prefixes) {
-        std::shared_ptr<Announcement> most_specific_ann = as_obj->policy->localRIB.get_ann(prefix);
+std::optional<std::shared_ptr<Announcement>> ASGraphAnalyzer::get_most_specific_ann(std::shared_ptr<AS> as_obj, const std::vector<unsigned short int>& ordered_prefix_block_ids) {
+    for (const auto& prefix_block_id : ordered_prefix_block_ids) {
+        std::shared_ptr<Announcement> most_specific_ann = as_obj->policy->localRIB.get_ann(prefix_block_id);
         if (most_specific_ann) {
             return most_specific_ann;
         }

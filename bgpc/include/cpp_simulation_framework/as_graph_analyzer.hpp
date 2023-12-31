@@ -18,7 +18,7 @@
 class ASGraphAnalyzer {
 public:
     ASGraphAnalyzer(std::shared_ptr<CPPSimulationEngine> engine,
-                  const std::vector<std::string>& ordered_prefixes,
+                  const std::vector<unsigned short int>& ordered_prefixes,
                   const std::unordered_set<int>& victim_asns,
                   const std::unordered_set<int>& attacker_asns);
 
@@ -33,7 +33,7 @@ private:
     std::unordered_map<int, int> control_plane_outcomes;
     std::unordered_map<int, std::unordered_map<int, int>> outcomes;
 
-    std::optional<std::shared_ptr<Announcement>> get_most_specific_ann(std::shared_ptr<AS> as_obj, const std::vector<std::string>& ordered_prefixes);
+    std::optional<std::shared_ptr<Announcement>> get_most_specific_ann(std::shared_ptr<AS> as_obj, const std::vector<unsigned short int>& ordered_prefixes);
     int get_as_outcome_data_plane(std::shared_ptr<AS> as_obj);
     int determine_as_outcome_data_plane(std::shared_ptr<AS> as_obj, std::optional<std::shared_ptr<Announcement>> most_specific_ann);
     int get_as_outcome_ctrl_plane(std::shared_ptr<AS> as_obj);
