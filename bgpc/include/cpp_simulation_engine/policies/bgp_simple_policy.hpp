@@ -27,7 +27,7 @@ public:
 protected:
     std::vector<std::function<std::shared_ptr<Announcement>(const std::shared_ptr<Announcement>&, const std::shared_ptr<Announcement>&)>> gao_rexford_functions;
 
-    bool valid_ann(const std::shared_ptr<Announcement>& ann, Relationships recv_relationship) const;
+    virtual bool valid_ann(const std::shared_ptr<Announcement>& ann, Relationships recv_relationship) const;
     std::shared_ptr<Announcement> copy_and_process(const std::shared_ptr<Announcement>& ann, Relationships recv_relationship);
     void reset_queue(bool reset_q);
     void initialize_gao_rexford_functions();

@@ -60,6 +60,7 @@ set(BGPC_SOURCES
     bgpc/src/cpp_simulation_engine/policies/bgp_simple_policy/gao_rexford_funcs.cpp
     bgpc/src/cpp_simulation_engine/policies/bgp_simple_policy/process_incoming_funcs.cpp
     bgpc/src/cpp_simulation_engine/policies/bgp_simple_policy/propagate_funcs.cpp
+    bgpc/src/cpp_simulation_engine/policies/rov_simple_policy.cpp
     bgpc/src/as_graph/as.cpp
     bgpc/src/as_graph/as_graph.cpp
     bgpc/src/cpp_simulation_engine/cpp_simulation_engine.cpp
