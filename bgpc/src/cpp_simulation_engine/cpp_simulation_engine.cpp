@@ -10,6 +10,7 @@
 #include "announcement.hpp"
 #include "policy.hpp"
 #include "bgp_simple_policy.hpp"
+#include "rov_simple_policy.hpp"
 #include "as.hpp"
 #include "as_graph.hpp"
 #include "cpp_simulation_engine.hpp"
@@ -73,13 +74,13 @@ void CPPSimulationEngine::register_policies() {
         return std::make_unique<BGPSimplePolicy>(max_prefix_block_id);
     });
     register_policy_factory("ROVSimple", [](int max_prefix_block_id) -> std::unique_ptr<Policy>{
-        return std::make_unique<BGPSimplePolicy>(max_prefix_block_id);
+        return std::make_unique<ROVSimplePolicy>(max_prefix_block_id);
     });
     register_policy_factory("ROV", [](int max_prefix_block_id) -> std::unique_ptr<Policy>{
-        return std::make_unique<BGPSimplePolicy>(max_prefix_block_id);
+        return std::make_unique<ROVSimplePolicy>(max_prefix_block_id);
     });
     register_policy_factory("RealPeerROVSimple", [](int max_prefix_block_id) -> std::unique_ptr<Policy>{
-        return std::make_unique<BGPSimplePolicy>(max_prefix_block_id);
+        return std::make_unique<ROVSimplePolicy>(max_prefix_block_id);
     });
 
 

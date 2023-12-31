@@ -99,7 +99,7 @@ class CPPSimulationEngine(SimulationEngine):
         assert scenario, "This can't be empty"
         # Propogate anns
         self._cpp_simulation_engine.run(propagation_round)
-        self._cpp_simulation_engine.dump_local_ribs_to_tsv("/home/anon/local_ribs.tsv")
+        # self._cpp_simulation_engine.dump_local_ribs_to_tsv("/home/anon/local_ribs.tsv")
         # Increment the ready to run round
         self.ready_to_run_round += 1
 
