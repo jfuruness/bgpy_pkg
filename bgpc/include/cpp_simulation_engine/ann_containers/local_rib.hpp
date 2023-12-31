@@ -17,10 +17,10 @@ public:
 
     void remove_ann(const unsigned short int prefix_block_id);
 
-    const std::unordered_map<unsigned short int, std::shared_ptr<Announcement>>& prefix_anns() const;
+    const std::vector<std::shared_ptr<Announcement>>& prefix_anns() const;
 
-protected:
-    std::unordered_map<unsigned short int, std::shared_ptr<Announcement>> _info;
+private:
+    std::vector<std::shared_ptr<Announcement>> _info;
 };
 
 #endif // LOCAL_RIB_HPP

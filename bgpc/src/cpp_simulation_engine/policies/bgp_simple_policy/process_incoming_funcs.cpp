@@ -12,6 +12,9 @@ void BGPSimplePolicy::process_incoming_anns(Relationships from_rel, int propagat
 
     // For each prefix, get all announcements received
     for (const auto& [prefix, ann_list] : recvQueue.prefix_anns()) {
+        if (ann_list.size() == 0){
+            continue;
+        }
         // Get announcement currently in local RIB
         auto current_ann = localRIB.get_ann(prefix);
 
@@ -47,7 +50,12 @@ void BGPSimplePolicy::process_incoming_anns(Relationships from_rel, int propagat
     // Process all announcements that were incoming from a specific relationship
 
     // For each prefix, get all announcements received
-    for (const auto& [prefix_block_id, ann_list] : recvQueue.prefix_anns()) {
+    //for (const auto& [prefix_block_id, ann_list] : recvQueue.prefix_anns()) {
+    for (unsigned short int prefix_block_id = 0; prefix_block_id < static_cast<unsigned short int>(recvQueue.prefix_anns().size()); ++prefix_block_id) {
+        const auto& ann_list = recvQueue.prefix_anns()[prefix_block_id];
+        if(ann_list.size() == 0){
+            continue;
+        }
         // Get announcement currently in local RIB
         auto current_ann = localRIB.get_ann(prefix_block_id);
 

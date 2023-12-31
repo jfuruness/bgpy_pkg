@@ -224,9 +224,11 @@ void CPPSimulationEngine::dump_local_ribs_to_tsv(const std::string& tsv_path) {
 
 
         // Get announcements from the local RIB
-        for (const auto& annPair : localRIB.prefix_anns()) {
-            const auto& ann = annPair.second;
 
+        for (const auto& ann : localRIB.prefix_anns()) {
+            if (ann == nullptr) {
+                continue;
+            }
             // Write each announcement's details to the TSV file
             file << std::to_string(asPair.first) << "\t" << ann->prefix() << "\t{" << join(ann->as_path, ",") << "}\t" << ann->timestamp() << "\t"
                  << optionalToString(ann->seed_asn()) << "\t" << booleanToString(ann->roa_valid_length()) << "\t"
@@ -276,8 +278,10 @@ std::map<int, std::vector<std::shared_ptr<Announcement>>> CPPSimulationEngine::g
         const auto& localRIB = as->policy->localRIB;
 
         std::vector<std::shared_ptr<Announcement>> announcements;
-        for (const auto& annPair : localRIB.prefix_anns()) {
-            announcements.push_back(annPair.second);
+        for (const auto& ann : localRIB.prefix_anns()) {
+            if (ann != nullptr) {
+                announcements.push_back(ann);
+            }
         }
 
         asn_to_announcements[as->asn] = announcements;
