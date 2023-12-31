@@ -3,20 +3,20 @@
 
 #include <memory>
 #include <vector>
-#include <map>
+#include <unordered_map>
 #include <string>
 #include "announcement.hpp"
 
 class RecvQueue {
 protected:
-    std::map<unsigned short int, std::vector<std::shared_ptr<Announcement>>> _info;
+    std::unordered_map<unsigned short int, std::vector<std::shared_ptr<Announcement>>> _info;
 
 public:
     RecvQueue();
 
     void add_ann(const std::shared_ptr<Announcement>& ann);
 
-    const std::map<unsigned short int, std::vector<std::shared_ptr<Announcement>>>& prefix_anns() const;
+    const std::unordered_map<unsigned short int, std::vector<std::shared_ptr<Announcement>>>& prefix_anns() const;
 
     const std::vector<std::shared_ptr<Announcement>>& get_ann_list(const unsigned short int prefix_block_id) const;
 };

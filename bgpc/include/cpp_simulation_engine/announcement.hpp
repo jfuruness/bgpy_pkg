@@ -99,7 +99,6 @@ public:
     bool covered_by_roa() const;
     bool roa_routed() const;
     int origin() const;
-
 };
 
 #endif // ANNOUNCEMENT_H

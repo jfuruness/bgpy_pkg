@@ -4,6 +4,7 @@
 #include <memory>
 #include <map>
 #include <string>
+#include <unordered_map>
 #include "announcement.hpp"
 
 class LocalRIB {
@@ -16,10 +17,10 @@ public:
 
     void remove_ann(const unsigned short int prefix_block_id);
 
-    const std::map<unsigned short int, std::shared_ptr<Announcement>>& prefix_anns() const;
+    const std::unordered_map<unsigned short int, std::shared_ptr<Announcement>>& prefix_anns() const;
 
 protected:
-    std::map<unsigned short int, std::shared_ptr<Announcement>> _info;
+    std::unordered_map<unsigned short int, std::shared_ptr<Announcement>> _info;
 };
 
 #endif // LOCAL_RIB_HPP
