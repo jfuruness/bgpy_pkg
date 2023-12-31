@@ -220,12 +220,13 @@ class PySimulation(Simulation):
                     engine=engine,
                     prev_scenario=prev_scenario,
                 )
+                print(f"setup scenario {time.perf_counter() - start}")
 
                 self._print_progress(percent_adopt, scenario, trial)
 
                 # Change AS Classes, seed announcements before propagation
                 scenario.setup_engine(engine, prev_scenario)
-                print(f"setup scenario {time.perf_counter() - start}")
+                print(f"setup scenario and engine {time.perf_counter() - start}")
                 # For each round of propagation run the engine
                 for propagation_round in range(self.propagation_rounds):
                     self._single_engine_run(

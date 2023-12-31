@@ -1,4 +1,5 @@
 #include <iostream>
+#include <chrono>
 #include <fstream>
 #include <sstream>
 #include <chrono>
@@ -88,6 +89,8 @@ void CPPSimulationEngine::register_policies() {
     // e.g., register_policy_factory("SpecificPolicy", ...);
 }
 void CPPSimulationEngine::set_as_classes(const std::string& base_policy_class_str, const std::unordered_map<int, std::string>& non_default_asn_cls_str_dict, const int max_prefix_block_id){
+
+    auto start = std::chrono::steady_clock::now();  // Start timing
     for (auto& [asn, as_obj] : as_graph->as_dict) {
 
         // Determine the policy class string to use
@@ -112,6 +115,9 @@ void CPPSimulationEngine::set_as_classes(const std::string& base_policy_class_st
         //set the reference to the AS
         as_obj->policy->as = std::weak_ptr<AS>(as_obj->shared_from_this());
     }
+    auto end = std::chrono::steady_clock::now();  // End timing
+    std::chrono::duration<double> elapsed_seconds = end - start;
+    std::cout << "set as classes in C++Function took: " << elapsed_seconds.count() << " seconds\n";
 }
 void CPPSimulationEngine::seed_announcements(const std::vector<std::shared_ptr<Announcement>>& announcements) {
     auto start = std::chrono::high_resolution_clock::now();
