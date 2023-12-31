@@ -30,7 +30,7 @@ set(CMAKE_CXX_FLAGS_RELEASE "-O3 -march=native")
 # but I'll keep it just in case
 # set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fprofile-generate")
 
-# set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fprofile-use")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fprofile-use")
 
 ################################################################
 
