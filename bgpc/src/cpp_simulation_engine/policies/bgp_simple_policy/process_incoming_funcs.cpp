@@ -188,12 +188,20 @@ std::shared_ptr<Announcement> BGPSimplePolicy::copy_and_process(const std::share
     std::vector<int> new_as_path = {as_ptr->asn};
     new_as_path.insert(new_as_path.end(), ann->as_path.begin(), ann->as_path.end());
 
+    // Creating a new AS path node
+    std::shared_ptr<ASPathNode> new_path_node = std::make_shared<ASPathNode>(as_ptr->asn, ann->as_path_leaf_node->as_path_length + 1);
+    new_path_node->parent = ann->as_path_leaf_node; // Set the parent of the new node
+
+    // Add the new node to the children of the old path node
+    ann->as_path_leaf_node->children.push_back(new_path_node);
+
     // Return a new Announcement object with the modified AS path and recv_relationship
     return std::make_shared<Announcement>(
         ann->prefix_block_id,
         ann->staticData,
         new_as_path,
         recv_relationship,
+        new_path_node,
         false
     );
 }
@@ -204,3 +212,4 @@ void BGPSimplePolicy::reset_queue(bool reset_q) {
         recvQueue.reset(max_prefix_block_id);// = RecvQueue(max_prefix_block_id);
     }
 }
+
