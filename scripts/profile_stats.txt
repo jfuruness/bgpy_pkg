@@ -1,0 +1,355 @@
+         187737016 function calls (186985993 primitive calls) in 30.155 seconds
+
+   Ordered by: cumulative time
+
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+        1    0.000    0.000   30.158   30.158 /home/anon/work/bgpy_pkg/my_profile.py:10(main)
+        1    0.000    0.000   26.560   26.560 /home/anon/work/bgpy_pkg/bgpy/simulation_frameworks/py_simulation_framework/py_simulation.py:129(_get_data)
+        1    0.000    0.000   26.559   26.559 /home/anon/work/bgpy_pkg/bgpy/simulation_frameworks/py_simulation_framework/py_simulation.py:169(_get_single_process_results)
+        1    0.000    0.000   26.559   26.559 /home/anon/work/bgpy_pkg/bgpy/simulation_frameworks/py_simulation_framework/py_simulation.py:172(<listcomp>)
+        1    0.009    0.009   26.559   26.559 /home/anon/work/bgpy_pkg/bgpy/simulation_frameworks/py_simulation_framework/py_simulation.py:185(_run_chunk)
+       60    0.006    0.000   18.980    0.316 /home/anon/work/bgpy_pkg/bgpy/simulation_frameworks/py_simulation_framework/py_simulation.py:262(_single_engine_run)
+       60   10.372    0.173   10.372    0.173 /home/anon/work/bgpy_pkg/bgpy/simulation_engines/cpp_simulation_engine/cpp_simulation_engine.py:95(run)
+       60    0.007    0.000    8.601    0.143 /home/anon/work/bgpy_pkg/bgpy/simulation_frameworks/py_simulation_framework/py_simulation.py:306(_collect_engine_run_data)
+        2    0.000    0.000    6.364    3.182 /home/anon/work/bgpy_pkg/bgpy/as_graphs/base/as_graph_constructor.py:31(run)
+        2    0.000    0.000    4.667    2.334 /home/anon/work/bgpy_pkg/bgpy/as_graphs/caida_as_graph/caida_as_graph_constructor.py:74(_get_as_graph)
+        2    0.000    0.000    4.667    2.334 /home/anon/work/bgpy_pkg/bgpy/as_graphs/base/as_graph/as_graph.py:60(__init__)
+       60    0.000    0.000    4.365    0.073 /home/anon/work/bgpy_pkg/bgpy/simulation_frameworks/py_simulation_framework/metric_tracker/metric_tracker.py:159(track_trial_metrics)
+       60    0.001    0.000    4.365    0.073 /home/anon/work/bgpy_pkg/bgpy/simulation_frameworks/py_simulation_framework/metric_tracker/metric_tracker.py:192(_track_trial_metrics)
+       60    0.850    0.014    4.347    0.072 /home/anon/work/bgpy_pkg/bgpy/simulation_frameworks/py_simulation_framework/metric_tracker/metric_tracker.py:220(_populate_metrics)
+       60    4.204    0.070    4.204    0.070 /home/anon/work/bgpy_pkg/bgpy/simulation_frameworks/cpp_simulation_framework/cpp_as_graph_analyzer.py:27(analyze)
+        2    0.048    0.024    3.653    1.827 /home/anon/work/bgpy_pkg/bgpy/as_graphs/base/as_graph/as_graph.py:111(_set_non_yaml_attrs)
+        1    0.000    0.000    3.596    3.596 /home/anon/work/bgpy_pkg/bgpy/simulation_frameworks/py_simulation_framework/py_simulation.py:36(__init__)
+       60    0.000    0.000    3.360    0.056 /home/anon/work/bgpy_pkg/bgpy/simulation_frameworks/py_simulation_framework/scenarios/scenario.py:378(setup_engine)
+       60    3.247    0.054    3.360    0.056 /home/anon/work/bgpy_pkg/bgpy/simulation_engines/cpp_simulation_engine/cpp_simulation_engine.py:53(setup)
+ 13681800    0.673    0.000    3.053    0.000 /home/anon/work/bgpy_pkg/bgpy/simulation_frameworks/py_simulation_framework/metric_tracker/metric.py:70(add_data)
+        2    0.230    0.115    1.696    0.848 /home/anon/work/bgpy_pkg/bgpy/as_graphs/caida_as_graph/caida_as_graph_constructor.py:40(_get_as_graph_info)
+ 13681800    1.109    0.000    1.439    0.000 /home/anon/work/bgpy_pkg/bgpy/simulation_frameworks/py_simulation_framework/metric_tracker/metric.py:121(_add_denominator)
+        2    0.038    0.019    1.294    0.647 /home/anon/work/bgpy_pkg/bgpy/as_graphs/base/as_graph/customer_cone_funcs.py:6(_get_customer_cone_size)
+  3875608    0.899    0.000    1.231    0.000 {method 'add' of 'set' objects}
+331654/23622    0.120    0.000    1.210    0.000 /home/anon/work/bgpy_pkg/bgpy/as_graphs/base/as_graph/customer_cone_funcs.py:23(_get_cone_size_helper)
+       60    0.004    0.000    1.123    0.019 /home/anon/work/bgpy_pkg/bgpy/simulation_frameworks/py_simulation_framework/scenarios/scenario.py:36(__init__)
+ 45606374    0.773    0.000    1.115    0.000 /home/anon/Downloads/pypy3.10-v7.3.13-linux64/lib/pypy3.10/types.py:186(__get__)
+        2    0.025    0.013    1.014    0.507 /home/anon/work/bgpy_pkg/bgpy/as_graphs/base/as_graph/as_graph.py:150(_set_as_groups)
+        2    0.178    0.089    1.014    0.507 /home/anon/work/bgpy_pkg/bgpy/as_graphs/base/as_graph/graph_building_funcs.py:51(_add_relationships)
+   308032    0.997    0.000    0.997    0.000 {method 'update' of 'set' objects}
+ 13681800    0.528    0.000    0.942    0.000 /home/anon/work/bgpy_pkg/bgpy/simulation_frameworks/py_simulation_framework/metric_tracker/metric.py:96(_add_numerator)
+       60    0.009    0.000    0.806    0.013 /home/anon/work/bgpy_pkg/bgpy/simulation_frameworks/py_simulation_framework/scenarios/scenario.py:245(_get_non_default_asn_cls_dict)
+       60    0.215    0.004    0.787    0.013 /home/anon/work/bgpy_pkg/bgpy/simulation_frameworks/py_simulation_framework/scenarios/scenario.py:304(_get_randomized_non_default_asn_cls_dict)
+   874572    0.075    0.000    0.767    0.000 /home/anon/work/bgpy_pkg/bgpy/as_graphs/caida_as_graph/caida_as_graph_constructor.py:108(_extract_peers)
+  3498288    0.665    0.000    0.665    0.000 /home/anon/work/bgpy_pkg/bgpy/as_graphs/base/links/peer_link.py:21(asns)
+        2    0.111    0.055    0.543    0.271 /home/anon/work/bgpy_pkg/bgpy/as_graphs/base/as_graph/graph_building_funcs.py:75(_make_relationships_tuples)
+      300    0.212    0.001    0.514    0.002 /home/anon/Downloads/pypy3.10-v7.3.13-linux64/lib/pypy3.10/random.py:406(sample)
+        2    0.020    0.010    0.503    0.252 /home/anon/work/bgpy_pkg/bgpy/as_graphs/base/as_graph/graph_building_funcs.py:13(_gen_graph)
+   456072    0.281    0.000    0.394    0.000 /home/anon/work/bgpy_pkg/bgpy/as_graphs/base/as_graph/graph_building_funcs.py:91(<listcomp>)
+        2    0.090    0.045    0.378    0.189 /home/anon/work/bgpy_pkg/bgpy/as_graphs/base/as_graph_info.py:29(asns)
+   308032    0.028    0.000    0.366    0.000 /home/anon/work/bgpy_pkg/bgpy/as_graphs/caida_as_graph/caida_as_graph_constructor.py:100(_extract_provider_customers)
+  1064168    0.125    0.000    0.358    0.000 /home/anon/work/bgpy_pkg/bgpy/as_graphs/base/as_graph/base_as.py:99(stub)
+ 45606374    0.342    0.000    0.342    0.000 /home/anon/Downloads/pypy3.10-v7.3.13-linux64/lib/pypy3.10/enum.py:807(value)
+        1    0.313    0.313    0.313    0.313 /home/anon/work/bgpy_pkg/bgpy/simulation_engines/cpp_simulation_engine/cpp_simulation_engine.py:27(__init__)
+  1182604    0.034    0.000    0.307    0.000 /home/anon/work/bgpy_pkg/bgpy/as_graphs/base/links/link.py:16(__hash__)
+        4    0.098    0.024    0.305    0.076 /home/anon/work/bgpy_pkg/bgpy/as_graphs/base/as_graph/as_graph.py:204(etc_no_ixp_filter)
+  1976390    0.232    0.000    0.297    0.000 /home/anon/Downloads/pypy3.10-v7.3.13-linux64/lib/pypy3.10/random.py:239(_randbelow_with_getrandbits)
+        4    0.096    0.024    0.293    0.073 /home/anon/work/bgpy_pkg/bgpy/as_graphs/base/as_graph/as_graph.py:190(stub_no_ixp_filter)
+        2    0.038    0.019    0.269    0.134 /home/anon/work/bgpy_pkg/bgpy/as_graphs/base/as_graph_info.py:20(__post_init__)
+        4    0.074    0.018    0.222    0.055 /home/anon/work/bgpy_pkg/bgpy/as_graphs/base/as_graph/as_graph.py:196(stubs_or_multihomed_no_ixp_filter)
+  1064168    0.218    0.000    0.218    0.000 /home/anon/work/bgpy_pkg/bgpy/as_graphs/base/as_graph/base_as.py:123(neighbors)
+    47072    0.055    0.000    0.206    0.000 /home/anon/work/bgpy_pkg/bgpy/as_graphs/base/as_graph/as_graph.py:205(<genexpr>)
+   110912    0.045    0.000    0.195    0.000 /home/anon/work/bgpy_pkg/bgpy/as_graphs/base/as_graph/as_graph.py:191(<genexpr>)
+       60    0.120    0.002    0.185    0.003 /home/anon/work/bgpy_pkg/bgpy/simulation_frameworks/py_simulation_framework/scenarios/scenario.py:191(_get_victim_asns)
+   924096    0.159    0.000    0.172    0.000 /home/anon/work/bgpy_pkg/bgpy/as_graphs/base/links/customer_provider_link.py:32(asns)
+        2    0.017    0.008    0.163    0.082 /home/anon/work/bgpy_pkg/bgpy/as_graphs/base/as_graph/propagation_rank_funcs.py:6(_assign_propagation_ranks)
+   308032    0.155    0.000    0.158    0.000 /home/anon/work/bgpy_pkg/bgpy/as_graphs/base/links/customer_provider_link.py:7(__init__)
+  2517276    0.154    0.000    0.154    0.000 {built-in function _weakref.proxy}
+   256796    0.038    0.000    0.146    0.000 /home/anon/work/bgpy_pkg/bgpy/as_graphs/base/as_graph/as_graph.py:197(<genexpr>)
+592044/152024    0.145    0.000    0.145    0.000 /home/anon/work/bgpy_pkg/bgpy/as_graphs/base/as_graph/propagation_rank_funcs.py:13(_assign_ranks_helper)
+   786898    0.103    0.000    0.126    0.000 /home/anon/work/bgpy_pkg/bgpy/as_graphs/base/as_graph/base_as.py:105(multihomed)
+  1182856    0.126    0.000    0.126    0.000 {method 'split' of 'str' objects}
+   874572    0.116    0.000    0.124    0.000 /home/anon/work/bgpy_pkg/bgpy/as_graphs/base/links/peer_link.py:7(__init__)
+      240    0.123    0.001    0.123    0.001 {method 'difference' of 'frozenset' objects}
+1338357/1335566    0.111    0.000    0.114    0.000 {built-in function hash}
+        4    0.042    0.010    0.114    0.028 /home/anon/work/bgpy_pkg/bgpy/as_graphs/base/as_graph/as_graph.py:193(multihomed_no_ixp_filter)
+  1182638    0.113    0.000    0.113    0.000 {method 'extend' of 'list' objects}
+       60    0.112    0.002    0.112    0.002 /home/anon/work/bgpy_pkg/bgpy/simulation_engines/cpp_simulation_engine/cpp_simulation_engine.py:80(<dictcomp>)
+   152068    0.042    0.000    0.102    0.000 /home/anon/work/bgpy_pkg/bgpy/as_graphs/base/as_graph/graph_building_funcs.py:21(_gen_as)
+       60    0.087    0.001    0.090    0.002 /home/anon/work/bgpy_pkg/bgpy/simulation_frameworks/py_simulation_framework/scenarios/scenario.py:102(_get_attacker_asns)
+        2    0.005    0.002    0.087    0.044 /home/anon/work/bgpy_pkg/bgpy/as_graphs/base/as_graph/propagation_rank_funcs.py:24(_get_propagation_ranks)
+  7449274    0.083    0.000    0.083    0.000 /home/anon/work/bgpy_pkg/bgpy/as_graphs/base/as_graph/as_graph.py:253(__getitem__)
+   145888    0.023    0.000    0.070    0.000 /home/anon/work/bgpy_pkg/bgpy/as_graphs/base/as_graph/as_graph.py:194(<genexpr>)
+        2    0.034    0.017    0.069    0.034 /home/anon/work/bgpy_pkg/bgpy/as_graphs/base/as_graph/propagation_rank_funcs.py:36(<listcomp>)
+       60    0.000    0.000    0.063    0.001 /home/anon/work/bgpy_pkg/bgpy/simulation_frameworks/py_simulation_framework/scenarios/scenario.py:223(_get_possible_victim_asns)
+  2716266    0.050    0.000    0.050    0.000 {method 'getrandbits' of 'Random' objects}
+   152068    0.007    0.000    0.049    0.000 /home/anon/work/bgpy_pkg/bgpy/as_graphs/base/as_graph/base_as.py:14(__init__)
+  3120016    0.039    0.000    0.039    0.000 {built-in function len}
+  1232128    0.039    0.000    0.039    0.000 /home/anon/work/bgpy_pkg/bgpy/as_graphs/base/links/customer_provider_link.py:26(provider_asn)
+  1358852    0.038    0.000    0.038    0.000 {method 'append' of 'list' objects}
+  3230096    0.035    0.000    0.035    0.000 /home/anon/work/bgpy_pkg/bgpy/as_graphs/base/as_graph/base_as.py:59(__hash__)
+   152946    0.033    0.000    0.035    0.000 /home/anon/work/bgpy_pkg/bgpy/as_graphs/base/as_graph/base_as.py:47(__lt__)
+     5320    0.013    0.000    0.034    0.000 /home/anon/Downloads/pypy3.10-v7.3.13-linux64/lib/pypy3.10/codecs.py:319(decode)
+        4    0.026    0.007    0.032    0.008 /home/anon/work/bgpy_pkg/bgpy/as_graphs/base/as_graph/as_graph.py:211(all_no_ixp_filter)
+  3548888    0.030    0.000    0.030    0.000 {method 'startswith' of 'str' objects}
+      180    0.005    0.000    0.026    0.000 /home/anon/work/bgpy_pkg/bgpy/simulation_frameworks/py_simulation_framework/metric_tracker/metric.py:54(save_percents)
+       60    0.024    0.000    0.024    0.000 /home/anon/work/bgpy_pkg/bgpy/simulation_frameworks/cpp_simulation_framework/cpp_as_graph_analyzer.py:15(__init__)
+     5320    0.021    0.000    0.021    0.000 {built-in function _codecs.utf_8_decode}
+       60    0.003    0.000    0.017    0.000 /home/anon/work/bgpy_pkg/bgpy/simulation_frameworks/py_simulation_framework/scenarios/scenario.py:415(_get_ordered_prefix_subprefix_dict)
+  1976390    0.015    0.000    0.015    0.000 {method 'bit_length' of 'int' objects}
+  1232128    0.014    0.000    0.014    0.000 /home/anon/work/bgpy_pkg/bgpy/as_graphs/base/links/customer_provider_link.py:20(customer_asn)
+   456072    0.013    0.000    0.013    0.000 {built-in function delattr}
+   458232    0.013    0.000    0.013    0.000 {built-in function getattr}
+       60    0.010    0.000    0.012    0.000 /home/anon/work/bgpy_pkg/bgpy/simulation_frameworks/py_simulation_framework/scenarios/hijack_scenarios/subprefix_hijack.py:24(_get_announcements)
+   456072    0.011    0.000    0.011    0.000 {built-in function setattr}
+      540    0.007    0.000    0.011    0.000 /home/anon/Downloads/pypy3.10-v7.3.13-linux64/lib/pypy3.10/dataclasses.py:1405(replace)
+  1182604    0.011    0.000    0.011    0.000 /home/anon/work/bgpy_pkg/bgpy/as_graphs/base/links/link.py:9(__init__)
+       71    0.001    0.000    0.011    0.000 /home/anon/work/pypy_env/lib/pypy3.10/site-packages/frozendict/core.py:30(__new__)
+   152068    0.006    0.000    0.010    0.000 /home/anon/work/bgpy_pkg/bgpy/simulation_engines/py_simulation_engine/policies/bgp/bgp_simple_policy/bgp_simple_policy.py:45(__init__)
+       71    0.009    0.000    0.009    0.000 {method '__init__' of 'frozendict' objects}
+        4    0.000    0.000    0.009    0.002 /home/anon/work/bgpy_pkg/bgpy/as_graphs/base/as_graph/as_graph.py:187(ixp_filter)
+      116    0.005    0.000    0.009    0.000 /home/anon/work/bgpy_pkg/bgpy/as_graphs/base/as_graph/as_graph.py:188(<genexpr>)
+        2    0.004    0.002    0.008    0.004 {built-in function max}
+      134    0.000    0.000    0.008    0.000 <frozen importlib._bootstrap>:1117(__import__)
+      268    0.000    0.000    0.008    0.000 <frozen importlib._bootstrap>:1038(_gcd_import)
+      234    0.000    0.000    0.007    0.000 <string>:2(__hash__)
+        4    0.000    0.000    0.007    0.002 /home/anon/work/bgpy_pkg/bgpy/as_graphs/base/as_graph/as_graph.py:201(input_clique_no_ixp_filter)
+      268    0.001    0.000    0.007    0.000 <frozen importlib._bootstrap>:1022(_find_and_load)
+       80    0.004    0.000    0.007    0.000 /home/anon/work/bgpy_pkg/bgpy/as_graphs/base/as_graph/as_graph.py:202(<genexpr>)
+   432458    0.006    0.000    0.006    0.000 /home/anon/work/bgpy_pkg/bgpy/as_graphs/base/as_graph/as_graph.py:175(<genexpr>)
+       60    0.000    0.000    0.006    0.000 /home/anon/work/bgpy_pkg/bgpy/simulation_frameworks/py_simulation_framework/scenarios/scenario.py:426(<listcomp>)
+   155220    0.003    0.000    0.005    0.000 {built-in function isinstance}
+      120    0.000    0.000    0.005    0.000 /home/anon/Downloads/pypy3.10-v7.3.13-linux64/lib/pypy3.10/ipaddress.py:57(ip_network)
+      120    0.001    0.000    0.005    0.000 /home/anon/Downloads/pypy3.10-v7.3.13-linux64/lib/pypy3.10/ipaddress.py:1465(__init__)
+   152026    0.003    0.000    0.005    0.000 /home/anon/work/bgpy_pkg/bgpy/as_graphs/base/as_graph/propagation_rank_funcs.py:27(<genexpr>)
+   153106    0.004    0.000    0.004    0.000 {method 'get' of 'dict' objects}
+       60    0.001    0.000    0.004    0.000 /home/anon/work/bgpy_pkg/bgpy/simulation_frameworks/py_simulation_framework/metric_tracker/metric_tracker.py:207(<listcomp>)
+      360    0.001    0.000    0.003    0.000 /home/anon/Downloads/pypy3.10-v7.3.13-linux64/lib/pypy3.10/ipaddress.py:1272(__init__)
+      842    0.002    0.000    0.003    0.000 /home/anon/Downloads/pypy3.10-v7.3.13-linux64/lib/pypy3.10/encodings/utf_8.py:19(encode)
+      268    0.000    0.000    0.003    0.000 <frozen importlib._bootstrap>:169(__enter__)
+      120    0.000    0.000    0.003    0.000 /home/anon/work/bgpy_pkg/bgpy/simulation_frameworks/py_simulation_framework/scenarios/scenario.py:432(<lambda>)
+      180    0.002    0.000    0.003    0.000 /home/anon/work/bgpy_pkg/bgpy/simulation_frameworks/py_simulation_framework/metric_tracker/metric.py:16(__init__)
+      120    0.000    0.000    0.003    0.000 /home/anon/Downloads/pypy3.10-v7.3.13-linux64/lib/pypy3.10/ipaddress.py:779(num_addresses)
+  242/122    0.001    0.000    0.003    0.000 /home/anon/Downloads/pypy3.10-v7.3.13-linux64/lib/pypy3.10/functools.py:971(__get__)
+     2322    0.002    0.000    0.003    0.000 /home/anon/Downloads/pypy3.10-v7.3.13-linux64/lib/pypy3.10/enum.py:789(__hash__)
+        2    0.000    0.000    0.003    0.001 /home/anon/work/bgpy_pkg/bgpy/simulation_frameworks/py_simulation_framework/py_simulation.py:120(_seed_random)
+        2    0.000    0.000    0.003    0.001 /home/anon/Downloads/pypy3.10-v7.3.13-linux64/lib/pypy3.10/random.py:128(seed)
+      300    0.003    0.000    0.003    0.000 /home/anon/Downloads/pypy3.10-v7.3.13-linux64/lib/pypy3.10/abc.py:117(__instancecheck__)
+      134    0.001    0.000    0.002    0.000 /home/anon/Downloads/pypy3.10-v7.3.13-linux64/lib/pypy3.10/_pypy_generic_alias.py:16(__new__)
+        2    0.000    0.000    0.002    0.001 /home/anon/Downloads/pypy3.10-v7.3.13-linux64/lib/pypy3.10/_sha512.py:258(digest)
+        2    0.000    0.000    0.002    0.001 /home/anon/Downloads/pypy3.10-v7.3.13-linux64/lib/pypy3.10/_sha512.py:194(sha_final)
+      240    0.002    0.000    0.002    0.000 /home/anon/work/bgpy_pkg/bgpy/simulation_frameworks/py_simulation_framework/scenarios/scenario.py:366(_preset_asns)
+      120    0.001    0.000    0.002    0.000 /home/anon/Downloads/pypy3.10-v7.3.13-linux64/lib/pypy3.10/ipaddress.py:1173(_ip_int_from_string)
+        2    0.000    0.000    0.002    0.001 /home/anon/Downloads/pypy3.10-v7.3.13-linux64/lib/pypy3.10/_sha512.py:29(sha_transform)
+   152068    0.002    0.000    0.002    0.000 /home/anon/work/bgpy_pkg/bgpy/simulation_engines/py_simulation_engine/ann_containers/local_rib.py:14(__init__)
+      536    0.001    0.000    0.002    0.000 <frozen importlib._bootstrap>:179(_get_module_lock)
+   152068    0.002    0.000    0.002    0.000 /home/anon/work/bgpy_pkg/bgpy/simulation_engines/py_simulation_engine/ann_containers/recv_queue.py:15(__init__)
+      180    0.001    0.000    0.002    0.000 /home/anon/Downloads/pypy3.10-v7.3.13-linux64/lib/pypy3.10/ipaddress.py:682(__str__)
+      240    0.000    0.000    0.002    0.000 /home/anon/Downloads/pypy3.10-v7.3.13-linux64/lib/pypy3.10/ipaddress.py:1047(subnet_of)
+      122    0.001    0.000    0.002    0.000 {method 'from_bytes' of 'type' objects}
+      268    0.000    0.000    0.002    0.000 <frozen importlib._bootstrap>:216(_lock_unlock_module)
+      120    0.000    0.000    0.002    0.000 /home/anon/Downloads/pypy3.10-v7.3.13-linux64/lib/pypy3.10/ipaddress.py:758(broadcast_address)
+      134    0.001    0.000    0.002    0.000 /home/anon/Downloads/pypy3.10-v7.3.13-linux64/lib/pypy3.10/_pypy_generic_alias.py:122(_make_parameters)
+      240    0.000    0.000    0.002    0.000 /home/anon/Downloads/pypy3.10-v7.3.13-linux64/lib/pypy3.10/ipaddress.py:1035(_is_subnet_of)
+      160    0.000    0.000    0.001    0.000 /home/anon/Downloads/pypy3.10-v7.3.13-linux64/lib/pypy3.10/_sha512.py:41(RND)
+      536    0.001    0.000    0.001    0.000 <frozen importlib._bootstrap>:100(acquire)
+      480    0.001    0.000    0.001    0.000 /home/anon/Downloads/pypy3.10-v7.3.13-linux64/lib/pypy3.10/ipaddress.py:1199(_parse_octet)
+      180    0.000    0.000    0.001    0.000 /home/anon/Downloads/pypy3.10-v7.3.13-linux64/lib/pypy3.10/ipaddress.py:609(__str__)
+       60    0.001    0.000    0.001    0.000 /home/anon/work/bgpy_pkg/bgpy/simulation_frameworks/py_simulation_framework/py_simulation.py:246(_print_progress)
+      536    0.001    0.000    0.001    0.000 <frozen importlib._bootstrap>:125(release)
+     1472    0.000    0.000    0.001    0.000 /home/anon/Downloads/pypy3.10-v7.3.13-linux64/lib/pypy3.10/_sha512.py:22(<lambda>)
+       60    0.000    0.000    0.001    0.000 /home/anon/work/bgpy_pkg/bgpy/simulation_frameworks/py_simulation_framework/scenarios/scenario.py:443(<dictcomp>)
+        1    0.000    0.000    0.001    0.001 /home/anon/work/bgpy_pkg/bgpy/simulation_frameworks/py_simulation_framework/metric_tracker/metric_tracker.py:42(__add__)
+        2    0.000    0.000    0.001    0.001 /home/anon/work/bgpy_pkg/bgpy/as_graphs/base/as_graph/as_graph.py:181(_default_as_group_filters)
+      180    0.000    0.000    0.001    0.000 /home/anon/Downloads/pypy3.10-v7.3.13-linux64/lib/pypy3.10/ipaddress.py:1235(_string_from_ip_int)
+      662    0.001    0.000    0.001    0.000 {built-in function time.perf_counter}
+      120    0.000    0.000    0.001    0.000 /home/anon/Downloads/pypy3.10-v7.3.13-linux64/lib/pypy3.10/ipaddress.py:533(_split_addr_prefix)
+      268    0.000    0.000    0.001    0.000 <frozen importlib._bootstrap>:173(__exit__)
+      540    0.001    0.000    0.001    0.000 /home/anon/Downloads/pypy3.10-v7.3.13-linux64/lib/pypy3.10/dataclasses.py:1205(_is_dataclass_instance)
+      240    0.000    0.000    0.001    0.000 /home/anon/Downloads/pypy3.10-v7.3.13-linux64/lib/pypy3.10/functools.py:98(_le_from_lt)
+     2196    0.001    0.000    0.001    0.000 {method '__setattr__' of 'MetricKey' objects}
+      180    0.001    0.000    0.001    0.000 /home/anon/work/bgpy_pkg/bgpy/simulation_engines/cpp_simulation_engine/cpp_simulation_engine.py:66(<genexpr>)
+      180    0.000    0.000    0.001    0.000 <string>:2(__init__)
+     1472    0.001    0.000    0.001    0.000 /home/anon/Downloads/pypy3.10-v7.3.13-linux64/lib/pypy3.10/_sha512.py:19(<lambda>)
+        2    0.000    0.000    0.001    0.000 /home/anon/work/bgpy_pkg/bgpy/as_graphs/caida_as_graph/caida_as_graph_constructor.py:21(__init__)
+      120    0.000    0.000    0.001    0.000 /home/anon/Downloads/pypy3.10-v7.3.13-linux64/lib/pypy3.10/ipaddress.py:763(hostmask)
+        2    0.000    0.000    0.001    0.000 /home/anon/work/bgpy_pkg/bgpy/as_graphs/base/as_graph_constructor.py:14(__init__)
+        2    0.000    0.000    0.001    0.000 /home/anon/work/bgpy_pkg/bgpy/as_graphs/base/as_graph_collector.py:10(__init__)
+       16    0.001    0.000    0.001    0.000 {method '__setattr__' of 'ScenarioConfig' objects}
+       60    0.000    0.000    0.001    0.000 /home/anon/work/bgpy_pkg/bgpy/simulation_frameworks/py_simulation_framework/scenarios/scenario.py:434(<dictcomp>)
+      285    0.000    0.000    0.001    0.000 <frozen importlib._bootstrap>:198(cb)
+      160    0.000    0.000    0.001    0.000 /home/anon/Downloads/pypy3.10-v7.3.13-linux64/lib/pypy3.10/_sha512.py:25(<lambda>)
+      420    0.000    0.000    0.000    0.000 /home/anon/Downloads/pypy3.10-v7.3.13-linux64/lib/pypy3.10/ipaddress.py:584(__lt__)
+      160    0.000    0.000    0.000    0.000 /home/anon/Downloads/pypy3.10-v7.3.13-linux64/lib/pypy3.10/_sha512.py:24(<lambda>)
+      187    0.000    0.000    0.000    0.000 {method 'join' of 'str' objects}
+      842    0.000    0.000    0.000    0.000 {built-in function _codecs.utf_8_encode}
+      120    0.000    0.000    0.000    0.000 /home/anon/Downloads/pypy3.10-v7.3.13-linux64/lib/pypy3.10/ipaddress.py:156(_split_optional_netmask)
+      180    0.000    0.000    0.000    0.000 /home/anon/Downloads/pypy3.10-v7.3.13-linux64/lib/pypy3.10/ipaddress.py:728(__eq__)
+       62    0.000    0.000    0.000    0.000 <frozen importlib._bootstrap>:71(__init__)
+      268    0.000    0.000    0.000    0.000 <frozen importlib._bootstrap>:968(_sanity_check)
+      720    0.000    0.000    0.000    0.000 {method '__setattr__' of 'DataKey' objects}
+      180    0.000    0.000    0.000    0.000 /home/anon/Downloads/pypy3.10-v7.3.13-linux64/lib/pypy3.10/functools.py:105(_ge_from_lt)
+      128    0.000    0.000    0.000    0.000 /home/anon/Downloads/pypy3.10-v7.3.13-linux64/lib/pypy3.10/_sha512.py:27(<lambda>)
+      180    0.000    0.000    0.000    0.000 /home/anon/work/bgpy_pkg/bgpy/simulation_frameworks/py_simulation_framework/metric_tracker/metric.py:24(<dictcomp>)
+       60    0.000    0.000    0.000    0.000 /home/anon/Downloads/pypy3.10-v7.3.13-linux64/lib/pypy3.10/_pypy_generic_alias.py:48(__getattribute__)
+      128    0.000    0.000    0.000    0.000 /home/anon/Downloads/pypy3.10-v7.3.13-linux64/lib/pypy3.10/_sha512.py:26(<lambda>)
+      120    0.000    0.000    0.000    0.000 /home/anon/Downloads/pypy3.10-v7.3.13-linux64/lib/pypy3.10/ipaddress.py:736(__hash__)
+        2    0.000    0.000    0.000    0.000 /home/anon/work/bgpy_pkg/bgpy/as_graphs/caida_as_graph/caida_as_graph_collector.py:37(default_dl_time)
+      540    0.000    0.000    0.000    0.000 {built-in function hasattr}
+      268    0.000    0.000    0.000    0.000 <frozen importlib._bootstrap>:165(__init__)
+      194    0.000    0.000    0.000    0.000 /home/anon/Downloads/pypy3.10-v7.3.13-linux64/lib/pypy3.10/_pypy_generic_alias.py:118(_is_typevar)
+      162    0.000    0.000    0.000    0.000 <string>:2(__eq__)
+      821    0.000    0.000    0.000    0.000 {built-in function _imp.acquire_lock}
+     1320    0.000    0.000    0.000    0.000 /home/anon/Downloads/pypy3.10-v7.3.13-linux64/lib/pypy3.10/ipaddress.py:574(__int__)
+      330    0.000    0.000    0.000    0.000 {built-in function math.ceil}
+      300    0.000    0.000    0.000    0.000 /home/anon/work/bgpy_pkg/bgpy/simulation_frameworks/py_simulation_framework/scenarios/scenario.py:354(_default_adopters)
+   120/60    0.000    0.000    0.000    0.000 {method '__getattribute__' of 'GenericAlias' objects}
+      150    0.000    0.000    0.000    0.000 {built-in function math.log}
+       71    0.000    0.000    0.000    0.000 {method '__setattr__' of 'frozendict' objects}
+      360    0.000    0.000    0.000    0.000 /home/anon/Downloads/pypy3.10-v7.3.13-linux64/lib/pypy3.10/ipaddress.py:577(__eq__)
+        3    0.000    0.000    0.000    0.000 /home/anon/work/bgpy_pkg/bgpy/simulation_frameworks/py_simulation_framework/metric_tracker/metric_tracker.py:23(__init__)
+      180    0.000    0.000    0.000    0.000 /home/anon/work/bgpy_pkg/bgpy/simulation_engines/cpp_simulation_engine/cpp_simulation_engine.py:64(<genexpr>)
+      120    0.000    0.000    0.000    0.000 /home/anon/Downloads/pypy3.10-v7.3.13-linux64/lib/pypy3.10/ipaddress.py:1147(_make_netmask)
+        3    0.000    0.000    0.000    0.000 /home/anon/Downloads/pypy3.10-v7.3.13-linux64/lib/pypy3.10/pathlib.py:1170(mkdir)
+        6    0.000    0.000    0.000    0.000 /home/anon/Downloads/pypy3.10-v7.3.13-linux64/lib/pypy3.10/pathlib.py:1092(stat)
+     1072    0.000    0.000    0.000    0.000 {built-in function _thread.get_ident}
+      180    0.000    0.000    0.000    0.000 {method 'to_bytes' of 'int' objects}
+      240    0.000    0.000    0.000    0.000 /home/anon/Downloads/pypy3.10-v7.3.13-linux64/lib/pypy3.10/ipaddress.py:415(_check_int_address)
+        6    0.000    0.000    0.000    0.000 {built-in function posix.stat}
+      234    0.000    0.000    0.000    0.000 /home/anon/work/pypy_env/lib/pypy3.10/site-packages/frozendict/core.py:69(__hash__)
+        9    0.000    0.000    0.000    0.000 /home/anon/Downloads/pypy3.10-v7.3.13-linux64/lib/pypy3.10/pathlib.py:569(_parse_args)
+        2    0.000    0.000    0.000    0.000 /home/anon/Downloads/pypy3.10-v7.3.13-linux64/lib/pypy3.10/datetime.py:1722(utcnow)
+      821    0.000    0.000    0.000    0.000 {built-in function _imp.release_lock}
+        2    0.000    0.000    0.000    0.000 /home/anon/Downloads/pypy3.10-v7.3.13-linux64/lib/pypy3.10/datetime.py:1711(utcfromtimestamp)
+      240    0.000    0.000    0.000    0.000 /home/anon/work/bgpy_pkg/bgpy/simulation_frameworks/py_simulation_framework/scenarios/scenario.py:360(_default_non_adopters)
+        2    0.000    0.000    0.000    0.000 /home/anon/Downloads/pypy3.10-v7.3.13-linux64/lib/pypy3.10/datetime.py:1657(_fromtimestamp)
+       60    0.000    0.000    0.000    0.000 /home/anon/work/bgpy_pkg/bgpy/simulation_frameworks/py_simulation_framework/scenarios/scenario.py:84(<dictcomp>)
+        2    0.000    0.000    0.000    0.000 /home/anon/Downloads/pypy3.10-v7.3.13-linux64/lib/pypy3.10/datetime.py:938(strftime)
+        3    0.000    0.000    0.000    0.000 /home/anon/Downloads/pypy3.10-v7.3.13-linux64/lib/pypy3.10/pathlib.py:1285(exists)
+     1072    0.000    0.000    0.000    0.000 {method '__exit__' of '_thread.lock' objects}
+        2    0.000    0.000    0.000    0.000 /home/anon/Downloads/pypy3.10-v7.3.13-linux64/lib/pypy3.10/pathlib.py:1432(expanduser)
+       12    0.000    0.000    0.000    0.000 /home/anon/work/bgpy_pkg/bgpy/simulation_frameworks/py_simulation_framework/utils.py:9(get_all_metric_keys)
+        5    0.000    0.000    0.000    0.000 /home/anon/Downloads/pypy3.10-v7.3.13-linux64/lib/pypy3.10/pathlib.py:589(_from_parts)
+       60    0.000    0.000    0.000    0.000 /home/anon/work/bgpy_pkg/bgpy/simulation_frameworks/py_simulation_framework/scenarios/scenario.py:171(_get_possible_attacker_asns)
+      180    0.000    0.000    0.000    0.000 /home/anon/work/bgpy_pkg/bgpy/simulation_frameworks/py_simulation_framework/metric_tracker/metric.py:27(<dictcomp>)
+        6    0.000    0.000    0.000    0.000 /home/anon/Downloads/pypy3.10-v7.3.13-linux64/lib/pypy3.10/datetime.py:1588(__new__)
+      480    0.000    0.000    0.000    0.000 {method 'isdigit' of 'str' objects}
+        2    0.000    0.000    0.000    0.000 /home/anon/Downloads/pypy3.10-v7.3.13-linux64/lib/pypy3.10/pathlib.py:1111(open)
+      540    0.000    0.000    0.000    0.000 {method 'values' of 'dict' objects}
+      480    0.000    0.000    0.000    0.000 {method 'isascii' of 'str' objects}
+        9    0.000    0.000    0.000    0.000 /home/anon/Downloads/pypy3.10-v7.3.13-linux64/lib/pypy3.10/pathlib.py:56(parse_parts)
+        3    0.000    0.000    0.000    0.000 {built-in function posix.mkdir}
+       60    0.000    0.000    0.000    0.000 /home/anon/Downloads/pypy3.10-v7.3.13-linux64/lib/pypy3.10/_pypy_generic_alias.py:33(__parameters__)
+        4    0.000    0.000    0.000    0.000 /home/anon/Downloads/pypy3.10-v7.3.13-linux64/lib/pypy3.10/pathlib.py:853(__truediv__)
+       11    0.000    0.000    0.000    0.000 /home/anon/Downloads/pypy3.10-v7.3.13-linux64/lib/pypy3.10/pathlib.py:631(__fspath__)
+        4    0.000    0.000    0.000    0.000 /home/anon/Downloads/pypy3.10-v7.3.13-linux64/lib/pypy3.10/pathlib.py:615(_make_child)
+      124    0.000    0.000    0.000    0.000 {built-in function _thread.allocate_lock}
+        2    0.000    0.000    0.000    0.000 {built-in function _io.open}
+      134    0.000    0.000    0.000    0.000 {method 'partition' of 'str' objects}
+        2    0.000    0.000    0.000    0.000 /home/anon/Downloads/pypy3.10-v7.3.13-linux64/lib/pypy3.10/datetime.py:2110(__sub__)
+        1    0.000    0.000    0.000    0.000 /home/anon/work/bgpy_pkg/bgpy/simulation_frameworks/py_simulation_framework/py_simulation.py:149(_get_chunks)
+        2    0.000    0.000    0.000    0.000 /home/anon/Downloads/pypy3.10-v7.3.13-linux64/lib/pypy3.10/datetime.py:1766(timetuple)
+      256    0.000    0.000    0.000    0.000 /home/anon/Downloads/pypy3.10-v7.3.13-linux64/lib/pypy3.10/_sha512.py:23(<lambda>)
+        3    0.000    0.000    0.000    0.000 /home/anon/Downloads/pypy3.10-v7.3.13-linux64/lib/pypy3.10/pathlib.py:957(__new__)
+        3    0.000    0.000    0.000    0.000 /home/anon/Downloads/pypy3.10-v7.3.13-linux64/lib/pypy3.10/pathlib.py:1300(is_dir)
+       12    0.000    0.000    0.000    0.000 /home/anon/Downloads/pypy3.10-v7.3.13-linux64/lib/pypy3.10/pathlib.py:621(__str__)
+      160    0.000    0.000    0.000    0.000 /home/anon/Downloads/pypy3.10-v7.3.13-linux64/lib/pypy3.10/_sha512.py:21(<lambda>)
+        6    0.000    0.000    0.000    0.000 /home/anon/Downloads/pypy3.10-v7.3.13-linux64/lib/pypy3.10/os.py:675(__getitem__)
+        2    0.000    0.000    0.000    0.000 /home/anon/Downloads/pypy3.10-v7.3.13-linux64/lib/pypy3.10/posixpath.py:229(expanduser)
+        1    0.000    0.000    0.000    0.000 /home/anon/Downloads/pypy3.10-v7.3.13-linux64/lib/pypy3.10/pathlib.py:995(home)
+        2    0.000    0.000    0.000    0.000 /home/anon/work/bgpy_pkg/bgpy/as_graphs/base/as_graph_collector.py:27(run)
+      242    0.000    0.000    0.000    0.000 {method '__exit__' of '_thread.RLock' objects}
+        2    0.000    0.000    0.000    0.000 /home/anon/work/bgpy_pkg/bgpy/as_graphs/caida_as_graph/caida_as_graph_collector.py:17(_run)
+        2    0.000    0.000    0.000    0.000 /home/anon/Downloads/pypy3.10-v7.3.13-linux64/lib/pypy3.10/datetime.py:162(_build_struct_time)
+      180    0.000    0.000    0.000    0.000 /home/anon/Downloads/pypy3.10-v7.3.13-linux64/lib/pypy3.10/ipaddress.py:792(prefixlen)
+      160    0.000    0.000    0.000    0.000 /home/anon/Downloads/pypy3.10-v7.3.13-linux64/lib/pypy3.10/_sha512.py:20(<lambda>)
+      120    0.000    0.000    0.000    0.000 {method 'copy' of 'frozenset' objects}
+        2    0.000    0.000    0.000    0.000 /home/anon/Downloads/pypy3.10-v7.3.13-linux64/lib/pypy3.10/datetime.py:2091(__add__)
+        2    0.000    0.000    0.000    0.000 /home/anon/Downloads/pypy3.10-v7.3.13-linux64/lib/pypy3.10/datetime.py:207(_wrap_strftime)
+        4    0.000    0.000    0.000    0.000 /home/anon/Downloads/pypy3.10-v7.3.13-linux64/lib/pypy3.10/datetime.py:468(__new__)
+      108    0.000    0.000    0.000    0.000 /home/anon/work/bgpy_pkg/bgpy/as_graphs/base/as_graph/propagation_rank_funcs.py:30(<genexpr>)
+        2    0.000    0.000    0.000    0.000 /home/anon/Downloads/pypy3.10-v7.3.13-linux64/lib/pypy3.10/_sha512.py:249(__init__)
+        2    0.000    0.000    0.000    0.000 /home/anon/work/bgpy_pkg/bgpy/as_graphs/caida_as_graph/caida_as_graph_constructor.py:83(_extract_input_clique_asns)
+        2    0.000    0.000    0.000    0.000 /home/anon/work/bgpy_pkg/bgpy/as_graphs/caida_as_graph/caida_as_graph_constructor.py:93(_extract_ixp_asns)
+        2    0.000    0.000    0.000    0.000 {built-in function time.gmtime}
+       60    0.000    0.000    0.000    0.000 /home/anon/work/bgpy_pkg/bgpy/simulation_frameworks/py_simulation_framework/scenarios/scenario.py:400(pre_aggregation_hook)
+        2    0.000    0.000    0.000    0.000 /home/anon/Downloads/pypy3.10-v7.3.13-linux64/lib/pypy3.10/datetime.py:1844(replace)
+       60    0.000    0.000    0.000    0.000 {built-in function iter}
+        6    0.000    0.000    0.000    0.000 /home/anon/Downloads/pypy3.10-v7.3.13-linux64/lib/pypy3.10/os.py:755(encode)
+        2    0.000    0.000    0.000    0.000 /home/anon/Downloads/pypy3.10-v7.3.13-linux64/lib/pypy3.10/_collections_abc.py:821(get)
+        3    0.000    0.000    0.000    0.000 /home/anon/work/bgpy_pkg/bgpy/simulation_frameworks/py_simulation_framework/utils.py:14(<listcomp>)
+        2    0.000    0.000    0.000    0.000 {method '__exit__' of '_io._IOBase' objects}
+       60    0.000    0.000    0.000    0.000 {built-in function next}
+        4    0.000    0.000    0.000    0.000 /home/anon/work/bgpy_pkg/bgpy/as_graphs/base/as_graph/as_graph.py:256(__len__)
+        2    0.000    0.000    0.000    0.000 /home/anon/Downloads/pypy3.10-v7.3.13-linux64/lib/pypy3.10/_collections_abc.py:828(__contains__)
+       60    0.000    0.000    0.000    0.000 /home/anon/work/bgpy_pkg/bgpy/simulation_frameworks/py_simulation_framework/scenarios/scenario.py:406(post_propagation_hook)
+        8    0.000    0.000    0.000    0.000 {method 'encode' of 'str' objects}
+        5    0.000    0.000    0.000    0.000 /home/anon/Downloads/pypy3.10-v7.3.13-linux64/lib/pypy3.10/pathlib.py:608(_format_parsed_parts)
+        2    0.000    0.000    0.000    0.000 {method 'seed' of 'Random' objects}
+        2    0.000    0.000    0.000    0.000 /home/anon/Downloads/pypy3.10-v7.3.13-linux64/lib/pypy3.10/_sha512.py:152(sha_update)
+        1    0.000    0.000    0.000    0.000 /home/anon/work/bgpy_pkg/bgpy/simulation_frameworks/py_simulation_framework/py_simulation.py:163(<listcomp>)
+        2    0.000    0.000    0.000    0.000 /home/anon/Downloads/pypy3.10-v7.3.13-linux64/lib/pypy3.10/datetime.py:641(__neg__)
+       71    0.000    0.000    0.000    0.000 /home/anon/work/pypy_env/lib/pypy3.10/site-packages/frozendict/core.py:66(__init__)
+        2    0.000    0.000    0.000    0.000 {built-in function time.strftime}
+       10    0.000    0.000    0.000    0.000 {method '__setattr__' of 'ASGraphInfo' objects}
+       60    0.000    0.000    0.000    0.000 /home/anon/work/bgpy_pkg/bgpy/simulation_frameworks/py_simulation_framework/metric_tracker/metric_tracker.py:255(_track_trial_metrics_hook)
+        2    0.000    0.000    0.000    0.000 /home/anon/Downloads/pypy3.10-v7.3.13-linux64/lib/pypy3.10/_sha512.py:134(sha_init)
+        4    0.000    0.000    0.000    0.000 /home/anon/Downloads/pypy3.10-v7.3.13-linux64/lib/pypy3.10/datetime.py:392(_check_date_fields)
+        4    0.000    0.000    0.000    0.000 /home/anon/Downloads/pypy3.10-v7.3.13-linux64/lib/pypy3.10/datetime.py:405(_check_time_fields)
+       11    0.000    0.000    0.000    0.000 /home/anon/Downloads/pypy3.10-v7.3.13-linux64/lib/pypy3.10/pathlib.py:239(splitroot)
+        4    0.000    0.000    0.000    0.000 /home/anon/Downloads/pypy3.10-v7.3.13-linux64/lib/pypy3.10/pathlib.py:600(_from_parsed_parts)
+        2    0.000    0.000    0.000    0.000 /home/anon/Downloads/pypy3.10-v7.3.13-linux64/lib/pypy3.10/datetime.py:2210(_normalize_datetime)
+       15    0.000    0.000    0.000    0.000 /home/anon/Downloads/pypy3.10-v7.3.13-linux64/lib/pypy3.10/enum.py:452(<genexpr>)
+        2    0.000    0.000    0.000    0.000 /home/anon/Downloads/pypy3.10-v7.3.13-linux64/lib/pypy3.10/datetime.py:69(_ymd2ord)
+        2    0.000    0.000    0.000    0.000 /home/anon/Downloads/pypy3.10-v7.3.13-linux64/lib/pypy3.10/_sha512.py:9(new_shaobject)
+        6    0.000    0.000    0.000    0.000 /home/anon/Downloads/pypy3.10-v7.3.13-linux64/lib/pypy3.10/os.py:759(decode)
+        2    0.000    0.000    0.000    0.000 /home/anon/Downloads/pypy3.10-v7.3.13-linux64/lib/pypy3.10/codecs.py:309(__init__)
+        1    0.000    0.000    0.000    0.000 {method 'disable' of '_lsprof.Profiler' objects}
+       16    0.000    0.000    0.000    0.000 {built-in function sys.intern}
+        4    0.000    0.000    0.000    0.000 /home/anon/Downloads/pypy3.10-v7.3.13-linux64/lib/pypy3.10/datetime.py:64(_days_before_month)
+        6    0.000    0.000    0.000    0.000 {built-in function round}
+        4    0.000    0.000    0.000    0.000 /home/anon/work/bgpy_pkg/bgpy/as_graphs/base/as_graph_info.py:37(link_sets)
+        3    0.000    0.000    0.000    0.000 /home/anon/Downloads/pypy3.10-v7.3.13-linux64/lib/pypy3.10/stat.py:50(S_ISDIR)
+        1    0.000    0.000    0.000    0.000 /home/anon/work/bgpy_pkg/bgpy/simulation_engines/base/simulation_engine.py:41(__init__)
+        3    0.000    0.000    0.000    0.000 /home/anon/Downloads/pypy3.10-v7.3.13-linux64/lib/pypy3.10/enum.py:448(__iter__)
+       20    0.000    0.000    0.000    0.000 {built-in function divmod}
+        2    0.000    0.000    0.000    0.000 {built-in function _io.text_encoding}
+        6    0.000    0.000    0.000    0.000 {method 'decode' of 'bytes' objects}
+        4    0.000    0.000    0.000    0.000 /home/anon/Downloads/pypy3.10-v7.3.13-linux64/lib/pypy3.10/pathlib.py:94(join_parsed_parts)
+        2    0.000    0.000    0.000    0.000 /home/anon/Downloads/pypy3.10-v7.3.13-linux64/lib/pypy3.10/datetime.py:2220(_normalize_date)
+       28    0.000    0.000    0.000    0.000 {built-in function _operator.index}
+        8    0.000    0.000    0.000    0.000 /home/anon/Downloads/pypy3.10-v7.3.13-linux64/lib/pypy3.10/datetime.py:57(_days_in_month)
+        8    0.000    0.000    0.000    0.000 /home/anon/Downloads/pypy3.10-v7.3.13-linux64/lib/pypy3.10/datetime.py:2203(_normalize_pair)
+        1    0.000    0.000    0.000    0.000 /home/anon/work/bgpy_pkg/bgpy/simulation_frameworks/py_simulation_framework/py_simulation.py:167(<listcomp>)
+        2    0.000    0.000    0.000    0.000 {built-in function math.modf}
+        1    0.000    0.000    0.000    0.000 /home/anon/work/bgpy_pkg/bgpy/simulation_frameworks/py_simulation_framework/scenarios/scenario_config.py:79(__post_init__)
+        2    0.000    0.000    0.000    0.000 /home/anon/Downloads/pypy3.10-v7.3.13-linux64/lib/pypy3.10/codecs.py:260(__init__)
+        9    0.000    0.000    0.000    0.000 {method 'reverse' of 'list' objects}
+        2    0.000    0.000    0.000    0.000 {built-in function time.time}
+       13    0.000    0.000    0.000    0.000 {built-in function posix.fspath}
+        2    0.000    0.000    0.000    0.000 /home/anon/work/bgpy_pkg/bgpy/as_graphs/base/as_graph_constructor.py:51(write_tsv)
+        4    0.000    0.000    0.000    0.000 /home/anon/Downloads/pypy3.10-v7.3.13-linux64/lib/pypy3.10/datetime.py:48(_is_leap)
+        6    0.000    0.000    0.000    0.000 /home/anon/Downloads/pypy3.10-v7.3.13-linux64/lib/pypy3.10/datetime.py:422(_check_tzinfo_arg)
+        4    0.000    0.000    0.000    0.000 /home/anon/Downloads/pypy3.10-v7.3.13-linux64/lib/pypy3.10/datetime.py:963(year)
+        2    0.000    0.000    0.000    0.000 /home/anon/Downloads/pypy3.10-v7.3.13-linux64/lib/pypy3.10/datetime.py:52(_days_before_year)
+        2    0.000    0.000    0.000    0.000 /home/anon/Downloads/pypy3.10-v7.3.13-linux64/lib/pypy3.10/posixpath.py:41(_get_sep)
+        2    0.000    0.000    0.000    0.000 {built-in function min}
+        4    0.000    0.000    0.000    0.000 {method 'strip' of 'str' objects}
+        4    0.000    0.000    0.000    0.000 {method '__new__' of 'type' objects}
+        2    0.000    0.000    0.000    0.000 {method 'copy' of 'dict' objects}
+        2    0.000    0.000    0.000    0.000 /home/anon/Downloads/pypy3.10-v7.3.13-linux64/lib/pypy3.10/datetime.py:1997(dst)
+        3    0.000    0.000    0.000    0.000 /home/anon/Downloads/pypy3.10-v7.3.13-linux64/lib/pypy3.10/stat.py:27(S_IFMT)
+        4    0.000    0.000    0.000    0.000 {built-in function abs}
+        4    0.000    0.000    0.000    0.000 /home/anon/Downloads/pypy3.10-v7.3.13-linux64/lib/pypy3.10/datetime.py:968(month)
+        4    0.000    0.000    0.000    0.000 /home/anon/Downloads/pypy3.10-v7.3.13-linux64/lib/pypy3.10/datetime.py:973(day)
+        4    0.000    0.000    0.000    0.000 <builtin>/frozen _structseq:7(<lambda>)
+        2    0.000    0.000    0.000    0.000 /home/anon/Downloads/pypy3.10-v7.3.13-linux64/lib/pypy3.10/datetime.py:601(days)
+        3    0.000    0.000    0.000    0.000 {method 'lstrip' of 'str' objects}
+        2    0.000    0.000    0.000    0.000 {method 'find' of 'str' objects}
+        2    0.000    0.000    0.000    0.000 {method 'rstrip' of 'str' objects}
+        2    0.000    0.000    0.000    0.000 /home/anon/Downloads/pypy3.10-v7.3.13-linux64/lib/pypy3.10/datetime.py:1628(hour)
+        2    0.000    0.000    0.000    0.000 /home/anon/Downloads/pypy3.10-v7.3.13-linux64/lib/pypy3.10/datetime.py:1648(tzinfo)
+        2    0.000    0.000    0.000    0.000 /home/anon/Downloads/pypy3.10-v7.3.13-linux64/lib/pypy3.10/datetime.py:1653(fold)
+        2    0.000    0.000    0.000    0.000 /home/anon/Downloads/pypy3.10-v7.3.13-linux64/lib/pypy3.10/datetime.py:606(seconds)
+        2    0.000    0.000    0.000    0.000 /home/anon/Downloads/pypy3.10-v7.3.13-linux64/lib/pypy3.10/datetime.py:1633(minute)
+        2    0.000    0.000    0.000    0.000 /home/anon/Downloads/pypy3.10-v7.3.13-linux64/lib/pypy3.10/datetime.py:611(microseconds)
+        2    0.000    0.000    0.000    0.000 /home/anon/Downloads/pypy3.10-v7.3.13-linux64/lib/pypy3.10/datetime.py:1638(second)
+        2    0.000    0.000    0.000    0.000 {method 'items' of 'dict' objects}
+
+

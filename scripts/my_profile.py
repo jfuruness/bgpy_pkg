@@ -10,7 +10,6 @@ from bgpy.simulation_engines.cpp_simulation_engine import CPPSimulationEngine, C
 def main():
     """Runs the defaults"""
 
-    trials = 10
 
     sim = PySimulation(
         percent_adoptions=(.01, 0.1, 0.2, 0.5, 0.8, .99),
@@ -18,7 +17,7 @@ def main():
             ScenarioConfig(ScenarioCls=SubprefixHijack, AdoptPolicyCls=ROVSimplePolicy, AnnCls=CPPAnn),
         ),
         output_dir=Path("~/Desktop/benchmark").expanduser(),
-        num_trials=trials,
+        num_trials=10,
         parse_cpus=1,
         python_hash_seed=0,
         SimulationEngineCls=CPPSimulationEngine,
@@ -40,27 +39,17 @@ def main():
 
     start = time.perf_counter()
     sim._get_data()
-    cpp_time = time.perf_counter() - start
-    print(cpp_time)
+    print(time.perf_counter() - start)
 
-
-    # Simulation for the paper
-    sim = PySimulation(
-        percent_adoptions=(.01, 0.1, 0.2, 0.5, 0.8, .99),
-        scenario_configs=(
-            ScenarioConfig(ScenarioCls=SubprefixHijack, AdoptPolicyCls=ROVSimplePolicy),
-        ),
-        output_dir=Path("~/Desktop/benchmark").expanduser(),
-        num_trials=trials,
-        parse_cpus=1,
-        python_hash_seed=0,
-    )
-    start = time.perf_counter()
-    sim._get_data()
-    py_time = time.perf_counter() - start
-    print(py_time)
-
-    print(f"C++ is {py_time / cpp_time:.2f} faster than Python")
 
 if __name__ == "__main__":
+    import cProfile
+    import pstats
+    profile = cProfile.Profile()
+    profile.enable()
     main()
+    profile.disable()
+    with open("profile_stats.txt", "w") as f:
+        stats = pstats.Stats(profile, stream=f)
+        stats.sort_stats("cumtime")
+        stats.print_stats()

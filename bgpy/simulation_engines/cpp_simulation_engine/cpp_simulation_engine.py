@@ -72,8 +72,8 @@ class CPPSimulationEngine(SimulationEngine):
 
         policies_used: set[type[Policy]] = set(non_default_asn_cls_dict.values())
         policies_used.add(BasePolicyCls)
-        import time
-        start = time.perf_counter()
+        # import time
+        # start = time.perf_counter()
         self._cpp_simulation_engine.setup(
             announcements,
             BasePolicyCls.name,
@@ -82,7 +82,7 @@ class CPPSimulationEngine(SimulationEngine):
                 for asn, PolicyCls in non_default_asn_cls_dict.items()
             },
         )
-        print(f"{time.perf_counter() - start}s for engine setup")
+        # print(f"{time.perf_counter() - start}s for engine setup")
 
         self.ready_to_run_round = 0
 
