@@ -36,6 +36,7 @@ class SuperprefixPrefixHijack(Scenario):
         for victim_asn in self.victim_asns:
             anns.append(
                 self.scenario_config.AnnCls(
+                    prefix_block_id=0,
                     prefix=Prefixes.PREFIX.value,
                     as_path=[victim_asn,],
                     timestamp=Timestamps.VICTIM.value,
@@ -54,6 +55,7 @@ class SuperprefixPrefixHijack(Scenario):
         for attacker_asn in self.attacker_asns:
             anns.append(
                 self.scenario_config.AnnCls(
+                    prefix_block_id=0,
                     prefix=Prefixes.PREFIX.value,
                     as_path=[attacker_asn,],
                     timestamp=Timestamps.ATTACKER.value,
@@ -65,6 +67,7 @@ class SuperprefixPrefixHijack(Scenario):
             )
             anns.append(
                 self.scenario_config.AnnCls(
+                    prefix_block_id=1,
                     prefix=Prefixes.SUPERPREFIX.value,
                     as_path=[attacker_asn,],
                     timestamp=Timestamps.ATTACKER.value,

@@ -27,6 +27,7 @@ class ValidPrefix(Scenario):
         for victim_asn in self.victim_asns:
             anns.append(
                 self.scenario_config.AnnCls(
+                    prefix_block_id=0,
                     prefix=Prefixes.PREFIX.value,
                     as_path=[victim_asn,],
                     timestamp=Timestamps.VICTIM.value,

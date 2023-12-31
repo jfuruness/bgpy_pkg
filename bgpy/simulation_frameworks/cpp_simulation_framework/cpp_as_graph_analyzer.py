@@ -19,7 +19,7 @@ class CPPASGraphAnalyzer(ASGraphAnalyzer):
 
         self._cpp_as_graph_analyzer = _CPPASGraphAnalyzer(
             self.engine._cpp_simulation_engine,
-            list(self.scenario.ordered_prefix_subprefix_dict),
+            list(range(len(self.scenario.ordered_prefix_subprefix_dict))),
             self.scenario.victim_asns.copy(),
             self.scenario.attacker_asns.copy(),
         )

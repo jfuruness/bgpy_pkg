@@ -63,7 +63,8 @@ public:
 class Announcement {
 
 public:
-    const unsigned short int prefix_block_id;
+    // To be compatible with python, can't be const
+    unsigned short int prefix_block_id;
     const std::vector<int> as_path;
     const Relationships recv_relationship;
     const bool traceback_end;

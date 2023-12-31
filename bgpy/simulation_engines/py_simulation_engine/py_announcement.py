@@ -30,6 +30,10 @@ class PyAnnouncement(YamlAble):
     traceback_end: bool = False
     # NOTE: must use list here for C++ compatability
     communities: list[str] = field(default_factory=list)
+    # Only required for C++. For an example, see the SubprefixHijack class
+    # in short, 0 for the most specific prefix, and onwards
+    prefix_block_id: int = 0
+
 
     def prefix_path_attributes_eq(self, ann: Optional["PyAnnouncement"]) -> bool:
         """Checks prefix and as path equivalency"""

@@ -77,6 +77,18 @@ class Scenario(ABC):
             str, list[str]
         ] = self._get_ordered_prefix_subprefix_dict()
 
+        # Used in the C++
+        self.most_to_least_speific_prefix_block_ids: list[int] = list()
+        for i, prefix in enumerate(self.ordered_prefix_subprefix_dict):
+            for ann in self.announcements:
+                if ann.prefix == prefix and not isinstance(ann, PyAnn):
+                    msg = (f"Announcement {ann} should have "
+                           f"a prefix_block_id of {i} but instead it has "
+                           f"{ann.prefix_block_id}. "
+                           "prefix_block_ids should go from most specific prefix at 0 "
+                           "to least specific prefix to be compatible with the C++")
+                    assert ann.prefix_block_id == i, msg
+
         self.policy_classes_used: frozenset[Type[Policy]] = frozenset()
 
     #################

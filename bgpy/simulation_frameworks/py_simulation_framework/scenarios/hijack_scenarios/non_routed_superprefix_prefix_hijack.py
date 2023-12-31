@@ -34,6 +34,7 @@ class NonRoutedSuperprefixPrefixHijack(Scenario):
         for attacker_asn in self.attacker_asns:
             anns.append(
                 self.scenario_config.AnnCls(
+                    prefix_block_id=1,
                     prefix=Prefixes.SUPERPREFIX.value,
                     as_path=[attacker_asn,],
                     timestamp=Timestamps.ATTACKER.value,
@@ -45,6 +46,7 @@ class NonRoutedSuperprefixPrefixHijack(Scenario):
             )
             anns.append(
                 self.scenario_config.AnnCls(
+                    prefix_block_id=0,
                     prefix=Prefixes.PREFIX.value,
                     as_path=[attacker_asn,],
                     timestamp=Timestamps.ATTACKER.value,

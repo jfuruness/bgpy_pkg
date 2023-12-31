@@ -165,6 +165,7 @@ PYBIND11_MODULE(bgpc, m) {
 			 py::arg("withdraw") = false,                             // Default value for withdraw
 			 py::arg("traceback_end") = false,                        // Default value for traceback_end
 			 py::arg("communities") = std::vector<std::string>{})     // Default value for communities
+        .def_readonly("prefix_block_id", &Announcement::prefix_block_id)
         .def_property_readonly("prefix", &Announcement::prefix)
         .def_readonly("as_path", &Announcement::as_path)
         .def_property_readonly("timestamp", &Announcement::timestamp)
