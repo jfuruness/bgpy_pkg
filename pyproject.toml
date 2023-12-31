@@ -85,6 +85,7 @@ where = ["bgpy"]
 
 [tool.scikit-build]
 wheel.expand-macos-universal-tags = true
+build-dir = "build/{wheel_tag}"
 
 [tool.cibuildwheel]
 build-verbosity = 1

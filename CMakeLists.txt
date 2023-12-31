@@ -15,7 +15,7 @@ project(
   LANGUAGES CXX)
 
 ### Personal modifications##############################
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 # Set the default build type to Release if not specified
@@ -23,6 +23,14 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
   set(CMAKE_BUILD_TYPE Release)
 #endif()
 set(CMAKE_CXX_FLAGS_RELEASE "-O3 -march=native")
+
+
+# TODO
+# NOTE: tried it, didn't seem to make more than 1s of difference
+# but I'll keep it just in case
+# set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fprofile-generate")
+
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fprofile-use")
 
 ################################################################
 
@@ -46,10 +54,6 @@ endif()
 # Add a library using FindPython's tooling (pybind11 also provides a helper like
 # this)
 ############################################################################
-# Automatically include all .cpp files in bgpc/src and its subdirectories
-# file(GLOB_RECURSE BGPC_SOURCES "bgpc/src/*.cpp")
-# python_add_library(bgpc MODULE bgpc/src/main.cpp bgpc/src/announcement.cpp bgpc/src/ann_containers/local_rib.cpp WITH_SOABI)
-# python_add_library(bgpc MODULE ${BGPC_SOURCES} WITH_SOABI)
 
 set(BGPC_SOURCES
     bgpc/src/cpp_simulation_engine/announcement.cpp
@@ -79,31 +83,6 @@ endif()
 ####################################
 
 # Add the directory where the header files are located
-# Also include the new directory for ann_containers
-# Old way:
-# target_include_directories(bgpc PRIVATE
-#   ${CMAKE_CURRENT_SOURCE_DIR}/bgpc/include
-#   ${CMAKE_CURRENT_SOURCE_DIR}/bgpc/include/ann_containers
-# )
-#######################################################################
-# New Way:
-# Get all subdirectories in bgpc/include
-# file(GLOB children RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}/bgpc/include ${CMAKE_CURRENT_SOURCE_DIR}/bgpc/include/*)
-# set(include_dirs "")
-# foreach(child ${children})
-#     if(IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/bgpc/include/${child})
-#         list(APPEND include_dirs ${CMAKE_CURRENT_SOURCE_DIR}/bgpc/include/${child})
-#     endif()
-# endforeach()
-
-# Print out include directories for debugging
-# foreach(dir ${include_dirs})
-#     message(STATUS "Including directory: ${dir}")
-# endforeach()
-
-# Now include these directories
-# target_include_directories(bgpc PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/bgpc/include ${include_dirs})
-
 # Going back to og
 
 # Manually include directories

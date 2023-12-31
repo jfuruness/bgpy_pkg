@@ -70,13 +70,10 @@ class CPPSimulationEngine(SimulationEngine):
                 "Not using CPPRelationship in CPPAnnouncement with CPPSimulationEngine"
             )
 
-        import time
-        start = time.perf_counter()
-
         policies_used: set[type[Policy]] = set(non_default_asn_cls_dict.values())
         policies_used.add(BasePolicyCls)
-        print(f"{time.perf_counter() - start} got policies used")
-
+        import time
+        start = time.perf_counter()
         self._cpp_simulation_engine.setup(
             announcements,
             BasePolicyCls.name,
@@ -85,8 +82,8 @@ class CPPSimulationEngine(SimulationEngine):
                 for asn, PolicyCls in non_default_asn_cls_dict.items()
             },
         )
+        print(f"{time.perf_counter() - start}s for engine setup")
 
-        print(f"{time.perf_counter() - start} engine setup complete")
         self.ready_to_run_round = 0
 
         return frozenset(policies_used)

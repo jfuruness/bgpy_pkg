@@ -2,7 +2,9 @@
 #include "local_rib.hpp"
 
 LocalRIB::LocalRIB(int max_prefix_block_id) {
-    _info.reserve(max_prefix_block_id);
+   if(max_prefix_block_id > 4){
+        _info.reserve(max_prefix_block_id);
+   }
 }
 
 std::shared_ptr<Announcement> LocalRIB::get_ann(const unsigned short int prefix_block_id, const std::shared_ptr<Announcement>& default_ann) const {

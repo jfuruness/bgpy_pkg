@@ -2,7 +2,9 @@
 #include "recv_queue.hpp"
 
 RecvQueue::RecvQueue(int max_prefix_block_id) {
-    _info.reserve(max_prefix_block_id);
+   if(max_prefix_block_id > 4){
+        _info.reserve(max_prefix_block_id);
+   }
 }
 
 void RecvQueue::add_ann(const std::shared_ptr<Announcement>& ann) {
