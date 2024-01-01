@@ -52,9 +52,9 @@ std::shared_ptr<Announcement> BGPSimplePolicy::get_best_ann_by_as_path(const std
         throw std::runtime_error("Announcement is null in get_best_ann_by_as_path.");
     }
 
-    if (current_ann->as_path_leaf_node->as_path_length < new_ann->as_path_leaf_node->as_path_length) {
+    if (current_ann->as_path.size() < new_ann->as_path.size()) {
         return current_ann;
-    } else if (current_ann->as_path_leaf_node->as_path_length > new_ann->as_path_leaf_node->as_path_length) {
+    } else if (current_ann->as_path.size() > new_ann->as_path.size()) {
         return new_ann;
     } else {
         return nullptr;
@@ -63,12 +63,12 @@ std::shared_ptr<Announcement> BGPSimplePolicy::get_best_ann_by_as_path(const std
 
 std::shared_ptr<Announcement> BGPSimplePolicy::get_best_ann_by_lowest_neighbor_asn_tiebreaker(const std::shared_ptr<Announcement>& current_ann, const std::shared_ptr<Announcement>& new_ann) {
     // Determines if the new announcement is better than the current announcement by Gao-Rexford criteria for ties
-    if (!current_ann || !current_ann->as_path_leaf_node || !new_ann || !new_ann->as_path_leaf_node) {
+    if (!current_ann || current_ann->as_path.empty() || !new_ann || new_ann->as_path.empty()) {
         throw std::runtime_error("Invalid announcement or empty AS path in get_best_ann_by_lowest_neighbor_asn_tiebreaker.");
     }
 
-    int current_neighbor_asn = current_ann->as_path_leaf_node->as_path_length > 1 ? current_ann->as_path_leaf_node->parent.lock()->asn : current_ann->as_path_leaf_node->asn;
-    int new_neighbor_asn = new_ann->as_path_leaf_node->as_path_length > 1 ? new_ann->as_path_leaf_node->parent.lock()->asn : new_ann->as_path_leaf_node->asn;
+    int current_neighbor_asn = current_ann->as_path.size() > 1 ? current_ann->as_path[1] : current_ann->as_path[0];
+    int new_neighbor_asn = new_ann->as_path.size() > 1 ? new_ann->as_path[1] : new_ann->as_path[0];
 
     if (current_neighbor_asn <= new_neighbor_asn) {
         return current_ann;
