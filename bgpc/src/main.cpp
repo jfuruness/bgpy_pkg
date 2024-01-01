@@ -167,7 +167,7 @@ PYBIND11_MODULE(bgpc, m) {
 			 py::arg("communities") = std::vector<std::string>{})     // Default value for communities
         .def_readonly("prefix_block_id", &Announcement::prefix_block_id)
         .def_property_readonly("prefix", &Announcement::prefix)
-        .def_readonly("as_path", &Announcement::as_path)
+        .def_property_readonly("as_path", &Announcement::as_path)
         .def_property_readonly("timestamp", &Announcement::timestamp)
         .def_property_readonly("seed_asn", &Announcement::seed_asn)
         .def_property_readonly("roa_valid_length", &Announcement::roa_valid_length)

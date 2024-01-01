@@ -53,7 +53,6 @@ public:
 class Announcement {
 public:
     unsigned short int prefix_block_id;
-    const std::vector<int> as_path;
     const Relationships recv_relationship;
     const bool traceback_end;
     const std::shared_ptr<StaticData> staticData;
@@ -68,10 +67,12 @@ public:
                  const std::vector<std::string>& communities = {});
     // Second constructor
     Announcement(unsigned short int prefix_block_id,
-                 std::shared_ptr<StaticData> staticData, const std::vector<int>& as_path,
+                 std::shared_ptr<StaticData> staticData,
                  Relationships recv_relationship, std::shared_ptr<ASPathNode> as_path_leaf_node,
                  bool traceback_end = false,
                  const std::vector<std::string>& communities = {});
+
+    std::vector<int> as_path() const;
     std::string prefix() const;
     int timestamp() const;
     std::optional<int> seed_asn() const;

@@ -10,7 +10,7 @@ Announcement::Announcement(unsigned short int prefix_block_id,
                  bool withdraw, bool traceback_end,
                  const std::vector<std::string>& communities)
         : prefix_block_id(prefix_block_id),
-          as_path(as_path),
+          //as_path(as_path),
           recv_relationship(recv_relationship),
           traceback_end(traceback_end),
           staticData(std::make_shared<StaticData>(prefix, timestamp, seed_asn, roa_valid_length, roa_origin, withdraw)),
@@ -20,18 +20,31 @@ Announcement::Announcement(unsigned short int prefix_block_id,
 
     // Second constructor
 Announcement::Announcement(unsigned short int prefix_block_id,
-                 std::shared_ptr<StaticData> staticData, const std::vector<int>& as_path,
+                 std::shared_ptr<StaticData> staticData,
                  Relationships recv_relationship, std::shared_ptr<ASPathNode> as_path_leaf_node,
                  bool traceback_end,
                  const std::vector<std::string>& communities)
         : prefix_block_id(prefix_block_id),
           staticData(staticData),
-          as_path(as_path),
+          //as_path(as_path),
           recv_relationship(recv_relationship),
           traceback_end(traceback_end),
           as_path_leaf_node(as_path_leaf_node) {
               // Additional initialization as required
           }
+
+std::vector<int> Announcement::as_path() const {
+    std::vector<int> path;
+    std::shared_ptr<ASPathNode> current_node = as_path_leaf_node;
+
+    while (current_node) {
+        path.push_back(current_node->asn);
+        current_node = current_node->parent.lock(); // Move up to the parent node
+    }
+
+    //std::reverse(path.begin(), path.end()); // Reverse to get the correct order
+    return path;
+}
 
 std::string Announcement::prefix() const {
     return staticData->prefix;
@@ -61,7 +74,7 @@ bool Announcement::withdraw() const {
 // Equality comparison operator
 bool Announcement::operator==(const Announcement& other) const {
     return prefix_block_id == other.prefix_block_id
-        && as_path == other.as_path
+        && as_path() == other.as_path()
         && timestamp() == other.timestamp()
         && seed_asn() == other.seed_asn()
         && roa_valid_length() == other.roa_valid_length()
@@ -77,7 +90,7 @@ bool Announcement::prefix_path_attributes_eq(const Announcement* ann) const {
     if (!ann) {
         return false;
     }
-    return ann->prefix() == prefix() && ann->as_path == as_path;
+    return ann->prefix() == prefix() && ann->as_path() == as_path();
 }
 
 bool Announcement::invalid_by_roa() const {
@@ -104,8 +117,9 @@ bool Announcement::roa_routed() const {
 }
 
 int Announcement::origin() const {
-    if (!as_path.empty()) {
-        return as_path.back();
+    auto as_path_var = as_path();
+    if (!as_path_var.empty()) {
+        return as_path_var.back();
     }
     return -1; // Or another appropriate default value
 }

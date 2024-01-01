@@ -100,18 +100,18 @@ void BGPSimplePolicy::process_incoming_anns(Relationships from_rel, int propagat
                 }
 
                 if (current_ann_processed){
-                     if (current_ann->as_path.size() < new_ann->as_path.size() + 1) {
+                     if (current_ann->as_path_leaf_node->as_path_length < new_ann->as_path_leaf_node->as_path_length + 1) {
                         continue;
-                    } else if (current_ann->as_path.size() > new_ann->as_path.size() + 1) {
+                    } else if (current_ann->as_path_leaf_node->as_path_length > new_ann->as_path_leaf_node->as_path_length + 1) {
                         current_ann = new_ann;
                         current_ann_processed = false;
                         continue;
                     }
                 }
                 else{
-                     if (current_ann->as_path.size() < new_ann->as_path.size()) {
+                     if (current_ann->as_path_leaf_node->as_path_length < new_ann->as_path_leaf_node->as_path_length) {
                         continue;
-                    } else if (current_ann->as_path.size() > new_ann->as_path.size()) {
+                    } else if (current_ann->as_path_leaf_node->as_path_length > new_ann->as_path_leaf_node->as_path_length) {
                         current_ann = new_ann;
                         current_ann_processed = false;
                         continue;
@@ -120,8 +120,8 @@ void BGPSimplePolicy::process_incoming_anns(Relationships from_rel, int propagat
                 }
 
                 if (current_ann_processed){
-                    int current_neighbor_asn = current_ann->as_path.size() > 1 ? current_ann->as_path[1] : current_ann->as_path[0];
-                    int new_neighbor_asn = new_ann->as_path.size() > 1 ? new_ann->as_path[1] : new_ann->as_path[0];
+                    int current_neighbor_asn = current_ann->as_path_leaf_node->parent.lock() ? current_ann->as_path_leaf_node->parent.lock()->asn : current_ann->as_path_leaf_node->asn;
+                    int new_neighbor_asn = new_ann->as_path_leaf_node->parent.lock() ? new_ann->as_path_leaf_node->parent.lock()->asn : new_ann->as_path_leaf_node->asn;
 
                     if (current_neighbor_asn <= new_neighbor_asn) {
                         continue;
@@ -132,8 +132,8 @@ void BGPSimplePolicy::process_incoming_anns(Relationships from_rel, int propagat
 
                     }
                 } else {
-                    int current_neighbor_asn = current_ann->as_path[0];
-                    int new_neighbor_asn = new_ann->as_path[0];
+                    int current_neighbor_asn = current_ann->as_path_leaf_node->asn;
+                    int new_neighbor_asn = new_ann->as_path_leaf_node->asn;
 
                     if (current_neighbor_asn <= new_neighbor_asn) {
                         continue;
@@ -172,7 +172,18 @@ void BGPSimplePolicy::receive_ann(const std::shared_ptr<Announcement>& ann) {
 bool BGPSimplePolicy::valid_ann(const std::shared_ptr<Announcement>& ann, Relationships recv_relationship) const {
     // BGP Loop Prevention Check
     if (auto as_ptr = as.lock()) { // Safely obtain a shared_ptr from weak_ptr
-        return std::find(ann->as_path.begin(), ann->as_path.end(), as_ptr->asn) == ann->as_path.end();
+        std::shared_ptr<ASPathNode> current_node = ann->as_path_leaf_node;
+
+        while (current_node) {
+            if (current_node->asn == as_ptr->asn) {
+                // ASN matches, indicating a loop
+                return false;
+            }
+            current_node = current_node->parent.lock(); // Move up to the parent node
+        }
+
+        // No match found in the AS path, so the announcement is valid
+        return true;
     }else{
         throw std::runtime_error("AS pointer is not valid.");
     }
@@ -183,10 +194,6 @@ std::shared_ptr<Announcement> BGPSimplePolicy::copy_and_process(const std::share
     if (!as_ptr) {
         throw std::runtime_error("AS pointer is not valid.");
     }
-
-    // Creating a new announcement with modified attributes
-    std::vector<int> new_as_path = {as_ptr->asn};
-    new_as_path.insert(new_as_path.end(), ann->as_path.begin(), ann->as_path.end());
 
     // Creating a new AS path node
     std::shared_ptr<ASPathNode> new_path_node = std::make_shared<ASPathNode>(as_ptr->asn, ann->as_path_leaf_node->as_path_length + 1);
@@ -199,7 +206,7 @@ std::shared_ptr<Announcement> BGPSimplePolicy::copy_and_process(const std::share
     return std::make_shared<Announcement>(
         ann->prefix_block_id,
         ann->staticData,
-        new_as_path,
+        //new_as_path,
         recv_relationship,
         new_path_node,
         false

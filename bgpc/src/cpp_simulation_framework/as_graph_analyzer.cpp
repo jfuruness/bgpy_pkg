@@ -84,7 +84,7 @@ int ASGraphAnalyzer::get_as_outcome_data_plane(std::shared_ptr<AS> as_obj) {
 
     // Handle undetermined cases, potentially involving recursion
     if (outcome == static_cast<int>(Outcomes::UNDETERMINED) && most_specific_ann) {
-        auto next_as = engine->as_graph->as_dict[(*most_specific_ann)->as_path[1]]; // Example of getting the next AS in the path
+        auto next_as = engine->as_graph->as_dict[(*most_specific_ann)->as_path_leaf_node->parent.lock()->asn]; // Example of getting the next AS in the path
         outcome = get_as_outcome_data_plane(next_as); // Recursively determine the outcome
     }
 
@@ -153,7 +153,7 @@ int ASGraphAnalyzer::determine_as_outcome_data_plane(std::shared_ptr<AS> as_obj,
 
     // Check if there is no announcement or other specific conditions are met
     if (!most_specific_ann ||
-        (*most_specific_ann)->as_path.size() == 1 ||
+        (*most_specific_ann)->as_path_leaf_node->as_path_length == 1 ||
         (*most_specific_ann)->recv_relationship == Relationships::ORIGIN ||
         (*most_specific_ann)->traceback_end) {
         return static_cast<int>(Outcomes::DISCONNECTED);
