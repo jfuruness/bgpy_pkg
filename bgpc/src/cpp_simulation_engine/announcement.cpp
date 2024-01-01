@@ -2,36 +2,38 @@
 
 
 // Constructor
-    // First constructo
-Announcement::Announcement(unsigned short int prefix_block_id,
-                 const std::string& prefix, const std::vector<int>& as_path, int timestamp,
-                 const std::optional<int>& seed_asn, const std::optional<bool>& roa_valid_length,
-                 const std::optional<int>& roa_origin, Relationships recv_relationship,
-                 bool withdraw, bool traceback_end,
-                 const std::vector<std::string>& communities)
-        : prefix_block_id(prefix_block_id),
-          as_path(as_path),
-          recv_relationship(recv_relationship),
-          traceback_end(traceback_end),
-          staticData(std::make_shared<StaticData>(prefix, timestamp, seed_asn, roa_valid_length, roa_origin, withdraw)),
-          as_path_leaf_node(staticData->path_node) {
-              // Additional initialization as required
-          }
+/*
+Announcement::Announcement(const std::string& prefix, const std::vector<int>& as_path, int timestamp,
+             const std::optional<int>& seed_asn, const std::optional<bool>& roa_valid_length,
+             const std::optional<int>& roa_origin, Relationships recv_relationship,
+             bool withdraw, bool traceback_end,
+             const std::vector<std::string>& communities)
+    : prefix(prefix), as_path(as_path), timestamp(timestamp),
+      seed_asn(seed_asn), roa_valid_length(roa_valid_length), roa_origin(roa_origin),
+      recv_relationship(recv_relationship), withdraw(withdraw),
+      traceback_end(traceback_end), communities(communities) {}
+*/
 
-    // Second constructor
+Announcement::Announcement(
+             unsigned short int prefix_block_id,
+             const std::string& prefix, const std::vector<int>& as_path, int timestamp,
+             const std::optional<int>& seed_asn, const std::optional<bool>& roa_valid_length,
+             const std::optional<int>& roa_origin, Relationships recv_relationship,
+             bool withdraw, bool traceback_end, const std::vector<std::string>& communities)
+    : prefix_block_id(prefix_block_id), as_path(as_path),
+      staticData(std::make_shared<StaticData>(prefix, timestamp, seed_asn, roa_valid_length, roa_origin, withdraw)),
+      recv_relationship(recv_relationship), traceback_end(traceback_end) {}
+      //communities(communities) {}
+
+
+
 Announcement::Announcement(unsigned short int prefix_block_id,
-                 std::shared_ptr<StaticData> staticData, const std::vector<int>& as_path,
-                 Relationships recv_relationship, std::shared_ptr<ASPathNode> as_path_leaf_node,
-                 bool traceback_end,
-                 const std::vector<std::string>& communities)
-        : prefix_block_id(prefix_block_id),
-          staticData(staticData),
-          as_path(as_path),
-          recv_relationship(recv_relationship),
-          traceback_end(traceback_end),
-          as_path_leaf_node(as_path_leaf_node) {
-              // Additional initialization as required
-          }
+                           std::shared_ptr<StaticData> staticData, const std::vector<int>& as_path,
+                           Relationships recv_relationship, bool traceback_end,
+                           const std::vector<std::string>& communities)
+    : prefix_block_id(prefix_block_id), staticData(staticData), as_path(as_path),
+      recv_relationship(recv_relationship), traceback_end(traceback_end) {}
+      //communities(communities) {}
 
 std::string Announcement::prefix() const {
     return staticData->prefix;
