@@ -409,7 +409,7 @@ as_graph: !yamlable/CAIDAASGraph
           1.2.0.0/16: !simulator_codec/Announcement
             as_path:
             - 666
-            - 2
+            - 1
             - 5
             - 8
             - 4
@@ -470,8 +470,8 @@ as_graph: !yamlable/CAIDAASGraph
           1.2.3.0/24: !simulator_codec/Announcement
             as_path:
             - 777
-            - 9
-            - 10
+            - 4
+            - 8
             - 5
             - 1
             - 666

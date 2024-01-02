@@ -28,7 +28,7 @@ bool BGPSimplePolicy::new_ann_better_gao_rexford(const std::shared_ptr<Announcem
             return true;
         } else {
             // Lastly, check ASNs
-            return current_ann->as_path[0] <= new_ann->as_path[0];
+            return current_ann->as_path[0] > new_ann->as_path[0];
         }
     }
 }
