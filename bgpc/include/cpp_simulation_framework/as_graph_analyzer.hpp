@@ -39,8 +39,8 @@ private:
     std::unordered_map<int, std::unordered_map<int, int>> outcomes;
 
     std::shared_ptr<Announcement> get_most_specific_ann(std::shared_ptr<AS> as_obj, const std::vector<unsigned short int>& ordered_prefixes);
-    int get_as_outcome_data_plane(std::shared_ptr<AS> as_obj);
-    int determine_as_outcome_data_plane(std::shared_ptr<AS> as_obj, std::shared_ptr<Announcement> most_specific_ann);
+    int get_as_outcome_data_plane(const std::shared_ptr<AS>& as_obj);
+    int determine_as_outcome_data_plane(const std::shared_ptr<AS>& as_obj, const std::shared_ptr<Announcement>& most_specific_ann);
     int get_as_outcome_ctrl_plane(std::shared_ptr<AS> as_obj);
     int determine_as_outcome_ctrl_plane(std::shared_ptr<AS> as_obj, std::shared_ptr<Announcement> ann);
     int get_other_as_outcome_hook(std::shared_ptr<AS> as_obj);

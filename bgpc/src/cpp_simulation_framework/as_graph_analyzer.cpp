@@ -56,8 +56,10 @@ std::unordered_map<int, std::unordered_map<int, int>> ASGraphAnalyzer::analyze()
 
 
 std::shared_ptr<Announcement> ASGraphAnalyzer::get_most_specific_ann(std::shared_ptr<AS> as_obj, const std::vector<unsigned short int>& ordered_prefix_block_ids) {
+
+    std::shared_ptr<Announcement> most_specific_ann = nullptr;
     for (const auto& prefix_block_id : ordered_prefix_block_ids) {
-        std::shared_ptr<Announcement> most_specific_ann = as_obj->policy->localRIB.get_ann(prefix_block_id);
+        most_specific_ann = as_obj->policy->localRIB.get_ann(prefix_block_id);
         if (most_specific_ann) {
             return most_specific_ann;
         }
@@ -67,7 +69,7 @@ std::shared_ptr<Announcement> ASGraphAnalyzer::get_most_specific_ann(std::shared
 
 
 
-int ASGraphAnalyzer::get_as_outcome_data_plane(std::shared_ptr<AS> as_obj) {
+int ASGraphAnalyzer::get_as_outcome_data_plane(const std::shared_ptr<AS>& as_obj) {
     // Check if the outcome is already determined for the AS
     auto it = data_plane_outcomes.find(as_obj->asn);
     if (it != data_plane_outcomes.end()) {
@@ -103,52 +105,7 @@ int ASGraphAnalyzer::get_as_outcome_data_plane(std::shared_ptr<AS> as_obj) {
     return outcome;
 }
 
-/*
-// Using a stack and avoiding recursion to make it faster
-int ASGraphAnalyzer::get_as_outcome_data_plane(std::shared_ptr<AS> initial_as_obj) {
-    std::stack<std::shared_ptr<AS>> as_stack;
-    as_stack.push(initial_as_obj);
-
-    while (!as_stack.empty()) {
-        auto as_obj = as_stack.top();
-        as_stack.pop();
-
-        // Check if the outcome is already determined for the AS
-        auto it = data_plane_outcomes.find(as_obj->asn);
-        if (it != data_plane_outcomes.end()) {
-            continue;
-        }
-
-        // Get the most specific announcement for the AS
-        // std::shared_ptr<Announcement> most_specific_ann = most_specific_ann_dict[as_obj->asn];
-        // NOTE: doing this here and avoiding a dict makes this 1.5x faster at least
-        // This is essential for the python runtimes
-        std::shared_ptr<Announcement> most_specific_ann = std::nullopt;
-        for (const auto& prefix_block_id : ordered_prefix_block_ids) {
-            std::shared_ptr<Announcement> most_specific_ann = as_obj->policy->localRIB.get_ann(prefix_block_id);
-            if (most_specific_ann) {
-                break;
-            }
-        }
-
-
-        // Determine the outcome based on the most specific announcement
-        int outcome = determine_as_outcome_data_plane(as_obj, most_specific_ann);
-
-        if (outcome == static_cast<int>(Outcomes::UNDETERMINED) && most_specific_ann) {
-            auto next_as = engine->as_graph->as_dict[(*most_specific_ann)->as_path[1]];
-            as_stack.push(next_as); // Push the next AS to the stack instead of a recursive call
-        } else {
-            assert(outcome != static_cast<int>(Outcomes::UNDETERMINED)); // Ensure that the outcome is no longer undetermined
-            data_plane_outcomes[as_obj->asn] = outcome; // Store the determined outcome
-        }
-    }
-
-    // Since we are using a stack, the initial AS's outcome should be in the data_plane_outcomes map
-    return data_plane_outcomes[initial_as_obj->asn];
-}
-*/
-int ASGraphAnalyzer::determine_as_outcome_data_plane(std::shared_ptr<AS> as_obj, std::shared_ptr<Announcement> most_specific_ann) {
+int ASGraphAnalyzer::determine_as_outcome_data_plane(const std::shared_ptr<AS>& as_obj, const std::shared_ptr<Announcement>& most_specific_ann) {
     // Check if the AS is an attacker
     if (attacker_asns.find(as_obj->asn) != attacker_asns.end()) {
         return static_cast<int>(Outcomes::ATTACKER_SUCCESS);
@@ -222,3 +179,50 @@ int ASGraphAnalyzer::get_other_as_outcome_hook(std::shared_ptr<AS> as_obj) {
     // Used to satisfy type checker, hook method for other metrics
     return static_cast<int>(Outcomes::ATTACKER_SUCCESS);
 }
+
+/*
+// Using a stack and avoiding recursion to make it faster
+int ASGraphAnalyzer::get_as_outcome_data_plane(std::shared_ptr<AS> initial_as_obj) {
+    std::stack<std::shared_ptr<AS>> as_stack;
+    as_stack.push(initial_as_obj);
+
+    while (!as_stack.empty()) {
+        auto as_obj = as_stack.top();
+        as_stack.pop();
+
+        // Check if the outcome is already determined for the AS
+        auto it = data_plane_outcomes.find(as_obj->asn);
+        if (it != data_plane_outcomes.end()) {
+            continue;
+        }
+
+        // Get the most specific announcement for the AS
+        // std::shared_ptr<Announcement> most_specific_ann = most_specific_ann_dict[as_obj->asn];
+        // NOTE: doing this here and avoiding a dict makes this 1.5x faster at least
+        // This is essential for the python runtimes
+        std::shared_ptr<Announcement> most_specific_ann = std::nullopt;
+        for (const auto& prefix_block_id : ordered_prefix_block_ids) {
+            std::shared_ptr<Announcement> most_specific_ann = as_obj->policy->localRIB.get_ann(prefix_block_id);
+            if (most_specific_ann) {
+                break;
+            }
+        }
+
+
+        // Determine the outcome based on the most specific announcement
+        int outcome = determine_as_outcome_data_plane(as_obj, most_specific_ann);
+
+        if (outcome == static_cast<int>(Outcomes::UNDETERMINED) && most_specific_ann) {
+            auto next_as = engine->as_graph->as_dict[(*most_specific_ann)->as_path[1]];
+            as_stack.push(next_as); // Push the next AS to the stack instead of a recursive call
+        } else {
+            assert(outcome != static_cast<int>(Outcomes::UNDETERMINED)); // Ensure that the outcome is no longer undetermined
+            data_plane_outcomes[as_obj->asn] = outcome; // Store the determined outcome
+        }
+    }
+
+    // Since we are using a stack, the initial AS's outcome should be in the data_plane_outcomes map
+    return data_plane_outcomes[initial_as_obj->asn];
+}
+*/
+

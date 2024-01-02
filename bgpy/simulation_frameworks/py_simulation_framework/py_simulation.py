@@ -33,6 +33,8 @@ from bgpy.simulation_engines.py_simulation_engine import ROVSimplePolicy
 class PySimulation(Simulation):
     """Runs simulations for BGP attack/defend scenarios"""
 
+    analysis_times = list()
+
     def __init__(
         self,
         percent_adoptions: tuple[Union[float, SpecialPercentAdoptions], ...] = (
@@ -315,12 +317,19 @@ class PySimulation(Simulation):
         # The reason we aggregate info right now, instead of saving
         # the engine and doing it later, is because doing it all
         # in RAM is MUCH faster, and speed is important
+        import time
+        start = time.perf_counter()
         outcomes = self.ASGraphAnalyzerCls(
             engine=engine,
             scenario=scenario,
             data_plane_tracking=self.data_plane_tracking,
             control_plane_tracking=self.control_plane_tracking,
         ).analyze()
+        end = time.perf_counter()
+
+        self.analysis_times.append(end-start)
+        from statistics import mean
+        print(f"analyzed on avg in {mean(self.analysis_times)}")
 
         metric_tracker.track_trial_metrics(
             engine=engine,
