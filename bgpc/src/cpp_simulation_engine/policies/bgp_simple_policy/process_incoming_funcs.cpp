@@ -190,7 +190,7 @@ std::shared_ptr<Announcement> BGPSimplePolicy::copy_and_process(const std::share
 
     // Return a new Announcement object with the modified AS path and recv_relationship
     return std::make_shared<Announcement>(
-        ann->prefix_block_id,
+        ann->prefix_block_id(),
         ann->staticData,
         new_as_path,
         recv_relationship,

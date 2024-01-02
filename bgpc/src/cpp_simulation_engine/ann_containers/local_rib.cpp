@@ -14,10 +14,10 @@ std::shared_ptr<Announcement> LocalRIB::get_ann(const unsigned short int prefix_
 }
 
 void LocalRIB::add_ann(const std::shared_ptr<Announcement>& ann) {
-    if (ann->prefix_block_id >= _info.size()) {
+    if (ann->prefix_block_id() >= _info.size()) {
         throw std::out_of_range("Prefix block ID is out of range");
     }
-    _info[ann->prefix_block_id] = ann;
+    _info[ann->prefix_block_id()] = ann;
 }
 
 void LocalRIB::remove_ann(const unsigned short int prefix_block_id) {
