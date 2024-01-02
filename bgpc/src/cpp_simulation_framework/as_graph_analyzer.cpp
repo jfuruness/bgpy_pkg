@@ -1,4 +1,5 @@
 #include <stack>
+#include <iostream>
 #include "announcement.hpp"
 #include "as.hpp"
 #include "cpp_simulation_engine.hpp"
@@ -36,8 +37,10 @@ std::shared_ptr<Announcement> ASGraphAnalyzer::get_most_specific_ann(const std::
     std::shared_ptr<Announcement> most_specific_ann = nullptr;
     for (const auto& prefix_block_id : ordered_prefix_block_ids) {
         most_specific_ann = as_obj->policy->localRIB.get_ann(prefix_block_id);
-        if (most_specific_ann) {
+        if (most_specific_ann && most_specific_ann->as_path.size() != 0) {
             return most_specific_ann;
+        }else{
+            most_specific_ann = nullptr;
         }
     }
     return most_specific_ann;  // Return empty optional if no announcement is found
@@ -45,13 +48,18 @@ std::shared_ptr<Announcement> ASGraphAnalyzer::get_most_specific_ann(const std::
 
 
 std::unordered_map<int, std::unordered_map<int, int>> ASGraphAnalyzer::analyze() {
+    //std::cout<<"made it"<<std::endl;
     for (auto& as_obj_pair : engine->as_graph->as_dict) {
         auto& as_obj = as_obj_pair.second; // Assuming as_graph is a map from IDs to AS shared_ptrs
 
         // Data Plane Analysis
         if(data_plane_tracking){
+
+            //std::cout<<"1"<<std::endl;
             int data_outcome = get_as_outcome_data_plane(as_obj);
+            //std::cout<<"2"<<std::endl;
             data_plane_outcomes[as_obj->asn] = data_outcome;
+            //std::cout<<"3"<<std::endl;
         }
 
         // Control Plane Analysis
@@ -64,6 +72,8 @@ std::unordered_map<int, std::unordered_map<int, int>> ASGraphAnalyzer::analyze()
     // Using integer values from the Plane enum as keys
     outcomes[static_cast<int>(Plane::DATA)] = data_plane_outcomes;
     outcomes[static_cast<int>(Plane::CTRL)] = control_plane_outcomes;
+
+    //std::cout<<"done"<<std::endl;
     return outcomes;
 }
 
@@ -71,27 +81,36 @@ int ASGraphAnalyzer::get_as_outcome_data_plane(const std::shared_ptr<AS>& as_obj
     // Check if the outcome is already determined for the AS
     auto it = data_plane_outcomes.find(as_obj->asn);
     if (it != data_plane_outcomes.end()) {
+            //std::cout<<"4"<<std::endl;
         return it->second;
     }
 
+            //std::cout<<"5"<<std::endl;
     // Get the most specific announcement for the AS
     // NOTE: doing this here and avoiding a dict makes this 1.5x faster at least
     // This is essential for python runtimes
     std::shared_ptr<Announcement> most_specific_ann = get_most_specific_ann(as_obj, ordered_prefix_block_ids);
 
+            //std::cout<<"6"<<std::endl;
     // Determine the outcome based on the most specific announcement
     int outcome = determine_as_outcome_data_plane(as_obj, most_specific_ann);
 
+            //std::cout<<"7"<<std::endl;
     // Handle undetermined cases, potentially involving recursion
     if (outcome == static_cast<int>(Outcomes::UNDETERMINED) && most_specific_ann) {
+            //std::cout<<"8"<<std::endl;
         auto next_as = engine->as_graph->as_dict[most_specific_ann->as_path[1]]; // Example of getting the next AS in the path
+            //std::cout<<"9"<<std::endl;
         outcome = get_as_outcome_data_plane(next_as); // Recursively determine the outcome
+            //std::cout<<"10"<<std::endl;
     }
 
     assert(outcome != static_cast<int>(Outcomes::UNDETERMINED)); // Ensure that the outcome is no longer undetermined
 
+            //std::cout<<"11"<<std::endl;
     // Store and return the determined outcome
     data_plane_outcomes[as_obj->asn] = outcome;
+            //std::cout<<"12"<<std::endl;
     return outcome;
 }
 

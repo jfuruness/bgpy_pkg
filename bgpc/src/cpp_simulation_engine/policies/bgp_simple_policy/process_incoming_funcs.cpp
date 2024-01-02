@@ -48,7 +48,6 @@ void BGPSimplePolicy::process_incoming_anns(Relationships from_rel, int propagat
 ///////////BGPSimple implementation. Done outside of the class to avoid circular ref with AS
 void BGPSimplePolicy::process_incoming_anns(Relationships from_rel, int propagation_round, bool reset_q) {
     // Process all announcements that were incoming from a specific relationship
-
     // For each prefix, get all announcements received
     //for (const auto& [prefix_block_id, ann_list] : recvQueue.prefix_anns()) {
     for (unsigned short int prefix_block_id = 0; prefix_block_id < static_cast<unsigned short int>(recvQueue.prefix_anns().size()); ++prefix_block_id) {
@@ -83,7 +82,7 @@ void BGPSimplePolicy::process_incoming_anns(Relationships from_rel, int propagat
         for (const auto& new_ann : ann_list) {
             // Make sure there are no loops
             if (valid_ann(new_ann, from_rel)) {
-                if (!current_ann){
+                if (current_ann->as_path.size() == 0){
                     current_ann = new_ann;
                     current_ann_processed = false;
                     continue;
@@ -156,7 +155,21 @@ void BGPSimplePolicy::process_incoming_anns(Relationships from_rel, int propagat
         // This is a new best announcement. Process it and add it to the local RIB
         if (!current_ann_processed) {
             // Save to local RIB
-            localRIB.add_ann(copy_and_process(current_ann, from_rel));
+            //localRIB.add_ann(copy_and_process(current_ann, from_rel));
+            auto as_ptr = as.lock();
+            if (!as_ptr) {
+                throw std::runtime_error("AS pointer is not valid.");
+            }
+
+            // Creating a new current_announcement with modified attributes
+            std::vector<int> new_as_path = {as_ptr->asn};
+            new_as_path.insert(new_as_path.end(), current_ann->as_path.begin(), current_ann->as_path.end());
+
+            auto ann = localRIB._info[current_ann->prefix_block_id];
+            ann->staticData = current_ann->staticData;
+            ann->as_path = new_as_path;
+            ann->recv_relationship = from_rel;
+            ann->traceback_end = false;
         }
 
 

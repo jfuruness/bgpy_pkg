@@ -31,11 +31,11 @@ class Announcement {
 public:
     // To be compatible with python, can't be const
     unsigned short int prefix_block_id;
-    const std::vector<int> as_path;
-    const Relationships recv_relationship;
-    const bool traceback_end;
+    std::vector<int> as_path;
+    Relationships recv_relationship;
+    bool traceback_end;
     //const std::vector<std::string> communities;
-    const std::shared_ptr<StaticData> staticData;
+    std::shared_ptr<StaticData> staticData;
 
     Announcement(unsigned short int prefix_block_id,
                  const std::string& prefix, const std::vector<int>& as_path, int timestamp,
@@ -45,9 +45,11 @@ public:
                  const std::vector<std::string>& communities = {});
 
     // New constructor
-    Announcement(unsigned short int prefix_block_id,
-                 std::shared_ptr<StaticData> staticData, const std::vector<int>& as_path,
-                 Relationships recv_relationship, bool traceback_end = false,
+    Announcement(unsigned short int prefix_block_id = 0,
+                 std::shared_ptr<StaticData> staticData = nullptr,
+                 const std::vector<int>& as_path = {},
+                 Relationships recv_relationship = Relationships::UNKNOWN,
+                 bool traceback_end = false,
                  const std::vector<std::string>& communities = {});
 
     std::string prefix() const;

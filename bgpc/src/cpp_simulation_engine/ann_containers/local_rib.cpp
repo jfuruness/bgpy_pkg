@@ -3,14 +3,18 @@
 
 
 LocalRIB::LocalRIB(int max_prefix_block_id) {
-    _info.resize(max_prefix_block_id, nullptr);
+    _info.resize(max_prefix_block_id);
+    for (int i = 0; i < max_prefix_block_id; ++i) {
+        // For each element in the vector, assign a new shared_ptr to a default Announcement
+        _info[i] = std::make_shared<Announcement>(static_cast<unsigned short int>(i));
+    }
 }
 
-std::shared_ptr<Announcement> LocalRIB::get_ann(const unsigned short int prefix_block_id, const std::shared_ptr<Announcement>& default_ann) const {
+std::shared_ptr<Announcement> LocalRIB::get_ann(const unsigned short int prefix_block_id) const {
     if (prefix_block_id >= _info.size()) {
         throw std::out_of_range("Prefix block ID is out of range");
     }
-    return _info[prefix_block_id] ? _info[prefix_block_id] : default_ann;
+    return _info[prefix_block_id];
 }
 
 void LocalRIB::add_ann(const std::shared_ptr<Announcement>& ann) {
@@ -24,7 +28,7 @@ void LocalRIB::remove_ann(const unsigned short int prefix_block_id) {
     if (prefix_block_id >= _info.size()) {
         throw std::out_of_range("Prefix block ID is out of range");
     }
-    _info[prefix_block_id] = nullptr;
+    _info[prefix_block_id] = std::make_shared<Announcement>(prefix_block_id);
 }
 
 const std::vector<std::shared_ptr<Announcement>>& LocalRIB::prefix_anns() const {
@@ -34,9 +38,12 @@ const std::vector<std::shared_ptr<Announcement>>& LocalRIB::prefix_anns() const 
 void LocalRIB::reset(int max_prefix_block_id_param){
     if (max_prefix_block_id_param != _info.size()){
         // This will happen the first time this gets initialized
-        _info.resize(max_prefix_block_id_param, nullptr);
+        _info.resize(max_prefix_block_id_param);
         //throw std::out_of_range("resetting with a different max prefix block id");
     }
 
-    std::fill(_info.begin(), _info.end(), nullptr); // Set each element to nullptr
+    for (int i = 0; i < max_prefix_block_id_param; ++i) {
+        // For each element in the vector, assign a new shared_ptr to a default Announcement
+        _info[i] = std::make_shared<Announcement>(static_cast<unsigned short int>(i));
+    }
 }
