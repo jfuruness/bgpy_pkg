@@ -4,7 +4,7 @@ from typing import Optional, TYPE_CHECKING
 from graphviz import Digraph
 import ipaddress
 
-from bgpy.enums import PyOutcomes, CPPOutcomes
+from bgpy.enums import PyOutcomes
 from bgpy.simulation_engines.py_simulation_engine import BGPPolicy
 from bgpy.simulation_engines.py_simulation_engine import BGPSimplePolicy
 from bgpy.simulation_engines.base import SimulationEngine
@@ -48,9 +48,7 @@ class Diagram:
         """Adds legend to the graph with outcome counts"""
 
         attacker_success_count = sum(
-            1
-            for x in traceback.values()
-            if x == PyOutcomes.ATTACKER_SUCCESS.value
+            1 for x in traceback.values() if x == PyOutcomes.ATTACKER_SUCCESS.value
         )
         victim_success_count = sum(
             1 for x in traceback.values() if x == PyOutcomes.VICTIM_SUCCESS.value
