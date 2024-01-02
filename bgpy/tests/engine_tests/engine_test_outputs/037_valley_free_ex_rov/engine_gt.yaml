@@ -238,9 +238,9 @@ as_graph: !yamlable/CAIDAASGraph
       input_clique: false
       ixp: false
       peers: !!python/tuple
+      - 3
       - 5
       - 9
-      - 3
       policy: !yamlable/RealPeerROVSimplePolicy
         _local_rib: !yamlable/LocalRIB
           1.2.0.0/16: !yamlable/PyAnnouncement

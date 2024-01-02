@@ -85,10 +85,8 @@ def _make_relationships_tuples(self):
     for as_obj in self:
         for rel_attr, setup_rel_attr in zip(rel_attrs, setup_rel_attrs):
             # Conver the setup attribute to tuple
-            setattr(
-                as_obj,
-                rel_attr,
-                tuple([proxy(x) for x in getattr(as_obj, setup_rel_attr)]),
-            )
+            # Must be sorted or else yaml dumps differently
+            sorted_ases = sorted(getattr(as_obj, setup_rel_attr), key=lambda x: x.asn)
+            setattr(as_obj, rel_attr, tuple([proxy(x) for x in sorted_ases]))
             # Delete the setup attribute
             delattr(as_obj, setup_rel_attr)

@@ -7,8 +7,8 @@ as_graph: !yamlable/CAIDAASGraph
       customers: !!python/tuple
       - 3
       - 4
-      - 777
       - 666
+      - 777
       input_clique: false
       ixp: false
       peers: !!python/tuple []
