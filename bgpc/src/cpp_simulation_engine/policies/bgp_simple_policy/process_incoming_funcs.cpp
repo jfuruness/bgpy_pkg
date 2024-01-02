@@ -1,6 +1,7 @@
 #include <iostream>
 #include <algorithm>
 #include <stdexcept>
+#include <boost/container/small_vector.hpp>
 
 #include "policy.hpp"
 #include "bgp_simple_policy.hpp"
@@ -185,7 +186,7 @@ std::shared_ptr<Announcement> BGPSimplePolicy::copy_and_process(const std::share
     }
 
     // Creating a new announcement with modified attributes
-    std::vector<int> new_as_path = {as_ptr->asn};
+    boost::container::small_vector<int, 6> new_as_path = {as_ptr->asn};
     new_as_path.insert(new_as_path.end(), ann->as_path.begin(), ann->as_path.end());
 
     // Return a new Announcement object with the modified AS path and recv_relationship

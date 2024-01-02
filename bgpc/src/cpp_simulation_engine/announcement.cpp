@@ -16,7 +16,7 @@ Announcement::Announcement(const std::string& prefix, const std::vector<int>& as
 
 Announcement::Announcement(
              unsigned short int prefix_block_id,
-             const std::string& prefix, const std::vector<int>& as_path, int timestamp,
+             const std::string& prefix, const boost::container::small_vector<int, 6>& as_path, int timestamp,
              const std::optional<int>& seed_asn, const std::optional<bool>& roa_valid_length,
              const std::optional<int>& roa_origin, Relationships recv_relationship,
              bool withdraw, bool traceback_end, const std::vector<std::string>& communities)
@@ -28,12 +28,27 @@ Announcement::Announcement(
 
 
 Announcement::Announcement(unsigned short int prefix_block_id,
-                           std::shared_ptr<StaticData> staticData, const std::vector<int>& as_path,
+                           std::shared_ptr<StaticData> staticData, const boost::container::small_vector<int, 6>& as_path,
                            Relationships recv_relationship, bool traceback_end,
                            const std::vector<std::string>& communities)
     : prefix_block_id(prefix_block_id), staticData(staticData), as_path(as_path),
       recv_relationship(recv_relationship), traceback_end(traceback_end) {}
       //communities(communities) {}
+
+Announcement::Announcement(const unsigned short int prefix_block_id,
+             const std::string& prefix,
+             const std::vector<int>& as_path,
+             int timestamp,
+             const std::optional<int>& seed_asn,
+             const std::optional<bool>& roa_valid_length,
+             const std::optional<int>& roa_origin,
+             Relationships recv_relationship,
+             bool withdraw,
+             bool traceback_end,
+             const std::vector<std::string>& communities)
+    : prefix_block_id(prefix_block_id), as_path(as_path.begin(), as_path.end()),
+      staticData(std::make_shared<StaticData>(prefix, timestamp, seed_asn, roa_valid_length, roa_origin, withdraw)),
+      recv_relationship(recv_relationship), traceback_end(traceback_end) {}
 
 std::string Announcement::prefix() const {
     return staticData->prefix;

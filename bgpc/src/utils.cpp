@@ -5,6 +5,7 @@
 #include <memory>
 #include <string>
 #include <climits>
+#include <boost/container/small_vector.hpp> // Include Boost's small_vector
 
 #include "announcement.hpp"
 #include "utils.hpp"
@@ -34,7 +35,7 @@ std::vector<std::shared_ptr<Announcement>> get_announcements_from_tsv(const std:
 
         unsigned short int prefix_block_id;
         std::string prefix;
-        std::vector<int> as_path;
+        boost::container::small_vector<int, 6> as_path; // Or convert `std::vector<int>` to `small_vector`
         int timestamp;
         std::optional<int> seed_asn;
         std::optional<bool> roa_valid_length;

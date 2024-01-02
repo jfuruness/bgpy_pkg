@@ -21,6 +21,19 @@ CPPSimulationEngine::CPPSimulationEngine(std::unique_ptr<ASGraph> as_graph, int 
     register_policies();
 }
 
+// overload jion for the boost vectors
+template<class T>
+std::string join(const boost::container::small_vector<T, 4>& vec, const std::string& sep) {
+    std::string result;
+    for (size_t i = 0; i < vec.size(); ++i) {
+        result += std::to_string(vec[i]);
+        if (i < vec.size() - 1) {
+            result += sep;
+        }
+    }
+    return result;
+}
+
 void CPPSimulationEngine::setup(
         const std::vector<std::shared_ptr<Announcement>>& announcements,
         const std::string& base_policy_class_str,
@@ -226,12 +239,14 @@ void CPPSimulationEngine::dump_local_ribs_to_tsv(const std::string& tsv_path) {
             if (ann == nullptr) {
                 continue;
             }
+            /*
             // Write each announcement's details to the TSV file
             file << std::to_string(asPair.first) << "\t" << ann->prefix() << "\t{" << join(ann->as_path, ",") << "}\t" << ann->timestamp() << "\t"
                  << optionalToString(ann->seed_asn()) << "\t" << booleanToString(ann->roa_valid_length()) << "\t"
                  << optionalToString(ann->roa_origin()) << "\t" << static_cast<int>(ann->recv_relationship) << "\t"
                  << booleanToString(ann->withdraw(), true) << "\t" << booleanToString(ann->traceback_end, true) << "\n";
                  //<< join(ann->communities, " ") << "\n";
+           */
         }
     }
 
