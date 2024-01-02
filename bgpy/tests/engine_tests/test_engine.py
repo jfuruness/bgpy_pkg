@@ -7,6 +7,7 @@ from bgpy.simulation_engines.cpp_simulation_engine import (
     CPPSimulationEngine,
     CPPAnnouncement,
 )
+from bgpy.simulation_engines.py_simulation_engine.policies import BGPPolicy, ROVPolicy
 from bgpy.simulation_frameworks.cpp_simulation_framework import CPPASGraphAnalyzer
 
 from .engine_test_configs import engine_test_configs
@@ -17,9 +18,20 @@ from .utils import EngineTestConfig
 cpp_configs = []
 for engine_test_config in engine_test_configs:
     try:
+        # These configs do bad things to announcements
+        # C++ doesn't allow this
         cpp_valid = int(engine_test_config.name) not in list(range(29, 34 + 1))
+        scenario_conf = engine_test_config.scenario_config
+        policies = list(scenario_conf.override_non_default_asn_cls_dict.values())
+        # These policies aren't supported yet
+        unsupported_policies = (BGPPolicy, ROVPolicy)
+        cpp_valid = cpp_valid and not any(x in policies for x in unsupported_policies)
+        cpp_valid = cpp_valid and not any(
+            x == scenario_conf.BasePolicyCls for x in unsupported_policies
+        )
     except ValueError:
         cpp_valid = True
+
     if cpp_valid:
         cpp_configs.append(
             replace(
