@@ -31,6 +31,19 @@ ASGraphAnalyzer::ASGraphAnalyzer(std::shared_ptr<CPPSimulationEngine> engine,
     */
 }
 
+std::shared_ptr<Announcement> ASGraphAnalyzer::get_most_specific_ann(const std::shared_ptr<AS>& as_obj, const std::vector<unsigned short int>& ordered_prefix_block_ids) {
+
+    std::shared_ptr<Announcement> most_specific_ann = nullptr;
+    for (const auto& prefix_block_id : ordered_prefix_block_ids) {
+        most_specific_ann = as_obj->policy->localRIB.get_ann(prefix_block_id);
+        if (most_specific_ann) {
+            return most_specific_ann;
+        }
+    }
+    return most_specific_ann;  // Return empty optional if no announcement is found
+}
+
+
 std::unordered_map<int, std::unordered_map<int, int>> ASGraphAnalyzer::analyze() {
     for (auto& as_obj_pair : engine->as_graph->as_dict) {
         auto& as_obj = as_obj_pair.second; // Assuming as_graph is a map from IDs to AS shared_ptrs
@@ -54,21 +67,6 @@ std::unordered_map<int, std::unordered_map<int, int>> ASGraphAnalyzer::analyze()
     return outcomes;
 }
 
-
-std::shared_ptr<Announcement> ASGraphAnalyzer::get_most_specific_ann(std::shared_ptr<AS> as_obj, const std::vector<unsigned short int>& ordered_prefix_block_ids) {
-
-    std::shared_ptr<Announcement> most_specific_ann = nullptr;
-    for (const auto& prefix_block_id : ordered_prefix_block_ids) {
-        most_specific_ann = as_obj->policy->localRIB.get_ann(prefix_block_id);
-        if (most_specific_ann) {
-            return most_specific_ann;
-        }
-    }
-    return nullptr;  // Return empty optional if no announcement is found
-}
-
-
-
 int ASGraphAnalyzer::get_as_outcome_data_plane(const std::shared_ptr<AS>& as_obj) {
     // Check if the outcome is already determined for the AS
     auto it = data_plane_outcomes.find(as_obj->asn);
@@ -77,17 +75,9 @@ int ASGraphAnalyzer::get_as_outcome_data_plane(const std::shared_ptr<AS>& as_obj
     }
 
     // Get the most specific announcement for the AS
-    // std::shared_ptr<Announcement> most_specific_ann = most_specific_ann_dict[as_obj->asn];
     // NOTE: doing this here and avoiding a dict makes this 1.5x faster at least
-    // This is essential for the python runtimes
-    std::shared_ptr<Announcement> most_specific_ann = nullptr;
-    for (const auto& prefix_block_id : ordered_prefix_block_ids) {
-        most_specific_ann = as_obj->policy->localRIB.get_ann(prefix_block_id);
-        if (most_specific_ann) {
-            break;
-        }
-    }
-
+    // This is essential for python runtimes
+    std::shared_ptr<Announcement> most_specific_ann = get_most_specific_ann(as_obj, ordered_prefix_block_ids);
 
     // Determine the outcome based on the most specific announcement
     int outcome = determine_as_outcome_data_plane(as_obj, most_specific_ann);
@@ -136,17 +126,11 @@ int ASGraphAnalyzer::get_as_outcome_ctrl_plane(std::shared_ptr<AS> as_obj) {
     }
 
     // Get the most specific announcement for the AS
-    // std::shared_ptr<Announcement> most_specific_ann = most_specific_ann_dict[as_obj->asn];
-    std::shared_ptr<Announcement> most_specific_ann = nullptr;
-    for (const auto& prefix_block_id : ordered_prefix_block_ids) {
-        most_specific_ann = as_obj->policy->localRIB.get_ann(prefix_block_id);
-        if (most_specific_ann) {
-            break;
-        }
-    }
+    //std::shared_ptr<Announcement> most_specific_ann = most_specific_ann_dict[as_obj->asn];
 
-
+    std::shared_ptr<Announcement> most_specific_ann = get_most_specific_ann(as_obj, ordered_prefix_block_ids);
     // Determine the outcome based on the most specific announcement
+    //
     int outcome = determine_as_outcome_ctrl_plane(as_obj, most_specific_ann);
 
     // Store and return the determined outcome
