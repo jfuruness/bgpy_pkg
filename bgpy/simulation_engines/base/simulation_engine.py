@@ -65,7 +65,6 @@ class SimulationEngine(YamlAble, ABC):
         else:
             return NotImplemented
 
-
     ###############
     # Setup funcs #
     ###############

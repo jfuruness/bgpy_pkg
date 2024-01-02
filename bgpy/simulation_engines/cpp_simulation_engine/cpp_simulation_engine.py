@@ -36,7 +36,9 @@ class CPPSimulationEngine(SimulationEngine):
                 # TODO: fix circular imports
                 with TemporaryDirectory() as tmp_dir:
                     tsv_path = Path(tmp_dir) / "caida.tsv"
-                    bgpy.as_graphs.base.ASGraphConstructor.write_tsv(self.as_graph, tsv_path)
+                    bgpy.as_graphs.base.ASGraphConstructor.write_tsv(
+                        self.as_graph, tsv_path
+                    )
 
                     try:
                         self._cpp_simulation_engine = get_engine(str(tsv_path))
@@ -125,7 +127,10 @@ class CPPSimulationEngine(SimulationEngine):
         for asn, as_obj in self.as_graph.as_dict.items():
             for announcement in announcements[asn]:
                 as_obj.policy._local_rib.add_ann(announcement)
-        return {"as_graph": self.as_graph, "ready_to_run_round": self.ready_to_run_round}
+        return {
+            "as_graph": self.as_graph,
+            "ready_to_run_round": self.ready_to_run_round,
+        }
 
     @classmethod
     def __from_yaml_dict__(

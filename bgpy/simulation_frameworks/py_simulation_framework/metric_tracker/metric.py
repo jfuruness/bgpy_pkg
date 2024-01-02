@@ -112,9 +112,10 @@ class Metric:
             raise NotImplementedError
 
         # NOTE: check the outcome first! for speed
-        if (outcome == self.metric_key.outcome.value
-            and as_obj.asn
-                in engine.as_graph.asn_groups[self.metric_key.as_group.value]):
+        if (
+            outcome == self.metric_key.outcome.value
+            and as_obj.asn in engine.as_graph.asn_groups[self.metric_key.as_group.value]
+        ):
             self._numerators[as_obj.policy.__class__] += 1
             self._numerators[Any] += 1
 

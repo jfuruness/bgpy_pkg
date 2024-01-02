@@ -29,12 +29,8 @@ class PyASGraphAnalyzer(ASGraphAnalyzer):
             as_obj: self._get_most_specific_ann(as_obj)
             for as_obj in engine.as_graph
         }
-        self._data_plane_outcomes: dict[
-            int, int
-        ] = dict()
-        self._control_plane_outcomes: dict[
-            int, int
-        ] = dict()
+        self._data_plane_outcomes: dict[int, int] = dict()
+        self._control_plane_outcomes: dict[int, int] = dict()
         self.outcomes: dict[int, dict[int, int]] = {
             Plane.DATA.value: self._data_plane_outcomes,
             Plane.CTRL.value: self._control_plane_outcomes,

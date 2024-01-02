@@ -86,7 +86,10 @@ def _copy_and_process(
     """
 
     kwargs: dict[str, Any] = {
-        "as_path": [self.as_.asn,] + ann.as_path,
+        "as_path": [
+            self.as_.asn,
+        ]
+        + ann.as_path,
         "recv_relationship": recv_relationship,
     }
 

@@ -29,7 +29,7 @@ class CPPASGraphAnalyzer(ASGraphAnalyzer):
             self.scenario.victim_asns.copy(),
             self.scenario.attacker_asns.copy(),
             data_plane_tracking=data_plane_tracking,
-            control_plane_tracking=control_plane_tracking
+            control_plane_tracking=control_plane_tracking,
         )
 
     def analyze(self) -> dict[int, dict[int, Union["CPPOutcomes", "PyOutcomes"]]]:

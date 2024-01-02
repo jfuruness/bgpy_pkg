@@ -36,7 +36,9 @@ class NonRoutedSuperprefixPrefixHijack(Scenario):
                 self.scenario_config.AnnCls(
                     prefix_block_id=1,
                     prefix=Prefixes.SUPERPREFIX.value,
-                    as_path=[attacker_asn,],
+                    as_path=[
+                        attacker_asn,
+                    ],
                     timestamp=Timestamps.ATTACKER.value,
                     seed_asn=attacker_asn,
                     roa_valid_length=None,
@@ -48,7 +50,9 @@ class NonRoutedSuperprefixPrefixHijack(Scenario):
                 self.scenario_config.AnnCls(
                     prefix_block_id=0,
                     prefix=Prefixes.PREFIX.value,
-                    as_path=[attacker_asn,],
+                    as_path=[
+                        attacker_asn,
+                    ],
                     timestamp=Timestamps.ATTACKER.value,
                     seed_asn=attacker_asn,
                     roa_valid_length=True,

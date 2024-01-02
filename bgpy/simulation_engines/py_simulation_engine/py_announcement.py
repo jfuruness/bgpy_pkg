@@ -34,7 +34,6 @@ class PyAnnouncement(YamlAble):
     # in short, 0 for the most specific prefix, and onwards
     prefix_block_id: int = 0
 
-
     def prefix_path_attributes_eq(self, ann: Optional["PyAnnouncement"]) -> bool:
         """Checks prefix and as path equivalency"""
 

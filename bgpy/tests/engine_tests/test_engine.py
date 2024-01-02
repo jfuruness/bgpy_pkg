@@ -4,7 +4,8 @@ from pathlib import Path
 import pytest
 
 from bgpy.simulation_engines.cpp_simulation_engine import (
-    CPPSimulationEngine, CPPAnnouncement
+    CPPSimulationEngine,
+    CPPAnnouncement,
 )
 from bgpy.simulation_frameworks.cpp_simulation_framework import CPPASGraphAnalyzer
 
@@ -16,7 +17,7 @@ from .utils import EngineTestConfig
 cpp_configs = []
 for engine_test_config in engine_test_configs:
     try:
-        cpp_valid = int(engine_test_config.name) not in list(range(29,34 + 1))
+        cpp_valid = int(engine_test_config.name) not in list(range(29, 34 + 1))
     except ValueError:
         cpp_valid = True
     if cpp_valid:
@@ -26,7 +27,9 @@ for engine_test_config in engine_test_configs:
                 name="cpp_" + engine_test_config.name,
                 desc="C++ Sim of " + engine_test_config.desc,
                 SimulationEngineCls=CPPSimulationEngine,
-                scenario_config=replace(engine_test_config.scenario_config, AnnCls=CPPAnnouncement),
+                scenario_config=replace(
+                    engine_test_config.scenario_config, AnnCls=CPPAnnouncement
+                ),
                 ASGraphAnalyzerCls=CPPASGraphAnalyzer,
             )
         )

@@ -86,14 +86,18 @@ class Scenario(ABC):
         }
         # Used in the C++
         for ann in self.announcements:
-            msg = (f"Announcement {ann} should have "
-                   f"a prefix_block_id of {prefix_to_block_id[ann.prefix]} "
-                   "but instead it has "
-                   f"{ann.prefix_block_id}. "
-                   "prefix_block_ids should go from most specific prefix at 0 "
-                   "to least specific prefix to be compatible with the C++")
+            msg = (
+                f"Announcement {ann} should have "
+                f"a prefix_block_id of {prefix_to_block_id[ann.prefix]} "
+                "but instead it has "
+                f"{ann.prefix_block_id}. "
+                "prefix_block_ids should go from most specific prefix at 0 "
+                "to least specific prefix to be compatible with the C++"
+            )
 
-            assert ann.prefix_block_id == prefix_to_block_id[ann.prefix] or isinstance(ann, PyAnn), msg
+            assert ann.prefix_block_id == prefix_to_block_id[ann.prefix] or isinstance(
+                ann, PyAnn
+            ), msg
 
     #################
     # Get attackers #
