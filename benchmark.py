@@ -10,7 +10,7 @@ from bgpy.simulation_engines.cpp_simulation_engine import CPPSimulationEngine, C
 def main():
     """Runs the defaults"""
 
-    trials = 10
+    trials = 20
 
     sim = PySimulation(
         percent_adoptions=(.01, 0.1, 0.2, 0.5, 0.8, .99),
@@ -19,7 +19,7 @@ def main():
         ),
         output_dir=Path("~/Desktop/benchmark").expanduser(),
         num_trials=trials,
-        parse_cpus=1,
+        parse_cpus=10,
         python_hash_seed=0,
         SimulationEngineCls=CPPSimulationEngine,
         ASGraphAnalyzerCls=CPPASGraphAnalyzer,
@@ -52,7 +52,7 @@ def main():
         ),
         output_dir=Path("~/Desktop/benchmark").expanduser(),
         num_trials=trials,
-        parse_cpus=1,
+        parse_cpus=10,
         python_hash_seed=0,
     )
     start = time.perf_counter()
