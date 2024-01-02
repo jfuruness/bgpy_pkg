@@ -6,6 +6,37 @@
 #include "bgp_simple_policy.hpp"
 #include "as.hpp"
 
+
+bool BGPSimplePolicy::new_ann_better_gao_rexford(const std::shared_ptr<Announcement>& current_ann, const bool& current_ann_processed, const std::shared_ptr<Announcement>& new_ann) {
+    if (!new_ann) {
+        throw std::runtime_error("New announcement can't be null.");
+    }
+
+    if (!current_ann) {
+        return true;
+
+    } else if(current_ann_processed) {
+        //We know in this case that current ann exists (from previous propagation relationship)
+        //which means therefore it has a better relationship than the new announcements
+        return false;
+    } else {
+        // The only case left is this one, where we only compare new anns unprocessed
+        // First check AS Paths
+        if (current_ann->as_path.size() < new_ann->as_path.size()) {
+            return false;
+        } else if (current_ann->as_path.size() > new_ann->as_path.size()) {
+            return true;
+        } else {
+            // Lastly, check ASNs
+            return current_ann->as_path[0] <= new_ann->as_path[0];
+        }
+    }
+}
+
+
+
+
+
 void BGPSimplePolicy::initialize_gao_rexford_functions() {
 
     gao_rexford_functions = {

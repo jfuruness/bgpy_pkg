@@ -229,9 +229,9 @@ as_graph: !yamlable/CAIDAASGraph
       input_clique: false
       ixp: false
       peers: !!python/tuple
+      - 5
       - 9
       - 3
-      - 5
       policy: !yamlable/BGPSimplePolicy
         _local_rib: !yamlable/LocalRIB
           1.2.0.0/16: !simulator_codec/Announcement
@@ -324,9 +324,9 @@ as_graph: !yamlable/CAIDAASGraph
       asn: 10
       customer_cone_size: 8
       customers: !!python/tuple
+      - 5
       - 8
       - 9
-      - 5
       input_clique: false
       ixp: false
       peers: !!python/tuple []
@@ -409,7 +409,7 @@ as_graph: !yamlable/CAIDAASGraph
           1.2.0.0/16: !simulator_codec/Announcement
             as_path:
             - 666
-            - 1
+            - 2
             - 5
             - 8
             - 4
@@ -470,8 +470,8 @@ as_graph: !yamlable/CAIDAASGraph
           1.2.3.0/24: !simulator_codec/Announcement
             as_path:
             - 777
-            - 4
-            - 8
+            - 9
+            - 10
             - 5
             - 1
             - 666
@@ -489,7 +489,7 @@ as_graph: !yamlable/CAIDAASGraph
         _recv_q: !yamlable/RecvQueue {}
       propagation_rank: 0
       providers: !!python/tuple
-      - 9
       - 4
+      - 9
   ixp_asns: []
 ready_to_run_round: 1

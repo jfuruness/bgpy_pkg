@@ -183,9 +183,34 @@ void CPPSimulationEngine::propagate_to_peers(const int propagation_round) {
 void CPPSimulationEngine::propagate_to_customers(const int propagation_round) {
     auto& ranks = as_graph->propagation_ranks;
     size_t i = 0; // Initialize i to 0
+    Relationships from_rel = Relationships::PROVIDERS;
 
     for (auto it = ranks.rbegin(); it != ranks.rend(); ++it, ++i) {
         auto& rank = *it;
+        if (i == 0){continue;}
+        for (auto& as_obj : rank) {
+            for (unsigned short int prefix_block_id = 0; prefix_block_id < static_cast<unsigned short int>(as_obj->policy->localRIB.prefix_anns().size()); ++prefix_block_id) {
+
+                auto current_ann = as_obj->policy->localRIB.get_ann(prefix_block_id);
+                bool current_ann_processed = true;
+                for (auto& weak_provider : as_obj->providers){
+                    auto new_ann = weak_provider.lock()->policy->localRIB.get_ann(prefix_block_id);
+                    if (new_ann and as_obj->policy->valid_ann(new_ann, from_rel)){
+                        if (as_obj->policy->new_ann_better_gao_rexford(
+                                current_ann, current_ann_processed, new_ann
+                        )){
+                            current_ann = new_ann;
+                            current_ann_processed = false;
+                        }
+                    }
+                }
+                if (!current_ann_processed){
+                    as_obj->policy->localRIB.add_ann(as_obj->policy->copy_and_process(current_ann, from_rel));
+                }
+            }
+
+        }
+        /*
         // There are no incoming anns in the top row
         if (i > 0) {
             for (auto& as_obj : rank) {
@@ -196,6 +221,7 @@ void CPPSimulationEngine::propagate_to_customers(const int propagation_round) {
         for (auto& as_obj : rank) {
             as_obj->policy->propagate_to_customers();
         }
+        */
     }
 }
 

@@ -29,6 +29,11 @@ public:
     virtual void propagate_to_providers() = 0;
     virtual void propagate_to_customers() = 0;
     virtual void propagate_to_peers() = 0;
+
+    virtual bool valid_ann(const std::shared_ptr<Announcement>& ann, Relationships recv_relationship) const = 0;
+    virtual std::shared_ptr<Announcement> copy_and_process(const std::shared_ptr<Announcement>& ann, Relationships recv_relationship) = 0;
+
+    virtual bool new_ann_better_gao_rexford(const std::shared_ptr<Announcement>& current_ann, const bool& current_ann_processed, const std::shared_ptr<Announcement>& new_ann) = 0;
 };
 
 #endif // POLICY_HPP

@@ -147,11 +147,11 @@ class EngineTester(EngineRunner):
         # Compare Engine
         engine_guess = self.codec.load(self.engine_guess_path)
         engine_gt = self.codec.load(self.engine_ground_truth_path)
-        assert engine_guess == engine_gt
+        assert engine_guess == engine_gt, f"{self.conf.name} failed engine check"
         # Compare outcomes
         outcomes_guess = self.codec.load(self.outcomes_guess_path)
         outcomes_gt = self.codec.load(self.outcomes_ground_truth_path)
-        assert outcomes_guess == outcomes_gt
+        assert outcomes_guess == outcomes_gt, f"{self.conf.name} failed outcomes check"
 
         if self.compare_metrics:
             self._compare_metrics_to_gt()
