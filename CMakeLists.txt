@@ -38,7 +38,6 @@ set(CMAKE_CXX_FLAGS_RELEASE "-O3 -march=native")
 # scikit-build-core's built-in backport)
 find_package(Python REQUIRED COMPONENTS Interpreter Development.Module)
 find_package(pybind11 CONFIG REQUIRED)
-find_package(Boost REQUIRED)
 
 ##################modification
 # Check for LTO support and enable it if possible
@@ -97,7 +96,7 @@ target_include_directories(bgpc PRIVATE
 )
 ######################################################################
 
-target_link_libraries(bgpc PRIVATE pybind11::headers Boost::boost)
+target_link_libraries(bgpc PRIVATE pybind11::headers)
 
 # This is passing in the version as a define just as an example
 target_compile_definitions(bgpc PRIVATE VERSION_INFO=${PROJECT_VERSION})
