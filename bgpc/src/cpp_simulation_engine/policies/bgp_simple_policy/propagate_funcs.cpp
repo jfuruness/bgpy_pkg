@@ -45,7 +45,7 @@ void BGPSimplePolicy::propagate(Relationships propagate_to, const std::set<Relat
     }
     for (const auto& neighbor_weak : neighbors) {
         for (const auto& ann : localRIB.prefix_anns()) {
-            if (send_rels.find(ann->recv_relationship) != send_rels.end() && !prev_sent(neighbor_weak, ann)) {
+            if (ann && send_rels.find(ann->recv_relationship) != send_rels.end() && !prev_sent(neighbor_weak, ann)) {
                 if (policy_propagate(neighbor_weak, ann, propagate_to, send_rels)) {
                     continue;
                 } else {
