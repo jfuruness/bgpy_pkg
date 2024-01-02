@@ -45,7 +45,7 @@ void BGPSimplePolicy::propagate(Relationships propagate_to, const std::set<Relat
     }
     for (const auto& neighbor_weak : neighbors) {
         for (const auto& ann : localRIB.prefix_anns()) {
-            if (ann->as_path.size() == 0) {
+            if (ann == nullptr) {
                 continue;
             }
 
