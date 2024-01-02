@@ -55,14 +55,14 @@ std::unordered_map<int, std::unordered_map<int, int>> ASGraphAnalyzer::analyze()
 }
 
 
-std::optional<std::shared_ptr<Announcement>> ASGraphAnalyzer::get_most_specific_ann(std::shared_ptr<AS> as_obj, const std::vector<unsigned short int>& ordered_prefix_block_ids) {
+std::shared_ptr<Announcement> ASGraphAnalyzer::get_most_specific_ann(std::shared_ptr<AS> as_obj, const std::vector<unsigned short int>& ordered_prefix_block_ids) {
     for (const auto& prefix_block_id : ordered_prefix_block_ids) {
         std::shared_ptr<Announcement> most_specific_ann = as_obj->policy->localRIB.get_ann(prefix_block_id);
         if (most_specific_ann) {
             return most_specific_ann;
         }
     }
-    return std::nullopt;  // Return empty optional if no announcement is found
+    return nullptr;  // Return empty optional if no announcement is found
 }
 
 
@@ -75,12 +75,12 @@ int ASGraphAnalyzer::get_as_outcome_data_plane(std::shared_ptr<AS> as_obj) {
     }
 
     // Get the most specific announcement for the AS
-    // std::optional<std::shared_ptr<Announcement>> most_specific_ann = most_specific_ann_dict[as_obj->asn];
+    // std::shared_ptr<Announcement> most_specific_ann = most_specific_ann_dict[as_obj->asn];
     // NOTE: doing this here and avoiding a dict makes this 1.5x faster at least
     // This is essential for the python runtimes
-    std::optional<std::shared_ptr<Announcement>> most_specific_ann = std::nullopt;
+    std::shared_ptr<Announcement> most_specific_ann = nullptr;
     for (const auto& prefix_block_id : ordered_prefix_block_ids) {
-        std::shared_ptr<Announcement> most_specific_ann = as_obj->policy->localRIB.get_ann(prefix_block_id);
+        most_specific_ann = as_obj->policy->localRIB.get_ann(prefix_block_id);
         if (most_specific_ann) {
             break;
         }
@@ -92,7 +92,7 @@ int ASGraphAnalyzer::get_as_outcome_data_plane(std::shared_ptr<AS> as_obj) {
 
     // Handle undetermined cases, potentially involving recursion
     if (outcome == static_cast<int>(Outcomes::UNDETERMINED) && most_specific_ann) {
-        auto next_as = engine->as_graph->as_dict[(*most_specific_ann)->as_path[1]]; // Example of getting the next AS in the path
+        auto next_as = engine->as_graph->as_dict[most_specific_ann->as_path[1]]; // Example of getting the next AS in the path
         outcome = get_as_outcome_data_plane(next_as); // Recursively determine the outcome
     }
 
@@ -120,10 +120,10 @@ int ASGraphAnalyzer::get_as_outcome_data_plane(std::shared_ptr<AS> initial_as_ob
         }
 
         // Get the most specific announcement for the AS
-        // std::optional<std::shared_ptr<Announcement>> most_specific_ann = most_specific_ann_dict[as_obj->asn];
+        // std::shared_ptr<Announcement> most_specific_ann = most_specific_ann_dict[as_obj->asn];
         // NOTE: doing this here and avoiding a dict makes this 1.5x faster at least
         // This is essential for the python runtimes
-        std::optional<std::shared_ptr<Announcement>> most_specific_ann = std::nullopt;
+        std::shared_ptr<Announcement> most_specific_ann = std::nullopt;
         for (const auto& prefix_block_id : ordered_prefix_block_ids) {
             std::shared_ptr<Announcement> most_specific_ann = as_obj->policy->localRIB.get_ann(prefix_block_id);
             if (most_specific_ann) {
@@ -148,7 +148,7 @@ int ASGraphAnalyzer::get_as_outcome_data_plane(std::shared_ptr<AS> initial_as_ob
     return data_plane_outcomes[initial_as_obj->asn];
 }
 */
-int ASGraphAnalyzer::determine_as_outcome_data_plane(std::shared_ptr<AS> as_obj, std::optional<std::shared_ptr<Announcement>> most_specific_ann) {
+int ASGraphAnalyzer::determine_as_outcome_data_plane(std::shared_ptr<AS> as_obj, std::shared_ptr<Announcement> most_specific_ann) {
     // Check if the AS is an attacker
     if (attacker_asns.find(as_obj->asn) != attacker_asns.end()) {
         return static_cast<int>(Outcomes::ATTACKER_SUCCESS);
@@ -161,9 +161,9 @@ int ASGraphAnalyzer::determine_as_outcome_data_plane(std::shared_ptr<AS> as_obj,
 
     // Check if there is no announcement or other specific conditions are met
     if (!most_specific_ann ||
-        (*most_specific_ann)->as_path.size() == 1 ||
-        (*most_specific_ann)->recv_relationship == Relationships::ORIGIN ||
-        (*most_specific_ann)->traceback_end) {
+        most_specific_ann->as_path.size() == 1 ||
+        most_specific_ann->recv_relationship == Relationships::ORIGIN ||
+        most_specific_ann->traceback_end) {
         return static_cast<int>(Outcomes::DISCONNECTED);
     }
 
@@ -179,10 +179,10 @@ int ASGraphAnalyzer::get_as_outcome_ctrl_plane(std::shared_ptr<AS> as_obj) {
     }
 
     // Get the most specific announcement for the AS
-    // std::optional<std::shared_ptr<Announcement>> most_specific_ann = most_specific_ann_dict[as_obj->asn];
-    std::optional<std::shared_ptr<Announcement>> most_specific_ann = std::nullopt;
+    // std::shared_ptr<Announcement> most_specific_ann = most_specific_ann_dict[as_obj->asn];
+    std::shared_ptr<Announcement> most_specific_ann = nullptr;
     for (const auto& prefix_block_id : ordered_prefix_block_ids) {
-        std::shared_ptr<Announcement> most_specific_ann = as_obj->policy->localRIB.get_ann(prefix_block_id);
+        most_specific_ann = as_obj->policy->localRIB.get_ann(prefix_block_id);
         if (most_specific_ann) {
             break;
         }
@@ -197,19 +197,19 @@ int ASGraphAnalyzer::get_as_outcome_ctrl_plane(std::shared_ptr<AS> as_obj) {
     return outcome;
 }
 
-int ASGraphAnalyzer::determine_as_outcome_ctrl_plane(std::shared_ptr<AS> as_obj, std::optional<std::shared_ptr<Announcement>> ann) {
+int ASGraphAnalyzer::determine_as_outcome_ctrl_plane(std::shared_ptr<AS> as_obj, std::shared_ptr<Announcement> ann) {
     // If there is no announcement, the AS is considered disconnected in the control plane
     if (!ann) {
         return static_cast<int>(Outcomes::DISCONNECTED);
     }
 
     // Check if the origin of the announcement is an attacker
-    if (attacker_asns.find((*ann)->origin()) != attacker_asns.end()) {
+    if (attacker_asns.find(ann->origin()) != attacker_asns.end()) {
         return static_cast<int>(Outcomes::ATTACKER_SUCCESS);
     }
 
     // Check if the origin of the announcement is a victim
-    if (victim_asns.find((*ann)->origin()) != victim_asns.end()) {
+    if (victim_asns.find(ann->origin()) != victim_asns.end()) {
         return static_cast<int>(Outcomes::VICTIM_SUCCESS);
     }
 
