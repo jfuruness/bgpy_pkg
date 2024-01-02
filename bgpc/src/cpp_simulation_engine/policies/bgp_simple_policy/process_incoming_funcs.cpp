@@ -170,8 +170,16 @@ void BGPSimplePolicy::receive_ann(const std::shared_ptr<Announcement>& ann) {
 }
 
 bool BGPSimplePolicy::valid_ann(const std::shared_ptr<Announcement>& ann, Relationships recv_relationship) const {
+
+                    std::cout<<"valid_ann1"<<std::endl;
     // BGP Loop Prevention Check
     if (auto as_ptr = as.lock()) { // Safely obtain a shared_ptr from weak_ptr
+
+                    std::cout<<"valid_ann2"<<std::endl;
+        for (auto as_path_int : ann->as_path){
+            std::cout<<as_path_int<<std::endl;
+        }
+            std::cout<<"valid ann 3"<<std::endl;
         return std::find(ann->as_path.begin(), ann->as_path.end(), as_ptr->asn) == ann->as_path.end();
     }else{
         throw std::runtime_error("AS pointer is not valid.");
