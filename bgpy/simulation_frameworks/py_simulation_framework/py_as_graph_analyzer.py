@@ -68,16 +68,16 @@ class PyASGraphAnalyzer(ASGraphAnalyzer):
     # Data plane funcs #
     ####################
 
-    def _get_as_outcome_data_plane(
-        self, as_obj: AS
-    ) -> int:
+    def _get_as_outcome_data_plane(self, as_obj: AS) -> int:
         """Recursively returns the as outcome"""
 
         if as_obj in self._data_plane_outcomes:
             return self._data_plane_outcomes[as_obj.asn]
         else:
             most_specific_ann = self._most_specific_ann_dict[as_obj]
-            outcome_int = self._determine_as_outcome_data_plane(as_obj, most_specific_ann)
+            outcome_int = self._determine_as_outcome_data_plane(
+                as_obj, most_specific_ann
+            )
             # We haven't traced back all the way on the AS path
             if outcome_int == PyOutcomes.UNDETERMINED.value:
                 # next as in the AS path to traceback to
@@ -120,9 +120,7 @@ class PyASGraphAnalyzer(ASGraphAnalyzer):
     # Control Plane Funcs #
     #######################
 
-    def _get_as_outcome_ctrl_plane(
-        self, as_obj: AS
-    ) -> int:
+    def _get_as_outcome_ctrl_plane(self, as_obj: AS) -> int:
         """Stores and returns the AS outcome from the control plane"""
 
         most_specific_ann = self._most_specific_ann_dict[as_obj]
@@ -153,8 +151,6 @@ class PyASGraphAnalyzer(ASGraphAnalyzer):
     # Hook funcs for other metrics #
     ################################
 
-    def _get_other_as_outcome_hook(
-        self, as_obj: AS
-    ) -> int:
+    def _get_other_as_outcome_hook(self, as_obj: AS) -> int:
         # Noop, this is just to satisfy mypy
         return PyOutcomes.ATTACKER_SUCCESS.value
