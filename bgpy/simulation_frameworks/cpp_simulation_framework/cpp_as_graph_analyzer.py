@@ -32,7 +32,7 @@ class CPPASGraphAnalyzer(ASGraphAnalyzer):
             control_plane_tracking=control_plane_tracking,
         )
 
-    def analyze(self) -> dict[int, dict[int, Union["CPPOutcomes", "PyOutcomes"]]]:
+    def analyze(self) -> dict[int, dict[int, int]]:
         """Takes in engine and outputs traceback for ctrl + data plane data"""
 
-        return self._cpp_as_graph_analyzer.analyze()
+        return self._cpp_as_graph_analyzer.analyze()  # type: ignore

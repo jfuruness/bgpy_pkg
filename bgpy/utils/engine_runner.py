@@ -54,8 +54,15 @@ class EngineRunner:
                 func(engine=engine, propagation_round=round_, trial=0, percent_adopt=0)
 
         # Get traceback results {AS: Outcome}
-        analyzer = self.conf.ASGraphAnalyzerCls(engine=engine, scenario=scenario)
-        outcomes = analyzer.analyze()
+        analyzer = self.conf.ASGraphAnalyzerCls(
+            engine=engine,
+            scenario=scenario,
+            # Later we don't even use control plane
+            # so just turn it off here
+            data_plane_tracking=True,
+            control_plane_tracking=False,
+        )
+        outcomes: dict[int, dict[int, int]] = analyzer.analyze()
         data_plane_outcomes = outcomes[Plane.DATA.value]
         # This comment is no longer relevant, we just store the ASN
         # Convert this to just be {ASN: Outcome} (Not the AS object)
@@ -92,7 +99,7 @@ class EngineRunner:
         trial: int,
         scenario: Scenario,
         propagation_round: int,
-        outcomes: dict[int, dict[int, PyOutcomes | CPPOutcomes]],
+        outcomes: dict[int, dict[int, int]],
     ) -> MetricTracker:
         # Get stored metrics
         metric_tracker = self.conf.MetricTrackerCls()
@@ -110,7 +117,7 @@ class EngineRunner:
     def _store_data(
         self,
         engine: SimulationEngine,
-        outcomes: dict[int, PyOutcomes | CPPOutcomes],
+        outcomes: dict[int, int],
         metric_tracker: MetricTracker,
     ):
         """Stores YAML for the engine, outcomes, and CSV for metrics.

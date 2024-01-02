@@ -310,7 +310,7 @@ class PySimulation(Simulation):
         scenario: Scenario,
         propagation_round: int,
         metric_tracker: MetricTracker,
-    ):
+    ) -> dict[int, dict[int, int]]:
         # Save all engine run info
         # The reason we aggregate info right now, instead of saving
         # the engine and doing it later, is because doing it all
