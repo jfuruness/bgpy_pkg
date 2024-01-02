@@ -158,7 +158,7 @@ void CPPSimulationEngine::propagate(const int propagation_round) {
 void CPPSimulationEngine::propagate_to_providers(const int propagation_round) {
     for (size_t i = 0; i < as_graph->propagation_ranks.size(); ++i) {
         auto& rank = as_graph->propagation_ranks[i];
-        /*
+
         Relationships from_rel = Relationships::CUSTOMERS;
 
         if (i == 0){continue;}
@@ -190,8 +190,8 @@ void CPPSimulationEngine::propagate_to_providers(const int propagation_round) {
             }
 
         }
-        */
 
+        /*
         if (i > 0) {
             for (auto& as_obj : rank) {
                 as_obj->policy->process_incoming_anns(Relationships::CUSTOMERS, propagation_round);
@@ -202,7 +202,7 @@ void CPPSimulationEngine::propagate_to_providers(const int propagation_round) {
             as_obj->policy->propagate_to_providers();
         }
 
-
+        */
     }
 }
 
@@ -224,9 +224,8 @@ void CPPSimulationEngine::propagate_to_customers(const int propagation_round) {
     for (auto it = ranks.rbegin(); it != ranks.rend(); ++it, ++i) {
         auto& rank = *it;
         if (i == 0){continue;}
-        /*
+
         for (auto& as_obj : rank) {
-            std::cout << "ASN IS " << as_obj->asn << std::endl;
             for (unsigned short int prefix_block_id = 0; prefix_block_id < static_cast<unsigned short int>(as_obj->policy->localRIB.prefix_anns().size()); ++prefix_block_id) {
 
                 auto current_ann = as_obj->policy->localRIB.get_ann(prefix_block_id);
@@ -239,34 +238,7 @@ void CPPSimulationEngine::propagate_to_customers(const int propagation_round) {
                     if (locked_provider){
 
                         new_ann = locked_provider->policy->localRIB.get_ann(prefix_block_id);
-                        //auto new_ann = locked_provider->policy->localRIB.get_ann(0);
-
-                        for (auto& ann : locked_provider->policy->localRIB.prefix_anns()) {
-                            if (ann != nullptr) {
-                                std::cout << "hurray" << std::endl;
-                            }
-                        }
-                        std::cout<<"here1"<<std::endl;
-                        if (new_ann){
-                            std::cout<<"here2"<<std::endl;
-
-                            std::cout << "new_ann is null: " << (new_ann == nullptr) << std::endl;
-                            if (new_ann) {
-                                for (const auto& num : new_ann->as_path) {
-                                    std::cout << num << std::endl;
-                                }
-                            }
-                            std::cout << "VALID ASN IS " << as_obj->asn << std::endl;
-
-
-                            std::cout<<(new_ann && as_obj->policy->valid_ann(new_ann, from_rel))<<"ASDF"<<std::endl;
-                            std::cout<<"here2"<<std::endl;
-
-                        }
-
-                        std::cout<<"!!!"<<std::endl;
                         if (new_ann && as_obj->policy->valid_ann(new_ann, from_rel)){
-                            std::cout<<"here3"<<std::endl;
                             if (as_obj->policy->new_ann_better_gao_rexford(
                                     current_ann, current_ann_processed, new_ann
                             )){
@@ -284,8 +256,8 @@ void CPPSimulationEngine::propagate_to_customers(const int propagation_round) {
             }
 
         }
-        */
 
+        /*
         // There are no incoming anns in the top row
         if (i > 0) {
             for (auto& as_obj : rank) {
@@ -296,7 +268,7 @@ void CPPSimulationEngine::propagate_to_customers(const int propagation_round) {
         for (auto& as_obj : rank) {
             as_obj->policy->propagate_to_customers();
         }
-
+        */
     }
 }
 

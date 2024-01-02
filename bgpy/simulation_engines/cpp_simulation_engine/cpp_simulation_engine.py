@@ -1,3 +1,4 @@
+import os
 from pathlib import Path
 from tempfile import TemporaryDirectory
 from typing import Any, Optional, TYPE_CHECKING
@@ -86,6 +87,14 @@ class CPPSimulationEngine(SimulationEngine):
         # print(f"{time.perf_counter() - start}s for engine setup")
 
         self.ready_to_run_round = 0
+
+        # Do this so that diagrams generate properly
+        # TODO: do this properly with patching...
+        if "PYTEST_CURRENT_TEST" in os.environ:
+            for asn, as_obj in self.as_graph.as_dict.items():
+                Cls = non_default_asn_cls_dict.get(asn, BasePolicyCls)
+                as_obj.policy = Cls(as_=as_obj)
+
 
         return frozenset(policies_used)
 

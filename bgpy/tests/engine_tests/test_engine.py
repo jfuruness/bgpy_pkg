@@ -29,9 +29,8 @@ for engine_test_config in engine_test_configs:
         cpp_valid = cpp_valid and not any(
             x == scenario_conf.BasePolicyCls for x in unsupported_policies
         )
-        cpp_valid = int(engine_test_config.name) == 11
     except ValueError:
-        cpp_valid = False
+        cpp_valid = True
 
     if cpp_valid:
         cpp_configs.append(
@@ -46,7 +45,7 @@ for engine_test_config in engine_test_configs:
                 ASGraphAnalyzerCls=CPPASGraphAnalyzer,
             )
         )
-engine_test_configs = cpp_configs# + engine_test_configs
+engine_test_configs = cpp_configs + engine_test_configs
 # engine_test_configs = [engine_test_configs[2]]
 # print(engine_test_configs[0].name)#= [engine_test_configs[2]]
 

@@ -38,7 +38,7 @@ as_graph: !yamlable/CAIDAASGraph
       input_clique: false
       ixp: false
       peers: !!python/tuple []
-      policy: !yamlable/BGPSimplePolicy
+      policy: !yamlable/ROVSimplePolicy
         _local_rib: !yamlable/LocalRIB {}
         _recv_q: !yamlable/RecvQueue {}
       propagation_rank: 1
