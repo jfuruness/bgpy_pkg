@@ -3,7 +3,7 @@
 
 RecvQueue::RecvQueue(int max_prefix_block_id) : _info(max_prefix_block_id) {
     // _info is initialized with max_prefix_block_id empty vectors
-    _info.resize(max_prefix_block_id); // Resizing the vector to hold max_prefix_block_id empty vectors
+    _info.resize(max_prefix_block_id, std::vector<std::shared_ptr<Announcement>>()); // Resizing the vector to hold max_prefix_block_id empty vectors
 }
 
 void RecvQueue::add_ann(const std::shared_ptr<Announcement>& ann) {
@@ -28,10 +28,11 @@ void RecvQueue::reset(int max_prefix_block_id_param){
     if (max_prefix_block_id_param != _info.size()){
         // This will happen the first time this gets initialized
 
-        _info.resize(max_prefix_block_id_param); // Resizing the vector to hold max_prefix_block_id empty vectors
+        _info.resize(max_prefix_block_id_param, std::vector<std::shared_ptr<Announcement>>()); // Resizing the vector to hold max_prefix_block_id empty vectors
         //throw std::out_of_range("resetting with a different max prefix block id");
-    }
-    for (auto& ann_list : _info) {
-        ann_list.clear(); // Clear each list in the vector
+    }else{
+        for (auto& ann_list : _info) {
+            ann_list.clear(); // Clear each list in the vector
+        }
     }
 }

@@ -36,7 +36,7 @@ void LocalRIB::reset(int max_prefix_block_id_param){
         // This will happen the first time this gets initialized
         _info.resize(max_prefix_block_id_param, nullptr);
         //throw std::out_of_range("resetting with a different max prefix block id");
+    }else{
+        std::fill(_info.begin(), _info.end(), nullptr); // Set each element to nullptr
     }
-
-    std::fill(_info.begin(), _info.end(), nullptr); // Set each element to nullptr
 }
