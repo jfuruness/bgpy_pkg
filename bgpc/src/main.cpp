@@ -122,18 +122,18 @@ PYBIND11_MODULE(bgpc, m) {
              py::arg("control_plane_tracking") = false)
         .def("analyze", &ASGraphAnalyzer::analyze);
     /*
-	py::class_<Announcement, std::shared_ptr<Announcement>>(m, "Announcement")
-		.def(py::init<const std::string&, const std::vector<int>&, int,
-					  const std::optional<int>&, const std::optional<bool>&,
-					  const std::optional<int>&, Relationships, bool, bool,
-					  const std::vector<std::string>&>(),
-			 py::arg("prefix"), py::arg("as_path"), py::arg("timestamp"),
-			 py::arg("seed_asn") = std::nullopt, py::arg("roa_valid_length") = std::nullopt,
-			 py::arg("roa_origin") = std::nullopt,
-			 py::arg("recv_relationship") = Relationships::UNKNOWN,  // Default value for recv_relationship
-			 py::arg("withdraw") = false,                             // Default value for withdraw
-			 py::arg("traceback_end") = false,                        // Default value for traceback_end
-			 py::arg("communities") = std::vector<std::string>{})     // Default value for communities
+    py::class_<Announcement, std::shared_ptr<Announcement>>(m, "Announcement")
+        .def(py::init<const std::string&, const std::vector<int>&, int,
+                      const std::optional<int>&, const std::optional<bool>&,
+                      const std::optional<int>&, Relationships, bool, bool,
+                      const std::vector<std::string>&>(),
+             py::arg("prefix"), py::arg("as_path"), py::arg("timestamp"),
+             py::arg("seed_asn") = std::nullopt, py::arg("roa_valid_length") = std::nullopt,
+             py::arg("roa_origin") = std::nullopt,
+             py::arg("recv_relationship") = Relationships::UNKNOWN,  // Default value for recv_relationship
+             py::arg("withdraw") = false,                             // Default value for withdraw
+             py::arg("traceback_end") = false,                        // Default value for traceback_end
+             py::arg("communities") = std::vector<std::string>{})     // Default value for communities
         .def_readonly("prefix", &Announcement::prefix)
         .def_readonly("as_path", &Announcement::as_path)
         .def_readonly("timestamp", &Announcement::timestamp)
@@ -155,20 +155,20 @@ PYBIND11_MODULE(bgpc, m) {
             return self == other;
         });
      */
-	py::class_<Announcement, std::shared_ptr<Announcement>>(m, "Announcement")
-		.def(py::init<const unsigned short int,
+    py::class_<Announcement, std::shared_ptr<Announcement>>(m, "Announcement")
+        .def(py::init<const unsigned short int,
                       const std::string&, const std::vector<int>&, int,
-					  const std::optional<int>&, const std::optional<bool>&,
-					  const std::optional<int>&, Relationships, bool, bool,
-					  const std::vector<std::string>&>(),
+                      const std::optional<int>&, const std::optional<bool>&,
+                      const std::optional<int>&, Relationships, bool, bool,
+                      const std::vector<std::string>&>(),
              py::arg("prefix_block_id"),
-			 py::arg("prefix"), py::arg("as_path"), py::arg("timestamp"),
-			 py::arg("seed_asn") = std::nullopt, py::arg("roa_valid_length") = std::nullopt,
-			 py::arg("roa_origin") = std::nullopt,
-			 py::arg("recv_relationship") = Relationships::UNKNOWN,  // Default value for recv_relationship
-			 py::arg("withdraw") = false,                             // Default value for withdraw
-			 py::arg("traceback_end") = false,                        // Default value for traceback_end
-			 py::arg("communities") = std::vector<std::string>{})     // Default value for communities
+             py::arg("prefix"), py::arg("as_path"), py::arg("timestamp"),
+             py::arg("seed_asn") = std::nullopt, py::arg("roa_valid_length") = std::nullopt,
+             py::arg("roa_origin") = std::nullopt,
+             py::arg("recv_relationship") = Relationships::UNKNOWN,  // Default value for recv_relationship
+             py::arg("withdraw") = false,                             // Default value for withdraw
+             py::arg("traceback_end") = false,                        // Default value for traceback_end
+             py::arg("communities") = std::vector<std::string>{})     // Default value for communities
         .def_readonly("prefix_block_id", &Announcement::prefix_block_id)
         .def_property_readonly("prefix", &Announcement::prefix)
         .def_readonly("as_path", &Announcement::as_path)

@@ -28,7 +28,7 @@ class Diagram:
         engine: SimulationEngine,
         scenario: Scenario,
         # Just the data plane
-        traceback: dict[int, PyOutcomes | CPPOutcomes],
+        traceback: dict[int, int],
         description: str,
         metric_tracker: "MetricTracker",
         diagram_ranks: tuple[tuple["AS", ...], ...],
@@ -44,19 +44,19 @@ class Diagram:
         self.dot.attr(label=description)
         self._render(path=path, view=view)
 
-    def _add_legend(self, traceback: dict[int, PyOutcomes | CPPOutcomes]) -> None:
+    def _add_legend(self, traceback: dict[int, int]) -> None:
         """Adds legend to the graph with outcome counts"""
 
         attacker_success_count = sum(
             1
             for x in traceback.values()
-            if x.value == PyOutcomes.ATTACKER_SUCCESS.value
+            if x == PyOutcomes.ATTACKER_SUCCESS.value
         )
         victim_success_count = sum(
-            1 for x in traceback.values() if x.value == PyOutcomes.VICTIM_SUCCESS.value
+            1 for x in traceback.values() if x == PyOutcomes.VICTIM_SUCCESS.value
         )
         disconnect_count = sum(
-            1 for x in traceback.values() if x.value == PyOutcomes.DISCONNECTED.value
+            1 for x in traceback.values() if x == PyOutcomes.DISCONNECTED.value
         )
         html = f"""<
               <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4">
@@ -83,7 +83,7 @@ class Diagram:
     def _add_ases(
         self,
         engine: SimulationEngine,
-        traceback: dict[int, PyOutcomes | CPPOutcomes],
+        traceback: dict[int, int],
         scenario: Scenario,
     ) -> None:
         # First add all nodes to the graph
@@ -95,7 +95,7 @@ class Diagram:
         subgraph: Digraph,
         as_obj: "AS",
         engine: SimulationEngine,
-        traceback: dict[int, PyOutcomes | CPPOutcomes],
+        traceback: dict[int, int],
         scenario: Scenario,
     ) -> None:
         kwargs = dict()
@@ -167,7 +167,7 @@ class Diagram:
         self,
         as_obj: "AS",
         engine: SimulationEngine,
-        traceback: dict[int, PyOutcomes | CPPOutcomes],
+        traceback: dict[int, int],
         scenario: Scenario,
     ) -> dict[str, str]:
         kwargs = {
@@ -193,11 +193,11 @@ class Diagram:
 
         # As obj is not attacker or victim
         else:
-            if traceback[as_obj.asn].value == PyOutcomes.ATTACKER_SUCCESS.value:
+            if traceback[as_obj.asn] == PyOutcomes.ATTACKER_SUCCESS.value:
                 kwargs.update({"fillcolor": "#ff6060:yellow"})
-            elif traceback[as_obj.asn].value == PyOutcomes.VICTIM_SUCCESS.value:
+            elif traceback[as_obj.asn] == PyOutcomes.VICTIM_SUCCESS.value:
                 kwargs.update({"fillcolor": "#90ee90:white"})
-            elif traceback[as_obj.asn].value == PyOutcomes.DISCONNECTED.value:
+            elif traceback[as_obj.asn] == PyOutcomes.DISCONNECTED.value:
                 kwargs.update({"fillcolor": "grey:white"})
 
             if as_obj.policy.__class__ not in [BGPPolicy, BGPSimplePolicy]:

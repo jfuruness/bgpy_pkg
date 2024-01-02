@@ -18,8 +18,8 @@ as_graph: !yamlable/CAIDAASGraph
             as_path:
             - 1
             - 777
-            communities: []
             prefix: 1.2.0.0/16
+            prefix_block_id: 1
             recv_relationship: !simulator_codec/Relationships
               name: CUSTOMERS
               value: 3
@@ -33,8 +33,8 @@ as_graph: !yamlable/CAIDAASGraph
             as_path:
             - 1
             - 666
-            communities: []
             prefix: 1.2.3.0/24
+            prefix_block_id: 0
             recv_relationship: !simulator_codec/Relationships
               name: CUSTOMERS
               value: 3
@@ -66,8 +66,8 @@ as_graph: !yamlable/CAIDAASGraph
             - 2
             - 5
             - 777
-            communities: []
             prefix: 1.2.0.0/16
+            prefix_block_id: 1
             recv_relationship: !simulator_codec/Relationships
               name: CUSTOMERS
               value: 3
@@ -98,8 +98,8 @@ as_graph: !yamlable/CAIDAASGraph
             - 3
             - 1
             - 777
-            communities: []
             prefix: 1.2.0.0/16
+            prefix_block_id: 1
             recv_relationship: !simulator_codec/Relationships
               name: PROVIDERS
               value: 1
@@ -107,22 +107,6 @@ as_graph: !yamlable/CAIDAASGraph
             roa_valid_length: true
             seed_asn: 777
             timestamp: 0
-            traceback_end: false
-            withdraw: false
-          1.2.3.0/24: !simulator_codec/Announcement
-            as_path:
-            - 3
-            - 1
-            - 666
-            communities: []
-            prefix: 1.2.3.0/24
-            recv_relationship: !simulator_codec/Relationships
-              name: PROVIDERS
-              value: 1
-            roa_origin: 777
-            roa_valid_length: false
-            seed_asn: 666
-            timestamp: 1
             traceback_end: false
             withdraw: false
         _recv_q: !yamlable/RecvQueue {}
@@ -147,8 +131,8 @@ as_graph: !yamlable/CAIDAASGraph
             - 4
             - 1
             - 777
-            communities: []
             prefix: 1.2.0.0/16
+            prefix_block_id: 1
             recv_relationship: !simulator_codec/Relationships
               name: PROVIDERS
               value: 1
@@ -156,22 +140,6 @@ as_graph: !yamlable/CAIDAASGraph
             roa_valid_length: true
             seed_asn: 777
             timestamp: 0
-            traceback_end: false
-            withdraw: false
-          1.2.3.0/24: !simulator_codec/Announcement
-            as_path:
-            - 4
-            - 1
-            - 666
-            communities: []
-            prefix: 1.2.3.0/24
-            recv_relationship: !simulator_codec/Relationships
-              name: PROVIDERS
-              value: 1
-            roa_origin: 777
-            roa_valid_length: false
-            seed_asn: 666
-            timestamp: 1
             traceback_end: false
             withdraw: false
         _recv_q: !yamlable/RecvQueue {}
@@ -196,8 +164,8 @@ as_graph: !yamlable/CAIDAASGraph
             as_path:
             - 5
             - 777
-            communities: []
             prefix: 1.2.0.0/16
+            prefix_block_id: 1
             recv_relationship: !simulator_codec/Relationships
               name: CUSTOMERS
               value: 3
@@ -229,8 +197,8 @@ as_graph: !yamlable/CAIDAASGraph
             - 3
             - 1
             - 777
-            communities: []
             prefix: 1.2.0.0/16
+            prefix_block_id: 1
             recv_relationship: !simulator_codec/Relationships
               name: PROVIDERS
               value: 1
@@ -238,23 +206,6 @@ as_graph: !yamlable/CAIDAASGraph
             roa_valid_length: true
             seed_asn: 777
             timestamp: 0
-            traceback_end: false
-            withdraw: false
-          1.2.3.0/24: !simulator_codec/Announcement
-            as_path:
-            - 7
-            - 3
-            - 1
-            - 666
-            communities: []
-            prefix: 1.2.3.0/24
-            recv_relationship: !simulator_codec/Relationships
-              name: PROVIDERS
-              value: 1
-            roa_origin: 777
-            roa_valid_length: false
-            seed_asn: 666
-            timestamp: 1
             traceback_end: false
             withdraw: false
         _recv_q: !yamlable/RecvQueue {}
@@ -279,8 +230,8 @@ as_graph: !yamlable/CAIDAASGraph
             - 4
             - 1
             - 777
-            communities: []
             prefix: 1.2.0.0/16
+            prefix_block_id: 1
             recv_relationship: !simulator_codec/Relationships
               name: PROVIDERS
               value: 1
@@ -288,23 +239,6 @@ as_graph: !yamlable/CAIDAASGraph
             roa_valid_length: true
             seed_asn: 777
             timestamp: 0
-            traceback_end: false
-            withdraw: false
-          1.2.3.0/24: !simulator_codec/Announcement
-            as_path:
-            - 8
-            - 4
-            - 1
-            - 666
-            communities: []
-            prefix: 1.2.3.0/24
-            recv_relationship: !simulator_codec/Relationships
-              name: PROVIDERS
-              value: 1
-            roa_origin: 777
-            roa_valid_length: false
-            seed_asn: 666
-            timestamp: 1
             traceback_end: false
             withdraw: false
         _recv_q: !yamlable/RecvQueue {}
@@ -328,8 +262,8 @@ as_graph: !yamlable/CAIDAASGraph
             - 666
             - 1
             - 777
-            communities: []
             prefix: 1.2.0.0/16
+            prefix_block_id: 1
             recv_relationship: !simulator_codec/Relationships
               name: PROVIDERS
               value: 1
@@ -342,8 +276,8 @@ as_graph: !yamlable/CAIDAASGraph
           1.2.3.0/24: !simulator_codec/Announcement
             as_path:
             - 666
-            communities: []
             prefix: 1.2.3.0/24
+            prefix_block_id: 0
             recv_relationship: !simulator_codec/Relationships
               name: ORIGIN
               value: 4
@@ -372,8 +306,8 @@ as_graph: !yamlable/CAIDAASGraph
           1.2.0.0/16: !simulator_codec/Announcement
             as_path:
             - 777
-            communities: []
             prefix: 1.2.0.0/16
+            prefix_block_id: 1
             recv_relationship: !simulator_codec/Relationships
               name: ORIGIN
               value: 4
@@ -388,8 +322,8 @@ as_graph: !yamlable/CAIDAASGraph
             - 777
             - 1
             - 666
-            communities: []
             prefix: 1.2.3.0/24
+            prefix_block_id: 0
             recv_relationship: !simulator_codec/Relationships
               name: PROVIDERS
               value: 1

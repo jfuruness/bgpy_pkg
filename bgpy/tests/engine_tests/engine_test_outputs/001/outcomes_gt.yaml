@@ -1,15 +1,5 @@
-1: !simulator_codec/PyOutcomes
-  name: ATTACKER_SUCCESS
-  value: 0
-2: !simulator_codec/PyOutcomes
-  name: ATTACKER_SUCCESS
-  value: 0
-3: !simulator_codec/PyOutcomes
-  name: ATTACKER_SUCCESS
-  value: 0
-666: !simulator_codec/PyOutcomes
-  name: ATTACKER_SUCCESS
-  value: 0
-777: !simulator_codec/PyOutcomes
-  name: VICTIM_SUCCESS
-  value: 1
+1: 0
+2: 0
+3: 0
+666: 0
+777: 1

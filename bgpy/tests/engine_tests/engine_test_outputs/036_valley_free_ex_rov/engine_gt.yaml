@@ -20,6 +20,7 @@ as_graph: !yamlable/CAIDAASGraph
             - 777
             communities: []
             prefix: 1.2.0.0/16
+            prefix_block_id: 1
             recv_relationship: !simulator_codec/PyRelationships
               name: PROVIDERS
               value: 1
@@ -35,6 +36,7 @@ as_graph: !yamlable/CAIDAASGraph
             - 666
             communities: []
             prefix: 1.2.3.0/24
+            prefix_block_id: 0
             recv_relationship: !simulator_codec/PyRelationships
               name: CUSTOMERS
               value: 3
@@ -67,6 +69,7 @@ as_graph: !yamlable/CAIDAASGraph
             - 777
             communities: []
             prefix: 1.2.0.0/16
+            prefix_block_id: 1
             recv_relationship: !simulator_codec/PyRelationships
               name: PROVIDERS
               value: 1
@@ -82,6 +85,7 @@ as_graph: !yamlable/CAIDAASGraph
             - 666
             communities: []
             prefix: 1.2.3.0/24
+            prefix_block_id: 0
             recv_relationship: !simulator_codec/PyRelationships
               name: CUSTOMERS
               value: 3
@@ -113,6 +117,7 @@ as_graph: !yamlable/CAIDAASGraph
             - 777
             communities: []
             prefix: 1.2.0.0/16
+            prefix_block_id: 1
             recv_relationship: !simulator_codec/PyRelationships
               name: PEERS
               value: 2
@@ -141,6 +146,7 @@ as_graph: !yamlable/CAIDAASGraph
             - 777
             communities: []
             prefix: 1.2.0.0/16
+            prefix_block_id: 1
             recv_relationship: !simulator_codec/PyRelationships
               name: CUSTOMERS
               value: 3
@@ -174,6 +180,7 @@ as_graph: !yamlable/CAIDAASGraph
             - 777
             communities: []
             prefix: 1.2.0.0/16
+            prefix_block_id: 1
             recv_relationship: !simulator_codec/PyRelationships
               name: PEERS
               value: 2
@@ -190,6 +197,7 @@ as_graph: !yamlable/CAIDAASGraph
             - 666
             communities: []
             prefix: 1.2.3.0/24
+            prefix_block_id: 0
             recv_relationship: !simulator_codec/PyRelationships
               name: CUSTOMERS
               value: 3
@@ -223,6 +231,7 @@ as_graph: !yamlable/CAIDAASGraph
             - 777
             communities: []
             prefix: 1.2.0.0/16
+            prefix_block_id: 1
             recv_relationship: !simulator_codec/PyRelationships
               name: CUSTOMERS
               value: 3
@@ -253,6 +262,7 @@ as_graph: !yamlable/CAIDAASGraph
             - 777
             communities: []
             prefix: 1.2.0.0/16
+            prefix_block_id: 1
             recv_relationship: !simulator_codec/PyRelationships
               name: CUSTOMERS
               value: 3
@@ -271,6 +281,7 @@ as_graph: !yamlable/CAIDAASGraph
             - 666
             communities: []
             prefix: 1.2.3.0/24
+            prefix_block_id: 0
             recv_relationship: !simulator_codec/PyRelationships
               name: PROVIDERS
               value: 1
@@ -304,6 +315,7 @@ as_graph: !yamlable/CAIDAASGraph
             - 777
             communities: []
             prefix: 1.2.0.0/16
+            prefix_block_id: 1
             recv_relationship: !simulator_codec/PyRelationships
               name: CUSTOMERS
               value: 3
@@ -321,6 +333,7 @@ as_graph: !yamlable/CAIDAASGraph
             - 666
             communities: []
             prefix: 1.2.3.0/24
+            prefix_block_id: 0
             recv_relationship: !simulator_codec/PyRelationships
               name: CUSTOMERS
               value: 3
@@ -350,6 +363,7 @@ as_graph: !yamlable/CAIDAASGraph
             - 777
             communities: []
             prefix: 1.2.0.0/16
+            prefix_block_id: 1
             recv_relationship: !simulator_codec/PyRelationships
               name: CUSTOMERS
               value: 3
@@ -381,6 +395,7 @@ as_graph: !yamlable/CAIDAASGraph
             - 777
             communities: []
             prefix: 1.2.0.0/16
+            prefix_block_id: 1
             recv_relationship: !simulator_codec/PyRelationships
               name: PROVIDERS
               value: 1
@@ -395,6 +410,7 @@ as_graph: !yamlable/CAIDAASGraph
             - 666
             communities: []
             prefix: 1.2.3.0/24
+            prefix_block_id: 0
             recv_relationship: !simulator_codec/Relationships
               name: ORIGIN
               value: 4
@@ -423,6 +439,7 @@ as_graph: !yamlable/CAIDAASGraph
             - 777
             communities: []
             prefix: 1.2.0.0/16
+            prefix_block_id: 1
             recv_relationship: !simulator_codec/Relationships
               name: ORIGIN
               value: 4
@@ -442,6 +459,7 @@ as_graph: !yamlable/CAIDAASGraph
             - 666
             communities: []
             prefix: 1.2.3.0/24
+            prefix_block_id: 0
             recv_relationship: !simulator_codec/PyRelationships
               name: PROVIDERS
               value: 1

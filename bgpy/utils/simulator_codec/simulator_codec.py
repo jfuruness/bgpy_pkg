@@ -55,6 +55,7 @@ class SimulatorCodec(YamlCodec):
             return types_to_yaml_tags[type(obj)], {"value": obj.value, "name": obj.name}
         elif isinstance(obj, CPPAnnouncement):
             return types_to_yaml_tags[type(obj)], {
+                "prefix_block_id": obj.prefix_block_id,
                 "prefix": obj.prefix,
                 "as_path": obj.as_path,
                 "timestamp": obj.timestamp,
@@ -64,7 +65,7 @@ class SimulatorCodec(YamlCodec):
                 "recv_relationship": obj.recv_relationship,
                 "withdraw": obj.withdraw,
                 "traceback_end": obj.traceback_end,
-                "communities": obj.communities,
+                # "communities": obj.communities,
             }
         else:
             # Encode the given object and also return the tag it should have

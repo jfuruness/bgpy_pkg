@@ -19,6 +19,7 @@ as_graph: !yamlable/CAIDAASGraph
             - 3
             communities: []
             prefix: 1.2.0.0/16
+            prefix_block_id: 0
             recv_relationship: !simulator_codec/PyRelationships
               name: PEERS
               value: 2
@@ -47,6 +48,7 @@ as_graph: !yamlable/CAIDAASGraph
             - 2
             communities: []
             prefix: 1.2.0.0/16
+            prefix_block_id: 0
             recv_relationship: !simulator_codec/Relationships
               name: ORIGIN
               value: 4
@@ -74,6 +76,7 @@ as_graph: !yamlable/CAIDAASGraph
             - 3
             communities: []
             prefix: 1.2.0.0/16
+            prefix_block_id: 0
             recv_relationship: !simulator_codec/Relationships
               name: ORIGIN
               value: 4
@@ -102,6 +105,7 @@ as_graph: !yamlable/CAIDAASGraph
             - 3
             communities: []
             prefix: 1.2.0.0/16
+            prefix_block_id: 0
             recv_relationship: !simulator_codec/PyRelationships
               name: PROVIDERS
               value: 1

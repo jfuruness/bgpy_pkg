@@ -17,8 +17,8 @@ as_graph: !yamlable/CAIDAASGraph
             as_path:
             - 1
             - 4
-            communities: []
             prefix: 1.2.0.0/16
+            prefix_block_id: 0
             recv_relationship: !simulator_codec/Relationships
               name: CUSTOMERS
               value: 3
@@ -45,8 +45,8 @@ as_graph: !yamlable/CAIDAASGraph
           1.2.0.0/16: !simulator_codec/Announcement
             as_path:
             - 2
-            communities: []
             prefix: 1.2.0.0/16
+            prefix_block_id: 0
             recv_relationship: !simulator_codec/Relationships
               name: ORIGIN
               value: 4
@@ -72,8 +72,8 @@ as_graph: !yamlable/CAIDAASGraph
           1.2.0.0/16: !simulator_codec/Announcement
             as_path:
             - 3
-            communities: []
             prefix: 1.2.0.0/16
+            prefix_block_id: 0
             recv_relationship: !simulator_codec/Relationships
               name: ORIGIN
               value: 4
@@ -98,8 +98,8 @@ as_graph: !yamlable/CAIDAASGraph
           1.2.0.0/16: !simulator_codec/Announcement
             as_path:
             - 4
-            communities: []
             prefix: 1.2.0.0/16
+            prefix_block_id: 0
             recv_relationship: !simulator_codec/Relationships
               name: ORIGIN
               value: 4
@@ -128,8 +128,8 @@ as_graph: !yamlable/CAIDAASGraph
             - 5
             - 1
             - 4
-            communities: []
             prefix: 1.2.0.0/16
+            prefix_block_id: 0
             recv_relationship: !simulator_codec/Relationships
               name: PEERS
               value: 2
