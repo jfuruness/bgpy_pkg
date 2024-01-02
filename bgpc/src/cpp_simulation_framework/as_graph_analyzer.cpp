@@ -109,8 +109,8 @@ int ASGraphAnalyzer::determine_as_outcome_data_plane(const std::shared_ptr<AS>& 
     // Check if there is no announcement or other specific conditions are met
     if (!most_specific_ann ||
         most_specific_ann->as_path.size() == 1 ||
-        most_specific_ann->recv_relationship == Relationships::ORIGIN){
-        //most_specific_ann->traceback_end) {
+        most_specific_ann->recv_relationship == Relationships::ORIGIN ||
+        most_specific_ann->traceback_end) {
         return static_cast<int>(Outcomes::DISCONNECTED);
     }
 

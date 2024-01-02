@@ -7,10 +7,10 @@ RecvQueue::RecvQueue(int max_prefix_block_id) : _info(max_prefix_block_id) {
 }
 
 void RecvQueue::add_ann(const std::shared_ptr<Announcement>& ann) {
-    if (ann->prefix_block_id() >= _info.size()) {
+    if (ann->prefix_block_id >= _info.size()) {
         throw std::out_of_range("Prefix block ID is out of range");
     }
-    _info[ann->prefix_block_id()].push_back(ann);
+    _info[ann->prefix_block_id].push_back(ann);
 }
 
 const std::vector<std::vector<std::shared_ptr<Announcement>>>& RecvQueue::prefix_anns() const {

@@ -139,7 +139,7 @@ void CPPSimulationEngine::seed_announcements(const std::vector<std::shared_ptr<A
         }
 
         auto& obj_to_seed = as_it->second;
-        if (obj_to_seed->policy->localRIB.get_ann(ann->prefix_block_id())) {
+        if (obj_to_seed->policy->localRIB.get_ann(ann->prefix_block_id)) {
             throw std::runtime_error("Seeding conflict: Announcement already exists in the local RIB.");
         }
 
@@ -211,7 +211,7 @@ void CPPSimulationEngine::dump_local_ribs_to_tsv(const std::string& tsv_path) {
     }
 
     // Write TSV header
-    file << "dumping_asn\tprefix\tas_path\ttimestamp\tseed_asn\troa_valid_length\troa_origin\trecv_relationship\twithdraw\n";
+    file << "dumping_asn\tprefix\tas_path\ttimestamp\tseed_asn\troa_valid_length\troa_origin\trecv_relationship\twithdraw\ttraceback_end\tcommunities\n";
 
     // Iterate through AS graph and get announcements from their local RIBs
     for (const auto& asPair : as_graph->as_dict) {
@@ -230,7 +230,7 @@ void CPPSimulationEngine::dump_local_ribs_to_tsv(const std::string& tsv_path) {
             file << std::to_string(asPair.first) << "\t" << ann->prefix() << "\t{" << join(ann->as_path, ",") << "}\t" << ann->timestamp() << "\t"
                  << optionalToString(ann->seed_asn()) << "\t" << booleanToString(ann->roa_valid_length()) << "\t"
                  << optionalToString(ann->roa_origin()) << "\t" << static_cast<int>(ann->recv_relationship) << "\t"
-                 << booleanToString(ann->withdraw(), true) << "\n";
+                 << booleanToString(ann->withdraw(), true) << "\t" << booleanToString(ann->traceback_end, true) << "\n";
                  //<< join(ann->communities, " ") << "\n";
         }
     }

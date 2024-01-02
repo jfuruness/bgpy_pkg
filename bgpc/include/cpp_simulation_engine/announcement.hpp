@@ -10,7 +10,6 @@
 
 class StaticData {
 public:
-    const unsigned short int prefix_block_id;
     const std::string prefix;
     const int timestamp;
     const std::optional<int> seed_asn;
@@ -18,10 +17,10 @@ public:
     const std::optional<int> roa_origin;
     const bool withdraw;
 
-    StaticData(const unsigned short int prefix_block_id, const std::string& prefix, int timestamp, const std::optional<int>& seed_asn,
+    StaticData(const std::string& prefix, int timestamp, const std::optional<int>& seed_asn,
                const std::optional<bool>& roa_valid_length,
                const std::optional<int>& roa_origin, bool withdraw)
-        : prefix_block_id(prefix_block_id), prefix(prefix), timestamp(timestamp), seed_asn(seed_asn),
+        : prefix(prefix), timestamp(timestamp), seed_asn(seed_asn),
           roa_valid_length(roa_valid_length), roa_origin(roa_origin),
           withdraw(withdraw) {}
 };
@@ -31,13 +30,12 @@ class Announcement {
 
 public:
     // To be compatible with python, can't be const
-    //unsigned short int prefix_block_id;
-    const std::shared_ptr<StaticData> staticData;
+    unsigned short int prefix_block_id;
     const std::vector<int> as_path;
     const Relationships recv_relationship;
-    //const bool traceback_end;
+    const bool traceback_end;
     //const std::vector<std::string> communities;
-
+    const std::shared_ptr<StaticData> staticData;
 
     Announcement(unsigned short int prefix_block_id,
                  const std::string& prefix, const std::vector<int>& as_path, int timestamp,
@@ -52,9 +50,6 @@ public:
                  Relationships recv_relationship, bool traceback_end = false,
                  const std::vector<std::string>& communities = {});
 
-    unsigned short int prefix_block_id() const {
-        return staticData->prefix_block_id;
-    }
     std::string prefix() const;
     int timestamp() const;
     std::optional<int> seed_asn() const;

@@ -20,9 +20,9 @@ Announcement::Announcement(
              const std::optional<int>& seed_asn, const std::optional<bool>& roa_valid_length,
              const std::optional<int>& roa_origin, Relationships recv_relationship,
              bool withdraw, bool traceback_end, const std::vector<std::string>& communities)
-    : as_path(as_path),
-      staticData(std::make_shared<StaticData>(prefix_block_id, prefix, timestamp, seed_asn, roa_valid_length, roa_origin, withdraw)),
-      recv_relationship(recv_relationship) {}
+    : prefix_block_id(prefix_block_id), as_path(as_path),
+      staticData(std::make_shared<StaticData>(prefix, timestamp, seed_asn, roa_valid_length, roa_origin, withdraw)),
+      recv_relationship(recv_relationship), traceback_end(traceback_end) {}
       //communities(communities) {}
 
 
@@ -31,11 +31,9 @@ Announcement::Announcement(unsigned short int prefix_block_id,
                            std::shared_ptr<StaticData> staticData, const std::vector<int>& as_path,
                            Relationships recv_relationship, bool traceback_end,
                            const std::vector<std::string>& communities)
-    : staticData(staticData), as_path(as_path),
-      recv_relationship(recv_relationship) {}
+    : prefix_block_id(prefix_block_id), staticData(staticData), as_path(as_path),
+      recv_relationship(recv_relationship), traceback_end(traceback_end) {}
       //communities(communities) {}
-
-
 
 std::string Announcement::prefix() const {
     return staticData->prefix;
@@ -64,15 +62,15 @@ bool Announcement::withdraw() const {
 
 // Equality comparison operator
 bool Announcement::operator==(const Announcement& other) const {
-    return prefix_block_id() == other.prefix_block_id()
+    return prefix_block_id == other.prefix_block_id
         && as_path == other.as_path
         && timestamp() == other.timestamp()
         && seed_asn() == other.seed_asn()
         && roa_valid_length() == other.roa_valid_length()
         && roa_origin() == other.roa_origin()
         && recv_relationship == other.recv_relationship
-        && withdraw() == other.withdraw();
-        //&& traceback_end == other.traceback_end;
+        && withdraw() == other.withdraw()
+        && traceback_end == other.traceback_end;
         //&& communities == other.communities;
 }
 
