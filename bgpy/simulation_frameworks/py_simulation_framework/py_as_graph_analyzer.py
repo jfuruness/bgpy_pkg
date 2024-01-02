@@ -15,7 +15,13 @@ if TYPE_CHECKING:
 class PyASGraphAnalyzer(ASGraphAnalyzer):
     """Takes in a SimulationEngine and outputs metrics"""
 
-    def __init__(self, engine: SimulationEngine, scenario: Scenario):
+    def __init__(
+        self,
+        engine: SimulationEngine,
+        scenario: Scenario,
+        data_plane_tracking: bool = True,
+        control_plane_tracking: bool = False,
+    ) -> None:
         self.engine: SimulationEngine = engine
         self.scenario: Scenario = scenario
         self._most_specific_ann_dict: dict[AS, Optional[Union["PyAnn", "CPPAnn"]]] = {
@@ -33,6 +39,8 @@ class PyASGraphAnalyzer(ASGraphAnalyzer):
             Plane.DATA.value: self._data_plane_outcomes,
             Plane.CTRL.value: self._control_plane_outcomes,
         }
+        self.data_plane_tracking: bool = data_plane_tracking
+        self.control_plane_tracking: bool = control_plane_tracking
 
     def _get_most_specific_ann(self, as_obj: AS) -> Optional[Union["PyAnn", "CPPAnn"]]:
         """Returns the most specific announcement that exists in a rib
@@ -52,9 +60,11 @@ class PyASGraphAnalyzer(ASGraphAnalyzer):
         """Takes in engine and outputs traceback for ctrl + data plane data"""
 
         for as_obj in self.engine.as_graph:
-            # Gets AS outcome and stores it in the outcomes dict
-            self._get_as_outcome_data_plane(as_obj)
-            # self._get_as_outcome_ctrl_plane(as_obj)
+            if self.data_plane_tracking:
+                # Gets AS outcome and stores it in the outcomes dict
+                self._get_as_outcome_data_plane(as_obj)
+            if self.control_plane_tracking:
+                self._get_as_outcome_ctrl_plane(as_obj)
             self._get_other_as_outcome_hook(as_obj)
         return self.outcomes
 

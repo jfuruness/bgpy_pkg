@@ -12,7 +12,13 @@ from bgpy.simulation_frameworks.py_simulation_framework.scenarios import Scenari
 class CPPASGraphAnalyzer(ASGraphAnalyzer):
     """Takes in a SimulationEngine and outputs metrics"""
 
-    def __init__(self, engine: CPPSimulationEngine, scenario: Scenario):
+    def __init__(
+        self,
+        engine: CPPSimulationEngine,
+        scenario: Scenario,
+        data_plane_tracking: bool = True,
+        control_plane_tracking: bool = False,
+    ) -> None:
         self.engine: CPPSimulationEngine = engine
         assert isinstance(self.engine, CPPSimulationEngine), "C++ will explode"
         self.scenario: Scenario = scenario
@@ -22,6 +28,8 @@ class CPPASGraphAnalyzer(ASGraphAnalyzer):
             list(range(len(self.scenario.ordered_prefix_subprefix_dict))),
             self.scenario.victim_asns.copy(),
             self.scenario.attacker_asns.copy(),
+            data_plane_tracking=data_plane_tracking,
+            control_plane_tracking=control_plane_tracking
         )
 
     def analyze(self) -> dict[int, dict[int, Union["CPPOutcomes", "PyOutcomes"]]]:

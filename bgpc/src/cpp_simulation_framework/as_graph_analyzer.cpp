@@ -8,11 +8,15 @@
 ASGraphAnalyzer::ASGraphAnalyzer(std::shared_ptr<CPPSimulationEngine> engine,
                              const std::vector<unsigned short int>& ordered_prefix_block_ids,
                              const std::unordered_set<int>& victim_asns,
-                             const std::unordered_set<int>& attacker_asns)
+                             const std::unordered_set<int>& attacker_asns,
+                             bool data_plane_tracking,
+                             bool control_plane_tracking)
     : engine(engine),
       ordered_prefix_block_ids(ordered_prefix_block_ids),
       victim_asns(victim_asns),
-      attacker_asns(attacker_asns) {
+      attacker_asns(attacker_asns),
+      data_plane_tracking(data_plane_tracking),
+      control_plane_tracking(control_plane_tracking){
 
     // Reserve sizes for speed
     control_plane_outcomes.reserve(ordered_prefix_block_ids.size());
@@ -32,17 +36,21 @@ std::unordered_map<int, std::unordered_map<int, int>> ASGraphAnalyzer::analyze()
         auto& as_obj = as_obj_pair.second; // Assuming as_graph is a map from IDs to AS shared_ptrs
 
         // Data Plane Analysis
-        int data_outcome = get_as_outcome_data_plane(as_obj);
-        data_plane_outcomes[as_obj->asn] = data_outcome;
+        if(data_plane_tracking){
+            int data_outcome = get_as_outcome_data_plane(as_obj);
+            data_plane_outcomes[as_obj->asn] = data_outcome;
+        }
 
         // Control Plane Analysis
-        //int ctrl_outcome = get_as_outcome_ctrl_plane(as_obj);
-        //control_plane_outcomes[as_obj->asn] = ctrl_outcome;
+        if (control_plane_tracking){
+            int ctrl_outcome = get_as_outcome_ctrl_plane(as_obj);
+            control_plane_outcomes[as_obj->asn] = ctrl_outcome;
+        }
     }
 
     // Using integer values from the Plane enum as keys
     outcomes[static_cast<int>(Plane::DATA)] = data_plane_outcomes;
-    //outcomes[static_cast<int>(Plane::CTRL)] = control_plane_outcomes;
+    outcomes[static_cast<int>(Plane::CTRL)] = control_plane_outcomes;
     return outcomes;
 }
 
@@ -171,7 +179,15 @@ int ASGraphAnalyzer::get_as_outcome_ctrl_plane(std::shared_ptr<AS> as_obj) {
     }
 
     // Get the most specific announcement for the AS
-    std::optional<std::shared_ptr<Announcement>> most_specific_ann = most_specific_ann_dict[as_obj->asn];
+    // std::optional<std::shared_ptr<Announcement>> most_specific_ann = most_specific_ann_dict[as_obj->asn];
+    std::optional<std::shared_ptr<Announcement>> most_specific_ann = std::nullopt;
+    for (const auto& prefix_block_id : ordered_prefix_block_ids) {
+        std::shared_ptr<Announcement> most_specific_ann = as_obj->policy->localRIB.get_ann(prefix_block_id);
+        if (most_specific_ann) {
+            break;
+        }
+    }
+
 
     // Determine the outcome based on the most specific announcement
     int outcome = determine_as_outcome_ctrl_plane(as_obj, most_specific_ann);

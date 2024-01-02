@@ -70,6 +70,10 @@ class PySimulation(Simulation):
         SimulationEngineCls: type[SimulationEngine] = PySimulationEngine,
         ASGraphAnalyzerCls: type[ASGraphAnalyzer] = PyASGraphAnalyzer,
         MetricTrackerCls: type[MetricTracker] = MetricTracker,
+        # Data plane tracking for traceback and MetricTrackerCls
+        data_plane_tracking: bool = True,
+        # Control plane trackign for traceback and MetricTrackerCls
+        control_plane_tracking: bool = False,
     ) -> None:
         """Downloads relationship data, runs simulation
 
@@ -102,6 +106,9 @@ class PySimulation(Simulation):
 
         self.ASGraphAnalyzerCls: type[ASGraphAnalyzer] = ASGraphAnalyzerCls
         self.MetricTrackerCls: type[MetricTracker] = MetricTrackerCls
+
+        self.data_plane_tracking: bool = data_plane_tracking
+        self.control_plane_tracking: bool = control_plane_tracking
 
     def run(
         self,
@@ -308,7 +315,12 @@ class PySimulation(Simulation):
         # The reason we aggregate info right now, instead of saving
         # the engine and doing it later, is because doing it all
         # in RAM is MUCH faster, and speed is important
-        outcomes = self.ASGraphAnalyzerCls(engine=engine, scenario=scenario).analyze()
+        outcomes = self.ASGraphAnalyzerCls(
+            engine=engine,
+            scenario=scenario,
+            data_plane_tracking=self.data_plane_tracking,
+            control_plane_tracking=self.control_plane_tracking,
+        ).analyze()
 
         metric_tracker.track_trial_metrics(
             engine=engine,

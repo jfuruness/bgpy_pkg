@@ -111,11 +111,15 @@ PYBIND11_MODULE(bgpc, m) {
         .def(py::init<std::shared_ptr<CPPSimulationEngine>,
                       const std::vector<unsigned short int>&,
                       const std::unordered_set<int>&,
-                      const std::unordered_set<int>&>(),
+                      const std::unordered_set<int>&,
+                      bool,
+                      bool>(),
              py::arg("engine"),
              py::arg("ordered_prefixes"),
              py::arg("victim_asns"),
-             py::arg("attacker_asns"))
+             py::arg("attacker_asns"),
+             py::arg("data_plane_tracking") = true,
+             py::arg("control_plane_tracking") = false)
         .def("analyze", &ASGraphAnalyzer::analyze);
     /*
 	py::class_<Announcement, std::shared_ptr<Announcement>>(m, "Announcement")

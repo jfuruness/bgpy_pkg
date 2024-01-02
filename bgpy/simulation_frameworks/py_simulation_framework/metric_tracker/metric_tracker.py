@@ -227,10 +227,7 @@ class MetricTracker:
     ) -> None:
         """Populates all metrics with data"""
 
-        try:
-            ctrl_plane_outcomes = outcomes[Plane.CTRL.value]
-        except KeyError:
-            pass
+        ctrl_plane_outcomes = outcomes[Plane.CTRL.value]
         data_plane_outcomes = outcomes[Plane.DATA.value]
 
         # Don't count these!
@@ -241,12 +238,21 @@ class MetricTracker:
             if as_obj.asn in uncountable_asns:
                 continue
             for metric in metrics:
+                # Must use .get, since if this tracking is turned off,
+                # this will be an empty dict
+                ctrl_plane_outcome = ctrl_plane_outcomes.get(
+                    as_obj.asn, PyOutcomes.UNDETERMINED.value
+                )
+                data_plane_outcome = data_plane_outcomes.get(
+                    as_obj.asn, PyOutcomes.UNDETERMINED.value
+                )
+
                 metric.add_data(
                     as_obj=as_obj,
                     engine=engine,
                     scenario=scenario,
-                    ctrl_plane_outcome=PyOutcomes.UNDETERMINED.value,  # ctrl_plane_outcomes[as_obj.asn],
-                    data_plane_outcome=data_plane_outcomes[as_obj.asn],
+                    ctrl_plane_outcome=ctrl_plane_outcome,
+                    data_plane_outcome=data_plane_outcome,
                 )
         # Only call this once or else it adds significant amounts of time
         for metric in metrics:
