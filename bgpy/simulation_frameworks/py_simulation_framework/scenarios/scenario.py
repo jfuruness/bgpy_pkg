@@ -93,7 +93,7 @@ class Scenario(ABC):
                    "prefix_block_ids should go from most specific prefix at 0 "
                    "to least specific prefix to be compatible with the C++")
 
-            assert ann.prefix_block_id == prefix_to_block_id[ann.prefix] or isinstance(ann, PyAnn)
+            assert ann.prefix_block_id == prefix_to_block_id[ann.prefix] or isinstance(ann, PyAnn), msg
 
     #################
     # Get attackers #

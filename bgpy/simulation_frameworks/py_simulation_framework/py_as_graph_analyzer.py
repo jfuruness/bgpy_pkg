@@ -1,4 +1,4 @@
-from typing import Any, Optional, TYPE_CHECKING, Union
+from typing import Optional, TYPE_CHECKING, Union
 
 from bgpy.as_graphs import AS
 from bgpy.enums import Plane, CPPOutcomes, PyOutcomes, PyRelationships
