@@ -52,7 +52,7 @@ void CPPSimulationEngine::setup(
 
 void CPPSimulationEngine::run(const int propagation_round) {
 
-    // auto start = std::chrono::high_resolution_clock::now();
+    auto start = std::chrono::high_resolution_clock::now();
     // Ensure that the simulator is ready to run this round
     if (ready_to_run_round != propagation_round) {
         throw std::runtime_error("Engine not set up to run for round " + std::to_string(propagation_round));
@@ -63,10 +63,10 @@ void CPPSimulationEngine::run(const int propagation_round) {
 
     // Increment the ready to run round
     ready_to_run_round++;
-    //auto end = std::chrono::high_resolution_clock::now();
-    //std::chrono::duration<double> elapsed = end - start;
-    //std::cout << "Propagated in "
-    //          << std::fixed << std::setprecision(2) << elapsed.count() << " seconds." << std::endl;
+    auto end = std::chrono::high_resolution_clock::now();
+    std::chrono::duration<double> elapsed = end - start;
+    std::cout << "Propagated in "
+              << std::fixed << std::setprecision(2) << elapsed.count() << " seconds." << std::endl;
 
 }
 

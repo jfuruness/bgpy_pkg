@@ -95,7 +95,6 @@ class CPPSimulationEngine(SimulationEngine):
                 Cls = non_default_asn_cls_dict.get(asn, BasePolicyCls)
                 as_obj.policy = Cls(as_=as_obj)
 
-
         return frozenset(policies_used)
 
     #####################
