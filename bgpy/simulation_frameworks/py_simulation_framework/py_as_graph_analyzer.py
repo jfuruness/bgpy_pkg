@@ -1,7 +1,7 @@
 from typing import Optional, TYPE_CHECKING, Union
 
 from bgpy.as_graphs import AS
-from bgpy.enums import Plane, CPPOutcomes, PyOutcomes, PyRelationships
+from bgpy.enums import Plane, PyOutcomes, PyRelationships
 from bgpy.simulation_engines.base import SimulationEngine
 from bgpy.simulation_frameworks.base import ASGraphAnalyzer
 

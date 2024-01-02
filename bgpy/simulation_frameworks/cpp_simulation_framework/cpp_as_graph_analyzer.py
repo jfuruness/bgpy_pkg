@@ -1,8 +1,5 @@
-from typing import Union
-
 from bgpy.bgpc import ASGraphAnalyzer as _CPPASGraphAnalyzer
 
-from bgpy.enums import CPPOutcomes, PyOutcomes
 from bgpy.simulation_engines.cpp_simulation_engine import CPPSimulationEngine
 from bgpy.simulation_frameworks.base import ASGraphAnalyzer
 
