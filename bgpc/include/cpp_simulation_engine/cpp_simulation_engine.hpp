@@ -39,7 +39,7 @@ public:
                const std::unordered_map<int, std::string>& non_default_asn_cls_str_dict = {},
                int max_prefix_block_id = 0);
 
-    void run(int propagation_round = 0);
+    void run(const int propagation_round = 0);
     std::map<int, std::vector<std::shared_ptr<Announcement>>> get_announcements();
 
 protected:
@@ -50,10 +50,10 @@ protected:
     void set_as_classes(const std::string& base_policy_class_str, const std::unordered_map<int, std::string>& non_default_asn_cls_str_dict, const int max_prefix_block_id);
     void seed_announcements(const std::vector<std::shared_ptr<Announcement>>& announcements);
 
-    void propagate(int propagation_round);
-    void propagate_to_providers(int propagation_round);
-    void propagate_to_peers(int propagation_round);
-    void propagate_to_customers(int propagation_round);
+    void propagate(const int propagation_round);
+    void propagate_to_providers(const int propagation_round);
+    void propagate_to_peers(const int propagation_round);
+    void propagate_to_customers(const int propagation_round);
 
     // CSV Helper functions
     template <typename T>

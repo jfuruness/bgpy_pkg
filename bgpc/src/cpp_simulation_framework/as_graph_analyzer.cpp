@@ -118,7 +118,7 @@ int ASGraphAnalyzer::determine_as_outcome_data_plane(const std::shared_ptr<AS>& 
     return static_cast<int>(Outcomes::UNDETERMINED);
 }
 
-int ASGraphAnalyzer::get_as_outcome_ctrl_plane(std::shared_ptr<AS> as_obj) {
+int ASGraphAnalyzer::get_as_outcome_ctrl_plane(const std::shared_ptr<AS>& as_obj) {
     // Check if the outcome is already computed for the AS
     auto it = control_plane_outcomes.find(as_obj->asn);
     if (it != control_plane_outcomes.end()) {
@@ -138,7 +138,7 @@ int ASGraphAnalyzer::get_as_outcome_ctrl_plane(std::shared_ptr<AS> as_obj) {
     return outcome;
 }
 
-int ASGraphAnalyzer::determine_as_outcome_ctrl_plane(std::shared_ptr<AS> as_obj, std::shared_ptr<Announcement> ann) {
+int ASGraphAnalyzer::determine_as_outcome_ctrl_plane(const std::shared_ptr<AS>& as_obj, const std::shared_ptr<Announcement>& ann) {
     // If there is no announcement, the AS is considered disconnected in the control plane
     if (!ann) {
         return static_cast<int>(Outcomes::DISCONNECTED);
@@ -159,7 +159,7 @@ int ASGraphAnalyzer::determine_as_outcome_ctrl_plane(std::shared_ptr<AS> as_obj,
     return static_cast<int>(Outcomes::DISCONNECTED);
 }
 
-int ASGraphAnalyzer::get_other_as_outcome_hook(std::shared_ptr<AS> as_obj) {
+int ASGraphAnalyzer::get_other_as_outcome_hook(const std::shared_ptr<AS>& as_obj) {
     // Used to satisfy type checker, hook method for other metrics
     return static_cast<int>(Outcomes::ATTACKER_SUCCESS);
 }

@@ -50,7 +50,7 @@ void CPPSimulationEngine::setup(
 
 }
 
-void CPPSimulationEngine::run(int propagation_round) {
+void CPPSimulationEngine::run(const int propagation_round) {
 
     // auto start = std::chrono::high_resolution_clock::now();
     // Ensure that the simulator is ready to run this round
@@ -85,13 +85,7 @@ void CPPSimulationEngine::register_policies() {
         return std::make_unique<BGPSimplePolicy>(max_prefix_block_id, std::move(local_rib), std::move(recv_queue));
     });
 
-    register_policy_factory("BGP", [](int max_prefix_block_id, LocalRIB&& local_rib, RecvQueue&& recv_queue) -> std::unique_ptr<Policy>{
-        return std::make_unique<BGPSimplePolicy>(max_prefix_block_id, std::move(local_rib), std::move(recv_queue));
-    });
     register_policy_factory("ROVSimple", [](int max_prefix_block_id, LocalRIB&& local_rib, RecvQueue&& recv_queue) -> std::unique_ptr<Policy>{
-        return std::make_unique<ROVSimplePolicy>(max_prefix_block_id, std::move(local_rib), std::move(recv_queue));
-    });
-    register_policy_factory("ROV", [](int max_prefix_block_id, LocalRIB&& local_rib, RecvQueue&& recv_queue) -> std::unique_ptr<Policy>{
         return std::make_unique<ROVSimplePolicy>(max_prefix_block_id, std::move(local_rib), std::move(recv_queue));
     });
     register_policy_factory("RealPeerROVSimple", [](int max_prefix_block_id, LocalRIB&& local_rib, RecvQueue&& recv_queue) -> std::unique_ptr<Policy>{
@@ -156,12 +150,12 @@ void CPPSimulationEngine::seed_announcements(const std::vector<std::shared_ptr<A
 
 ///////////////////propagation funcs
 
-void CPPSimulationEngine::propagate(int propagation_round) {
+void CPPSimulationEngine::propagate(const int propagation_round) {
     propagate_to_providers(propagation_round);
     propagate_to_peers(propagation_round);
     propagate_to_customers(propagation_round);
 }
-void CPPSimulationEngine::propagate_to_providers(int propagation_round) {
+void CPPSimulationEngine::propagate_to_providers(const int propagation_round) {
     for (size_t i = 0; i < as_graph->propagation_ranks.size(); ++i) {
         auto& rank = as_graph->propagation_ranks[i];
 
@@ -176,7 +170,7 @@ void CPPSimulationEngine::propagate_to_providers(int propagation_round) {
         }
     }
 }
-void CPPSimulationEngine::propagate_to_peers(int propagation_round) {
+void CPPSimulationEngine::propagate_to_peers(const int propagation_round) {
     for (auto& [asn, as_obj] : as_graph->as_dict) {
         as_obj->policy->propagate_to_peers();
     }
@@ -186,7 +180,7 @@ void CPPSimulationEngine::propagate_to_peers(int propagation_round) {
     }
 }
 
-void CPPSimulationEngine::propagate_to_customers(int propagation_round) {
+void CPPSimulationEngine::propagate_to_customers(const int propagation_round) {
     auto& ranks = as_graph->propagation_ranks;
     size_t i = 0; // Initialize i to 0
 
