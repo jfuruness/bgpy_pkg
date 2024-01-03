@@ -303,7 +303,7 @@ void CPPSimulationEngine::dump_local_ribs_to_tsv(const std::string& tsv_path) {
             file << std::to_string(asPair.first) << "\t" << ann->prefix() << "\t{" << join(ann->as_path, ",") << "}\t" << ann->timestamp() << "\t"
                  << optionalToString(ann->seed_asn()) << "\t" << booleanToString(ann->roa_valid_length()) << "\t"
                  << optionalToString(ann->roa_origin()) << "\t" << static_cast<int>(ann->recv_relationship) << "\t"
-                 << booleanToString(ann->withdraw(), true) << "\t" << booleanToString(ann->traceback_end, true) << "\t";
+                 << booleanToString(ann->withdraw(), true) << "\t" << booleanToString(ann->traceback_end, true) << "\t"
                  << "" << "\n";//join(ann->communities, " ") << "\n";
         }
     }

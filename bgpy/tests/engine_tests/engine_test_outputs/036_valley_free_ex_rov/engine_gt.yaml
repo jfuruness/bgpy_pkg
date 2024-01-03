@@ -2,6 +2,7 @@
 as_graph: !yamlable/CAIDAASGraph
   as_dict:
     1: !yamlable/AS
+      as_rank: 2
       asn: 1
       customer_cone_size: 1
       customers: !!python/tuple
@@ -51,6 +52,7 @@ as_graph: !yamlable/CAIDAASGraph
       providers: !!python/tuple
       - 5
     2: !yamlable/AS
+      as_rank: 2
       asn: 2
       customer_cone_size: 1
       customers: !!python/tuple
@@ -100,6 +102,7 @@ as_graph: !yamlable/CAIDAASGraph
       providers: !!python/tuple
       - 5
     3: !yamlable/AS
+      as_rank: 6
       asn: 3
       customer_cone_size: 0
       customers: !!python/tuple []
@@ -131,6 +134,7 @@ as_graph: !yamlable/CAIDAASGraph
       propagation_rank: 0
       providers: !!python/tuple []
     4: !yamlable/AS
+      as_rank: 2
       asn: 4
       customer_cone_size: 1
       customers: !!python/tuple
@@ -161,6 +165,7 @@ as_graph: !yamlable/CAIDAASGraph
       providers: !!python/tuple
       - 8
     5: !yamlable/AS
+      as_rank: 0
       asn: 5
       customer_cone_size: 3
       customers: !!python/tuple
@@ -212,6 +217,7 @@ as_graph: !yamlable/CAIDAASGraph
       providers: !!python/tuple
       - 10
     8: !yamlable/AS
+      as_rank: 1
       asn: 8
       customer_cone_size: 2
       customers: !!python/tuple
@@ -246,6 +252,7 @@ as_graph: !yamlable/CAIDAASGraph
       providers: !!python/tuple
       - 10
     9: !yamlable/AS
+      as_rank: 2
       asn: 9
       customer_cone_size: 1
       customers: !!python/tuple
@@ -297,6 +304,7 @@ as_graph: !yamlable/CAIDAASGraph
       - 10
       - 11
     10: !yamlable/AS
+      as_rank: 0
       asn: 10
       customer_cone_size: 8
       customers: !!python/tuple
@@ -347,6 +355,7 @@ as_graph: !yamlable/CAIDAASGraph
       propagation_rank: 3
       providers: !!python/tuple []
     11: !yamlable/AS
+      as_rank: 6
       asn: 11
       customer_cone_size: 0
       customers: !!python/tuple
@@ -377,6 +386,7 @@ as_graph: !yamlable/CAIDAASGraph
       propagation_rank: 2
       providers: !!python/tuple []
     666: !yamlable/AS
+      as_rank: 6
       asn: 666
       customer_cone_size: 0
       customers: !!python/tuple []
@@ -426,6 +436,7 @@ as_graph: !yamlable/CAIDAASGraph
       - 1
       - 2
     777: !yamlable/AS
+      as_rank: 6
       asn: 777
       customer_cone_size: 0
       customers: !!python/tuple []

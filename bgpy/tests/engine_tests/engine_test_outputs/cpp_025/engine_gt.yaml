@@ -2,6 +2,7 @@
 as_graph: !yamlable/CAIDAASGraph
   as_dict:
     1: !yamlable/AS
+      as_rank: 0
       asn: 1
       customer_cone_size: 5
       customers: !!python/tuple
@@ -33,6 +34,7 @@ as_graph: !yamlable/CAIDAASGraph
       propagation_rank: 3
       providers: !!python/tuple []
     2: !yamlable/AS
+      as_rank: 0
       asn: 2
       customer_cone_size: 2
       customers: !!python/tuple
@@ -63,6 +65,7 @@ as_graph: !yamlable/CAIDAASGraph
       providers: !!python/tuple
       - 1
     3: !yamlable/AS
+      as_rank: 0
       asn: 3
       customer_cone_size: 2
       customers: !!python/tuple
@@ -93,6 +96,7 @@ as_graph: !yamlable/CAIDAASGraph
       providers: !!python/tuple
       - 1
     4: !yamlable/AS
+      as_rank: 2
       asn: 4
       customer_cone_size: 1
       customers: !!python/tuple
@@ -122,6 +126,7 @@ as_graph: !yamlable/CAIDAASGraph
       providers: !!python/tuple
       - 3
     5: !yamlable/AS
+      as_rank: 2
       asn: 5
       customer_cone_size: 1
       customers: !!python/tuple
@@ -151,6 +156,7 @@ as_graph: !yamlable/CAIDAASGraph
       providers: !!python/tuple
       - 2
     777: !yamlable/AS
+      as_rank: 4
       asn: 777
       customer_cone_size: 0
       customers: !!python/tuple []

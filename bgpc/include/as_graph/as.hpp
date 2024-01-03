@@ -18,6 +18,7 @@ public:
     bool multihomed;
     bool transit;
     long long customer_cone_size;
+    long long as_rank;
     long long propagation_rank;
 
     AS(int asn);

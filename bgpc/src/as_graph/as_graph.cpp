@@ -56,7 +56,7 @@ ASGraph readASGraph(const std::string& filename) {
     std::string line;
 
     std::getline(file, line);
-    std::string expectedHeaderStart = "asn\tpeers\tcustomers\tproviders\tinput_clique\tixp\tcustomer_cone_size\tpropagation_rank\tstubs\tstub\tmultihomed\ttransit";
+    std::string expectedHeaderStart = "asn\tpeers\tcustomers\tproviders\tinput_clique\tixp\tcustomer_cone_size\tas_rank\tpropagation_rank\tstubs\tstub\tmultihomed\ttransit";
     if (line.find(expectedHeaderStart) != 0) {
         throw std::runtime_error("File header does not start with the expected format.");
     }
@@ -102,10 +102,11 @@ ASGraph readASGraph(const std::string& filename) {
         as->input_clique = (tokens[4] == "True");
         as->ixp = (tokens[5] == "True");
         as->customer_cone_size = std::stoll(tokens[6]);
-        as->propagation_rank = std::stoll(tokens[7]);
-        as->stub = (tokens[9] == "True");
-        as->multihomed = (tokens[10] == "True");
-        as->transit = (tokens[11] == "True");
+        as->as_rank = std::stoll(tokens[7]);
+        as->propagation_rank = std::stoll(tokens[8]);
+        as->stub = (tokens[10] == "True");
+        as->multihomed = (tokens[11] == "True");
+        as->transit = (tokens[12] == "True");
     }
     asGraph.calculatePropagationRanks();
 

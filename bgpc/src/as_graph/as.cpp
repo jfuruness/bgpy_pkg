@@ -11,6 +11,7 @@ AS::AS(int asn)
       multihomed(false),
       transit(false),
       customer_cone_size(0),
+      as_rank(0),
       propagation_rank(0) {
     // Can't set 'policy->as' here, AS must already be accessed by shared_ptr before calling else err
 }

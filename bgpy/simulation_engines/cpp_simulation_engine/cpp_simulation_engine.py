@@ -50,6 +50,7 @@ class CPPSimulationEngine(SimulationEngine):
 
     def get_announcements(self):
         return self._cpp_simulation_engine.get_announcements()
+
     ###############
     # Setup funcs #
     ###############

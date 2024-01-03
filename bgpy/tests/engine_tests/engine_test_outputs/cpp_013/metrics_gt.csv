@@ -1,10 +1,10 @@
 scenario_cls,AdoptingPolicyCls,BasePolicyCls,PolicyCls,outcome_type,as_group,outcome,percent_adopt,propagation_round,value,yerr,scenario_config_label
-NonRoutedSuperprefixHijack,ROVSimplePolicy,BGPSimplePolicy,ROVSimplePolicy,DATA,all_wout_ixps,ATTACKER_SUCCESS,0,0,,0,
+NonRoutedSuperprefixHijack,ROVSimplePolicy,BGPSimplePolicy,ROVSimplePolicy,DATA,all_wout_ixps,ATTACKER_SUCCESS,0,0,100.0,0.0,
 NonRoutedSuperprefixHijack,ROVSimplePolicy,BGPSimplePolicy,BGPSimplePolicy,DATA,all_wout_ixps,ATTACKER_SUCCESS,0,0,100.0,0.0,
 NonRoutedSuperprefixHijack,ROVSimplePolicy,BGPSimplePolicy,Any,DATA,all_wout_ixps,ATTACKER_SUCCESS,0,0,100.0,0.0,
-NonRoutedSuperprefixHijack,ROVSimplePolicy,BGPSimplePolicy,ROVSimplePolicy,DATA,all_wout_ixps,VICTIM_SUCCESS,0,0,,0,
+NonRoutedSuperprefixHijack,ROVSimplePolicy,BGPSimplePolicy,ROVSimplePolicy,DATA,all_wout_ixps,VICTIM_SUCCESS,0,0,0.0,0.0,
 NonRoutedSuperprefixHijack,ROVSimplePolicy,BGPSimplePolicy,BGPSimplePolicy,DATA,all_wout_ixps,VICTIM_SUCCESS,0,0,0.0,0.0,
 NonRoutedSuperprefixHijack,ROVSimplePolicy,BGPSimplePolicy,Any,DATA,all_wout_ixps,VICTIM_SUCCESS,0,0,0.0,0.0,
-NonRoutedSuperprefixHijack,ROVSimplePolicy,BGPSimplePolicy,ROVSimplePolicy,DATA,all_wout_ixps,DISCONNECTED,0,0,,0,
+NonRoutedSuperprefixHijack,ROVSimplePolicy,BGPSimplePolicy,ROVSimplePolicy,DATA,all_wout_ixps,DISCONNECTED,0,0,0.0,0.0,
 NonRoutedSuperprefixHijack,ROVSimplePolicy,BGPSimplePolicy,BGPSimplePolicy,DATA,all_wout_ixps,DISCONNECTED,0,0,0.0,0.0,
 NonRoutedSuperprefixHijack,ROVSimplePolicy,BGPSimplePolicy,Any,DATA,all_wout_ixps,DISCONNECTED,0,0,0.0,0.0,

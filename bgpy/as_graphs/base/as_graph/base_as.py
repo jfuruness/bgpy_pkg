@@ -20,6 +20,7 @@ class AS(YamlAble):
         providers: tuple["AS", ...] = tuple(),
         customers: tuple["AS", ...] = tuple(),
         customer_cone_size: Optional[int] = None,
+        as_rank: Optional[int] = None,
         propagation_rank: Optional[int] = None,
         policy: Optional["Policy"] = None,
     ) -> None:
@@ -34,6 +35,7 @@ class AS(YamlAble):
         self.input_clique: bool = input_clique
         self.ixp: bool = ixp
         self.customer_cone_size: Optional[int] = customer_cone_size
+        self.as_rank: Optional[int] = as_rank
         # Propagation rank. Rank leaves to clique
         self.propagation_rank: Optional[int] = propagation_rank
 
@@ -89,6 +91,7 @@ class AS(YamlAble):
             "input_clique",
             "ixp",
             "customer_cone_size",
+            "as_rank",
             "propagation_rank",
             # Don't forget the properties
         ) + ("stubs", "stub", "multihomed", "transit")
@@ -141,6 +144,7 @@ class AS(YamlAble):
             "input_clique": self.input_clique,
             "ixp": self.ixp,
             "customer_cone_size": self.customer_cone_size,
+            "as_rank": self.as_rank,
             "propagation_rank": self.propagation_rank,
             "policy": self.policy,
         }

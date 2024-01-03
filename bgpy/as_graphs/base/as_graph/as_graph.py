@@ -23,6 +23,7 @@ from .propagation_rank_funcs import _get_propagation_ranks
 # Customer cone funcs
 from .customer_cone_funcs import _get_customer_cone_size
 from .customer_cone_funcs import _get_cone_size_helper
+from .customer_cone_funcs import _get_as_rank
 
 from bgpy.simulation_engines.base import Policy
 from bgpy.simulation_engines.py_simulation_engine import BGPSimplePolicy
@@ -47,6 +48,7 @@ class ASGraph(YamlAble):
     # Customer cone funcs
     _get_customer_cone_size = _get_customer_cone_size
     _get_cone_size_helper = _get_cone_size_helper
+    _get_as_rank = _get_as_rank
 
     def __init_subclass__(cls, *args, **kwargs):
         """This method essentially creates a list of all subclasses
@@ -146,6 +148,7 @@ class ASGraph(YamlAble):
         if customer_cones:
             # Determine customer cones of all ases
             self._get_customer_cone_size()
+            self._get_as_rank()
 
     def _set_as_groups(
         self,
