@@ -2,6 +2,16 @@
 requires = ["setuptools>=51.0", "wheel", "scikit-build-core>=0.3.3", "pybind11~=2.11"]
 build-backend = "scikit_build_core.build"
 
+[tool.scikit-build]
+wheel.expand-macos-universal-tags = true
+build-dir = "build/{wheel_tag}"
+wheel.packages = ["bgpy"]
+
+[tool.cibuildwheel]
+build-verbosity = 1
+
+
+
 [project]
 name = "bgpy_pkg"
 version = "3.0.0"
@@ -82,14 +92,6 @@ include_package_data = true
 # https://stackoverflow.com/a/76214408/8903959
 [tool.setuptools.packages.find]
 where = ["bgpy"]
-
-[tool.scikit-build]
-wheel.expand-macos-universal-tags = true
-build-dir = "build/{wheel_tag}"
-
-[tool.cibuildwheel]
-build-verbosity = 1
-
 [tool.pytest.ini_options]
 python_files = ["test*.py"]
 python_classes = ["Test*"]
