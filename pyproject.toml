@@ -19,7 +19,7 @@ description = "Simulates BGP and ROV"
 readme = "README.md"
 authors = [
     {name = "Justin Furuness", email = "jfuruness@gmail.com"},
-    {name = "Cameron Morris", email = ""},
+    {name = "Cameron Morris", email = "cameron.morris@uconn.edu"},
     {name = "Reynaldo Morillo", email = "reynaldo.morillo@uconn.edu"}
 ]
 license = {file = "LICENSE.txt"}
