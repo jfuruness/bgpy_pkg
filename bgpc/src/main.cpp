@@ -43,32 +43,10 @@
 #define BOOST_DISABLE_THREADS
 
 
-int main() {
-    try {
-        auto engine = get_engine();
-        // Get announcements from TSV file
-        std::vector<std::shared_ptr<Announcement>> announcements = get_announcements_from_tsv();
-        // Setup the engine with the loaded announcements
-        engine.setup(
-            announcements,
-            "BGPSimplePolicy",
-            {},
-            1000
-        );
-        engine.run();
-        std::cout << "done" << std::endl;
-    } catch (const std::runtime_error& e) {
-        std::cerr << "Error: " << e.what() << std::endl;
-        return 1;
-    }
-    return 0;
-}
-
 namespace py = pybind11;
 #define PYBIND11_DETAILED_ERROR_MESSAGES
 
 PYBIND11_MODULE(bgpc, m) {
-    m.def("main", &main, "what is this desc for?");
     m.def("get_engine", &get_engine, py::arg("filename") = "/home/anon/Desktop/caida.tsv");
     py::enum_<Relationships>(m, "Relationships")
         .value("PROVIDERS", Relationships::PROVIDERS)

@@ -5,6 +5,10 @@
 #include <memory>
 #include <string>
 #include <climits>
+#include <vector>
+#include <map>
+
+
 
 #include "announcement.hpp"
 #include "utils.hpp"
@@ -14,118 +18,137 @@ CPPSimulationEngine get_engine(std::string as_graph_tsv_path) {
     return CPPSimulationEngine(std::move(asGraph));
 }
 
-std::vector<std::shared_ptr<Announcement>> get_announcements_from_tsv(const std::string& path) {
+
+std::vector<std::shared_ptr<Announcement>> get_announcements_from_tsv_for_extrapolation(const std::string& path, const bool origin_only_seeding) {
     std::vector<std::shared_ptr<Announcement>> announcements;
     std::ifstream file(path);
     std::string line;
+    std::map<std::string, size_t> headerIndices;
 
-    // Skip the header line
-    std::getline(file, line);
-    std::string expectedHeaderStart = "prefix_block_id\tprefix\tas_path\ttimestamp\tseed_asn\troa_valid_length\troa_origin\trecv_relationship\twithdraw\ttraceback_end\tcommunities";
-    if (line.find(expectedHeaderStart) != 0) {
-        throw std::runtime_error("TSV file header does not start with the expected format.");
+    // Read the header line
+    if (!std::getline(file, line)) {
+        throw std::runtime_error("TSV file is empty or header is missing.");
     }
 
+    std::istringstream headerStream(line);
+    std::string header;
+    size_t index = 0;
+    while (std::getline(headerStream, header, '\t')) {
+        headerIndices[header] = index++;
+    }
 
+    // Verify required headers
+    std::vector<std::string> requiredHeaders = {
+        "prefix_block_id", "prefix", "as_path", "timestamp", "prefix_id", "roa_validity",
+        "roa_routed",
+    };
+
+    for (const auto& requiredHeader : requiredHeaders) {
+        if (headerIndices.find(requiredHeader) == headerIndices.end()) {
+            throw std::runtime_error("Missing required header: " + requiredHeader);
+        }
+    }
 
     while (std::getline(file, line)) {
         std::istringstream iss(line);
         std::string token;
+        std::vector<std::string> fields(index);
 
-        unsigned short int prefix_block_id;
-        std::string prefix;
+        size_t currentIdx = 0;
+        while (std::getline(iss, token, '\t')) {
+            if (currentIdx < fields.size()) {
+                fields[currentIdx++] = token;
+            }
+        }
+
+        // Validate line format
+        if (currentIdx != index) {
+            throw std::runtime_error("Incorrect number of fields in a line.");
+        }
+
+        // Parse each field using the headerIndices
+        unsigned short int prefix_block_id = std::stoul(fields[headerIndices["prefix_block_id"]]);
+        std::string prefix = fields[headerIndices["prefix"]];
+        std::string asPathStr = fields[headerIndices["as_path"]];
+
+        // Skip line if AS path contains "{", indicating an AS-SET
+        if (asPathStr.find('{') != std::string::npos) {
+            continue;
+        }
+        // Parse as_path (assuming it's a comma-separated list within a single field)
+
         std::vector<int> as_path;
-        int timestamp;
-        std::optional<int> seed_asn;
-        std::optional<bool> roa_valid_length;
-        std::optional<int> roa_origin;
-        Relationships recv_relationship;
-        bool withdraw;
-        bool traceback_end;
-        std::vector<std::string> communities;
+        std::istringstream asPathStream(asPathStr);
+        int asNum;
+        while (asPathStream >> asNum) {
+            as_path.push_back(asNum);
+        }
+        if (as_path.size() == 0){
+            throw std::runtime_error("as path is empty");
+        }
+        int roa_validity = std::stoi(fields[headerIndices["roa_validity"]]);
+        int roa_routed = std::stoi(fields[headerIndices["roa_routed"]]);
+        int timestamp = std::stoi(fields[headerIndices["timestamp"]]);
+        unsigned long prefix_id = std::stoul(fields[headerIndices["prefix_id"]]);
 
-        // Parse each field
-        std::getline(iss, token, '\t');
-        errno = 0;  // Clear errno
-        unsigned long temp = std::strtoul(token.c_str(), nullptr, 10);  // Using base 10 for decimal
+        // TODO: if prefix_id not in valid_prefix_ids, continue
+        //
+        //
 
-        if (errno == ERANGE || temp > USHRT_MAX) {
-            // Handle error: Value out of range for unsigned short
-            throw std::runtime_error("Invalid prefix_block_id: " + token);
+
+        // TODO: this needs to be fixed if we ever want to propagate this info
+        // but for now, this will work correctly with ROV
+        // this info is simply missing from the mrt analysis
+        // both for roa_valid_length and roa_origin
+        std::optional<bool> roa_valid_length = (roa_validity == 0 || roa_validity == 1 || roa_validity == 3);
+        std::optional<int> roa_origin = 0;
+        // TODO: make this proper if we want to check this later
+        // but for now this will accurately work with ROV
+        if (roa_validity == 3 || roa_validity == 4 || roa_routed == 2){
+            roa_origin = 0;
         } else {
-            prefix_block_id = static_cast<unsigned short>(temp);
+            roa_origin = as_path[0];
         }
 
-        std::getline(iss, prefix, '\t');
+        for (size_t i = 0; i < as_path.size(); ++i){
+            std::optional<int> seed_asn = as_path[i];
 
-        // Parse as_path
-        if (std::getline(iss, token, '\t')) {
-            std::istringstream as_path_stream(token.substr(1, token.size() - 2)); // Strip braces
-            std::string as_num;
-            while (std::getline(as_path_stream, as_num, ',')) {
-                as_path.push_back(std::stoi(as_num));
+            std::vector<int> temp_as_path;
+            for (size_t j = i; j < as_path.size(); ++j){
+                temp_as_path.push_back(as_path[i]);
             }
+
+            std::shared_ptr<Announcement> ann = std::make_shared<Announcement>(
+                prefix_block_id,
+                prefix,
+                temp_as_path,
+                timestamp,
+                // seed_asn
+                seed_asn,
+                // roa_valid_length
+                roa_valid_length,
+                // roa_origin
+                roa_origin,
+                // always default to the origin
+                // doesn't matter, we just never want to override
+                // seeding announcements
+                Relationships::ORIGIN,
+                // withdraw
+                false,
+                // traceback_end
+                i == 0,
+                // communities, we don't track these rn
+                {}
+            );
+            // TODO: check if seed_asn is in the set of valid_asbns
+            announcements.push_back(ann);
+
+            // TODO: if origin_only_seeding and seed_asn in the as graph, break
+            // Must check if it's in the graph since we may remove stubs, and
+            // the caida graph might not have every AS. Doesn't mean we should
+            // discard the announcements
         }
-
-        // Parse timestamp, etc.
-        std::getline(iss, token, '\t'); timestamp = std::stoi(token);
-        // Similar parsing for other fields
-
-        if (std::getline(iss, token, '\t') && !token.empty()) {
-            seed_asn = std::stoi(token);
-        }
-
-        // Parse roa_valid_length (optional)
-        if (std::getline(iss, token, '\t') && !token.empty()) {
-            roa_valid_length = (token == "True");
-        }
-
-        // Parse roa_origin (optional)
-        if (std::getline(iss, token, '\t') && !token.empty()) {
-            roa_origin = std::stoi(token);
-        }
-
-        // Parse recv_relationship (convert to enum)
-        if (std::getline(iss, token, '\t') && !token.empty()) {
-            int rel_value = std::stoi(token);
-            switch (rel_value) {
-                case 1: recv_relationship = Relationships::PROVIDERS; break;
-                case 2: recv_relationship = Relationships::PEERS; break;
-                case 3: recv_relationship = Relationships::CUSTOMERS; break;
-                case 4: recv_relationship = Relationships::ORIGIN; break;
-                default:
-                    throw std::runtime_error("Invalid recv_relationship value: " + token);
-            }
-        } else {
-            throw std::runtime_error("Missing or empty recv_relationship value.");
-        }
-        // Assuming Relationships can be converted from int/string
-        // recv_relationship = ...
-
-        // Parse withdraw
-        std::getline(iss, token, '\t');
-        withdraw = (token == "True");
-
-        // Parse traceback_end
-        std::getline(iss, token, '\t');
-        traceback_end = (token == "True");
-
-        // Parse communities
-        if (std::getline(iss, token, '\t') && !token.empty()) {
-            std::istringstream communities_stream(token.substr(1, token.size() - 2)); // Strip braces
-            std::string community;
-            while (std::getline(communities_stream, community, ',')) {
-                communities.push_back(community);
-            }
-        }
-
-        std::shared_ptr<Announcement> ann = std::make_shared<Announcement>(
-            prefix_block_id, prefix, as_path, timestamp, seed_asn, roa_valid_length,
-            roa_origin, recv_relationship, withdraw, traceback_end, communities
-        );
-        announcements.push_back(ann);
     }
 
     return announcements;
 }
-
