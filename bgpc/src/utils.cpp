@@ -7,11 +7,11 @@
 #include <climits>
 #include <vector>
 #include <map>
-
-
+#include <unordered_set>
 
 #include "announcement.hpp"
 #include "utils.hpp"
+
 
 CPPSimulationEngine get_engine(std::string as_graph_tsv_path) {
     auto asGraph = std::make_unique<ASGraph>(readASGraph(as_graph_tsv_path));
@@ -19,7 +19,13 @@ CPPSimulationEngine get_engine(std::string as_graph_tsv_path) {
 }
 
 
-std::vector<std::shared_ptr<Announcement>> get_announcements_from_tsv_for_extrapolation(const std::string& path, const bool origin_only_seeding) {
+std::vector<std::shared_ptr<Announcement>> get_announcements_from_tsv_for_extrapolation(
+    const std::string& path,
+    const bool origin_only_seeding = true,
+    const std::unordered_set<int>& valid_seed_asns = std::unordered_set<int>(),
+    const std::unordered_set<int>& omitted_vantage_point_asns = std::unordered_set<int>(),
+    const std::unordered_set<unsigned long>& valid_prefix_ids = std::unordered_set<unsigned long>()
+) {
     std::vector<std::shared_ptr<Announcement>> announcements;
     std::ifstream file(path);
     std::string line;
@@ -111,44 +117,56 @@ std::vector<std::shared_ptr<Announcement>> get_announcements_from_tsv_for_extrap
         }
 
         for (size_t i = 0; i < as_path.size(); ++i){
-            std::optional<int> seed_asn = as_path[i];
+            // If the seed_asns is not in the list of valid_seed_asns, don't create ann
+            // (valid_seed_asns is typically all non stub ASNs)
+            // Additionally, ensure we aren't seeding anything at the omitted vantage points
+            // Additionally, ensure we have a valid prefix_id
+            if (
+                valid_seed_asns.find(as_path[i]) != valid_seed_asns.end()
+                && omitted_vantage_point_asns.find(as_path[as_path.size() - 1]) == omitted_vantage_point_asns.end()
+                && valid_prefix_ids.find(prefix_id) != valid_prefix_ids.end()
+            ){
+                std::optional<int> seed_asn = as_path[i];
 
-            std::vector<int> temp_as_path;
-            for (size_t j = i; j < as_path.size(); ++j){
-                temp_as_path.push_back(as_path[i]);
+                std::vector<int> temp_as_path;
+                for (size_t j = 0; j <= i; ++j){
+                    temp_as_path.push_back(as_path[j]);
+                }
+
+                std::shared_ptr<Announcement> ann = std::make_shared<Announcement>(
+                    prefix_block_id,
+                    prefix,
+                    temp_as_path,
+                    timestamp,
+                    // seed_asn
+                    seed_asn,
+                    // roa_valid_length
+                    roa_valid_length,
+                    // roa_origin
+                    roa_origin,
+                    // always default to the origin
+                    // doesn't matter, we just never want to override
+                    // seeding announcements
+                    Relationships::ORIGIN,
+                    // withdraw
+                    false,
+                    // traceback_end
+                    i == 0,
+                    // communities, we don't track these rn
+                    {}
+                );
+                // TODO: check if seed_asn is in the set of valid_asbns
+                announcements.push_back(ann);
+                // TODO: if origin_only_seeding and seed_asn in the as graph, break
+                // Must check if it's in the graph since we may remove stubs, and
+                // the caida graph might not have every AS. Doesn't mean we should
+                // discard the announcements. We check if the seed_asn is in the graph
+                // in the if statement above, so we only need to check this here
+                if (origin_only_seeding){
+                    break;
+                }
             }
-
-            std::shared_ptr<Announcement> ann = std::make_shared<Announcement>(
-                prefix_block_id,
-                prefix,
-                temp_as_path,
-                timestamp,
-                // seed_asn
-                seed_asn,
-                // roa_valid_length
-                roa_valid_length,
-                // roa_origin
-                roa_origin,
-                // always default to the origin
-                // doesn't matter, we just never want to override
-                // seeding announcements
-                Relationships::ORIGIN,
-                // withdraw
-                false,
-                // traceback_end
-                i == 0,
-                // communities, we don't track these rn
-                {}
-            );
-            // TODO: check if seed_asn is in the set of valid_asbns
-            announcements.push_back(ann);
-
-            // TODO: if origin_only_seeding and seed_asn in the as graph, break
-            // Must check if it's in the graph since we may remove stubs, and
-            // the caida graph might not have every AS. Doesn't mean we should
-            // discard the announcements
         }
     }
-
     return announcements;
 }
