@@ -41,14 +41,14 @@ public:
 
     void run(const int propagation_round = 0);
     std::map<int, std::vector<std::shared_ptr<Announcement>>> get_announcements();
+    void set_as_classes(const std::string& base_policy_class_str, const std::unordered_map<int, std::string>& non_default_asn_cls_str_dict, const int max_prefix_block_id);
+    void seed_announcements(const std::vector<std::shared_ptr<Announcement>>& announcements);
 
 protected:
     std::map<std::string, PolicyFactoryFunc> name_to_policy_func_dict;
 
     void register_policy_factory(const std::string& name, const PolicyFactoryFunc& factory);
     void register_policies();
-    void set_as_classes(const std::string& base_policy_class_str, const std::unordered_map<int, std::string>& non_default_asn_cls_str_dict, const int max_prefix_block_id);
-    void seed_announcements(const std::vector<std::shared_ptr<Announcement>>& announcements);
 
     void propagate(const int propagation_round);
     void propagate_to_providers(const int propagation_round);

@@ -48,6 +48,18 @@ namespace py = pybind11;
 
 PYBIND11_MODULE(bgpc, m) {
     m.def("get_engine", &get_engine, py::arg("filename") = "/home/anon/Desktop/caida.tsv");
+    // Binding for extrapolate
+    m.def("extrapolate", &extrapolate,
+          py::arg("tsv_paths"),
+          py::arg("origin_only_seeding"),
+          py::arg("valid_seed_asns"),
+          py::arg("omitted_vantage_point_asns"),
+          py::arg("valid_prefix_ids"),
+          py::arg("max_prefix_block_id"),
+          py::arg("output_asns"),
+          py::arg("out_path"),
+          py::arg("non_default_asn_cls_str_dict"),
+          py::arg("caida_tsv_path"));
     py::enum_<Relationships>(m, "Relationships")
         .value("PROVIDERS", Relationships::PROVIDERS)
         .value("PEERS", Relationships::PEERS)
@@ -69,21 +81,6 @@ PYBIND11_MODULE(bgpc, m) {
         .def("dump_local_ribs_to_tsv", &CPPSimulationEngine::dump_local_ribs_to_tsv,
              py::arg("tsv_path"))
         .def("get_announcements", &CPPSimulationEngine::get_announcements);
-        /*
-        .def("setup", [](CPPSimulationEngine& engine, const std::vector<std::shared_ptr<Announcement>>& announcements, const std::string& base_policy_class_str, const std::map<int, std::string>& non_default_asn_cls_str_dict) {
-            // Debug: Print the number of announcements
-            std::cout << "Setting up engine with " << announcements.size() << " announcements." << std::endl;
-
-            // Check for null pointers
-            for (const auto& ann : announcements) {
-                if (!ann) {
-                    throw std::runtime_error("Null announcement in the list");
-                }
-            }
-            // Call the actual setup method
-            engine.setup(announcements, base_policy_class_str, non_default_asn_cls_str_dict);
-        }, py::arg("announcements"), py::arg("base_policy_class_str") = "BGPSimplePolicy", py::arg("non_default_asn_cls_str_dict") = std::map<int, std::string>{})
-       */
 
     py::class_<ASGraphAnalyzer>(m, "ASGraphAnalyzer")
         .def(py::init<std::shared_ptr<CPPSimulationEngine>,
@@ -99,40 +96,7 @@ PYBIND11_MODULE(bgpc, m) {
              py::arg("data_plane_tracking") = true,
              py::arg("control_plane_tracking") = false)
         .def("analyze", &ASGraphAnalyzer::analyze);
-    /*
-    py::class_<Announcement, std::shared_ptr<Announcement>>(m, "Announcement")
-        .def(py::init<const std::string&, const std::vector<int>&, int,
-                      const std::optional<int>&, const std::optional<bool>&,
-                      const std::optional<int>&, Relationships, bool, bool,
-                      const std::vector<std::string>&>(),
-             py::arg("prefix"), py::arg("as_path"), py::arg("timestamp"),
-             py::arg("seed_asn") = std::nullopt, py::arg("roa_valid_length") = std::nullopt,
-             py::arg("roa_origin") = std::nullopt,
-             py::arg("recv_relationship") = Relationships::UNKNOWN,  // Default value for recv_relationship
-             py::arg("withdraw") = false,                             // Default value for withdraw
-             py::arg("traceback_end") = false,                        // Default value for traceback_end
-             py::arg("communities") = std::vector<std::string>{})     // Default value for communities
-        .def_readonly("prefix", &Announcement::prefix)
-        .def_readonly("as_path", &Announcement::as_path)
-        .def_readonly("timestamp", &Announcement::timestamp)
-        .def_readonly("seed_asn", &Announcement::seed_asn)
-        .def_readonly("roa_valid_length", &Announcement::roa_valid_length)
-        .def_readonly("roa_origin", &Announcement::roa_origin)
-        .def_readonly("recv_relationship", &Announcement::recv_relationship)
-        .def_readonly("withdraw", &Announcement::withdraw)
-        .def_readonly("traceback_end", &Announcement::traceback_end)
-        .def_readonly("communities", &Announcement::communities)
-        .def("prefix_path_attributes_eq", &Announcement::prefix_path_attributes_eq)
-        .def_property_readonly("invalid_by_roa", &Announcement::invalid_by_roa)
-        .def_property_readonly("valid_by_roa", &Announcement::valid_by_roa)
-        .def_property_readonly("unknown_by_roa", &Announcement::unknown_by_roa)
-        .def_property_readonly("covered_by_roa", &Announcement::covered_by_roa)
-        .def_property_readonly("roa_routed", &Announcement::roa_routed)
-        .def_property_readonly("origin", &Announcement::origin)
-        .def("__eq__", [](const Announcement &self, const Announcement &other) {
-            return self == other;
-        });
-     */
+
     py::class_<Announcement, std::shared_ptr<Announcement>>(m, "Announcement")
         .def(py::init<const unsigned short int,
                       const std::string&, const std::vector<int>&, int,

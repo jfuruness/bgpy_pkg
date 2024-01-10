@@ -19,12 +19,44 @@ CPPSimulationEngine get_engine(std::string as_graph_tsv_path) {
 }
 
 
+void extrapolate(
+    const std::vector<std::string>& tsv_paths,
+    const bool origin_only_seeding,
+    const std::unordered_set<int>& valid_seed_asns,
+    const std::unordered_set<int>& omitted_vantage_point_asns,
+    const std::unordered_set<unsigned long>& valid_prefix_ids,
+    const long max_prefix_block_id,
+    const std::vector<int>& output_asns,
+    const std::string& out_path,
+    const std::unordered_map<int, std::string>& non_default_asn_cls_str_dict,
+    const std::string& caida_tsv_path
+) {
+    auto engine = get_engine(caida_tsv_path);
+    engine.set_as_classes("BGPSimplePolicy", non_default_asn_cls_str_dict, max_prefix_block_id);
+    for (const std::string& tsv_path : tsv_paths){
+        engine.seed_announcements(
+            get_announcements_from_tsv_for_extrapolation(
+                tsv_path,
+                origin_only_seeding,
+                valid_seed_asns,
+                omitted_vantage_point_asns,
+                valid_prefix_ids
+            )
+        );
+    }
+    engine.ready_to_run_round = 0;
+    engine.run();
+    // TODO: local_ribs_to_csv
+}
+
+
+// TODO: Definitely needs a big refactor. Wayyy too large of a function
 std::vector<std::shared_ptr<Announcement>> get_announcements_from_tsv_for_extrapolation(
     const std::string& path,
-    const bool origin_only_seeding = true,
-    const std::unordered_set<int>& valid_seed_asns = std::unordered_set<int>(),
-    const std::unordered_set<int>& omitted_vantage_point_asns = std::unordered_set<int>(),
-    const std::unordered_set<unsigned long>& valid_prefix_ids = std::unordered_set<unsigned long>()
+    const bool origin_only_seeding,
+    const std::unordered_set<int>& valid_seed_asns,
+    const std::unordered_set<int>& omitted_vantage_point_asns,
+    const std::unordered_set<unsigned long>& valid_prefix_ids
 ) {
     std::vector<std::shared_ptr<Announcement>> announcements;
     std::ifstream file(path);
@@ -97,11 +129,6 @@ std::vector<std::shared_ptr<Announcement>> get_announcements_from_tsv_for_extrap
         int timestamp = std::stoi(fields[headerIndices["timestamp"]]);
         unsigned long prefix_id = std::stoul(fields[headerIndices["prefix_id"]]);
 
-        // TODO: if prefix_id not in valid_prefix_ids, continue
-        //
-        //
-
-
         // TODO: this needs to be fixed if we ever want to propagate this info
         // but for now, this will work correctly with ROV
         // this info is simply missing from the mrt analysis
@@ -151,13 +178,16 @@ std::vector<std::shared_ptr<Announcement>> get_announcements_from_tsv_for_extrap
                     // withdraw
                     false,
                     // traceback_end
-                    i == 0,
+                    // TODO: this may be off if the origin isn't in the graph
+                    // however, we don't use this anyways for extrapolation
+                    i == 0
                     // communities, we don't track these rn
-                    {}
+                    //{}
                 );
-                // TODO: check if seed_asn is in the set of valid_asbns
+
+
                 announcements.push_back(ann);
-                // TODO: if origin_only_seeding and seed_asn in the as graph, break
+                // If origin_only_seeding and seed_asn in the as graph, break
                 // Must check if it's in the graph since we may remove stubs, and
                 // the caida graph might not have every AS. Doesn't mean we should
                 // discard the announcements. We check if the seed_asn is in the graph
