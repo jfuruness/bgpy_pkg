@@ -45,21 +45,21 @@ class ASGraphConstructor(ABC):
         # Generate AS Graph from ASGraphInfo
         as_graph = self._get_as_graph(as_graph_info)
         # Write to TSV if tsv_path is set
-        self.write_tsv(as_graph)
+        self.write_tsv(as_graph, self.tsv_path)
         return as_graph
 
     @staticmethod
-    def write_tsv(as_graph: "ASGraph") -> None:
+    def write_tsv(as_graph: "ASGraph", tsv_path: Optional[Path] = None) -> None:
         """Writes AS Graph to TSV"""
 
-        if self.tsv_path:
+        if tsv_path:
             print(
                 f"Writing as graph to {tsv_path} "
                 "if you want to save time and not do this, pass tsv_path=None "
                 "to the run function"
             )
 
-            with self.tsv_path.open(mode="w") as f:
+            with tsv_path.open(mode="w") as f:
                 # Get columns
                 cols: list[str] = list(
                     next(iter(as_graph.as_dict.values())).db_row.keys()
