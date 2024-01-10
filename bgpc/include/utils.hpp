@@ -7,6 +7,7 @@
 #include <string>
 #include <vector>
 #include <unordered_set>
+#include <unordered_map>
 
 #include "announcement.hpp"
 #include "cpp_simulation_engine.hpp"
@@ -27,7 +28,7 @@ void extrapolate(
     const bool origin_only_seeding,
     const std::unordered_set<int>& valid_seed_asns,
     const std::unordered_set<int>& omitted_vantage_point_asns,
-    const std::unordered_set<long>& valid_prefix_ids,
+    const std::unordered_set<unsigned long>& valid_prefix_ids,
     const long max_prefix_block_id,
     const std::vector<int>& output_asns,
     const std::string& out_path,
