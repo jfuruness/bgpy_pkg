@@ -47,7 +47,7 @@ class ASGraphConstructor(ABC):
         # Generate AS Graph from ASGraphInfo
         as_graph = self._get_as_graph(as_graph_info)
         if not self.stubs:
-            invalid_asns = frozenset([as_obj for as_obj in as_graph if as_obj.stub])
+            invalid_asns = frozenset([as_obj.asns for as_obj in as_graph if as_obj.stub])
             # Get ASGraphInfo from downloaded file
             as_graph_info = self._get_as_graph_info(dl_path, invalid_asns)
             # Generate AS Graph from ASGraphInfo
