@@ -77,7 +77,7 @@ std::vector<std::shared_ptr<Announcement>> get_announcements_from_tsv_for_extrap
 
     // Verify required headers
     std::vector<std::string> requiredHeaders = {
-        "prefix_block_id", "prefix", "as_path", "timestamp", "prefix_id", "roa_validity",
+        "block_prefix_id", "prefix", "as_path", "timestamp", "prefix_id", "roa_validity",
         "roa_routed",
     };
 
@@ -105,7 +105,7 @@ std::vector<std::shared_ptr<Announcement>> get_announcements_from_tsv_for_extrap
         }
 
         // Parse each field using the headerIndices
-        unsigned short int prefix_block_id = std::stoul(fields[headerIndices["prefix_block_id"]]);
+        unsigned short int prefix_block_id = std::stoul(fields[headerIndices["block_prefix_id"]]);
         std::string prefix = fields[headerIndices["prefix"]];
         std::string asPathStr = fields[headerIndices["as_path"]];
 
