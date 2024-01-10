@@ -79,7 +79,9 @@ PYBIND11_MODULE(bgpc, m) {
         .def("run", &CPPSimulationEngine::run,
              py::arg("propagation_round") = 0)
         .def("dump_local_ribs_to_tsv", &CPPSimulationEngine::dump_local_ribs_to_tsv,
-             py::arg("tsv_path"))
+             py::arg("tsv_path"),
+             py::arg("output_asns") = {}
+             )
         .def("get_announcements", &CPPSimulationEngine::get_announcements);
 
     py::class_<ASGraphAnalyzer>(m, "ASGraphAnalyzer")

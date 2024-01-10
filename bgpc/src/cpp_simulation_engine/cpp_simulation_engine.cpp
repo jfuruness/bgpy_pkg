@@ -6,6 +6,7 @@
 #include <stdexcept>
 #include <iomanip>
 #include <algorithm>
+#include <unordered_set>
 
 #include "enums.hpp"
 #include "announcement.hpp"
@@ -274,7 +275,7 @@ void CPPSimulationEngine::propagate_to_customers(const int propagation_round) {
 
 
 //// CSV funcs////////////////////////////
-void CPPSimulationEngine::dump_local_ribs_to_tsv(const std::string& tsv_path) {
+void CPPSimulationEngine::dump_local_ribs_to_tsv(const std::string& tsv_path, const std::unordered_set<int>& output_asns) {
     std::ofstream file(tsv_path);
 
     // Check if file is open
@@ -288,19 +289,22 @@ void CPPSimulationEngine::dump_local_ribs_to_tsv(const std::string& tsv_path) {
 
     // Iterate through AS graph and get announcements from their local RIBs
     for (const auto& asPair : as_graph->as_dict) {
+        const auto& asn = asPair.first;
+        if(output_asns.find(asn) == output_asns.end()){
+            continue;
+        }
         const auto& as = asPair.second;
         const auto& policy = as->policy;
         const auto& localRIB = policy->localRIB;
 
 
         // Get announcements from the local RIB
-
         for (const auto& ann : localRIB.prefix_anns()) {
             if (ann == nullptr) {
                 continue;
             }
             // Write each announcement's details to the TSV file
-            file << std::to_string(asPair.first) << "\t" << ann->prefix() << "\t{" << join(ann->as_path, ",") << "}\t" << ann->timestamp() << "\t"
+            file << std::to_string(asPair.first) << "\t" << ann->prefix() << "\t" << join(ann->as_path, " ") << "\t" << ann->timestamp() << "\t"
                  << optionalToString(ann->seed_asn()) << "\t" << booleanToString(ann->roa_valid_length()) << "\t"
                  << optionalToString(ann->roa_origin()) << "\t" << static_cast<int>(ann->recv_relationship) << "\t"
                  << booleanToString(ann->withdraw(), true) << "\t" << booleanToString(ann->traceback_end, true) << "\t"

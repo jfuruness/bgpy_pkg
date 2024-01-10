@@ -5,6 +5,7 @@
 #include <vector>
 #include <string>
 #include <functional>
+#include <unordered_set>
 
 #include "enums.hpp"
 #include "announcement.hpp"
@@ -24,7 +25,7 @@ public:
 
     CPPSimulationEngine(std::unique_ptr<ASGraph> as_graph, int ready_to_run_round = -1);
 
-    void dump_local_ribs_to_tsv(const std::string& tsv_path);
+    void dump_local_ribs_to_tsv(const std::string& tsv_path, const std::unordered_set<int>& output_asns = {});
 
     // Disable copy semantics
     CPPSimulationEngine(const CPPSimulationEngine&) = delete;

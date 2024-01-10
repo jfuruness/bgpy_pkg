@@ -26,7 +26,7 @@ void extrapolate(
     const std::unordered_set<int>& omitted_vantage_point_asns,
     const std::unordered_set<unsigned long>& valid_prefix_ids,
     const long max_prefix_block_id,
-    const std::vector<int>& output_asns,
+    const std::unordered_set<int>& output_asns,
     const std::string& out_path,
     const std::unordered_map<int, std::string>& non_default_asn_cls_str_dict,
     const std::string& caida_tsv_path
@@ -46,7 +46,7 @@ void extrapolate(
     }
     engine.ready_to_run_round = 0;
     engine.run();
-    // TODO: local_ribs_to_csv
+    engine.dump_local_ribs_to_tsv(out_path, output_asns);
 }
 
 
