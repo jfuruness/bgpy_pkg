@@ -25,6 +25,7 @@ class CAIDAASGraphConstructor(ASGraphConstructor):
         as_graph_collector_kwargs=frozendict(),
         as_graph_kwargs=frozendict(),
         tsv_path: Optional[Path] = None,
+        stubs: bool = True,
     ) -> None:
         super().__init__(
             ASGraphCollectorCls,
@@ -32,12 +33,15 @@ class CAIDAASGraphConstructor(ASGraphConstructor):
             as_graph_collector_kwargs=as_graph_collector_kwargs,
             as_graph_kwargs=as_graph_kwargs,
             tsv_path=tsv_path,
+            stubs=stubs
         )
 
     ####################
     # Abstract methods #
     ####################
-    def _get_as_graph_info(self, dl_path: Path) -> ASGraphInfo:
+    def _get_as_graph_info(
+        self, dl_path: Path, invalid_asns: frozenset[int] = frozenset()
+    ) -> ASGraphInfo:
         """Gets AS Graph info from the downloaded file"""
 
         input_clique_asns: set[int] = set()
@@ -51,18 +55,20 @@ class CAIDAASGraphConstructor(ASGraphConstructor):
             for line in f:
                 # Get Caida input clique. See paper on site for what this is
                 if line.startswith("# input clique"):
-                    self._extract_input_clique_asns(line, input_clique_asns)
+                    self._extract_input_clique_asns(
+                        line, input_clique_asns, invalid_asns
+                    )
                 # Get detected Caida IXPs. See paper on site for what this is
                 elif line.startswith("# IXP ASes"):
-                    self._extract_ixp_asns(line, ixp_asns)
+                    self._extract_ixp_asns(line, ixp_asns, invalid_asns)
                 # Not a comment, must be a relationship
                 elif not line.startswith("#"):
                     # Extract all customer provider pairs
                     if "-1" in line:
-                        self._extract_provider_customers(line, cp_links)
+                        self._extract_provider_customers(line, cp_links, invalid_asns)
                     # Extract all peers
                     else:
-                        self._extract_peers(line, peer_links)
+                        self._extract_peers(line, peer_links, invalid_asns)
 
         return ASGraphInfo(
             customer_provider_links=frozenset(cp_links),
@@ -81,32 +87,42 @@ class CAIDAASGraphConstructor(ASGraphConstructor):
     #################
 
     def _extract_input_clique_asns(
-        self, line: str, input_clique_asns: set[int]
+        self, line: str, input_clique_asns: set[int], invalid_asns: frozenset[int]
     ) -> None:
         """Adds all ASNs within input clique line to ases dict"""
 
         # Gets all input ASes for clique
         for asn in line.split(":")[-1].strip().split(" "):
             # Insert AS into graph
-            input_clique_asns.add(int(asn))
+            if int(asn) not in invalid_asns:
+                input_clique_asns.add(int(asn))
 
-    def _extract_ixp_asns(self, line: str, ixp_asns: set[int]) -> None:
+    def _extract_ixp_asns(
+        self, line: str, ixp_asns: set[int], invalid_asns: frozenset[int]
+    ) -> None:
         """Adds all ASNs that are detected IXPs to ASes dict"""
 
         # Get all IXPs that Caida lists
         for asn in line.split(":")[-1].strip().split(" "):
-            ixp_asns.add(int(asn))
+            if int(asn) not in invalid_asns:
+                ixp_asns.add(int(asn))
 
-    def _extract_provider_customers(self, line: str, cp_links: set[CPLink]) -> None:
+    def _extract_provider_customers(
+        self, line: str, cp_links: set[CPLink], invalid_asns: frozenset[int]
+    ) -> None:
         """Extracts provider customers: <provider-as>|<customer-as>|-1"""
 
         provider_asn, customer_asn, _, source = line.split("|")
-        cp_links.add(
-            CPLink(customer_asn=int(customer_asn), provider_asn=int(provider_asn))
-        )
+        if all(int(x) not in invalid_asns for x in (provider_asn, customer_asn)):
+            cp_links.add(
+                CPLink(customer_asn=int(customer_asn), provider_asn=int(provider_asn))
+            )
 
-    def _extract_peers(self, line: str, peer_links: set[PeerLink]) -> None:
+    def _extract_peers(
+        self, line: str, peer_links: set[PeerLink], invalid_asns: frozenset[int]
+    ) -> None:
         """Extracts peers: <peer-as>|<peer-as>|0|<source>"""
 
         peer1_asn, peer2_asn, _, source = line.split("|")
-        peer_links.add(PeerLink(int(peer1_asn), int(peer2_asn)))
+        if all(int(x) not in invalid_asns for x in (peer1_asn, peer2_asn)):
+            peer_links.add(PeerLink(int(peer1_asn), int(peer2_asn)))
