@@ -49,17 +49,17 @@ class ASGraphConstructor(ABC):
         return as_graph
 
     @staticmethod
-    def write_tsv(as_graph: "ASGraph", tsv_path: Optional[Path] = None) -> None:
+    def write_tsv(as_graph: "ASGraph") -> None:
         """Writes AS Graph to TSV"""
 
-        if tsv_path:
+        if self.tsv_path:
             print(
                 f"Writing as graph to {tsv_path} "
                 "if you want to save time and not do this, pass tsv_path=None "
                 "to the run function"
             )
 
-            with tsv_path.open(mode="w") as f:
+            with self.tsv_path.open(mode="w") as f:
                 # Get columns
                 cols: list[str] = list(
                     next(iter(as_graph.as_dict.values())).db_row.keys()
