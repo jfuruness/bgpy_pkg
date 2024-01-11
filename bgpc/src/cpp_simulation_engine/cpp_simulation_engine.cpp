@@ -140,9 +140,13 @@ void CPPSimulationEngine::seed_announcements(const std::vector<std::shared_ptr<A
         }
 
         auto& obj_to_seed = as_it->second;
-        // if (obj_to_seed->policy->localRIB.get_ann(ann->prefix_block_id)) {
-        //     throw std::runtime_error("Seeding conflict: Announcement already exists in the local RIB.");
-        // }
+        if (
+            obj_to_seed->policy->localRIB.get_ann(ann->prefix_block_id)
+            && obj_to_seed->policy->localRIB.get_ann(ann->prefix_block_id)->timestamp() < ann->timestamp()
+        ) {
+            continue;
+            //throw std::runtime_error("Seeding conflict: Announcement already exists in the local RIB.");
+        }
 
         obj_to_seed->policy->localRIB.add_ann(ann);
     }
