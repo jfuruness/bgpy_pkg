@@ -156,7 +156,7 @@ std::vector<std::shared_ptr<Announcement>> get_announcements_from_tsv_for_extrap
                 std::optional<int> seed_asn = as_path[i];
 
                 std::vector<int> temp_as_path;
-                for (size_t j = i; j < as_path.size(); ++j){
+                for (size_t j = i; j >= 0 ; --j){
                     temp_as_path.push_back(as_path[j]);
                 }
 
