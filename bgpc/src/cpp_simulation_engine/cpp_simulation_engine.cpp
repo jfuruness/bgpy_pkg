@@ -285,7 +285,8 @@ void CPPSimulationEngine::dump_local_ribs_to_tsv(const std::string& tsv_path, co
     }
 
     // Write TSV header
-    file << "dumping_asn\tprefix\tas_path\ttimestamp\tseed_asn\troa_valid_length\troa_origin\trecv_relationship\twithdraw\ttraceback_end\tcommunities\n";
+    // Don't write the header since we must concatenate all these files later
+    // file << "dumping_asn\tprefix\tas_path\ttimestamp\tseed_asn\troa_valid_length\troa_origin\trecv_relationship\twithdraw\ttraceback_end\tcommunities\n";
 
     // Iterate through AS graph and get announcements from their local RIBs
     for (const auto& asPair : as_graph->as_dict) {
