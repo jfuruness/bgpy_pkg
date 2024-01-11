@@ -140,23 +140,23 @@ std::vector<std::shared_ptr<Announcement>> get_announcements_from_tsv_for_extrap
         if (roa_validity == 3 || roa_validity == 4 || roa_routed == 2){
             roa_origin = 0;
         } else {
-            roa_origin = as_path[0];
+            roa_origin = as_path[as_path.size() - 1];
         }
 
-        for (size_t i = 0; i < as_path.size(); ++i){
+        for (size_t i = as_path.size() - 1; i >= 0; --i){
             // If the seed_asns is not in the list of valid_seed_asns, don't create ann
             // (valid_seed_asns is typically all non stub ASNs)
             // Additionally, ensure we aren't seeding anything at the omitted vantage points
             // Additionally, ensure we have a valid prefix_id
             if (
                 valid_seed_asns.find(as_path[i]) != valid_seed_asns.end()
-                && omitted_vantage_point_asns.find(as_path[as_path.size() - 1]) == omitted_vantage_point_asns.end()
+                && omitted_vantage_point_asns.find(as_path[0]) == omitted_vantage_point_asns.end()
                 && valid_prefix_ids.find(prefix_id) != valid_prefix_ids.end()
             ){
                 std::optional<int> seed_asn = as_path[i];
 
                 std::vector<int> temp_as_path;
-                for (size_t j = 0; j <= i; ++j){
+                for (size_t j = i; j < as_path.size(); ++j){
                     temp_as_path.push_back(as_path[j]);
                 }
 
