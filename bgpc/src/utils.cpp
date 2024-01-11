@@ -1,4 +1,5 @@
 #include <fstream>
+#include <iostream>
 #include <sstream>
 #include <stdexcept>
 #include <optional>
@@ -142,8 +143,11 @@ std::vector<std::shared_ptr<Announcement>> get_announcements_from_tsv_for_extrap
         } else {
             roa_origin = as_path[as_path.size() - 1];
         }
+        //std::cout<<"a"<<std::endl;
 
-        for (size_t i = as_path.size() - 1; i >= 0; --i){
+        for (int i = as_path.size() - 1; i >= 0; --i){
+
+            // std::cout<<"b"<<std::endl;
             // If the seed_asns is not in the list of valid_seed_asns, don't create ann
             // (valid_seed_asns is typically all non stub ASNs)
             // Additionally, ensure we aren't seeding anything at the omitted vantage points
@@ -153,12 +157,19 @@ std::vector<std::shared_ptr<Announcement>> get_announcements_from_tsv_for_extrap
                 && omitted_vantage_point_asns.find(as_path[0]) == omitted_vantage_point_asns.end()
                 && valid_prefix_ids.find(prefix_id) != valid_prefix_ids.end()
             ){
+
+                //std::cout<<"c"<<std::endl;
                 std::optional<int> seed_asn = as_path[i];
 
                 std::vector<int> temp_as_path;
-                for (size_t j = i; j >= 0 ; --j){
+                for (int j = i; j >= 0 ; --j){
+
+                    //std::cout<<"d"<<std::endl;
                     temp_as_path.push_back(as_path[j]);
+                    //std::cout<<"e"<<std::endl;
                 }
+
+                //std::cout<<"f"<<std::endl;
 
                 std::shared_ptr<Announcement> ann = std::make_shared<Announcement>(
                     prefix_block_id,
@@ -198,5 +209,6 @@ std::vector<std::shared_ptr<Announcement>> get_announcements_from_tsv_for_extrap
             }
         }
     }
+    //std::cout<<"done with anns"<<std::endl;
     return announcements;
 }
