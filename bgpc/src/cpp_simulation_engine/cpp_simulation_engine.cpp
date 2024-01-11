@@ -142,12 +142,21 @@ void CPPSimulationEngine::seed_announcements(const std::vector<std::shared_ptr<A
         auto& obj_to_seed = as_it->second;
         if (
             obj_to_seed->policy->localRIB.get_ann(ann->prefix_block_id)
-            && obj_to_seed->policy->localRIB.get_ann(ann->prefix_block_id)->timestamp() < ann->timestamp()
         ) {
-            continue;
+
+            auto current_ann = obj_to_seed->policy->localRIB.get_ann(ann->prefix_block_id);
+            // If the existing ann is better, don't seed the new_ann
+            if (current_ann->recv_relationship > ann->recv_relationship) {
+                continue;
+            // existing ann's as path is better, don't seed the new ann
+            } else if (current_ann->as_path.size() < ann->as_path.size()) {
+                continue;
+            // If existing ann has the most recent timestamp, don't seed new ann
+            } else if (current_ann.timestamp() > ann->timestamp()){
+                continue;
+            }
             //throw std::runtime_error("Seeding conflict: Announcement already exists in the local RIB.");
         }
-
         obj_to_seed->policy->localRIB.add_ann(ann);
     }
 
