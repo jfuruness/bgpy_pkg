@@ -40,7 +40,12 @@ public:
                const std::unordered_map<int, std::string>& non_default_asn_cls_str_dict = {},
                int max_prefix_block_id = 0);
 
-    void run(const int propagation_round = 0);
+    void run(
+        const int propagation_round,
+        const std::unordered_set<int>& valid_propagate_up,
+        const std::unordered_set<int>& valid_propagate_peers,
+        const std::unordered_set<int>& valid_propagate_down
+    );
     std::map<int, std::vector<std::shared_ptr<Announcement>>> get_announcements();
     void set_as_classes(const std::string& base_policy_class_str, const std::unordered_map<int, std::string>& non_default_asn_cls_str_dict, const int max_prefix_block_id);
     void seed_announcements(const std::vector<std::shared_ptr<Announcement>>& announcements);
@@ -51,10 +56,14 @@ protected:
     void register_policy_factory(const std::string& name, const PolicyFactoryFunc& factory);
     void register_policies();
 
-    void propagate(const int propagation_round);
-    void propagate_to_providers(const int propagation_round);
-    void propagate_to_peers(const int propagation_round);
-    void propagate_to_customers(const int propagation_round);
+    void propagate(const int propagation_round,
+        const std::unordered_set<int>& valid_propagate_up,
+        const std::unordered_set<int>& valid_propagate_peers,
+        const std::unordered_set<int>& valid_propagate_down
+    );
+    void propagate_to_providers(const int propagation_round, const std::unordered_set<int>& valid_propagate);
+    void propagate_to_peers(const int propagation_round, const std::unordered_set<int>& valid_propagate);
+    void propagate_to_customers(const int propagation_round, const std::unordered_set<int>& valid_propagate);
 
     // CSV Helper functions
     template <typename T>

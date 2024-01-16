@@ -51,7 +51,12 @@ void CPPSimulationEngine::setup(
 
 }
 
-void CPPSimulationEngine::run(const int propagation_round) {
+void CPPSimulationEngine::run(
+    const int propagation_round,
+    const std::unordered_set<int>& valid_propagate_up,
+    const std::unordered_set<int>& valid_propagate_peers,
+    const std::unordered_set<int>& valid_propagate_down
+) {
 
     auto start = std::chrono::high_resolution_clock::now();
     // Ensure that the simulator is ready to run this round
@@ -60,7 +65,7 @@ void CPPSimulationEngine::run(const int propagation_round) {
     }
 
     // Propagate announcements
-    propagate(propagation_round);
+    propagate(propagation_round, valid_propagate_up, valid_propagate_peers, valid_propagate_down);
 
     // Increment the ready to run round
     ready_to_run_round++;
@@ -164,12 +169,17 @@ void CPPSimulationEngine::seed_announcements(const std::vector<std::shared_ptr<A
 
 ///////////////////propagation funcs
 
-void CPPSimulationEngine::propagate(const int propagation_round) {
-    propagate_to_providers(propagation_round);
-    propagate_to_peers(propagation_round);
-    propagate_to_customers(propagation_round);
+void CPPSimulationEngine::propagate(
+        const int propagation_round,
+        const std::unordered_set<int>& valid_propagate_up,
+        const std::unordered_set<int>& valid_propagate_peers,
+        const std::unordered_set<int>& valid_propagate_down
+) {
+    propagate_to_providers(propagation_round, valid_propagate_up);
+    propagate_to_peers(propagation_round, valid_propagate_peers);
+    propagate_to_customers(propagation_round, valid_propagate_down);
 }
-void CPPSimulationEngine::propagate_to_providers(const int propagation_round) {
+void CPPSimulationEngine::propagate_to_providers(const int propagation_round, const std::unordered_set<int>& valid_propagate) {
     for (size_t i = 0; i < as_graph->propagation_ranks.size(); ++i) {
         auto& rank = as_graph->propagation_ranks[i];
 
@@ -177,6 +187,9 @@ void CPPSimulationEngine::propagate_to_providers(const int propagation_round) {
 
         if (i == 0){continue;}
         for (auto& as_obj : rank) {
+            if(valid_propagate.find(as_obj->asn) == valid_propagate.end()){
+                continue;
+            }
             for (unsigned short int prefix_block_id = 0; prefix_block_id < static_cast<unsigned short int>(as_obj->policy->localRIB.prefix_anns().size()); ++prefix_block_id) {
 
                 auto current_ann = as_obj->policy->localRIB.get_ann(prefix_block_id);
@@ -220,17 +233,25 @@ void CPPSimulationEngine::propagate_to_providers(const int propagation_round) {
     }
 }
 
-void CPPSimulationEngine::propagate_to_peers(const int propagation_round) {
+void CPPSimulationEngine::propagate_to_peers(const int propagation_round, const std::unordered_set<int>& valid_propagate) {
     for (auto& [asn, as_obj] : as_graph->as_dict) {
+        if(valid_propagate.find(as_obj->asn) == valid_propagate.end()){
+            continue;
+        }
+
         as_obj->policy->propagate_to_peers();
     }
 
     for (auto& [asn, as_obj] : as_graph->as_dict) {
+        if(valid_propagate.find(as_obj->asn) == valid_propagate.end()){
+            continue;
+        }
+
         as_obj->policy->process_incoming_anns(Relationships::PEERS, propagation_round);
     }
 }
 
-void CPPSimulationEngine::propagate_to_customers(const int propagation_round) {
+void CPPSimulationEngine::propagate_to_customers(const int propagation_round, const std::unordered_set<int>& valid_propagate) {
     auto& ranks = as_graph->propagation_ranks;
     size_t i = 0; // Initialize i to 0
     Relationships from_rel = Relationships::PROVIDERS;
@@ -240,6 +261,10 @@ void CPPSimulationEngine::propagate_to_customers(const int propagation_round) {
         if (i == 0){continue;}
 
         for (auto& as_obj : rank) {
+            if(valid_propagate.find(as_obj->asn) == valid_propagate.end()){
+                continue;
+            }
+
             for (unsigned short int prefix_block_id = 0; prefix_block_id < static_cast<unsigned short int>(as_obj->policy->localRIB.prefix_anns().size()); ++prefix_block_id) {
 
                 auto current_ann = as_obj->policy->localRIB.get_ann(prefix_block_id);

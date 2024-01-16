@@ -2,9 +2,14 @@ import time
 
 from bgpy.as_graphs import CAIDAASGraphConstructor
 from bgpy.enums import PyRelationships as Relationships
+from bgpy.enums import CPPRelationships
 from bgpy.simulation_engines.py_simulation_engine import (
     PySimulationEngine,
     PyAnnouncement as PyAnn,
+)
+from bgpy.simulation_engines.cpp_simulation_engine import (
+    CPPSimulationEngine,
+    CPPAnnouncement as CPPAnn,
 )
 
 from typing import Any, Optional, TYPE_CHECKING, Union
@@ -269,7 +274,6 @@ ann_provider_cone = set()
 provider_cone_dict = dict()
 for ann in anns:
     ann_provider_cone.update(get_cone(as_graph.as_dict[ann.seed_asn], provider_cone_dict, as_graph, "providers"))
-input(38803 in ann_provider_cone)
 print(f"ann provider cone {len(ann_provider_cone)}")
 valid_propagate_up = valid_propagate_up.intersection(ann_provider_cone)
 print(f"after intersecting with provider cone of anns {len(valid_propagate_up)}")
@@ -305,6 +309,102 @@ start = time.perf_counter()
 exr_sim_engine._propagate_to_providers(0, None, valid_propagate_up)
 exr_sim_engine._propagate_to_peers(0, None, valid_propagate_peers)
 exr_sim_engine._propagate_to_customers(0, None, valid_propagate_down)
+# input(str(as_graph.as_dict[174].policy._local_rib))
+
+print(time.perf_counter() - start)
+
+
+
+
+
+
+
+as_graph = CAIDAASGraphConstructor().run()
+# Python anns
+import csv
+anns = list()
+with open("/home/anon/work/c/BGPExtrapolator/build/BGPExtrapolator/TestCases/RealData-Announcements_4000.tsv") as f:
+    for row in csv.DictReader(f, delimiter="\t"):
+        as_path = [int(x) for x in row["as_path"].replace("}", "").replace("{", "").split(",")]
+        if as_path[-1] in as_graph.as_dict:
+            origin = as_path[-1]
+        else:
+            origin = 1
+        anns.append(
+            CPPAnn(
+                prefix_block_id=int(row["prefix_block_id"]),
+                prefix=row["prefix"],
+                as_path=[origin],
+                timestamp=0,
+                seed_asn=origin,
+                roa_valid_length=None,
+                roa_origin=None,
+                recv_relationship=CPPRelationships.ORIGIN,
+                withdraw=False,
+                traceback_end=False,
+                communities=list()
+            )
+        )
+# anns = anns[:1000]
+print(len(anns))
+# anns = [
+#     PyAnn(
+#         prefix="1.0.6.0/24",
+#         as_path=[38803],
+#         timestamp=0,
+#         seed_asn=38803,
+#         roa_valid_length=None,
+#         roa_origin=None,
+#         recv_relationship=Relationships.ORIGIN,
+#     )
+# ]
+
+customer_cone_dict = dict()
+valid_propagate_up = get_cone(as_graph.as_dict[174], customer_cone_dict, as_graph, "customers")
+for peer_obj in as_graph.as_dict[174].peers:
+    valid_propagate_up.update(get_cone(peer_obj, customer_cone_dict, as_graph, "customers"))
+for provider_obj in as_graph.as_dict[174].providers:
+    valid_propagate_up.update(get_cone(provider_obj, customer_cone_dict, as_graph, "customers"))
+
+print(f"before intersecting with provider cone of anns {len(valid_propagate_up)}")
+# Now get provider cone of anns
+ann_provider_cone = set()
+provider_cone_dict = dict()
+for ann in anns:
+    ann_provider_cone.update(get_cone(as_graph.as_dict[ann.seed_asn], provider_cone_dict, as_graph, "providers"))
+print(f"ann provider cone {len(ann_provider_cone)}")
+valid_propagate_up = valid_propagate_up.intersection(ann_provider_cone)
+print(f"after intersecting with provider cone of anns {len(valid_propagate_up)}")
+
+provider_cone = get_cone(as_graph.as_dict[174], provider_cone_dict, as_graph, "providers")
+valid_propagate_down = provider_cone
+# If this is the only one in the set, don't propagate it
+if valid_propagate_down == set([174]):
+    valid_propagate_down = set()
+print(f"valid propagate down {len(valid_propagate_down)}")
+valid_propagate_peers = set()
+for asn in set([174]) | valid_propagate_down:
+    for peer in as_graph.as_dict[asn].peers:
+        valid_propagate_peers.add(peer.asn)
+
+
+print(f"valid peers {len(valid_propagate_peers)}")
+
+input("waot")
+
+# py_sim_engine = PySimulationEngine(as_graph)
+# py_sim_engine.setup(anns)
+# start = time.perf_counter()
+# py_sim_engine.run()
+# input(str(as_graph.as_dict[174].policy._local_rib))
+# print(time.perf_counter() - start)
+
+
+cpp_sim_engine = CPPSimulationEngine(as_graph)
+cpp_sim_engine.setup(anns)
+start = time.perf_counter()
+# input(38803 in valid_propagate_up)
+cpp_sim_engine.run(0, None, valid_propagate_up, valid_propagate_peers, valid_propagate_down)
 # input(str(as_graph.as_dict[174].policy._local_rib))
 
 print(time.perf_counter() - start)

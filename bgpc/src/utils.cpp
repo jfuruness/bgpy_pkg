@@ -46,7 +46,7 @@ void extrapolate(
         );
     }
     engine.ready_to_run_round = 0;
-    engine.run();
+    engine.run(0, {}, {}, {});
     engine.dump_local_ribs_to_tsv(out_path, output_asns);
 }
 

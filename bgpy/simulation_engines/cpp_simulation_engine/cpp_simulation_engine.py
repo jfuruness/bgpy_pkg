@@ -104,7 +104,7 @@ class CPPSimulationEngine(SimulationEngine):
     # Propagation funcs #
     #####################
 
-    def run(self, propagation_round: int = 0, scenario: Optional["Scenario"] = None):
+    def run(self, propagation_round: int = 0, scenario: Optional["Scenario"] = None, valid_up=set(), valid_peers=set(), valid_down=set()):
         """Propogates announcements and ensures proper setup"""
 
         # Ensure that the simulator is ready to run this round
@@ -112,7 +112,7 @@ class CPPSimulationEngine(SimulationEngine):
             raise Exception(f"Engine not set up to run for {propagation_round} round")
         assert scenario, "This can't be empty"
         # Propogate anns
-        self._cpp_simulation_engine.run(propagation_round)
+        self._cpp_simulation_engine.run(propagation_round, valid_up, valid_peers, valid_down)
         # self._cpp_simulation_engine.dump_local_ribs_to_tsv("/home/anon/local_ribs.tsv")
         # Increment the ready to run round
         self.ready_to_run_round += 1
