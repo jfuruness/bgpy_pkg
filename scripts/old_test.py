@@ -214,48 +214,32 @@ def get_cone(as_obj, cone_dict, as_graph, relationship) -> set[int]:
     if as_obj.asn in cone_dict:
         return cone_dict[as_obj.asn]
     else:
-        cone_dict[as_obj.asn] = set([as_obj.asn])
+        cone_dict[as_obj.asn] = set()
         for neighbor in getattr(as_obj, relationship):
             cone_dict[as_obj.asn].add(neighbor.asn)
             get_cone(neighbor, cone_dict, as_graph, relationship)
             cone_dict[as_obj.asn].update(cone_dict[neighbor.asn])
     return cone_dict[as_obj.asn]
 
-as_graph = CAIDAASGraphConstructor().run()
 # Python anns
 import csv
 anns = list()
-with open("/home/anon/work/c/BGPExtrapolator/build/BGPExtrapolator/TestCases/RealData-Announcements_4000.tsv") as f:
+with open("/home/anon/work/c/BGPExtrapolator/build/BGPExtrapolator/TestCases/RealData-Announcements_1000.tsv") as f:
     for row in csv.DictReader(f, delimiter="\t"):
         as_path = [int(x) for x in row["as_path"].replace("}", "").replace("{", "").split(",")]
-        if as_path[-1] in as_graph.as_dict:
-            anns.append(
-                PyAnn(
-                    prefix=row["prefix"],
-                    as_path=[as_path[-1]],
-                    timestamp=0,
-                    seed_asn=as_path[-1],
-                    roa_valid_length=None,
-                    roa_origin=None,
-                    recv_relationship=Relationships.ORIGIN,
-                )
+        anns.append(
+            PyAnn(
+                prefix=row["prefix"],
+                as_path=[as_path[-1]],
+                timestamp=0,
+                seed_asn=as_path[-1],
+                roa_valid_length=None,
+                roa_origin=None,
+                recv_relationship=Relationships.ORIGIN,
             )
-        else:
-            print("excluding")
-anns = anns[:1000]
-print(len(anns))
-# anns = [
-#     PyAnn(
-#         prefix="1.0.6.0/24",
-#         as_path=[38803],
-#         timestamp=0,
-#         seed_asn=38803,
-#         roa_valid_length=None,
-#         roa_origin=None,
-#         recv_relationship=Relationships.ORIGIN,
-#     )
-# ]
+        )
 
+as_graph = CAIDAASGraphConstructor().run()
 customer_cone_dict = dict()
 valid_propagate_up = get_cone(as_graph.as_dict[174], customer_cone_dict, as_graph, "customers")
 for peer_obj in as_graph.as_dict[174].peers:
@@ -269,16 +253,12 @@ ann_provider_cone = set()
 provider_cone_dict = dict()
 for ann in anns:
     ann_provider_cone.update(get_cone(as_graph.as_dict[ann.seed_asn], provider_cone_dict, as_graph, "providers"))
-input(38803 in ann_provider_cone)
 print(f"ann provider cone {len(ann_provider_cone)}")
 valid_propagate_up = valid_propagate_up.intersection(ann_provider_cone)
 print(f"after intersecting with provider cone of anns {len(valid_propagate_up)}")
 
 provider_cone = get_cone(as_graph.as_dict[174], provider_cone_dict, as_graph, "providers")
 valid_propagate_down = provider_cone
-# If this is the only one in the set, don't propagate it
-if valid_propagate_down == set([174]):
-    valid_propagate_down = set()
 print(f"valid propagate down {len(valid_propagate_down)}")
 valid_propagate_peers = set()
 for asn in set([174]) | valid_propagate_down:
@@ -289,23 +269,20 @@ for asn in set([174]) | valid_propagate_down:
 print(f"valid peers {len(valid_propagate_peers)}")
 
 input("waot")
-
-# py_sim_engine = PySimulationEngine(as_graph)
-# py_sim_engine.setup(anns)
-# start = time.perf_counter()
-# py_sim_engine.run()
-# input(str(as_graph.as_dict[174].policy._local_rib))
-# print(time.perf_counter() - start)
+#py_sim_engine = PySimulationEngine(as_graph)
+#py_sim_engine.setup(anns)
+#start = time.perf_counter()
+#py_sim_engine.run()
+#print(time.perf_counter() - start)
 
 
 exr_sim_engine = ExrPySimulationEngine(as_graph)
 exr_sim_engine.setup(anns)
 start = time.perf_counter()
-# input(38803 in valid_propagate_up)
 exr_sim_engine._propagate_to_providers(0, None, valid_propagate_up)
 exr_sim_engine._propagate_to_peers(0, None, valid_propagate_peers)
 exr_sim_engine._propagate_to_customers(0, None, valid_propagate_down)
-# input(str(as_graph.as_dict[174].policy._local_rib))
+
 
 print(time.perf_counter() - start)
 raise NotImplementedError("check anns at each as")
