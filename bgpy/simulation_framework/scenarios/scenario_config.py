@@ -1,6 +1,6 @@
 import abc
 from dataclasses import asdict, dataclass, field
-from typing import Any, Optional, TYPE_CHECKING, Union
+from typing import Any, Optional, TYPE_CHECKING
 
 from frozendict import frozendict
 

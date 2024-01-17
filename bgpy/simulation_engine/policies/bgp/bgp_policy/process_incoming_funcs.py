@@ -1,4 +1,4 @@
-from typing import Optional, TYPE_CHECKING, Union
+from typing import Optional, TYPE_CHECKING
 
 
 from bgpy.simulation_engine.ann_containers import AnnInfo, SendInfo

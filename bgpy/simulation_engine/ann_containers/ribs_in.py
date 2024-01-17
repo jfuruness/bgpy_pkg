@@ -1,5 +1,5 @@
 import dataclasses
-from typing import Iterator, Optional, TYPE_CHECKING, Union
+from typing import Iterator, Optional, TYPE_CHECKING
 
 from yamlable import YamlAble, yaml_info
 

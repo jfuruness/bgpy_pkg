@@ -1,4 +1,4 @@
-from typing import Any, Optional, TYPE_CHECKING, Union
+from typing import Any, Optional, TYPE_CHECKING
 
 from frozendict import frozendict
 

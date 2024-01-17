@@ -1,4 +1,4 @@
-from typing import Optional, TYPE_CHECKING, Union
+from typing import Optional, TYPE_CHECKING
 
 from .propagate_funcs import _propagate
 from .propagate_funcs import _process_outgoing_ann

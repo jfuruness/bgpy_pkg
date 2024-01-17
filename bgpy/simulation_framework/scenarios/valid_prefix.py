@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Union
+from typing import TYPE_CHECKING
 
 from .scenario import Scenario
 from bgpy.enums import Prefixes

@@ -53,7 +53,7 @@ class BaseSimulationEngine(YamlAble, ABC):
     def __eq__(self, other) -> bool:
         """Returns if two simulators contain the same BGPDAG's"""
 
-        if isinstance(other, SimulationEngine):
+        if isinstance(other, BaseSimulationEngine):
             rv = self.as_graph.as_dict == other.as_graph.as_dict
             assert isinstance(rv, bool), "Make mypy happy"
             return rv
