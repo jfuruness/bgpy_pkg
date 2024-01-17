@@ -4,13 +4,13 @@ from frozendict import frozendict
 import pytest
 
 from bgpy.enums import Prefixes
-from bgpy.simulation_frameworks.py_simulation_framework import ScenarioConfig
-from bgpy.simulation_frameworks.py_simulation_framework import SubprefixHijack
-from bgpy.simulation_frameworks.py_simulation_framework import NonRoutedPrefixHijack
-from bgpy.simulation_engines.py_simulation_engine import PyAnnouncement
-from bgpy.simulation_engines.py_simulation_engine import BGPSimplePolicy
-from bgpy.simulation_engines.py_simulation_engine import BGPPolicy
-from bgpy.simulation_engines.py_simulation_engine import ROVSimplePolicy
+from bgpy.simulation_framework import ScenarioConfig
+from bgpy.simulation_framework import SubprefixHijack
+from bgpy.simulation_framework import NonRoutedPrefixHijack
+from bgpy.simulation_engine import Announcement
+from bgpy.simulation_engine import BGPSimplePolicy
+from bgpy.simulation_engine import BGPPolicy
+from bgpy.simulation_engine import ROVSimplePolicy
 
 
 @pytest.mark.framework
@@ -23,7 +23,7 @@ class TestScenario:
         num_victims = 1
         scenario_config = ScenarioConfig(
             ScenarioCls=SubprefixHijack,
-            AnnCls=PyAnnouncement,
+            AnnCls=Announcement,
             BasePolicyCls=BGPSimplePolicy,
             num_attackers=num_attackers,
             num_victims=num_victims,
@@ -63,7 +63,7 @@ class TestScenario:
         assert issubclass(conf.AdoptPolicyCls, conf.BasePolicyCls)
 
     ##############################################
-    # set Attacker/Victim and PyAnnouncement Funcs #
+    # set Attacker/Victim and Announcement Funcs #
     ##############################################
 
     def test_set_attackers_victims_anns_w_prev_scenario(self, engine):
