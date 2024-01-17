@@ -73,8 +73,8 @@ class Metric:
         as_obj: AS,
         engine: BaseSimulationEngine,
         scenario: Scenario,
-        ctrl_plane_outcome: Outcomes,
-        data_plane_outcome: Outcomes,
+        ctrl_plane_outcome: int,
+        data_plane_outcome: int,
     ):
         within_denom = self._add_denominator(
             as_obj=as_obj,
@@ -99,8 +99,8 @@ class Metric:
         as_obj: AS,
         engine: BaseSimulationEngine,
         scenario: Scenario,
-        ctrl_plane_outcome: Outcomes,
-        data_plane_outcome: Outcomes,
+        ctrl_plane_outcome: int,
+        data_plane_outcome: int,
     ) -> None:
         """Adds to numerator if it is within the as group and the outcome is correct"""
 
@@ -125,8 +125,8 @@ class Metric:
         as_obj: AS,
         engine: BaseSimulationEngine,
         scenario: Scenario,
-        ctrl_plane_outcome: Outcomes,
-        data_plane_outcome: Outcomes,
+        ctrl_plane_outcome: int,
+        data_plane_outcome: int,
     ) -> bool:
         """Adds to the denominator if it is within the as group"""
 

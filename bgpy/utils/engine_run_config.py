@@ -24,7 +24,7 @@ class EngineRunConfig:
     as_graph_info: ASGraphInfo
     propagation_rounds: int = 1
     ASGraphCls: type[ASGraph] = CAIDAASGraph
-    SimulationEngineCls: type[BaseSimulationEngine] = SimulationEngine
+    SimulationEngineCls: type[BaseSimulationEngine] = SimulationEngine  # type: ignore
     MetricTrackerCls: type[MetricTracker] = MetricTracker
     ASGraphAnalyzerCls: type[BaseASGraphAnalyzer] = ASGraphAnalyzer
     DiagramCls: type[Diagram] = Diagram

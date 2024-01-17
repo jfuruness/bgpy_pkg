@@ -64,8 +64,9 @@ class BGPPolicy(BGPSimplePolicy):
 
     # Must be here since it referes to BGPPolicy
     # Could just use super but want to avoid the additional func calls
-    # mypy doesn't understand the func definition
-    def receive_ann(self, ann: "Ann", accept_withdrawals: bool = True) -> None:
+    def receive_ann(  # type: ignore
+        self, ann: "Ann", accept_withdrawals: bool = True
+    ) -> None:
         super(BGPPolicy, self).receive_ann(ann, accept_withdrawals=True)
 
     def __to_yaml_dict__(self):

@@ -1,6 +1,6 @@
 black==23.11.0
 pre-commit==3.5.0
-setuptools==68.0.0
+setuptools==69.0.3
 wheel==0.40.0
 beautifulsoup4==4.12.2
 requests==2.31.0

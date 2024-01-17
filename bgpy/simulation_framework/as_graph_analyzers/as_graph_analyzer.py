@@ -108,14 +108,14 @@ class ASGraphAnalyzer(BaseASGraphAnalyzer):
             return Outcomes.VICTIM_SUCCESS.value
         # End of traceback
         elif (
-            most_specific_ann is None
+            most_specific_ann is None  # type: ignore
             or len(most_specific_ann.as_path) == 1
             or most_specific_ann.recv_relationship.value == Relationships.ORIGIN.value
             or most_specific_ann.traceback_end
         ):
             return Outcomes.DISCONNECTED.value
         else:
-            return Outcomes.UNDETERMINED.value
+            return Outcomes.UNDETERMINED.value  # type: ignore
 
     #######################
     # Control Plane Funcs #

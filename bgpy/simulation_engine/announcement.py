@@ -29,7 +29,7 @@ class Announcement(YamlAble):
     withdraw: bool = False
     traceback_end: bool = False
     # NOTE: must use list here for C++ compatability
-    communities: tuple[str] = ()
+    communities: tuple[str, ...] = ()
 
     def prefix_path_attributes_eq(self, ann: Optional["Announcement"]) -> bool:
         """Checks prefix and as path equivalency"""
