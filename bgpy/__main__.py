@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from bgpy.simulation_engines.py_simulation_engine import ROVSimplePolicy
+from bgpy.simulation_engine import ROVSimplePolicy
 from bgpy.enums import SpecialPercentAdoptions
 from bgpy.simulation_framework import (
     Simulation,
