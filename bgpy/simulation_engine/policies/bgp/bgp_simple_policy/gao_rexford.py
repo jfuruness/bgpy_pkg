@@ -1,6 +1,6 @@
 from typing import Optional
 
-from bgpy.simulation_engines.py_simulation_engine.py_announcement import Announcement as Ann
+from bgpy.simulation_engine.announcement import Announcement as Ann
 
 
 def _get_best_ann_by_gao_rexford(

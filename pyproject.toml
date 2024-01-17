@@ -81,8 +81,8 @@ include-package-data = true
 "bgpy" = ["py.typed"]
 
 # https://stackoverflow.com/a/76214408/8903959
-[tool.setuptools.packages.find]
-where = ["bgpy"]
+# [tool.setuptools.packages.find]
+# where = ["bgpy"]
 
 [tool.pytest.ini_options]
 python_files = ["test*.py"]

@@ -25,7 +25,7 @@ class ASGraphAnalyzer(BaseASGraphAnalyzer):
     ) -> None:
         self.engine: BaseSimulationEngine = engine
         self.scenario: "Scenario" = scenario
-        self._most_specific_ann_dict: dict[AS, Optional[Ann]] = {
+        self._most_specific_ann_dict: dict[AS, Optional["Ann"]] = {
             # Get the most specific ann in the rib
             as_obj: self._get_most_specific_ann(as_obj)
             for as_obj in engine.as_graph
@@ -39,7 +39,7 @@ class ASGraphAnalyzer(BaseASGraphAnalyzer):
         self.data_plane_tracking: bool = data_plane_tracking
         self.control_plane_tracking: bool = control_plane_tracking
 
-    def _get_most_specific_ann(self, as_obj: AS) -> Optional[Ann]:
+    def _get_most_specific_ann(self, as_obj: AS) -> Optional["Ann"]:
         """Returns the most specific announcement that exists in a rib
 
         as_obj is the as
@@ -83,7 +83,7 @@ class ASGraphAnalyzer(BaseASGraphAnalyzer):
             if outcome_int == Outcomes.UNDETERMINED.value:
                 # next as in the AS path to traceback to
                 # Ignore type because only way for this to be here
-                # Is if the most specific Ann was NOT None.
+                # Is if the most specific "Ann" was NOT None.
                 next_as = self.engine.as_graph.as_dict[
                     most_specific_ann.as_path[1]  # type: ignore
                 ]  # type: ignore
@@ -94,7 +94,7 @@ class ASGraphAnalyzer(BaseASGraphAnalyzer):
             return outcome_int
 
     def _determine_as_outcome_data_plane(
-        self, as_obj: AS, most_specific_ann: Optional[Ann]
+        self, as_obj: AS, most_specific_ann: Optional["Ann"]
     ) -> int:
         """Determines the outcome at an AS
 
@@ -131,7 +131,7 @@ class ASGraphAnalyzer(BaseASGraphAnalyzer):
         return outcome_int
 
     def _determine_as_outcome_ctrl_plane(
-        self, as_obj: AS, ann: Optional[Ann]
+        self, as_obj: AS, ann: Optional["Ann"]
     ) -> int:
         """Determines the outcome at an AS on the control plane
 

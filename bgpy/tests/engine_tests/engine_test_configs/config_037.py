@@ -5,7 +5,7 @@ from bgpy.tests.engine_tests.utils import EngineTestConfig
 
 from bgpy.simulation_engine import (
     BGPSimplePolicy,
-    RealPeerROVSimplePolicy,
+    ROVSimplePolicy,
 )
 from bgpy.simulation_framework import (
     ScenarioConfig,
@@ -33,7 +33,7 @@ config_037 = EngineTestConfig(
         BasePolicyCls=BGPSimplePolicy,
         override_attacker_asns=frozenset({ASNs.ATTACKER.value}),
         override_victim_asns=frozenset({ASNs.VICTIM.value}),
-        override_non_default_asn_cls_dict=frozendict({8: RealPeerROVSimplePolicy}),
+        override_non_default_asn_cls_dict=frozendict({8: ROVSimplePolicy}),
     ),
     as_graph_info=as_graph_info_052,
 )

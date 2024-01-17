@@ -6,7 +6,7 @@ if TYPE_CHECKING:
     from bgpy.simulation_framework.scenarios import Scenario
 
 
-class ASGraphAnalyzer(ABC):
+class BaseASGraphAnalyzer(ABC):
     """Takes in a SimulationEngine and outputs metrics"""
 
     @abstractmethod

@@ -25,8 +25,7 @@ from .customer_cone_funcs import _get_customer_cone_size
 from .customer_cone_funcs import _get_cone_size_helper
 from .customer_cone_funcs import _get_as_rank
 
-from bgpy.simulation_engine import Policy
-from bgpy.simulation_engine import BGPSimplePolicy
+import bgpy
 
 from ..as_graph_info import ASGraphInfo
 
@@ -63,7 +62,7 @@ class ASGraph(YamlAble):
         self,
         as_graph_info: "ASGraphInfo",
         BaseASCls: type[AS] = AS,
-        BasePolicyCls: type[Policy] = BGPSimplePolicy,
+        BasePolicyCls: type[bgpy.simulation_engine.Policy] = bgpy.simulation_engine.BGPSimplePolicy,
         customer_cones: bool = True,
         yaml_as_dict: Optional[frozendict[int, AS]] = None,
         yaml_ixp_asns: frozenset[int] = frozenset(),
@@ -114,7 +113,7 @@ class ASGraph(YamlAble):
         self,
         as_graph_info: ASGraphInfo,
         BaseASCls: type["AS"],
-        BasePolicyCls: type["Policy"],
+        BasePolicyCls: type["bgpy.simulation_engine.Policy"],
         customer_cones: bool,
     ) -> None:
         """Generates the AS graph normally (not from YAML)"""

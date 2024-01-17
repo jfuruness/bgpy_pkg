@@ -85,7 +85,7 @@ def _propagate(
 def _policy_propagate(
     self,
     neighbor: "AS",
-    ann: Ann,
+    ann: "Ann",
     propagate_to: Relationships,
     send_rels: set[Relationships],
 ) -> bool:
@@ -94,7 +94,7 @@ def _policy_propagate(
     return False
 
 
-def _prev_sent(self, neighbor: "AS", ann: Ann) -> bool:
+def _prev_sent(self, neighbor: "AS", ann: "Ann") -> bool:
     """Don't resend anything for BGPAS. For this class it doesn't matter"""
     return False
 
@@ -102,7 +102,7 @@ def _prev_sent(self, neighbor: "AS", ann: Ann) -> bool:
 def _process_outgoing_ann(
     self,
     neighbor: "AS",
-    ann: Ann,
+    ann: "Ann",
     propagate_to: Relationships,
     send_rels: set[Relationships],
 ):

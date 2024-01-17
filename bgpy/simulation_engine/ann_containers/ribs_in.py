@@ -21,8 +21,8 @@ class AnnInfo(YamlAble):
     from the last AS and has not yet been updated)
     """
 
-    unprocessed_ann: Optional[Ann]
-    recv_relationship: Optional[Relationships]
+    unprocessed_ann: Optional["Ann"]
+    recv_relationship: Optional["Relationships"]
 
 
 class RIBsIn(AnnContainer):
@@ -57,8 +57,8 @@ class RIBsIn(AnnContainer):
 
     def add_unprocessed_ann(
         self,
-        unprocessed_ann: Ann,
-        recv_relationship: Relationships,
+        unprocessed_ann: "Ann",
+        recv_relationship: "Relationships",
     ):
         """Adds an unprocessed ann to ribs in
 

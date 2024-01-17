@@ -6,11 +6,10 @@ from .ann_containers import RIBsOut
 from .ann_containers import SendQueue
 from .ann_containers import RecvQueue
 
+from .policies import Policy
 from .policies import BGPSimplePolicy
 from .policies import BGPPolicy
 from .policies import ROVSimplePolicy
-from .policies import RealROVSimplePolicy
-from .policies import RealPeerROVSimplePolicy
 from .policies import ROVPolicy
 
 from .simulation_engines import BaseSimulationEngine
@@ -26,9 +25,8 @@ __all__ = [
     "BGPSimplePolicy",
     "BGPPolicy",
     "ROVSimplePolicy",
-    "RealROVSimplePolicy",
-    "RealPeerROVSimplePolicy",
     "ROVPolicy",
+    "Policy",
     "BaseSimulationEngine",
     "SimulationEngine",
 ]

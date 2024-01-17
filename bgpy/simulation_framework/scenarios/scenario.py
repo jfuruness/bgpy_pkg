@@ -11,8 +11,8 @@ from frozendict import frozendict
 
 from bgpy.as_graphs import AS
 from bgpy.simulation_engine import Announcement as Ann
-from bgpy.simulation_engines import BaseSimulationEngine
-from bgpy.simulation_engines import Policy
+from bgpy.simulation_engine import BaseSimulationEngine
+from bgpy.simulation_engine import Policy
 from bgpy.enums import (
     SpecialPercentAdoptions,
     Outcomes,

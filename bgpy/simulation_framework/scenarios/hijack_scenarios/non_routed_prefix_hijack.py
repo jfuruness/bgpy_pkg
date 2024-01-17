@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING, Union
 
-from bgpy.simulation_frameworks.scenarios.scenario import Scenario
+from bgpy.simulation_framework.scenarios.scenario import Scenario
 from bgpy.enums import Prefixes
 from bgpy.enums import Relationships
 from bgpy.enums import Timestamps

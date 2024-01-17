@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from typing import Any, Optional, Union
 
 from bgpy.enums import ASGroups, Plane, Outcomes
-from bgpy.simulation_engines.base import Policy
+from bgpy.simulation_engine import Policy
 
 
 @dataclass(frozen=True, slots=True)

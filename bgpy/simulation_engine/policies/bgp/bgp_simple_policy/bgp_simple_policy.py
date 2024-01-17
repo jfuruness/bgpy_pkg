@@ -23,7 +23,7 @@ from .gao_rexford import _get_best_ann_by_local_pref
 from .gao_rexford import _get_best_ann_by_as_path
 from .gao_rexford import _get_best_ann_by_lowest_neighbor_asn_tiebreaker
 
-from bgpy.simulation_engine import Policy
+from bgpy.simulation_engine.policies.policy import Policy
 from bgpy.simulation_engine.ann_containers import LocalRIB
 from bgpy.simulation_engine.ann_containers import RecvQueue
 
@@ -59,8 +59,8 @@ class BGPSimplePolicy(Policy):
         self,
     ) -> tuple[
         Callable[
-            [Ann, Ann],
-            Optional[Ann],
+            ["Ann", "Ann"],
+            Optional["Ann"],
         ],
         ...,
     ]:

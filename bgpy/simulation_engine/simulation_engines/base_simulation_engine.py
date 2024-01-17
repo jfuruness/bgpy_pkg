@@ -5,7 +5,7 @@ from typing import Any, Optional, TYPE_CHECKING
 from frozendict import frozendict
 from yamlable import YamlAble, yaml_info, yaml_info_decorate
 
-from .policy import Policy
+from ..policies import Policy
 
 # https://stackoverflow.com/a/57005931/8903959
 if TYPE_CHECKING:

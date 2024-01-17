@@ -1,5 +1,5 @@
-from .bgp import BGPSimplePolicy, BGPPolicy
 from .policy import Policy
+from .bgp import BGPSimplePolicy, BGPPolicy
 from .rov import (
     ROVSimplePolicy,
     ROVPolicy,

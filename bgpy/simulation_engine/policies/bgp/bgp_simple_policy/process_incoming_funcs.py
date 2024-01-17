@@ -1,6 +1,6 @@
 from typing import Any, Optional, TYPE_CHECKING, Union
 
-from bgpy.simulation_engines.py_simulation_engine.ann_containers import RecvQueue
+from bgpy.simulation_engine.ann_containers import RecvQueue
 
 if TYPE_CHECKING:
     from bgpy.enums import Relationships
@@ -10,7 +10,7 @@ if TYPE_CHECKING:
 
 
 def receive_ann(
-    self, ann: Ann, accept_withdrawals: bool = False
+    self, ann: "Ann", accept_withdrawals: bool = False
 ) -> None:
     """Function for recieving announcements, adds to recv_q"""
 
@@ -22,7 +22,7 @@ def receive_ann(
 def process_incoming_anns(
     self,
     *,
-    from_rel: Relationships,
+    from_rel: "Relationships",
     propagation_round: int,
     scenario: "Scenario",
     reset_q: bool = True,
@@ -32,7 +32,7 @@ def process_incoming_anns(
     # For each prefix, get all anns recieved
     for prefix, ann_list in self._recv_q.prefix_anns():
         # Get announcement currently in local rib
-        current_ann: Ann = self._local_rib.get_ann(prefix)
+        current_ann: "Ann" = self._local_rib.get_ann(prefix)
         og_ann = current_ann
 
         # Seeded Ann will never be overriden, so continue
@@ -59,8 +59,8 @@ def process_incoming_anns(
 
 def _valid_ann(
     self,
-    ann: Ann,
-    recv_relationship: Relationships,
+    ann: "Ann",
+    recv_relationship: "Relationships",
 ) -> bool:
     """Determine if an announcement is valid or should be dropped"""
 
@@ -70,10 +70,10 @@ def _valid_ann(
 
 def _copy_and_process(
     self,
-    ann: Ann,
-    recv_relationship: Relationships,
+    ann: "Ann",
+    recv_relationship: "Relationships",
     overwrite_default_kwargs: Optional[dict[Any, Any]] = None,
-) -> Ann:
+) -> "Ann":
     """Deep copies ann and modifies attrs
 
     Prepends AS to AS Path and sets recv_relationship

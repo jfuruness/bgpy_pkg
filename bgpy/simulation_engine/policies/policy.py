@@ -50,7 +50,7 @@ class Policy(YamlAble, metaclass=ABCMeta):
 
     @abstractmethod
     def receive_ann(
-        self, ann: Ann, accept_withdrawals: bool = False
+        self, ann: "Ann", accept_withdrawals: bool = False
     ) -> None:
         """Function for recieving announcements"""
 
@@ -60,7 +60,7 @@ class Policy(YamlAble, metaclass=ABCMeta):
     def process_incoming_anns(
         self,
         *,
-        from_rel: Relationships,
+        from_rel: "Relationships",
         propagation_round: int,
         scenario: "Scenario",
         reset_q: bool = True,
