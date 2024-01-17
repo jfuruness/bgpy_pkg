@@ -1,4 +1,4 @@
-!yamlable/PySimulationEngine
+!yamlable/SimulationEngine
 as_graph: !yamlable/CAIDAASGraph
   as_dict:
     1: !yamlable/AS
@@ -13,16 +13,15 @@ as_graph: !yamlable/CAIDAASGraph
       peers: !!python/tuple []
       policy: !yamlable/BGPPolicy
         _local_rib: !yamlable/LocalRIB
-          1.2.0.0/16: !yamlable/PyAnnouncement
-            as_path:
+          1.2.0.0/16: !yamlable/Announcement
+            as_path: !!python/tuple
             - 1
             - 2
             - 5
             - 777
-            communities: []
+            communities: !!python/tuple []
             prefix: 1.2.0.0/16
-            prefix_block_id: 0
-            recv_relationship: !simulator_codec/PyRelationships
+            recv_relationship: !simulator_codec/Relationships
               name: CUSTOMERS
               value: 3
             roa_origin: 777
@@ -35,18 +34,17 @@ as_graph: !yamlable/CAIDAASGraph
         _ribs_in: !yamlable/RIBsIn
           2:
             1.2.0.0/16: !yamlable/AnnInfo
-              recv_relationship: !simulator_codec/PyRelationships
+              recv_relationship: !simulator_codec/Relationships
                 name: CUSTOMERS
                 value: 3
-              unprocessed_ann: !yamlable/PyAnnouncement
-                as_path:
+              unprocessed_ann: !yamlable/Announcement
+                as_path: !!python/tuple
                 - 2
                 - 5
                 - 777
-                communities: []
+                communities: !!python/tuple []
                 prefix: 1.2.0.0/16
-                prefix_block_id: 0
-                recv_relationship: !simulator_codec/PyRelationships
+                recv_relationship: !simulator_codec/Relationships
                   name: CUSTOMERS
                   value: 3
                 roa_origin: 777
@@ -57,18 +55,17 @@ as_graph: !yamlable/CAIDAASGraph
                 withdraw: false
           3:
             1.2.0.0/16: !yamlable/AnnInfo
-              recv_relationship: !simulator_codec/PyRelationships
+              recv_relationship: !simulator_codec/Relationships
                 name: CUSTOMERS
                 value: 3
-              unprocessed_ann: !yamlable/PyAnnouncement
-                as_path:
+              unprocessed_ann: !yamlable/Announcement
+                as_path: !!python/tuple
                 - 3
                 - 4
                 - 777
-                communities: []
+                communities: !!python/tuple []
                 prefix: 1.2.0.0/16
-                prefix_block_id: 0
-                recv_relationship: !simulator_codec/PyRelationships
+                recv_relationship: !simulator_codec/Relationships
                   name: CUSTOMERS
                   value: 3
                 roa_origin: 777
@@ -79,16 +76,15 @@ as_graph: !yamlable/CAIDAASGraph
                 withdraw: false
         _ribs_out: !yamlable/RIBsOut
           2:
-            1.2.0.0/16: !yamlable/PyAnnouncement
-              as_path:
+            1.2.0.0/16: !yamlable/Announcement
+              as_path: !!python/tuple
               - 1
               - 2
               - 5
               - 777
-              communities: []
+              communities: !!python/tuple []
               prefix: 1.2.0.0/16
-              prefix_block_id: 0
-              recv_relationship: !simulator_codec/PyRelationships
+              recv_relationship: !simulator_codec/Relationships
                 name: CUSTOMERS
                 value: 3
               roa_origin: 777
@@ -98,16 +94,15 @@ as_graph: !yamlable/CAIDAASGraph
               traceback_end: false
               withdraw: false
           3:
-            1.2.0.0/16: !yamlable/PyAnnouncement
-              as_path:
+            1.2.0.0/16: !yamlable/Announcement
+              as_path: !!python/tuple
               - 1
               - 2
               - 5
               - 777
-              communities: []
+              communities: !!python/tuple []
               prefix: 1.2.0.0/16
-              prefix_block_id: 0
-              recv_relationship: !simulator_codec/PyRelationships
+              recv_relationship: !simulator_codec/Relationships
                 name: CUSTOMERS
                 value: 3
               roa_origin: 777
@@ -130,15 +125,14 @@ as_graph: !yamlable/CAIDAASGraph
       peers: !!python/tuple []
       policy: !yamlable/BGPPolicy
         _local_rib: !yamlable/LocalRIB
-          1.2.0.0/16: !yamlable/PyAnnouncement
-            as_path:
+          1.2.0.0/16: !yamlable/Announcement
+            as_path: !!python/tuple
             - 2
             - 5
             - 777
-            communities: []
+            communities: !!python/tuple []
             prefix: 1.2.0.0/16
-            prefix_block_id: 0
-            recv_relationship: !simulator_codec/PyRelationships
+            recv_relationship: !simulator_codec/Relationships
               name: CUSTOMERS
               value: 3
             roa_origin: 777
@@ -151,19 +145,18 @@ as_graph: !yamlable/CAIDAASGraph
         _ribs_in: !yamlable/RIBsIn
           1:
             1.2.0.0/16: !yamlable/AnnInfo
-              recv_relationship: !simulator_codec/PyRelationships
+              recv_relationship: !simulator_codec/Relationships
                 name: PROVIDERS
                 value: 1
-              unprocessed_ann: !yamlable/PyAnnouncement
-                as_path:
+              unprocessed_ann: !yamlable/Announcement
+                as_path: !!python/tuple
                 - 1
                 - 2
                 - 5
                 - 777
-                communities: []
+                communities: !!python/tuple []
                 prefix: 1.2.0.0/16
-                prefix_block_id: 0
-                recv_relationship: !simulator_codec/PyRelationships
+                recv_relationship: !simulator_codec/Relationships
                   name: CUSTOMERS
                   value: 3
                 roa_origin: 777
@@ -174,17 +167,16 @@ as_graph: !yamlable/CAIDAASGraph
                 withdraw: false
           5:
             1.2.0.0/16: !yamlable/AnnInfo
-              recv_relationship: !simulator_codec/PyRelationships
+              recv_relationship: !simulator_codec/Relationships
                 name: CUSTOMERS
                 value: 3
-              unprocessed_ann: !yamlable/PyAnnouncement
-                as_path:
+              unprocessed_ann: !yamlable/Announcement
+                as_path: !!python/tuple
                 - 5
                 - 777
-                communities: []
+                communities: !!python/tuple []
                 prefix: 1.2.0.0/16
-                prefix_block_id: 0
-                recv_relationship: !simulator_codec/PyRelationships
+                recv_relationship: !simulator_codec/Relationships
                   name: CUSTOMERS
                   value: 3
                 roa_origin: 777
@@ -195,15 +187,14 @@ as_graph: !yamlable/CAIDAASGraph
                 withdraw: false
         _ribs_out: !yamlable/RIBsOut
           1:
-            1.2.0.0/16: !yamlable/PyAnnouncement
-              as_path:
+            1.2.0.0/16: !yamlable/Announcement
+              as_path: !!python/tuple
               - 2
               - 5
               - 777
-              communities: []
+              communities: !!python/tuple []
               prefix: 1.2.0.0/16
-              prefix_block_id: 0
-              recv_relationship: !simulator_codec/PyRelationships
+              recv_relationship: !simulator_codec/Relationships
                 name: CUSTOMERS
                 value: 3
               roa_origin: 777
@@ -213,15 +204,14 @@ as_graph: !yamlable/CAIDAASGraph
               traceback_end: false
               withdraw: false
           5:
-            1.2.0.0/16: !yamlable/PyAnnouncement
-              as_path:
+            1.2.0.0/16: !yamlable/Announcement
+              as_path: !!python/tuple
               - 2
               - 5
               - 777
-              communities: []
+              communities: !!python/tuple []
               prefix: 1.2.0.0/16
-              prefix_block_id: 0
-              recv_relationship: !simulator_codec/PyRelationships
+              recv_relationship: !simulator_codec/Relationships
                 name: CUSTOMERS
                 value: 3
               roa_origin: 777
@@ -245,15 +235,14 @@ as_graph: !yamlable/CAIDAASGraph
       peers: !!python/tuple []
       policy: !yamlable/BGPPolicy
         _local_rib: !yamlable/LocalRIB
-          1.2.0.0/16: !yamlable/PyAnnouncement
-            as_path:
+          1.2.0.0/16: !yamlable/Announcement
+            as_path: !!python/tuple
             - 3
             - 4
             - 777
-            communities: []
+            communities: !!python/tuple []
             prefix: 1.2.0.0/16
-            prefix_block_id: 0
-            recv_relationship: !simulator_codec/PyRelationships
+            recv_relationship: !simulator_codec/Relationships
               name: CUSTOMERS
               value: 3
             roa_origin: 777
@@ -266,19 +255,18 @@ as_graph: !yamlable/CAIDAASGraph
         _ribs_in: !yamlable/RIBsIn
           1:
             1.2.0.0/16: !yamlable/AnnInfo
-              recv_relationship: !simulator_codec/PyRelationships
+              recv_relationship: !simulator_codec/Relationships
                 name: PROVIDERS
                 value: 1
-              unprocessed_ann: !yamlable/PyAnnouncement
-                as_path:
+              unprocessed_ann: !yamlable/Announcement
+                as_path: !!python/tuple
                 - 1
                 - 2
                 - 5
                 - 777
-                communities: []
+                communities: !!python/tuple []
                 prefix: 1.2.0.0/16
-                prefix_block_id: 0
-                recv_relationship: !simulator_codec/PyRelationships
+                recv_relationship: !simulator_codec/Relationships
                   name: CUSTOMERS
                   value: 3
                 roa_origin: 777
@@ -289,17 +277,16 @@ as_graph: !yamlable/CAIDAASGraph
                 withdraw: false
           4:
             1.2.0.0/16: !yamlable/AnnInfo
-              recv_relationship: !simulator_codec/PyRelationships
+              recv_relationship: !simulator_codec/Relationships
                 name: CUSTOMERS
                 value: 3
-              unprocessed_ann: !yamlable/PyAnnouncement
-                as_path:
+              unprocessed_ann: !yamlable/Announcement
+                as_path: !!python/tuple
                 - 4
                 - 777
-                communities: []
+                communities: !!python/tuple []
                 prefix: 1.2.0.0/16
-                prefix_block_id: 0
-                recv_relationship: !simulator_codec/PyRelationships
+                recv_relationship: !simulator_codec/Relationships
                   name: CUSTOMERS
                   value: 3
                 roa_origin: 777
@@ -310,15 +297,14 @@ as_graph: !yamlable/CAIDAASGraph
                 withdraw: false
         _ribs_out: !yamlable/RIBsOut
           1:
-            1.2.0.0/16: !yamlable/PyAnnouncement
-              as_path:
+            1.2.0.0/16: !yamlable/Announcement
+              as_path: !!python/tuple
               - 3
               - 4
               - 777
-              communities: []
+              communities: !!python/tuple []
               prefix: 1.2.0.0/16
-              prefix_block_id: 0
-              recv_relationship: !simulator_codec/PyRelationships
+              recv_relationship: !simulator_codec/Relationships
                 name: CUSTOMERS
                 value: 3
               roa_origin: 777
@@ -328,15 +314,14 @@ as_graph: !yamlable/CAIDAASGraph
               traceback_end: false
               withdraw: false
           4:
-            1.2.0.0/16: !yamlable/PyAnnouncement
-              as_path:
+            1.2.0.0/16: !yamlable/Announcement
+              as_path: !!python/tuple
               - 3
               - 4
               - 777
-              communities: []
+              communities: !!python/tuple []
               prefix: 1.2.0.0/16
-              prefix_block_id: 0
-              recv_relationship: !simulator_codec/PyRelationships
+              recv_relationship: !simulator_codec/Relationships
                 name: CUSTOMERS
                 value: 3
               roa_origin: 777
@@ -360,14 +345,13 @@ as_graph: !yamlable/CAIDAASGraph
       peers: !!python/tuple []
       policy: !yamlable/BGPPolicy
         _local_rib: !yamlable/LocalRIB
-          1.2.0.0/16: !yamlable/PyAnnouncement
-            as_path:
+          1.2.0.0/16: !yamlable/Announcement
+            as_path: !!python/tuple
             - 4
             - 777
-            communities: []
+            communities: !!python/tuple []
             prefix: 1.2.0.0/16
-            prefix_block_id: 0
-            recv_relationship: !simulator_codec/PyRelationships
+            recv_relationship: !simulator_codec/Relationships
               name: CUSTOMERS
               value: 3
             roa_origin: 777
@@ -380,18 +364,17 @@ as_graph: !yamlable/CAIDAASGraph
         _ribs_in: !yamlable/RIBsIn
           3:
             1.2.0.0/16: !yamlable/AnnInfo
-              recv_relationship: !simulator_codec/PyRelationships
+              recv_relationship: !simulator_codec/Relationships
                 name: PROVIDERS
                 value: 1
-              unprocessed_ann: !yamlable/PyAnnouncement
-                as_path:
+              unprocessed_ann: !yamlable/Announcement
+                as_path: !!python/tuple
                 - 3
                 - 4
                 - 777
-                communities: []
+                communities: !!python/tuple []
                 prefix: 1.2.0.0/16
-                prefix_block_id: 0
-                recv_relationship: !simulator_codec/PyRelationships
+                recv_relationship: !simulator_codec/Relationships
                   name: CUSTOMERS
                   value: 3
                 roa_origin: 777
@@ -402,15 +385,14 @@ as_graph: !yamlable/CAIDAASGraph
                 withdraw: false
           777:
             1.2.0.0/16: !yamlable/AnnInfo
-              recv_relationship: !simulator_codec/PyRelationships
+              recv_relationship: !simulator_codec/Relationships
                 name: CUSTOMERS
                 value: 3
-              unprocessed_ann: !yamlable/PyAnnouncement
-                as_path:
+              unprocessed_ann: !yamlable/Announcement
+                as_path: !!python/tuple
                 - 777
-                communities: []
+                communities: !!python/tuple []
                 prefix: 1.2.0.0/16
-                prefix_block_id: 0
                 recv_relationship: !simulator_codec/Relationships
                   name: ORIGIN
                   value: 4
@@ -422,14 +404,13 @@ as_graph: !yamlable/CAIDAASGraph
                 withdraw: false
         _ribs_out: !yamlable/RIBsOut
           3:
-            1.2.0.0/16: !yamlable/PyAnnouncement
-              as_path:
+            1.2.0.0/16: !yamlable/Announcement
+              as_path: !!python/tuple
               - 4
               - 777
-              communities: []
+              communities: !!python/tuple []
               prefix: 1.2.0.0/16
-              prefix_block_id: 0
-              recv_relationship: !simulator_codec/PyRelationships
+              recv_relationship: !simulator_codec/Relationships
                 name: CUSTOMERS
                 value: 3
               roa_origin: 777
@@ -439,14 +420,13 @@ as_graph: !yamlable/CAIDAASGraph
               traceback_end: false
               withdraw: false
           777:
-            1.2.0.0/16: !yamlable/PyAnnouncement
-              as_path:
+            1.2.0.0/16: !yamlable/Announcement
+              as_path: !!python/tuple
               - 4
               - 777
-              communities: []
+              communities: !!python/tuple []
               prefix: 1.2.0.0/16
-              prefix_block_id: 0
-              recv_relationship: !simulator_codec/PyRelationships
+              recv_relationship: !simulator_codec/Relationships
                 name: CUSTOMERS
                 value: 3
               roa_origin: 777
@@ -470,14 +450,13 @@ as_graph: !yamlable/CAIDAASGraph
       peers: !!python/tuple []
       policy: !yamlable/BGPPolicy
         _local_rib: !yamlable/LocalRIB
-          1.2.0.0/16: !yamlable/PyAnnouncement
-            as_path:
+          1.2.0.0/16: !yamlable/Announcement
+            as_path: !!python/tuple
             - 5
             - 777
-            communities: []
+            communities: !!python/tuple []
             prefix: 1.2.0.0/16
-            prefix_block_id: 0
-            recv_relationship: !simulator_codec/PyRelationships
+            recv_relationship: !simulator_codec/Relationships
               name: CUSTOMERS
               value: 3
             roa_origin: 777
@@ -490,18 +469,17 @@ as_graph: !yamlable/CAIDAASGraph
         _ribs_in: !yamlable/RIBsIn
           2:
             1.2.0.0/16: !yamlable/AnnInfo
-              recv_relationship: !simulator_codec/PyRelationships
+              recv_relationship: !simulator_codec/Relationships
                 name: PROVIDERS
                 value: 1
-              unprocessed_ann: !yamlable/PyAnnouncement
-                as_path:
+              unprocessed_ann: !yamlable/Announcement
+                as_path: !!python/tuple
                 - 2
                 - 5
                 - 777
-                communities: []
+                communities: !!python/tuple []
                 prefix: 1.2.0.0/16
-                prefix_block_id: 0
-                recv_relationship: !simulator_codec/PyRelationships
+                recv_relationship: !simulator_codec/Relationships
                   name: CUSTOMERS
                   value: 3
                 roa_origin: 777
@@ -512,15 +490,14 @@ as_graph: !yamlable/CAIDAASGraph
                 withdraw: false
           777:
             1.2.0.0/16: !yamlable/AnnInfo
-              recv_relationship: !simulator_codec/PyRelationships
+              recv_relationship: !simulator_codec/Relationships
                 name: CUSTOMERS
                 value: 3
-              unprocessed_ann: !yamlable/PyAnnouncement
-                as_path:
+              unprocessed_ann: !yamlable/Announcement
+                as_path: !!python/tuple
                 - 777
-                communities: []
+                communities: !!python/tuple []
                 prefix: 1.2.0.0/16
-                prefix_block_id: 0
                 recv_relationship: !simulator_codec/Relationships
                   name: ORIGIN
                   value: 4
@@ -532,14 +509,13 @@ as_graph: !yamlable/CAIDAASGraph
                 withdraw: false
         _ribs_out: !yamlable/RIBsOut
           2:
-            1.2.0.0/16: !yamlable/PyAnnouncement
-              as_path:
+            1.2.0.0/16: !yamlable/Announcement
+              as_path: !!python/tuple
               - 5
               - 777
-              communities: []
+              communities: !!python/tuple []
               prefix: 1.2.0.0/16
-              prefix_block_id: 0
-              recv_relationship: !simulator_codec/PyRelationships
+              recv_relationship: !simulator_codec/Relationships
                 name: CUSTOMERS
                 value: 3
               roa_origin: 777
@@ -549,14 +525,13 @@ as_graph: !yamlable/CAIDAASGraph
               traceback_end: false
               withdraw: false
           777:
-            1.2.0.0/16: !yamlable/PyAnnouncement
-              as_path:
+            1.2.0.0/16: !yamlable/Announcement
+              as_path: !!python/tuple
               - 5
               - 777
-              communities: []
+              communities: !!python/tuple []
               prefix: 1.2.0.0/16
-              prefix_block_id: 0
-              recv_relationship: !simulator_codec/PyRelationships
+              recv_relationship: !simulator_codec/Relationships
                 name: CUSTOMERS
                 value: 3
               roa_origin: 777
@@ -579,12 +554,11 @@ as_graph: !yamlable/CAIDAASGraph
       peers: !!python/tuple []
       policy: !yamlable/BGPPolicy
         _local_rib: !yamlable/LocalRIB
-          1.2.0.0/16: !yamlable/PyAnnouncement
-            as_path:
+          1.2.0.0/16: !yamlable/Announcement
+            as_path: !!python/tuple
             - 777
-            communities: []
+            communities: !!python/tuple []
             prefix: 1.2.0.0/16
-            prefix_block_id: 0
             recv_relationship: !simulator_codec/Relationships
               name: ORIGIN
               value: 4
@@ -598,12 +572,11 @@ as_graph: !yamlable/CAIDAASGraph
         _ribs_in: !yamlable/RIBsIn {}
         _ribs_out: !yamlable/RIBsOut
           4:
-            1.2.0.0/16: !yamlable/PyAnnouncement
-              as_path:
+            1.2.0.0/16: !yamlable/Announcement
+              as_path: !!python/tuple
               - 777
-              communities: []
+              communities: !!python/tuple []
               prefix: 1.2.0.0/16
-              prefix_block_id: 0
               recv_relationship: !simulator_codec/Relationships
                 name: ORIGIN
                 value: 4
@@ -614,12 +587,11 @@ as_graph: !yamlable/CAIDAASGraph
               traceback_end: false
               withdraw: false
           5:
-            1.2.0.0/16: !yamlable/PyAnnouncement
-              as_path:
+            1.2.0.0/16: !yamlable/Announcement
+              as_path: !!python/tuple
               - 777
-              communities: []
+              communities: !!python/tuple []
               prefix: 1.2.0.0/16
-              prefix_block_id: 0
               recv_relationship: !simulator_codec/Relationships
                 name: ORIGIN
                 value: 4
