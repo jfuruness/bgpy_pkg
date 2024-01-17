@@ -62,8 +62,9 @@ class Scenario(ABC):
         )
 
         if self.scenario_config.override_announcements:
-            self.announcements: tuple["Ann", ...
-                                      ] = self.scenario_config.override_announcements
+            self.announcements: tuple[
+                "Ann", ...
+            ] = self.scenario_config.override_announcements
         else:
             self.announcements = self._get_announcements(
                 engine=engine, prev_scenario=prev_scenario
@@ -497,9 +498,7 @@ class Scenario(ABC):
     # Deprecated funcs, DO NOT USE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!#
     ###################################################################################
 
-    def determine_as_outcome(
-        self, as_obj: AS, ann: Optional["Ann"]
-    ) -> Outcomes:
+    def determine_as_outcome(self, as_obj: AS, ann: Optional["Ann"]) -> Outcomes:
         """Determines the outcome at an AS
 
         ann is most_specific_ann is the most specific prefix announcement

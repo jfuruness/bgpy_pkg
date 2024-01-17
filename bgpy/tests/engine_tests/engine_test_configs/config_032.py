@@ -31,9 +31,7 @@ class Custom32ValidPrefix(ValidPrefix):
             object.__setattr__(
                 ann,
                 "as_path",
-                (
-                    3,
-                ),
+                (3,),
             )
             engine.as_graph.as_dict[3].policy._local_rib.add_ann(ann)
             Custom32ValidPrefix.victim_asns = frozenset({2, 3})

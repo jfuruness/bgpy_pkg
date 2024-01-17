@@ -5,7 +5,8 @@ from bgpy.simulation_framework.scenarios import ScenarioConfig
 from bgpy.simulation_engine import BaseSimulationEngine, SimulationEngine
 from bgpy.simulation_framework.metric_tracker.metric_tracker import MetricTracker
 from bgpy.simulation_framework.as_graph_analyzers import (
-    BaseASGraphAnalyzer, ASGraphAnalyzer
+    BaseASGraphAnalyzer,
+    ASGraphAnalyzer,
 )
 from .diagram import Diagram
 

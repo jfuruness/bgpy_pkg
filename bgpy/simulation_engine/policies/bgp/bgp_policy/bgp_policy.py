@@ -23,7 +23,6 @@ if TYPE_CHECKING:
     from bgpy.simulation_engine.announcement import Announcement as Ann
 
 
-
 class BGPPolicy(BGPSimplePolicy):
     name = "BGP"
 
@@ -33,7 +32,7 @@ class BGPPolicy(BGPSimplePolicy):
         _ribs_in: Optional[RIBsIn] = None,
         _ribs_out: Optional[RIBsOut] = None,
         _send_q: Optional[SendQueue] = None,
-        **kwargs
+        **kwargs,
     ):
         super(BGPPolicy, self).__init__(*args, **kwargs)
         self._ribs_in: RIBsIn = _ribs_in if _ribs_in else RIBsIn()

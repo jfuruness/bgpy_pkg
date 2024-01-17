@@ -66,7 +66,6 @@ class ASGraphConstructor(ABC):
                 customers = tuple([x for x in provider.customers if x.asn != stub.asn])
                 provider.customers = customers
 
-
     @staticmethod
     def write_tsv(as_graph: "ASGraph", tsv_path: Optional[Path] = None) -> None:
         """Writes AS Graph to TSV"""

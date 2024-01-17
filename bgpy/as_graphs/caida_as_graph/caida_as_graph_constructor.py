@@ -33,7 +33,7 @@ class CAIDAASGraphConstructor(ASGraphConstructor):
             as_graph_collector_kwargs=as_graph_collector_kwargs,
             as_graph_kwargs=as_graph_kwargs,
             tsv_path=tsv_path,
-            stubs=stubs
+            stubs=stubs,
         )
 
     ####################

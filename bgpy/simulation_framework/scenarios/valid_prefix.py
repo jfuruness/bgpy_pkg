@@ -13,9 +13,7 @@ if TYPE_CHECKING:
 class ValidPrefix(Scenario):
     """A valid prefix engine input, mainly for testing"""
 
-    def _get_announcements(
-        self, *args, **kwargs
-    ) -> tuple["Ann", ...]:
+    def _get_announcements(self, *args, **kwargs) -> tuple["Ann", ...]:
         """Returns a valid prefix announcement
 
         for subclasses of this EngineInput, you can set AnnCls equal to
@@ -27,9 +25,7 @@ class ValidPrefix(Scenario):
             anns.append(
                 self.scenario_config.AnnCls(
                     prefix=Prefixes.PREFIX.value,
-                    as_path=(
-                        victim_asn,
-                    ),
+                    as_path=(victim_asn,),
                     timestamp=Timestamps.VICTIM.value,
                     seed_asn=victim_asn,
                     roa_valid_length=True,

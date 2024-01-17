@@ -27,9 +27,7 @@ def _propagate(
 
 def _prev_sent(self, neighbor: "AS", ann: "Ann") -> bool:
     """Don't send what we've already sent"""
-    ribs_out_ann: Optional["Ann"] = self._ribs_out.get_ann(
-        neighbor.asn, ann.prefix
-    )
+    ribs_out_ann: Optional["Ann"] = self._ribs_out.get_ann(neighbor.asn, ann.prefix)
     return ann.prefix_path_attributes_eq(ribs_out_ann)
 
 

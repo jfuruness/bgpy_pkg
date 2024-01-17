@@ -13,9 +13,7 @@ if TYPE_CHECKING:
 class NonRoutedPrefixHijack(Scenario):
     """Non routed prefix hijack (ROA of AS 0)"""
 
-    def _get_announcements(
-        self, *args, **kwargs
-    ) -> tuple["Ann", ...]:
+    def _get_announcements(self, *args, **kwargs) -> tuple["Ann", ...]:
         """Returns non routed prefix announcement from attacker
 
         for subclasses of this EngineInput, you can set AnnCls equal to
@@ -27,9 +25,7 @@ class NonRoutedPrefixHijack(Scenario):
             anns.append(
                 self.scenario_config.AnnCls(
                     prefix=Prefixes.PREFIX.value,
-                    as_path=(
-                        attacker_asn,
-                    ),
+                    as_path=(attacker_asn,),
                     timestamp=Timestamps.ATTACKER.value,
                     seed_asn=attacker_asn,
                     roa_valid_length=True,

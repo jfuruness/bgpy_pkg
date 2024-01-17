@@ -23,9 +23,7 @@ def _get_best_ann_by_gao_rexford(
         raise Exception("No ann was chosen")
 
 
-def _get_best_ann_by_local_pref(
-    self, current_ann: Ann, new_ann: Ann
-) -> Optional[Ann]:
+def _get_best_ann_by_local_pref(self, current_ann: Ann, new_ann: Ann) -> Optional[Ann]:
     """Returns best announcement by local pref, or None if tie"""
 
     if current_ann.recv_relationship.value > new_ann.recv_relationship.value:
@@ -36,9 +34,7 @@ def _get_best_ann_by_local_pref(
         return None
 
 
-def _get_best_ann_by_as_path(
-    self, current_ann: Ann, new_ann: Ann
-) -> Optional[Ann]:
+def _get_best_ann_by_as_path(self, current_ann: Ann, new_ann: Ann) -> Optional[Ann]:
     """Returns best announcement by as path length, or None if tie
 
     Shorter AS Paths are better

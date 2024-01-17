@@ -8,10 +8,7 @@ if TYPE_CHECKING:
     from bgpy.simulation_engine.announcement import Announcement as Ann
 
 
-
-def receive_ann(
-    self, ann: "Ann", accept_withdrawals: bool = False
-) -> None:
+def receive_ann(self, ann: "Ann", accept_withdrawals: bool = False) -> None:
     """Function for recieving announcements, adds to recv_q"""
 
     if getattr(ann, "withdraw", False) and not accept_withdrawals:
@@ -80,10 +77,7 @@ def _copy_and_process(
     """
 
     kwargs: dict[str, Any] = {
-        "as_path": (
-            self.as_.asn,
-        )
-        + ann.as_path,
+        "as_path": (self.as_.asn,) + ann.as_path,
         "recv_relationship": recv_relationship,
     }
 

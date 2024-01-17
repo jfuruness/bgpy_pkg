@@ -130,9 +130,7 @@ class ASGraphAnalyzer(BaseASGraphAnalyzer):
         self._control_plane_outcomes[as_obj.asn] = outcome_int
         return outcome_int
 
-    def _determine_as_outcome_ctrl_plane(
-        self, as_obj: AS, ann: Optional["Ann"]
-    ) -> int:
+    def _determine_as_outcome_ctrl_plane(self, as_obj: AS, ann: Optional["Ann"]) -> int:
         """Determines the outcome at an AS on the control plane
 
         ann is most_specific_ann is the most specific prefix announcement

@@ -57,13 +57,7 @@ class BGPSimplePolicy(Policy):
     @property
     def _gao_rexford_funcs(
         self,
-    ) -> tuple[
-        Callable[
-            ["Ann", "Ann"],
-            Optional["Ann"],
-        ],
-        ...,
-    ]:
+    ) -> tuple[Callable[["Ann", "Ann"], Optional["Ann"],], ...,]:
         return (
             self._get_best_ann_by_local_pref,
             self._get_best_ann_by_as_path,

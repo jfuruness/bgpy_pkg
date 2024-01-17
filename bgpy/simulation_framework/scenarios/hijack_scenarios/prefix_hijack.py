@@ -13,9 +13,7 @@ if TYPE_CHECKING:
 class PrefixHijack(Scenario):
     """Prefix hijack where both attacker and victim compete for a prefix"""
 
-    def _get_announcements(
-        self, *args, **kwargs
-    ) -> tuple["Ann", ...]:
+    def _get_announcements(self, *args, **kwargs) -> tuple["Ann", ...]:
         """Returns the two announcements seeded for this engine input
 
         This engine input is for a prefix hijack,
@@ -30,9 +28,7 @@ class PrefixHijack(Scenario):
             anns.append(
                 self.scenario_config.AnnCls(
                     prefix=Prefixes.PREFIX.value,
-                    as_path=(
-                        victim_asn,
-                    ),
+                    as_path=(victim_asn,),
                     timestamp=Timestamps.VICTIM.value,
                     seed_asn=victim_asn,
                     roa_valid_length=True,
@@ -50,9 +46,7 @@ class PrefixHijack(Scenario):
             anns.append(
                 self.scenario_config.AnnCls(
                     prefix=Prefixes.PREFIX.value,
-                    as_path=(
-                        attacker_asn,
-                    ),
+                    as_path=(attacker_asn,),
                     timestamp=Timestamps.ATTACKER.value,
                     seed_asn=attacker_asn,
                     roa_valid_length=True,

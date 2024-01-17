@@ -1,14 +1,13 @@
 from typing import Optional, TYPE_CHECKING, Union
 
 
-from bgpy.simulation_engine.ann_containers import (AnnInfo, SendInfo)
+from bgpy.simulation_engine.ann_containers import AnnInfo, SendInfo
 
 
 if TYPE_CHECKING:
     from bgpy.enums import Relationships
     from bgpy.simulation_framework import Scenario
     from bgpy.simulation_engine.announcement import Announcement as Ann
-
 
 
 def process_incoming_anns(
@@ -24,9 +23,7 @@ def process_incoming_anns(
 
     for prefix, anns in self._recv_q.prefix_anns():
         # Get announcement currently in local rib
-        _local_rib_ann: Optional["Ann"] = self._local_rib.get_ann(
-            prefix
-        )
+        _local_rib_ann: Optional["Ann"] = self._local_rib.get_ann(prefix)
         current_ann: Optional["Ann"] = _local_rib_ann
         current_processed: bool = True
 
@@ -253,9 +250,7 @@ def _select_best_ribs_in(self, prefix: str) -> Optional["Ann"]:
 
     # Get the best announcement
     best_unprocessed_ann: Optional["Ann"] = None
-    best_recv_relationship: Optional[
-        "Relationships"
-    ] = None
+    best_recv_relationship: Optional["Relationships"] = None
     for ann_info in self._ribs_in.get_ann_infos(prefix):
         new_unprocessed_ann = ann_info.unprocessed_ann
         new_recv_relationship = ann_info.recv_relationship
