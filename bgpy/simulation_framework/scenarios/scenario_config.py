@@ -69,7 +69,7 @@ class ScenarioConfig:
     #    Optional[frozendict[int, type[Policy]]],
     #    frozendict[str, None]
     # ] = None
-    override_announcements: tuple["PyAnn", ...] = ()
+    override_announcements: tuple["Ann", ...] = ()
     # If you'd like to add an extra CSV label you do so here
     csv_label: str = ""
     # Deprecated param, don't use

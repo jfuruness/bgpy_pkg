@@ -35,7 +35,7 @@ class SimulatorCodec(YamlCodec):
         """Creates object related to the given tag, from decoded dict"""
 
         typ = yaml_tags_to_types[yaml_tag_suffix]
-        if issubclass(typ, YamlAbleEnum) or typ in (CPPOutcomes, CPPRelationships):
+        if issubclass(typ, YamlAbleEnum):
             # Don't use unessecary name
             return typ(value=dct["value"])
         else:

@@ -5,12 +5,16 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "bgpy_pkg"
 version = "3.0.0"
+requires-python = ">=3.10"
 description = "Simulates BGP and ROV in an extensible manner"
 readme = "README.md"
 authors = [
     {name = "Justin Furuness", email = "jfuruness@gmail.com"},
     {name = "Cameron Morris", email = "cameron.morris@uconn.edu"},
     {name = "Reynaldo Morillo", email = "reynaldo.morillo@uconn.edu"}
+]
+maintainers = [
+  {name = "Justin Furuness", email = "jfuruness@gmail.com"}
 ]
 license = {file = "LICENSE.txt"}
 keywords = [
@@ -69,11 +73,8 @@ test = [
     "ruff==0.1.5"
 ]
 
-[tool.setuptools.dynamic]
-python_requires = ">= 3.10"
-packages = {find = true}
-zip_safe = false
-include_package_data = true
+[tool.setuptools]
+include-package-data = true
 
 # https://stackoverflow.com/a/76214408/8903959
 [tool.setuptools.package-data]

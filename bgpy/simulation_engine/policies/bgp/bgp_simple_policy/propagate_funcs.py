@@ -18,8 +18,6 @@ def propagate_to_providers(self) -> None:
         [
             Relationships.ORIGIN,
             Relationships.CUSTOMERS,
-            CPPRelationships.ORIGIN,
-            CPPRelationships.CUSTOMERS,
         ]
     )
     self._propagate(Relationships.PROVIDERS, send_rels)
@@ -35,10 +33,6 @@ def propagate_to_customers(self) -> None:
             Relationships.CUSTOMERS,
             Relationships.PEERS,
             Relationships.PROVIDERS,
-            CPPRelationships.ORIGIN,
-            CPPRelationships.CUSTOMERS,
-            CPPRelationships.PEERS,
-            CPPRelationships.PROVIDERS,
         ]
     )
     self._propagate(Relationships.CUSTOMERS, send_rels)
@@ -52,8 +46,6 @@ def propagate_to_peers(self) -> None:
         [
             Relationships.ORIGIN,
             Relationships.CUSTOMERS,
-            CPPRelationships.ORIGIN,
-            CPPRelationships.CUSTOMERS,
         ]
     )
     self._propagate(Relationships.PEERS, send_rels)
