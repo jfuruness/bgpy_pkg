@@ -3,10 +3,10 @@ from pathlib import Path
 import pickle
 from pprint import pformat
 
-from bgpy.enums import CPPOutcomes, PyOutcomes
-from bgpy.simulation_engines.base import SimulationEngine
-from bgpy.simulation_frameworks.py_simulation_framework import Scenario
-from bgpy.simulation_frameworks.py_simulation_framework import MetricTracker
+from bgpy.enums import Outcomes
+from bgpy.simulation_engine import BaseSimulationEngine
+from bgpy.simulation_framework import Scenario
+from bgpy.simulation_framework import MetricTracker
 from bgpy.utils import EngineRunner
 
 
@@ -84,8 +84,8 @@ class EngineTester(EngineRunner):
 
     def _store_gt_data(
         self,
-        engine: SimulationEngine,
-        outcomes: dict[int, PyOutcomes | CPPOutcomes],
+        engine: BaseSimulationEngine,
+        outcomes: dict[int, Outcomes],
         metric_tracker: MetricTracker,
     ) -> None:
         """Stores GROUND TRUTH YAML for the engine, outcomes, and CSV for metrics.
