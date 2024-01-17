@@ -1,17 +1,12 @@
 from dataclasses import dataclass
 
 from bgpy.as_graphs import ASGraphInfo, ASGraph, CAIDAASGraph
-from bgpy.simulation_frameworks.py_simulation_framework.scenarios import ScenarioConfig
-from bgpy.simulation_engines.base import SimulationEngine
-from bgpy.simulation_engines.py_simulation_engine import PySimulationEngine
-from bgpy.simulation_frameworks.py_simulation_framework.metric_tracker.metric_tracker import (
-    MetricTracker,
+from bgpy.simulation_framework.scenarios import ScenarioConfig
+from bgpy.simulation_engine import BaseSimulationEngine, SimulationEngine
+from bgpy.simulation_framework.metric_tracker.metric_tracker import MetricTracker
+from bgpy.simulation_framework.as_graph_analyzers import (
+    BaseASGraphAnalyzer, ASGraphAnalyzer
 )
-from bgpy.simulation_frameworks.base.as_graph_analyzer import ASGraphAnalyzer
-from bgpy.simulation_frameworks.py_simulation_framework.py_as_graph_analyzer import (
-    PyASGraphAnalyzer,
-)
-
 from .diagram import Diagram
 
 
@@ -28,7 +23,7 @@ class EngineRunConfig:
     as_graph_info: ASGraphInfo
     propagation_rounds: int = 1
     ASGraphCls: type[ASGraph] = CAIDAASGraph
-    SimulationEngineCls: type[SimulationEngine] = PySimulationEngine  # type: ignore
+    SimulationEngineCls: type[BaseSimulationEngine] = SimulationEngine
     MetricTrackerCls: type[MetricTracker] = MetricTracker
-    ASGraphAnalyzerCls: type[ASGraphAnalyzer] = PyASGraphAnalyzer
+    ASGraphAnalyzerCls: type[BaseASGraphAnalyzer] = ASGraphAnalyzer
     DiagramCls: type[Diagram] = Diagram

@@ -4,7 +4,7 @@ from weakref import proxy
 from yamlable import yaml_info, YamlAble
 
 if TYPE_CHECKING:
-    from bgpy.simulation_engines.base import Policy
+    from bgpy.simulation_engine import Policy
 
 
 @yaml_info(yaml_tag="AS")

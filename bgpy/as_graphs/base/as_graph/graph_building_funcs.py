@@ -7,7 +7,7 @@ from .base_as import AS
 
 if TYPE_CHECKING:
     from bgpy.as_graphs import ASGraphInfo
-    from bgpy.simulation_engines.base import Policy
+    from bgpy.simulation_engine import Policy
 
 
 def _gen_graph(

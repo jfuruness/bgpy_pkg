@@ -4,11 +4,11 @@ from typing import Optional, TYPE_CHECKING
 from graphviz import Digraph
 import ipaddress
 
-from bgpy.enums import PyOutcomes
-from bgpy.simulation_engines.py_simulation_engine import BGPPolicy
-from bgpy.simulation_engines.py_simulation_engine import BGPSimplePolicy
-from bgpy.simulation_engines.base import SimulationEngine
-from bgpy.simulation_frameworks.py_simulation_framework import Scenario
+from bgpy.enums import Outcomes
+from bgpy.simulation_engine import BGPPolicy
+from bgpy.simulation_engine import BGPSimplePolicy
+from bgpy.simulation_engine import BaseSimulationEngine
+from bgpy.simulation_framework import Scenario
 
 if TYPE_CHECKING:
     from bgpy.as_graphs.base.as_graph import AS
@@ -25,7 +25,7 @@ class Diagram:
 
     def generate_as_graph(
         self,
-        engine: SimulationEngine,
+        engine: BaseSimulationEngine,
         scenario: Scenario,
         # Just the data plane
         traceback: dict[int, int],
@@ -48,13 +48,13 @@ class Diagram:
         """Adds legend to the graph with outcome counts"""
 
         attacker_success_count = sum(
-            1 for x in traceback.values() if x == PyOutcomes.ATTACKER_SUCCESS.value
+            1 for x in traceback.values() if x == Outcomes.ATTACKER_SUCCESS.value
         )
         victim_success_count = sum(
-            1 for x in traceback.values() if x == PyOutcomes.VICTIM_SUCCESS.value
+            1 for x in traceback.values() if x == Outcomes.VICTIM_SUCCESS.value
         )
         disconnect_count = sum(
-            1 for x in traceback.values() if x == PyOutcomes.DISCONNECTED.value
+            1 for x in traceback.values() if x == Outcomes.DISCONNECTED.value
         )
         html = f"""<
               <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4">
@@ -80,7 +80,7 @@ class Diagram:
 
     def _add_ases(
         self,
-        engine: SimulationEngine,
+        engine: BaseSimulationEngine,
         traceback: dict[int, int],
         scenario: Scenario,
     ) -> None:
@@ -92,7 +92,7 @@ class Diagram:
         self,
         subgraph: Digraph,
         as_obj: "AS",
-        engine: SimulationEngine,
+        engine: BaseSimulationEngine,
         traceback: dict[int, int],
         scenario: Scenario,
     ) -> None:
@@ -109,7 +109,7 @@ class Diagram:
         subgraph.node(str(as_obj.asn), html, **kwargs)
 
     def _get_html(
-        self, as_obj: "AS", engine: SimulationEngine, scenario: Scenario
+        self, as_obj: "AS", engine: BaseSimulationEngine, scenario: Scenario
     ) -> str:
         asn_str = str(as_obj.asn)
         if as_obj.asn in scenario.victim_asns:
@@ -164,7 +164,7 @@ class Diagram:
     def _get_kwargs(
         self,
         as_obj: "AS",
-        engine: SimulationEngine,
+        engine: BaseSimulationEngine,
         traceback: dict[int, int],
         scenario: Scenario,
     ) -> dict[str, str]:
@@ -191,18 +191,18 @@ class Diagram:
 
         # As obj is not attacker or victim
         else:
-            if traceback[as_obj.asn] == PyOutcomes.ATTACKER_SUCCESS.value:
+            if traceback[as_obj.asn] == Outcomes.ATTACKER_SUCCESS.value:
                 kwargs.update({"fillcolor": "#ff6060:yellow"})
-            elif traceback[as_obj.asn] == PyOutcomes.VICTIM_SUCCESS.value:
+            elif traceback[as_obj.asn] == Outcomes.VICTIM_SUCCESS.value:
                 kwargs.update({"fillcolor": "#90ee90:white"})
-            elif traceback[as_obj.asn] == PyOutcomes.DISCONNECTED.value:
+            elif traceback[as_obj.asn] == Outcomes.DISCONNECTED.value:
                 kwargs.update({"fillcolor": "grey:white"})
 
             if as_obj.policy.__class__ not in [BGPPolicy, BGPSimplePolicy]:
                 kwargs["shape"] = "octagon"
         return kwargs
 
-    def _add_edges(self, engine: SimulationEngine):
+    def _add_edges(self, engine: BaseSimulationEngine):
         # Then add all connections to the graph
         # Starting with provider to customer
         for as_obj in engine.as_graph:

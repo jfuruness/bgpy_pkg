@@ -25,8 +25,8 @@ from .customer_cone_funcs import _get_customer_cone_size
 from .customer_cone_funcs import _get_cone_size_helper
 from .customer_cone_funcs import _get_as_rank
 
-from bgpy.simulation_engines.base import Policy
-from bgpy.simulation_engines.py_simulation_engine import BGPSimplePolicy
+from bgpy.simulation_engine import Policy
+from bgpy.simulation_engine import BGPSimplePolicy
 
 from ..as_graph_info import ASGraphInfo
 

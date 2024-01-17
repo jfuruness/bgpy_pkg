@@ -4,10 +4,10 @@ from .engine_run_config import EngineRunConfig
 from .simulator_codec import SimulatorCodec
 
 from bgpy.as_graphs.base import AS
-from bgpy.simulation_engines.base import SimulationEngine
-from bgpy.simulation_frameworks.py_simulation_framework import Scenario
-from bgpy.simulation_frameworks.py_simulation_framework import MetricTracker
-from bgpy.enums import Plane, SpecialPercentAdoptions, PyOutcomes, CPPOutcomes
+from bgpy.simulation_engine import BaseSimulationEngine
+from bgpy.simulation_framework import Scenario
+from bgpy.simulation_framework import MetricTracker
+from bgpy.enums import Plane, SpecialPercentAdoptions, Outcomes
 
 
 class EngineRunner:
@@ -82,7 +82,7 @@ class EngineRunner:
 
         return engine, outcomes_yaml, metric_tracker, scenario
 
-    def _get_engine(self) -> SimulationEngine:
+    def _get_engine(self) -> BaseSimulationEngine:
         """Creates and engine and sets it up for runs"""
 
         as_graph = self.conf.ASGraphCls(
@@ -94,7 +94,7 @@ class EngineRunner:
 
     def _get_trial_metrics(
         self,
-        engine: SimulationEngine,
+        engine: BaseSimulationEngine,
         percent_adopt: float | SpecialPercentAdoptions,
         trial: int,
         scenario: Scenario,
@@ -116,7 +116,7 @@ class EngineRunner:
 
     def _store_data(
         self,
-        engine: SimulationEngine,
+        engine: BaseSimulationEngine,
         outcomes: dict[int, int],
         metric_tracker: MetricTracker,
     ):
@@ -140,8 +140,8 @@ class EngineRunner:
     def _generate_diagrams(
         self, scenario: Scenario, metric_tracker: MetricTracker
     ) -> tuple[
-        SimulationEngine,
-        dict[int, PyOutcomes | CPPOutcomes],
+        BaseSimulationEngine,
+        dict[int, Outcomes],
         tuple[tuple["AS", ...], ...],
     ]:
         """Generates diagrams"""
@@ -170,7 +170,7 @@ class EngineRunner:
         return engine_guess, outcomes_guess, diagram_obj_ranks
 
     def _get_diagram_obj_ranks(
-        self, engine_guess: SimulationEngine
+        self, engine_guess: BaseSimulationEngine
     ) -> tuple[tuple[AS, ...], ...]:
         """Returns diagram ranks as AS objects
 
