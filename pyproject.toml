@@ -1,21 +1,11 @@
 [build-system]
-requires = ["setuptools>=51.0", "wheel", "scikit-build-core>=0.3.3", "pybind11~=2.11"]
-build-backend = "scikit_build_core.build"
-
-[tool.scikit-build]
-wheel.expand-macos-universal-tags = true
-build-dir = "build/{wheel_tag}"
-wheel.packages = ["bgpy"]
-
-[tool.cibuildwheel]
-build-verbosity = 1
-
-
+requires = ["setuptools>=51.0", "wheel"]
+build-backend = "setuptools.build_meta"
 
 [project]
 name = "bgpy_pkg"
 version = "3.0.0"
-description = "Simulates BGP and ROV"
+description = "Simulates BGP and ROV in an extensible manner"
 readme = "README.md"
 authors = [
     {name = "Justin Furuness", email = "jfuruness@gmail.com"},
@@ -92,6 +82,7 @@ include_package_data = true
 # https://stackoverflow.com/a/76214408/8903959
 [tool.setuptools.packages.find]
 where = ["bgpy"]
+
 [tool.pytest.ini_options]
 python_files = ["test*.py"]
 python_classes = ["Test*"]
