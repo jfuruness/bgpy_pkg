@@ -20,7 +20,7 @@ def receive_ann(
 ) -> None:
     """Function for recieving announcements, adds to recv_q"""
 
-    if ann.withdraw and not accept_withdrawals:
+    if getattr(ann, "withdraw", False) and not accept_withdrawals:
         raise NotImplementedError("Policy can't handle withdrawals")
     self._recv_q.add_ann(ann)
 
