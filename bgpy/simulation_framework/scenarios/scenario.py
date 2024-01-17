@@ -9,14 +9,11 @@ from typing import Any, Optional, Type, Union
 
 from frozendict import frozendict
 
-from bgpy.as_graphs import AS
 from bgpy.simulation_engine import Announcement as Ann
 from bgpy.simulation_engine import BaseSimulationEngine
 from bgpy.simulation_engine import Policy
 from bgpy.enums import (
     SpecialPercentAdoptions,
-    Outcomes,
-    Relationships,
 )
 
 from .scenario_config import ScenarioConfig

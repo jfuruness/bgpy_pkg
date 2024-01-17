@@ -2,7 +2,7 @@ from collections import defaultdict
 from dataclasses import replace
 from typing import Any, Optional, Type
 
-from bgpy.enums import Plane, Outcomes
+from bgpy.enums import Plane
 from bgpy.as_graphs import AS
 from bgpy.simulation_engine import Policy, BaseSimulationEngine
 from bgpy.simulation_framework.scenarios import Scenario
