@@ -1,4 +1,4 @@
-from .graph_analyzer import GraphAnalyzer
+from .as_graph_analyzers import BaseASGraphAnalyzer, ASGraphAnalyzer
 from .graph_factory import GraphFactory
 from .metric_tracker import MetricTracker
 
@@ -14,11 +14,10 @@ from .scenarios import ValidPrefix
 
 from .simulation import Simulation
 
-from .utils import get_real_world_rov_asn_cls_dict
-
 
 __all__ = [
-    "GraphAnalyzer",
+    "ASGraphAnalyzer",
+    "BaseASGraphAnalyzer",
     "GraphFactory",
     "MetricTracker",
     "ScenarioConfig",
@@ -31,5 +30,4 @@ __all__ = [
     "NonRoutedSuperprefixPrefixHijack",
     "ValidPrefix",
     "Simulation",
-    "get_real_world_rov_asn_cls_dict",
 ]

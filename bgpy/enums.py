@@ -31,11 +31,6 @@ class Outcomes(YamlAbleEnum):
     UNDETERMINED: int = 3
 
 
-class Plane(YamlAbleEnum):
-    DATA: str = "data_plane"
-    CTRL: str = "control_plane"
-
-
 class Relationships(YamlAbleEnum):
     # Must start at one for the priority
     PROVIDERS: int = 1
@@ -47,6 +42,12 @@ class Relationships(YamlAbleEnum):
     ORIGIN: int = 4
     # Unknown for external programs like extrapoaltor
     UNKNOWN: int = 5
+
+
+class Plane(YamlAbleEnum):
+    # Changing to integers so that this is compatible with c++
+    DATA: int = 0  # "data_plane"
+    CTRL: int = 1  # "control_plane"
 
 
 class ROAValidity(YamlAbleEnum):
@@ -93,16 +94,18 @@ class ASNs(YamlAbleEnum):
 class ASGroups(YamlAbleEnum):
     """AS types"""
 
+    IXPS: str = "ixp"
+    # NOTE: only the IXP group has IXPs
     STUBS: str = "stub"
     MULTIHOMED: str = "multihomed"
     STUBS_OR_MH: str = "stub_or_multihomed"
     INPUT_CLIQUE: str = "input_clique"
     # Not stubs, multihomed, or input clique
     ETC: str = "etc"
-    ALL: str = "all"
+    ALL_WOUT_IXPS: str = "all_wout_ixps"
 
 
-class SpecialPercentAdoptions(Enum):
+class SpecialPercentAdoptions(YamlAbleEnum):
     ALL_BUT_ONE: float = 1
     ONLY_ONE: float = 0
 

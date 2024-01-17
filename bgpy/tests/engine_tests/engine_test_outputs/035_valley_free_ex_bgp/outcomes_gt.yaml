@@ -1,33 +1,11 @@
-1: !simulator_codec/Outcomes
-  name: ATTACKER_SUCCESS
-  value: 0
-2: !simulator_codec/Outcomes
-  name: ATTACKER_SUCCESS
-  value: 0
-3: !simulator_codec/Outcomes
-  name: ATTACKER_SUCCESS
-  value: 0
-4: !simulator_codec/Outcomes
-  name: ATTACKER_SUCCESS
-  value: 0
-5: !simulator_codec/Outcomes
-  name: ATTACKER_SUCCESS
-  value: 0
-8: !simulator_codec/Outcomes
-  name: ATTACKER_SUCCESS
-  value: 0
-9: !simulator_codec/Outcomes
-  name: ATTACKER_SUCCESS
-  value: 0
-10: !simulator_codec/Outcomes
-  name: ATTACKER_SUCCESS
-  value: 0
-11: !simulator_codec/Outcomes
-  name: ATTACKER_SUCCESS
-  value: 0
-666: !simulator_codec/Outcomes
-  name: ATTACKER_SUCCESS
-  value: 0
-777: !simulator_codec/Outcomes
-  name: VICTIM_SUCCESS
-  value: 1
+1: 0
+2: 0
+3: 0
+4: 0
+5: 0
+8: 0
+9: 0
+10: 0
+11: 0
+666: 0
+777: 1

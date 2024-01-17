@@ -7,7 +7,7 @@ from bgpy.enums import Timestamps
 
 
 if TYPE_CHECKING:
-    from bgpy.simulation_engine import Announcement
+    from bgpy.simulation_engine import Announcement as Ann
 
 
 class SubprefixHijack(Scenario):
@@ -18,7 +18,7 @@ class SubprefixHijack(Scenario):
     invalid by roa by length and origin
     """
 
-    def _get_announcements(self, *args, **kwargs) -> tuple["Announcement", ...]:
+    def _get_announcements(self, *args, **kwargs) -> tuple["Ann", ...]:
         """Returns victim and attacker anns for subprefix hijack
 
         for subclasses of this EngineInput, you can set AnnCls equal to

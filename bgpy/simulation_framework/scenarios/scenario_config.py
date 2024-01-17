@@ -1,23 +1,24 @@
 import abc
 from dataclasses import asdict, dataclass, field
-from typing import Any, Optional, Union, TYPE_CHECKING
+from typing import Any, Optional, TYPE_CHECKING
 
 from frozendict import frozendict
 
-from bgpy.caida_collector import AS
 from bgpy.enums import ASGroups
 
-from bgpy.simulation_engine import Announcement
-from bgpy.simulation_engine import BGPSimpleAS
+from bgpy.simulation_engine import Announcement as Ann
+from bgpy.simulation_engine import Policy
+from bgpy.simulation_engine import BGPSimplePolicy
 
 
 if TYPE_CHECKING:
-    from .scenario_trial import Scenario
+    from .scenario import Scenario
 
-pseudo_base_cls_dict: dict[type[AS], type[AS]] = dict()
+pseudo_base_cls_dict: dict[type[Policy], type[Policy]] = dict()
 
 
-class MISSINGAS(AS):
+class MISSINGPolicy(Policy):
+    name: str = "missing"
     pass
 
 
@@ -31,10 +32,10 @@ class ScenarioConfig:
     ScenarioCls: type["Scenario"]
     # This is the base type of announcement for this class
     # You can specify a different base ann
-    AnnCls: type[Announcement] = Announcement
-    BaseASCls: type[AS] = BGPSimpleAS
+    AnnCls: type[Ann] = Ann
+    BasePolicyCls: type[Policy] = BGPSimplePolicy
     # Fixed in post init, but can't show mypy for some reason
-    AdoptASCls: type[AS] = MISSINGAS
+    AdoptPolicyCls: type[Policy] = MISSINGPolicy  # type: ignore
     num_attackers: int = 1
     num_victims: int = 1
     # Adoption is equal across these atributes of the engine
@@ -48,7 +49,7 @@ class ScenarioConfig:
     # Victims can be chosen from this attribute of the engine
     victim_subcategory_attr: str = ASGroups.STUBS_OR_MH.value
     # ASes that are hardcoded to specific values
-    hardcoded_asn_cls_dict: frozendict[int, type[AS]] = field(
+    hardcoded_asn_cls_dict: frozendict[int, type[Policy]] = field(
         # Mypy doesn't understand frozendict typing, just ignore it
         default_factory=frozendict  # type: ignore
     )
@@ -58,39 +59,46 @@ class ScenarioConfig:
     # For some reason mypy has trouble with empty frozendicts
     # So I've included that as a second option for typing purposes
     # (specifically with the tests)
-    override_non_default_asn_cls_dict: Union[
-        Optional[frozendict[int, type[AS]]], frozendict[str, None]
-    ] = None
-    override_announcements: tuple[Announcement, ...] = ()
+    override_non_default_asn_cls_dict: Any = None
+    # Unfortunately this causes lots of errors in mypy, even though
+    # it's correct. No idea why it's failing here, possibly something
+    # internal to frozendict. Either way, it doesn't matter, this is
+    # pretty much only used within the tests, which would fail if this
+    # was wrong anyways
+    # override_non_default_asn_cls_dict: Union[
+    #    Optional[frozendict[int, type[Policy]]],
+    #    frozendict[str, None]
+    # ] = None
+    override_announcements: tuple["Ann", ...] = ()
     # If you'd like to add an extra CSV label you do so here
     csv_label: str = ""
     # Deprecated param, don't use
     scenario_label: str = ""
 
     def __post_init__(self):
-        """sets AdoptASCls if it is None
+        """sets AdoptPolicyCls if it is None
 
         This is done to fix the following:
-        Scenario 1 has 3 BGP ASes and 1 AdoptCls
+        Scenario 1 has 3 BGP Policyes and 1 AdoptCls
         Scenario 2 has no adopt classes, so 4 BGP
-        Scenario 3 we want to run ROV++, but what were the adopting ASes from
+        Scenario 3 we want to run ROV++, but what were the adopting Policyes from
         scenario 1? We don't know anymore.
-        Instead for scenario 2, we have 3 BGP ASes and 1 Psuedo BGP AS
+        Instead for scenario 2, we have 3 BGP Policyes and 1 Psuedo BGP Policy
         Then scenario 3 will still work as expected
         """
 
-        if self.AdoptASCls == MISSINGAS:
+        if self.AdoptPolicyCls == MISSINGPolicy:
             # mypy says this is unreachable, which is wrong
             global pseudo_base_cls_dict  # type: ignore
-            AdoptASCls = pseudo_base_cls_dict.get(self.BaseASCls)
-            if not AdoptASCls:
-                name: str = f"Pseudo {self.BaseASCls.name}".replace(" ", "")
-                PseudoBaseCls = type(name, (self.BaseASCls,), {"name": name})
-                pseudo_base_cls_dict[self.BaseASCls] = PseudoBaseCls
+            AdoptPolicyCls = pseudo_base_cls_dict.get(self.BasePolicyCls)
+            if not AdoptPolicyCls:
+                name: str = f"Pseudo {self.BasePolicyCls.name}".replace(" ", "")
+                PseudoBaseCls = type(name, (self.BasePolicyCls,), {"name": name})
+                pseudo_base_cls_dict[self.BasePolicyCls] = PseudoBaseCls
                 # Must set for pickling purposes
                 setattr(abc, name, PseudoBaseCls)
-                AdoptASCls = PseudoBaseCls
-            object.__setattr__(self, "AdoptASCls", AdoptASCls)
+                AdoptPolicyCls = PseudoBaseCls
+            object.__setattr__(self, "AdoptPolicyCls", AdoptPolicyCls)
         # Better error messages when setting this var
         if not isinstance(self.hardcoded_asn_cls_dict, frozendict):  # type: ignore
             raise TypeError(
@@ -108,15 +116,19 @@ class ScenarioConfig:
         """Converts non default as cls dict to a yamlable dict of asn: name"""
 
         return {
-            asn: AS.subclass_to_name_dict[ASCls]
-            for asn, ASCls in self.hardcoded_asn_cls_dict.items()
+            asn: Policy.subclass_to_name_dict[PolicyCls]
+            for asn, PolicyCls in self.hardcoded_asn_cls_dict.items()
         }
 
     @staticmethod
-    def _get_hardcoded_asn_cls_dict_from_yaml(yaml_dict) -> dict[int, type[AS]]:
+    def _get_hardcoded_asn_cls_dict_from_yaml(
+        yaml_dict,
+    ) -> dict[int, type[Policy]]:
         """Converts yamlified non_default_as_cls_dict back to normal asn: class"""
 
-        return {asn: AS.name_to_subclass_dict[name] for asn, name in yaml_dict.items()}
+        return {
+            asn: Policy.name_to_subclass_dict[name] for asn, name in yaml_dict.items()
+        }
 
     def __to_yaml_dict__(self) -> dict[Any, Any]:
         """This optional method is called when you call yaml.dump()"""

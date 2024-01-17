@@ -9,15 +9,19 @@ from typing import Any, Optional, Type, Union
 
 from frozendict import frozendict
 
-from bgpy.caida_collector import AS
+from bgpy.as_graphs import AS
+from bgpy.simulation_engine import Announcement as Ann
+from bgpy.simulation_engine import BaseSimulationEngine
+from bgpy.simulation_engine import Policy
+from bgpy.enums import (
+    SpecialPercentAdoptions,
+    Outcomes,
+    Relationships,
+)
 
 from .scenario_config import ScenarioConfig
 
-from bgpy.simulation_engine import Announcement
-from bgpy.simulation_engine import SimulationEngine
-from bgpy.enums import SpecialPercentAdoptions, Outcomes, Relationships
-
-pseudo_base_cls_dict: dict[type[AS], type[AS]] = dict()
+pseudo_base_cls_dict: dict[type[Policy], type[Policy]] = dict()
 
 
 class Scenario(ABC):
@@ -31,7 +35,7 @@ class Scenario(ABC):
         *,
         scenario_config: ScenarioConfig,
         percent_adoption: Union[float, SpecialPercentAdoptions] = 0,
-        engine: Optional[SimulationEngine] = None,
+        engine: Optional[BaseSimulationEngine] = None,
         prev_scenario: Optional["Scenario"] = None,
     ):
         """inits attrs
@@ -50,14 +54,16 @@ class Scenario(ABC):
             scenario_config.override_victim_asns, engine, prev_scenario
         )
 
-        AS_CLS_DCT = dict[int, type[AS]]
-        self.non_default_asn_cls_dict: AS_CLS_DCT = self._get_non_default_asn_cls_dict(
-            scenario_config.override_non_default_asn_cls_dict, engine, prev_scenario
+        POLICY_CLS_DCT = frozendict[int, type[Policy]]
+        self.non_default_asn_cls_dict: POLICY_CLS_DCT = (
+            self._get_non_default_asn_cls_dict(
+                scenario_config.override_non_default_asn_cls_dict, engine, prev_scenario
+            )
         )
 
         if self.scenario_config.override_announcements:
             self.announcements: tuple[
-                "Announcement", ...
+                "Ann", ...
             ] = self.scenario_config.override_announcements
         else:
             self.announcements = self._get_announcements(
@@ -68,7 +74,7 @@ class Scenario(ABC):
             str, list[str]
         ] = self._get_ordered_prefix_subprefix_dict()
 
-        self.as_classes_used: frozenset[Type[AS]] = frozenset()
+        self.policy_classes_used: frozenset[Type[Policy]] = frozenset()
 
     #################
     # Get attackers #
@@ -77,7 +83,7 @@ class Scenario(ABC):
     def _get_attacker_asns(
         self,
         override_attacker_asns: Optional[frozenset[int]],
-        engine: Optional[SimulationEngine],
+        engine: Optional[BaseSimulationEngine],
         prev_scenario: Optional["Scenario"],
     ) -> frozenset[int]:
         """Returns attacker ASN at random"""
@@ -145,18 +151,18 @@ class Scenario(ABC):
 
     def _get_possible_attacker_asns(
         self,
-        engine: SimulationEngine,
+        engine: BaseSimulationEngine,
         percent_adoption: Union[float, SpecialPercentAdoptions],
         prev_scenario: Optional["Scenario"],
-    ) -> set[int]:
+    ) -> frozenset[int]:
         """Returns possible attacker ASNs, defaulted from config"""
 
-        possible_asns = engine.asn_groups[
+        possible_asns = engine.as_graph.asn_groups[
             self.scenario_config.attacker_subcategory_attr
         ]
         err = "Make mypy happy"
         assert all(isinstance(x, int) for x in possible_asns), err
-        assert isinstance(possible_asns, set), err
+        assert isinstance(possible_asns, frozenset), err
         return possible_asns
 
     ###############
@@ -166,7 +172,7 @@ class Scenario(ABC):
     def _get_victim_asns(
         self,
         override_victim_asns: Optional[frozenset[int]],
-        engine: Optional[SimulationEngine],
+        engine: Optional[BaseSimulationEngine],
         prev_scenario: Optional["Scenario"],
     ) -> frozenset[int]:
         """Returns victim ASN at random"""
@@ -197,16 +203,18 @@ class Scenario(ABC):
 
     def _get_possible_victim_asns(
         self,
-        engine: SimulationEngine,
+        engine: BaseSimulationEngine,
         percent_adoption: Union[float, SpecialPercentAdoptions],
         prev_scenario: Optional["Scenario"],
-    ) -> set[int]:
+    ) -> frozenset[int]:
         """Returns possible victim ASNs, defaulted from config"""
 
-        possible_asns = engine.asn_groups[self.scenario_config.victim_subcategory_attr]
+        possible_asns = engine.as_graph.asn_groups[
+            self.scenario_config.victim_subcategory_attr
+        ]
         err = "Make mypy happy"
         assert all(isinstance(x, int) for x in possible_asns), err
-        assert isinstance(possible_asns, set), err
+        assert isinstance(possible_asns, frozenset), err
         # Remove attackers from possible victims
         possible_asns = possible_asns.difference(self.attacker_asns)
         return possible_asns
@@ -218,18 +226,18 @@ class Scenario(ABC):
     def _get_non_default_asn_cls_dict(
         self,
         override_non_default_asn_cls_dict: Union[
-            Optional[frozendict[int, type[AS]]],
+            Optional[frozendict[int, type[Policy]]],
             # Must include due to mypy weirdness
             # about empty frozendicts
             frozendict[str, None],
         ],
-        engine: Optional[SimulationEngine],
+        engine: Optional[BaseSimulationEngine],
         prev_scenario: Optional["Scenario"],
-    ) -> dict[int, type[AS]]:
+    ) -> frozendict[int, type[Policy]]:
         """Returns as class dict
 
-        non_default_asn_cls_dict is a dict of asn: AdoptASCls
-        where you do __not__ include any of the BaseASCls,
+        non_default_asn_cls_dict is a dict of asn: AdoptPolicyCls
+        where you do __not__ include any of the BasePolicyCls,
         since that is the default
 
         By default, we use the previous engine input to maintain static
@@ -243,18 +251,18 @@ class Scenario(ABC):
         # adoption across the graph
         elif prev_scenario:
             non_default_asn_cls_dict = dict()
-            for asn, OldASCls in prev_scenario.non_default_asn_cls_dict.items():
+            for asn, OldPolicyCls in prev_scenario.non_default_asn_cls_dict.items():
                 HardcodedCls = self.scenario_config.hardcoded_asn_cls_dict.get(asn)
                 if HardcodedCls:
                     non_default_asn_cls_dict[asn] = HardcodedCls
                 # If the ASN was of the adopting class of the last scenario,
-                # Update the adopting AS class for the new scenario
-                elif OldASCls == prev_scenario.scenario_config.AdoptASCls:
-                    non_default_asn_cls_dict[asn] = self.scenario_config.AdoptASCls
+                # Update the adopting Policy class for the new scenario
+                elif OldPolicyCls == prev_scenario.scenario_config.AdoptPolicyCls:
+                    non_default_asn_cls_dict[asn] = self.scenario_config.AdoptPolicyCls
                 # # Otherwise keep the AS class as it was
                 # # This is useful for things like ROV, etc...
                 # else:
-                #     non_default_asn_cls_dict[asn] = OldASCls
+                #     non_default_asn_cls_dict[asn] = OldPolicyCls
                 # If you are comparing two scenarios that have different hardcoded ASNs
                 # Then the commented out methodology above no longer works (and I think
                 # it was only set that way for older versions of BGPy, really it makes
@@ -269,15 +277,15 @@ class Scenario(ABC):
         # Validate that this is only non_default ASes
         # This matters, because later this entire dict may be used for the next
         # scenario
-        for asn, ASCls in non_default_asn_cls_dict.items():
-            assert ASCls != self.scenario_config.BaseASCls, "No defaults!"
+        for asn, PolicyCls in non_default_asn_cls_dict.items():
+            assert PolicyCls != self.scenario_config.BasePolicyCls, "No defaults!"
 
-        return non_default_asn_cls_dict
+        return frozendict(non_default_asn_cls_dict)
 
     def _get_randomized_non_default_asn_cls_dict(
         self,
-        engine: SimulationEngine,
-    ) -> dict[int, type[AS]]:
+        engine: BaseSimulationEngine,
+    ) -> dict[int, type[Policy]]:
         """Get adopting ASNs and non default ASNs
 
         By default, to get even adoption, adopt in each of the three
@@ -287,11 +295,11 @@ class Scenario(ABC):
         # Get the asn_cls_dict without randomized adoption
         asn_cls_dict = dict(self.scenario_config.hardcoded_asn_cls_dict)
         for asn in self._default_adopters:
-            asn_cls_dict[asn] = self.scenario_config.AdoptASCls
+            asn_cls_dict[asn] = self.scenario_config.AdoptPolicyCls
 
         # Randomly adopt in all three subcategories
         for subcategory in self.scenario_config.adoption_subcategory_attrs:
-            asns = engine.asn_groups[subcategory]
+            asns = engine.as_graph.asn_groups[subcategory]
             # Remove ASes that are already pre-set
             # Ex: Attacker and victim
             # Ex: ROV Nodes (in certain situations)
@@ -319,7 +327,7 @@ class Scenario(ABC):
             possible_adopters_tup = tuple(possible_adopters)
             try:
                 for asn in random.sample(possible_adopters_tup, k):
-                    asn_cls_dict[asn] = self.scenario_config.AdoptASCls
+                    asn_cls_dict[asn] = self.scenario_config.AdoptPolicyCls
             except ValueError:
                 raise ValueError(f"{k} can't be sampled from {len(possible_adopters)}")
         return asn_cls_dict
@@ -349,57 +357,16 @@ class Scenario(ABC):
     #############################
 
     def setup_engine(
-        self, engine: SimulationEngine, prev_scenario: Optional["Scenario"] = None
+        self, engine: BaseSimulationEngine, prev_scenario: Optional["Scenario"] = None
     ) -> None:
-        """sets up engine input"""
+        """Sets up engine"""
 
-        self._set_engine_as_classes(engine, prev_scenario)
-        self._seed_engine_announcements(engine, prev_scenario)
-        engine.ready_to_run_round = 0
-
-    def _set_engine_as_classes(
-        self, engine: SimulationEngine, prev_scenario: Optional["Scenario"]
-    ) -> None:
-        """Resets Engine ASes and changes their AS class
-
-        We do this here because we already seed from the scenario
-        to allow for easy overriding. If scenario controls seeding,
-        it doesn't make sense for engine to control resetting either
-        and have each do half and half
-        """
-
-        as_classes_used = set()
-        # Done here to save as much time  as possible
-        BaseASCls = self.scenario_config.BaseASCls
-        for as_obj in engine:
-            # set the AS class to be the proper type of AS
-            cls = self.non_default_asn_cls_dict.get(as_obj.asn, BaseASCls)
-            as_obj.__class__ = cls
-            as_classes_used.add(cls)
-            # Clears all RIBs, etc
-            # Reset base is False to avoid overrides base AS info (peers, etc)
-            as_obj.__init__(reset_base=False)
-        self.as_classes_used = frozenset(as_classes_used)
-
-    def _seed_engine_announcements(
-        self, engine: SimulationEngine, prev_scenario: Optional["Scenario"]
-    ) -> None:
-        """Seeds announcement at the proper AS
-
-        Since this is the simulator engine, we should
-        never have to worry about overlapping announcements
-        """
-
-        for ann in self.announcements:
-            assert ann.seed_asn is not None
-            # Get the AS object to seed at
-            # Must ignore type because it doesn't see assert above
-            obj_to_seed = engine.as_dict[ann.seed_asn]  # type: ignore
-            # Ensure we aren't replacing anything
-            err = "Seeding conflict"
-            assert obj_to_seed._local_rib.get_ann(ann.prefix) is None, err
-            # Seed by placing in the local rib
-            obj_to_seed._local_rib.add_ann(ann)
+        self.policy_classes_used = engine.setup(
+            self.announcements,
+            self.scenario_config.BasePolicyCls,
+            self.non_default_asn_cls_dict,
+            prev_scenario,
+        )
 
     ##################
     # Subclass Funcs #
@@ -461,8 +428,8 @@ class Scenario(ABC):
         """Label that will be used on the graph"""
 
         return (
-            f"{self.scenario_config.BaseASCls.name} "
-            "({self.scenario_config.AdoptASCls.name} adopting)"
+            f"{self.scenario_config.BasePolicyCls.name} "
+            "({self.scenario_config.AdoptPolicyCls.name} adopting)"
         )
 
     ##############
@@ -470,19 +437,25 @@ class Scenario(ABC):
     ##############
 
     @property
-    def _yamlable_non_default_asn_cls_dict(self) -> dict[int, str]:
+    def _yamlable_non_default_asn_cls_dict(self) -> frozendict[int, str]:
         """Converts non default as cls dict to a yamlable dict of asn: name"""
 
-        return {
-            asn: AS.subclass_to_name_dict[ASCls]
-            for asn, ASCls in self.non_default_asn_cls_dict.items()
-        }
+        return frozendict(
+            {
+                asn: Policy.subclass_to_name_dict[PolicyCls]
+                for asn, PolicyCls in self.non_default_asn_cls_dict.items()
+            }
+        )
 
     @staticmethod
-    def _get_non_default_asn_cls_dict_from_yaml(yaml_dict) -> dict[int, type[AS]]:
+    def _get_non_default_asn_cls_dict_from_yaml(
+        yaml_dict,
+    ) -> frozendict[int, type[Policy]]:
         """Converts yamlified non_default_asn_cls_dict back to normal asn: class"""
 
-        return {asn: AS.name_to_subclass_dict[name] for asn, name in yaml_dict.items()}
+        return frozendict(
+            {asn: Policy.name_to_subclass_dict[name] for asn, name in yaml_dict.items()}
+        )
 
     def __to_yaml_dict__(self) -> dict[Any, Any]:
         """This optional method is called when you call yaml.dump()"""
@@ -491,7 +464,11 @@ class Scenario(ABC):
             self.scenario_config,
             override_attacker_asns=self.attacker_asns,
             override_victim_asns=self.victim_asns,
-            override_non_default_as_cls_dict=self._yamlable_non_default_asn_cls_dict,
+            # Need to break mypy here so that this can become yamlable
+            # Afterwards we can reverse it in the from_yaml
+            override_non_default_asn_cls_dict=(
+                self._yamlable_non_default_asn_cls_dict  # type: ignore
+            ),
             override_announcements=self.announcements,
         )
 
@@ -516,57 +493,3 @@ class Scenario(ABC):
             scenario_config=config_to_use,
             percent_adoption=dct["percent_adoption"],
         )
-
-    ###################################################################################
-    # Deprecated funcs, DO NOT USE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!#
-    ###################################################################################
-
-    def determine_as_outcome(self, as_obj: AS, ann: Optional[Announcement]) -> Outcomes:
-        """Determines the outcome at an AS
-
-        ann is most_specific_ann is the most specific prefix announcement
-        that exists at that AS
-        """
-
-        # This warning results in a ton of slowdowns, removing
-        # warnings.warn(
-        #     "Deprecated, untested, please don't use. Leaving this until 2025"
-        #     " so that a few PhD students can graduate :)",
-        #     DeprecationWarning,
-        # )
-
-        if as_obj.asn in self.attacker_asns:
-            return Outcomes.ATTACKER_SUCCESS
-        elif as_obj.asn in self.victim_asns:
-            return Outcomes.VICTIM_SUCCESS
-        # End of traceback
-        elif (
-            ann is None
-            or len(ann.as_path) == 1
-            or ann.recv_relationship == Relationships.ORIGIN
-            or ann.traceback_end
-        ):
-            return Outcomes.DISCONNECTED
-        else:
-            return Outcomes.UNDETERMINED
-
-    @property
-    def graph_label(self) -> str:
-        """Label that will be used on the graph"""
-
-        # This surprisingly results in significant slowdowns, removing
-        # warnings.warn(
-        #     "Deprecated, untested, please don't use. Leaving this until 2025"
-        #     " so that a few PhD students can graduate :)",
-        #     DeprecationWarning,
-        # )
-
-        if self.scenario_config.scenario_label:
-            return self.scenario_config.scenario_label
-        elif self.scenario_config.AdoptASCls:
-            return (
-                f"{self.scenario_config.BaseASCls.name} "
-                f"({self.scenario_config.AdoptASCls.name} adopting)"
-            )
-        else:
-            return f"{self.scenario_config.BaseASCls.name} (None adopting)"

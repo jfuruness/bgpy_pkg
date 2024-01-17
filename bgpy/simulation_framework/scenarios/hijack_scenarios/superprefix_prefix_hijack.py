@@ -7,7 +7,7 @@ from bgpy.enums import Timestamps
 
 
 if TYPE_CHECKING:
-    from bgpy.simulation_engine import Announcement
+    from bgpy.simulation_engine import Announcement as Ann
 
 
 class SuperprefixPrefixHijack(Scenario):
@@ -19,7 +19,7 @@ class SuperprefixPrefixHijack(Scenario):
     and the victim announces their own prefix
     """
 
-    def _get_announcements(self, *args, **kwargs) -> tuple["Announcement", ...]:
+    def _get_announcements(self, *args, **kwargs) -> tuple["Ann", ...]:
         """Returns victim+attacker prefix ann, attacker superprefix ann
 
         for subclasses of this EngineInput, you can set AnnCls equal to

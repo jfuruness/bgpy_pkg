@@ -1,18 +1,15 @@
 import pytest
 
-from bgpy.caida_collector import CaidaCollector
+from bgpy.as_graphs import CAIDAASGraphConstructor
 
-from ....simulation_engine import BGPSimpleAS
-from ....simulation_engine import SimulationEngine
+from bgpy.simulation_engine import SimulationEngine
 
 
 @pytest.fixture(scope="session")
-def engine():
+def engine() -> SimulationEngine:
     # Engine is not picklable or dillable AT ALL, so do it here
     # (after the multiprocess process has started)
     # Changing recursion depth does nothing
     # Making nothing a reference does nothing
-    return CaidaCollector(
-        BaseASCls=BGPSimpleAS,
-        GraphCls=SimulationEngine,
-    ).run(tsv_path=None)
+    as_graph = CAIDAASGraphConstructor().run()
+    return SimulationEngine(as_graph)

@@ -1,12 +1,13 @@
 import dataclasses
-from typing import Iterator, Optional
+from typing import Iterator, Optional, TYPE_CHECKING
 
 from yamlable import YamlAble, yaml_info
 
 from .ann_container import AnnContainer
 
-from bgpy.simulation_engine.announcement import Announcement
-from bgpy.enums import Relationships
+if TYPE_CHECKING:
+    from bgpy.enums import Relationships
+    from bgpy.simulation_engines.py_simulation_engine import Announcement as Ann
 
 
 @yaml_info(yaml_tag="AnnInfo")
@@ -20,8 +21,8 @@ class AnnInfo(YamlAble):
     from the last AS and has not yet been updated)
     """
 
-    unprocessed_ann: Optional[Announcement]
-    recv_relationship: Optional[Relationships]
+    unprocessed_ann: Optional["Ann"]
+    recv_relationship: Optional["Relationships"]
 
 
 class RIBsIn(AnnContainer):
@@ -55,7 +56,9 @@ class RIBsIn(AnnContainer):
         return self._info.get(neighbor_asn, dict()).get(prefix)
 
     def add_unprocessed_ann(
-        self, unprocessed_ann: Announcement, recv_relationship: Relationships
+        self,
+        unprocessed_ann: "Ann",
+        recv_relationship: "Relationships",
     ):
         """Adds an unprocessed ann to ribs in
 

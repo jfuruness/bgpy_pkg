@@ -1,14 +1,16 @@
-from typing import Optional
+from typing import Optional, TYPE_CHECKING
 
 from .ann_container import AnnContainer
 
-from bgpy.simulation_engine.announcement import Announcement as Ann
+
+if TYPE_CHECKING:
+    from bgpy.simulation_engine import Announcement as Ann
 
 
 class LocalRIB(AnnContainer):
     """Local RIB for a BGP AS"""
 
-    def __init__(self, _info: Optional[dict[str, Ann]] = None):
+    def __init__(self, _info: Optional[dict[str, "Ann"]] = None):
         """Stores _info dict which contains local ribs
 
         This is passed in so that we can regenerate this class from yaml
@@ -17,14 +19,14 @@ class LocalRIB(AnnContainer):
         yamlable using the yamlable library
         """
 
-        self._info: dict[str, Ann] = _info if _info is not None else dict()
+        self._info: dict[str, "Ann"] = _info if _info else dict()
 
-    def get_ann(self, prefix: str, default: Optional[Ann] = None) -> Optional[Ann]:
+    def get_ann(self, prefix: str, default: Optional["Ann"] = None) -> Optional["Ann"]:
         """Returns announcement or none from the local rib by prefix"""
 
         return self._info.get(prefix, default)
 
-    def add_ann(self, ann: Ann):
+    def add_ann(self, ann: "Ann"):
         """Adds an announcement to local rib with prefix as key"""
 
         self._info[ann.prefix] = ann

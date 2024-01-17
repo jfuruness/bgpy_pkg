@@ -7,13 +7,13 @@ from bgpy.enums import Timestamps
 
 
 if TYPE_CHECKING:
-    from bgpy.simulation_engine import Announcement
+    from bgpy.simulation_engine import Announcement as Ann
 
 
 class ValidPrefix(Scenario):
     """A valid prefix engine input, mainly for testing"""
 
-    def _get_announcements(self, *args, **kwargs) -> tuple["Announcement", ...]:
+    def _get_announcements(self, *args, **kwargs) -> tuple["Ann", ...]:
         """Returns a valid prefix announcement
 
         for subclasses of this EngineInput, you can set AnnCls equal to

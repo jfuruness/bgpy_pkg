@@ -3,13 +3,17 @@ from itertools import product
 from multiprocessing import cpu_count
 from multiprocessing import Pool
 from pathlib import Path
-from typing import Any, Optional, Union
+from typing import Optional, Union
 import random
 import os
 
-from bgpy.caida_collector import CaidaCollector
+from frozendict import frozendict
 
-from .graph_analyzer import GraphAnalyzer
+from bgpy.as_graphs.base import ASGraphConstructor, ASGraph
+from bgpy.as_graphs.caida_as_graph import CAIDAASGraphConstructor
+
+
+from .as_graph_analyzers import BaseASGraphAnalyzer, ASGraphAnalyzer
 from .graph_factory import GraphFactory
 from .metric_tracker import MetricTracker
 from .scenarios import Scenario
@@ -17,9 +21,9 @@ from .scenarios import ScenarioConfig
 from .scenarios import SubprefixHijack
 
 from bgpy.enums import SpecialPercentAdoptions
-from bgpy.simulation_engine import BGPSimpleAS
-from bgpy.simulation_engine import SimulationEngine
-from bgpy.simulation_engine import ROVSimpleAS
+from bgpy.simulation_engine import BaseSimulationEngine, SimulationEngine
+from bgpy.simulation_engine import BGPSimplePolicy
+from bgpy.simulation_engine import ROVSimplePolicy
 
 
 class Simulation:
@@ -33,17 +37,39 @@ class Simulation:
             0.8,
         ),
         scenario_configs: tuple[ScenarioConfig, ...] = tuple(
-            [ScenarioConfig(ScenarioCls=SubprefixHijack, AdoptASCls=ROVSimpleAS)]
+            [
+                ScenarioConfig(
+                    ScenarioCls=SubprefixHijack,
+                    AdoptPolicyCls=ROVSimplePolicy,
+                    BasePolicyCls=BGPSimplePolicy,
+                )
+            ]
         ),
         num_trials: int = 2,
         propagation_rounds: int = 1,
         output_dir: Path = Path("/tmp/sims"),
         parse_cpus: int = cpu_count(),
         python_hash_seed: Optional[int] = None,
-        engine_kwargs: Optional[dict[Any, Any]] = None,
-        caida_run_kwargs: Optional[dict[Any, Any]] = None,
-        GraphAnalyzerCls: type[GraphAnalyzer] = GraphAnalyzer,
+        ASGraphConstructorCls: type[ASGraphConstructor] = CAIDAASGraphConstructor,
+        as_graph_constructor_kwargs=frozendict(
+            {
+                "as_graph_collector_kwargs": frozendict(
+                    {
+                        # dl_time: datetime(),
+                        "cache_dir": Path("/tmp/as_graph_collector_cache"),
+                    }
+                ),
+                "as_graph_kwargs": frozendict({"customer_cones": True}),
+                "tsv_path": None,  # Path.home() / "Desktop" / "caida.tsv",
+            }
+        ),
+        SimulationEngineCls: type[BaseSimulationEngine] = SimulationEngine,
+        ASGraphAnalyzerCls: type[BaseASGraphAnalyzer] = ASGraphAnalyzer,
         MetricTrackerCls: type[MetricTracker] = MetricTracker,
+        # Data plane tracking for traceback and MetricTrackerCls
+        data_plane_tracking: bool = True,
+        # Control plane trackign for traceback and MetricTrackerCls
+        control_plane_tracking: bool = False,
     ) -> None:
         """Downloads relationship data, runs simulation
 
@@ -66,24 +92,19 @@ class Simulation:
         self.python_hash_seed: Optional[int] = python_hash_seed
         self._seed_random()
 
-        if engine_kwargs:
-            self.engine_kwargs: dict[Any, Any] = engine_kwargs
-        else:
-            self.engine_kwargs = {
-                "BaseASCls": BGPSimpleAS,
-                "GraphCls": SimulationEngine,
-            }
-
-        if caida_run_kwargs:
-            self.caida_run_kwargs: dict[Any, Any] = caida_run_kwargs
-        else:
-            self.caida_run_kwargs = dict()
         # Done here so that the caida files are cached
         # So that multiprocessing doesn't interfere with one another
-        CaidaCollector().run(**self.caida_run_kwargs)
+        self.ASGraphConstructorCls: type[ASGraphConstructor] = ASGraphConstructorCls
+        self.as_graph_constructor_kwargs = as_graph_constructor_kwargs
+        self.ASGraphConstructorCls(**as_graph_constructor_kwargs).run()
 
-        self.GraphAnalyzerCls: type[GraphAnalyzer] = GraphAnalyzerCls
+        self.SimulationEngineCls: type[BaseSimulationEngine] = SimulationEngineCls
+
+        self.ASGraphAnalyzerCls: type[BaseASGraphAnalyzer] = ASGraphAnalyzerCls
         self.MetricTrackerCls: type[MetricTracker] = MetricTrackerCls
+
+        self.data_plane_tracking: bool = data_plane_tracking
+        self.control_plane_tracking: bool = control_plane_tracking
 
     def run(
         self,
@@ -178,9 +199,13 @@ class Simulation:
         # (after the multiprocess process has started)
         # Changing recursion depth does nothing
         # Making nothing a reference does nothing
-        run_kwargs = self.caida_run_kwargs.copy()
-        run_kwargs["tsv_path"] = None
-        engine = CaidaCollector(**self.engine_kwargs.copy()).run(**run_kwargs)
+        constructor_kwargs = dict(self.as_graph_constructor_kwargs)
+        constructor_kwargs["tsv_path"] = None
+        as_graph: ASGraph = self.ASGraphConstructorCls(**constructor_kwargs).run()
+        engine = self.SimulationEngineCls(
+            as_graph,
+            cached_as_graph_tsv_path=self.as_graph_constructor_kwargs.get("tsv_path"),
+        )
 
         metric_tracker = self.MetricTrackerCls()
 
@@ -201,7 +226,6 @@ class Simulation:
 
                 # Change AS Classes, seed announcements before propagation
                 scenario.setup_engine(engine, prev_scenario)
-
                 # For each round of propagation run the engine
                 for propagation_round in range(self.propagation_rounds):
                     self._single_engine_run(
@@ -237,7 +261,7 @@ class Simulation:
     def _single_engine_run(
         self,
         *,
-        engine: SimulationEngine,
+        engine: BaseSimulationEngine,
         percent_adopt: Union[float, SpecialPercentAdoptions],
         trial: int,
         scenario: Scenario,
@@ -282,12 +306,18 @@ class Simulation:
         scenario: Scenario,
         propagation_round: int,
         metric_tracker: MetricTracker,
-    ):
+    ) -> dict[int, dict[int, int]]:
         # Save all engine run info
         # The reason we aggregate info right now, instead of saving
         # the engine and doing it later, is because doing it all
         # in RAM is MUCH faster, and speed is important
-        outcomes = self.GraphAnalyzerCls(engine=engine, scenario=scenario).analyze()
+        outcomes = self.ASGraphAnalyzerCls(
+            engine=engine,
+            scenario=scenario,
+            data_plane_tracking=self.data_plane_tracking,
+            control_plane_tracking=self.control_plane_tracking,
+        ).analyze()
+
         metric_tracker.track_trial_metrics(
             engine=engine,
             percent_adopt=percent_adopt,

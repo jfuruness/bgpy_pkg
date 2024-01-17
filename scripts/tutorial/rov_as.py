@@ -22,6 +22,4 @@ class ROVAS(BGPSimpleAS):
         # Use standard BGP to determine if the announcement is valid
         else:
             # Mypy doesn't map superclasses properly
-            return super(ROVAS, self)._valid_ann(  # type: ignore
-                ann, *args, **kwargs
-            )
+            return super(ROVAS, self)._valid_ann(ann, *args, **kwargs)  # type: ignore

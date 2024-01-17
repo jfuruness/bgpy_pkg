@@ -2,7 +2,7 @@ from typing import Iterator, Optional
 
 from .ann_container import AnnContainer
 
-from bgpy.simulation_engine.announcement import Announcement as Ann
+from bgpy.simulation_engine import Announcement as Ann
 
 
 class RIBsOut(AnnContainer):

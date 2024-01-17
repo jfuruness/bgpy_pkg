@@ -7,7 +7,7 @@ from bgpy.enums import Timestamps
 
 
 if TYPE_CHECKING:
-    from bgpy.simulation_engine import Announcement
+    from bgpy.simulation_engine import Announcement as Ann
 
 
 class NonRoutedSuperprefixPrefixHijack(Scenario):
@@ -18,7 +18,7 @@ class NonRoutedSuperprefixPrefixHijack(Scenario):
     hijacking a non routed prefix that has a non routed ROA
     """
 
-    def _get_announcements(self, *args, **kwargs) -> tuple["Announcement", ...]:
+    def _get_announcements(self, *args, **kwargs) -> tuple["Ann", ...]:
         """Returns a superprefix announcement for this engine input
 
         for subclasses of this EngineInput, you can set AnnCls equal to

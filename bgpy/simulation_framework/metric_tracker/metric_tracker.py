@@ -11,9 +11,8 @@ from .data_key import DataKey
 from .metric import Metric
 from .metric_key import MetricKey
 
-from bgpy.caida_collector.graph.base_as import AS
-from bgpy.enums import Plane, SpecialPercentAdoptions
-from bgpy.simulation_engine import SimulationEngine
+from bgpy.enums import Plane, SpecialPercentAdoptions, Outcomes
+from bgpy.simulation_engine import BaseSimulationEngine
 from bgpy.simulation_framework.scenarios import Scenario
 from bgpy.simulation_framework.utils import get_all_metric_keys
 
@@ -103,12 +102,14 @@ class MetricTracker:
             #     pprint(x.percents)
             # input("waiting")
             for metric_key, trial_data in agg_percents.items():
-                assert metric_key.ASCls
+                assert metric_key.PolicyCls
                 row = {
                     "scenario_cls": data_key.scenario_config.ScenarioCls.__name__,
-                    "adopting_as_cls": data_key.scenario_config.AdoptASCls.__name__,
-                    "base_as_cls": data_key.scenario_config.BaseASCls.__name__,
-                    "as_cls": metric_key.ASCls.__name__,
+                    "AdoptingPolicyCls": (
+                        data_key.scenario_config.AdoptPolicyCls.__name__
+                    ),
+                    "BasePolicyCls": data_key.scenario_config.BasePolicyCls.__name__,
+                    "PolicyCls": metric_key.PolicyCls.__name__,
                     "outcome_type": metric_key.plane.name,
                     "as_group": metric_key.as_group.value,
                     "outcome": metric_key.outcome.name,
@@ -158,12 +159,12 @@ class MetricTracker:
     def track_trial_metrics(
         self,
         *,
-        engine: SimulationEngine,
+        engine: BaseSimulationEngine,
         percent_adopt: Union[float, SpecialPercentAdoptions],
         trial: int,
         scenario: Scenario,
         propagation_round: int,
-        outcomes: dict[str, dict[AS, Any]],
+        outcomes: dict[int, dict[int, int]],
     ) -> None:
         """Tracks all metrics from a single trial, adding to self.data
 
@@ -191,19 +192,19 @@ class MetricTracker:
     def _track_trial_metrics(
         self,
         *,
-        engine: SimulationEngine,
+        engine: BaseSimulationEngine,
         percent_adopt: Union[float, SpecialPercentAdoptions],
         trial: int,
         scenario: Scenario,
         propagation_round: int,
-        outcomes,
+        outcomes: dict[int, dict[int, int]],
     ) -> None:
         """Tracks all metrics from a single trial, adding to self.data
 
         TODO: This should really be cleaned up, but good enough for now
         """
 
-        metrics = [Metric(x, scenario.as_classes_used) for x in self.metric_keys]
+        metrics = [Metric(x, scenario.policy_classes_used) for x in self.metric_keys]
         self._populate_metrics(
             metrics=metrics, engine=engine, scenario=scenario, outcomes=outcomes
         )
@@ -220,9 +221,9 @@ class MetricTracker:
         self,
         *,
         metrics: list[Metric],
-        engine: SimulationEngine,
+        engine: BaseSimulationEngine,
         scenario: Scenario,
-        outcomes,
+        outcomes: dict[int, dict[int, int]],
     ) -> None:
         """Populates all metrics with data"""
 
@@ -232,17 +233,26 @@ class MetricTracker:
         # Don't count these!
         uncountable_asns = scenario._preset_asns
 
-        for as_obj in engine:
+        for as_obj in engine.as_graph:
             # Don't count preset ASNs
             if as_obj.asn in uncountable_asns:
                 continue
             for metric in metrics:
+                # Must use .get, since if this tracking is turned off,
+                # this will be an empty dict
+                ctrl_plane_outcome = ctrl_plane_outcomes.get(
+                    as_obj.asn, Outcomes.UNDETERMINED.value
+                )
+                data_plane_outcome = data_plane_outcomes.get(
+                    as_obj.asn, Outcomes.UNDETERMINED.value
+                )
+
                 metric.add_data(
                     as_obj=as_obj,
                     engine=engine,
                     scenario=scenario,
-                    ctrl_plane_outcome=ctrl_plane_outcomes[as_obj],
-                    data_plane_outcome=data_plane_outcomes[as_obj],
+                    ctrl_plane_outcome=ctrl_plane_outcome,
+                    data_plane_outcome=data_plane_outcome,
                 )
         # Only call this once or else it adds significant amounts of time
         for metric in metrics:
@@ -251,7 +261,7 @@ class MetricTracker:
     def _track_trial_metrics_hook(
         self,
         *,
-        engine: SimulationEngine,
+        engine: BaseSimulationEngine,
         percent_adopt: Union[float, SpecialPercentAdoptions],
         trial: int,
         scenario: Scenario,

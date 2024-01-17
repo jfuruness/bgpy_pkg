@@ -1,5 +1,3 @@
-# This should be made compatible with mypy, but I have no time
-
 from pathlib import Path
 
 from PIL import Image, ImageFile

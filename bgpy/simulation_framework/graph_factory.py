@@ -60,16 +60,22 @@ class GraphFactory:
             relevant_rows = list()
             for row in self.graph_rows:
                 # Get all the rows that correspond to that type of graph
-                BaseASCls = row["data_key"].scenario_config.BaseASCls
-                AdoptASCls = row["data_key"].scenario_config.AdoptASCls
+                BasePolicyCls = row["data_key"].scenario_config.BasePolicyCls
+                AdoptPolicyCls = row["data_key"].scenario_config.AdoptPolicyCls
                 if (
                     row["metric_key"].plane == metric_key.plane
                     and row["metric_key"].as_group == metric_key.as_group
                     and row["metric_key"].outcome == metric_key.outcome
                     and (
-                        (row["metric_key"].ASCls == BaseASCls and adopting is False)
-                        or (row["metric_key"].ASCls == AdoptASCls and adopting is True)
-                        or (row["metric_key"].ASCls == Any and adopting is Any)
+                        (
+                            row["metric_key"].PolicyCls == BasePolicyCls
+                            and adopting is False
+                        )
+                        or (
+                            row["metric_key"].PolicyCls == AdoptPolicyCls
+                            and adopting is True
+                        )
+                        or (row["metric_key"].PolicyCls == Any and adopting is Any)
                     )
                 ):
                     relevant_rows.append(row)
@@ -88,7 +94,7 @@ class GraphFactory:
         #     Plane
         #     as_group
         #     outcome
-        #     ASCls
+        #     PolicyCls
         # Value: float
         # Yerr: yerr
 
@@ -104,7 +110,7 @@ class GraphFactory:
         ).replace(" ", "")
         as_cls_rows_dict = defaultdict(list)
         for row in relevant_rows:
-            as_cls_rows_dict[row["data_key"].scenario_config.AdoptASCls].append(row)
+            as_cls_rows_dict[row["data_key"].scenario_config.AdoptPolicyCls].append(row)
 
         matplotlib.use("Agg")
         fig, ax = plt.subplots()
