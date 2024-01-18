@@ -2,10 +2,11 @@ from multiprocessing import cpu_count
 from pathlib import Path
 
 from subprefix_hijack import SubprefixHijack
-from peer_rov_as import PeerROVAS
-from rov_as import ROVAS
+from peer_rov_policy import PeerROVPolicy
+from rov_policy import ROVPolicy
 
-from bgpy import Simulation, ScenarioConfig
+from bgpy.enums import SpecialPercentAdoptions
+from bgpy.simulation_framework import Simulation, ScenarioConfig
 
 
 def main():
@@ -14,19 +15,16 @@ def main():
     # Simulation for the paper
     sim = Simulation(
         percent_adoptions=(
-            # NOTE: There is currently a slight issue with the SpecialPercentAdoptions
-            # SpecialPercentAdoptions.ONLY_ONE,
-            0.01,
+            SpecialPercentAdoptions.ONLY_ONE,
             0.1,
             0.2,
             0.4,
             0.8,
-            0.99
-            # SpecialPercentAdoptions.ALL_BUT_ONE,
+            0.99 # SpecialPercentAdoptions.ALL_BUT_ONE,
         ),
         scenario_configs=(
-            ScenarioConfig(ScenarioCls=SubprefixHijack, AdoptASCls=ROVAS),
-            ScenarioConfig(ScenarioCls=SubprefixHijack, AdoptASCls=PeerROVAS),
+            ScenarioConfig(ScenarioCls=SubprefixHijack, AdoptPolicyCls=ROVPolicy),
+            ScenarioConfig(ScenarioCls=SubprefixHijack, AdoptPolicyCls=PeerROVPolicy),
         ),
         output_dir=Path("~/Desktop/tutorial_ex").expanduser(),
         num_trials=100,

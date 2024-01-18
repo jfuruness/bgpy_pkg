@@ -1,13 +1,12 @@
-from bgpy import BGPSimpleAS
-from bgpy import Announcement as Ann
+from bgpy.simulation_engine import BGPSimplePolicy
+from bgpy.simulation_engine import Announcement as Ann
 
 
-class ROVAS(BGPSimpleAS):
-    """An AS that deploys ROV"""
+class ROVPolicy(BGPSimplePolicy):
+    """An Policy that deploys ROV"""
 
     name: str = "TutorialROV"
 
-    # mypy doesn't understand that this func is valid
     def _valid_ann(self, ann: Ann, *args, **kwargs) -> bool:  # type: ignore
         """Returns announcement validity
 
@@ -21,5 +20,4 @@ class ROVAS(BGPSimpleAS):
             return False
         # Use standard BGP to determine if the announcement is valid
         else:
-            # Mypy doesn't map superclasses properly
-            return super(ROVAS, self)._valid_ann(ann, *args, **kwargs)  # type: ignore
+            return super(ROVPolicy, self)._valid_ann(ann, *args, **kwargs)

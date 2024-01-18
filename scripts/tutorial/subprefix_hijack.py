@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING
 
-from bgpy.simulation_framework.scenarios.scenario import Scenario
+from bgpy.simulation_framework import Scenario
 from bgpy.enums import Prefixes
 from bgpy.enums import Relationships
 from bgpy.enums import Timestamps
@@ -39,7 +39,7 @@ class SubprefixHijack(Scenario):
                 )
             )
 
-        err: str = "Fix the roa_origins of the " "announcements for multiple victims"
+        err: str = "Fix the roa_origins of the announcements for multiple victims"
         assert len(self.victim_asns) == 1, err
 
         roa_origin: int = next(iter(self.victim_asns))

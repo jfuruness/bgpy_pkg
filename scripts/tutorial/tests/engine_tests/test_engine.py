@@ -2,10 +2,10 @@ from pathlib import Path
 
 import pytest
 
-from bgpy import EngineTester
-from bgpy import EngineTestConfig
+from .engine_test_configs import engine_test_configs
 
-from engine_test_configs import engine_test_configs
+from bgpy.tests import EngineTester
+from bgpy.tests import EngineTestConfig
 
 
 @pytest.mark.engine
