@@ -20,6 +20,6 @@ class ROVPolicy(BGPSimplePolicy):
             return False
         # Use standard BGP to determine if the announcement is valid
         else:
-           return super(ROVPolicy, self)._valid_ann(  # type: ignore
+            return super(ROVPolicy, self)._valid_ann(  # type: ignore
                 ann, *args, **kwargs
             )

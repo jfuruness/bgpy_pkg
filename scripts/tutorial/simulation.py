@@ -20,7 +20,7 @@ def main():
             0.2,
             0.4,
             0.8,
-            0.99 # SpecialPercentAdoptions.ALL_BUT_ONE,
+            0.99,  # SpecialPercentAdoptions.ALL_BUT_ONE,
         ),
         scenario_configs=(
             ScenarioConfig(ScenarioCls=SubprefixHijack, AdoptPolicyCls=ROVPolicy),
