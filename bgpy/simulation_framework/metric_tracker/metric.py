@@ -24,8 +24,8 @@ class Metric:
         self._numerators: dict[type[Policy], float] = {k: 0 for k in as_classes_used}
         self._denominators: dict[type[Policy], float] = {k: 0 for k in as_classes_used}
         # Used for aggregate statistics with any Policy class
-        self._numerators[Policy] = 0
-        self._denominators[Policy] = 0
+        self._numerators[Policy] = 0  # type: ignore
+        self._denominators[Policy] = 0  # type: ignore
         if percents:
             self.percents: defaultdict[MetricKey, list[float]] = percents
         else:
@@ -113,7 +113,7 @@ class Metric:
             and as_obj.asn in engine.as_graph.asn_groups[self.metric_key.as_group.value]
         ):
             self._numerators[as_obj.policy.__class__] += 1
-            self._numerators[Policy] += 1
+            self._numerators[Policy] += 1  # type: ignore
 
     def _add_denominator(
         self,
@@ -128,7 +128,7 @@ class Metric:
 
         if as_obj.asn in engine.as_graph.asn_groups[self.metric_key.as_group.value]:
             self._denominators[as_obj.policy.__class__] += 1
-            self._denominators[Policy] += 1
+            self._denominators[Policy] += 1  # type: ignore
             return True
         else:
             return False
