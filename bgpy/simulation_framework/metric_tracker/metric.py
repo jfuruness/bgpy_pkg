@@ -21,12 +21,8 @@ class Metric:
     ) -> None:
         self.metric_key: MetricKey = metric_key
         self.as_classes_used: frozenset[Type[Policy]] = as_classes_used
-        self._numerators: dict[type[Policy], float] = {
-            k: 0 for k in as_classes_used
-        }
-        self._denominators: dict[type[Policy], float] = {
-            k: 0 for k in as_classes_used
-        }
+        self._numerators: dict[type[Policy], float] = {k: 0 for k in as_classes_used}
+        self._denominators: dict[type[Policy], float] = {k: 0 for k in as_classes_used}
         # Used for aggregate statistics with any Policy class
         self._numerators[Policy] = 0
         self._denominators[Policy] = 0
