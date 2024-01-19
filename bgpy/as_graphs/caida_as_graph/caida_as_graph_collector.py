@@ -44,7 +44,7 @@ class CAIDAASGraphCollector(ASGraphCollector):
 
         # 10 days because sometimes caida takes a while to upload
         # 7 days ago was actually not enough
-        dl_time: datetime = datetime.utcnow() - timedelta(days=10)
+        dl_time: datetime = datetime.now() - timedelta(days=10)
         return dl_time.replace(hour=0, minute=0, second=0, microsecond=0)
 
     #################

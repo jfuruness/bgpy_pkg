@@ -101,6 +101,8 @@ markers = [
 ]
 filterwarnings = [
     "ignore::DeprecationWarning:yamlable",
+    "ignore::DeprecationWarning:tqdm",
+    "ignore::DeprecationWarning:dateutil.tz.tz",
 ]
 
 [tool.mypy]
