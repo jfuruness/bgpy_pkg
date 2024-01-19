@@ -34,4 +34,5 @@ def main():
 
 
 if __name__ == "__main__":
+    print("This takes about 6 minutes")
     main()
