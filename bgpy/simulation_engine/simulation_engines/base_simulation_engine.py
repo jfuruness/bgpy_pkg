@@ -82,6 +82,7 @@ class BaseSimulationEngine(YamlAble, ABC):
     # Propagation funcs #
     #####################
 
+    @abstractmethod
     def run(
         self, propagation_round: int = 0, scenario: Optional["Scenario"] = None
     ) -> None:
