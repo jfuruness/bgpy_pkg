@@ -106,6 +106,39 @@ class Simulation:
         self.data_plane_tracking: bool = data_plane_tracking
         self.control_plane_tracking: bool = control_plane_tracking
 
+        self._validate_scenario_configs()
+
+    def _validate_scenario_configs(self) -> None:
+        """validates that the scenario configs
+
+        adopt and base policies don't overlap with the hardcoded asns
+
+        If they do, setting and unsetting from scenario to scenario will fail
+
+        If they do overlap, just make a subclass of the Policy you are using
+        in the hardcoded ASNs
+        """
+
+        adopt_and_base_policies = set()
+        for scenario_config in self.scenario_configs:
+            adopt_and_base_policies.add(scenario_config.AdoptPolicyCls)
+            adopt_and_base_policies.add(scenario_config.BasePolicyCls)
+
+        hardcoded_asn_policies = set()
+        for scenario_config in self.scenario_configs:
+            for value in scenario_config.hardcoded_asn_cls_dict:
+                hardcoded_asn_policies.add(value)
+
+        diff = adopt_and_base_policies.intersection(hardcoded_asn_policies)
+
+        msg = (
+            "Can't have AdoptPolicyCls or BasePolicyCls be in the harcoded_asn_cls_dict"
+            " since this will not be set properly when comparing multiple scenarios"
+            " instead, for the hardcoded_asn_cls_dict, take the subclass of your policy"
+            " and use that instead"
+        )
+        assert len(diff) == 0, msg
+
     def run(
         self,
         GraphFactoryCls: type[GraphFactory] = GraphFactory,

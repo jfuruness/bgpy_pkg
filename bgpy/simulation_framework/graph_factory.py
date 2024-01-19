@@ -14,6 +14,7 @@ from .metric_tracker.metric_key import MetricKey
 from .utils import get_all_metric_keys
 
 from bgpy.enums import SpecialPercentAdoptions
+from bgpy.simulation_engine import Policy
 
 
 class GraphFactory:
@@ -75,7 +76,7 @@ class GraphFactory:
                             row["metric_key"].PolicyCls == AdoptPolicyCls
                             and adopting is True
                         )
-                        or (row["metric_key"].PolicyCls == Any and adopting is Any)
+                        or (row["metric_key"].PolicyCls == Policy and adopting is Any)
                     )
                 ):
                     relevant_rows.append(row)

@@ -1,6 +1,6 @@
 from collections import defaultdict
 from dataclasses import replace
-from typing import Any, Optional, Type
+from typing import Optional, Type
 
 from bgpy.enums import Plane
 from bgpy.as_graphs import AS
@@ -21,15 +21,15 @@ class Metric:
     ) -> None:
         self.metric_key: MetricKey = metric_key
         self.as_classes_used: frozenset[Type[Policy]] = as_classes_used
-        self._numerators: dict[type[Policy] | Any, float] = {
+        self._numerators: dict[type[Policy], float] = {
             k: 0 for k in as_classes_used
         }
-        self._denominators: dict[type[Policy] | Any, float] = {
+        self._denominators: dict[type[Policy], float] = {
             k: 0 for k in as_classes_used
         }
-        # Used for aggregate statistics with any AS class
-        self._numerators[Any] = 0
-        self._denominators[Any] = 0
+        # Used for aggregate statistics with any Policy class
+        self._numerators[Policy] = 0
+        self._denominators[Policy] = 0
         if percents:
             self.percents: defaultdict[MetricKey, list[float]] = percents
         else:
@@ -117,7 +117,7 @@ class Metric:
             and as_obj.asn in engine.as_graph.asn_groups[self.metric_key.as_group.value]
         ):
             self._numerators[as_obj.policy.__class__] += 1
-            self._numerators[Any] += 1
+            self._numerators[Policy] += 1
 
     def _add_denominator(
         self,
@@ -132,7 +132,7 @@ class Metric:
 
         if as_obj.asn in engine.as_graph.asn_groups[self.metric_key.as_group.value]:
             self._denominators[as_obj.policy.__class__] += 1
-            self._denominators[Any] += 1
+            self._denominators[Policy] += 1
             return True
         else:
             return False
