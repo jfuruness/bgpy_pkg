@@ -52,4 +52,5 @@ def _send_anns(self, propagate_to: "Relationships"):
         if not ann.withdraw:
             self._ribs_out.add_ann(neighbor.asn, ann)
     for neighbor in neighbors:
-        self._send_q.reset_neighbor(neighbor.asn)
+        # Resets neighbor, removing all their SendInfo
+        self._send_q.pop(neighbor.asn, None)

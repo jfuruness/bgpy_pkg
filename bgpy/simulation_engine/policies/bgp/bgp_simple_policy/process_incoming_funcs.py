@@ -27,7 +27,7 @@ def process_incoming_anns(
     """Process all announcements that were incoming from a specific rel"""
 
     # For each prefix, get all anns recieved
-    for prefix, ann_list in self._recv_q.prefix_anns():
+    for prefix, ann_list in self._recv_q.items():
         # Get announcement currently in local rib
         current_ann: "Ann" = self._local_rib.get(prefix)
         og_ann = current_ann

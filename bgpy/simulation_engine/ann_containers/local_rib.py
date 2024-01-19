@@ -1,4 +1,4 @@
-from typing import Optional, TYPE_CHECKING
+from typing import TYPE_CHECKING
 
 from .ann_container import AnnContainer
 
@@ -14,16 +14,3 @@ class LocalRIB(AnnContainer[str, "Ann"]):
         """Adds an announcement to local rib with prefix as key"""
 
         self.data[ann.prefix] = ann
-
-    def remove_ann(self, prefix: str):
-        """Removes announcement from local rib based on prefix"""
-
-        del self.data[prefix]
-
-    def prefix_anns(self):
-        """Returns all prefixes and announcements zipped"""
-
-        return self.data.items()
-
-    def __str__(self) -> str:
-        return str({k: str(v) for k, v in self.data.items()})

@@ -81,8 +81,3 @@ class SendQueue(AnnContainer[int, dict[str, SendInfo]]):
             for prefix, send_info in self.data.get(neighbor_obj.asn, dict()).items():
                 for ann in send_info.anns:
                     yield neighbor_obj, prefix, ann
-
-    def reset_neighbor(self, neighbor_asn: int):
-        """Resets a neighbor, removing all send info"""
-
-        self.data.pop(neighbor_asn, None)

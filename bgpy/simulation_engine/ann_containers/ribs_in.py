@@ -30,6 +30,7 @@ class RIBsIn(AnnContainer[int, dict[str, AnnInfo]]):
 
     neighbor: {prefix: (announcement, relationship)}
     """
+
     def get_unprocessed_ann_recv_rel(
         self, neighbor_asn: int, prefix: str
     ) -> Optional[AnnInfo]:

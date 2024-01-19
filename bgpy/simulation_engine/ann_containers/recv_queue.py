@@ -1,5 +1,3 @@
-from typing import ItemsView, Optional
-
 from .ann_container import AnnContainer
 
 from bgpy.simulation_engine import Announcement as Ann
@@ -19,11 +17,6 @@ class RecvQueue(AnnContainer[str, list["Ann"]]):
         """
 
         self.data[ann.prefix] = self.data.get(ann.prefix, list()) + [ann]
-
-    def prefix_anns(self) -> ItemsView[str, list["Ann"]]:
-        """Returns all prefixes and announcement lists zipped"""
-
-        return self.data.items()
 
     def get_ann_list(self, prefix: str) -> list["Ann"]:
         """Returns recevied ann list for a given prefix"""

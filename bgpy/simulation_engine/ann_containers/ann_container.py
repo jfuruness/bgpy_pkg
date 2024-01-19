@@ -1,6 +1,6 @@
 from collections import UserDict
 import pprint
-from typing import Any, Generic, Optional, TypeVar
+from typing import Any, Generic, TypeVar
 
 KeyType = TypeVar("KeyType")
 ValueType = TypeVar("ValueType")

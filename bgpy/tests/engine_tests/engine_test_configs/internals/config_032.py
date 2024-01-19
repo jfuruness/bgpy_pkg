@@ -19,9 +19,7 @@ class Custom32ValidPrefix(ValidPrefix):
     def post_propagation_hook(self, engine=None, propagation_round=0, *args, **kwargs):
         if propagation_round == 1:  # second round
             ann = deepcopy(
-                engine.as_graph.as_dict[2].policy._local_rib.get(
-                    Prefixes.PREFIX.value
-                )
+                engine.as_graph.as_dict[2].policy._local_rib.get(Prefixes.PREFIX.value)
             )
             # Add a new announcement at AS 3, which will be better than the one
             # from 2 and cause a withdrawn route by 1 to 4

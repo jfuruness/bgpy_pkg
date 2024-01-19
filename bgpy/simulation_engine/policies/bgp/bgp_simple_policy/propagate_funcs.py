@@ -71,7 +71,7 @@ def _propagate(
         raise NotImplementedError
 
     for neighbor in neighbors:
-        for prefix, ann in self._local_rib.prefix_anns():
+        for prefix, ann in self._local_rib.items():
             if ann.recv_relationship in send_rels and not self._prev_sent(
                 neighbor, ann
             ):
