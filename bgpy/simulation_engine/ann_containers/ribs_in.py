@@ -25,26 +25,11 @@ class AnnInfo(YamlAble):
     recv_relationship: Optional["Relationships"]
 
 
-class RIBsIn(AnnContainer):
+class RIBsIn(AnnContainer[int, dict[str, AnnInfo]]):
     """Incomming announcements for a BGP AS
 
     neighbor: {prefix: (announcement, relationship)}
     """
-
-    def __init__(self, _info: Optional[dict[int, dict[str, AnnInfo]]] = None):
-        """Stores _info dict which contains ribs in
-
-        This is passed in so that we can regenerate this class from yaml
-
-        Note that we do not use a defaultdict here because that is not
-        yamlable using the yamlable library
-        """
-
-        # {neighbor: {prefix: (announcement, relationship)}}
-        self._info: dict[int, dict[str, AnnInfo]] = (
-            _info if _info is not None else dict()
-        )
-
     def get_unprocessed_ann_recv_rel(
         self, neighbor_asn: int, prefix: str
     ) -> Optional[AnnInfo]:
@@ -53,7 +38,7 @@ class RIBsIn(AnnContainer):
         We don't use defaultdict here because that's not yamlable
         """
 
-        return self._info.get(neighbor_asn, dict()).get(prefix)
+        return self.data.get(neighbor_asn, dict()).get(prefix)
 
     def add_unprocessed_ann(
         self,
@@ -66,14 +51,14 @@ class RIBsIn(AnnContainer):
 
         # Shorten the var name
         ann = unprocessed_ann
-        if ann.as_path[0] not in self._info:
-            self._info[ann.as_path[0]] = {
+        if ann.as_path[0] not in self.data:
+            self.data[ann.as_path[0]] = {
                 ann.prefix: AnnInfo(
                     unprocessed_ann=unprocessed_ann, recv_relationship=recv_relationship
                 )
             }
         else:
-            self._info[ann.as_path[0]][ann.prefix] = AnnInfo(
+            self.data[ann.as_path[0]][ann.prefix] = AnnInfo(
                 unprocessed_ann=unprocessed_ann, recv_relationship=recv_relationship
             )
 
@@ -83,10 +68,10 @@ class RIBsIn(AnnContainer):
         default_ann_info: AnnInfo = AnnInfo(
             unprocessed_ann=None, recv_relationship=None
         )
-        for prefix_ann_info in self._info.values():
+        for prefix_ann_info in self.data.values():
             yield prefix_ann_info.get(prefix, default_ann_info)
 
     def remove_entry(self, neighbor_asn: int, prefix: str):
         """Removes AnnInfo from RibsIn"""
 
-        del self._info[neighbor_asn][prefix]
+        del self.data[neighbor_asn][prefix]

@@ -13,7 +13,7 @@ as_graph: !yamlable/CAIDAASGraph
       peers: !!python/tuple
       - 2
       policy: !yamlable/BGPPolicy
-        _local_rib: !yamlable/LocalRIB
+        _local_rib: !simulator_codec/LocalRIB
           1.2.0.0/16: !yamlable/Announcement
             as_path: !!python/tuple
             - 1
@@ -29,8 +29,8 @@ as_graph: !yamlable/CAIDAASGraph
             timestamp: 0
             traceback_end: false
             withdraw: false
-        _recv_q: !yamlable/RecvQueue {}
-        _ribs_in: !yamlable/RIBsIn
+        _recv_q: !simulator_codec/RecvQueue {}
+        _ribs_in: !simulator_codec/RIBsIn
           2:
             1.2.0.0/16: !yamlable/AnnInfo
               recv_relationship: !simulator_codec/Relationships
@@ -90,7 +90,7 @@ as_graph: !yamlable/CAIDAASGraph
                 timestamp: 0
                 traceback_end: false
                 withdraw: false
-        _ribs_out: !yamlable/RIBsOut
+        _ribs_out: !simulator_codec/RIBsOut
           2:
             1.2.0.0/16: !yamlable/Announcement
               as_path: !!python/tuple
@@ -139,7 +139,7 @@ as_graph: !yamlable/CAIDAASGraph
               timestamp: 0
               traceback_end: false
               withdraw: false
-        _send_q: !yamlable/SendQueue {}
+        _send_q: !simulator_codec/SendQueue {}
       propagation_rank: 2
       providers: !!python/tuple []
     2: !yamlable/AS
@@ -154,7 +154,7 @@ as_graph: !yamlable/CAIDAASGraph
       peers: !!python/tuple
       - 1
       policy: !yamlable/BGPPolicy
-        _local_rib: !yamlable/LocalRIB
+        _local_rib: !simulator_codec/LocalRIB
           1.2.0.0/16: !yamlable/Announcement
             as_path: !!python/tuple
             - 2
@@ -170,8 +170,8 @@ as_graph: !yamlable/CAIDAASGraph
             timestamp: 0
             traceback_end: false
             withdraw: false
-        _recv_q: !yamlable/RecvQueue {}
-        _ribs_in: !yamlable/RIBsIn
+        _recv_q: !simulator_codec/RecvQueue {}
+        _ribs_in: !simulator_codec/RIBsIn
           1:
             1.2.0.0/16: !yamlable/AnnInfo
               recv_relationship: !simulator_codec/Relationships
@@ -211,7 +211,7 @@ as_graph: !yamlable/CAIDAASGraph
                 timestamp: 0
                 traceback_end: false
                 withdraw: false
-        _ribs_out: !yamlable/RIBsOut
+        _ribs_out: !simulator_codec/RIBsOut
           1:
             1.2.0.0/16: !yamlable/Announcement
               as_path: !!python/tuple
@@ -260,7 +260,7 @@ as_graph: !yamlable/CAIDAASGraph
               timestamp: 0
               traceback_end: false
               withdraw: false
-        _send_q: !yamlable/SendQueue {}
+        _send_q: !simulator_codec/SendQueue {}
       propagation_rank: 1
       providers: !!python/tuple []
     3: !yamlable/AS
@@ -273,7 +273,7 @@ as_graph: !yamlable/CAIDAASGraph
       peers: !!python/tuple
       - 777
       policy: !yamlable/BGPPolicy
-        _local_rib: !yamlable/LocalRIB
+        _local_rib: !simulator_codec/LocalRIB
           1.2.0.0/16: !yamlable/Announcement
             as_path: !!python/tuple
             - 3
@@ -289,8 +289,8 @@ as_graph: !yamlable/CAIDAASGraph
             timestamp: 0
             traceback_end: false
             withdraw: false
-        _recv_q: !yamlable/RecvQueue {}
-        _ribs_in: !yamlable/RIBsIn
+        _recv_q: !simulator_codec/RecvQueue {}
+        _ribs_in: !simulator_codec/RIBsIn
           2:
             1.2.0.0/16: !yamlable/AnnInfo
               recv_relationship: !simulator_codec/Relationships
@@ -330,8 +330,8 @@ as_graph: !yamlable/CAIDAASGraph
                 timestamp: 0
                 traceback_end: false
                 withdraw: false
-        _ribs_out: !yamlable/RIBsOut {}
-        _send_q: !yamlable/SendQueue {}
+        _ribs_out: !simulator_codec/RIBsOut {}
+        _send_q: !simulator_codec/SendQueue {}
       propagation_rank: 0
       providers: !!python/tuple
       - 2
@@ -345,7 +345,7 @@ as_graph: !yamlable/CAIDAASGraph
       ixp: false
       peers: !!python/tuple []
       policy: !yamlable/BGPPolicy
-        _local_rib: !yamlable/LocalRIB
+        _local_rib: !simulator_codec/LocalRIB
           1.2.0.0/16: !yamlable/Announcement
             as_path: !!python/tuple
             - 4
@@ -361,8 +361,8 @@ as_graph: !yamlable/CAIDAASGraph
             timestamp: 0
             traceback_end: false
             withdraw: false
-        _recv_q: !yamlable/RecvQueue {}
-        _ribs_in: !yamlable/RIBsIn
+        _recv_q: !simulator_codec/RecvQueue {}
+        _ribs_in: !simulator_codec/RIBsIn
           1:
             1.2.0.0/16: !yamlable/AnnInfo
               recv_relationship: !simulator_codec/Relationships
@@ -402,7 +402,7 @@ as_graph: !yamlable/CAIDAASGraph
                 timestamp: 0
                 traceback_end: false
                 withdraw: false
-        _ribs_out: !yamlable/RIBsOut
+        _ribs_out: !simulator_codec/RIBsOut
           1:
             1.2.0.0/16: !yamlable/Announcement
               as_path: !!python/tuple
@@ -435,7 +435,7 @@ as_graph: !yamlable/CAIDAASGraph
               timestamp: 0
               traceback_end: false
               withdraw: false
-        _send_q: !yamlable/SendQueue {}
+        _send_q: !simulator_codec/SendQueue {}
       propagation_rank: 1
       providers: !!python/tuple
       - 1
@@ -449,7 +449,7 @@ as_graph: !yamlable/CAIDAASGraph
       peers: !!python/tuple
       - 3
       policy: !yamlable/BGPPolicy
-        _local_rib: !yamlable/LocalRIB
+        _local_rib: !simulator_codec/LocalRIB
           1.2.0.0/16: !yamlable/Announcement
             as_path: !!python/tuple
             - 777
@@ -464,9 +464,9 @@ as_graph: !yamlable/CAIDAASGraph
             timestamp: 0
             traceback_end: false
             withdraw: false
-        _recv_q: !yamlable/RecvQueue {}
-        _ribs_in: !yamlable/RIBsIn {}
-        _ribs_out: !yamlable/RIBsOut
+        _recv_q: !simulator_codec/RecvQueue {}
+        _ribs_in: !simulator_codec/RIBsIn {}
+        _ribs_out: !simulator_codec/RIBsOut
           1:
             1.2.0.0/16: !yamlable/Announcement
               as_path: !!python/tuple
@@ -527,7 +527,7 @@ as_graph: !yamlable/CAIDAASGraph
               timestamp: 0
               traceback_end: false
               withdraw: false
-        _send_q: !yamlable/SendQueue {}
+        _send_q: !simulator_codec/SendQueue {}
       propagation_rank: 0
       providers: !!python/tuple
       - 1

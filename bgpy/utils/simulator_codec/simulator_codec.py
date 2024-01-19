@@ -5,9 +5,12 @@ import yaml
 
 from .simulator_loader import SimulatorLoader
 from bgpy.enums import YamlAbleEnum
+from bgpy.simulation_engine.ann_containers.ann_container import AnnContainer
 
 # 2-way mappings between the types and the yaml tags
 types_to_yaml_tags = {X: X.yaml_suffix() for X in YamlAbleEnum.yamlable_enums()}
+types_to_yaml_tags.update({Cls: Cls.__name__ for Cls in AnnContainer.subclasses})
+
 yaml_tags_to_types = {v: k for k, v in types_to_yaml_tags.items()}
 
 
@@ -35,11 +38,18 @@ class SimulatorCodec(YamlCodec):
         """Creates object related to the given tag, from decoded dict"""
 
         typ = yaml_tags_to_types[yaml_tag_suffix]
-        if issubclass(typ, YamlAbleEnum):
-            # Don't use unessecary name
-            return typ(value=dct["value"])
-        else:
-            return typ(**dct)
+        try:
+            if issubclass(typ, YamlAbleEnum):
+                # Don't use unessecary name
+                return typ(value=dct["value"])
+            elif issubclass(typ, AnnContainer):
+                return typ.__from_yaml_dict__(dct=dct, yaml_tag=yaml_tag_suffix)
+            else:
+                return typ(**dct)
+        except Exception as e:
+            # For some reason YamlAble library suppresses these errors...
+            print(e)
+            raise
 
     @classmethod
     def to_yaml_dict(cls, obj) -> tuple[str, Any]:
@@ -47,6 +57,9 @@ class SimulatorCodec(YamlCodec):
 
         if isinstance(obj, YamlAbleEnum):
             return types_to_yaml_tags[type(obj)], {"value": obj.value, "name": obj.name}
+        elif isinstance(obj, AnnContainer):
+            rv = types_to_yaml_tags[type(obj)], obj.__to_yaml_dict__()
+            return rv
         else:
             # Encode the given object and also return the tag it should have
             return types_to_yaml_tags[type(obj)], vars(obj)

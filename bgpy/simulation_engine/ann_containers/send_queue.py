@@ -25,36 +25,22 @@ class SendInfo(YamlAble):
         return f"send_info: ann: {self.ann}, withdrawal {self.withdrawal_ann}"
 
 
-class SendQueue(AnnContainer):
+class SendQueue(AnnContainer[int, dict[str, SendInfo]]):
     """Announcements to be sent for a BGP AS
 
     {neighbor: {prefix: SendInfo}}
     """
 
-    def __init__(self, _info: Optional[dict[int, dict[str, SendInfo]]] = None):
-        """Stores _info dict which contains send queue
-
-        This is passed in so that we can regenerate this class from yaml
-
-        Note that we do not use a defaultdict here because that is not
-        yamlable using the yamlable library
-        """
-
-        # {neighbor: {prefix: SendInfo}}
-        self._info: dict[int, dict[str, SendInfo]] = (
-            _info if _info is not None else dict()
-        )
-
     def add_ann(self, neighbor_asn: int, ann: Ann):
         """Adds Ann to be sent"""
 
         # Used to be done by the defaultdict
-        if neighbor_asn not in self._info:
-            self._info[neighbor_asn] = {ann.prefix: SendInfo()}
-        if ann.prefix not in self._info[neighbor_asn]:
-            self._info[neighbor_asn][ann.prefix] = SendInfo()
+        if neighbor_asn not in self.data:
+            self.data[neighbor_asn] = {ann.prefix: SendInfo()}
+        if ann.prefix not in self.data[neighbor_asn]:
+            self.data[neighbor_asn][ann.prefix] = SendInfo()
 
-        send_info = self._info[neighbor_asn][ann.prefix]
+        send_info = self.data[neighbor_asn][ann.prefix]
 
         # If the announcement is a withdraw
         if ann.withdraw:
@@ -66,7 +52,7 @@ class SendQueue(AnnContainer):
             if send_info.ann is not None and send_info.ann.prefix_path_attributes_eq(
                 ann
             ):
-                del self._info[neighbor_asn][ann.prefix]
+                del self.data[neighbor_asn][ann.prefix]
             # If withdrawl is not equal to Ann, add withdrawal
             else:
                 send_info.withdrawal_ann = ann
@@ -85,18 +71,18 @@ class SendQueue(AnnContainer):
     def get_send_info(self, neighbor_obj: "AS", prefix: str) -> Optional[Ann]:
         """Returns the SendInfo for a neighbor AS and prefix"""
 
-        return self._info.get(neighbor_obj.asn, dict()).get(prefix)
+        return self.data.get(neighbor_obj.asn, dict()).get(prefix)
 
     def info(self, neighbors: list["AS"]) -> Iterator[tuple["AS", str, Ann]]:
         """Returns neighbor obj, prefix, announcement"""
 
         for neighbor_obj in neighbors:
             # assert isinstance(neighbor_obj, bgp_as.BGPAS)
-            for prefix, send_info in self._info.get(neighbor_obj.asn, dict()).items():
+            for prefix, send_info in self.data.get(neighbor_obj.asn, dict()).items():
                 for ann in send_info.anns:
                     yield neighbor_obj, prefix, ann
 
     def reset_neighbor(self, neighbor_asn: int):
         """Resets a neighbor, removing all send info"""
 
-        self._info.pop(neighbor_asn, None)
+        self.data.pop(neighbor_asn, None)
