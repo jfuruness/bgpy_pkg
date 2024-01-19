@@ -10,11 +10,6 @@ if TYPE_CHECKING:
 class LocalRIB(AnnContainer[str, "Ann"]):
     """Local RIB for a BGP AS"""
 
-    def get_ann(self, prefix: str, default: Optional["Ann"] = None) -> Optional["Ann"]:
-        """Returns announcement or none from the local rib by prefix"""
-
-        return self.data.get(prefix, default)
-
     def add_ann(self, ann: "Ann"):
         """Adds an announcement to local rib with prefix as key"""
 

@@ -29,7 +29,7 @@ def process_incoming_anns(
     # For each prefix, get all anns recieved
     for prefix, ann_list in self._recv_q.prefix_anns():
         # Get announcement currently in local rib
-        current_ann: "Ann" = self._local_rib.get_ann(prefix)
+        current_ann: "Ann" = self._local_rib.get(prefix)
         og_ann = current_ann
 
         # Seeded Ann will never be overriden, so continue

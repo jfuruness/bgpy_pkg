@@ -23,7 +23,7 @@ def process_incoming_anns(
 
     for prefix, anns in self._recv_q.prefix_anns():
         # Get announcement currently in local rib
-        _local_rib_ann: Optional["Ann"] = self._local_rib.get_ann(prefix)
+        _local_rib_ann: Optional["Ann"] = self._local_rib.get(prefix)
         current_ann: Optional["Ann"] = _local_rib_ann
         current_processed: bool = True
 
@@ -60,7 +60,7 @@ def process_incoming_anns(
             if ann.withdraw:
                 if self._process_incoming_withdrawal(ann, from_rel):
                     # the above will return true if the local rib is changed
-                    updated_loc_rib_ann: "Ann" = self._local_rib.get_ann(prefix)
+                    updated_loc_rib_ann: "Ann" = self._local_rib.get(prefix)
                     if current_processed:
                         current_ann = updated_loc_rib_ann
                     else:
@@ -165,7 +165,7 @@ def _process_incoming_withdrawal(
     prefix: str = ann.prefix
     neighbor: int = ann.as_path[0]
     # Return if the current ann was seeded (for an attack)
-    _local_rib_ann = self._local_rib.get_ann(prefix)
+    _local_rib_ann = self._local_rib.get(prefix)
 
     err: str = "Trying to withdraw seeded ann {_local_rib_ann.seed_asn}"
     assert not (
@@ -194,7 +194,7 @@ def _process_incoming_withdrawal(
     withdraw_ann: "Ann" = self._copy_and_process(
         ann, recv_relationship, overwrite_default_kwargs={"withdraw": True}
     )
-    if withdraw_ann.prefix_path_attributes_eq(self._local_rib.get_ann(prefix)):
+    if withdraw_ann.prefix_path_attributes_eq(self._local_rib.get(prefix)):
         self._local_rib.remove_ann(prefix)
         # Also remove from neighbors
         self._withdraw_ann_from_neighbors(withdraw_ann)

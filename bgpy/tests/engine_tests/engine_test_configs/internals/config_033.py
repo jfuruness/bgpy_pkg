@@ -20,7 +20,7 @@ class Custom33ValidPrefix(ValidPrefix):
     def post_propagation_hook(self, engine=None, propagation_round=0, *args, **kwargs):
         if propagation_round == 1:  # second round
             ann = deepcopy(
-                engine.as_graph.as_dict[2].policy._local_rib.get_ann(
+                engine.as_graph.as_dict[2].policy._local_rib.get(
                     Prefixes.PREFIX.value
                 )
             )

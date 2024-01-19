@@ -1,12 +1,24 @@
 from collections import UserDict
 import pprint
-from typing import Any, Optional
+from typing import Any, Generic, Optional, TypeVar
+
+KeyType = TypeVar("KeyType")
+ValueType = TypeVar("ValueType")
 
 
-class AnnContainer(UserDict):
-    """Container for announcement that has slots and equality"""
+class AnnContainer(UserDict[KeyType, ValueType], Generic[KeyType, ValueType]):
+    """Container for announcements that can dump to YamlAble
 
-    subclasses = set()
+    Inherits from UserDict so that it can easily be dumped to YAML
+    and also avoid the PyPy changes to the way it accesses dict values
+
+    Where PyPy differs for accessing dictionary subclasses:
+    https://doc.pypy.org/en/latest/cpython_differences.html#subclasses-of-built-in-types
+    UserDict source (notice how it's implemented get, which won't conflict with PyPy):
+    https://github.com/python/cpython/blob/main/Lib/collections/__init__.py#L1117
+    """
+
+    subclasses: set["AnnContainer[Any, Any]"] = set()
 
     def __init_subclass__(cls, *args, **kwargs):
         """This method essentially creates a list of all subclasses
@@ -14,7 +26,7 @@ class AnnContainer(UserDict):
         """
 
         super().__init_subclass__(*args, **kwargs)
-        AnnContainer.subclasses.add(cls)
+        AnnContainer.subclasses.add(cls)  # type: ignore
 
     def __str__(self) -> str:
         """Returns contents of the container as str"""
@@ -32,7 +44,7 @@ class AnnContainer(UserDict):
         return self.data
 
     @classmethod
-    def __from_yaml_dict__(cls, dct, yaml_tag) -> "AnnContainer":
+    def __from_yaml_dict__(cls, dct, yaml_tag) -> "AnnContainer[KeyType, ValueType]":
         """This optional method is called when you call yaml.load()"""
 
         return cls(dct)

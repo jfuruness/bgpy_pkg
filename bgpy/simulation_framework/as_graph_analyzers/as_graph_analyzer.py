@@ -47,7 +47,7 @@ class ASGraphAnalyzer(BaseASGraphAnalyzer):
         """
 
         for prefix in self.scenario.ordered_prefix_subprefix_dict:
-            most_specific_ann = as_obj.policy._local_rib.get_ann(prefix)
+            most_specific_ann = as_obj.policy._local_rib.get(prefix)
             if most_specific_ann:
                 # Mypy doesn't recognize that this is always an annoucnement
                 return most_specific_ann  # type: ignore
