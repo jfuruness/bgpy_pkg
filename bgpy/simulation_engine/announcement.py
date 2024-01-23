@@ -27,11 +27,11 @@ class Announcement(YamlAble):
     withdraw: bool = False
     traceback_end: bool = False
     # ROV, ROV++ optional attributes
-    roa_valid_length: Optional[bool]
-    roa_origin: Optional[int]
+    roa_valid_length: Optional[bool] = None
+    roa_origin: Optional[int] = None
     # BGPsec optional attributes
-    bgpsec_next_asn: Optional[int]
-    bgpsec_as_path: tuple[int] = ()
+    bgpsec_next_asn: Optional[int] = None
+    bgpsec_as_path: tuple[int, ...] = ()
 
     def prefix_path_attributes_eq(self, ann: Optional["Announcement"]) -> bool:
         """Checks prefix and as path equivalency"""

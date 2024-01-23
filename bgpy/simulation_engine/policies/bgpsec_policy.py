@@ -34,10 +34,11 @@ class BGPSecPolicy(BGPPolicy):
 
         next_asn = neighbor.asn if isinstance(neighbor.policy, BGPSecPolicy) else None
         path = ann.bgpsec_path if isinstance(neighbor.policy, BGPSecPolicy) else ()
-        send_ann = ann.copy(bgpsec_next_asn=next_asn, bgpsec_as_path=path)
+        send_ann = ann.copy({"bgpsec_next_asn": next_asn, "bgpsec_as_path": path})
         neighbor.policy.recieve_ann(send_ann)
 
-    def _copy_and_process(
+    # Mypy doesn't understand the superclass
+    def _copy_and_process(  # type: ignore
         self,
         ann: "Ann",
         recv_relationship: "Relationships",
@@ -64,7 +65,8 @@ class BGPSecPolicy(BGPPolicy):
             ann, recv_relationship, overwrite_default_kwargs
         )
 
-    def _get_best_ann_by_bgpsec(
+    # mypy wants a return statement, but nah
+    def _get_best_ann_by_bgpsec(  # type: ignore
         self, current_ann: "Ann", new_ann: "Ann"
     ) -> Optional["Ann"]:
         current_valid = current_ann.bgpsec_valid(self.as_.asn)
