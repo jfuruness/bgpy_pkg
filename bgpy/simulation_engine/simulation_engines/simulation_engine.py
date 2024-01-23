@@ -80,11 +80,7 @@ class SimulationEngine(BaseSimulationEngine):
             # Get the AS object to seed at
             # Must ignore type because it doesn't see assert above
             obj_to_seed = self.as_graph.as_dict[ann.seed_asn]  # type: ignore
-            # Ensure we aren't replacing anything
-            err = "Seeding conflict"
-            assert obj_to_seed.policy._local_rib.get(ann.prefix) is None, err
-            # Seed by placing in the local rib
-            obj_to_seed.policy._local_rib.add_ann(ann)
+            obj_to_seed.seed_ann(ann)
 
     #####################
     # Propagation funcs #

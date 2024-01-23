@@ -8,6 +8,20 @@ if TYPE_CHECKING:
     from bgpy.simulation_engine.announcement import Announcement as Ann
 
 
+def seed_ann(self, ann: "Ann") -> None:
+    """Seeds an announcement at this AS
+
+    Useful hook function used in BGPSec
+    and later hopefully in the API for ROAs
+    """
+
+    # Ensure we aren't replacing anything
+    err = "Seeding conflict"
+    assert self.policy._local_rib.get(ann.prefix) is None, err
+    # Seed by placing in the local rib
+    self.policy._local_rib.add_ann(ann)
+
+
 def receive_ann(self, ann: "Ann", accept_withdrawals: bool = False) -> None:
     """Function for recieving announcements, adds to recv_q"""
 

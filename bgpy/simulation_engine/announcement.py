@@ -23,13 +23,15 @@ class Announcement(YamlAble):
     as_path: tuple[int]
     timestamp: int
     seed_asn: Optional[int]
-    roa_valid_length: Optional[bool]
-    roa_origin: Optional[int]
     recv_relationship: "Relationships"
     withdraw: bool = False
     traceback_end: bool = False
-    # NOTE: must use list here for C++ compatability
-    communities: tuple[str, ...] = ()
+    # ROV, ROV++ optional attributes
+    roa_valid_length: Optional[bool]
+    roa_origin: Optional[int]
+    # BGPsec optional attributes
+    bgpsec_next_asn: Optional[int]
+    bgpsec_as_path: tuple[int] = ()
 
     def prefix_path_attributes_eq(self, ann: Optional["Announcement"]) -> bool:
         """Checks prefix and as path equivalency"""
@@ -54,6 +56,11 @@ class Announcement(YamlAble):
         # Mypy says it gets this wrong
         # https://github.com/microsoft/pyright/issues/1047#issue-705124399
         return replace(self, **kwargs)  # type: ignore
+
+    def bgpsec_valid(self, asn: int) -> bool:
+        """Returns True if valid by BGPSec else False"""
+
+        return self.bgpsec_next_asn == asn and self.bgpsec_as_path == self.as_path
 
     @property
     def invalid_by_roa(self) -> bool:
