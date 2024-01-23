@@ -1,6 +1,14 @@
+from typing import Any, Callable, Optional, TYPE_CHECKING
+
 from bgpy.simulation_engine.policies.bgp.bgp_policy import BGPPolicy
 
-class BGPsecPolicy(BGPPolicy):
+if TYPE_CHECKING:
+    from bgpy.as_graphs import AS
+    from bgpy.enums import Relationships
+    from bgpy.simulation_engine.announcement import Announcement as Ann
+
+
+class BGPSecPolicy(BGPPolicy):
     """Represents BGPSec
 
     Since there are no real world implementations,
@@ -16,7 +24,7 @@ class BGPsecPolicy(BGPPolicy):
         super().seed_ann(ann.copy({"bgpsec_as_path": ann.as_path}))
 
     def policy_propagate(  # type: ignore
-        self, neighbor: "AS", ann: "Announcement", *args, **kwargs
+        self, neighbor: "AS", ann: "Ann", *args, **kwargs
     ) -> bool:
         """Sets BGPSec fields when propagating
 
@@ -24,9 +32,9 @@ class BGPsecPolicy(BGPPolicy):
         otherwise clear out both fields
         """
 
-        next_asn = neighbor.asn if isinstance(neighbor.policy, BGPsecPolicy) else None
-        bgpsec_path = ann.bgpsec_path if isistance(neighbor.policy, BGPsecPolicy else ()
-        send_ann = ann.copy(bgpsec_next_asn=next_asn, bgpsec_as_path=bgpsec_path)
+        next_asn = neighbor.asn if isinstance(neighbor.policy, BGPSecPolicy) else None
+        path = ann.bgpsec_path if isinstance(neighbor.policy, BGPSecPolicy) else ()
+        send_ann = ann.copy(bgpsec_next_asn=next_asn, bgpsec_as_path=path)
         neighbor.policy.recieve_ann(send_ann)
 
     def _copy_and_process(
@@ -56,7 +64,9 @@ class BGPsecPolicy(BGPPolicy):
             ann, recv_relationship, overwrite_default_kwargs
         )
 
-    def _get_best_ann_by_bgpsec(self, current_ann: "Ann", new_ann: "Ann") -> Optional["Ann"]:
+    def _get_best_ann_by_bgpsec(
+        self, current_ann: "Ann", new_ann: "Ann"
+    ) -> Optional["Ann"]:
         current_valid = current_ann.bgpsec_valid(self.as_.asn)
         new_valid = new_ann.bgpsec_valid(self.as_.asn)
 
@@ -68,7 +78,7 @@ class BGPsecPolicy(BGPPolicy):
     @property
     def _gao_rexford_funcs(
         self,
-    ) -> tuple[Callable[["Ann", "Ann"], Optional["Ann"],], ...,]:
+    ) -> tuple[Callable[["Ann", "Ann"], Optional["Ann"]], ...]:
         return (
             self._get_best_ann_by_local_pref,
             self._get_best_ann_by_as_path,

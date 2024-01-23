@@ -4,6 +4,7 @@ from .rov import (
     ROVSimplePolicy,
     ROVPolicy,
 )
+from .bgpsec_policy import BGPSecPolicy
 
 __all__ = [
     "BGPSimplePolicy",
@@ -11,4 +12,5 @@ __all__ = [
     "Policy",
     "ROVSimplePolicy",
     "ROVPolicy",
+    "BGPSecPolicy"
 ]
