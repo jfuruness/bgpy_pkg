@@ -12,7 +12,7 @@ as_graph: !yamlable/CAIDAASGraph
       peers: !!python/tuple
       - 3
       - 5
-      policy: !yamlable/BGPSimplePolicy
+      policy: !yamlable/BGP%20Simple
         _local_rib: !simulator_codec/LocalRIB {}
         _recv_q: !simulator_codec/RecvQueue {}
       propagation_rank: 1
@@ -27,7 +27,7 @@ as_graph: !yamlable/CAIDAASGraph
       input_clique: false
       ixp: false
       peers: !!python/tuple []
-      policy: !yamlable/BGPSimplePolicy
+      policy: !yamlable/BGP%20Simple
         _local_rib: !simulator_codec/LocalRIB {}
         _recv_q: !simulator_codec/RecvQueue {}
       propagation_rank: 2
@@ -41,7 +41,7 @@ as_graph: !yamlable/CAIDAASGraph
       ixp: false
       peers: !!python/tuple
       - 1
-      policy: !yamlable/BGPSimplePolicy
+      policy: !yamlable/BGP%20Simple
         _local_rib: !simulator_codec/LocalRIB {}
         _recv_q: !simulator_codec/RecvQueue {}
       propagation_rank: 0
@@ -54,7 +54,7 @@ as_graph: !yamlable/CAIDAASGraph
       input_clique: false
       ixp: false
       peers: !!python/tuple []
-      policy: !yamlable/BGPSimplePolicy
+      policy: !yamlable/BGP%20Simple
         _local_rib: !simulator_codec/LocalRIB
           1.2.0.0/16: !yamlable/Announcement
             as_path: !!python/tuple
@@ -85,7 +85,7 @@ as_graph: !yamlable/CAIDAASGraph
       ixp: false
       peers: !!python/tuple
       - 1
-      policy: !yamlable/BGPSimplePolicy
+      policy: !yamlable/BGP%20Simple
         _local_rib: !simulator_codec/LocalRIB {}
         _recv_q: !simulator_codec/RecvQueue {}
       propagation_rank: 0

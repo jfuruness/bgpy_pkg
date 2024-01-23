@@ -30,12 +30,21 @@ def pytest_sessionfinish(session, exitstatus):
     # Only run in master thread after all other threads/tests have finished
     # Also runs when xdist isn't running
     if not hasattr(session.config, "workerinput"):
-        DiagramAggregator(DIAGRAM_PATH).aggregate_diagrams()
-        # Teardown stuff (open PDF for viewing)
-        if session.config.getoption("view"):
-            # https://stackoverflow.com/q/19453338/8903959
-            agg_path = DiagramAggregator(DIAGRAM_PATH).aggregated_diagrams_path
-            subprocess.call(["xdg-open", str(agg_path)])
+        try:
+            DiagramAggregator(DIAGRAM_PATH).aggregate_diagrams()
+            # Teardown stuff (open PDF for viewing)
+            if session.config.getoption("view"):
+                # https://stackoverflow.com/q/19453338/8903959
+                agg_path = DiagramAggregator(DIAGRAM_PATH).aggregated_diagrams_path
+                subprocess.call(["xdg-open", str(agg_path)])
+        # If the diagram aggregator errors out due to a test failure,
+        # the actual test failure is suppressed for some reason and only the diagram
+        # aggregator error is raised (likely due to some pytest internals)
+        # I've never encountered a legitimate error with the PDF generation, and if
+        # the PDF generation fails, but the tests pass, I think it's okay to pass
+        # If there's a better workaround for this, I don't know it.
+        except Exception as e:
+            print(f"Diagram aggregator failed, typically caused by a test failure {e}")
 
 
 @pytest.fixture(scope="session")
