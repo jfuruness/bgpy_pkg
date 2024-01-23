@@ -11,6 +11,7 @@ from .propagate_funcs import _process_outgoing_ann
 from .propagate_funcs import _prev_sent
 
 # Process incoming announcements
+from .process_incoming_funcs import seed_ann
 from .process_incoming_funcs import receive_ann
 from .process_incoming_funcs import process_incoming_anns
 from .process_incoming_funcs import _valid_ann
@@ -74,6 +75,7 @@ class BGPSimplePolicy(Policy):
     _prev_sent = _prev_sent
 
     # Process incoming announcements
+    seed_ann = seed_ann
     receive_ann = receive_ann
     process_incoming_anns = process_incoming_anns
     _valid_ann = _valid_ann

@@ -17,9 +17,9 @@ def seed_ann(self, ann: "Ann") -> None:
 
     # Ensure we aren't replacing anything
     err = "Seeding conflict"
-    assert self.policy._local_rib.get(ann.prefix) is None, err
+    assert self._local_rib.get(ann.prefix) is None, err
     # Seed by placing in the local rib
-    self.policy._local_rib.add_ann(ann)
+    self._local_rib.add_ann(ann)
 
 
 def receive_ann(self, ann: "Ann", accept_withdrawals: bool = False) -> None:

@@ -9,6 +9,8 @@ from .ann_containers import RecvQueue
 from .policies import Policy
 from .policies import BGPSimplePolicy
 from .policies import BGPPolicy
+from .policies import PeerROVSimplePolicy
+from .policies import PeerROVPolicy
 from .policies import ROVSimplePolicy
 from .policies import ROVPolicy
 from .policies import BGPSecPolicy
@@ -25,6 +27,8 @@ __all__ = [
     "RecvQueue",
     "BGPSimplePolicy",
     "BGPPolicy",
+    "PeerROVSimplePolicy",
+    "PeerROVPolicy",
     "ROVSimplePolicy",
     "ROVPolicy",
     "Policy",

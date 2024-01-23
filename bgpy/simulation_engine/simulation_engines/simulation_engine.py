@@ -80,7 +80,7 @@ class SimulationEngine(BaseSimulationEngine):
             # Get the AS object to seed at
             # Must ignore type because it doesn't see assert above
             obj_to_seed = self.as_graph.as_dict[ann.seed_asn]  # type: ignore
-            obj_to_seed.seed_ann(ann)
+            obj_to_seed.policy.seed_ann(ann)
 
     #####################
     # Propagation funcs #

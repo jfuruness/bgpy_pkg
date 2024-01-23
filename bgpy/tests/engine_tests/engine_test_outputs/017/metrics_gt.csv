@@ -1,7 +1,0 @@
-scenario_cls,AdoptingPolicyCls,BasePolicyCls,PolicyCls,outcome_type,as_group,outcome,percent_adopt,propagation_round,value,yerr,scenario_config_label
-ValidPrefix,PseudoROVSimple,ROVSimplePolicy,ROVSimplePolicy,DATA,all_wout_ixps,ATTACKER_SUCCESS,0,0,0.0,0.0,
-ValidPrefix,PseudoROVSimple,ROVSimplePolicy,Policy,DATA,all_wout_ixps,ATTACKER_SUCCESS,0,0,0.0,0.0,
-ValidPrefix,PseudoROVSimple,ROVSimplePolicy,ROVSimplePolicy,DATA,all_wout_ixps,VICTIM_SUCCESS,0,0,100.0,0.0,
-ValidPrefix,PseudoROVSimple,ROVSimplePolicy,Policy,DATA,all_wout_ixps,VICTIM_SUCCESS,0,0,100.0,0.0,
-ValidPrefix,PseudoROVSimple,ROVSimplePolicy,ROVSimplePolicy,DATA,all_wout_ixps,DISCONNECTED,0,0,0.0,0.0,
-ValidPrefix,PseudoROVSimple,ROVSimplePolicy,Policy,DATA,all_wout_ixps,DISCONNECTED,0,0,0.0,0.0,
