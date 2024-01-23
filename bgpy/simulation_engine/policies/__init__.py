@@ -12,5 +12,5 @@ __all__ = [
     "Policy",
     "ROVSimplePolicy",
     "ROVPolicy",
-    "BGPSecPolicy"
+    "BGPSecPolicy",
 ]
