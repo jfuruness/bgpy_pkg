@@ -11,8 +11,6 @@ if TYPE_CHECKING:
 
 class Policy(YamlAble, metaclass=ABCMeta):
     name: str = "AbstractPolicy"
-    as_class_names: list[str] = []
-    as_classes: list[type["Policy"]] = []
     subclass_to_name_dict: dict[type["Policy"], str] = {}
     name_to_subclass_dict: dict[str, type["Policy"]] = {}
 
@@ -24,19 +22,18 @@ class Policy(YamlAble, metaclass=ABCMeta):
 
         super().__init_subclass__(*args, **kwargs)
         assert hasattr(cls, "name"), "Policy must have a name"
-        cls.as_class_names.append(cls.name)
+        # yamlable not up to date with mypy
+        yaml_info_decorate(cls, yaml_tag=cls.name)  # type: ignore
+        cls.subclass_to_name_dict[cls] = cls.name
+        cls.name_to_subclass_dict[cls.name] = cls
+
         msg: str = (
             f"Duplicate name {cls.name} with {cls.__name__}."
             "Please make a class attr "
             "name for the policy something else"
         )
-        assert len(set(cls.as_class_names)) == len(cls.as_class_names), msg
-        cls.as_classes.append(cls)
-
-        # yamlable not up to date with mypy
-        yaml_info_decorate(cls, yaml_tag=cls.__name__)  # type: ignore
-        cls.subclass_to_name_dict[cls] = cls.__name__
-        cls.name_to_subclass_dict[cls.__name__] = cls
+        names = list(cls.name_to_subclass_dict)
+        assert len(set(names)) == len(names), msg
 
     def __eq__(self, other) -> bool:
         if isinstance(other, Policy):
