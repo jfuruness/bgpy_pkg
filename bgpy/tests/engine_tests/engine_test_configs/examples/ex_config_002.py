@@ -1,6 +1,6 @@
 from frozendict import frozendict
 from bgpy.enums import ASNs
-from bgpy.tests.engine_tests.as_graph_infos import as_graph_info_001
+from bgpy.tests.engine_tests.as_graph_infos import as_graph_info_000
 from bgpy.tests.engine_tests.utils import EngineTestConfig
 
 from bgpy.simulation_engine import (
@@ -14,6 +14,7 @@ from bgpy.simulation_framework import (
 
 
 desc = (
+    "Subprefix hijack with BGP Simple"
     "Valley Free (Gao Rexford) Demonstration\n"
     "import policy\n"
     "AS 9, prefix, shows customer > peer\n"
@@ -28,8 +29,8 @@ desc = (
     "AS 12 shows a hidden hijack\n"
 )
 
-config_001 = EngineTestConfig(
-    name="001_gao_rexford_bgp_simple",
+ex_config_002 = EngineTestConfig(
+    name="ex_002_subprefix_hijack_bgp_simple_gao_rexford_demo",
     desc=desc,
     scenario_config=ScenarioConfig(
         ScenarioCls=SubprefixHijack,
@@ -38,5 +39,5 @@ config_001 = EngineTestConfig(
         override_victim_asns=frozenset({ASNs.VICTIM.value}),
         override_non_default_asn_cls_dict=frozendict(),
     ),
-    as_graph_info=as_graph_info_001,
+    as_graph_info=as_graph_info_000,
 )
