@@ -19,8 +19,8 @@ desc = (
     "Subprefix hijack with ROV"
 )
 
-ex_config_004 = EngineTestConfig(
-    name="ex_004_subprefix_hijack_rov",
+ex_config_005 = EngineTestConfig(
+    name="ex_005_subprefix_hijack_rov",
     desc=desc,
     scenario_config=ScenarioConfig(
         ScenarioCls=SubprefixHijack,
