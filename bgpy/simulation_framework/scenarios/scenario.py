@@ -16,6 +16,7 @@ from bgpy.enums import (
     SpecialPercentAdoptions,
 )
 
+from .preprocess_anns_funcs import noop, PREPROCESS_ANNS_FUNC_TYPE
 from .scenario_config import ScenarioConfig
 
 pseudo_base_cls_dict: dict[type[Policy], type[Policy]] = dict()
@@ -34,6 +35,7 @@ class Scenario(ABC):
         percent_adoption: Union[float, SpecialPercentAdoptions] = 0,
         engine: Optional[BaseSimulationEngine] = None,
         prev_scenario: Optional["Scenario"] = None,
+        preprocess_anns_func: PREPROCESS_ANNS_FUNC_TYPE = noop
     ):
         """inits attrs
 
@@ -63,9 +65,10 @@ class Scenario(ABC):
                 "Ann", ...
             ] = self.scenario_config.override_announcements
         else:
-            self.announcements = self._get_announcements(
+            anns = self._get_announcements(
                 engine=engine, prev_scenario=prev_scenario
             )
+            self.announcements = preprocess_anns_func(self, anns, engine, prev_scenario)
 
         self.ordered_prefix_subprefix_dict: dict[
             str, list[str]

@@ -1,3 +1,5 @@
+from . import preprocess_anns_funcs
+
 from .scenario_config import ScenarioConfig
 from .scenario import Scenario
 
@@ -11,6 +13,7 @@ from .valid_prefix import ValidPrefix
 
 
 __all__ = [
+    "preprocess_anns_funcs",
     "ScenarioConfig",
     "Scenario",
     "PrefixHijack",
