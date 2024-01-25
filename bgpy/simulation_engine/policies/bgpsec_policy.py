@@ -18,7 +18,7 @@ class BGPSecPolicy(BGPPolicy):
 
     name = "BGPSec"
 
-    def seed_ann(self, ann: "Ann") -> None:
+    def seed_ann(self, ann: "Ann") -> None:  # type: ignore
         """Seeds announcement at this AS and initializes BGPSec path"""
 
         super().seed_ann(ann.copy({"bgpsec_as_path": ann.as_path}))

@@ -89,7 +89,7 @@ class ASGraphAnalyzer(BaseASGraphAnalyzer):
                     # not the next ASN in the AS PATH
                     # This is more in line with real BGP and allows for more
                     # advanced types of hijacks such as origin spoofing hijacks
-                    most_specific_ann.next_hop_asn
+                    most_specific_ann.next_hop_asn  # type: ignore
                 ]  # type: ignore
                 outcome_int = self._get_as_outcome_data_plane(next_as)
             assert outcome_int != Outcomes.UNDETERMINED.value, "Shouldn't be possible"

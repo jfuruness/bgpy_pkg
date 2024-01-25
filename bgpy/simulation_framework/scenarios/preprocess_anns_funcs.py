@@ -73,7 +73,7 @@ def shortest_path_export_all_hijack(
     Specifically useful against bgp-isec, ASPA, and pathend
     """
 
-    processed_anns = list()
+    processed_anns: list["Ann"] = list()
 
     valid_ann = _get_valid_by_roa_ann(self_scenario.victim_asns, unprocessed_anns)
     print(valid_ann)
