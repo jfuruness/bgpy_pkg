@@ -2,7 +2,7 @@ from typing import Callable, Optional, TYPE_CHECKING
 
 if TYPE_CHECKING:
     from bgpy.simulation_framework.scenario import Scenario
-    from bgpy.simulation_engine import (Announcement, BaseSimulationEngine)
+    from bgpy.simulation_engine import Announcement as Ann, BaseSimulationEngine
 
 
 PREPROCESS_ANNS_FUNC_TYPE = Callable[
@@ -27,31 +27,6 @@ def noop(
     return unprocessed_anns
 
 
-def origin_spoofing_hijack(
-    self_scenario: "Scenario",
-    unprocessed_anns: tuple["Ann", ...],
-    engine: Optional["BaseSimulationEngine"],
-    prev_scenario: Optional["Scenario"],
-) -> tuple["Ann", ...]:
-    """Makes the attack use origin spoofing to be valid by ROA"""
-
-    processed_anns = list()
-
-    valid_ann = _get_valid_by_roa_ann(self_scenario.victim_asns, unprocessed_anns)
-
-    for ann in unprocessed_anns:
-        # If the announcement is from the attacker
-        if ann.invalid_by_roa:
-            if ann.prefix != valid_ann.prefix:
-                raise NotImplementedError("TODO: get the valid origin per prefix")
-            # Make the AS path be just the victim
-            processed_anns.append(ann.copy({"as_path": (valid_ann.origin,)}))
-        else:
-            processed_anns.append(ann)
-
-    return tuple(processed_anns)
-
-
 def origin_hijack(
     self_scenario: "Scenario",
     unprocessed_anns: tuple["Ann", ...],
@@ -70,7 +45,17 @@ def origin_hijack(
             if ann.prefix != valid_ann.prefix:
                 raise NotImplementedError("TODO: get the valid origin per prefix")
             # Make the AS path be just the victim
-            processed_anns.append(ann.copy({"as_path": (valid_ann.origin, ann.origin)}))
+            processed_ann = ann.copy(
+                {
+                    "as_path": (ann.origin, valid_ann.origin),
+                    # Ann.copy overwrites seed_asn and traceback by default
+                    # so include these here to make sure that doesn't happen
+                    "seed_asn": ann.seed_asn,
+                    "traceback_end": ann.traceback_end
+                }
+            )
+            processed_anns.append(processed_ann)
+
         else:
             processed_anns.append(ann)
 
@@ -91,7 +76,7 @@ def shortest_path_export_all_hijack(
     processed_anns = list()
 
     valid_ann = _get_valid_by_roa_ann(self_scenario.victim_asns, unprocessed_anns)
-
+    print(valid_ann)
     for ann in unprocessed_anns:
         # TODO
         # NOTE: must set pathend valid to be False
@@ -99,11 +84,136 @@ def shortest_path_export_all_hijack(
     return tuple(processed_anns)
 
 
+############################
+# Origin spoofing variants #
+############################
+
+def origin_spoofing_hijack(
+    self_scenario: "Scenario",
+    unprocessed_anns: tuple["Ann", ...],
+    engine: Optional["BaseSimulationEngine"],
+    prev_scenario: Optional["Scenario"],
+) -> tuple["Ann", ...]:
+    """Makes the attack use origin spoofing to be valid by ROA"""
+
+    processed_anns = list()
+
+    valid_ann = _get_valid_by_roa_ann(self_scenario.victim_asns, unprocessed_anns)
+
+    for ann in unprocessed_anns:
+        # If the announcement is from the attacker
+        if ann.invalid_by_roa:
+            if ann.prefix != valid_ann.prefix:
+                raise NotImplementedError("TODO: get the valid origin per prefix")
+            # Make the AS path be just the victim
+            processed_ann = ann.copy(
+                {
+                    "as_path": (valid_ann.origin,),
+                    "next_hop_asn": ann.origin,
+                    # Ann.copy overwrites seed_asn and traceback by default
+                    # so include these here to make sure that doesn't happen
+                    "seed_asn": ann.seed_asn,
+                    "traceback_end": ann.traceback_end
+                }
+            )
+            processed_anns.append(processed_ann)
+        else:
+            processed_anns.append(ann)
+
+    return tuple(processed_anns)
+
+
+def origin_spoofing_disconnection_hijack(
+    self_scenario: "Scenario",
+    unprocessed_anns: tuple["Ann", ...],
+    engine: Optional["BaseSimulationEngine"],
+    prev_scenario: Optional["Scenario"],
+) -> tuple["Ann", ...]:
+    """Makes the attack use origin spoofing to be valid by ROA and disconnects traffic"""
+
+    processed_anns = list()
+
+    valid_ann = _get_valid_by_roa_ann(self_scenario.victim_asns, unprocessed_anns)
+
+    for ann in unprocessed_anns:
+        # If the announcement is from the attacker
+        if ann.invalid_by_roa:
+            if ann.prefix != valid_ann.prefix:
+                raise NotImplementedError("TODO: get the valid origin per prefix")
+
+            assert engine
+            origin_as_obj = engine.as_dict.get(ann.origin)
+            assert origin_as_obj
+            if not origin_as_obj.providers:
+                raise NotImplementedError("TODO: direct traffic elsewhere")
+            provider_as = origin_as_obj.providers[0]
+
+            # Make the AS path be just the victim
+            processed_ann = ann.copy(
+                {
+                    "as_path": (valid_ann.origin,),
+                    "next_hop_asn": provider_as.asn,
+                    # Ann.copy overwrites seed_asn and traceback by default
+                    # so include these here to make sure that doesn't happen
+                    "seed_asn": ann.seed_asn,
+                    "traceback_end": ann.traceback_end
+                }
+            )
+            processed_anns.append(processed_ann)
+        else:
+            processed_anns.append(ann)
+
+    return tuple(processed_anns)
+
+
+def origin_spoofing_scapegoat_hijack(
+    self_scenario: "Scenario",
+    unprocessed_anns: tuple["Ann", ...],
+    engine: Optional["BaseSimulationEngine"],
+    prev_scenario: Optional["Scenario"],
+) -> tuple["Ann", ...]:
+    """Makes the attack use origin spoofing to be valid by ROA and disconnects traffic"""
+
+    processed_anns = list()
+
+    valid_ann = _get_valid_by_roa_ann(self_scenario.victim_asns, unprocessed_anns)
+
+    for ann in unprocessed_anns:
+        # If the announcement is from the attacker
+        if ann.invalid_by_roa:
+            if ann.prefix != valid_ann.prefix:
+                raise NotImplementedError("TODO: get the valid origin per prefix")
+
+            assert engine
+            origin_as_obj = engine.as_dict.get(ann.origin)
+            assert origin_as_obj
+            if not origin_as_obj.customers:
+                raise NotImplementedError("TODO: Scapegoat someone else")
+            customer_as = origin_as_obj.customers[0]
+
+            # Make the AS path be just the victim
+            processed_ann = ann.copy(
+                {
+                    "as_path": (valid_ann.origin,),
+                    "next_hop_asn": customer_as.asn,
+                    # Ann.copy overwrites seed_asn and traceback by default
+                    # so include these here to make sure that doesn't happen
+                    "seed_asn": ann.seed_asn,
+                    "traceback_end": ann.traceback_end
+                }
+            )
+            processed_anns.append(processed_ann)
+        else:
+            processed_anns.append(ann)
+
+    return tuple(processed_anns)
+
+
 ################
 # Helper funcs #
 ################
 
-def _get_a_valid_by_roa_ann(
+def _get_valid_by_roa_ann(
     victim_asns: frozenset[int],
     unprocessed_anns: tuple["Ann", ...]
 ) -> "Ann":

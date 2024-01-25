@@ -28,6 +28,7 @@ class PrefixHijack(Scenario):
             anns.append(
                 self.scenario_config.AnnCls(
                     prefix=Prefixes.PREFIX.value,
+                    next_hop_asn=victim_asn,
                     as_path=(victim_asn,),
                     timestamp=Timestamps.VICTIM.value,
                     seed_asn=victim_asn,
@@ -46,6 +47,7 @@ class PrefixHijack(Scenario):
             anns.append(
                 self.scenario_config.AnnCls(
                     prefix=Prefixes.PREFIX.value,
+                    next_hop_asn=attacker_asn,
                     as_path=(attacker_asn,),
                     timestamp=Timestamps.ATTACKER.value,
                     seed_asn=attacker_asn,

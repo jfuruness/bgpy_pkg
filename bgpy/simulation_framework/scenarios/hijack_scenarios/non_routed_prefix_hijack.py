@@ -25,6 +25,7 @@ class NonRoutedPrefixHijack(Scenario):
             anns.append(
                 self.scenario_config.AnnCls(
                     prefix=Prefixes.PREFIX.value,
+                    next_hop_asn=attacker_asn,
                     as_path=(attacker_asn,),
                     timestamp=Timestamps.ATTACKER.value,
                     seed_asn=attacker_asn,

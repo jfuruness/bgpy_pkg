@@ -19,6 +19,8 @@ class Announcement(YamlAble):
     # MUST use slots for speed
     # Since anns get copied across 70k ASes
     prefix: str
+    # Equivalent to the next hop in a normal BGP announcement
+    next_hop_asn: int
     # NOTE: must use list here for C++ compatability
     as_path: tuple[int]
     timestamp: int
@@ -30,8 +32,12 @@ class Announcement(YamlAble):
     roa_valid_length: Optional[bool] = None
     roa_origin: Optional[int] = None
     # BGPsec optional attributes
+    # BGPsec next ASN that should receive the control plane announcement
+    # NOTE: this is the opposite direction of next_hop, for the data plane
     bgpsec_next_asn: Optional[int] = None
     bgpsec_as_path: tuple[int, ...] = ()
+    # For pathend. Similar to ROA info, we store this instead of deal with RPKI
+    pathend_valid: Optional[bool] = None
 
     def prefix_path_attributes_eq(self, ann: Optional["Announcement"]) -> bool:
         """Checks prefix and as path equivalency"""
