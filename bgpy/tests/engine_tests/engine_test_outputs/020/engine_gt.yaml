@@ -20,6 +20,8 @@ as_graph: !yamlable/CAIDAASGraph
             - 777
             bgpsec_as_path: !!python/tuple []
             bgpsec_next_asn: null
+            next_hop_asn: 777
+            pathend_valid: null
             prefix: 1.2.0.0/16
             recv_relationship: !simulator_codec/Relationships
               name: CUSTOMERS
@@ -43,6 +45,8 @@ as_graph: !yamlable/CAIDAASGraph
                 - 777
                 bgpsec_as_path: !!python/tuple []
                 bgpsec_next_asn: null
+                next_hop_asn: 2
+                pathend_valid: null
                 prefix: 1.2.0.0/16
                 recv_relationship: !simulator_codec/Relationships
                   name: CUSTOMERS
@@ -64,6 +68,8 @@ as_graph: !yamlable/CAIDAASGraph
                 - 777
                 bgpsec_as_path: !!python/tuple []
                 bgpsec_next_asn: null
+                next_hop_asn: 4
+                pathend_valid: null
                 prefix: 1.2.0.0/16
                 recv_relationship: !simulator_codec/Relationships
                   name: CUSTOMERS
@@ -84,13 +90,15 @@ as_graph: !yamlable/CAIDAASGraph
                 - 777
                 bgpsec_as_path: !!python/tuple []
                 bgpsec_next_asn: null
+                next_hop_asn: 777
+                pathend_valid: null
                 prefix: 1.2.0.0/16
                 recv_relationship: !simulator_codec/Relationships
                   name: ORIGIN
                   value: 4
                 roa_origin: 777
                 roa_valid_length: true
-                seed_asn: 777
+                seed_asn: null
                 timestamp: 0
                 traceback_end: false
                 withdraw: false
@@ -102,6 +110,8 @@ as_graph: !yamlable/CAIDAASGraph
               - 777
               bgpsec_as_path: !!python/tuple []
               bgpsec_next_asn: null
+              next_hop_asn: 1
+              pathend_valid: null
               prefix: 1.2.0.0/16
               recv_relationship: !simulator_codec/Relationships
                 name: CUSTOMERS
@@ -119,6 +129,8 @@ as_graph: !yamlable/CAIDAASGraph
               - 777
               bgpsec_as_path: !!python/tuple []
               bgpsec_next_asn: null
+              next_hop_asn: 1
+              pathend_valid: null
               prefix: 1.2.0.0/16
               recv_relationship: !simulator_codec/Relationships
                 name: CUSTOMERS
@@ -136,6 +148,8 @@ as_graph: !yamlable/CAIDAASGraph
               - 777
               bgpsec_as_path: !!python/tuple []
               bgpsec_next_asn: null
+              next_hop_asn: 1
+              pathend_valid: null
               prefix: 1.2.0.0/16
               recv_relationship: !simulator_codec/Relationships
                 name: CUSTOMERS
@@ -168,6 +182,8 @@ as_graph: !yamlable/CAIDAASGraph
             - 777
             bgpsec_as_path: !!python/tuple []
             bgpsec_next_asn: null
+            next_hop_asn: 777
+            pathend_valid: null
             prefix: 1.2.0.0/16
             recv_relationship: !simulator_codec/Relationships
               name: CUSTOMERS
@@ -191,6 +207,8 @@ as_graph: !yamlable/CAIDAASGraph
                 - 777
                 bgpsec_as_path: !!python/tuple []
                 bgpsec_next_asn: null
+                next_hop_asn: 1
+                pathend_valid: null
                 prefix: 1.2.0.0/16
                 recv_relationship: !simulator_codec/Relationships
                   name: CUSTOMERS
@@ -211,13 +229,15 @@ as_graph: !yamlable/CAIDAASGraph
                 - 777
                 bgpsec_as_path: !!python/tuple []
                 bgpsec_next_asn: null
+                next_hop_asn: 777
+                pathend_valid: null
                 prefix: 1.2.0.0/16
                 recv_relationship: !simulator_codec/Relationships
                   name: ORIGIN
                   value: 4
                 roa_origin: 777
                 roa_valid_length: true
-                seed_asn: 777
+                seed_asn: null
                 timestamp: 0
                 traceback_end: false
                 withdraw: false
@@ -229,6 +249,8 @@ as_graph: !yamlable/CAIDAASGraph
               - 777
               bgpsec_as_path: !!python/tuple []
               bgpsec_next_asn: null
+              next_hop_asn: 2
+              pathend_valid: null
               prefix: 1.2.0.0/16
               recv_relationship: !simulator_codec/Relationships
                 name: CUSTOMERS
@@ -246,6 +268,8 @@ as_graph: !yamlable/CAIDAASGraph
               - 777
               bgpsec_as_path: !!python/tuple []
               bgpsec_next_asn: null
+              next_hop_asn: 2
+              pathend_valid: null
               prefix: 1.2.0.0/16
               recv_relationship: !simulator_codec/Relationships
                 name: CUSTOMERS
@@ -263,6 +287,8 @@ as_graph: !yamlable/CAIDAASGraph
               - 777
               bgpsec_as_path: !!python/tuple []
               bgpsec_next_asn: null
+              next_hop_asn: 2
+              pathend_valid: null
               prefix: 1.2.0.0/16
               recv_relationship: !simulator_codec/Relationships
                 name: CUSTOMERS
@@ -293,6 +319,8 @@ as_graph: !yamlable/CAIDAASGraph
             - 777
             bgpsec_as_path: !!python/tuple []
             bgpsec_next_asn: null
+            next_hop_asn: 777
+            pathend_valid: null
             prefix: 1.2.0.0/16
             recv_relationship: !simulator_codec/Relationships
               name: PEERS
@@ -316,6 +344,8 @@ as_graph: !yamlable/CAIDAASGraph
                 - 777
                 bgpsec_as_path: !!python/tuple []
                 bgpsec_next_asn: null
+                next_hop_asn: 2
+                pathend_valid: null
                 prefix: 1.2.0.0/16
                 recv_relationship: !simulator_codec/Relationships
                   name: CUSTOMERS
@@ -336,13 +366,15 @@ as_graph: !yamlable/CAIDAASGraph
                 - 777
                 bgpsec_as_path: !!python/tuple []
                 bgpsec_next_asn: null
+                next_hop_asn: 777
+                pathend_valid: null
                 prefix: 1.2.0.0/16
                 recv_relationship: !simulator_codec/Relationships
                   name: ORIGIN
                   value: 4
                 roa_origin: 777
                 roa_valid_length: true
-                seed_asn: 777
+                seed_asn: null
                 timestamp: 0
                 traceback_end: false
                 withdraw: false
@@ -368,6 +400,8 @@ as_graph: !yamlable/CAIDAASGraph
             - 777
             bgpsec_as_path: !!python/tuple []
             bgpsec_next_asn: null
+            next_hop_asn: 777
+            pathend_valid: null
             prefix: 1.2.0.0/16
             recv_relationship: !simulator_codec/Relationships
               name: CUSTOMERS
@@ -391,6 +425,8 @@ as_graph: !yamlable/CAIDAASGraph
                 - 777
                 bgpsec_as_path: !!python/tuple []
                 bgpsec_next_asn: null
+                next_hop_asn: 1
+                pathend_valid: null
                 prefix: 1.2.0.0/16
                 recv_relationship: !simulator_codec/Relationships
                   name: CUSTOMERS
@@ -411,13 +447,15 @@ as_graph: !yamlable/CAIDAASGraph
                 - 777
                 bgpsec_as_path: !!python/tuple []
                 bgpsec_next_asn: null
+                next_hop_asn: 777
+                pathend_valid: null
                 prefix: 1.2.0.0/16
                 recv_relationship: !simulator_codec/Relationships
                   name: ORIGIN
                   value: 4
                 roa_origin: 777
                 roa_valid_length: true
-                seed_asn: 777
+                seed_asn: null
                 timestamp: 0
                 traceback_end: false
                 withdraw: false
@@ -429,6 +467,8 @@ as_graph: !yamlable/CAIDAASGraph
               - 777
               bgpsec_as_path: !!python/tuple []
               bgpsec_next_asn: null
+              next_hop_asn: 4
+              pathend_valid: null
               prefix: 1.2.0.0/16
               recv_relationship: !simulator_codec/Relationships
                 name: CUSTOMERS
@@ -446,6 +486,8 @@ as_graph: !yamlable/CAIDAASGraph
               - 777
               bgpsec_as_path: !!python/tuple []
               bgpsec_next_asn: null
+              next_hop_asn: 4
+              pathend_valid: null
               prefix: 1.2.0.0/16
               recv_relationship: !simulator_codec/Relationships
                 name: CUSTOMERS
@@ -476,6 +518,8 @@ as_graph: !yamlable/CAIDAASGraph
             - 777
             bgpsec_as_path: !!python/tuple []
             bgpsec_next_asn: null
+            next_hop_asn: 777
+            pathend_valid: null
             prefix: 1.2.0.0/16
             recv_relationship: !simulator_codec/Relationships
               name: ORIGIN
@@ -495,13 +539,15 @@ as_graph: !yamlable/CAIDAASGraph
               - 777
               bgpsec_as_path: !!python/tuple []
               bgpsec_next_asn: null
+              next_hop_asn: 777
+              pathend_valid: null
               prefix: 1.2.0.0/16
               recv_relationship: !simulator_codec/Relationships
                 name: ORIGIN
                 value: 4
               roa_origin: 777
               roa_valid_length: true
-              seed_asn: 777
+              seed_asn: null
               timestamp: 0
               traceback_end: false
               withdraw: false
@@ -511,13 +557,15 @@ as_graph: !yamlable/CAIDAASGraph
               - 777
               bgpsec_as_path: !!python/tuple []
               bgpsec_next_asn: null
+              next_hop_asn: 777
+              pathend_valid: null
               prefix: 1.2.0.0/16
               recv_relationship: !simulator_codec/Relationships
                 name: ORIGIN
                 value: 4
               roa_origin: 777
               roa_valid_length: true
-              seed_asn: 777
+              seed_asn: null
               timestamp: 0
               traceback_end: false
               withdraw: false
@@ -527,13 +575,15 @@ as_graph: !yamlable/CAIDAASGraph
               - 777
               bgpsec_as_path: !!python/tuple []
               bgpsec_next_asn: null
+              next_hop_asn: 777
+              pathend_valid: null
               prefix: 1.2.0.0/16
               recv_relationship: !simulator_codec/Relationships
                 name: ORIGIN
                 value: 4
               roa_origin: 777
               roa_valid_length: true
-              seed_asn: 777
+              seed_asn: null
               timestamp: 0
               traceback_end: false
               withdraw: false
@@ -543,13 +593,15 @@ as_graph: !yamlable/CAIDAASGraph
               - 777
               bgpsec_as_path: !!python/tuple []
               bgpsec_next_asn: null
+              next_hop_asn: 777
+              pathend_valid: null
               prefix: 1.2.0.0/16
               recv_relationship: !simulator_codec/Relationships
                 name: ORIGIN
                 value: 4
               roa_origin: 777
               roa_valid_length: true
-              seed_asn: 777
+              seed_asn: null
               timestamp: 0
               traceback_end: false
               withdraw: false

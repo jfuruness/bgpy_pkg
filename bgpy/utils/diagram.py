@@ -92,7 +92,7 @@ class Diagram:
             for ann in as_obj.policy._local_rib.values():
                 if len(ann.as_path) == 1 and ann.as_path[0] != ann.next_hop_asn:
                     return True
-                elif ann.as_path[1] != ann.next_hop_asn:
+                elif len(ann.as_path) > 1 and ann.as_path[1] != ann.next_hop_asn:
                     return True
         return False
 
