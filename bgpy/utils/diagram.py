@@ -37,11 +37,11 @@ class Diagram:
         view: bool = False,
     ) -> None:
         self._add_legend(traceback)
-        self._add_ases(engine, traceback, scenario)
+        display_next_hop_asn = self._display_next_hop_asn(engine, scenario)
+        self._add_ases(engine, traceback, scenario, display_next_hop_asn)
         self._add_edges(engine)
         self._add_diagram_ranks(diagram_ranks, static_order)
-        # https://stackoverflow.com/a/57461245/8903959
-        self.dot.attr(label=description)
+        self._add_description(description, display_next_hop_asn)
         self._render(path=path, view=view)
 
     def _add_legend(self, traceback: dict[int, int]) -> None:
@@ -78,15 +78,33 @@ class Diagram:
         kwargs = {"color": "black", "style": "filled", "fillcolor": "white"}
         self.dot.node("Legend", html, shape="plaintext", **kwargs)
 
+    def _display_next_hop_asn(self, engine: BaseSimulationEngine, scenario: Scenario) -> bool:
+        """Displays the next hop ASN
+
+        We want to display the next hop ASN any time it has been manipulated
+        That only happens when the next_hop_asn is not equal to the as object's ASN
+        (which occurs when the AS is the origin) or the next ASN in the path
+        """
+
+        for as_obj in engine.as_graph:
+            for ann in as_obj.policy._local_rib.values():
+                if len(ann.as_path) == 1 and ann.as_path[0] != ann.next_hop_asn:
+                    return True
+                elif ann.as_path[1] != ann.next_hop_asn:
+                    return True
+        return False
+
     def _add_ases(
         self,
         engine: BaseSimulationEngine,
         traceback: dict[int, int],
         scenario: Scenario,
+        display_next_hop_asn: bool,
     ) -> None:
+
         # First add all nodes to the graph
         for as_obj in engine.as_graph:
-            self._encode_as_obj_as_node(self.dot, as_obj, engine, traceback, scenario)
+            self._encode_as_obj_as_node(self.dot, as_obj, engine, traceback, scenario, display_next_hop_asn)
 
     def _encode_as_obj_as_node(
         self,
@@ -95,6 +113,7 @@ class Diagram:
         engine: BaseSimulationEngine,
         traceback: dict[int, int],
         scenario: Scenario,
+        display_next_hop_asn: bool,
     ) -> None:
         kwargs = dict()
         # if False:
@@ -102,15 +121,20 @@ class Diagram:
         #               "shape": "box",
         #               "color": "black",
         #               "fillcolor": "lightgray"}
-        html = self._get_html(as_obj, engine, scenario)
+        html = self._get_html(as_obj, engine, scenario, display_next_hop_asn)
 
         kwargs = self._get_kwargs(as_obj, engine, traceback, scenario)
 
         subgraph.node(str(as_obj.asn), html, **kwargs)
 
     def _get_html(
-        self, as_obj: "AS", engine: BaseSimulationEngine, scenario: Scenario
+        self, as_obj: "AS", engine: BaseSimulationEngine, scenario: Scenario, display_next_hop_asn: bool
     ) -> str:
+
+        if display_next_hop_asn:
+            colspan = 5
+        else:
+            colspan = 4
         asn_str = str(as_obj.asn)
         if as_obj.asn in scenario.victim_asns:
             asn_str = "&#128519;" + asn_str + "&#128519;"
@@ -118,12 +142,12 @@ class Diagram:
             asn_str = "&#128520;" + asn_str + "&#128520;"
 
         html = f"""<
-            <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4">
+            <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="{colspan}">
             <TR>
-            <TD COLSPAN="4" BORDER="0">{asn_str}</TD>
+            <TD COLSPAN="{colspan}" BORDER="0">{asn_str}</TD>
             </TR>
             <TR>
-            <TD COLSPAN="4" BORDER="0">({as_obj.policy.name})</TD>
+            <TD COLSPAN="{colspan}" BORDER="0">({as_obj.policy.name})</TD>
             </TR>"""
         local_rib_anns = tuple(list(as_obj.policy._local_rib.values()))
         local_rib_anns = tuple(
@@ -134,8 +158,8 @@ class Diagram:
             )
         )
         if len(local_rib_anns) > 0:
-            html += """<TR>
-                        <TD COLSPAN="4">Local RIB</TD>
+            html += f"""<TR>
+                        <TD COLSPAN="{colspan}">Local RIB</TD>
                       </TR>"""
 
             for ann in local_rib_anns:
@@ -156,8 +180,10 @@ class Diagram:
                 html += f"""<TR>
                             <TD>{mask}</TD>
                             <TD>{path}</TD>
-                            <TD>{ann_help}</TD>
-                          </TR>"""
+                            <TD>{ann_help}</TD>"""
+                if display_next_hop_asn:
+                    html += f"""<TD>{ann.next_hop_asn}</TD>"""
+                html += """</TR>"""
         html += "</TABLE>>"
         return html
 
@@ -245,5 +271,14 @@ class Diagram:
                             s.edge(previous_asn, asn, style="invis")  # type: ignore
                         previous_asn = asn
 
-    def _render(self, path: Optional[Path] = None, view: bool = False):
+    def _add_description(self, description: str, display_next_hop_asn: bool) -> None:
+        if display_next_hop_asn:
+            description += (
+                "\nLocal RIB rows displayed as: "
+                "prefix, as path, origin, next_hop"
+            )
+        # https://stackoverflow.com/a/57461245/8903959
+        self.dot.attr(label=description)
+
+    def _render(self, path: Optional[Path] = None, view: bool = False) -> None:
         self.dot.render(path, view=view)
