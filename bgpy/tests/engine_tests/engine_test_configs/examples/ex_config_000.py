@@ -13,9 +13,7 @@ from bgpy.simulation_framework import (
 )
 
 
-desc = (
-    "Valid prefix with BGP Simple"
-)
+desc = "Valid prefix with BGP Simple"
 
 ex_config_000 = EngineTestConfig(
     name="ex_000_valid_prefix_bgp_simple",

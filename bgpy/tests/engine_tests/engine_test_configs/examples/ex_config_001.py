@@ -13,9 +13,7 @@ from bgpy.simulation_framework import (
 )
 
 
-desc = (
-    "Prefix hijack with BGP Simple"
-)
+desc = "Prefix hijack with BGP Simple"
 
 ex_config_001 = EngineTestConfig(
     name="ex_001_prefix_hijack_bgp_simple",

@@ -12,7 +12,7 @@ PREPROCESS_ANNS_FUNC_TYPE = Callable[
         Optional["BaseSimulationEngine"],
         Optional["Scenario"],
     ],
-    tuple["Ann", ...]
+    tuple["Ann", ...],
 ]
 
 
@@ -51,7 +51,7 @@ def origin_hijack(
                     # Ann.copy overwrites seed_asn and traceback by default
                     # so include these here to make sure that doesn't happen
                     "seed_asn": ann.seed_asn,
-                    "traceback_end": ann.traceback_end
+                    "traceback_end": ann.traceback_end,
                 }
             )
             processed_anns.append(processed_ann)
@@ -88,6 +88,7 @@ def shortest_path_export_all_hijack(
 # Origin spoofing variants #
 ############################
 
+
 def origin_spoofing_hijack(
     self_scenario: "Scenario",
     unprocessed_anns: tuple["Ann", ...],
@@ -113,7 +114,7 @@ def origin_spoofing_hijack(
                     # Ann.copy overwrites seed_asn and traceback by default
                     # so include these here to make sure that doesn't happen
                     "seed_asn": ann.seed_asn,
-                    "traceback_end": ann.traceback_end
+                    "traceback_end": ann.traceback_end,
                 }
             )
             processed_anns.append(processed_ann)
@@ -156,7 +157,7 @@ def origin_spoofing_disconnection_hijack(
                     # Ann.copy overwrites seed_asn and traceback by default
                     # so include these here to make sure that doesn't happen
                     "seed_asn": ann.seed_asn,
-                    "traceback_end": ann.traceback_end
+                    "traceback_end": ann.traceback_end,
                 }
             )
             processed_anns.append(processed_ann)
@@ -199,7 +200,7 @@ def origin_spoofing_scapegoat_hijack(
                     # Ann.copy overwrites seed_asn and traceback by default
                     # so include these here to make sure that doesn't happen
                     "seed_asn": ann.seed_asn,
-                    "traceback_end": ann.traceback_end
+                    "traceback_end": ann.traceback_end,
                 }
             )
             processed_anns.append(processed_ann)
@@ -213,9 +214,9 @@ def origin_spoofing_scapegoat_hijack(
 # Helper funcs #
 ################
 
+
 def _get_valid_by_roa_ann(
-    victim_asns: frozenset[int],
-    unprocessed_anns: tuple["Ann", ...]
+    victim_asns: frozenset[int], unprocessed_anns: tuple["Ann", ...]
 ) -> "Ann":
     """Returns an announcement that's valid by ROA"""
 

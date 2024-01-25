@@ -78,7 +78,9 @@ class Diagram:
         kwargs = {"color": "black", "style": "filled", "fillcolor": "white"}
         self.dot.node("Legend", html, shape="plaintext", **kwargs)
 
-    def _display_next_hop_asn(self, engine: BaseSimulationEngine, scenario: Scenario) -> bool:
+    def _display_next_hop_asn(
+        self, engine: BaseSimulationEngine, scenario: Scenario
+    ) -> bool:
         """Displays the next hop ASN
 
         We want to display the next hop ASN any time it has been manipulated
@@ -101,10 +103,11 @@ class Diagram:
         scenario: Scenario,
         display_next_hop_asn: bool,
     ) -> None:
-
         # First add all nodes to the graph
         for as_obj in engine.as_graph:
-            self._encode_as_obj_as_node(self.dot, as_obj, engine, traceback, scenario, display_next_hop_asn)
+            self._encode_as_obj_as_node(
+                self.dot, as_obj, engine, traceback, scenario, display_next_hop_asn
+            )
 
     def _encode_as_obj_as_node(
         self,
@@ -128,9 +131,12 @@ class Diagram:
         subgraph.node(str(as_obj.asn), html, **kwargs)
 
     def _get_html(
-        self, as_obj: "AS", engine: BaseSimulationEngine, scenario: Scenario, display_next_hop_asn: bool
+        self,
+        as_obj: "AS",
+        engine: BaseSimulationEngine,
+        scenario: Scenario,
+        display_next_hop_asn: bool,
     ) -> str:
-
         if display_next_hop_asn:
             colspan = 5
         else:
@@ -274,8 +280,7 @@ class Diagram:
     def _add_description(self, description: str, display_next_hop_asn: bool) -> None:
         if display_next_hop_asn:
             description += (
-                "\nLocal RIB rows displayed as: "
-                "prefix, as path, origin, next_hop"
+                "\nLocal RIB rows displayed as: " "prefix, as path, origin, next_hop"
             )
         # https://stackoverflow.com/a/57461245/8903959
         self.dot.attr(label=description)

@@ -44,7 +44,7 @@ class EngineRunner:
         scenario = self.conf.scenario_config.ScenarioCls(
             scenario_config=self.conf.scenario_config,
             engine=engine,
-            preprocess_anns_func=self.conf.scenario_config.preprocess_anns_func
+            preprocess_anns_func=self.conf.scenario_config.preprocess_anns_func,
         )
         scenario.setup_engine(engine)
 

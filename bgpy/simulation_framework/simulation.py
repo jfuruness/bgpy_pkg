@@ -253,7 +253,7 @@ class Simulation:
                     percent_adoption=percent_adopt,
                     engine=engine,
                     prev_scenario=prev_scenario,
-                    preprocess_anns_func=scenario_config.preprocess_anns_func
+                    preprocess_anns_func=scenario_config.preprocess_anns_func,
                 )
 
                 self._print_progress(percent_adopt, scenario, trial)

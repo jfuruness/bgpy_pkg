@@ -15,9 +15,7 @@ from bgpy.simulation_framework import (
 )
 
 
-desc = (
-    "Subprefix hijack with Peer ROV"
-)
+desc = "Subprefix hijack with Peer ROV"
 
 ex_config_007 = EngineTestConfig(
     name="ex_007_subprefix_hijack_peer_rov",

@@ -15,9 +15,7 @@ from bgpy.simulation_framework import (
 )
 
 
-desc = (
-    "NonRoutedPrefixhijack with ROV simple"
-)
+desc = "NonRoutedPrefixhijack with ROV simple"
 
 ex_config_008 = EngineTestConfig(
     name="ex_008_non_routed_prefix_hijack_rov_simple",

@@ -12,7 +12,7 @@ from bgpy.simulation_engine import (
 from bgpy.simulation_framework import (
     ScenarioConfig,
     PrefixHijack,
-    preprocess_anns_funcs
+    preprocess_anns_funcs,
 )
 
 
