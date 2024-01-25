@@ -102,8 +102,10 @@ class GraphFactory:
         if not relevant_rows:
             return
         adopting_str = str(adopting) if isinstance(adopting, bool) else "Any"
+        scenario_config = relevant_rows[0]['data_key'].scenario_config
+        mod_name = scenario_config.preprocess_anns_func.__name__
         graph_name = (
-            f"{relevant_rows[0]['data_key'].scenario_config.ScenarioCls.__name__}"
+            f"{scenario_config.ScenarioCls.__name__}_{mod_name}"
             f"/{metric_key.as_group.value}"
             f"/adopting_is_{adopting_str}"
             f"/{metric_key.plane.value}"

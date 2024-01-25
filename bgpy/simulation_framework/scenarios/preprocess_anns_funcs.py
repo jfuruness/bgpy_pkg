@@ -21,7 +21,7 @@ def noop(
     unprocessed_anns: tuple["Ann", ...],
     engine: Optional["BaseSimulationEngine"],
     prev_scenario: Optional["Scenario"],
-) -> tuple["Ann", ...]
+) -> tuple["Ann", ...]:
     """No op, the default preprocessing step"""
 
     return unprocessed_anns
@@ -32,7 +32,7 @@ def origin_spoofing_hijack(
     unprocessed_anns: tuple["Ann", ...],
     engine: Optional["BaseSimulationEngine"],
     prev_scenario: Optional["Scenario"],
-) -> tuple["Ann", ...]
+) -> tuple["Ann", ...]:
     """Makes the attack use origin spoofing to be valid by ROA"""
 
     processed_anns = list()
@@ -49,7 +49,7 @@ def origin_spoofing_hijack(
         else:
             processed_anns.append(ann)
 
-    return processed_anns
+    return tuple(processed_anns)
 
 
 def origin_hijack(
@@ -57,7 +57,7 @@ def origin_hijack(
     unprocessed_anns: tuple["Ann", ...],
     engine: Optional["BaseSimulationEngine"],
     prev_scenario: Optional["Scenario"],
-) -> tuple["Ann", ...]
+) -> tuple["Ann", ...]:
     """Makes the attack use an origin hijack to be valid by ROA"""
 
     processed_anns = list()
@@ -74,7 +74,7 @@ def origin_hijack(
         else:
             processed_anns.append(ann)
 
-    return processed_anns
+    return tuple(processed_anns)
 
 
 def shortest_path_export_all_hijack(
@@ -82,7 +82,7 @@ def shortest_path_export_all_hijack(
     unprocessed_anns: tuple["Ann", ...],
     engine: Optional["BaseSimulationEngine"],
     prev_scenario: Optional["Scenario"],
-) -> tuple["Ann", ...]
+) -> tuple["Ann", ...]:
     """Makes the attack use shortest path export all to bypass pathsec protections
 
     Specifically useful against bgp-isec, ASPA, and pathend
@@ -96,7 +96,7 @@ def shortest_path_export_all_hijack(
         # TODO
         # NOTE: must set pathend valid to be False
         pass
-    return processed_anns
+    return tuple(processed_anns)
 
 
 ################
