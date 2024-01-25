@@ -12,6 +12,8 @@ from .ex_config_010 import ex_config_010
 from .ex_config_011 import ex_config_011
 from .ex_config_012 import ex_config_012
 from .ex_config_013 import ex_config_013
+from .ex_config_014 import ex_config_014
+from .ex_config_015 import ex_config_015
 
 example_configs = [
     ex_config_000,
@@ -28,6 +30,8 @@ example_configs = [
     ex_config_011,
     ex_config_012,
     ex_config_013,
+    ex_config_014,
+    ex_config_015,
 ]
 
 __all__ = ["example_configs"]

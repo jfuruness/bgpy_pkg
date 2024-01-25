@@ -19,7 +19,7 @@ as_graph: !yamlable/CAIDAASGraph
             - 3
             bgpsec_as_path: !!python/tuple []
             bgpsec_next_asn: null
-            next_hop_asn: 3
+            next_hop_asn: 2
             pathend_valid: null
             prefix: 1.2.0.0/16
             recv_relationship: !simulator_codec/Relationships
@@ -51,7 +51,7 @@ as_graph: !yamlable/CAIDAASGraph
                   value: 4
                 roa_origin: 2
                 roa_valid_length: true
-                seed_asn: null
+                seed_asn: 2
                 timestamp: 0
                 traceback_end: false
                 withdraw: false
@@ -65,7 +65,7 @@ as_graph: !yamlable/CAIDAASGraph
                 - 3
                 bgpsec_as_path: !!python/tuple []
                 bgpsec_next_asn: null
-                next_hop_asn: 3
+                next_hop_asn: 2
                 pathend_valid: null
                 prefix: 1.2.0.0/16
                 recv_relationship: !simulator_codec/Relationships
@@ -73,7 +73,7 @@ as_graph: !yamlable/CAIDAASGraph
                   value: 4
                 roa_origin: 2
                 roa_valid_length: true
-                seed_asn: null
+                seed_asn: 3
                 timestamp: 0
                 traceback_end: false
                 withdraw: false
@@ -146,7 +146,7 @@ as_graph: !yamlable/CAIDAASGraph
                 value: 4
               roa_origin: 2
               roa_valid_length: true
-              seed_asn: null
+              seed_asn: 2
               timestamp: 0
               traceback_end: false
               withdraw: false
@@ -190,7 +190,7 @@ as_graph: !yamlable/CAIDAASGraph
               - 3
               bgpsec_as_path: !!python/tuple []
               bgpsec_next_asn: null
-              next_hop_asn: 3
+              next_hop_asn: 2
               pathend_valid: null
               prefix: 1.2.0.0/16
               recv_relationship: !simulator_codec/Relationships
@@ -198,7 +198,7 @@ as_graph: !yamlable/CAIDAASGraph
                 value: 4
               roa_origin: 2
               roa_valid_length: true
-              seed_asn: null
+              seed_asn: 3
               timestamp: 0
               traceback_end: false
               withdraw: false

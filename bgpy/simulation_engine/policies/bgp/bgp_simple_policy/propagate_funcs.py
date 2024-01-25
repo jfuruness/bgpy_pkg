@@ -71,8 +71,15 @@ def _propagate(
         raise NotImplementedError
 
     for prefix, unprocessed_ann in self._local_rib.items():
+
         # Starting in v4 we must set the next_hop when sending
-        ann = unprocessed_ann.copy({"next_hop_asn": self.as_.asn})
+        # Unless this is the origin, in which case it's already set
+        # (and resetting it would override some attack logic)
+        if unprocessed_ann.recv_relationship.value == Relationships.ORIGIN.value:
+            ann = unprocessed_ann
+        else:
+            ann = unprocessed_ann.copy({"next_hop_asn": self.as_.asn})
+
         for neighbor in neighbors:
             if ann.recv_relationship in send_rels and not self._prev_sent(
                 neighbor, ann

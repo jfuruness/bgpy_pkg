@@ -143,7 +143,7 @@ def origin_spoofing_disconnection_hijack(
                 raise NotImplementedError("TODO: get the valid origin per prefix")
 
             assert engine
-            origin_as_obj = engine.as_dict.get(ann.origin)
+            origin_as_obj = engine.as_graph.as_dict.get(ann.origin)
             assert origin_as_obj
             if not origin_as_obj.providers:
                 raise NotImplementedError("TODO: direct traffic elsewhere")
@@ -186,7 +186,7 @@ def origin_spoofing_scapegoat_hijack(
                 raise NotImplementedError("TODO: get the valid origin per prefix")
 
             assert engine
-            origin_as_obj = engine.as_dict.get(ann.origin)
+            origin_as_obj = engine.as_graph.as_dict.get(ann.origin)
             assert origin_as_obj
             if not origin_as_obj.customers:
                 raise NotImplementedError("TODO: Scapegoat someone else")
