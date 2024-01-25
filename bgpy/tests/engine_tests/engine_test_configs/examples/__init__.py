@@ -25,6 +25,7 @@ example_configs = [
     ex_config_008,
     ex_config_009,
     ex_config_010,
+    ex_config_011,
     ex_config_012,
     ex_config_013,
 ]

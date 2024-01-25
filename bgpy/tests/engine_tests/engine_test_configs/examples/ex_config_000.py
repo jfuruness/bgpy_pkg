@@ -5,7 +5,6 @@ from bgpy.tests.engine_tests.utils import EngineTestConfig
 
 from bgpy.simulation_engine import (
     BGPSimplePolicy,
-    ROVSimplePolicy,
 )
 from bgpy.simulation_framework import (
     ScenarioConfig,
