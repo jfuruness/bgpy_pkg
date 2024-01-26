@@ -103,7 +103,9 @@ class OriginSpoofingPrefixScapegoatHijack(OriginSpoofingPrefixDisconnectionHijac
         This is a dynamic subclass of the attacker's class
         """
 
-        class SpoofingScapegoatingAttacker(PolicyCls):
+        # mypy can't handle dynamic base classes
+        # https://github.com/python/mypy/issues/2477
+        class SpoofingScapegoatingAttacker(PolicyCls):  # type: ignore
             name = "Spoofing scapegoating attacker"
 
             def _policy_propagate(
