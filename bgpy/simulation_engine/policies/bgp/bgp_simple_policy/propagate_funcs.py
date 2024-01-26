@@ -71,7 +71,6 @@ def _propagate(
         raise NotImplementedError
 
     for prefix, unprocessed_ann in self._local_rib.items():
-
         # Starting in v4 we must set the next_hop when sending
         # Copying announcements is a bottleneck for sims,
         # so we try to do this as little as possible

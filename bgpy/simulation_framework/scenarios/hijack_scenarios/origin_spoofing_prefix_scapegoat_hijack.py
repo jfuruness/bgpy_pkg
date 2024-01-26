@@ -7,7 +7,7 @@ from bgpy.enums import SpecialPercentAdoptions
 from bgpy.enums import Timestamps
 
 from .origin_spoofing_prefix_disconnection_hijack import (
-    OriginSpoofingPrefixDisconnectionHijack
+    OriginSpoofingPrefixDisconnectionHijack,
 )
 
 
@@ -18,9 +18,7 @@ if TYPE_CHECKING:
     from bgpy.simulation_engine import Policy
 
 
-class OriginSpoofingPrefixScapegoatHijack(
-    OriginSpoofingPrefixDisconnectionHijack
-):
+class OriginSpoofingPrefixScapegoatHijack(OriginSpoofingPrefixDisconnectionHijack):
     """Prefix hijack where both attacker and victim compete for a prefix
 
     Attacker spoofs origin to be victim to bypass roas, and sets the next hop

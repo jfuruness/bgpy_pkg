@@ -1,9 +1,7 @@
 from .origin_spoofing_prefix_disconnection_hijack import (
-    OriginSpoofingPrefixDisconnectionHijack
+    OriginSpoofingPrefixDisconnectionHijack,
 )
-from .origin_spoofing_prefix_scapegoat_hijack import (
-    OriginSpoofingPrefixScapegoatHijack
-)
+from .origin_spoofing_prefix_scapegoat_hijack import OriginSpoofingPrefixScapegoatHijack
 from .prefix_hijack import PrefixHijack
 from .subprefix_hijack import SubprefixHijack
 from .non_routed_prefix_hijack import NonRoutedPrefixHijack
