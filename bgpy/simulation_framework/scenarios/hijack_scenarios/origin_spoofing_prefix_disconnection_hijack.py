@@ -70,8 +70,6 @@ class OriginSpoofingPrefixDisconnectionHijack(Scenario):
 
         self.__og_attacker_policies: dict[int, type["Policy"]] = dict()
         for attacker_asn in self.attacker_asns:
-            as_obj = engine.as_graph.as_dict[attacker_asn]
-
             # Get what the attacker class would have been set to
             self.__og_attacker_policies[
                 attacker_asn
