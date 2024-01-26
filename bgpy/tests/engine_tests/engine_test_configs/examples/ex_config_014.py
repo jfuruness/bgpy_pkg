@@ -8,8 +8,7 @@ from bgpy.simulation_engine import (
 )
 from bgpy.simulation_framework import (
     ScenarioConfig,
-    PrefixHijack,
-    preprocess_anns_funcs,
+    OriginSpoofingPrefixDisconnectionHijack,
 )
 
 
@@ -23,8 +22,7 @@ ex_config_014 = EngineTestConfig(
     name="ex_014_origin_spoofing_disconnection_prefix_hijack_rov_simple",
     desc=desc,
     scenario_config=ScenarioConfig(
-        ScenarioCls=PrefixHijack,
-        preprocess_anns_func=preprocess_anns_funcs.origin_spoofing_disconnection_hijack,
+        ScenarioCls=OriginSpoofingPrefixDisconnectionHijack,
         BasePolicyCls=ROVSimplePolicy,
         override_attacker_asns=frozenset({ASNs.ATTACKER.value}),
         override_victim_asns=frozenset({ASNs.VICTIM.value}),

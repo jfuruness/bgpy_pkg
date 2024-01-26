@@ -3,6 +3,8 @@ from . import preprocess_anns_funcs
 from .scenario_config import ScenarioConfig
 from .scenario import Scenario
 
+from .hijack_scenarios import OriginSpoofingPrefixDisconnectionHijack
+from .hijack_scenarios import OriginSpoofingPrefixScapegoatHijack
 from .hijack_scenarios import PrefixHijack
 from .hijack_scenarios import SubprefixHijack
 from .hijack_scenarios import NonRoutedPrefixHijack
@@ -16,6 +18,8 @@ __all__ = [
     "preprocess_anns_funcs",
     "ScenarioConfig",
     "Scenario",
+    "OriginSpoofingPrefixDisconnectionHijack",
+    "OriginSpoofingPrefixScapegoatHijack",
     "PrefixHijack",
     "SubprefixHijack",
     "NonRoutedPrefixHijack",

@@ -84,11 +84,6 @@ def shortest_path_export_all_hijack(
     return tuple(processed_anns)
 
 
-############################
-# Origin spoofing variants #
-############################
-
-
 def origin_spoofing_hijack(
     self_scenario: "Scenario",
     unprocessed_anns: tuple["Ann", ...],
@@ -111,92 +106,6 @@ def origin_spoofing_hijack(
                 {
                     "as_path": (valid_ann.origin,),
                     "next_hop_asn": ann.origin,
-                    # Ann.copy overwrites seed_asn and traceback by default
-                    # so include these here to make sure that doesn't happen
-                    "seed_asn": ann.seed_asn,
-                    "traceback_end": ann.traceback_end,
-                }
-            )
-            processed_anns.append(processed_ann)
-        else:
-            processed_anns.append(ann)
-
-    return tuple(processed_anns)
-
-
-def origin_spoofing_disconnection_hijack(
-    self_scenario: "Scenario",
-    unprocessed_anns: tuple["Ann", ...],
-    engine: Optional["BaseSimulationEngine"],
-    prev_scenario: Optional["Scenario"],
-) -> tuple["Ann", ...]:
-    """Makes the attack use origin spoofing to be valid by ROA and disconnects traffic"""
-
-    processed_anns = list()
-
-    valid_ann = _get_valid_by_roa_ann(self_scenario.victim_asns, unprocessed_anns)
-
-    for ann in unprocessed_anns:
-        # If the announcement is from the attacker
-        if ann.invalid_by_roa:
-            if ann.prefix != valid_ann.prefix:
-                raise NotImplementedError("TODO: get the valid origin per prefix")
-
-            assert engine
-            origin_as_obj = engine.as_graph.as_dict.get(ann.origin)
-            assert origin_as_obj
-            if not origin_as_obj.providers:
-                raise NotImplementedError("TODO: direct traffic elsewhere")
-            provider_as = origin_as_obj.providers[0]
-
-            # Make the AS path be just the victim
-            processed_ann = ann.copy(
-                {
-                    "as_path": (valid_ann.origin,),
-                    "next_hop_asn": provider_as.asn,
-                    # Ann.copy overwrites seed_asn and traceback by default
-                    # so include these here to make sure that doesn't happen
-                    "seed_asn": ann.seed_asn,
-                    "traceback_end": ann.traceback_end,
-                }
-            )
-            processed_anns.append(processed_ann)
-        else:
-            processed_anns.append(ann)
-
-    return tuple(processed_anns)
-
-
-def origin_spoofing_scapegoat_hijack(
-    self_scenario: "Scenario",
-    unprocessed_anns: tuple["Ann", ...],
-    engine: Optional["BaseSimulationEngine"],
-    prev_scenario: Optional["Scenario"],
-) -> tuple["Ann", ...]:
-    """Makes the attack use origin spoofing to be valid by ROA and disconnects traffic"""
-
-    processed_anns = list()
-
-    valid_ann = _get_valid_by_roa_ann(self_scenario.victim_asns, unprocessed_anns)
-
-    for ann in unprocessed_anns:
-        # If the announcement is from the attacker
-        if ann.invalid_by_roa:
-            if ann.prefix != valid_ann.prefix:
-                raise NotImplementedError("TODO: get the valid origin per prefix")
-
-            assert engine
-            origin_as_obj = engine.as_graph.as_dict.get(ann.origin)
-            assert origin_as_obj
-            if not origin_as_obj.customers:
-                raise NotImplementedError("TODO: Scapegoat someone else")
-            customer_as = origin_as_obj.customers[0]
-
-            # Make the AS path be just the victim
-            processed_ann = ann.copy(
-                {
-                    "as_path": (valid_ann.origin,),
-                    "next_hop_asn": customer_as.asn,
                     # Ann.copy overwrites seed_asn and traceback by default
                     # so include these here to make sure that doesn't happen
                     "seed_asn": ann.seed_asn,
