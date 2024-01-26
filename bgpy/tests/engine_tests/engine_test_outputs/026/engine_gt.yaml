@@ -452,7 +452,7 @@ as_graph: !yamlable/CAIDAASGraph
                   value: 4
                 roa_origin: 777
                 roa_valid_length: true
-                seed_asn: 777
+                seed_asn: null
                 timestamp: 0
                 traceback_end: false
                 withdraw: false
@@ -572,7 +572,7 @@ as_graph: !yamlable/CAIDAASGraph
                   value: 4
                 roa_origin: 777
                 roa_valid_length: true
-                seed_asn: 777
+                seed_asn: null
                 timestamp: 0
                 traceback_end: false
                 withdraw: false
@@ -663,7 +663,7 @@ as_graph: !yamlable/CAIDAASGraph
                 value: 4
               roa_origin: 777
               roa_valid_length: true
-              seed_asn: 777
+              seed_asn: null
               timestamp: 0
               traceback_end: false
               withdraw: false
@@ -681,7 +681,7 @@ as_graph: !yamlable/CAIDAASGraph
                 value: 4
               roa_origin: 777
               roa_valid_length: true
-              seed_asn: 777
+              seed_asn: null
               timestamp: 0
               traceback_end: false
               withdraw: false

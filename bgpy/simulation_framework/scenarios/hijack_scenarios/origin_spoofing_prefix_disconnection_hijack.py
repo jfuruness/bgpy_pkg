@@ -1,5 +1,7 @@
 from typing import Optional, TYPE_CHECKING
 
+from frozendict import frozendict
+
 from bgpy.simulation_framework.scenarios.scenario import Scenario
 from bgpy.enums import Prefixes
 from bgpy.enums import Relationships
@@ -79,16 +81,35 @@ class OriginSpoofingPrefixDisconnectionHijack(Scenario):
 
             PolicyCls = self.__og_attacker_policies[attacker_asn]
 
-            # My eyes! It burns!
-            as_obj.policy.__class__ = self._generate_policy_cls(PolicyCls)
+            non_default = dict(self.non_default_asn_cls_dict)
+
+            non_default[attacker_asn] = self._generate_policy_cls(PolicyCls)
+
+            self.non_default_asn_cls_dict = frozendict(non_default)
+
+        super().setup_engine(engine, prev_scenario)
 
     def pre_aggregation_hook(
         self, engine: "BaseSimulationEngine", *args, **kwargs
     ) -> None:
         """Puts the OG attacker class back for data analysis"""
 
+        non_default = dict(self.non_default_asn_cls_dict)
+
         for attacker_asn, OgPolicyCls in self.__og_attacker_policies.items():
-            engine.as_graph.as_dict[attacker_asn].__class__ = OgPolicyCls
+            OldPolicyCls = engine.as_graph.as_dict[attacker_asn].policy.__class__
+            self.policy_classes_used = frozenset(
+                [x for x in self.policy_classes_used if x != OldPolicyCls]
+            )
+
+            engine.as_graph.as_dict[attacker_asn].policy.__class__ = OgPolicyCls
+
+            if OgPolicyCls != self.scenario_config.BasePolicyCls:
+                non_default[attacker_asn] = OgPolicyCls
+            else:
+                del non_default[attacker_asn]
+
+        self.non_default_asn_cls_dict = frozendict(non_default)
 
     def _generate_policy_cls(self, PolicyCls: type["Policy"]) -> type["Policy"]:
         """Generates the Spoofing Didsconnecting Attacker policy class
@@ -108,7 +129,7 @@ class OriginSpoofingPrefixDisconnectionHijack(Scenario):
             ) -> bool:
                 if ann.recv_relationship.value == Relationships.ORIGIN.value:
                     ann = ann.copy({"next_hop_asn": neighbor.asn})
-                    self._process_outgoing_ann(ann)
+                    self._process_outgoing_ann(neighbor, ann, propagate_to, send_rels)
                     return True
                 else:
                     return False

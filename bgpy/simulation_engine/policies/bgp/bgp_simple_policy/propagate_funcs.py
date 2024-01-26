@@ -75,7 +75,7 @@ def _propagate(
         # Starting in v4 we must set the next_hop when sending
         # Copying announcements is a bottleneck for sims,
         # so we try to do this as little as possible
-        if neighbors and ann.recv_relationship in send_rels:
+        if neighbors and unprocessed_ann.recv_relationship in send_rels:
             ann = unprocessed_ann.copy({"next_hop_asn": self.as_.asn})
         else:
             continue

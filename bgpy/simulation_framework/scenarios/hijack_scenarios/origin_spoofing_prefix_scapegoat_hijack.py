@@ -74,7 +74,7 @@ class OriginSpoofingPrefixScapegoatHijack(
 
     def _get_possible_attacker_asns(
         self,
-        engine: BaseSimulationEngine,
+        engine: "BaseSimulationEngine",
         percent_adoption: Union[float, SpecialPercentAdoptions],
         prev_scenario: Optional["Scenario"],
     ) -> frozenset[int]:
@@ -109,7 +109,7 @@ class OriginSpoofingPrefixScapegoatHijack(
             name = "Spoofing scapegoating attacker"
 
             def _policy_propagate(
-                self,
+                s,
                 neighbor: "AS",
                 ann: "Ann",
                 propagate_to: Relationships,

@@ -1,7 +1,7 @@
 scenario_cls,AdoptingPolicyCls,BasePolicyCls,PolicyCls,outcome_type,as_group,outcome,percent_adopt,propagation_round,value,yerr,scenario_config_label
-PrefixHijack,PseudoROVSimple,ROVSimplePolicy,ROVSimplePolicy,DATA,all_wout_ixps,ATTACKER_SUCCESS,0,0,0.0,0.0,
-PrefixHijack,PseudoROVSimple,ROVSimplePolicy,Policy,DATA,all_wout_ixps,ATTACKER_SUCCESS,0,0,0.0,0.0,
-PrefixHijack,PseudoROVSimple,ROVSimplePolicy,ROVSimplePolicy,DATA,all_wout_ixps,VICTIM_SUCCESS,0,0,50.0,0.0,
-PrefixHijack,PseudoROVSimple,ROVSimplePolicy,Policy,DATA,all_wout_ixps,VICTIM_SUCCESS,0,0,50.0,0.0,
-PrefixHijack,PseudoROVSimple,ROVSimplePolicy,ROVSimplePolicy,DATA,all_wout_ixps,DISCONNECTED,0,0,50.0,0.0,
-PrefixHijack,PseudoROVSimple,ROVSimplePolicy,Policy,DATA,all_wout_ixps,DISCONNECTED,0,0,50.0,0.0,
+OriginSpoofingPrefixScapegoatHijack,PseudoROVSimple,ROVSimplePolicy,ROVSimplePolicy,DATA,all_wout_ixps,ATTACKER_SUCCESS,0,0,50.0,0.0,
+OriginSpoofingPrefixScapegoatHijack,PseudoROVSimple,ROVSimplePolicy,Policy,DATA,all_wout_ixps,ATTACKER_SUCCESS,0,0,50.0,0.0,
+OriginSpoofingPrefixScapegoatHijack,PseudoROVSimple,ROVSimplePolicy,ROVSimplePolicy,DATA,all_wout_ixps,VICTIM_SUCCESS,0,0,50.0,0.0,
+OriginSpoofingPrefixScapegoatHijack,PseudoROVSimple,ROVSimplePolicy,Policy,DATA,all_wout_ixps,VICTIM_SUCCESS,0,0,50.0,0.0,
+OriginSpoofingPrefixScapegoatHijack,PseudoROVSimple,ROVSimplePolicy,ROVSimplePolicy,DATA,all_wout_ixps,DISCONNECTED,0,0,0.0,0.0,
+OriginSpoofingPrefixScapegoatHijack,PseudoROVSimple,ROVSimplePolicy,Policy,DATA,all_wout_ixps,DISCONNECTED,0,0,0.0,0.0,
