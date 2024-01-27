@@ -15,6 +15,8 @@ from .policies import ROVSimplePolicy
 from .policies import ROVPolicy
 from .policies import BGPSecPolicy
 from .policies import BGPSecSimplePolicy
+from .policies import PathendSimplePolicy
+from .policies import PathendPolicy
 
 from .simulation_engines import BaseSimulationEngine
 from .simulation_engines import SimulationEngine
@@ -35,6 +37,8 @@ __all__ = [
     "Policy",
     "BGPSecPolicy",
     "BGPSecSimplePolicy",
+    "PathendSimplePolicy",
+    "PathendPolicy",
     "BaseSimulationEngine",
     "SimulationEngine",
 ]

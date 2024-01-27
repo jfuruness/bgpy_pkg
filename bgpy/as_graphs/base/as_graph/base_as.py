@@ -48,8 +48,12 @@ class AS(YamlAble):
         self.policy: Policy = policy
         self.policy.as_ = proxy(self)
 
-        # This is useful for some policies to have knowledge of the graph
-        self.as_graph: CallableProxyType["ASGraph"] = proxy(as_graph)  # type: ignore
+        # # This is useful for some policies to have knowledge of the graph
+        if as_graph:
+            self.as_graph: CallableProxyType["ASGraph"] = proxy(as_graph)
+        else:
+            # Ignoring this because it gets set properly immediatly
+            self.as_graph = None  # type: ignore
 
     def __lt__(self, as_obj: Any) -> bool:
         if isinstance(as_obj, AS):
@@ -152,8 +156,6 @@ class AS(YamlAble):
             "as_rank": self.as_rank,
             "propagation_rank": self.propagation_rank,
             "policy": self.policy,
-            # Don't store this weak ref, we add it back afterwards
-            "as_graph": None,
         }
 
     @classmethod

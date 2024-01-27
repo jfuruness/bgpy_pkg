@@ -8,6 +8,7 @@ from .rov import (
 )
 from .bgpsec import BGPSecPolicy
 from .bgpsec import BGPSecSimplePolicy
+from .pathend import PathendSimplePolicy, PathendPolicy
 
 __all__ = [
     "BGPSimplePolicy",
@@ -19,4 +20,6 @@ __all__ = [
     "ROVPolicy",
     "BGPSecPolicy",
     "BGPSecSimplePolicy",
+    "PathendSimplePolicy",
+    "PathendPolicy",
 ]

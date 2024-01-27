@@ -15,10 +15,18 @@ class PathendSimplePolicy(BGPSimplePolicy):
     def _valid_ann(self, ann: "Ann", *args, **kwargs) -> bool:  # type: ignore
         """Returns announcement validity by checking pathend records"""
 
-        raise NotImplementedError
-        if ann.pathend_valid:
-            return super(PathendSimplePolicy, self)._valid_ann(  # type: ignore
-                *args, **kwargs
-            )
-        else:
+        origin_asn = ann.origin
+        origin_as_obj = self.as_graph.as_dict[origin_asn]
+        # If the origin is deploying pathend and the path is longer than 1
+        if (
+            isinstance(origin_as_obj.policy, PathendSimplePolicy)
+            and len(ann.as_path) > 1
+        ):
+            # If the provider is real, do the loop check
+            for provider in origin_as_obj.providers:
+                if provider.asn == ann.as_path[-2]:
+                    return super()._valid_ann(ann, *args, **kwargs)
+            # Provider is fake, return False
             return False
+        else:
+            return super()._valid_ann(ann, *args, **kwargs)
