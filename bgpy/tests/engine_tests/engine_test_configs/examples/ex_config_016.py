@@ -3,10 +3,7 @@ from bgpy.enums import ASNs
 from bgpy.tests.engine_tests.as_graph_infos import as_graph_info_000
 from bgpy.tests.engine_tests.utils import EngineTestConfig
 
-from bgpy.simulation_engine import (
-    BGPSimplePolicy,
-    BGPSecSimplePolicy
-)
+from bgpy.simulation_engine import BGPSimplePolicy, BGPSecSimplePolicy
 from bgpy.simulation_framework import (
     ScenarioConfig,
     PrefixHijack,
@@ -19,7 +16,6 @@ desc = (
     "BGPSec is security third, which doesn't amount to much\n"
     "AS 2 is saved, but as long as the chain is broken, AS 5"
     " is still hijacked"
-
 )
 
 ex_config_016 = EngineTestConfig(

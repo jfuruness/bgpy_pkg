@@ -18,8 +18,7 @@ class PathendSimplePolicy(BGPSimplePolicy):
         raise NotImplementedError
         if ann.pathend_valid:
             return super(PathendSimplePolicy, self)._valid_ann(  # type: ignore
-                *args,
-                **kwargs
+                *args, **kwargs
             )
         else:
             return False

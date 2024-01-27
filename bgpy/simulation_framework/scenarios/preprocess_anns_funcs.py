@@ -133,7 +133,6 @@ def origin_spoofing_hijack(
     )
     assert not bgp_policy_derived_classes, msg
 
-
     return tuple(processed_anns)
 
 

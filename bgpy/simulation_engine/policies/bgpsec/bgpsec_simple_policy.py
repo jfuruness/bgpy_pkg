@@ -28,7 +28,6 @@ class BGPSecSimplePolicy(BGPSimplePolicy):
             ann = ann.copy({"bgpsec_as_path": ann.as_path})
         super().seed_ann(ann)
 
-
     def _policy_propagate(  # type: ignore
         self, neighbor: "AS", ann: "Ann", *args, **kwargs
     ) -> bool:

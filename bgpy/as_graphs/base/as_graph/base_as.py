@@ -1,10 +1,11 @@
 from typing import Any, Optional, TYPE_CHECKING
-from weakref import proxy
+from weakref import proxy, CallableProxyType
 
 from yamlable import yaml_info, YamlAble
 
 if TYPE_CHECKING:
     from bgpy.simulation_engine import Policy
+    from .as_graph import ASGraph
 
 
 @yaml_info(yaml_tag="AS")
@@ -23,6 +24,7 @@ class AS(YamlAble):
         as_rank: Optional[int] = None,
         propagation_rank: Optional[int] = None,
         policy: Optional["Policy"] = None,
+        as_graph: Optional["ASGraph"] = None,
     ) -> None:
         # Make sure you're not accidentally passing in a string here
         self.asn: int = int(asn)
@@ -45,6 +47,9 @@ class AS(YamlAble):
         assert policy, "This should never be None"
         self.policy: Policy = policy
         self.policy.as_ = proxy(self)
+
+        # This is useful for some policies to have knowledge of the graph
+        self.as_graph: CallableProxyType["ASGraph"] = proxy(as_graph)  # type: ignore
 
     def __lt__(self, as_obj: Any) -> bool:
         if isinstance(as_obj, AS):
@@ -147,6 +152,8 @@ class AS(YamlAble):
             "as_rank": self.as_rank,
             "propagation_rank": self.propagation_rank,
             "policy": self.policy,
+            # Don't store this weak ref, we add it back afterwards
+            "as_graph": None,
         }
 
     @classmethod

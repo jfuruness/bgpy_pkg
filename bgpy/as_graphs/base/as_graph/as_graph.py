@@ -1,4 +1,5 @@
 from typing import Any, Callable, Optional
+from weakref import proxy
 
 from frozendict import frozendict
 from yamlable import yaml_info, YamlAble, yaml_info_decorate
@@ -101,6 +102,7 @@ class ASGraph(YamlAble):
         self.as_dict: frozendict[int, AS] = yaml_as_dict
         # Convert ASNs to refs
         for as_obj in self.as_dict.values():
+            as_obj.as_graph = proxy(self)
             as_obj.peers = tuple([self.as_dict[asn] for asn in as_obj.peers])
             as_obj.customers = tuple([self.as_dict[asn] for asn in as_obj.customers])
             as_obj.providers = tuple([self.as_dict[asn] for asn in as_obj.providers])

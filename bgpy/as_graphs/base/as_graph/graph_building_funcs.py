@@ -22,6 +22,7 @@ def _gen_graph(
         as_ = BaseASCls(
             asn,
             policy=BasePolicyCls(),
+            as_graph=self,
         )
         assert as_.policy.as_ == proxy(
             as_
