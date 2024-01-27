@@ -49,7 +49,7 @@ class AS(YamlAble):
         self.policy.as_ = proxy(self)
 
         # # This is useful for some policies to have knowledge of the graph
-        if as_graph:
+        if as_graph is not None:
             self.as_graph: CallableProxyType["ASGraph"] = proxy(as_graph)
         else:
             # Ignoring this because it gets set properly immediatly

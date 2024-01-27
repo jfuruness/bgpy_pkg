@@ -16,7 +16,7 @@ class PathendSimplePolicy(BGPSimplePolicy):
         """Returns announcement validity by checking pathend records"""
 
         origin_asn = ann.origin
-        origin_as_obj = self.as_graph.as_dict[origin_asn]
+        origin_as_obj = self.as_.as_graph.as_dict[origin_asn]
         # If the origin is deploying pathend and the path is longer than 1
         if (
             isinstance(origin_as_obj.policy, PathendSimplePolicy)
