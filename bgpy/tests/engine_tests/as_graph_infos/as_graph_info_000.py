@@ -27,7 +27,7 @@ as_graph_info_000 = ASGraphInfo(
             CPLink(provider_asn=2, customer_asn=ASNs.VICTIM.value),
             CPLink(provider_asn=4, customer_asn=ASNs.VICTIM.value),
             CPLink(provider_asn=5, customer_asn=1),
-            CPLink(provider_asn=5, customer_asn=2),
+            # CPLink(provider_asn=5, customer_asn=2),
             CPLink(provider_asn=8, customer_asn=1),
             CPLink(provider_asn=8, customer_asn=2),
             CPLink(provider_asn=9, customer_asn=4),

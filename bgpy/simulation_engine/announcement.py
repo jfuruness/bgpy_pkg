@@ -118,10 +118,6 @@ class Announcement(YamlAble):
     def __str__(self) -> str:
         return f"{self.prefix} {self.as_path} {self.recv_relationship}"
 
-    def __hash__(self):
-        """Hash func. Needed for ROV++"""
-        return hash(str(self))
-
     ##############
     # Yaml funcs #
     ##############

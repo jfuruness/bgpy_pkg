@@ -1,6 +1,6 @@
 from typing import Any, Callable, Optional, TYPE_CHECKING
 
-from bgpy.simulation_engine.policies.bgp.bgp_policy import BGPPolicy
+from bgpy.simulation_engine.policies.bgp.bgp_simple_policy import BGPSimplePolicy
 
 if TYPE_CHECKING:
     from bgpy.as_graphs import AS
@@ -8,22 +8,28 @@ if TYPE_CHECKING:
     from bgpy.simulation_engine.announcement import Announcement as Ann
 
 
-class BGPSecPolicy(BGPPolicy):
+class BGPSecSimplePolicy(BGPSimplePolicy):
     """Represents BGPSec
 
     Since there are no real world implementations,
     we assume a secure path preference of security third,
-    or else this would literally do nothing lmao
+    which is in line with the majority of users
+    for the survey results in "A Survey of Interdomain Routing Policies"
+    https://www.cs.bu.edu/~goldbe/papers/survey.pdf
     """
 
-    name = "BGPSec"
+    name = "BGPSec Simple"
 
     def seed_ann(self, ann: "Ann") -> None:  # type: ignore
         """Seeds announcement at this AS and initializes BGPSec path"""
 
-        super().seed_ann(ann.copy({"bgpsec_as_path": ann.as_path}))
+        # This ann is valid, add the bgpsec as path
+        if ann.as_path == (self.as_.asn,):
+            ann = ann.copy({"bgpsec_as_path": ann.as_path})
+        super().seed_ann(ann)
 
-    def policy_propagate(  # type: ignore
+
+    def _policy_propagate(  # type: ignore
         self, neighbor: "AS", ann: "Ann", *args, **kwargs
     ) -> bool:
         """Sets BGPSec fields when propagating
@@ -32,10 +38,14 @@ class BGPSecPolicy(BGPPolicy):
         otherwise clear out both fields
         """
 
-        next_asn = neighbor.asn if isinstance(neighbor.policy, BGPSecPolicy) else None
-        path = ann.bgpsec_path if isinstance(neighbor.policy, BGPSecPolicy) else ()
+        if isinstance(neighbor.policy, BGPSecSimplePolicy):
+            next_asn = neighbor.asn
+            path = ann.bgpsec_as_path
+        else:
+            next_asn = None
+            path = ()
         send_ann = ann.copy({"bgpsec_next_asn": next_asn, "bgpsec_as_path": path})
-        neighbor.policy.recieve_ann(send_ann)
+        self._process_outgoing_ann(neighbor, send_ann, *args, **kwargs)
 
     # Mypy doesn't understand the superclass
     def _copy_and_process(  # type: ignore
@@ -48,7 +58,6 @@ class BGPSecPolicy(BGPPolicy):
 
         prepends ASN if valid, otherwise clears
         """
-
         if ann.bgpsec_valid(self.as_.asn):
             bgpsec_as_path = (self.as_.asn,) + ann.bgpsec_as_path
         else:
@@ -57,7 +66,7 @@ class BGPSecPolicy(BGPPolicy):
         if overwrite_default_kwargs is None:
             overwrite_default_kwargs = {}
 
-        overwrite_default_kwargs["bgsec_as_path"] = overwrite_default_kwargs.get(
+        overwrite_default_kwargs["bgpsec_as_path"] = overwrite_default_kwargs.get(
             "bgpsec_as_path", bgpsec_as_path
         )
 

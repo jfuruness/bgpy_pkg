@@ -1,5 +1,7 @@
 from typing import Callable, Optional, TYPE_CHECKING
 
+from bgpy.simulation_engine import BGPPolicy
+
 if TYPE_CHECKING:
     from bgpy.simulation_framework.scenario import Scenario
     from bgpy.simulation_engine import Announcement as Ann, BaseSimulationEngine
@@ -115,6 +117,22 @@ def origin_spoofing_hijack(
             processed_anns.append(processed_ann)
         else:
             processed_anns.append(ann)
+
+    policies = set(list(self_scenario.non_default_asn_cls_dict.values()))
+    policies.add(self_scenario.scenario_config.AdoptPolicyCls)
+    policies.add(self_scenario.scenario_config.BasePolicyCls)
+
+    bgp_policy_derived_classes = [x for x in policies if issubclass(x, BGPPolicy)]
+
+    msg = (
+        f"{bgp_policy_derived_classes} are subclasses of BGPPolicy\n"
+        "Origin spoofing isn't compatible with the way we've implemented "
+        "the RIBsIn, which deviates from real life (where announcements are "
+        "just stored using path attributes). So you can't use origin spoofing "
+        "with policies derived from BGPPolicy, only BGPSimplePolicy"
+    )
+    assert not bgp_policy_derived_classes, msg
+
 
     return tuple(processed_anns)
 

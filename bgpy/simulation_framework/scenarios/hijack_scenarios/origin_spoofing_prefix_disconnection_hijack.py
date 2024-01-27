@@ -6,6 +6,7 @@ from bgpy.simulation_framework.scenarios.scenario import Scenario
 from bgpy.enums import Prefixes
 from bgpy.enums import Relationships
 from bgpy.enums import Timestamps
+from bgpy.simulation_engine import BGPPolicy
 
 
 if TYPE_CHECKING:
@@ -86,6 +87,19 @@ class OriginSpoofingPrefixDisconnectionHijack(Scenario):
             self.non_default_asn_cls_dict = frozendict(non_default)
 
         super().setup_engine(engine, prev_scenario)
+
+        bgp_policy_derived_classes = [
+            x for x in self.policy_classes_used if issubclass(x, BGPPolicy)
+        ]
+
+        msg = (
+            f"{bgp_policy_derived_classes} are subclasses of BGPPolicy\n"
+            "Origin spoofing isn't compatible with the way we've implemented "
+            "the RIBsIn, which deviates from real life (where announcements are "
+            "just stored using path attributes). So you can't use origin spoofing "
+            "with policies derived from BGPPolicy, only BGPSimplePolicy"
+        )
+        assert not bgp_policy_derived_classes, msg
 
     def pre_aggregation_hook(
         self, engine: "BaseSimulationEngine", *args, **kwargs
