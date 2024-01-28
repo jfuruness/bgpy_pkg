@@ -1,4 +1,4 @@
-from collections import dequeue
+from collections import deque
 from typing import Callable, Optional, TYPE_CHECKING
 
 from bgpy.simulation_engine import BGPPolicy, PathendSimplePolicy
@@ -81,9 +81,12 @@ def shortest_path_export_all_hijack(
 
     valid_ann = _get_valid_by_roa_ann(self_scenario.victim_asns, unprocessed_anns)
     for ann in unprocessed_anns:
-        if isinstance(
-            self_scenario.scenario_config.AdoptPolicyCls,
-            PathendSimplePolicy
+        if not ann.invalid_by_roa:
+            processed_anns.append(ann)
+            continue
+        elif any(
+            issubclass(x, PathendSimplePolicy)
+            for x in self_scenario.non_default_asn_cls_dict.values()
         ):
             shortest_as_path = _find_shortest_secondary_provider_path(
                 valid_ann.origin,
@@ -97,7 +100,18 @@ def shortest_path_export_all_hijack(
             )
 
         if shortest_as_path:
-            processed_anns.append(ann.copy({"as_path": ann.as_path + shortest_as_path}))
+            processed_anns.append(
+                ann.copy(
+                    {
+                        "as_path": ann.as_path + shortest_as_path,
+                        # Ann.copy overwrites seed_asn and traceback by default
+                        # so include these here to make sure that doesn't happen
+                        "seed_asn": ann.seed_asn,
+                        "traceback_end": ann.traceback_end,
+                    }
+                )
+            )
+
         else:
             processed_anns.append(ann)
     return tuple(processed_anns)
@@ -195,8 +209,10 @@ def _find_shortest_secondary_provider_path(
 
     root_as_obj = engine.as_graph.as_dict[root_asn]
     for first_provider in root_as_obj.providers:
-        for secondary_provider in first_provider.providers:
-            return (secondary_provider.asn, first_provider.asn, root_asn)
+        # You only need legit origin and their provider, you don't need three
+        # for secondary_provider in first_provider.providers:
+        #     return (secondary_provider.asn, first_provider.asn, root_asn)
+        return (first_provider.asn, root_asn)
     return None
 
 
@@ -219,7 +235,7 @@ def _find_shortest_non_adopting_path_general(
     visited = dict()
 
     # First, use BFS on provider relationships
-    queue = dequeue([(root_as, (root_as.asn,))])
+    queue = deque([(root_as, (root_as.asn,))])
     while queue:
         as_, as_path = queue.popleft()
         if as_ not in visited:
@@ -256,7 +272,7 @@ def _find_shortest_non_adopting_path_general(
     # them and return the shortest AS path (or None)
     non_adopting_customers = set()
     for visited_as, as_path in visited.copy().items():
-        queue = dequeue([(visited_as, (visited_as.asn,))])
+        queue = deque([(visited_as, (visited_as.asn,))])
         while queue:
             as_, as_path = queue.popleft()
             if not isinstance(as_, AdoptPolicyCls):
