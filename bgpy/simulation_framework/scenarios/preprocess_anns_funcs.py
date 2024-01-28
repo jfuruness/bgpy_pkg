@@ -89,14 +89,11 @@ def shortest_path_export_all_hijack(
             for x in self_scenario.non_default_asn_cls_dict.values()
         ):
             shortest_as_path = _find_shortest_secondary_provider_path(
-                valid_ann.origin,
-                engine
+                valid_ann.origin, engine
             )
         else:
             shortest_as_path = _find_shortest_non_adopting_path_general(
-                valid_ann.origin,
-                self_scenario.scenario_config.AdoptPolicyCls,
-                engine
+                valid_ann.origin, self_scenario.scenario_config.AdoptPolicyCls, engine
             )
 
         if shortest_as_path:
@@ -199,8 +196,7 @@ def _get_valid_by_roa_ann(
 
 
 def _find_shortest_secondary_provider_path(
-    root_asn: int,
-    engine: Optional["BaseSimulationEngine"]
+    root_asn: int, engine: Optional["BaseSimulationEngine"]
 ) -> Optional[tuple[int, ...]]:
     """Finds the shortest secondary provider
 
@@ -219,7 +215,7 @@ def _find_shortest_secondary_provider_path(
 def _find_shortest_non_adopting_path_general(
     root_asn: int,
     AdoptPolicyCls: type["Policy"],
-    engine: Optional["BaseSimulationEngine"]
+    engine: Optional["BaseSimulationEngine"],
 ) -> Optional[tuple[int, ...]]:
     """Finds the shortest non adopting path from the root asn
 
@@ -287,8 +283,7 @@ def _find_shortest_non_adopting_path_general(
             as_: len(visited[as_]) for as_ in non_adopting_customers
         }
         sorted_non_adopting_customers = sorted(
-            non_adopting_customer_distances.items(),
-            key=lambda x: x[1]
+            non_adopting_customer_distances.items(), key=lambda x: x[1]
         )
         best_as = sorted_non_adopting_customers[0][0]
         return visited[best_as]
