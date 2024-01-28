@@ -78,7 +78,9 @@ def shortest_path_export_all_hijack(
     processed_anns: list["Ann"] = list()
 
     valid_ann = _get_valid_by_roa_ann(self_scenario.victim_asns, unprocessed_anns)
-    print(valid_ann)
+    _find_shortest_path(
+        valid_ann.orgin, self_scenario.scenario_config.AdoptPolicyCls, engine
+    )
     for ann in unprocessed_anns:
         # TODO
         # NOTE: must set pathend valid to be False
@@ -165,3 +167,83 @@ def _get_valid_by_roa_ann(
         raise ValueError("What's the point if victim_asn isn't valid?")
 
     return victim_ann
+
+
+def _find_shortest_non_adopting_path(
+    root_asn: int,
+    AdoptPolicyCls: type[Policy],
+    engine: Optional["BaseSimulationEngine"]
+) -> Optional[tuple[int, ...]]:
+    """Finds the shortest non adopting path from the root asn
+
+    Announcements from customers > peers > providers, since
+    policies like ASPA and bgp-isec would reject announcements
+    that are already going to customers, etc. So even if the path
+    is longer, it's better to be accepted by going to a provider
+    """
+
+    root_as = engine.as_graph.as_dict[root_asn]
+
+    # {AS: as_path to get here}
+    visited = dict()
+
+    # First, use BFS on provider relationships
+    queue = dequeue([(root_as, (root_as.asn,))])
+    while queue:
+        as_, as_path = queue.popleft()
+        if as_ not in visited:
+            if not isinstance(as_, AdoptPolicyCls):
+                return as_path
+            visited[as_] = as_path
+            for provider_as in engine.as_graph.as_dict[as_.asn].providers:
+                if provider_as not in visisted:
+                    queue.append((provider_as, (provider_as.asn,) + as_path))
+
+    # Then, go in order of provider relationships
+    # This is a nice optimization, since the dictionary maintains order
+    # and BFS increments in order of distance
+    for visisted_as, as_path in visisted.copy().items():
+        for peer_as in visisted_as.peers:
+            if not isinstance(peer_as, AdoptPolicyCls):
+                return (peer_as.asn,) + as_path
+            elif peer_as not in visisted:
+                visited[peer_as] = (peer_as.asn,) + as_path
+
+    # At this point, if we still haven't found it, it's a customer
+    # relationship (or doesn't exist).
+    # From here, the proper way to do things would be to use some modified
+    # djikstras algorithm
+    # But it's important to note that this is the uncommon case
+    # since this would only occur if all of the input clique is adopting.
+    # If that were the case, djikstras algorithm would have a very bad runtime
+    # since 99% of ASes would be adopting
+    # Additionally, this function only runs once per trial
+    # for all these reasons, I'm not going to implement a modified djikstras,
+    # which may be prone to error, and just do it the naive way, which is much
+    # less error prone
+    # To do this, I'll  simply iterate through all remaining ASes, and then sort
+    # them and return the shortest AS path (or None)
+    non_adopting_customers = set()
+    for visisted_as, as_path in visisted.copy().items():
+        queue = dequeue([(visisted_as, (visisted_as.asn,))])
+        while queue:
+            as_, as_path = queue.popleft()
+            if not isinstance(as_, AdoptPolicyCls):
+                non_adopting_customers.add(as_)
+            # If the old path doesn't exist or is larger than the new one
+            if len(visited.get(as_, (None,) + as_path)) > len(as_path):
+                visited[as_] = as_path
+                for customer_as in engine.as_graph.as_dict[as_.asn].customers:
+                    queue.append((customer_as, (customer_as.asn,) +  as_path))
+    if non_adopting_customer_distances:
+        non_adopting_customer_distances = {
+            as_: len(visisted[as_]) for as_ in non_adopting_customers
+        }
+        sorted_non_adopting_customers = sorted(
+            non_adopting_customer_distances.items(),
+            key=lambda x: x[1]
+        )
+        best_as = sorted_non_adopting_customers[0][0]
+        return visited[best_as]
+    else:
+        return None
