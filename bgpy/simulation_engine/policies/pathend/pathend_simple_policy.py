@@ -23,7 +23,8 @@ class PathendSimplePolicy(BGPSimplePolicy):
             and len(ann.as_path) > 1
         ):
             # If the provider is real, do the loop check
-            for provider in origin_as_obj.providers:
+            # Mypy thinks this is unreachable for some reason, even tho tests pass
+            for provider in origin_as_obj.providers:  # type: ignore
                 if provider.asn == ann.as_path[-2]:
                     return super()._valid_ann(ann, *args, **kwargs)
             # Provider is fake, return False

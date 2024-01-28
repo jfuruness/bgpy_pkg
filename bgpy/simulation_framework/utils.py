@@ -29,14 +29,13 @@ def get_country_asns(
 
     with CachedSession(str(requests_cache_path)) as session:
         response = session.get(
-            f"https://stat.ripe.net/data/country-asns/data.json?resource={country_code.lower()}&lod=1"
+            "https://stat.ripe.net/data/country-asns/"
+            f"data.json?resource={country_code.lower()}&lod=1"
         )
-        response.raise_status()
-
-        data = response.json()
+        assert response.status_code == 200
 
         # Extract both routed and non-routed ASNs using regex
-        country_info = data["data"]["countries"][0]
+        country_info = response.json()["data"]["countries"][0]
         asns = re.findall(r"AsnSingle\((\d+)\)", country_info["routed"])
         asns += re.findall(r"AsnSingle\((\d+)\)", country_info["non_routed"])
 

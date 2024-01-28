@@ -4,6 +4,7 @@ from typing import Callable, Optional, TYPE_CHECKING
 from bgpy.simulation_engine import BGPPolicy, PathendSimplePolicy
 
 if TYPE_CHECKING:
+    from bgpy.as_graphs import AS
     from bgpy.simulation_framework.scenario import Scenario
     from bgpy.simulation_engine import Announcement as Ann, BaseSimulationEngine
     from bgpy.simulation_engine import Policy
@@ -203,6 +204,7 @@ def _find_shortest_secondary_provider_path(
     Used for attacking pathend, which only looks at the first provider
     """
 
+    assert engine, "mypy"
     root_as_obj = engine.as_graph.as_dict[root_asn]
     for first_provider in root_as_obj.providers:
         # You only need legit origin and their provider, you don't need three
@@ -225,13 +227,14 @@ def _find_shortest_non_adopting_path_general(
     is longer, it's better to be accepted by going to a provider
     """
 
+    assert engine, "mypy"
     root_as = engine.as_graph.as_dict[root_asn]
 
     # {AS: as_path to get here}
     visited = dict()
 
     # First, use BFS on provider relationships
-    queue = deque([(root_as, (root_as.asn,))])
+    queue: deque[tuple["AS", tuple[int, ...]]] = deque([(root_as, (root_as.asn,))])
     while queue:
         as_, as_path = queue.popleft()
         if as_ not in visited:
