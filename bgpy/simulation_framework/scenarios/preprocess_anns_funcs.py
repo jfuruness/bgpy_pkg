@@ -1,10 +1,12 @@
+from collections import dequeue
 from typing import Callable, Optional, TYPE_CHECKING
 
-from bgpy.simulation_engine import BGPPolicy
+from bgpy.simulation_engine import BGPPolicy, PathendSimplePolicy
 
 if TYPE_CHECKING:
     from bgpy.simulation_framework.scenario import Scenario
     from bgpy.simulation_engine import Announcement as Ann, BaseSimulationEngine
+    from bgpy.simulation_engine import Policy
 
 
 PREPROCESS_ANNS_FUNC_TYPE = Callable[
@@ -78,13 +80,26 @@ def shortest_path_export_all_hijack(
     processed_anns: list["Ann"] = list()
 
     valid_ann = _get_valid_by_roa_ann(self_scenario.victim_asns, unprocessed_anns)
-    _find_shortest_path(
-        valid_ann.orgin, self_scenario.scenario_config.AdoptPolicyCls, engine
-    )
     for ann in unprocessed_anns:
-        # TODO
-        # NOTE: must set pathend valid to be False
-        pass
+        if isinstance(
+            self_scenario.scenario_config.AdoptPolicyCls,
+            PathendSimplePolicy
+        ):
+            shortest_as_path = _find_shortest_secondary_provider_path(
+                valid_ann.origin,
+                engine
+            )
+        else:
+            shortest_as_path = _find_shortest_non_adopting_path_general(
+                valid_ann.origin,
+                self_scenario.scenario_config.AdoptPolicyCls,
+                engine
+            )
+
+        if shortest_as_path:
+            processed_anns.append(ann.copy({"as_path": ann.as_path + shortest_as_path}))
+        else:
+            processed_anns.append(ann)
     return tuple(processed_anns)
 
 
@@ -169,9 +184,25 @@ def _get_valid_by_roa_ann(
     return victim_ann
 
 
-def _find_shortest_non_adopting_path(
+def _find_shortest_secondary_provider_path(
     root_asn: int,
-    AdoptPolicyCls: type[Policy],
+    engine: Optional["BaseSimulationEngine"]
+) -> Optional[tuple[int, ...]]:
+    """Finds the shortest secondary provider
+
+    Used for attacking pathend, which only looks at the first provider
+    """
+
+    root_as_obj = engine.as_graph.as_dict[root_asn]
+    for first_provider in root_as_obj.providers:
+        for secondary_provider in first_provider.providers:
+            return (secondary_provider.asn, first_provider.asn, root_asn)
+    return None
+
+
+def _find_shortest_non_adopting_path_general(
+    root_asn: int,
+    AdoptPolicyCls: type["Policy"],
     engine: Optional["BaseSimulationEngine"]
 ) -> Optional[tuple[int, ...]]:
     """Finds the shortest non adopting path from the root asn
@@ -196,17 +227,17 @@ def _find_shortest_non_adopting_path(
                 return as_path
             visited[as_] = as_path
             for provider_as in engine.as_graph.as_dict[as_.asn].providers:
-                if provider_as not in visisted:
+                if provider_as not in visited:
                     queue.append((provider_as, (provider_as.asn,) + as_path))
 
     # Then, go in order of provider relationships
     # This is a nice optimization, since the dictionary maintains order
     # and BFS increments in order of distance
-    for visisted_as, as_path in visisted.copy().items():
-        for peer_as in visisted_as.peers:
+    for visited_as, as_path in visited.copy().items():
+        for peer_as in visited_as.peers:
             if not isinstance(peer_as, AdoptPolicyCls):
                 return (peer_as.asn,) + as_path
-            elif peer_as not in visisted:
+            elif peer_as not in visited:
                 visited[peer_as] = (peer_as.asn,) + as_path
 
     # At this point, if we still haven't found it, it's a customer
@@ -224,8 +255,8 @@ def _find_shortest_non_adopting_path(
     # To do this, I'll  simply iterate through all remaining ASes, and then sort
     # them and return the shortest AS path (or None)
     non_adopting_customers = set()
-    for visisted_as, as_path in visisted.copy().items():
-        queue = dequeue([(visisted_as, (visisted_as.asn,))])
+    for visited_as, as_path in visited.copy().items():
+        queue = dequeue([(visited_as, (visited_as.asn,))])
         while queue:
             as_, as_path = queue.popleft()
             if not isinstance(as_, AdoptPolicyCls):
@@ -234,10 +265,10 @@ def _find_shortest_non_adopting_path(
             if len(visited.get(as_, (None,) + as_path)) > len(as_path):
                 visited[as_] = as_path
                 for customer_as in engine.as_graph.as_dict[as_.asn].customers:
-                    queue.append((customer_as, (customer_as.asn,) +  as_path))
-    if non_adopting_customer_distances:
+                    queue.append((customer_as, (customer_as.asn,) + as_path))
+    if non_adopting_customers:
         non_adopting_customer_distances = {
-            as_: len(visisted[as_]) for as_ in non_adopting_customers
+            as_: len(visited[as_]) for as_ in non_adopting_customers
         }
         sorted_non_adopting_customers = sorted(
             non_adopting_customer_distances.items(),
