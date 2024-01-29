@@ -24,6 +24,7 @@ class Custom33ValidPrefix(ValidPrefix):
         trial: int,
         propagation_round: int,
     ) -> None:
+
         if propagation_round == 1:  # second round
             ann = deepcopy(
                 engine.as_graph.as_dict[2].policy._local_rib.get(Prefixes.PREFIX.value)

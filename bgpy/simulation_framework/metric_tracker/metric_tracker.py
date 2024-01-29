@@ -92,7 +92,7 @@ class MetricTracker:
         """Returns rows for a CSV"""
 
         rows = list()
-        for data_key, metric_list in sorted(self.data.items()):
+        for data_key, metric_list in self.data.items():
             agg_percents = sum(metric_list, start=metric_list[0]).percents
             # useful for debugging individual trials
             # from pprint import pprint
@@ -101,7 +101,7 @@ class MetricTracker:
             #     pprint(x.metric_key)
             #     pprint(x.percents)
             # input("waiting")
-            for metric_key, trial_data in sorted(agg_percents.items()):
+            for metric_key, trial_data in agg_percents.items():
                 assert metric_key.PolicyCls
                 row = {
                     "scenario_cls": data_key.scenario_config.ScenarioCls.__name__,
@@ -130,9 +130,9 @@ class MetricTracker:
 
     def get_pickle_data(self):
         agg_data = list()
-        for data_key, metric_list in sorted(self.data.items()):
+        for data_key, metric_list in self.data.items():
             agg_percents = sum(metric_list, start=metric_list[0]).percents
-            for metric_key, trial_data in sorted(agg_percents.items()):
+            for metric_key, trial_data in agg_percents.items():
                 row = {
                     "data_key": data_key,
                     "metric_key": metric_key,

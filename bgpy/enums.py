@@ -23,13 +23,6 @@ class YamlAbleEnum(Enum):
     def yamlable_enums():
         return yamlable_enums
 
-    def __lt__(self, other) -> bool:
-        """Used for sorting in metric tracker"""
-        if isinstance(other, Enum):
-            return bool(self.value < other.value)  # for mypy
-        else:
-            return NotImplemented
-
 
 class Outcomes(YamlAbleEnum):
     ATTACKER_SUCCESS: int = 0

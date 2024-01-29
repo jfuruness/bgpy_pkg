@@ -7,7 +7,7 @@ from bgpy.enums import SpecialPercentAdoptions
 from bgpy.simulation_framework.scenarios import ScenarioConfig
 
 
-@dataclass(frozen=True, slots=True, order=True)
+@dataclass(frozen=True, slots=True)
 class DataKey:
     """Key for storing data within the MetricTracker"""
 
