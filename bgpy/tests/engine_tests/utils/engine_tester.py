@@ -148,7 +148,6 @@ class EngineTester(EngineRunner):
                     pickle_path=self.metrics_ground_truth_path_pickle,
                 )
 
-
     def _generate_gt_diagrams(
         self, scenario: Scenario, metric_tracker: MetricTracker
     ) -> None:
