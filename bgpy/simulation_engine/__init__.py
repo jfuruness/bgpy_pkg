@@ -40,6 +40,7 @@ __all__ = [
     "BGPSecPolicy",
     "BGPSecSimplePolicy",
     "OnlyToCustomersPolicy",
+    "OnlyToCustomersSimplePolicy",
     "PathendSimplePolicy",
     "PathendPolicy",
     "BaseSimulationEngine",

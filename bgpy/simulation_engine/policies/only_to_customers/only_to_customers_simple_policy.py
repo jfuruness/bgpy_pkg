@@ -4,6 +4,7 @@ from bgpy.enums import Relationships
 from bgpy.simulation_engine.policies.bgp import BGPSimplePolicy
 
 if TYPE_CHECKING:
+    from bgpy.as_graphs import AS
     from bgpy.simulation_engine import Announcement as Ann
 
 
@@ -12,7 +13,7 @@ class OnlyToCustomersSimplePolicy(BGPSimplePolicy):
 
     name: str = "OnlyToCustomersSimple"
 
-    def _valid_ann(self, ann: "Ann", from_rel: Relationships) -> bool:
+    def _valid_ann(self, ann: "Ann", from_rel: Relationships) -> bool:  # type: ignore
         """Returns False if from peer/customer when only_to_customers is set"""
 
         # If ann.only_to_customers is set, only accept from a provider
@@ -21,7 +22,7 @@ class OnlyToCustomersSimplePolicy(BGPSimplePolicy):
         else:
             return super()._valid_ann(ann, from_rel)
 
-    def _policy_propagate(
+    def _policy_propagate(  # type: ignore
         self,
         neighbor: "AS",
         ann: "Ann",
