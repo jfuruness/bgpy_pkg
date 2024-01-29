@@ -20,6 +20,7 @@ as_graph: !yamlable/CAIDAASGraph
             bgpsec_as_path: !!python/tuple []
             bgpsec_next_asn: null
             next_hop_asn: 2
+            only_to_customers: null
             pathend_valid: null
             prefix: 1.2.0.0/16
             recv_relationship: !simulator_codec/Relationships
@@ -45,6 +46,7 @@ as_graph: !yamlable/CAIDAASGraph
                 bgpsec_as_path: !!python/tuple []
                 bgpsec_next_asn: null
                 next_hop_asn: 2
+                only_to_customers: null
                 pathend_valid: null
                 prefix: 1.2.0.0/16
                 recv_relationship: !simulator_codec/Relationships
@@ -66,6 +68,7 @@ as_graph: !yamlable/CAIDAASGraph
               bgpsec_as_path: !!python/tuple []
               bgpsec_next_asn: null
               next_hop_asn: 1
+              only_to_customers: null
               pathend_valid: null
               prefix: 1.2.0.0/16
               recv_relationship: !simulator_codec/Relationships
@@ -100,6 +103,7 @@ as_graph: !yamlable/CAIDAASGraph
             bgpsec_as_path: !!python/tuple []
             bgpsec_next_asn: null
             next_hop_asn: 777
+            only_to_customers: null
             pathend_valid: null
             prefix: 1.2.0.0/16
             recv_relationship: !simulator_codec/Relationships
@@ -126,6 +130,7 @@ as_graph: !yamlable/CAIDAASGraph
                 bgpsec_as_path: !!python/tuple []
                 bgpsec_next_asn: null
                 next_hop_asn: 1
+                only_to_customers: null
                 pathend_valid: null
                 prefix: 1.2.0.0/16
                 recv_relationship: !simulator_codec/Relationships
@@ -148,6 +153,7 @@ as_graph: !yamlable/CAIDAASGraph
                 bgpsec_as_path: !!python/tuple []
                 bgpsec_next_asn: null
                 next_hop_asn: 777
+                only_to_customers: null
                 pathend_valid: null
                 prefix: 1.2.0.0/16
                 recv_relationship: !simulator_codec/Relationships
@@ -168,6 +174,7 @@ as_graph: !yamlable/CAIDAASGraph
               bgpsec_as_path: !!python/tuple []
               bgpsec_next_asn: null
               next_hop_asn: 2
+              only_to_customers: null
               pathend_valid: null
               prefix: 1.2.0.0/16
               recv_relationship: !simulator_codec/Relationships
@@ -187,6 +194,7 @@ as_graph: !yamlable/CAIDAASGraph
               bgpsec_as_path: !!python/tuple []
               bgpsec_next_asn: null
               next_hop_asn: 2
+              only_to_customers: null
               pathend_valid: null
               prefix: 1.2.0.0/16
               recv_relationship: !simulator_codec/Relationships
@@ -206,6 +214,7 @@ as_graph: !yamlable/CAIDAASGraph
               bgpsec_as_path: !!python/tuple []
               bgpsec_next_asn: null
               next_hop_asn: 2
+              only_to_customers: null
               pathend_valid: null
               prefix: 1.2.0.0/16
               recv_relationship: !simulator_codec/Relationships
@@ -225,6 +234,7 @@ as_graph: !yamlable/CAIDAASGraph
               bgpsec_as_path: !!python/tuple []
               bgpsec_next_asn: null
               next_hop_asn: 2
+              only_to_customers: null
               pathend_valid: null
               prefix: 1.2.0.0/16
               recv_relationship: !simulator_codec/Relationships
@@ -260,6 +270,7 @@ as_graph: !yamlable/CAIDAASGraph
             bgpsec_as_path: !!python/tuple []
             bgpsec_next_asn: null
             next_hop_asn: 2
+            only_to_customers: null
             pathend_valid: null
             prefix: 1.2.0.0/16
             recv_relationship: !simulator_codec/Relationships
@@ -285,6 +296,7 @@ as_graph: !yamlable/CAIDAASGraph
                 bgpsec_as_path: !!python/tuple []
                 bgpsec_next_asn: null
                 next_hop_asn: 2
+                only_to_customers: null
                 pathend_valid: null
                 prefix: 1.2.0.0/16
                 recv_relationship: !simulator_codec/Relationships
@@ -306,6 +318,7 @@ as_graph: !yamlable/CAIDAASGraph
               bgpsec_as_path: !!python/tuple []
               bgpsec_next_asn: null
               next_hop_asn: 3
+              only_to_customers: null
               pathend_valid: null
               prefix: 1.2.0.0/16
               recv_relationship: !simulator_codec/Relationships
@@ -338,6 +351,7 @@ as_graph: !yamlable/CAIDAASGraph
             bgpsec_as_path: !!python/tuple []
             bgpsec_next_asn: null
             next_hop_asn: 2
+            only_to_customers: null
             pathend_valid: null
             prefix: 1.2.0.0/16
             recv_relationship: !simulator_codec/Relationships
@@ -363,6 +377,7 @@ as_graph: !yamlable/CAIDAASGraph
                 bgpsec_as_path: !!python/tuple []
                 bgpsec_next_asn: null
                 next_hop_asn: 2
+                only_to_customers: null
                 pathend_valid: null
                 prefix: 1.2.0.0/16
                 recv_relationship: !simulator_codec/Relationships
@@ -397,6 +412,7 @@ as_graph: !yamlable/CAIDAASGraph
             bgpsec_as_path: !!python/tuple []
             bgpsec_next_asn: null
             next_hop_asn: 777
+            only_to_customers: null
             pathend_valid: null
             prefix: 1.2.0.0/16
             recv_relationship: !simulator_codec/Relationships
@@ -421,6 +437,7 @@ as_graph: !yamlable/CAIDAASGraph
                 bgpsec_as_path: !!python/tuple []
                 bgpsec_next_asn: null
                 next_hop_asn: 777
+                only_to_customers: null
                 pathend_valid: null
                 prefix: 1.2.0.0/16
                 recv_relationship: !simulator_codec/Relationships
@@ -455,6 +472,7 @@ as_graph: !yamlable/CAIDAASGraph
             bgpsec_as_path: !!python/tuple []
             bgpsec_next_asn: null
             next_hop_asn: 3
+            only_to_customers: null
             pathend_valid: null
             prefix: 1.2.0.0/16
             recv_relationship: !simulator_codec/Relationships
@@ -481,6 +499,7 @@ as_graph: !yamlable/CAIDAASGraph
                 bgpsec_as_path: !!python/tuple []
                 bgpsec_next_asn: null
                 next_hop_asn: 3
+                only_to_customers: null
                 pathend_valid: null
                 prefix: 1.2.0.0/16
                 recv_relationship: !simulator_codec/Relationships
@@ -514,6 +533,7 @@ as_graph: !yamlable/CAIDAASGraph
             bgpsec_as_path: !!python/tuple []
             bgpsec_next_asn: null
             next_hop_asn: 777
+            only_to_customers: null
             pathend_valid: null
             prefix: 1.2.0.0/16
             recv_relationship: !simulator_codec/Relationships
@@ -535,6 +555,7 @@ as_graph: !yamlable/CAIDAASGraph
               bgpsec_as_path: !!python/tuple []
               bgpsec_next_asn: null
               next_hop_asn: 777
+              only_to_customers: null
               pathend_valid: null
               prefix: 1.2.0.0/16
               recv_relationship: !simulator_codec/Relationships
@@ -553,6 +574,7 @@ as_graph: !yamlable/CAIDAASGraph
               bgpsec_as_path: !!python/tuple []
               bgpsec_next_asn: null
               next_hop_asn: 777
+              only_to_customers: null
               pathend_valid: null
               prefix: 1.2.0.0/16
               recv_relationship: !simulator_codec/Relationships

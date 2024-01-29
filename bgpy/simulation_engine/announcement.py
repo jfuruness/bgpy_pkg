@@ -36,6 +36,8 @@ class Announcement(YamlAble):
     # NOTE: this is the opposite direction of next_hop, for the data plane
     bgpsec_next_asn: Optional[int] = None
     bgpsec_as_path: tuple[int, ...] = ()
+    # RFC 9234 OTC attribute
+    only_to_customers: Optional[bool] = None
     # For pathend. Similar to ROA info, we store this instead of deal with RPKI
     pathend_valid: Optional[bool] = None
 
