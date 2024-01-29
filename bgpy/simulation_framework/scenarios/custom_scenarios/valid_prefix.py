@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING
 
-from .scenario import Scenario
+from ..scenario import Scenario
 from bgpy.enums import Prefixes
 from bgpy.enums import Relationships
 from bgpy.enums import Timestamps

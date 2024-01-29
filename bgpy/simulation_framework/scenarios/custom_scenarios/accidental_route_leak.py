@@ -54,11 +54,11 @@ class AccidentalRouteLeak(ValidPrefix):
         if propagation_round == 0:
             announcements: list["Ann"] = list(self.announcements)  # type: ignore
             for attacker_asn in self.attacker_asns:
-                if not engine.as_graph.as_dict[attacker_asn]._local_rib:
+                if not engine.as_graph.as_dict[attacker_asn].policy._local_rib:
                     print("Attacker did not recieve announcement, can't leak")
                 for prefix, ann in engine.as_graph.as_dict[
                     attacker_asn
-                ]._local_rib.items():
+                ].policy._local_rib.items():
                     announcements.append(
                         ann.copy(
                             {
@@ -71,7 +71,8 @@ class AccidentalRouteLeak(ValidPrefix):
                     )
             self.announcements = tuple(announcements)
             self.setup_engine(engine)
-        elif propagation_round == 1:
+            engine.ready_to_run_round = 1
+        elif propagation_round > 1:
             raise NotImplementedError
 
     def _get_attacker_asns(self, *args, **kwargs):
