@@ -376,13 +376,26 @@ class Scenario(ABC):
 
         raise NotImplementedError
 
-    def pre_aggregation_hook(self, *args, **kwargs):
+    def pre_aggregation_hook(
+        self,
+        engine: "BaseSimulationEngine",
+        percent_adopt: float | SpecialPercentAdoptions,
+        trial: int,
+        propagation_round: int
+    ) -> None:
+
         """Useful hook for changes/checks
         prior to results aggregation.
         """
         pass
 
-    def post_propagation_hook(self, *args, **kwargs):
+    def post_propagation_hook(
+        self,
+        engine: "BaseSimulationEngine",
+        percent_adopt: float | SpecialPercentAdoptions,
+        trial: int,
+        propagation_round: int
+    ) -> None:
         """Useful hook for post propagation"""
 
         pass

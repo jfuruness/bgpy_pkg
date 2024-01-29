@@ -1,0 +1,56 @@
+from typing import TYPE_CHECKING
+
+from .scenario import Scenario
+from bgpy.enums import Prefixes
+from bgpy.enums import Relationships
+from bgpy.enums import Timestamps
+
+
+if TYPE_CHECKING:
+    from bgpy.simulation_engine import Announcement as Ann
+
+
+class AccidentalRouteLeak(ValidPrefix):
+    """An accidental route leak of a valid prefix"""
+
+    def post_propagation_hook(self, engine, propagation_round, *args, **kwargs):
+        """Causes an accidental route leak
+
+        Changes the valid prefix to be received from a customer
+        so that in the second propagation round, the AS will export to all
+        relationships
+        """
+
+        raise NotImplementedError
+        # Add the route leak from the attacker
+        attacker_ann = None
+        attacker_ann = engine.as_dict[
+            list(self.attacker_asns)[0]
+        ]._local_rib.get_ann(Prefixes.PREFIX.value)
+        if propagation_round == 1:
+            # If attacker never received announcement, attack is impossible
+            if attacker_ann is None:
+                print(
+                    "Attacker did not receive announcement from victim, cannot attack"
+                )
+                return
+            print(
+                "Altering the recv_relationship to customer for:", attacker_ann
+            )
+            engine.as_dict[list(self.attacker_asns)[0]]._local_rib.get_ann(
+                Prefixes.PREFIX.value
+            ).recv_relationship = Relationships.CUSTOMERS
+
+    def _get_attacker_asns(self, *args, **kwargs):
+        """Gets attacker ASNs, overriding the valid prefix which has no attackers
+
+        There is a very rare case where the attacker can not perform the route leak
+        due to a disconnection, which happens around .1% in the CAIDA topology.
+        In theory - you could just look at the provider cone of the victim,
+        and then the peers of that provider cone (and of the victim itself), and
+        then the customer cones of all of those ASes to get the list of possible
+        valid attackers. However, we consider the attacker being unable to attack
+        in extremely rare cases a valid result, and thus do not change the random
+        selection. Doing so would also be a lot slower for a very extreme edge case
+        """
+        return Scenario._get_attacker_asns(self, *args, **kwargs)

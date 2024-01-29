@@ -1,3 +1,4 @@
+from .accidental_route_leak import AccidentalRouteLeak
 from .origin_spoofing_prefix_disconnection_hijack import (
     OriginSpoofingPrefixDisconnectionHijack,
 )
@@ -10,6 +11,7 @@ from .non_routed_superprefix_hijack import NonRoutedSuperprefixHijack
 from .non_routed_superprefix_prefix_hijack import NonRoutedSuperprefixPrefixHijack
 
 __all__ = [
+    "AccidentalRouteLeak",
     "OriginSpoofingPrefixDisconnectionHijack",
     "OriginSpoofingPrefixScapegoatHijack",
     "PrefixHijack",

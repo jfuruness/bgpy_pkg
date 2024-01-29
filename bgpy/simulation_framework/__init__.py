@@ -5,6 +5,7 @@ from .metric_tracker import MetricTracker
 from .scenarios import preprocess_anns_funcs
 from .scenarios import ScenarioConfig
 from .scenarios import Scenario
+from .scenarios import AccidentalRouteLeak
 from .scenarios import OriginSpoofingPrefixDisconnectionHijack
 from .scenarios import OriginSpoofingPrefixScapegoatHijack
 from .scenarios import PrefixHijack
@@ -26,6 +27,7 @@ __all__ = [
     "preprocess_anns_funcs",
     "ScenarioConfig",
     "Scenario",
+    "AccidentalRouteLeak",
     "OriginSpoofingPrefixDisconnectionHijack",
     "OriginSpoofingPrefixScapegoatHijack",
     "PrefixHijack",
