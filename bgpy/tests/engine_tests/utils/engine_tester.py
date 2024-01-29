@@ -111,6 +111,8 @@ class EngineTester(EngineRunner):
 
         To combat this, we now compare metrics, and only overwrite
         if the metrics are actually different
+
+        This function is unfortunately stupid complicated to accomplish this
         """
 
         # Save metrics as ground truth if ground truth doesn't exist
@@ -122,7 +124,7 @@ class EngineTester(EngineRunner):
                 csv_path=self.metrics_ground_truth_path_csv,
                 pickle_path=self.metrics_ground_truth_path_pickle,
             )
-        elif self.overwrite:
+        elif self.overwrite and self.metrics_guess_path_pickle.exists():
             try:
                 self._compare_metrics_to_gt()
             # Metrics are actually different, write them out
@@ -131,6 +133,21 @@ class EngineTester(EngineRunner):
                     csv_path=self.metrics_ground_truth_path_csv,
                     pickle_path=self.metrics_ground_truth_path_pickle,
                 )
+        elif self.overwrite:
+            try:
+                # Write to guess first, so that we can compare
+                metric_tracker.write_data(
+                    csv_path=self.metrics_guess_path_csv,
+                    pickle_path=self.metrics_guess_path_pickle,
+                )
+                self._compare_metrics_to_gt()
+            # Metrics are actually different, write them out
+            except AssertionError:
+                metric_tracker.write_data(
+                    csv_path=self.metrics_ground_truth_path_csv,
+                    pickle_path=self.metrics_ground_truth_path_pickle,
+                )
+
 
     def _generate_gt_diagrams(
         self, scenario: Scenario, metric_tracker: MetricTracker
