@@ -103,16 +103,34 @@ class EngineTester(EngineRunner):
         self._store_gt_metrics(metric_tracker)
 
     def _store_gt_metrics(self, metric_tracker: MetricTracker) -> None:
-        """Stores metric ground truth"""
+        """Stores metric ground truth
+
+        For some reason, even with sorting, these files store
+        differently, and this the git diffs include these files
+        even though we don't even track them anymore
+
+        To combat this, we now compare metrics, and only overwrite
+        if the metrics are actually different
+        """
+
         # Save metrics as ground truth if ground truth doesn't exist
         if (
             not self.metrics_ground_truth_path_pickle.exists()
             or not self.metrics_ground_truth_path_csv.exists()
-        ) or self.overwrite:
+        ):
             metric_tracker.write_data(
                 csv_path=self.metrics_ground_truth_path_csv,
                 pickle_path=self.metrics_ground_truth_path_pickle,
             )
+        elif self.overwrite:
+            try:
+                self._compare_metrics_to_gt()
+            # Metrics are actually different, write them out
+            except AssertionError:
+                metric_tracker.write_data(
+                    csv_path=self.metrics_ground_truth_path_csv,
+                    pickle_path=self.metrics_ground_truth_path_pickle,
+                )
 
     def _generate_gt_diagrams(
         self, scenario: Scenario, metric_tracker: MetricTracker
