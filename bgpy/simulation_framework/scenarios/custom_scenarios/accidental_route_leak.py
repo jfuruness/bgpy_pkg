@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING
 
-from bgpy.enums import Relationships, SpecialPercentAdoptions
+from bgpy.enums import Relationships, SpecialPercentAdoptions, Timestamps
 
 from .valid_prefix import ValidPrefix
 from ..scenario import Scenario
@@ -50,20 +50,22 @@ class AccidentalRouteLeak(ValidPrefix):
         forgo this for now for simplicity.
         """
 
-
         if propagation_round == 0:
             announcements = list(self.announcements)
             for attacker_asn in self.attacker_asns:
                 if not engine.as_graph.as_dict[attacker_asn]._local_rib:
                     print("Attacker did not recieve announcement, can't leak")
-                for prefix, ann in engine.as_graph.as_dict[attacker_asn]._local_rib.items():
+                for prefix, ann in engine.as_graph.as_dict[
+                    attacker_asn
+                ]._local_rib.items():
                     announcements.append(
                         ann.copy(
                             {
                                 "recv_relationship": Relationships.CUSTOMERS,
-                                 "seed_asn": attacker_asn,
-                                 "traceback_end": True
-                             }
+                                "seed_asn": attacker_asn,
+                                "traceback_end": True,
+                                "timestamp": Timestamps.ATTACKER.value,
+                            }
                         )
                     )
             self.announcements = tuple(announcements)

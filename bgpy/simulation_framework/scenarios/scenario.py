@@ -381,9 +381,8 @@ class Scenario(ABC):
         engine: "BaseSimulationEngine",
         percent_adopt: float | SpecialPercentAdoptions,
         trial: int,
-        propagation_round: int
+        propagation_round: int,
     ) -> None:
-
         """Useful hook for changes/checks
         prior to results aggregation.
         """
@@ -394,7 +393,7 @@ class Scenario(ABC):
         engine: "BaseSimulationEngine",
         percent_adopt: float | SpecialPercentAdoptions,
         trial: int,
-        propagation_round: int
+        propagation_round: int,
     ) -> None:
         """Useful hook for post propagation"""
 

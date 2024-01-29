@@ -8,6 +8,7 @@ from bgpy.simulation_framework.as_graph_analyzers import (
     BaseASGraphAnalyzer,
     ASGraphAnalyzer,
 )
+from bgpy.simulation_framework import AccidentalRouteLeak
 from .diagram import Diagram
 
 
@@ -28,3 +29,10 @@ class EngineRunConfig:
     MetricTrackerCls: type[MetricTracker] = MetricTracker
     ASGraphAnalyzerCls: type[BaseASGraphAnalyzer] = ASGraphAnalyzer
     DiagramCls: type[Diagram] = Diagram
+
+    def __post_init__(self):
+        if (
+            self.scenario_config.ScenarioCls == AccidentalRouteLeak
+            and self.propagation_rounds < 2
+        ):
+            raise ValueError("propagation_rounds must be >= 2 for AccidentalRouteLeak")
