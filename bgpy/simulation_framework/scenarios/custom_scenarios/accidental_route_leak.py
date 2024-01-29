@@ -8,6 +8,7 @@ from ..scenario import Scenario
 
 if TYPE_CHECKING:
     from bgpy.simulation_engine import BaseSimulationEngine
+    from bgpy.simulation_engine import Announcement as Ann
 
 
 class AccidentalRouteLeak(ValidPrefix):
@@ -51,7 +52,7 @@ class AccidentalRouteLeak(ValidPrefix):
         """
 
         if propagation_round == 0:
-            announcements = list(self.announcements)
+            announcements: list["Ann"] = list(self.announcements)  # type: ignore
             for attacker_asn in self.attacker_asns:
                 if not engine.as_graph.as_dict[attacker_asn]._local_rib:
                     print("Attacker did not recieve announcement, can't leak")

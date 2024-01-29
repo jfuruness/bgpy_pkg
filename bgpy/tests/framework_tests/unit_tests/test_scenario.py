@@ -301,7 +301,7 @@ class TestScenario:
 
         SubprefixHijack(
             scenario_config=ScenarioConfig(ScenarioCls=SubprefixHijack), engine=engine
-        ).post_propagation_hook()
+        ).post_propagation_hook(engine, percent_adopt=.5, trial=0, propagation_round=0)
 
     ################
     # Helper Funcs #

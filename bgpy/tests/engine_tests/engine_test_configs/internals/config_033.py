@@ -5,8 +5,8 @@ from copy import deepcopy
 from bgpy.tests.engine_tests.as_graph_infos import as_graph_info_047
 from bgpy.tests.engine_tests.utils import EngineTestConfig
 
-
-from bgpy.simulation_engine import BGPPolicy
+from bgpy.enums import SpecialPercentAdoptions
+from bgpy.simulation_engine import BGPPolicy, BaseSimulationEngine
 from bgpy.simulation_framework import (
     ValidPrefix,
     ScenarioConfig,
@@ -17,7 +17,14 @@ from bgpy.enums import Prefixes
 class Custom33ValidPrefix(ValidPrefix):
     """Add a better announcement in round 2 to cause withdrawal"""
 
-    def post_propagation_hook(self, engine=None, propagation_round=0, *args, **kwargs):
+    def post_propagation_hook(
+        self,
+        engine: "BaseSimulationEngine",
+        percent_adopt: float | SpecialPercentAdoptions,
+        trial: int,
+        propagation_round: int,
+    ) -> None:
+
         if propagation_round == 1:  # second round
             ann = deepcopy(
                 engine.as_graph.as_dict[2].policy._local_rib.get(Prefixes.PREFIX.value)
@@ -34,7 +41,7 @@ class Custom33ValidPrefix(ValidPrefix):
             )
             engine.as_graph.as_dict[3].policy._local_rib.add_ann(ann)
             Custom33ValidPrefix.victim_asns = frozenset({2, 3})
-            self.victim_asns = frozenset({2, 3})
+            self.victim_asns: frozenset[int] = frozenset({2, 3})
 
 
 config_033 = EngineTestConfig(
