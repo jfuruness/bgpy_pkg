@@ -234,7 +234,7 @@ def _find_shortest_non_adopting_path_general(
     AdoptPolicyCls = self_scenario.scenario_config.AdoptPolicyCls
 
     def get_policy(as_: "AS") -> type["Policy"]:
-        return self_scenario.non_default_asn_cls_dict.get(
+        return self_scenario.non_default_asn_cls_dict.get(  # type: ignore
             as_.asn, self_scenario.scenario_config.BasePolicyCls
         )
 

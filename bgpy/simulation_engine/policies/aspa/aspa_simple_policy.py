@@ -23,7 +23,7 @@ class ASPASimplePolicy(BGPSimplePolicy):
             if len(ann.as_path) == 1:
                 return super()._valid_ann(ann, from_rel)
             else:
-                reversed_as_path = list(reversed(ann.as_path))
+                reversed_as_path = list(reversed(ann.as_path))  # type: ignore
                 # For every adopting ASPA AS in the path,
                 # The next ASN in the path must be in their providers list
                 for i, asn in enumerate(reversed_as_path):
@@ -41,7 +41,7 @@ class ASPASimplePolicy(BGPSimplePolicy):
                 return super()._valid_ann(ann, from_rel)
             else:
                 # https://datatracker.ietf.org/doc/html/draft-ietf-sidrops-aspa-verification-16
-                u_min = len(ann.as_path) + 1
+                u_min = len(ann.as_path) + 1  # type: ignore
                 reversed_as_path = list(reversed(ann.as_path))
                 # For every adopting ASPA AS in the path,
                 # The next ASN in the path must be in their providers list
@@ -76,4 +76,4 @@ class ASPASimplePolicy(BGPSimplePolicy):
         else:
             raise NotImplementedError("Should never reach here")
 
-        return super()._valid_ann(ann, from_rel)
+        return super()._valid_ann(ann, from_rel)  # type: ignore
