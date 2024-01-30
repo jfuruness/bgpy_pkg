@@ -1,11 +1,31 @@
 from frozendict import frozendict
 
+from bgpy.as_graphs import ASGraphInfo, PeerLink, CustomerProviderLink as CPLink
 from bgpy.enums import ASNs
 from bgpy.simulation_engine import BGPSimplePolicy
 from bgpy.simulation_framework import ScenarioConfig, SubprefixHijack
-from bgpy.tests import as_graph_infos
 from bgpy.tests import EngineTestConfig
 
+r"""Hidden hijack example with BGP
+Figure 1a in our ROV++ paper
+
+    1
+     \
+     2 - 3
+    /     \
+   777     666
+"""
+
+as_graph_info = ASGraphInfo(
+    peer_links=frozenset([PeerLink(2, 3)]),
+    customer_provider_links=frozenset(
+        [
+            CPLink(provider_asn=1, customer_asn=2),
+            CPLink(provider_asn=2, customer_asn=ASNs.VICTIM.value),
+            CPLink(provider_asn=3, customer_asn=ASNs.ATTACKER.value),
+        ]
+    ),
+)
 
 config_tutorial = EngineTestConfig(
     name="tutorial",
@@ -17,5 +37,5 @@ config_tutorial = EngineTestConfig(
         override_victim_asns=frozenset({ASNs.VICTIM.value}),
         override_non_default_asn_cls_dict=frozendict(),
     ),
-    as_graph_info=as_graph_infos.as_graph_info_001,
+    as_graph_info=as_graph_info,
 )
