@@ -12,6 +12,10 @@ class ASPASimplePolicy(BGPSimplePolicy):
 
     name: str = "ASPASimple"
 
+    def __init__(self, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
+        # self._provider_check.cache_clear()
+
     def _valid_ann(self, ann: "Ann", from_rel: Relationships) -> bool:  # type: ignore
         """Returns False if from peer/customer when aspa is set"""
 
@@ -35,15 +39,13 @@ class ASPASimplePolicy(BGPSimplePolicy):
             reversed_as_path = list(reversed(ann.as_path))  # type: ignore
             # For every adopting ASPA AS in the path,
             # The next ASN in the path must be in their providers list
-            for i, asn in enumerate(reversed_as_path):
+            for i, asn1 in enumerate(reversed_as_path):
                 # This is the end of the AS Path
                 if i == len(reversed_as_path) - 1:
                     break
-                cur_as_obj = self.as_.as_graph.as_dict[asn]
-                if isinstance(cur_as_obj.policy, ASPASimplePolicy):
-                    next_as_obj = self.as_.as_graph.as_dict[reversed_as_path[i + 1]]
-                    if next_as_obj.asn not in cur_as_obj.provider_asns:
-                        return False
+                asn2 = reversed_as_path[i + 1]
+                if not self._provider_check(asn1, asn2):
+                    return False
         return super()._valid_ann(ann, from_rel)  # type: ignore
 
     def _downstream_check(self, ann: "Ann", from_rel: Relationships) -> bool:
@@ -69,30 +71,36 @@ class ASPASimplePolicy(BGPSimplePolicy):
         reversed_as_path = list(reversed(ann.as_path))
         # For every adopting ASPA AS in the path,
         # The next ASN in the path must be in their providers list
-        for i, asn in enumerate(reversed_as_path):
+        for i, asn1 in enumerate(reversed_as_path):
             # This is the end of the AS Path
             if i == len(reversed_as_path) - 1:
                 break
-            cur_as_obj = self.as_.as_graph.as_dict[asn]
-            if isinstance(cur_as_obj.policy, ASPASimplePolicy):
-                next_as_obj = self.as_.as_graph.as_dict[reversed_as_path[i + 1]]
-                if next_as_obj.asn not in cur_as_obj.provider_asns:
-                    u_min = i + 2
-                    break
+            asn2 = reversed_as_path[i + 1]
+            if not self._provider_check(asn1, asn2):
+                u_min = i + 2
+                break
         return u_min
 
     def _calculate_v_max_complement(self, ann: "Ann") -> int:
         """Calculates v_max_complement from ASPA RFC"""
 
         v_max_complement = 0
-        for i, asn in enumerate(ann.as_path):
+        for i, asn1 in enumerate(ann.as_path):
             # This is the end of the AS Path
             if i == len(ann.as_path) - 1:
                 break
-            cur_as_obj = self.as_.as_graph.as_dict[asn]
-            if isinstance(cur_as_obj.policy, ASPASimplePolicy):
-                next_as_obj = self.as_.as_graph.as_dict[ann.as_path[i + 1]]
-                if next_as_obj.asn not in cur_as_obj.provider_asns:
-                    v_max_complement = i + 2
-                    break
+            asn2 = ann.as_path[i + 1]
+            if not self._provider_check(asn1, asn2):
+                v_max_complement = i + 2
+                break
         return v_max_complement
+
+    def _provider_check(self, asn1: int, asn2: int) -> bool:
+        """Returns False if asn2 is not in asn1's provider_asns, AND asn1 adopts ASPA"""
+
+        cur_as_obj = self.as_.as_graph.as_dict[asn1]
+        if isinstance(cur_as_obj.policy, ASPASimplePolicy):
+            next_as_obj = self.as_.as_graph.as_dict[asn2]
+            if next_as_obj.asn not in cur_as_obj.provider_asns:
+                return False
+        return True
