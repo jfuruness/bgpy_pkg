@@ -38,8 +38,6 @@ class Announcement(YamlAble):
     bgpsec_as_path: tuple[int, ...] = ()
     # RFC 9234 OTC attribute
     only_to_customers: Optional[bool] = None
-    # For pathend. Similar to ROA info, we store this instead of deal with RPKI
-    pathend_valid: Optional[bool] = None
 
     def prefix_path_attributes_eq(self, ann: Optional["Announcement"]) -> bool:
         """Checks prefix and as path equivalency"""
