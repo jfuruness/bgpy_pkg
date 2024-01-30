@@ -10,7 +10,7 @@ from .bgpsec import BGPSecPolicy
 from .bgpsec import BGPSecSimplePolicy
 from .only_to_customers import OnlyToCustomersSimplePolicy, OnlyToCustomersPolicy
 from .pathend import PathendSimplePolicy, PathendPolicy
-from .aspa import ASPASimplePolicy, ASPAPolicy,
+from .aspa import ASPASimplePolicy, ASPAPolicy
 
 __all__ = [
     "BGPSimplePolicy",

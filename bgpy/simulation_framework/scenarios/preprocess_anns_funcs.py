@@ -47,8 +47,8 @@ def origin_hijack(
     for ann in unprocessed_anns:
         # If the announcement is from the attacker
         if ann.invalid_by_roa:
-            if ann.prefix != valid_ann.prefix:
-                raise NotImplementedError("TODO: get the valid origin per prefix")
+            # if ann.prefix != valid_ann.prefix:
+            #     raise NotImplementedError("TODO: get the valid origin per prefix")
             # Make the AS path be just the victim
             processed_ann = ann.copy(
                 {

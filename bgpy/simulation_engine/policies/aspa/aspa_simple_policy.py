@@ -31,9 +31,9 @@ class ASPASimplePolicy(BGPSimplePolicy):
                     # This is the end of the AS Path
                     if i == len(reversed_as_path):
                         continue
-                    cur_as_obj = self.as_graph.as_dict[asn]
+                    cur_as_obj = self.as_.as_graph.as_dict[asn]
                     if isinstance(cur_as_obj.policy, ASPASimplePolicy):
-                        next_as_obj = self.as_graph.as_dict[reversed_as_path[i + 1]]
+                        next_as_obj = self.as_.as_graph.as_dict[reversed_as_path[i + 1]]
                         if next_as_obj not in cur_as_obj.providers:
                             return False
         elif from_rel.value == Relationships.PROVIDERS.value:
@@ -48,11 +48,11 @@ class ASPASimplePolicy(BGPSimplePolicy):
                 # The next ASN in the path must be in their providers list
                 for i, asn in enumerate(reversed_as_path):
                     # This is the end of the AS Path
-                    if i == len(reversed_as_path):
+                    if i == len(reversed_as_path) - 1:
                         continue
-                    cur_as_obj = self.as_graph.as_dict[asn]
+                    cur_as_obj = self.as_.as_graph.as_dict[asn]
                     if isinstance(cur_as_obj.policy, ASPASimplePolicy):
-                        next_as_obj = self.as_graph.as_dict[reversed_as_path[i + 1]]
+                        next_as_obj = self.as_.as_graph.as_dict[reversed_as_path[i + 1]]
                         if next_as_obj not in cur_as_obj.providers:
                             u_min = i + 2
                             break
@@ -60,11 +60,11 @@ class ASPASimplePolicy(BGPSimplePolicy):
                 v_max_complement = 0
                 for i, asn in enumerate(ann.as_path):
                     # This is the end of the AS Path
-                    if i == len(ann.as_path):
+                    if i == len(ann.as_path) - 1:
                         continue
-                    cur_as_obj = self.as_graph.as_dict[asn]
+                    cur_as_obj = self.as_.as_graph.as_dict[asn]
                     if isinstance(cur_as_obj.policy, ASPASimplePolicy):
-                        next_as_obj = self.as_graph.as_dict[reversed_as_path[i + 1]]
+                        next_as_obj = self.as_.as_graph.as_dict[ann.as_path[i + 1]]
                         if next_as_obj not in cur_as_obj.providers:
                             v_max_complement = i + 2
                             break
