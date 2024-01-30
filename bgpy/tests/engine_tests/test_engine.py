@@ -2,7 +2,7 @@ from pathlib import Path
 
 import pytest
 
-from .engine_test_configs import example_configs
+from .engine_test_configs import engine_test_configs
 from .utils import EngineTester
 from .utils import EngineTestConfig
 
@@ -14,7 +14,7 @@ class TestEngine:
     See README for in depth details
     """
 
-    @pytest.mark.parametrize("conf", example_configs)
+    @pytest.mark.parametrize("conf", engine_test_configs)
     def test_engine(self, conf: EngineTestConfig, overwrite: bool):
         """Performs a system test on the engine
 

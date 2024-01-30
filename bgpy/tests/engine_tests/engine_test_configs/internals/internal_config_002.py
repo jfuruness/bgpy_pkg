@@ -1,7 +1,6 @@
 from frozendict import frozendict
 from copy import deepcopy
 
-from bgpy.tests.engine_tests.as_graph_infos import as_graph_info_040
 from bgpy.tests.engine_tests.utils import EngineTestConfig
 
 
@@ -12,8 +11,31 @@ from bgpy.simulation_framework import (
 )
 from bgpy.enums import Prefixes
 
+from bgpy.as_graphs import PeerLink, CustomerProviderLink as CPLink
+from bgpy.as_graphs import ASGraphInfo
 
-class Custom34ValidPrefix(ValidPrefix):
+
+r"""Graph to test relationship preference
+
+      2
+     /
+5 - 1 - 3
+     \
+      4
+"""
+
+as_graph_info = ASGraphInfo(
+    peer_links=frozenset([PeerLink(1, 3), PeerLink(1, 5)]),
+    customer_provider_links=frozenset(
+        [
+            CPLink(provider_asn=2, customer_asn=1),
+            CPLink(provider_asn=1, customer_asn=4),
+        ]
+    ),
+)
+
+
+class Custom02ValidPrefix(ValidPrefix):
     """Add a better announcement in round 2 to cause withdrawal"""
 
     def post_propagation_hook(self, engine=None, propagation_round=0, *args, **kwargs):
@@ -32,7 +54,7 @@ class Custom34ValidPrefix(ValidPrefix):
                 (3,),
             )
             engine.as_graph.as_dict[3].policy._local_rib.add_ann(ann)
-            Custom34ValidPrefix.victim_asns = frozenset({2, 3})
+            Custom02ValidPrefix.victim_asns = frozenset({2, 3})
 
         if propagation_round == 2:  # third round
             ann = deepcopy(
@@ -49,18 +71,18 @@ class Custom34ValidPrefix(ValidPrefix):
                 1, Prefixes.PREFIX.value
             )
             engine.as_graph.as_dict[3].policy._send_q.add_ann(1, ann)
-            Custom34ValidPrefix.victim_asns = frozenset({2})
+            Custom02ValidPrefix.victim_asns = frozenset({2})
 
 
-config_034 = EngineTestConfig(
-    name="034",
+internal_config_002 = EngineTestConfig(
+    name="internal_002",
     desc="Test withdrawal mechanism choosing next best announcement",
     scenario_config=ScenarioConfig(
-        ScenarioCls=Custom34ValidPrefix,
+        ScenarioCls=Custom02ValidPrefix,
         BasePolicyCls=BGPPolicy,
         override_victim_asns=frozenset({2}),
         override_non_default_asn_cls_dict=frozendict(),
     ),
-    as_graph_info=as_graph_info_040,
+    as_graph_info=as_graph_info,
     propagation_rounds=4,
 )

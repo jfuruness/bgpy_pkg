@@ -1,9 +1,10 @@
 from frozendict import frozendict
 from copy import deepcopy
 
-
-from bgpy.tests.engine_tests.as_graph_infos import as_graph_info_047
 from bgpy.tests.engine_tests.utils import EngineTestConfig
+
+from bgpy.as_graphs import PeerLink, CustomerProviderLink as CPLink
+from bgpy.as_graphs import ASGraphInfo
 
 from bgpy.enums import SpecialPercentAdoptions
 from bgpy.simulation_engine import BGPPolicy, BaseSimulationEngine
@@ -14,7 +15,18 @@ from bgpy.simulation_framework import (
 from bgpy.enums import Prefixes
 
 
-class Custom33ValidPrefix(ValidPrefix):
+as_graph_info = ASGraphInfo(
+    peer_links=frozenset([PeerLink(1, 3), PeerLink(1, 5)]),
+    customer_provider_links=frozenset(
+        [
+            CPLink(provider_asn=2, customer_asn=1),
+            CPLink(provider_asn=1, customer_asn=4),
+        ]
+    ),
+)
+
+
+class Custom00ValidPrefix(ValidPrefix):
     """Add a better announcement in round 2 to cause withdrawal"""
 
     def post_propagation_hook(
@@ -39,19 +51,19 @@ class Custom33ValidPrefix(ValidPrefix):
                 (3,),
             )
             engine.as_graph.as_dict[3].policy._local_rib.add_ann(ann)
-            Custom33ValidPrefix.victim_asns = frozenset({2, 3})
+            Custom00ValidPrefix.victim_asns = frozenset({2, 3})
             self.victim_asns: frozenset[int] = frozenset({2, 3})
 
 
-config_033 = EngineTestConfig(
-    name="033",
+internal_config_000 = EngineTestConfig(
+    name="internal_000",
     desc="Test withdrawal mechanism caused by better announcement",
     scenario_config=ScenarioConfig(
-        ScenarioCls=Custom33ValidPrefix,
+        ScenarioCls=Custom00ValidPrefix,
         BasePolicyCls=BGPPolicy,
         override_victim_asns=frozenset({2}),
         override_non_default_asn_cls_dict=frozendict(),
     ),
-    as_graph_info=as_graph_info_047,
+    as_graph_info=as_graph_info,
     propagation_rounds=3,
 )
