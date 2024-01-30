@@ -141,7 +141,7 @@ class Simulation:
 
     def run(
         self,
-        GraphFactoryCls: type[GraphFactory] = GraphFactory,
+        GraphFactoryCls: Optional[type[GraphFactory]] = GraphFactory,
         graph_factory_kwargs=None,
     ) -> None:
         """Runs the simulation and write the data"""
@@ -380,7 +380,7 @@ class Simulation:
 
     def _graph_data(
         self,
-        GraphFactoryCls: type[GraphFactory] = GraphFactory,
+        GraphFactoryCls: Optional[type[GraphFactory]] = GraphFactory,
         kwargs=None,
     ) -> None:
         """Generates some default graphs"""
@@ -390,8 +390,9 @@ class Simulation:
         # Set defaults for kwargs
         kwargs["pickle_path"] = kwargs.pop("pickle_path", self.pickle_path)
         kwargs["graph_dir"] = kwargs.pop("graph_dir", self.output_dir / "graphs")
-        GraphFactoryCls(**kwargs).generate_graphs()
-        print(f"\nWrote graphs to {kwargs['graph_dir']}")
+        if GraphFactoryCls:
+            GraphFactoryCls(**kwargs).generate_graphs()
+            print(f"\nWrote graphs to {kwargs['graph_dir']}")
 
     @property
     def graph_output_dir(self) -> Path:
