@@ -100,6 +100,10 @@ def shortest_path_export_all_hijack(
             )
 
         if shortest_as_path:
+            # This can happen if the attacker is the shortest path
+            # See shortest_path_export_all_aspa_simple_provider test (27)
+            if shortest_as_path[0] == ann.as_path[0] and len(shortest_as_path) > 1:
+                shortest_as_path = shortest_as_path[1:]
             processed_anns.append(
                 ann.copy(
                     {
@@ -284,7 +288,7 @@ def _find_shortest_non_adopting_path_general(
     non_adopting_customers = set()  # USING ASNs due to weakref.Proxy not hashable
     for visited_asn, as_path in visited.copy().items():
         visited_as = engine.as_graph.as_dict[visited_asn]
-        queue = deque([(visited_as, (visited_as.asn,))])
+        queue = deque([(visited_as, as_path)])
         while queue:
             as_, as_path = queue.popleft()
             if not issubclass(get_policy(as_), AdoptPolicyCls):
@@ -292,8 +296,8 @@ def _find_shortest_non_adopting_path_general(
             # If the old path doesn't exist or is larger than the new one
             if len(visited.get(as_.asn, (None,) + as_path)) > len(as_path):
                 visited[as_.asn] = as_path
-                for customer_as in engine.as_graph.as_dict[as_.asn].customers:
-                    queue.append((customer_as, (customer_as.asn,) + as_path))
+            for customer_as in engine.as_graph.as_dict[as_.asn].customers:
+                queue.append((customer_as, (customer_as.asn,) + as_path))
     if non_adopting_customers:
         non_adopting_customer_distances = {
             asn: len(visited[asn]) for asn in non_adopting_customers
