@@ -36,15 +36,11 @@ class ASPASimplePolicy(BGPSimplePolicy):
         if len(ann.as_path) == 1:
             return super()._valid_ann(ann, from_rel)
         else:
-            reversed_as_path = list(reversed(ann.as_path))  # type: ignore
+            reversed_path = list(reversed(ann.as_path))  # type: ignore
             # For every adopting ASPA AS in the path,
             # The next ASN in the path must be in their providers list
-            for i, asn1 in enumerate(reversed_as_path):
-                # This is the end of the AS Path
-                if i == len(reversed_as_path) - 1:
-                    break
-                asn2 = reversed_as_path[i + 1]
-                if not self._provider_check(asn1, asn2):
+            for i in range(len(reversed_path) - 1):
+                if not self._provider_check(reversed_path[i], reversed_path[i + 1]):
                     return False
         return super()._valid_ann(ann, from_rel)  # type: ignore
 
@@ -68,15 +64,11 @@ class ASPASimplePolicy(BGPSimplePolicy):
 
         # https://datatracker.ietf.org/doc/html/draft-ietf-sidrops-aspa-verification-16
         u_min = len(ann.as_path) + 1  # type: ignore
-        reversed_as_path = list(reversed(ann.as_path))
+        reversed_path = list(reversed(ann.as_path))
         # For every adopting ASPA AS in the path,
         # The next ASN in the path must be in their providers list
-        for i, asn1 in enumerate(reversed_as_path):
-            # This is the end of the AS Path
-            if i == len(reversed_as_path) - 1:
-                break
-            asn2 = reversed_as_path[i + 1]
-            if not self._provider_check(asn1, asn2):
+        for i in range(len(reversed_path) - 1):
+            if not self._provider_check(reversed_path[i], reversed_path[i + 1]):
                 u_min = i + 2
                 break
         return u_min
@@ -85,12 +77,8 @@ class ASPASimplePolicy(BGPSimplePolicy):
         """Calculates v_max_complement from ASPA RFC"""
 
         v_max_complement = 0
-        for i, asn1 in enumerate(ann.as_path):
-            # This is the end of the AS Path
-            if i == len(ann.as_path) - 1:
-                break
-            asn2 = ann.as_path[i + 1]
-            if not self._provider_check(asn1, asn2):
+        for i in range(len(ann.as_path) - 1):
+            if not self._provider_check(ann.as_path[i], ann.as_path[i + 1]):
                 v_max_complement = i + 2
                 break
         return v_max_complement
