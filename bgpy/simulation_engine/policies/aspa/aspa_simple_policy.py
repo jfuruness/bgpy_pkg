@@ -29,7 +29,7 @@ class ASPASimplePolicy(BGPSimplePolicy):
                 # The next ASN in the path must be in their providers list
                 for i, asn in enumerate(reversed_as_path):
                     # This is the end of the AS Path
-                    if i == len(reversed_as_path):
+                    if i == len(reversed_as_path) - 1:
                         continue
                     cur_as_obj = self.as_.as_graph.as_dict[asn]
                     if isinstance(cur_as_obj.policy, ASPASimplePolicy):

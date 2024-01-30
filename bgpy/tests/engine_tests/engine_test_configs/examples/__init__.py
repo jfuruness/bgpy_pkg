@@ -23,6 +23,7 @@ from .ex_config_021 import ex_config_021
 from .ex_config_022 import ex_config_022
 from .ex_config_023 import ex_config_023
 from .ex_config_024 import ex_config_024
+from .ex_config_025 import ex_config_025
 
 
 example_configs = [
@@ -51,6 +52,7 @@ example_configs = [
     ex_config_022,
     ex_config_023,
     ex_config_024,
+    ex_config_025,
 ]
 
 __all__ = ["example_configs"]

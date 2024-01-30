@@ -94,7 +94,9 @@ def shortest_path_export_all_hijack(
             )
         else:
             shortest_as_path = _find_shortest_non_adopting_path_general(
-                valid_ann.origin, self_scenario.scenario_config.AdoptPolicyCls, engine
+                valid_ann.origin,
+                self_scenario,
+                engine
             )
 
         if shortest_as_path:
@@ -216,7 +218,7 @@ def _find_shortest_secondary_provider_path(
 
 def _find_shortest_non_adopting_path_general(
     root_asn: int,
-    AdoptPolicyCls: type["Policy"],
+    self_scenario: "Scenario",
     engine: Optional["BaseSimulationEngine"],
 ) -> Optional[tuple[int, ...]]:
     """Finds the shortest non adopting path from the root asn
@@ -227,33 +229,43 @@ def _find_shortest_non_adopting_path_general(
     is longer, it's better to be accepted by going to a provider
     """
 
+    AdoptPolicyCls = self_scenario.scenario_config.AdoptPolicyCls
+
+    def get_policy(as_: "AS") -> type["Policy"]:
+        return self_scenario.non_default_asn_cls_dict.get(
+            as_.asn, self_scenario.scenario_config.BasePolicyCls
+        )
+
     assert engine, "mypy"
     root_as = engine.as_graph.as_dict[root_asn]
 
-    # {AS: as_path to get here}
+    # {ASN: as_path to get here}
+    # NOTE: I used to have AS as the key, but weakref.Proxy isn't hashable
+    # https://stackoverflow.com/a/68273386/8903959
     visited = dict()
 
     # First, use BFS on provider relationships
     queue: deque[tuple["AS", tuple[int, ...]]] = deque([(root_as, (root_as.asn,))])
     while queue:
         as_, as_path = queue.popleft()
-        if as_ not in visited:
-            if not isinstance(as_, AdoptPolicyCls):
+        if as_.asn not in visited:
+            if not issubclass(get_policy(as_), AdoptPolicyCls):
                 return as_path
-            visited[as_] = as_path
+            visited[as_.asn] = as_path
             for provider_as in engine.as_graph.as_dict[as_.asn].providers:
-                if provider_as not in visited:
+                if provider_as.asn not in visited:
                     queue.append((provider_as, (provider_as.asn,) + as_path))
 
     # Then, go in order of provider relationships
     # This is a nice optimization, since the dictionary maintains order
     # and BFS increments in order of distance
-    for visited_as, as_path in visited.copy().items():
+    for visited_asn, as_path in visited.copy().items():
+        visited_as = engine.as_graph.as_dict[visited_asn]
         for peer_as in visited_as.peers:
-            if not isinstance(peer_as, AdoptPolicyCls):
+            if not issubclass(get_policy(peer_as), AdoptPolicyCls):
                 return (peer_as.asn,) + as_path
-            elif peer_as not in visited:
-                visited[peer_as] = (peer_as.asn,) + as_path
+            elif peer_as.asn not in visited:
+                visited[peer_as.asn] = (peer_as.asn,) + as_path
 
     # At this point, if we still haven't found it, it's a customer
     # relationship (or doesn't exist).
@@ -269,26 +281,27 @@ def _find_shortest_non_adopting_path_general(
     # less error prone
     # To do this, I'll  simply iterate through all remaining ASes, and then sort
     # them and return the shortest AS path (or None)
-    non_adopting_customers = set()
-    for visited_as, as_path in visited.copy().items():
+    non_adopting_customers = set()  # USING ASNs due to weakref.Proxy not hashable
+    for visited_asn, as_path in visited.copy().items():
+        visited_as = engine.as_graph.as_dict[visited_asn]
         queue = deque([(visited_as, (visited_as.asn,))])
         while queue:
             as_, as_path = queue.popleft()
-            if not isinstance(as_, AdoptPolicyCls):
-                non_adopting_customers.add(as_)
+            if not issubclass(get_policy(as_), AdoptPolicyCls):
+                non_adopting_customers.add(as_.asn)
             # If the old path doesn't exist or is larger than the new one
-            if len(visited.get(as_, (None,) + as_path)) > len(as_path):
-                visited[as_] = as_path
+            if len(visited.get(as_.asn, (None,) + as_path)) > len(as_path):
+                visited[as_.asn] = as_path
                 for customer_as in engine.as_graph.as_dict[as_.asn].customers:
                     queue.append((customer_as, (customer_as.asn,) + as_path))
     if non_adopting_customers:
         non_adopting_customer_distances = {
-            as_: len(visited[as_]) for as_ in non_adopting_customers
+            asn: len(visited[asn]) for asn in non_adopting_customers
         }
         sorted_non_adopting_customers = sorted(
             non_adopting_customer_distances.items(), key=lambda x: x[1]
         )
-        best_as = sorted_non_adopting_customers[0][0]
-        return visited[best_as]
+        best_asn = sorted_non_adopting_customers[0][0]
+        return visited[best_asn]
     else:
         return None

@@ -38,6 +38,8 @@ from .bgp.config_035 import config_035
 from .rov.config_036 import config_036
 from .rov.config_037 import config_037
 
+example_configs = [config_032, config_033, config_034] + example_configs
+
 __all__ = [
     "config_001",
     "config_002",
