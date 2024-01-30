@@ -18,7 +18,7 @@ assert False, "Turn asserts off with pypy3 -O for benchmarks"
 def main():
     """Runs the defaults"""
 
-    output_dir_parent = Path.home() / "Desktop" / "aspa_benchmarks"
+    output_dir = Path.home() / "Desktop" / "aspa_benchmarks"
 
     # Testing native BGPy implementation
     sim = Simulation(

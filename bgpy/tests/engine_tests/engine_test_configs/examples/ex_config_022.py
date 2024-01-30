@@ -11,9 +11,7 @@ from bgpy.simulation_framework import (
 )
 
 
-desc = (
-    "accidental route leak against ASPA"
-)
+desc = "accidental route leak against ASPA"
 
 ex_config_022 = EngineTestConfig(
     name="ex_022_route_leak_aspa_upstream_verification",

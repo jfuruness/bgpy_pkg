@@ -49,7 +49,7 @@ class ASPASimplePolicy(BGPSimplePolicy):
                 for i, asn in enumerate(reversed_as_path):
                     # This is the end of the AS Path
                     if i == len(reversed_as_path) - 1:
-                        continue
+                        break
                     cur_as_obj = self.as_.as_graph.as_dict[asn]
                     if isinstance(cur_as_obj.policy, ASPASimplePolicy):
                         next_as_obj = self.as_.as_graph.as_dict[reversed_as_path[i + 1]]
@@ -61,7 +61,7 @@ class ASPASimplePolicy(BGPSimplePolicy):
                 for i, asn in enumerate(ann.as_path):
                     # This is the end of the AS Path
                     if i == len(ann.as_path) - 1:
-                        continue
+                        break
                     cur_as_obj = self.as_.as_graph.as_dict[asn]
                     if isinstance(cur_as_obj.policy, ASPASimplePolicy):
                         next_as_obj = self.as_.as_graph.as_dict[ann.as_path[i + 1]]

@@ -94,9 +94,7 @@ def shortest_path_export_all_hijack(
             )
         else:
             shortest_as_path = _find_shortest_non_adopting_path_general(
-                valid_ann.origin,
-                self_scenario,
-                engine
+                valid_ann.origin, self_scenario, engine
             )
 
         if shortest_as_path:

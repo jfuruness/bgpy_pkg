@@ -34,7 +34,7 @@ def main():
             ),
         ),
         output_dir=output_dir,
-        num_trials=5,
+        num_trials=10,
         parse_cpus=1,
     )
     start = perf_counter()
