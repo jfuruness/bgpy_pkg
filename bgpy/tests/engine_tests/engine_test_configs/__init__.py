@@ -76,6 +76,8 @@ __all__ = [
     "config_035",
     "config_036",
     "config_037",
+    "engine_test_configs",
+    "example_configs",
 ]
 
 engine_test_configs = [
