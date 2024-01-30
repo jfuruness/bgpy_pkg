@@ -52,8 +52,7 @@ class ASPASimplePolicy(BGPSimplePolicy):
         if len(ann.as_path) <= 2:
             return super()._valid_ann(ann, from_rel)
         else:
-
-            u_min = self._calculate_u_min(ann)
+            u_min = self._calculate_u_min(ann)  # type: ignore
             v_max_complement = self._calculate_v_max_complement(ann)
 
             v_max = len(ann.as_path) - v_max_complement
