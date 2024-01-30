@@ -14,9 +14,13 @@ class AS(YamlAble):
 
     def __init__(
         self,
+        *,
         asn: int,
         input_clique: bool = False,
         ixp: bool = False,
+        peer_asns: frozenset[int] = frozenset(),
+        provider_asns: frozenset[int] = frozenset(),
+        customer_asns: frozenset[int] = frozenset(),
         peers: tuple["AS", ...] = tuple(),
         providers: tuple["AS", ...] = tuple(),
         customers: tuple["AS", ...] = tuple(),
@@ -28,6 +32,10 @@ class AS(YamlAble):
     ) -> None:
         # Make sure you're not accidentally passing in a string here
         self.asn: int = int(asn)
+
+        self.peer_asns: frozenset[int] = peer_asns
+        self.provider_asns: frozenset[int] = provider_asns
+        self.customer_asns: frozenset[int] = customer_asns
 
         self.peers: tuple["AS", ...] = peers
         self.providers: tuple["AS", ...] = providers
@@ -162,6 +170,9 @@ class AS(YamlAble):
     def __from_yaml_dict__(cls, dct: dict[Any, Any], yaml_tag: str):
         """This optional method is called when you call yaml.load()"""
 
+        dct["customer_asns"] = frozenset(dct["customers"])
+        dct["peer_asns"] = frozenset(dct["peers"])
+        dct["provider_asns"] = frozenset(dct["providers"])
         return cls(**dct)
 
 

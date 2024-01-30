@@ -20,7 +20,7 @@ def _gen_graph(
 
     def _gen_as(asn):
         as_ = BaseASCls(
-            asn,
+            asn=asn,
             policy=BasePolicyCls(),
             as_graph=self,
         )
@@ -89,5 +89,8 @@ def _make_relationships_tuples(self):
             # Must be sorted or else yaml dumps differently
             sorted_ases = sorted(getattr(as_obj, setup_rel_attr), key=lambda x: x.asn)
             setattr(as_obj, rel_attr, tuple([proxy(x) for x in sorted_ases]))
+            asns_attr = rel_attr[:-1] + "_asns"
+            setattr(as_obj, asns_attr, frozenset([x.asn for x in sorted_ases]))
+
             # Delete the setup attribute
             delattr(as_obj, setup_rel_attr)
