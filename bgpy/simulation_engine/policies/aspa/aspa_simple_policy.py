@@ -34,7 +34,7 @@ class ASPASimplePolicy(BGPSimplePolicy):
                     cur_as_obj = self.as_.as_graph.as_dict[asn]
                     if isinstance(cur_as_obj.policy, ASPASimplePolicy):
                         next_as_obj = self.as_.as_graph.as_dict[reversed_as_path[i + 1]]
-                        if next_as_obj not in cur_as_obj.providers:
+                        if next_as_obj.asn not in cur_as_obj.provider_asns:
                             return False
         elif from_rel.value == Relationships.PROVIDERS.value:
             # downstream check
@@ -53,7 +53,7 @@ class ASPASimplePolicy(BGPSimplePolicy):
                     cur_as_obj = self.as_.as_graph.as_dict[asn]
                     if isinstance(cur_as_obj.policy, ASPASimplePolicy):
                         next_as_obj = self.as_.as_graph.as_dict[reversed_as_path[i + 1]]
-                        if next_as_obj not in cur_as_obj.providers:
+                        if next_as_obj.asn not in cur_as_obj.provider_asns:
                             u_min = i + 2
                             break
                 # V calculation
@@ -65,7 +65,7 @@ class ASPASimplePolicy(BGPSimplePolicy):
                     cur_as_obj = self.as_.as_graph.as_dict[asn]
                     if isinstance(cur_as_obj.policy, ASPASimplePolicy):
                         next_as_obj = self.as_.as_graph.as_dict[ann.as_path[i + 1]]
-                        if next_as_obj not in cur_as_obj.providers:
+                        if next_as_obj.asn not in cur_as_obj.provider_asns:
                             v_max_complement = i + 2
                             break
 
