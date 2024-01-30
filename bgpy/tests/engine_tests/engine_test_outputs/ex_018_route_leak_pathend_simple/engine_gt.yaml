@@ -22,7 +22,6 @@ as_graph: !yamlable/CAIDAASGraph
             bgpsec_next_asn: null
             next_hop_asn: 666
             only_to_customers: null
-            pathend_valid: null
             prefix: 1.2.0.0/16
             recv_relationship: !simulator_codec/Relationships
               name: CUSTOMERS
@@ -58,7 +57,6 @@ as_graph: !yamlable/CAIDAASGraph
             bgpsec_next_asn: null
             next_hop_asn: 777
             only_to_customers: null
-            pathend_valid: null
             prefix: 1.2.0.0/16
             recv_relationship: !simulator_codec/Relationships
               name: CUSTOMERS
@@ -94,7 +92,6 @@ as_graph: !yamlable/CAIDAASGraph
             bgpsec_next_asn: null
             next_hop_asn: 9
             only_to_customers: null
-            pathend_valid: null
             prefix: 1.2.0.0/16
             recv_relationship: !simulator_codec/Relationships
               name: PEERS
@@ -127,7 +124,6 @@ as_graph: !yamlable/CAIDAASGraph
             bgpsec_next_asn: null
             next_hop_asn: 777
             only_to_customers: null
-            pathend_valid: null
             prefix: 1.2.0.0/16
             recv_relationship: !simulator_codec/Relationships
               name: CUSTOMERS
@@ -164,7 +160,6 @@ as_graph: !yamlable/CAIDAASGraph
             bgpsec_next_asn: null
             next_hop_asn: 1
             only_to_customers: null
-            pathend_valid: null
             prefix: 1.2.0.0/16
             recv_relationship: !simulator_codec/Relationships
               name: CUSTOMERS
@@ -200,7 +195,6 @@ as_graph: !yamlable/CAIDAASGraph
             bgpsec_next_asn: null
             next_hop_asn: 2
             only_to_customers: null
-            pathend_valid: null
             prefix: 1.2.0.0/16
             recv_relationship: !simulator_codec/Relationships
               name: CUSTOMERS
@@ -238,7 +232,6 @@ as_graph: !yamlable/CAIDAASGraph
             bgpsec_next_asn: null
             next_hop_asn: 4
             only_to_customers: null
-            pathend_valid: null
             prefix: 1.2.0.0/16
             recv_relationship: !simulator_codec/Relationships
               name: CUSTOMERS
@@ -273,7 +266,6 @@ as_graph: !yamlable/CAIDAASGraph
             bgpsec_next_asn: null
             next_hop_asn: 777
             only_to_customers: null
-            pathend_valid: null
             prefix: 1.2.0.0/16
             recv_relationship: !simulator_codec/Relationships
               name: CUSTOMERS
@@ -311,7 +303,6 @@ as_graph: !yamlable/CAIDAASGraph
             bgpsec_next_asn: null
             next_hop_asn: 10
             only_to_customers: null
-            pathend_valid: null
             prefix: 1.2.0.0/16
             recv_relationship: !simulator_codec/Relationships
               name: CUSTOMERS
@@ -345,7 +336,6 @@ as_graph: !yamlable/CAIDAASGraph
             bgpsec_next_asn: null
             next_hop_asn: 10
             only_to_customers: null
-            pathend_valid: null
             prefix: 1.2.0.0/16
             recv_relationship: !simulator_codec/Relationships
               name: CUSTOMERS
@@ -378,7 +368,6 @@ as_graph: !yamlable/CAIDAASGraph
             bgpsec_next_asn: null
             next_hop_asn: 2
             only_to_customers: null
-            pathend_valid: null
             prefix: 1.2.0.0/16
             recv_relationship: !simulator_codec/Relationships
               name: CUSTOMERS
@@ -411,7 +400,6 @@ as_graph: !yamlable/CAIDAASGraph
             bgpsec_next_asn: null
             next_hop_asn: 777
             only_to_customers: null
-            pathend_valid: null
             prefix: 1.2.0.0/16
             recv_relationship: !simulator_codec/Relationships
               name: ORIGIN
