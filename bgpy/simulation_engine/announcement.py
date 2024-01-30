@@ -7,26 +7,38 @@ if TYPE_CHECKING:
     from bgpy.enums import Relationships
 
 
-# Timing tests over a 2m period indicate that
-# slots offers basically no speedup here.
-# besides, YamlAble doesn't have slots, so this
-# doesn't matter
 @yaml_info(yaml_tag="Announcement")
 @dataclass(slots=True, frozen=True)
 class Announcement(YamlAble):
     """BGP Announcement"""
 
-    # MUST use slots for speed
-    # Since anns get copied across 70k ASes
     prefix: str
     # Equivalent to the next hop in a normal BGP announcement
     next_hop_asn: int
-    # NOTE: must use list here for C++ compatability
     as_path: tuple[int]
-    timestamp: int
     seed_asn: Optional[int]
     recv_relationship: "Relationships"
+
+    #############################
+    # Optional attributes below #
+    #############################
+    # If you aren't using the policies listed below,
+    # You can create an announcement class without them
+    # for a much faster runtime. Announcement copying is
+    # the bottleneck for BGPy, smaller announcements copy
+    # much faster across the AS topology
+
+    # This currently is unused. Depending on some results from
+    # our in-progress publications it may be used in the future
+    # For now, we just set the timestamp of the victim to 0,
+    # and timestamp of the attacker to 1
+    timestamp: int = 0
+    # Used for classes derived from BGPPolicy
     withdraw: bool = False
+    # Deprecated attr. This existed before next_hop_asn
+    # next_hop_asn should be set instead of this now
+    # Currently functionality is unchanged but it just
+    # shouldn't be used.
     traceback_end: bool = False
     # ROV, ROV++ optional attributes
     roa_valid_length: Optional[bool] = None
@@ -36,7 +48,7 @@ class Announcement(YamlAble):
     # NOTE: this is the opposite direction of next_hop, for the data plane
     bgpsec_next_asn: Optional[int] = None
     bgpsec_as_path: tuple[int, ...] = ()
-    # RFC 9234 OTC attribute
+    # RFC 9234 OTC attribute (Used in OnlyToCustomers Policy)
     only_to_customers: Optional[bool] = None
 
     def prefix_path_attributes_eq(self, ann: Optional["Announcement"]) -> bool:

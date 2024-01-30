@@ -115,7 +115,7 @@ class ASGraphAnalyzer(BaseASGraphAnalyzer):
             most_specific_ann is None  # type: ignore
             or len(most_specific_ann.as_path) == 1
             or most_specific_ann.recv_relationship.value == Relationships.ORIGIN.value
-            or most_specific_ann.traceback_end
+            or getattr(most_specific_ann, "traceback_end", False)
             # Adding this condition in V4 for proper next_hop behavior
             or most_specific_ann.next_hop_asn == as_obj.asn
         ):
