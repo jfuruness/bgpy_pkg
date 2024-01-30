@@ -3,30 +3,35 @@ from bgpy.enums import ASNs
 from bgpy.tests.engine_tests.as_graph_infos import as_graph_info_000
 from bgpy.tests.engine_tests.utils import EngineTestConfig
 
-from bgpy.simulation_engine import (
-    ROVSimplePolicy,
-)
+from bgpy.simulation_engine import BGPSimplePolicy, PathendSimplePolicy
 from bgpy.simulation_framework import (
     ScenarioConfig,
-    OriginSpoofingPrefixScapegoatHijack,
+    PrefixHijack,
+    preprocess_anns_funcs,
 )
 
 
 desc = (
-    "Origin spoofing scapegoat prefix hijack thwarting ROV\n"
-    "This attack reaches more ASes than just the origin hijack\n"
-    "In this scenario AS 2 is the attacker, scapegoating 666"
+    "Origin prefix hijack with pathend simple\n"
+    "Pathend checks the end of the path for valid providers\n"
+    "and is thus protected against simple origin hijacks"
 )
 
 ex_config_015 = EngineTestConfig(
-    name="ex_015_origin_spoofing_scapegoat_prefix_hijack_rov_simple",
+    name="ex_015_origin_prefix_hijack_pathend_simple",
     desc=desc,
     scenario_config=ScenarioConfig(
-        ScenarioCls=OriginSpoofingPrefixScapegoatHijack,
-        BasePolicyCls=ROVSimplePolicy,
-        override_attacker_asns=frozenset({2}),
+        ScenarioCls=PrefixHijack,
+        preprocess_anns_func=preprocess_anns_funcs.origin_hijack,
+        BasePolicyCls=BGPSimplePolicy,
+        override_attacker_asns=frozenset({ASNs.ATTACKER.value}),
         override_victim_asns=frozenset({ASNs.VICTIM.value}),
-        override_non_default_asn_cls_dict=frozendict({}),
+        override_non_default_asn_cls_dict=frozendict(
+            {
+                1: PathendSimplePolicy,
+                ASNs.VICTIM.value: PathendSimplePolicy,
+            }
+        ),
     ),
     as_graph_info=as_graph_info_000,
 )

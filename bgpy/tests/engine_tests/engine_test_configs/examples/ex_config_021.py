@@ -3,7 +3,7 @@ from bgpy.enums import ASNs
 from bgpy.tests.engine_tests.as_graph_infos import as_graph_info_000
 from bgpy.tests.engine_tests.utils import EngineTestConfig
 
-from bgpy.simulation_engine import BGPSimplePolicy, OnlyToCustomersSimplePolicy
+from bgpy.simulation_engine import BGPSimplePolicy, ASPASimplePolicy
 from bgpy.simulation_framework import (
     ScenarioConfig,
     AccidentalRouteLeak,
@@ -12,14 +12,11 @@ from bgpy.simulation_framework import (
 
 
 desc = (
-    "accidental route leak against OnlyToCustomersSimple\n"
-    "This policy sets the only_to_customers attribute"
-    "specified in RFC 9234 \n"
-    "which protects against simple route leaks"
+    "accidental route leak against ASPASimple"
 )
 
 ex_config_021 = EngineTestConfig(
-    name="ex_021_route_leak_otc_simple",
+    name="ex_021_route_leak_aspa_simple_upstream_verification",
     desc=desc,
     propagation_rounds=2,  # Required for route leaks
     scenario_config=ScenarioConfig(
@@ -30,8 +27,8 @@ ex_config_021 = EngineTestConfig(
         override_victim_asns=frozenset({ASNs.VICTIM.value}),
         override_non_default_asn_cls_dict=frozendict(
             {
-                1: OnlyToCustomersSimplePolicy,
-                2: OnlyToCustomersSimplePolicy,
+                1: ASPASimplePolicy,
+                2: ASPASimplePolicy,
             }
         ),
     ),

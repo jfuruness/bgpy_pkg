@@ -12,17 +12,17 @@ from bgpy.simulation_framework import (
 
 
 desc = (
-    "Origin prefix hijack with pathend simple\n"
+    "shortest path export all attack against pathend simple\n"
     "Pathend checks the end of the path for valid providers\n"
-    "and is thus protected against simple origin hijacks"
+    "so anything beyond the third AS is not protected"
 )
 
 ex_config_017 = EngineTestConfig(
-    name="ex_017_origin_prefix_hijack_pathend_simple",
+    name="ex_017_shortest_path_export_all_pathend_simple",
     desc=desc,
     scenario_config=ScenarioConfig(
         ScenarioCls=PrefixHijack,
-        preprocess_anns_func=preprocess_anns_funcs.origin_hijack,
+        preprocess_anns_func=preprocess_anns_funcs.shortest_path_export_all_hijack,
         BasePolicyCls=BGPSimplePolicy,
         override_attacker_asns=frozenset({ASNs.ATTACKER.value}),
         override_victim_asns=frozenset({ASNs.VICTIM.value}),

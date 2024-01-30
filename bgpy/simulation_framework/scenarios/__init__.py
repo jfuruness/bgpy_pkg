@@ -4,8 +4,6 @@ from .scenario_config import ScenarioConfig
 from .scenario import Scenario
 
 from .custom_scenarios import AccidentalRouteLeak
-from .custom_scenarios import OriginSpoofingPrefixDisconnectionHijack
-from .custom_scenarios import OriginSpoofingPrefixScapegoatHijack
 from .custom_scenarios import PrefixHijack
 from .custom_scenarios import SubprefixHijack
 from .custom_scenarios import NonRoutedPrefixHijack
@@ -20,8 +18,6 @@ __all__ = [
     "ScenarioConfig",
     "Scenario",
     "AccidentalRouteLeak",
-    "OriginSpoofingPrefixDisconnectionHijack",
-    "OriginSpoofingPrefixScapegoatHijack",
     "PrefixHijack",
     "SubprefixHijack",
     "NonRoutedPrefixHijack",
