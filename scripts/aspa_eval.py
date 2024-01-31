@@ -1,3 +1,4 @@
+from copy import deepcopy
 from multiprocessing import cpu_count
 from pathlib import Path
 import time
@@ -9,7 +10,7 @@ from bgpy.simulation_engine import (
     OnlyToCustomersSimplePolicy,
 )
 
-from bgpy.enums import SpecialPercentAdoptions
+from bgpy.enums import ASGroups, SpecialPercentAdoptions
 from bgpy.simulation_framework import (
     Simulation,
     AccidentalRouteLeak,
@@ -29,7 +30,7 @@ default_kwargs = {
         # Using only 1 AS not adopting causes extreme variance
         # SpecialPercentAdoptions.ALL_BUT_ONE,
     ),
-    "num_trials": 20,
+    "num_trials": 50,
     "parse_cpus": cpu_count(),
 }
 
@@ -51,7 +52,10 @@ def main():
         scenario_configs=tuple(
             [
                 ScenarioConfig(
-                    ScenarioCls=AccidentalRouteLeak, AdoptPolicyCls=AdoptPolicyCls
+                    ScenarioCls=AccidentalRouteLeak,
+                    AdoptPolicyCls=AdoptPolicyCls,
+                    # Leakers from anywhere
+                    attacker_subcategory_attr=ASGroups.ALL_WOUT_IXPS.value,
                 )
                 for AdoptPolicyCls in classes
             ]
@@ -102,6 +106,18 @@ def main():
     sim.run()
     print(time.perf_counter() - start)
 
+    shortest_path_kwargs = deepcopy(default_kwargs)
+    shortest_path_kwargs.update({
+        "percent_adoptions": (
+            SpecialPercentAdoptions.ONLY_ONE,
+            0.1,
+            0.2,
+            0.5,
+            # Max adoption, beyond this RAM explodes due to bug
+            0.8,
+        ),
+    })
+
     # Shortest path export all
     sim = Simulation(
         scenario_configs=tuple(
@@ -117,7 +133,7 @@ def main():
             ]
         ),
         output_dir=DIR / "shortest_path_export_all",
-        **default_kwargs,
+        **shortest_path_kwargs,
     )
     start = time.perf_counter()
     sim.run()
@@ -139,7 +155,7 @@ def main():
             ]
         ),
         output_dir=DIR / "shortest_path_export_all_multi",
-        **default_kwargs,
+        **shortest_path_kwargs,
     )
     start = time.perf_counter()
     sim.run()
