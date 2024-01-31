@@ -8,13 +8,20 @@ if TYPE_CHECKING:
 
 
 class ASPASimplePolicy(BGPSimplePolicy):
-    """An Policy that deploys ASPA"""
+    """An Policy that deploys ASPA
+
+    We experimented with adding a cache to the provider_check
+    but this has a negligable impact on performance
+
+    Removing the path reversals sped up performance by about 5%
+    but made the code a lot less readable and deviated from the RFC
+    so we decided to forgo those as well
+    """
 
     name: str = "ASPASimple"
 
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
-        # self._provider_check.cache_clear()
 
     def _valid_ann(self, ann: "Ann", from_rel: Relationships) -> bool:  # type: ignore
         """Returns False if from peer/customer when aspa is set"""
@@ -36,12 +43,13 @@ class ASPASimplePolicy(BGPSimplePolicy):
         if len(ann.as_path) == 1:
             return super()._valid_ann(ann, from_rel)
         else:
-            reversed_path = list(reversed(ann.as_path))  # type: ignore
+            reversed_path = ann.as_path[::-1]  # type: ignore
             # For every adopting ASPA AS in the path,
             # The next ASN in the path must be in their providers list
             for i in range(len(reversed_path) - 1):
                 if not self._provider_check(reversed_path[i], reversed_path[i + 1]):
                     return False
+
         return super()._valid_ann(ann, from_rel)  # type: ignore
 
     def _downstream_check(self, ann: "Ann", from_rel: Relationships) -> bool:
@@ -62,15 +70,17 @@ class ASPASimplePolicy(BGPSimplePolicy):
     def _calculate_u_min(self, ann: "Ann") -> int:
         """Calculates u_min from ASPA RFC"""
 
+        path = ann.as_path
         # https://datatracker.ietf.org/doc/html/draft-ietf-sidrops-aspa-verification-16
-        u_min = len(ann.as_path) + 1  # type: ignore
-        reversed_path = list(reversed(ann.as_path))
+        u_min = len(path) + 1  # type: ignore
+        reversed_path = path[::-1]
         # For every adopting ASPA AS in the path,
         # The next ASN in the path must be in their providers list
         for i in range(len(reversed_path) - 1):
             if not self._provider_check(reversed_path[i], reversed_path[i + 1]):
                 u_min = i + 2
                 break
+
         return u_min
 
     def _calculate_v_max_complement(self, ann: "Ann") -> int:
