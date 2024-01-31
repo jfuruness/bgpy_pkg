@@ -1,11 +1,12 @@
 from multiprocessing import cpu_count
 from pathlib import Path
+import time
 
 from bgpy.simulation_engine import (
     ASPASimplePolicy,
     BGPSecSimplePolicy,
     PathendSimplePolicy,
-    OnlyToCustomersSimplePolicy
+    OnlyToCustomersSimplePolicy,
 )
 
 from bgpy.enums import SpecialPercentAdoptions
@@ -28,7 +29,7 @@ default_kwargs = {
         # Using only 1 AS not adopting causes extreme variance
         # SpecialPercentAdoptions.ALL_BUT_ONE,
     ),
-    "trials": 1,
+    "num_trials": 20,
     "parse_cpus": cpu_count(),
 }
 
@@ -36,31 +37,32 @@ classes = [
     ASPASimplePolicy,
     BGPSecSimplePolicy,
     PathendSimplePolicy,
-    OnlyToCustomersSimplePolicy
+    OnlyToCustomersSimplePolicy,
 ]
 
 
 def main():
     """Runs the defaults"""
 
-    DIR = Path.home() / "desktop" / "aspa_sims"
+    DIR = Path.home() / "Desktop" / "aspa_sims"
 
     # Route leak
     sim = Simulation(
         scenario_configs=tuple(
             [
                 ScenarioConfig(
-                    ScenarioCls=AccidentalRouteLeak,
-                    AdoptPolicyCls=AdoptPolicyCls
+                    ScenarioCls=AccidentalRouteLeak, AdoptPolicyCls=AdoptPolicyCls
                 )
                 for AdoptPolicyCls in classes
             ]
         ),
         propagation_rounds=2,
         output_dir=DIR / "accidental_route_leak",
-        **default_kwargs
+        **default_kwargs,
     )
+    start = time.perf_counter()
     sim.run()
+    print(time.perf_counter() - start)
 
     # Origin Hijack
     sim = Simulation(
@@ -75,9 +77,11 @@ def main():
             ]
         ),
         output_dir=DIR / "origin_hijack",
-        **default_kwargs
+        **default_kwargs,
     )
+    start = time.perf_counter()
     sim.run()
+    print(time.perf_counter() - start)
 
     # Origin Spoofing Hijack
     sim = Simulation(
@@ -92,9 +96,11 @@ def main():
             ]
         ),
         output_dir=DIR / "origin_spoofing",
-        **default_kwargs
+        **default_kwargs,
     )
+    start = time.perf_counter()
     sim.run()
+    print(time.perf_counter() - start)
 
     # Shortest path export all
     sim = Simulation(
@@ -111,9 +117,11 @@ def main():
             ]
         ),
         output_dir=DIR / "shortest_path_export_all",
-        **default_kwargs
+        **default_kwargs,
     )
+    start = time.perf_counter()
     sim.run()
+    print(time.perf_counter() - start)
 
     # Shortest path export all multi attackers
     sim = Simulation(
@@ -125,14 +133,17 @@ def main():
                     preprocess_anns_func=(
                         preprocess_anns_funcs.shortest_path_export_all_hijack
                     ),
+                    num_attackers=10,
                 )
                 for AdoptPolicyCls in classes
             ]
         ),
         output_dir=DIR / "shortest_path_export_all_multi",
-        **default_kwargs
+        **default_kwargs,
     )
+    start = time.perf_counter()
     sim.run()
+    print(time.perf_counter() - start)
 
     # geographic adoption
     raise NotImplementedError("GEOGRAPHIC ADOPTION")
