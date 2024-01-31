@@ -89,7 +89,7 @@ class ASPASimplePolicy(BGPSimplePolicy):
         v_max_complement = 0
         for i in range(len(ann.as_path) - 1):
             if not self._provider_check(ann.as_path[i], ann.as_path[i + 1]):
-                v_max_complement = i + 2
+                v_max_complement = i + 1
                 break
         return v_max_complement
 
