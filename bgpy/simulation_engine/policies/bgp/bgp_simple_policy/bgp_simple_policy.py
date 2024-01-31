@@ -55,16 +55,6 @@ class BGPSimplePolicy(Policy):
         # This gets set within the AS class so it's fine
         self.as_: CallableProxyType["AS"] = as_  # type: ignore
 
-    @property
-    def _gao_rexford_funcs(
-        self,
-    ) -> tuple[Callable[["Ann", "Ann"], Optional["Ann"],], ...,]:
-        return (
-            self._get_best_ann_by_local_pref,
-            self._get_best_ann_by_as_path,
-            self._get_best_ann_by_lowest_neighbor_asn_tiebreaker,
-        )
-
     # Propagation functionality
     propagate_to_providers = propagate_to_providers
     propagate_to_customers = propagate_to_customers

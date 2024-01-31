@@ -16,11 +16,25 @@ def _get_best_ann_by_gao_rexford(
         return new_ann
     else:
         # Inspiration for this func refactor came from bgpsecsim
-        for func in self._gao_rexford_funcs:
-            best_ann = func(current_ann, new_ann)
-            if best_ann is not None:
-                assert isinstance(best_ann, Ann), "mypy type check"
-                return best_ann
+        # for func in self._gao_rexford_funcs:
+        #     best_ann = func(current_ann, new_ann)
+        #     if best_ann is not None:
+        #         assert isinstance(best_ann, Ann), "mypy type check"
+        #         return best_ann
+
+        # Having this dynamic like above is literally 7x slower, resulting
+        # in bottlenecks. Gotta do it the ugly way unfortunately
+        ann = self._get_best_ann_by_local_pref(current_ann, new_ann)
+        if ann:
+            return ann
+        else:
+            ann = self._get_best_ann_by_as_path(current_ann, new_ann)
+            if ann:
+                return ann
+            else:
+                return self._get_best_ann_by_lowest_neighbor_asn_tiebreaker(
+                    current_ann, new_ann
+                )
         raise Exception("No ann was chosen")
 
 
