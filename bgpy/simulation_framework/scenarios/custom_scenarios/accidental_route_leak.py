@@ -55,9 +55,7 @@ class AccidentalRouteLeak(ValidPrefix):
             announcements: list["Ann"] = list(self.announcements)  # type: ignore
             for attacker_asn in self.attacker_asns:
                 if not engine.as_graph.as_dict[attacker_asn].policy._local_rib:
-                    print(
-                        "Attacker did not recieve announcement, can't leak. "
-                    )
+                    print("Attacker did not recieve announcement, can't leak. ")
                 for prefix, ann in engine.as_graph.as_dict[
                     attacker_asn
                 ].policy._local_rib.items():

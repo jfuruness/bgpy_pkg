@@ -6,9 +6,10 @@ if TYPE_CHECKING:
     from bgpy.enums import Relationships
     from bgpy.simulation_framework import Scenario
     from bgpy.simulation_engine.announcement import Announcement as Ann
+    from .bgp_simple_policy import BGPSimplePolicy
 
 
-def seed_ann(self, ann: "Ann") -> None:
+def seed_ann(self: "BGPSimplePolicy", ann: "Ann") -> None:
     """Seeds an announcement at this AS
 
     Useful hook function used in BGPSec
@@ -22,7 +23,9 @@ def seed_ann(self, ann: "Ann") -> None:
     self._local_rib.add_ann(ann)
 
 
-def receive_ann(self, ann: "Ann", accept_withdrawals: bool = False) -> None:
+def receive_ann(
+    self: "BGPSimplePolicy", ann: "Ann", accept_withdrawals: bool = False
+) -> None:
     """Function for recieving announcements, adds to recv_q"""
 
     if getattr(ann, "withdraw", False) and not accept_withdrawals:
@@ -31,7 +34,7 @@ def receive_ann(self, ann: "Ann", accept_withdrawals: bool = False) -> None:
 
 
 def process_incoming_anns(
-    self,
+    self: "BGPSimplePolicy",
     *,
     from_rel: "Relationships",
     propagation_round: int,
@@ -43,7 +46,7 @@ def process_incoming_anns(
     # For each prefix, get all anns recieved
     for prefix, ann_list in self._recv_q.items():
         # Get announcement currently in local rib
-        current_ann: "Ann" = self._local_rib.get(prefix)
+        current_ann: Optional["Ann"] = self._local_rib.get(prefix)
         og_ann = current_ann
 
         # Seeded Ann will never be overriden, so continue
@@ -62,6 +65,7 @@ def process_incoming_anns(
 
         # This is a new best ann. Process it and add it to the local rib
         if og_ann != current_ann:
+            assert current_ann, "mypy type check"
             # Save to local rib
             self._local_rib.add_ann(current_ann)
 
@@ -69,7 +73,7 @@ def process_incoming_anns(
 
 
 def _valid_ann(
-    self,
+    self: "BGPSimplePolicy",
     ann: "Ann",
     recv_relationship: "Relationships",
 ) -> bool:
@@ -80,7 +84,7 @@ def _valid_ann(
 
 
 def _copy_and_process(
-    self,
+    self: "BGPSimplePolicy",
     ann: "Ann",
     recv_relationship: "Relationships",
     overwrite_default_kwargs: Optional[dict[Any, Any]] = None,
@@ -101,7 +105,7 @@ def _copy_and_process(
     return ann.copy(overwrite_default_kwargs=kwargs)
 
 
-def _reset_q(self, reset_q: bool):
+def _reset_q(self: "BGPSimplePolicy", reset_q: bool) -> None:
     """Resets the recieve q"""
 
     if reset_q:

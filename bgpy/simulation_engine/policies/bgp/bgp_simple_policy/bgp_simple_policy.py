@@ -1,4 +1,4 @@
-from typing import Any, Callable, Optional, TYPE_CHECKING
+from typing import Any, Optional, TYPE_CHECKING
 from weakref import CallableProxyType
 
 # Propagation functionality
@@ -30,7 +30,6 @@ from bgpy.simulation_engine.ann_containers import RecvQueue
 
 if TYPE_CHECKING:
     from bgpy.as_graphs import AS
-    from bgpy.simulation_engine.announcement import Announcement as Ann
 
 
 class BGPSimplePolicy(Policy):

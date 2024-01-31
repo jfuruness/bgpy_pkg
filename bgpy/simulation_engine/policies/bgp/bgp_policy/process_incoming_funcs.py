@@ -8,10 +8,11 @@ if TYPE_CHECKING:
     from bgpy.enums import Relationships
     from bgpy.simulation_framework import Scenario
     from bgpy.simulation_engine.announcement import Announcement as Ann
+    from .bgp_policy import BGPPolicy
 
 
 def process_incoming_anns(
-    self,
+    self: "BGPPolicy",
     *,
     from_rel: "Relationships",
     propagation_round: int,
@@ -65,10 +66,11 @@ def process_incoming_anns(
             if ann.withdraw:
                 if self._process_incoming_withdrawal(ann, from_rel):
                     # the above will return true if the local rib is changed
-                    updated_loc_rib_ann: "Ann" = self._local_rib.get(prefix)
+                    updated_loc_rib_ann: Optional["Ann"] = self._local_rib.get(prefix)
                     if current_processed:
                         current_ann = updated_loc_rib_ann
                     else:
+                        assert updated_loc_rib_ann, "mypy type check"
                         new_ann_is_better: bool = self._new_ann_better(
                             current_ann,
                             current_processed,
@@ -102,12 +104,14 @@ def process_incoming_anns(
             self._withdraw_ann_from_neighbors(withdraw_ann)
             err = f"withdrawing ann that is same as new ann {withdraw_ann}"
             if not current_processed:
+                assert current_ann is not None, "mypy type check"
                 assert not withdraw_ann.prefix_path_attributes_eq(
                     self._copy_and_process(current_ann, from_rel)
                 ), err
 
         # We have a new best!
         if current_processed is False:
+            assert current_ann is not None, "mypy type check"
             current_ann = self._copy_and_process(current_ann, from_rel)
             # Save to local rib
             self._local_rib.add_ann(current_ann)
@@ -116,7 +120,7 @@ def process_incoming_anns(
 
 
 def _new_ann_better(
-    self,
+    self: "BGPPolicy",
     # Current announcement to check against
     current_ann: Optional["Ann"],
     # Whether or not current ann has been processed local rib
@@ -125,9 +129,9 @@ def _new_ann_better(
     # Default recv relationship if current ann is unprocessed
     default_current_recv_rel: "Relationships",
     # New announcement
-    new_ann: "Ann",
+    new_ann: Optional["Ann"],
     # If new announcement is in local rib, this is True
-    new_processed: "Relationships",
+    new_processed: bool,
     # Default recv rel if new ann is unprocessed
     default_new_recv_rel: "Relationships",
 ) -> bool:
@@ -163,7 +167,7 @@ def _new_ann_better(
 
 
 def _process_incoming_withdrawal(
-    self,
+    self: "BGPPolicy",
     ann: "Ann",
     recv_relationship: "Relationships",
 ) -> bool:
@@ -216,7 +220,7 @@ def _process_incoming_withdrawal(
     return False
 
 
-def _withdraw_ann_from_neighbors(self, withdraw_ann: "Ann"):
+def _withdraw_ann_from_neighbors(self: "BGPPolicy", withdraw_ann: "Ann"):
     """Withdraw a route from all neighbors.
 
     This function will not remove an announcement from the local rib, that
@@ -248,7 +252,7 @@ def _withdraw_ann_from_neighbors(self, withdraw_ann: "Ann"):
             send_info.ann = None
 
 
-def _select_best_ribs_in(self, prefix: str) -> Optional["Ann"]:
+def _select_best_ribs_in(self: "BGPPolicy", prefix: str) -> Optional["Ann"]:
     """Selects best ann from ribs in
 
     Remember, ribs in anns are NOT deep copied"""
@@ -262,15 +266,16 @@ def _select_best_ribs_in(self, prefix: str) -> Optional["Ann"]:
         if self._new_ann_better(
             best_unprocessed_ann,
             False,
-            best_recv_relationship,
+            best_recv_relationship,  # type: ignore
             new_unprocessed_ann,
             False,
-            new_recv_relationship,
+            new_recv_relationship,  # type: ignore
         ):
             best_unprocessed_ann = new_unprocessed_ann
             best_recv_relationship = new_recv_relationship
 
     if best_unprocessed_ann is not None:
+        assert best_recv_relationship is not None, "mypy type check"
         # mypy having trouble dealing with this
         return self._copy_and_process(  # type: ignore
             best_unprocessed_ann, best_recv_relationship

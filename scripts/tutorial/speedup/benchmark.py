@@ -12,15 +12,14 @@ from bgpy.simulation_framework import (
 from small_ann import SmallAnn
 
 
-
 def main():
     """Runs the defaults"""
 
     sim = Simulation(
         percent_adoptions=(
             0.1,
-            .5,
-            .8,
+            0.5,
+            0.8,
         ),
         scenario_configs=(
             ScenarioConfig(
@@ -43,8 +42,8 @@ def main():
     sim = Simulation(
         percent_adoptions=(
             0.1,
-            .5,
-            .8,
+            0.5,
+            0.8,
         ),
         scenario_configs=(
             ScenarioConfig(

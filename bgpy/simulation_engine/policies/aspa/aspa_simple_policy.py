@@ -28,8 +28,13 @@ class ASPASimplePolicy(BGPSimplePolicy):
 
         assert len(set(ann.as_path)) == len(ann.as_path), "We deal with prepending"
 
+        if ann.next_hop_asn != ann.as_path[0]:
+            return False
         # If ann.aspa is set, only accept from a provider
-        if from_rel.value in (Relationships.CUSTOMERS.value, Relationships.PEERS.value):
+        elif from_rel.value in (
+            Relationships.CUSTOMERS.value,
+            Relationships.PEERS.value,
+        ):
             return self._upstream_check(ann, from_rel)
         elif from_rel.value == Relationships.PROVIDERS.value:
             return self._downstream_check(ann, from_rel)

@@ -16,7 +16,7 @@ class SmallAnn:
         as_path: tuple[int],
         seed_asn: Optional[int],
         recv_relationship: "Relationships",
-        **kwargs
+        **kwargs,
     ) -> None:
         self.prefix = prefix
         self.next_hop_asn = next_hop_asn
@@ -38,7 +38,7 @@ class SmallAnn:
             "next_hop_asn": self.next_hop_asn,
             "as_path": self.as_path,
             "seed_asn": None,
-            "recv_relationship": self.recv_relationship
+            "recv_relationship": self.recv_relationship,
         }
 
         if overwrite_default_kwargs:

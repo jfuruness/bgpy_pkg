@@ -1,4 +1,4 @@
-from typing import Any, Callable, Optional, TYPE_CHECKING
+from typing import Any, Optional, TYPE_CHECKING
 
 from bgpy.simulation_engine.policies.bgp.bgp_simple_policy import BGPSimplePolicy
 
@@ -45,6 +45,7 @@ class BGPSecSimplePolicy(BGPSimplePolicy):
             path = ()
         send_ann = ann.copy({"bgpsec_next_asn": next_asn, "bgpsec_as_path": path})
         self._process_outgoing_ann(neighbor, send_ann, *args, **kwargs)
+        return True
 
     # Mypy doesn't understand the superclass
     def _copy_and_process(  # type: ignore
@@ -73,8 +74,7 @@ class BGPSecSimplePolicy(BGPSimplePolicy):
             ann, recv_relationship, overwrite_default_kwargs
         )
 
-    # mypy wants a return statement, but nah
-    def _get_best_ann_by_bgpsec(  # type: ignore
+    def _get_best_ann_by_bgpsec(
         self, current_ann: "Ann", new_ann: "Ann"
     ) -> Optional["Ann"]:
         current_valid = current_ann.bgpsec_valid(self.as_.asn)
@@ -84,8 +84,10 @@ class BGPSecSimplePolicy(BGPSimplePolicy):
             return current_ann
         elif not current_valid and new_valid:
             return new_ann
+        else:
+            return None
 
-    def _get_best_ann_by_gao_rexford(
+    def _get_best_ann_by_gao_rexford(  # type: ignore
         self,
         current_ann: Optional["Ann"],
         new_ann: "Ann",
