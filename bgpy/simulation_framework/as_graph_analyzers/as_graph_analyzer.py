@@ -72,7 +72,7 @@ class ASGraphAnalyzer(BaseASGraphAnalyzer):
     def _get_as_outcome_data_plane(self, as_obj: AS) -> int:
         """Recursively returns the as outcome"""
 
-        if as_obj in self._data_plane_outcomes:
+        if as_obj.asn in self._data_plane_outcomes:
             return self._data_plane_outcomes[as_obj.asn]
         else:
             most_specific_ann = self._most_specific_ann_dict[as_obj]
