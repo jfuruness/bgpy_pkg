@@ -11,6 +11,8 @@ from .bgpsec import BGPSecSimplePolicy
 from .only_to_customers import OnlyToCustomersSimplePolicy, OnlyToCustomersPolicy
 from .pathend import PathendSimplePolicy, PathendPolicy
 from .aspa import ASPASimplePolicy, ASPAPolicy
+from .ez_pathsec import EzPathsecSimplePolicy
+from .ez_pathsec import EzbbPathsecSimplePolicy
 
 __all__ = [
     "BGPSimplePolicy",
@@ -28,4 +30,6 @@ __all__ = [
     "PathendPolicy",
     "ASPASimplePolicy",
     "ASPAPolicy",
+    "EzPathsecSimplePolicy",
+    "EzbbPathsecSimplePolicy",
 ]

@@ -21,6 +21,8 @@ from .policies import PathendSimplePolicy
 from .policies import PathendPolicy
 from .policies import ASPASimplePolicy
 from .policies import ASPAPolicy
+from .policies import EzPathsecSimplePolicy
+from .policies import EzbbPathsecSimplePolicy
 
 from .simulation_engines import BaseSimulationEngine
 from .simulation_engines import SimulationEngine
@@ -49,4 +51,6 @@ __all__ = [
     "ASPAPolicy",
     "BaseSimulationEngine",
     "SimulationEngine",
+    "EzPathsecSimplePolicy",
+    "EzbbPathsecSimplePolicy",
 ]

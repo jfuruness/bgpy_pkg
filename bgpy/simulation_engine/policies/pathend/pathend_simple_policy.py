@@ -22,10 +22,10 @@ class PathendSimplePolicy(BGPSimplePolicy):
             isinstance(origin_as_obj.policy, PathendSimplePolicy)
             and len(ann.as_path) > 1
         ):
-            # If the provider is real, do the loop check
+            # If the neighbor is real, do the loop check
             # Mypy thinks this is unreachable for some reason, even tho tests pass
-            for provider in origin_as_obj.providers:  # type: ignore
-                if provider.asn == ann.as_path[-2]:
+            for neighbor in origin_as_obj.neighbors:  # type: ignore
+                if neighbor.asn == ann.as_path[-2]:
                     return super()._valid_ann(ann, *args, **kwargs)
             # Provider is fake, return False
             return False
