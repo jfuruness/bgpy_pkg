@@ -20,7 +20,9 @@ def main():
             0.2,
             0.5,
             0.8,
-            SpecialPercentAdoptions.ALL_BUT_ONE,
+            0.99,
+            # Using only 1 AS not adopting causes extreme variance
+            # SpecialPercentAdoptions.ALL_BUT_ONE,
         ),
         scenario_configs=(
             ScenarioConfig(ScenarioCls=SubprefixHijack, AdoptPolicyCls=ROVSimplePolicy),
