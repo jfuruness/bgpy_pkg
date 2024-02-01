@@ -1,13 +1,13 @@
 from typing import TYPE_CHECKING
 
 
-from bgpy.simulation_engine.policies.bgp import BGPSimplePolicy
+from bgpy.simulation_engine.policies.rov import ROVSimplePolicy
 
 if TYPE_CHECKING:
     from bgpy.simulation_engine import Announcement as Ann
 
 
-class PathendSimplePolicy(BGPSimplePolicy):
+class PathendSimplePolicy(ROVSimplePolicy):
     """An Policy that deploys Pathend"""
 
     name: str = "PathendSimple"
@@ -24,8 +24,8 @@ class PathendSimplePolicy(BGPSimplePolicy):
         ):
             # If the provider is real, do the loop check
             # Mypy thinks this is unreachable for some reason, even tho tests pass
-            for provider in origin_as_obj.providers:  # type: ignore
-                if provider.asn == ann.as_path[-2]:
+            for neighbor in origin_as_obj.neighbors:  # type: ignore
+                if neighbor.asn == ann.as_path[-2]:
                     return super()._valid_ann(ann, *args, **kwargs)
             # Provider is fake, return False
             return False

@@ -1,3 +1,4 @@
+from functools import cached_property
 from typing import Any, Optional, TYPE_CHECKING
 from weakref import proxy, CallableProxyType
 
@@ -98,7 +99,7 @@ class AS(YamlAble):
 
         return {attr: _format(getattr(self, attr)) for attr in self.db_row_keys}
 
-    @property
+    @cached_property
     def db_row_keys(self) -> tuple[str, ...]:
         return (
             "asn",
@@ -116,31 +117,31 @@ class AS(YamlAble):
     def __str__(self):
         return "\n".join(str(x) for x in self.db_row.items())
 
-    @property
+    @cached_property
     def stub(self) -> bool:
         """Returns True if AS is a stub by RFC1772"""
 
         return len(self.neighbors) == 1
 
-    @property
+    @cached_property
     def multihomed(self) -> bool:
         """Returns True if AS is multihomed by RFC1772"""
 
         return len(self.customers) == 0 and len(self.peers) + len(self.providers) > 1
 
-    @property
+    @cached_property
     def transit(self) -> bool:
         """Returns True if AS is a transit AS by RFC1772"""
 
         return len(self.customers) > 1
 
-    @property
+    @cached_property
     def stubs(self) -> tuple["AS", ...]:
         """Returns a list of any stubs connected to that AS"""
 
         return tuple([x for x in self.customers if x.stub])
 
-    @property
+    @cached_property
     def neighbors(self) -> tuple["AS", ...]:
         """Returns customers + peers + providers"""
 
