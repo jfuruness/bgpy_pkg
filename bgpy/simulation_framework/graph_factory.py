@@ -28,6 +28,8 @@ class GraphFactory:
         label_replacement_dict=None,
         y_axis_label_replacement_dict=None,
         x_axis_label_replacement_dict=None,
+        x_limit: int = 100,
+        y_limit: int = 100,
     ) -> None:
         self.pickle_path: Path = pickle_path
         with self.pickle_path.open("rb") as f:
@@ -54,6 +56,8 @@ class GraphFactory:
         if y_axis_label_replacement_dict is None:
             y_axis_label_replacement_dict = dict()
         self.y_axis_label_replacement_dict = y_axis_label_replacement_dict
+        self.x_limit = x_limit
+        self.y_limit = y_limit
 
     def generate_graphs(self) -> None:
         """Generates default graphs"""
@@ -127,8 +131,8 @@ class GraphFactory:
         fig, ax = plt.subplots()
         fig.set_dpi(300)
         # Set X and Y axis size
-        plt.xlim(0, 100)
-        plt.ylim(0, 100)
+        plt.xlim(0, self.x_limit)
+        plt.ylim(0, self.y_limit)
 
         def get_percent_adopt(graph_row) -> float:
             """Extractions percent adoption for sort comparison
