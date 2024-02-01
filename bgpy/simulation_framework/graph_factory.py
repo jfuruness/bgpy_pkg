@@ -32,6 +32,14 @@ class GraphFactory:
         self.pickle_path: Path = pickle_path
         with self.pickle_path.open("rb") as f:
             self.graph_rows = pickle.load(f)
+            max_prop_round = max(
+                x["data_key"].propagation_round for x in self.graph_rows
+            )
+            self.graph_rows = [
+                x
+                for x in self.graph_rows
+                if x["data_key"].propagation_round == max_prop_round
+            ]
         self.graph_dir: Path = graph_dir
         self.graph_dir.mkdir(parents=True, exist_ok=True)
 
@@ -108,7 +116,7 @@ class GraphFactory:
             f"{scenario_config.ScenarioCls.__name__}_{mod_name}"
             f"/{metric_key.as_group.value}"
             f"/adopting_is_{adopting_str}"
-            f"/{metric_key.plane.value}"
+            f"/{metric_key.plane.name}"
             f"/{metric_key.outcome.name}.png"
         ).replace(" ", "")
         as_cls_rows_dict = defaultdict(list)
