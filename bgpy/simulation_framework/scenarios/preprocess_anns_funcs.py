@@ -292,11 +292,13 @@ def _find_shortest_non_adopting_path_general(
         if self_scenario.percent_adoption >= 0.8:
             input_clique_ases = [x for x in engine.as_graph if x.input_clique]
             print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" + str(len(input_clique_ases)))
-            print(x.policy.name for x in input_clique_ases)
+            print([x.policy.name for x in input_clique_ases])
             print(self_scenario.attacker_asns)
             print(
-                len(engine.as_graph.as_dict[asn].neighbors)
-                for asn in self_scenario.attacker_asns
+                [
+                    len(engine.as_graph.as_dict[asn].neighbors)
+                    for asn in self_scenario.attacker_asns
+                ]
             )
         # TODO: fix
         # NOTE: It's just that at 90% adoption, when attackers and victims are
