@@ -1,7 +1,7 @@
 from collections import deque
 from typing import Callable, Optional, TYPE_CHECKING
 
-from bgpy.simulation_engine import BGPPolicy, PathendSimplePolicy
+from bgpy.simulation_engine import BGPPolicy, ASPASimplePolicy, PathendSimplePolicy
 
 if TYPE_CHECKING:
     from bgpy.as_graphs import AS
@@ -92,10 +92,15 @@ def shortest_path_export_all_hijack(
             shortest_as_path = _find_shortest_secondary_provider_path(
                 valid_ann.origin, engine
             )
-        else:
+        elif any(
+            issubclass(x, ASPASimplePolicy)
+            for x in self_scenario.non_default_asn_cls_dict.values()
+        ):
             shortest_as_path = _find_shortest_non_adopting_path_general(
                 valid_ann.origin, self_scenario, engine
             )
+        else:
+            return origin_hijack(self_scenario, unprocessed_anns, engine, prev_scenario)
 
         if shortest_as_path:
             # This can happen if the attacker is the shortest path
@@ -283,6 +288,18 @@ def _find_shortest_non_adopting_path_general(
     # less error prone
     # To do this, I'll  simply iterate through all remaining ASes, and then sort
     # them and return the shortest AS path (or None)
+
+    if len(engine.as_graph) > 100:
+        # TODO: fix
+        # NOTE: It's just that at 90% adoption, when attackers and victims are
+        # on the edge, this code doesn't get run (which is why it's fine)
+        raise NotImplementedError(
+            "Theres a bug in shortest path export all when run with 99% adoption that "
+            "eats up all the RAM. Not going to fix it for now - just run with 90%"
+            " or less adoption percentages. If someone wants support for more, please "
+            "email jfuruness@gmail.com or submit a github issue"
+        )
+
     non_adopting_customers = set()  # USING ASNs due to weakref.Proxy not hashable
     for visited_asn, as_path in visited.copy().items():
         visited_as = engine.as_graph.as_dict[visited_asn]
