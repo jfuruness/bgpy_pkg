@@ -25,6 +25,7 @@ from .utils import get_all_metric_keys
 from bgpy.enums import SpecialPercentAdoptions
 from bgpy.simulation_engine import BaseSimulationEngine, SimulationEngine
 from bgpy.simulation_engine import BGPSimplePolicy
+from bgpy.simulation_engine import BGPPolicy
 from bgpy.simulation_engine import ROVSimplePolicy
 
 
@@ -112,6 +113,17 @@ class Simulation:
         self._validate_scenario_configs()
 
         self.metric_keys: tuple[MetricKey, ...] = metric_keys
+
+        if self.propagation_rounds > 1:
+            for scenario_config in self.scenario_configs:
+                if isinstance(
+                    scenario_config.AdoptPolicyCls, BGPPolicy
+                ) and not isinstance(scenario_config.BasePolicyCls, BGPPolicy):
+                    raise Exception(
+                        "You have an AdoptPolicyCls inheriting from BGPPolicy "
+                        "but your BasePolicyCls is not. You may want to pass in "
+                        "BasePolicyCls=BGPPolicy to your scenario_config"
+                    )
 
     def _validate_scenario_configs(self) -> None:
         """validates that the scenario configs
