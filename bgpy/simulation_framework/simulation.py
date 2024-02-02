@@ -16,9 +16,11 @@ from bgpy.as_graphs.caida_as_graph import CAIDAASGraphConstructor
 from .as_graph_analyzers import BaseASGraphAnalyzer, ASGraphAnalyzer
 from .graph_factory import GraphFactory
 from .metric_tracker import MetricTracker
+from .metric_tracker.metric_key import MetricKey
 from .scenarios import Scenario
 from .scenarios import ScenarioConfig
 from .scenarios import SubprefixHijack
+from .utils import get_all_metric_keys
 
 from bgpy.enums import SpecialPercentAdoptions
 from bgpy.simulation_engine import BaseSimulationEngine, SimulationEngine
@@ -70,6 +72,7 @@ class Simulation:
         data_plane_tracking: bool = True,
         # Control plane trackign for traceback and MetricTrackerCls
         control_plane_tracking: bool = False,
+        metric_keys: tuple[MetricKey, ...] = tuple(list(get_all_metric_keys())),
     ) -> None:
         """Downloads relationship data, runs simulation
 
@@ -107,6 +110,8 @@ class Simulation:
         self.control_plane_tracking: bool = control_plane_tracking
 
         self._validate_scenario_configs()
+
+        self.metric_keys: tuple[MetricKey, ...] = metric_keys
 
     def _validate_scenario_configs(self) -> None:
         """validates that the scenario configs
@@ -240,7 +245,7 @@ class Simulation:
             cached_as_graph_tsv_path=self.as_graph_constructor_kwargs.get("tsv_path"),
         )
 
-        metric_tracker = self.MetricTrackerCls()
+        metric_tracker = self.MetricTrackerCls(metric_keys=self.metric_keys)
 
         prev_scenario = None
 
@@ -390,6 +395,7 @@ class Simulation:
         # Set defaults for kwargs
         kwargs["pickle_path"] = kwargs.pop("pickle_path", self.pickle_path)
         kwargs["graph_dir"] = kwargs.pop("graph_dir", self.output_dir / "graphs")
+        kwargs["metric_keys"] = kwargs.pop("metric_keys", self.metric_keys)
         if GraphFactoryCls:
             GraphFactoryCls(**kwargs).generate_graphs()
             print(f"\nWrote graphs to {kwargs['graph_dir']}")

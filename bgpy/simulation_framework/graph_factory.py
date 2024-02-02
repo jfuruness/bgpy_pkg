@@ -30,6 +30,7 @@ class GraphFactory:
         x_axis_label_replacement_dict=None,
         x_limit: int = 100,
         y_limit: int = 100,
+        metric_keys: tuple[MetricKey, ...] = tuple(list(get_all_metric_keys())),
     ) -> None:
         self.pickle_path: Path = pickle_path
         with self.pickle_path.open("rb") as f:
@@ -59,13 +60,15 @@ class GraphFactory:
         self.x_limit = x_limit
         self.y_limit = y_limit
 
+        self.metric_keys: tuple[MetricKey, ...] = metric_keys
+
     def generate_graphs(self) -> None:
         """Generates default graphs"""
 
         # Each metric key here contains plane, as group, and outcome
         # In other words, aech type of graph
 
-        graph_infos = list(product(get_all_metric_keys(), [True, False, Any]))
+        graph_infos = list(product(self.metric_keys, [True, False, Any]))
 
         for metric_key, adopting in tqdm(
             graph_infos, total=len(graph_infos), desc="Writing Graphs"
