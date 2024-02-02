@@ -20,9 +20,6 @@ class ASPASimplePolicy(BGPSimplePolicy):
 
     name: str = "ASPASimple"
 
-    def __init__(self, *args, **kwargs) -> None:
-        super().__init__(*args, **kwargs)
-
     def _valid_ann(self, ann: "Ann", from_rel: Relationships) -> bool:  # type: ignore
         """Returns False if from peer/customer when aspa is set"""
 

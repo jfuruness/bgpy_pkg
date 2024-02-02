@@ -67,7 +67,7 @@ class BGPPolicy(BGPSimplePolicy):
     def receive_ann(  # type: ignore
         self, ann: "Ann", accept_withdrawals: bool = True
     ) -> None:
-        super(BGPPolicy, self).receive_ann(ann, accept_withdrawals=True)
+        BGPSimplePolicy.receive_ann(self, ann, accept_withdrawals=True)
 
     def __to_yaml_dict__(self):
         """This optional method is called when you call yaml.dump()"""
