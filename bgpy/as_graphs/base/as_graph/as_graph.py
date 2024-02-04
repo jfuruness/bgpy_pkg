@@ -214,6 +214,9 @@ class ASGraph(YamlAble):
                 if not (x.stub or x.multihomed or x.input_clique or x.ixp)
             )
 
+        def transit_no_ixp_filter(as_graph: "ASGraph") -> frozenset[AS]:
+            return frozenset(x for x in as_graph if x.transit and not x.ixp)
+
         def all_no_ixp_filter(as_graph: "ASGraph") -> frozenset[AS]:
             return frozenset(list(as_graph))
 
@@ -225,6 +228,7 @@ class ASGraph(YamlAble):
                 ASGroups.STUBS_OR_MH.value: stubs_or_multihomed_no_ixp_filter,
                 ASGroups.INPUT_CLIQUE.value: input_clique_no_ixp_filter,
                 ASGroups.ETC.value: etc_no_ixp_filter,
+                ASGroups.TRANSIT.value: transit_no_ixp_filter,
                 ASGroups.ALL_WOUT_IXPS.value: all_no_ixp_filter,
             }
         )

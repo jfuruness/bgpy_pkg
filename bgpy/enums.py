@@ -102,6 +102,8 @@ class ASGroups(YamlAbleEnum):
     INPUT_CLIQUE: str = "input_clique"
     # Not stubs, multihomed, or input clique
     ETC: str = "etc"
+    # not stubs or multihomed
+    TRANSIT: str = "transit"
     ALL_WOUT_IXPS: str = "all_wout_ixps"
 
 
