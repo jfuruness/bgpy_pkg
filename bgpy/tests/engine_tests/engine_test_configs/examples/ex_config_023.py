@@ -12,13 +12,13 @@ from bgpy.simulation_framework import (
 
 
 desc = (
-    "accidental route leak against ASPASimple\n"
+    "subprefix origin hijack against ASPASimple\n"
     "This isn't realistic, just for testing to test the downstream"
     "Use the subprefix to check"
 )
 
 ex_config_023 = EngineTestConfig(
-    name="ex_023_route_leak_aspa_simple_downstream_verification",
+    name="ex_023_subprefix_origin_aspa_simple_downstream_verification",
     desc=desc,
     propagation_rounds=2,  # Required for route leaks
     scenario_config=ScenarioConfig(

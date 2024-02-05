@@ -16,8 +16,13 @@ class OnlyToCustomersSimplePolicy(BGPSimplePolicy):
     def _valid_ann(self, ann: "Ann", from_rel: Relationships) -> bool:  # type: ignore
         """Returns False if from peer/customer when only_to_customers is set"""
 
-        # If ann.only_to_customers is set, only accept from a provider
-        if ann.only_to_customers and from_rel.value != Relationships.PROVIDERS.value:
+        if (
+            ann.only_to_customers
+            and from_rel.value == Relationships.PEERS.value
+            and ann.next_hop_asn != ann.only_to_customers
+        ):
+            return False
+        elif ann.only_to_customers and from_rel.value == Relationships.CUSTOMERS.value:
             return False
         else:
             return super()._valid_ann(ann, from_rel)
@@ -33,9 +38,9 @@ class OnlyToCustomersSimplePolicy(BGPSimplePolicy):
 
         if (
             propagate_to.value == Relationships.CUSTOMERS.value
-            and not ann.only_to_customers
+            or propagate_to.value == Relationships.PEERS.value
         ):
-            ann = ann.copy({"only_to_customers": True})
+            ann = ann.copy({"only_to_customers": self.as_.asn})
             self._process_outgoing_ann(neighbor, ann, propagate_to, send_rels)
             return True
         else:

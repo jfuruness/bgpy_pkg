@@ -49,7 +49,7 @@ class Announcement(YamlAble):
     bgpsec_next_asn: Optional[int] = None
     bgpsec_as_path: tuple[int, ...] = ()
     # RFC 9234 OTC attribute (Used in OnlyToCustomers Policy)
-    only_to_customers: Optional[bool] = None
+    only_to_customers: Optional[int] = None
 
     def prefix_path_attributes_eq(self, ann: Optional["Announcement"]) -> bool:
         """Checks prefix and as path equivalency"""
