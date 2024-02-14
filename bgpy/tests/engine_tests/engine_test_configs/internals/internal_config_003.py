@@ -45,5 +45,4 @@ internal_config_003 = EngineTestConfig(
         ),
     ),
     as_graph_info=as_graph_info,
-    propagation_rounds=2,  # required for route leak
 )

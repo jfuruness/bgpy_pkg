@@ -49,7 +49,6 @@ class Simulation:
             ]
         ),
         num_trials: int = 2,
-        propagation_rounds: int = 1,
         output_dir: Path = Path("/tmp/sims"),
         parse_cpus: int = cpu_count(),
         python_hash_seed: Optional[int] = None,
@@ -87,7 +86,6 @@ class Simulation:
             Union[float, SpecialPercentAdoptions], ...
         ] = percent_adoptions
         self.num_trials: int = num_trials
-        self.propagation_rounds: int = propagation_rounds
         self.output_dir: Path = output_dir
         self.output_dir.mkdir(parents=True, exist_ok=True)
         self.parse_cpus: int = parse_cpus
@@ -114,16 +112,15 @@ class Simulation:
 
         self.metric_keys: tuple[MetricKey, ...] = metric_keys
 
-        if self.propagation_rounds > 1:
-            for scenario_config in self.scenario_configs:
-                if isinstance(
-                    scenario_config.AdoptPolicyCls, BGPPolicy
-                ) and not isinstance(scenario_config.BasePolicyCls, BGPPolicy):
-                    raise Exception(
-                        "You have an AdoptPolicyCls inheriting from BGPPolicy "
-                        "but your BasePolicyCls is not. You may want to pass in "
-                        "BasePolicyCls=BGPPolicy to your scenario_config"
-                    )
+        for scenario_config in self.scenario_configs:
+            if isinstance(scenario_config.AdoptPolicyCls, BGPPolicy) and not isinstance(
+                scenario_config.BasePolicyCls, BGPPolicy
+            ):
+                raise Exception(
+                    "You have an AdoptPolicyCls inheriting from BGPPolicy "
+                    "but your BasePolicyCls is not. You may want to pass in "
+                    "BasePolicyCls=BGPPolicy to your scenario_config"
+                )
 
     def _validate_scenario_configs(self) -> None:
         """validates that the scenario configs
@@ -278,7 +275,7 @@ class Simulation:
                 # Change AS Classes, seed announcements before propagation
                 scenario.setup_engine(engine, prev_scenario)
                 # For each round of propagation run the engine
-                for propagation_round in range(self.propagation_rounds):
+                for propagation_round in range(scenario_config.propagation_rounds):
                     self._single_engine_run(
                         engine=engine,
                         percent_adopt=percent_adopt,

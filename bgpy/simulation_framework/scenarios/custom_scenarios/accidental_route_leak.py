@@ -1,6 +1,7 @@
 from typing import TYPE_CHECKING
+import warnings
 
-from bgpy.enums import Relationships, SpecialPercentAdoptions, Timestamps
+from bgpy.enums import ASGroups, Relationships, SpecialPercentAdoptions, Timestamps
 
 from .valid_prefix import ValidPrefix
 from ..scenario import Scenario
@@ -13,6 +14,23 @@ if TYPE_CHECKING:
 
 class AccidentalRouteLeak(ValidPrefix):
     """An accidental route leak of a valid prefix"""
+
+    min_propagation_rounds: int = 2
+
+    def __init__(self, *args, **kwargs) -> None:  # type: ignore
+        super().__init__(*args, **kwargs)
+        if (
+            self.scenario_config.attacker_subcategory_attr in self.warning_as_groups
+            and not self.scenario_config.override_attacker_asns
+        ):
+            msg = (
+                "You used the ASGroup of "
+                f"{self.scenario_config.attacker_subcategory_attr} "
+                f"for your scenario {self.__class__.__name__}, "
+                f"but {self.__class__.__name__} can't leak from stubs. "
+                "To suppress this warning, override warning_as_groups"
+            )
+            warnings.warn(msg, RuntimeWarning)
 
     def post_propagation_hook(
         self,
@@ -88,3 +106,15 @@ class AccidentalRouteLeak(ValidPrefix):
         selection. Doing so would also be a lot slower for a very extreme edge case
         """
         return Scenario._get_attacker_asns(self, *args, **kwargs)
+
+    @property
+    def warning_as_groups(self) -> frozenset[str]:
+        """Returns a frozenset of ASGroups that should raise a warning"""
+
+        return frozenset(
+            [
+                ASGroups.STUBS_OR_MH.value,
+                ASGroups.STUBS.value,
+                ASGroups.ALL_WOUT_IXPS.value,
+            ]
+        )

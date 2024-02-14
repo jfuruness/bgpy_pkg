@@ -41,6 +41,8 @@ as_graph_info = ASGraphInfo(
 class Custom01ValidPrefix(ValidPrefix):
     """Add a better announcement in round 2 to cause withdrawal"""
 
+    min_propagation_rounds = 3
+
     def post_propagation_hook(
         self,
         engine: "BaseSimulationEngine",
@@ -77,5 +79,4 @@ internal_config_001 = EngineTestConfig(
         override_non_default_asn_cls_dict=frozendict(),
     ),
     as_graph_info=as_graph_info,
-    propagation_rounds=3,
 )

@@ -20,7 +20,6 @@ desc = (
 ex_config_023 = EngineTestConfig(
     name="ex_023_subprefix_origin_aspa_simple_downstream_verification",
     desc=desc,
-    propagation_rounds=2,  # Required for route leaks
     scenario_config=ScenarioConfig(
         ScenarioCls=SubprefixHijack,
         preprocess_anns_func=preprocess_anns_funcs.origin_hijack,

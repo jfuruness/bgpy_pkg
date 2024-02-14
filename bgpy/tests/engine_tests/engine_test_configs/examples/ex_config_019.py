@@ -21,7 +21,6 @@ desc = (
 ex_config_019 = EngineTestConfig(
     name="ex_019_route_leak_otc_simple",
     desc=desc,
-    propagation_rounds=2,  # Required for route leaks
     scenario_config=ScenarioConfig(
         ScenarioCls=AccidentalRouteLeak,
         preprocess_anns_func=preprocess_anns_funcs.noop,

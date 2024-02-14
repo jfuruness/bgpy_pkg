@@ -49,7 +49,7 @@ class EngineRunner:
         scenario.setup_engine(engine)
 
         # Run engine
-        for round_ in range(self.conf.propagation_rounds):  # type: ignore
+        for round_ in range(self.conf.scenario_config.propagation_rounds):  # type: ignore
             engine.run(propagation_round=round_, scenario=scenario)
             # By default, these are both no ops
             for func in (scenario.pre_aggregation_hook, scenario.post_propagation_hook):
@@ -74,7 +74,7 @@ class EngineRunner:
             percent_adopt=0,
             trial=0,
             scenario=scenario,
-            propagation_round=self.conf.propagation_rounds - 1,
+            propagation_round=self.conf.scenario_config.propagation_rounds - 1,
             outcomes=outcomes,
         )
         # Store engine and traceback YAML
@@ -110,7 +110,7 @@ class EngineRunner:
             percent_adopt=0,
             trial=0,
             scenario=scenario,
-            propagation_round=self.conf.propagation_rounds - 1,
+            propagation_round=self.conf.scenario_config.propagation_rounds - 1,
             outcomes=outcomes,
         )
         assert isinstance(metric_tracker, MetricTracker)

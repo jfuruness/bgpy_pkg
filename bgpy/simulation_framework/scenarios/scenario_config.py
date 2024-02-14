@@ -32,6 +32,8 @@ class ScenarioConfig:
     """
 
     ScenarioCls: type["Scenario"]
+    # Set in post_init
+    propagation_rounds: int = None  # type: ignore
     preprocess_anns_func: PREPROCESS_ANNS_FUNC_TYPE = noop
     # This is the base type of announcement for this class
     # You can specify a different base ann
@@ -89,6 +91,19 @@ class ScenarioConfig:
         Instead for scenario 2, we have 3 BGP Policyes and 1 Psuedo BGP Policy
         Then scenario 3 will still work as expected
         """
+
+        if self.propagation_rounds is None:
+            object.__setattr__(  # type: ignore
+                self, "propagation_rounds", self.ScenarioCls.min_propagation_rounds
+            )
+
+        if self.ScenarioCls.min_propagation_rounds > self.propagation_rounds:
+            raise ValueError(
+                f"{self.ScenarioCls.__name__} requires a minimum of "
+                f"{self.ScenarioCls.min_propagation_rounds} propagation rounds "
+                f"but this scenario_config has only {self.propagation_rounds} "
+                "propagation rounds"
+            )
 
         if self.AdoptPolicyCls == MISSINGPolicy:
             # mypy says this is unreachable, which is wrong

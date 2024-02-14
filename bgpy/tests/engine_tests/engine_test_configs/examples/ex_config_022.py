@@ -16,7 +16,6 @@ desc = "accidental route leak against ASPA"
 ex_config_022 = EngineTestConfig(
     name="ex_022_route_leak_aspa_upstream_verification",
     desc=desc,
-    propagation_rounds=2,  # Required for route leaks
     scenario_config=ScenarioConfig(
         ScenarioCls=AccidentalRouteLeak,
         preprocess_anns_func=preprocess_anns_funcs.noop,

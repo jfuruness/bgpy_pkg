@@ -28,6 +28,8 @@ class Scenario(ABC):
     This represents a single trial
     """
 
+    min_propagation_rounds: int = 1
+
     def __init__(
         self,
         *,
@@ -380,7 +382,11 @@ class Scenario(ABC):
     ##################
 
     @abstractmethod
-    def _get_announcements(self, *args, **kwargs):
+    def _get_announcements(
+        self,
+        engine: Optional[BaseSimulationEngine] = None,
+        prev_scenario: Optional["Scenario"] = None,
+    ) -> tuple["Ann", ...]:
         """Returns announcements"""
 
         raise NotImplementedError

@@ -19,7 +19,6 @@ desc = (
 ex_config_028 = EngineTestConfig(
     name="ex_028_route_leak_aspa_simple_u_min_v_max_check",
     desc=desc,
-    propagation_rounds=2,  # Required for route leaks
     scenario_config=ScenarioConfig(
         ScenarioCls=AccidentalRouteLeak,
         preprocess_anns_func=preprocess_anns_funcs.noop,

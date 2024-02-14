@@ -19,7 +19,6 @@ desc = (
 ex_config_026 = EngineTestConfig(
     name="ex_026_shortest_path_export_all_aspa_simple_peer",
     desc=desc,
-    propagation_rounds=1,
     scenario_config=ScenarioConfig(
         ScenarioCls=PrefixHijack,
         preprocess_anns_func=preprocess_anns_funcs.shortest_path_export_all_hijack,

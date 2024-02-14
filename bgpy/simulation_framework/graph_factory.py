@@ -43,6 +43,17 @@ class GraphFactory:
                 for x in self.graph_rows
                 if x["data_key"].propagation_round == max_prop_round
             ]
+
+            propagation_rounds = [
+                x["data_key"].scenario_config.propagation_rounds
+                for x in self.graph_rows
+            ]
+            if len(set(propagation_rounds)) != 1:
+                raise NotImplementedError(
+                    "Default grapher doesn't account for differing propagation rounds, "
+                    "You'll need to write your own GraphFactory and pass it into "
+                    "sim.run with sim.run(GraphFactoryCls=MyGraphFactoryCls)"
+                )
         self.graph_dir: Path = graph_dir
         self.graph_dir.mkdir(parents=True, exist_ok=True)
 
