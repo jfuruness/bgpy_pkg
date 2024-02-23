@@ -23,6 +23,20 @@ from .policies import ASPA
 from .policies import ASPAFull
 
 # Old - just keeping these around for backwards compatability
+from .policies import BGP as BGPSimplePolicy
+from .policies import BGPFull as BGPPolicy
+from .policies import PeerROV as PeerROVSimplePolicy
+from .policies import PeerROVFull as PeerROVPolicy
+from .policies import ROV as ROVSimplePolicy
+from .policies import ROVFull as ROVPolicy
+from .policies import BGPSecFull as BGPSecPolicy
+from .policies import BGPSec as BGPSecSimplePolicy
+from .policies import OnlyToCustomers as OnlyToCustomersSimplePolicy
+from .policies import OnlyToCustomersFull as OnlyToCustomersPolicy
+from .policies import Pathend as PathendSimplePolicy
+from .policies import PathendFull as PathendPolicy
+from .policies import ASPA as ASPASimplePolicy
+from .policies import ASPAFull as ASPAPolicy
 
 
 from .simulation_engines import BaseSimulationEngine
@@ -50,6 +64,20 @@ __all__ = [
     "PathendFull",
     "ASPA",
     "ASPAFull",
+    "BGPSimplePolicy",
+    "BGPPolicy",
+    "PeerROVSimplePolicy",
+    "PeerROVPolicy",
+    "ROVSimplePolicy",
+    "ROVPolicy",
+    "BGPSecPolicy",
+    "BGPSecSimplePolicy",
+    "OnlyToCustomersSimplePolicy",
+    "OnlyToCustomersPolicy",
+    "PathendSimplePolicy",
+    "PathendPolicy",
+    "ASPASimplePolicy",
+    "ASPAPolicy",
     "BaseSimulationEngine",
     "SimulationEngine",
 ]
