@@ -63,16 +63,16 @@ class Scenario(ABC):
         )
 
         if self.scenario_config.override_announcements:
-            self.announcements: tuple[
-                "Ann", ...
-            ] = self.scenario_config.override_announcements
+            self.announcements: tuple["Ann", ...] = (
+                self.scenario_config.override_announcements
+            )
         else:
             anns = self._get_announcements(engine=engine, prev_scenario=prev_scenario)
             self.announcements = preprocess_anns_func(self, anns, engine, prev_scenario)
 
-        self.ordered_prefix_subprefix_dict: dict[
-            str, list[str]
-        ] = self._get_ordered_prefix_subprefix_dict()
+        self.ordered_prefix_subprefix_dict: dict[str, list[str]] = (
+            self._get_ordered_prefix_subprefix_dict()
+        )
 
         self.policy_classes_used: frozenset[Type[Policy]] = frozenset()
 

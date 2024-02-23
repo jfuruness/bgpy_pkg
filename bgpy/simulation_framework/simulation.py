@@ -82,9 +82,9 @@ class Simulation:
         mp_method: Multiprocessing method
         """
 
-        self.percent_adoptions: tuple[
-            Union[float, SpecialPercentAdoptions], ...
-        ] = percent_adoptions
+        self.percent_adoptions: tuple[Union[float, SpecialPercentAdoptions], ...] = (
+            percent_adoptions
+        )
         self.num_trials: int = num_trials
         self.output_dir: Path = output_dir
         self.output_dir.mkdir(parents=True, exist_ok=True)
