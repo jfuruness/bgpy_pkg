@@ -8,11 +8,11 @@ if TYPE_CHECKING:
     from bgpy.enums import Relationships
     from bgpy.simulation_framework import Scenario
     from bgpy.simulation_engine.announcement import Announcement as Ann
-    from .bgp_policy import BGPPolicy
+    from .bgp_full import BGPFull
 
 
 def process_incoming_anns(
-    self: "BGPPolicy",
+    self: "BGPFull",
     *,
     from_rel: "Relationships",
     propagation_round: int,
@@ -120,7 +120,7 @@ def process_incoming_anns(
 
 
 def _new_ann_better(
-    self: "BGPPolicy",
+    self: "BGPFull",
     # Current announcement to check against
     current_ann: Optional["Ann"],
     # Whether or not current ann has been processed local rib
@@ -167,7 +167,7 @@ def _new_ann_better(
 
 
 def _process_incoming_withdrawal(
-    self: "BGPPolicy",
+    self: "BGPFull",
     ann: "Ann",
     recv_relationship: "Relationships",
 ) -> bool:
@@ -220,7 +220,7 @@ def _process_incoming_withdrawal(
     return False
 
 
-def _withdraw_ann_from_neighbors(self: "BGPPolicy", withdraw_ann: "Ann"):
+def _withdraw_ann_from_neighbors(self: "BGPFull", withdraw_ann: "Ann"):
     """Withdraw a route from all neighbors.
 
     This function will not remove an announcement from the local rib, that
@@ -252,7 +252,7 @@ def _withdraw_ann_from_neighbors(self: "BGPPolicy", withdraw_ann: "Ann"):
             send_info.ann = None
 
 
-def _select_best_ribs_in(self: "BGPPolicy", prefix: str) -> Optional["Ann"]:
+def _select_best_ribs_in(self: "BGPFull", prefix: str) -> Optional["Ann"]:
     """Selects best ann from ribs in
 
     Remember, ribs in anns are NOT deep copied"""

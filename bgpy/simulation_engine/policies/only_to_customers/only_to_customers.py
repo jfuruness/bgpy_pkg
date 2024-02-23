@@ -1,17 +1,17 @@
 from typing import TYPE_CHECKING
 
 from bgpy.enums import Relationships
-from bgpy.simulation_engine.policies.bgp import BGPSimplePolicy
+from bgpy.simulation_engine.policies.bgp import BGP
 
 if TYPE_CHECKING:
     from bgpy.as_graphs import AS
     from bgpy.simulation_engine import Announcement as Ann
 
 
-class OnlyToCustomersSimplePolicy(BGPSimplePolicy):
+class OnlyToCustomers(BGP):
     """An Policy that deploys OnlyToCustomers"""
 
-    name: str = "OnlyToCustomersSimple"
+    name: str = "OnlyToCustomers"
 
     def _valid_ann(self, ann: "Ann", from_rel: Relationships) -> bool:  # type: ignore
         """Returns False if from peer/customer when only_to_customers is set"""

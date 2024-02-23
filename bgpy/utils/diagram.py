@@ -5,8 +5,8 @@ from graphviz import Digraph
 import ipaddress
 
 from bgpy.enums import Outcomes
-from bgpy.simulation_engine import BGPPolicy
-from bgpy.simulation_engine import BGPSimplePolicy
+from bgpy.simulation_engine import BGPFull
+from bgpy.simulation_engine import BGP
 from bgpy.simulation_engine import BaseSimulationEngine
 from bgpy.simulation_framework import Scenario
 
@@ -210,7 +210,7 @@ class Diagram:
         # If the as obj is the attacker
         if as_obj.asn in scenario.attacker_asns:
             kwargs.update({"fillcolor": "#ff6060", "shape": "doublecircle"})
-            if as_obj.policy.__class__ not in (BGPPolicy, BGPSimplePolicy):
+            if as_obj.policy.__class__ not in (BGPFull, BGP):
                 kwargs["shape"] = "doubleoctagon"
             # If people complain about the red being too dark lol:
             kwargs.update({"fillcolor": "#FF7F7F"})
@@ -218,7 +218,7 @@ class Diagram:
         # As obj is the victim
         elif as_obj.asn in scenario.victim_asns:
             kwargs.update({"fillcolor": "#90ee90", "shape": "doublecircle"})
-            if as_obj.policy.__class__ not in (BGPPolicy, BGPSimplePolicy):
+            if as_obj.policy.__class__ not in (BGPFull, BGP):
                 kwargs["shape"] = "doubleoctagon"
 
         # As obj is not attacker or victim
@@ -230,7 +230,7 @@ class Diagram:
             elif traceback[as_obj.asn] == Outcomes.DISCONNECTED.value:
                 kwargs.update({"fillcolor": "grey:white"})
 
-            if as_obj.policy.__class__ not in [BGPPolicy, BGPSimplePolicy]:
+            if as_obj.policy.__class__ not in [BGPFull, BGP]:
                 kwargs["shape"] = "octagon"
         return kwargs
 

@@ -1,4 +1,4 @@
-from .bgp_simple_policy import BGPSimplePolicy
-from .bgp_policy import BGPPolicy
+from .bgp import BGP
+from .bgp_full import BGPFull
 
-__all__ = ["BGPPolicy", "BGPSimplePolicy"]
+__all__ = ["BGPFull", "BGP"]

@@ -1,13 +1,13 @@
 from typing import TYPE_CHECKING
 
 from bgpy.enums import Relationships
-from bgpy.simulation_engine.policies.bgp import BGPSimplePolicy
+from bgpy.simulation_engine.policies.bgp import BGP
 
 if TYPE_CHECKING:
     from bgpy.simulation_engine import Announcement as Ann
 
 
-class ASPASimplePolicy(BGPSimplePolicy):
+class ASPA(BGP):
     """An Policy that deploys ASPA
 
     We experimented with adding a cache to the provider_check
@@ -18,7 +18,7 @@ class ASPASimplePolicy(BGPSimplePolicy):
     so we decided to forgo those as well
     """
 
-    name: str = "ASPASimple"
+    name: str = "ASPA"
 
     def _valid_ann(self, ann: "Ann", from_rel: Relationships) -> bool:  # type: ignore
         """Returns False if from peer/customer when aspa is set"""
@@ -99,7 +99,7 @@ class ASPASimplePolicy(BGPSimplePolicy):
         """Returns False if asn2 is not in asn1's provider_asns, AND asn1 adopts ASPA"""
 
         cur_as_obj = self.as_.as_graph.as_dict[asn1]
-        if isinstance(cur_as_obj.policy, ASPASimplePolicy):
+        if isinstance(cur_as_obj.policy, ASPA):
             next_as_obj = self.as_.as_graph.as_dict[asn2]
             if next_as_obj.asn not in cur_as_obj.provider_asns:
                 return False

@@ -63,9 +63,7 @@ class ASGraph(YamlAble):
         self,
         as_graph_info: "ASGraphInfo",
         BaseASCls: type[AS] = AS,
-        BasePolicyCls: type[
-            bgpy.simulation_engine.Policy
-        ] = bgpy.simulation_engine.BGPSimplePolicy,
+        BasePolicyCls: type[bgpy.simulation_engine.Policy] = bgpy.simulation_engine.BGP,
         customer_cones: bool = True,
         yaml_as_dict: Optional[frozendict[int, AS]] = None,
         yaml_ixp_asns: frozenset[int] = frozenset(),

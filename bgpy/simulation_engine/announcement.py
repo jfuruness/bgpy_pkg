@@ -33,7 +33,7 @@ class Announcement(YamlAble):
     # For now, we just set the timestamp of the victim to 0,
     # and timestamp of the attacker to 1
     timestamp: int = 0
-    # Used for classes derived from BGPPolicy
+    # Used for classes derived from BGPFull
     withdraw: bool = False
     # Deprecated attr. This existed before next_hop_asn
     # next_hop_asn should be set instead of this now

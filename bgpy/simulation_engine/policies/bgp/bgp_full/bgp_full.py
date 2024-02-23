@@ -11,7 +11,7 @@ from .process_incoming_funcs import _process_incoming_withdrawal
 from .process_incoming_funcs import _withdraw_ann_from_neighbors
 from .process_incoming_funcs import _select_best_ribs_in
 
-from bgpy.simulation_engine.policies.bgp import BGPSimplePolicy
+from bgpy.simulation_engine.policies.bgp import BGP
 
 from bgpy.simulation_engine.ann_containers import RIBsIn
 from bgpy.simulation_engine.ann_containers import RIBsOut
@@ -23,8 +23,8 @@ if TYPE_CHECKING:
     from bgpy.simulation_engine.announcement import Announcement as Ann
 
 
-class BGPPolicy(BGPSimplePolicy):
-    name = "BGP"
+class BGPFull(BGP):
+    name = "BGP Full"
 
     def __init__(
         self,
@@ -34,7 +34,7 @@ class BGPPolicy(BGPSimplePolicy):
         _send_q: Optional[SendQueue] = None,
         **kwargs,
     ):
-        super(BGPPolicy, self).__init__(*args, **kwargs)
+        super(BGPFull, self).__init__(*args, **kwargs)
         self._ribs_in: RIBsIn = _ribs_in if _ribs_in else RIBsIn()
         self._ribs_out: RIBsOut = _ribs_out if _ribs_out else RIBsOut()
         self._send_q: SendQueue = _send_q if _send_q else SendQueue()
@@ -45,7 +45,7 @@ class BGPPolicy(BGPSimplePolicy):
     _prev_sent = _prev_sent  # type: ignore
     _send_anns = _send_anns
 
-    # Must add this func here since it refers to BGPPolicy
+    # Must add this func here since it refers to BGPFull
     # Could use super but want to avoid additional func calls
     def _populate_send_q(
         self,
@@ -53,7 +53,7 @@ class BGPPolicy(BGPSimplePolicy):
         send_rels: set["Relationships"],
     ) -> None:
         # Process outging ann is oerriden so this just adds to send q
-        super(BGPPolicy, self)._propagate(propagate_to, send_rels)
+        super(BGPFull, self)._propagate(propagate_to, send_rels)
 
     # Process incoming funcs
     process_incoming_anns = process_incoming_anns
@@ -62,17 +62,17 @@ class BGPPolicy(BGPSimplePolicy):
     _withdraw_ann_from_neighbors = _withdraw_ann_from_neighbors
     _select_best_ribs_in = _select_best_ribs_in
 
-    # Must be here since it referes to BGPPolicy
+    # Must be here since it referes to BGPFull
     # Could just use super but want to avoid the additional func calls
     def receive_ann(  # type: ignore
         self, ann: "Ann", accept_withdrawals: bool = True
     ) -> None:
-        BGPSimplePolicy.receive_ann(self, ann, accept_withdrawals=True)
+        BGP.receive_ann(self, ann, accept_withdrawals=True)
 
     def __to_yaml_dict__(self):
         """This optional method is called when you call yaml.dump()"""
 
-        as_dict = super(BGPPolicy, self).__to_yaml_dict__()
+        as_dict = super(BGPFull, self).__to_yaml_dict__()
         as_dict.update(
             {
                 "_ribs_in": self._ribs_in,

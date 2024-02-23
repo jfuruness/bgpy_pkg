@@ -4,7 +4,7 @@ from copy import deepcopy
 from bgpy.tests.engine_tests.utils import EngineTestConfig
 
 
-from bgpy.simulation_engine import BGPPolicy
+from bgpy.simulation_engine import BGPFull
 from bgpy.simulation_framework import (
     ValidPrefix,
     ScenarioConfig,
@@ -81,7 +81,7 @@ internal_config_002 = EngineTestConfig(
     desc="Test withdrawal mechanism choosing next best announcement",
     scenario_config=ScenarioConfig(
         ScenarioCls=Custom02ValidPrefix,
-        BasePolicyCls=BGPPolicy,
+        BasePolicyCls=BGPFull,
         override_victim_asns=frozenset({2}),
         override_non_default_asn_cls_dict=frozendict(),
     ),

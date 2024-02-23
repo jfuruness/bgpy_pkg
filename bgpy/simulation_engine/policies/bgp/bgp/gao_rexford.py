@@ -3,11 +3,11 @@ from typing import Optional, TYPE_CHECKING
 from bgpy.simulation_engine.announcement import Announcement as Ann
 
 if TYPE_CHECKING:
-    from .bgp_simple_policy import BGPSimplePolicy
+    from .bgp import BGP
 
 
 def _get_best_ann_by_gao_rexford(
-    self: "BGPSimplePolicy",
+    self: "BGP",
     current_ann: Optional[Ann],
     new_ann: Ann,
 ) -> Ann:
@@ -42,7 +42,7 @@ def _get_best_ann_by_gao_rexford(
 
 
 def _get_best_ann_by_local_pref(
-    self: "BGPSimplePolicy", current_ann: Ann, new_ann: Ann
+    self: "BGP", current_ann: Ann, new_ann: Ann
 ) -> Optional[Ann]:
     """Returns best announcement by local pref, or None if tie"""
 
@@ -55,7 +55,7 @@ def _get_best_ann_by_local_pref(
 
 
 def _get_best_ann_by_as_path(
-    self: "BGPSimplePolicy", current_ann: Ann, new_ann: Ann
+    self: "BGP", current_ann: Ann, new_ann: Ann
 ) -> Optional[Ann]:
     """Returns best announcement by as path length, or None if tie
 
@@ -71,7 +71,7 @@ def _get_best_ann_by_as_path(
 
 
 def _get_best_ann_by_lowest_neighbor_asn_tiebreaker(
-    self: "BGPSimplePolicy", current_ann: Ann, new_ann: Ann
+    self: "BGP", current_ann: Ann, new_ann: Ann
 ) -> Ann:
     """Determines if the new ann > current ann by Gao Rexford for ties
 

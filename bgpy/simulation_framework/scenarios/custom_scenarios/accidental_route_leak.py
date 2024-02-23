@@ -47,9 +47,9 @@ class AccidentalRouteLeak(ValidPrefix):
 
         NOTE: the old way of doing this was to simply alter the attackers
         local RIB and then propagate again. However - this has some drawbacks
-        Then the attacker must deploy BGPPolicy (that uses withdrawals) and
-        the entire graph has to propagate again. BGPPolicy (and subclasses
-        of it) are MUCH slower than BGPSimplePolicy due to all the extra
+        Then the attacker must deploy BGPFull (that uses withdrawals) and
+        the entire graph has to propagate again. BGPFull (and subclasses
+        of it) are MUCH slower than BGP due to all the extra
         computations for withdrawals, RIBsIn, RIBsOut, etc. Additionally,
         propagating a second round after the ASGraph is __already__ full
         is wayyy more expensive than propagating when the AS graph is empty.
@@ -57,7 +57,7 @@ class AccidentalRouteLeak(ValidPrefix):
         Instead, we now get the announcement that the attacker needs to leak
         after the first round of propagating the valid prefix.
         Then we clear the graph, seed those announcements, and propagate again
-        This way, we avoid needing BGPPolicy (since the graph has been cleared,
+        This way, we avoid needing BGPFull (since the graph has been cleared,
         there is no need for withdrawals), and we avoid propagating a second
         time after the graph is alrady full.
 

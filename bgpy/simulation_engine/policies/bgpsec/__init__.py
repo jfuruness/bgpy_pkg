@@ -1,7 +1,7 @@
-from .bgpsec_simple_policy import BGPSecSimplePolicy
-from .bgpsec_policy import BGPSecPolicy
+from .bgpsec import BGPSec
+from .bgpsec_full import BGPSecFull
 
 __all__ = [
-    "BGPSecSimplePolicy",
-    "BGPSecPolicy",
+    "BGPSec",
+    "BGPSecFull",
 ]

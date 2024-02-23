@@ -7,20 +7,23 @@ from .ann_containers import SendQueue
 from .ann_containers import RecvQueue
 
 from .policies import Policy
-from .policies import BGPSimplePolicy
-from .policies import BGPPolicy
-from .policies import PeerROVSimplePolicy
-from .policies import PeerROVPolicy
-from .policies import ROVSimplePolicy
-from .policies import ROVPolicy
-from .policies import BGPSecPolicy
-from .policies import BGPSecSimplePolicy
-from .policies import OnlyToCustomersSimplePolicy
-from .policies import OnlyToCustomersPolicy
-from .policies import PathendSimplePolicy
-from .policies import PathendPolicy
-from .policies import ASPASimplePolicy
-from .policies import ASPAPolicy
+from .policies import BGP
+from .policies import BGPFull
+from .policies import PeerROV
+from .policies import PeerROVFull
+from .policies import ROV
+from .policies import ROVFull
+from .policies import BGPSecFull
+from .policies import BGPSec
+from .policies import OnlyToCustomers
+from .policies import OnlyToCustomersFull
+from .policies import Pathend
+from .policies import PathendFull
+from .policies import ASPA
+from .policies import ASPAFull
+
+# Old - just keeping these around for backwards compatability
+
 
 from .simulation_engines import BaseSimulationEngine
 from .simulation_engines import SimulationEngine
@@ -32,21 +35,21 @@ __all__ = [
     "RIBsOut",
     "SendQueue",
     "RecvQueue",
-    "BGPSimplePolicy",
-    "BGPPolicy",
-    "PeerROVSimplePolicy",
-    "PeerROVPolicy",
-    "ROVSimplePolicy",
-    "ROVPolicy",
+    "BGP",
+    "BGPFull",
+    "PeerROV",
+    "PeerROVFull",
+    "ROV",
+    "ROVFull",
     "Policy",
-    "BGPSecPolicy",
-    "BGPSecSimplePolicy",
-    "OnlyToCustomersPolicy",
-    "OnlyToCustomersSimplePolicy",
-    "PathendSimplePolicy",
-    "PathendPolicy",
-    "ASPASimplePolicy",
-    "ASPAPolicy",
+    "BGPSecFull",
+    "BGPSec",
+    "OnlyToCustomersFull",
+    "OnlyToCustomers",
+    "Pathend",
+    "PathendFull",
+    "ASPA",
+    "ASPAFull",
     "BaseSimulationEngine",
     "SimulationEngine",
 ]

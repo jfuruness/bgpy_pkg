@@ -8,7 +8,7 @@ from bgpy.enums import ASGroups
 
 from bgpy.simulation_engine import Announcement as Ann
 from bgpy.simulation_engine import Policy
-from bgpy.simulation_engine import BGPSimplePolicy
+from bgpy.simulation_engine import BGP
 
 from .preprocess_anns_funcs import noop, PREPROCESS_ANNS_FUNC_TYPE
 
@@ -38,7 +38,7 @@ class ScenarioConfig:
     # This is the base type of announcement for this class
     # You can specify a different base ann
     AnnCls: type[Ann] = Ann
-    BasePolicyCls: type[Policy] = BGPSimplePolicy
+    BasePolicyCls: type[Policy] = BGP
     # Fixed in post init, but can't show mypy for some reason
     AdoptPolicyCls: type[Policy] = MISSINGPolicy  # type: ignore
     num_attackers: int = 1

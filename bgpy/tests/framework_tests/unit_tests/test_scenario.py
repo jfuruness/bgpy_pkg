@@ -8,9 +8,9 @@ from bgpy.simulation_framework import ScenarioConfig
 from bgpy.simulation_framework import SubprefixHijack
 from bgpy.simulation_framework import NonRoutedPrefixHijack
 from bgpy.simulation_engine import Announcement
-from bgpy.simulation_engine import BGPSimplePolicy
-from bgpy.simulation_engine import BGPPolicy
-from bgpy.simulation_engine import ROVSimplePolicy
+from bgpy.simulation_engine import BGP
+from bgpy.simulation_engine import BGPFull
+from bgpy.simulation_engine import ROV
 
 
 @pytest.mark.framework
@@ -24,12 +24,12 @@ class TestScenario:
         scenario_config = ScenarioConfig(
             ScenarioCls=SubprefixHijack,
             AnnCls=Announcement,
-            BasePolicyCls=BGPSimplePolicy,
+            BasePolicyCls=BGP,
             num_attackers=num_attackers,
             num_victims=num_victims,
             override_attacker_asns=frozenset(range(num_attackers)),
             override_victim_asns=frozenset(range(num_victims)),
-            override_non_default_asn_cls_dict=frozendict({1: BGPPolicy}),
+            override_non_default_asn_cls_dict=frozendict({1: BGPFull}),
         )
         SubprefixHijack(scenario_config=scenario_config)
 
@@ -250,8 +250,8 @@ class TestScenario:
 
         scenario_config = ScenarioConfig(
             ScenarioCls=SubprefixHijack,
-            AdoptPolicyCls=ROVSimplePolicy,
-            BasePolicyCls=BGPSimplePolicy,
+            AdoptPolicyCls=ROV,
+            BasePolicyCls=BGP,
         )
         scenario = SubprefixHijack(
             scenario_config=scenario_config, percent_adoption=0.5, engine=engine
@@ -260,8 +260,8 @@ class TestScenario:
             override_non_default_asn_cls_dict=None, engine=engine, prev_scenario=None
         )
 
-        assert ROVSimplePolicy in list(non_default_asn_cls_dict.values())
-        assert BGPSimplePolicy not in list(non_default_asn_cls_dict.values())
+        assert ROV in list(non_default_asn_cls_dict.values())
+        assert BGP not in list(non_default_asn_cls_dict.values())
 
     def test_default_adopters(self, engine):
         """Ensures that the default adopters returns the victims"""

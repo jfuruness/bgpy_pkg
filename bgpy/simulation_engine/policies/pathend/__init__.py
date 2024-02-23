@@ -1,7 +1,7 @@
-from .pathend_policy import PathendPolicy
-from .pathend_simple_policy import PathendSimplePolicy
+from .pathend_full import PathendFull
+from .pathend import Pathend
 
 __all__ = [
-    "PathendPolicy",
-    "PathendSimplePolicy",
+    "PathendFull",
+    "Pathend",
 ]

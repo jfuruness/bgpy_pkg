@@ -1,31 +1,31 @@
 from .policy import Policy
-from .bgp import BGPSimplePolicy, BGPPolicy
+from .bgp import BGP, BGPFull
 from .rov import (
-    PeerROVSimplePolicy,
-    PeerROVPolicy,
-    ROVSimplePolicy,
-    ROVPolicy,
+    PeerROV,
+    PeerROVFull,
+    ROV,
+    ROVFull,
 )
-from .bgpsec import BGPSecPolicy
-from .bgpsec import BGPSecSimplePolicy
-from .only_to_customers import OnlyToCustomersSimplePolicy, OnlyToCustomersPolicy
-from .pathend import PathendSimplePolicy, PathendPolicy
-from .aspa import ASPASimplePolicy, ASPAPolicy
+from .bgpsec import BGPSecFull
+from .bgpsec import BGPSec
+from .only_to_customers import OnlyToCustomers, OnlyToCustomersFull
+from .pathend import Pathend, PathendFull
+from .aspa import ASPA, ASPAFull
 
 __all__ = [
-    "BGPSimplePolicy",
-    "BGPPolicy",
+    "BGP",
+    "BGPFull",
     "Policy",
-    "PeerROVSimplePolicy",
-    "PeerROVPolicy",
-    "ROVSimplePolicy",
-    "ROVPolicy",
-    "BGPSecPolicy",
-    "BGPSecSimplePolicy",
-    "OnlyToCustomersSimplePolicy",
-    "OnlyToCustomersPolicy",
-    "PathendSimplePolicy",
-    "PathendPolicy",
-    "ASPASimplePolicy",
-    "ASPAPolicy",
+    "PeerROV",
+    "PeerROVFull",
+    "ROV",
+    "ROVFull",
+    "BGPSecFull",
+    "BGPSec",
+    "OnlyToCustomers",
+    "OnlyToCustomersFull",
+    "Pathend",
+    "PathendFull",
+    "ASPA",
+    "ASPAFull",
 ]

@@ -32,8 +32,8 @@ if TYPE_CHECKING:
     from bgpy.as_graphs import AS
 
 
-class BGPSimplePolicy(Policy):
-    name: str = "BGP Simple"
+class BGP(Policy):
+    name: str = "BGP"
 
     def __init__(
         self,
