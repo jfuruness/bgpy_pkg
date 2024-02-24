@@ -69,18 +69,16 @@ class Scenario(ABC):
             self.announcements: tuple["Ann", ...] = (
                 self.scenario_config.override_announcements
             )
-            self.roas_infos: tuple[ROAInfo, ...] = self.scenario_config.override_roa_infos
+            self.roas_infos: tuple[ROAInfo, ...] = (
+                self.scenario_config.override_roa_infos
+            )
         else:
             anns = self._get_announcements(engine=engine, prev_scenario=prev_scenario)
             self.roa_infos = self._get_roa_infos(
-                announcements=anns,
-                engine=engine,
-                prev_scenario=prev_scenario
+                announcements=anns, engine=engine, prev_scenario=prev_scenario
             )
             anns = self._add_roa_info_to_anns(
-                announcements=anns,
-                engine=engine,
-                prev_scenario=prev_scenario
+                announcements=anns, engine=engine, prev_scenario=prev_scenario
             )
             self.announcements = preprocess_anns_func(self, anns, engine, prev_scenario)
 
@@ -436,9 +434,7 @@ class Scenario(ABC):
             roa_origin = self._get_roa_origin(roa_checker, prefix, ann.origin)
 
             roa_valid_length = self._get_roa_valid_length(
-                roa_checker,
-                prefix,
-                ann.origin
+                roa_checker, prefix, ann.origin
             )
 
             processed_anns.append(
@@ -486,18 +482,11 @@ class Scenario(ABC):
 
         roa_checker = ROAChecker()
         for roa in self.roa_infos:
-            roa_checker.insert(
-                roa.prefix,
-                roa.origin,
-                roa.max_length
-            )
+            roa_checker.insert(roa.prefix, roa.origin, roa.max_length)
         return roa_checker
 
     def _get_roa_origin(
-        self,
-        roa_checker: ROAChecker,
-        prefix: IPv4Network | IPv6Network,
-        origin: int
+        self, roa_checker: ROAChecker, prefix: IPv4Network | IPv6Network, origin: int
     ) -> Optional[int]:
         """Returns ROA origin"""
 
@@ -525,7 +514,7 @@ class Scenario(ABC):
         validity, _ = roa_checker.get_validity(prefix, origin)
         if validity in (
             ROAValidity.INVALID_LENGTH,
-            ROAValidity.INVALID_LENGTH_AND_ORIGIN
+            ROAValidity.INVALID_LENGTH_AND_ORIGIN,
         ):
             return False
         elif validity == ROAValidity.UNKNOWN:
