@@ -516,8 +516,8 @@ class Scenario(ABC):
     def _get_roa_valid_length(
         self,
         roa_checker: ROAChecker,
-        prefix: IPv4Network | IPv6Network
-        origin: int
+        prefix: IPv4Network | IPv6Network,
+        origin: int,
     ) -> Optional[bool]:
         """Returns ROA validity"""
 
