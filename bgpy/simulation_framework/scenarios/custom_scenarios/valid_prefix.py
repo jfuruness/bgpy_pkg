@@ -38,3 +38,14 @@ class ValidPrefix(Scenario):
 
     def _get_attacker_asns(self, *args, **kwargs):
         return set()
+
+    def _get_roa_infos(
+        self,
+        *,
+        announcements: tuple["Ann", ...] = (),
+        engine: Optional["BaseSimulationEngine"] = None,
+        prev_scenario: Optional["Scenario"] = None,
+    ) -> tuple[ROAInfo, ...]:
+        """Returns a tuple of ROAInfo's"""
+
+        return tuple([ROAInfo(Prefixes.PREFIX.value, x) for x in self.victim_asns])

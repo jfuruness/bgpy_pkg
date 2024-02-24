@@ -18,13 +18,10 @@ def _get_announcements(self, *args, **kwargs):
         anns.append(
             self.scenario_config.AnnCls(
                 prefix=Prefixes.PREFIX.value,
-                next_hop_asn=victim_asn,
                 as_path=(victim_asn,),
                 timestamp=Timestamps.VICTIM.value,
-                seed_asn=victim_asn,
                 roa_valid_length=True,
                 roa_origin=victim_asn,
-                recv_relationship=Relationships.ORIGIN,
             )
         )
 
@@ -37,13 +34,10 @@ def _get_announcements(self, *args, **kwargs):
         anns.append(
             self.scenario_config.AnnCls(
                 prefix=Prefixes.SUBPREFIX.value,
-                next_hop_asn=attacker_asn,
                 as_path=(attacker_asn,),
                 timestamp=Timestamps.ATTACKER.value,
-                seed_asn=attacker_asn,
                 roa_valid_length=False,
                 roa_origin=roa_origin,
-                recv_relationship=Relationships.ORIGIN,
             )
         )
     return tuple(anns)

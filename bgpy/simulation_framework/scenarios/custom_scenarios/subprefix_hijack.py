@@ -1,6 +1,7 @@
-from typing import TYPE_CHECKING
+from typing import Optional, TYPE_CHECKING
 
 from bgpy.simulation_framework.scenarios.scenario import Scenario
+from bgpy.simulation_framework.scenarios.roa_info import ROAInfo
 from bgpy.enums import Prefixes
 from bgpy.enums import Relationships
 from bgpy.enums import Timestamps
@@ -8,6 +9,7 @@ from bgpy.enums import Timestamps
 
 if TYPE_CHECKING:
     from bgpy.simulation_engine import Announcement as Ann
+    from bgpy.simulation_engine import BaseSimulationEngine
 
 
 class SubprefixHijack(Scenario):
@@ -30,13 +32,8 @@ class SubprefixHijack(Scenario):
             anns.append(
                 self.scenario_config.AnnCls(
                     prefix=Prefixes.PREFIX.value,
-                    next_hop_asn=victim_asn,
                     as_path=(victim_asn,),
                     timestamp=Timestamps.VICTIM.value,
-                    seed_asn=victim_asn,
-                    roa_valid_length=True,
-                    roa_origin=victim_asn,
-                    recv_relationship=Relationships.ORIGIN,
                 )
             )
 
@@ -49,13 +46,24 @@ class SubprefixHijack(Scenario):
             anns.append(
                 self.scenario_config.AnnCls(
                     prefix=Prefixes.SUBPREFIX.value,
-                    next_hop_asn=attacker_asn,
                     as_path=(attacker_asn,),
                     timestamp=Timestamps.ATTACKER.value,
-                    seed_asn=attacker_asn,
-                    roa_valid_length=False,
-                    roa_origin=roa_origin,
-                    recv_relationship=Relationships.ORIGIN,
                 )
             )
         return tuple(anns)
+
+    def _get_roa_infos(
+        self,
+        *,
+        announcements: tuple["Ann", ...] = (),
+        engine: Optional["BaseSimulationEngine"] = None,
+        prev_scenario: Optional["Scenario"] = None,
+    ) -> tuple[ROAInfo, ...]:
+        """Returns a tuple of ROAInfo's"""
+
+        err: str = "Fix the roa_origins of the " "announcements for multiple victims"
+        assert len(self.victim_asns) == 1, err
+
+        roa_origin: int = next(iter(self.victim_asns))
+
+        return (ROAInfo(Prefixes.PREFIX.value, roa_origin),)

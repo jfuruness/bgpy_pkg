@@ -3,8 +3,7 @@ from typing import Any, Optional, TYPE_CHECKING
 
 from yamlable import YamlAble, yaml_info
 
-if TYPE_CHECKING:
-    from bgpy.enums import Relationships
+from bgpy.enums import Relationships
 
 
 @yaml_info(yaml_tag="Announcement")
@@ -13,11 +12,11 @@ class Announcement(YamlAble):
     """BGP Announcement"""
 
     prefix: str
-    # Equivalent to the next hop in a normal BGP announcement
-    next_hop_asn: int
     as_path: tuple[int, ...]
-    seed_asn: Optional[int]
-    recv_relationship: "Relationships"
+    # Equivalent to the next hop in a normal BGP announcement
+    next_hop_asn: int = None  # type: ignore
+    seed_asn: Optional[int] = None
+    recv_relationship: Relationships = Relationships.ORIGIN
 
     #############################
     # Optional attributes below #
@@ -50,6 +49,18 @@ class Announcement(YamlAble):
     bgpsec_as_path: tuple[int, ...] = ()
     # RFC 9234 OTC attribute (Used in OnlyToCustomers Policy)
     only_to_customers: Optional[int] = None
+
+    def __post_init__(self):
+        """Defaults seed_asn and next_hop_asn"""
+
+        if self.seed_asn is None:
+            if len(self.as_path) == 1:
+                object.__setattr__(self, "seed_asn", self.as_path[0])
+        if self.next_hop_asn is None:
+            if len(self.as_path) == 1:  # type: ignore
+                object.__setattr__(self, "next_hop_asn", self.as_path[0])
+            else:
+                raise ValueError("Must set next_hop_asn")
 
     def prefix_path_attributes_eq(self, ann: Optional["Announcement"]) -> bool:
         """Checks prefix and as path equivalency"""
