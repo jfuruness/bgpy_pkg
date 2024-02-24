@@ -91,7 +91,6 @@ class Diagram:
               </TR>"""
         html += """</TABLE>>"""
 
-
         kwargs = {"color": "black", "style": "filled", "fillcolor": "white"}
         self.dot.node("Legend", html, shape="plaintext", **kwargs)
 
