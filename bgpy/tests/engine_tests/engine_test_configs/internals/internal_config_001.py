@@ -8,7 +8,7 @@ from bgpy.as_graphs import ASGraphInfo
 from bgpy.tests.engine_tests.utils import EngineTestConfig
 
 from bgpy.enums import SpecialPercentAdoptions
-from bgpy.simulation_engine import BGPPolicy, BaseSimulationEngine
+from bgpy.simulation_engine import BGPFull, BaseSimulationEngine
 from bgpy.simulation_framework import (
     ValidPrefix,
     ScenarioConfig,
@@ -74,7 +74,7 @@ internal_config_001 = EngineTestConfig(
     desc="Test withdrawal mechanism caused by better announcement",
     scenario_config=ScenarioConfig(
         ScenarioCls=Custom01ValidPrefix,
-        BasePolicyCls=BGPPolicy,
+        BasePolicyCls=BGPFull,
         override_victim_asns=frozenset({2}),
         override_non_default_asn_cls_dict=frozendict(),
     ),

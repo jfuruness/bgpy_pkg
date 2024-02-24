@@ -3,7 +3,7 @@ from bgpy.enums import ASNs
 from .as_graph_info_000 import as_graph_info_000
 from bgpy.tests.engine_tests.utils import EngineTestConfig
 
-from bgpy.simulation_engine import BGPSimplePolicy, BGPSecSimplePolicy
+from bgpy.simulation_engine import BGP, BGPSec
 from bgpy.simulation_framework import (
     ScenarioConfig,
     PrefixHijack,
@@ -24,12 +24,12 @@ ex_config_014 = EngineTestConfig(
     scenario_config=ScenarioConfig(
         ScenarioCls=PrefixHijack,
         preprocess_anns_func=preprocess_anns_funcs.origin_spoofing_hijack,
-        BasePolicyCls=BGPSecSimplePolicy,
+        BasePolicyCls=BGPSec,
         override_attacker_asns=frozenset({ASNs.ATTACKER.value}),
         override_victim_asns=frozenset({ASNs.VICTIM.value}),
         override_non_default_asn_cls_dict=frozendict(
             {
-                ASNs.ATTACKER.value: BGPSimplePolicy,
+                ASNs.ATTACKER.value: BGP,
             }
         ),
     ),

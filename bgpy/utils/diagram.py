@@ -5,8 +5,8 @@ from graphviz import Digraph
 import ipaddress
 
 from bgpy.enums import Outcomes
-from bgpy.simulation_engine import BGPPolicy
-from bgpy.simulation_engine import BGPSimplePolicy
+from bgpy.simulation_engine import BGPFull
+from bgpy.simulation_engine import BGP
 from bgpy.simulation_engine import BaseSimulationEngine
 from bgpy.simulation_framework import Scenario
 
@@ -36,7 +36,7 @@ class Diagram:
         path: Optional[Path] = None,
         view: bool = False,
     ) -> None:
-        self._add_legend(traceback)
+        self._add_legend(traceback, scenario)
         display_next_hop_asn = self._display_next_hop_asn(engine, scenario)
         self._add_ases(engine, traceback, scenario, display_next_hop_asn)
         self._add_edges(engine)
@@ -44,7 +44,7 @@ class Diagram:
         self._add_description(description, display_next_hop_asn)
         self._render(path=path, view=view)
 
-    def _add_legend(self, traceback: dict[int, int]) -> None:
+    def _add_legend(self, traceback: dict[int, int], scenario: Scenario) -> None:
         """Adds legend to the graph with outcome counts"""
 
         attacker_success_count = sum(
@@ -73,7 +73,23 @@ class Diagram:
                 <TD BGCOLOR="grey:white">&#10041; DISCONNECTED &#10041;</TD>
                 <TD>{disconnect_count}</TD>
               </TR>
-            </TABLE>>"""
+        """
+
+        # ROAs takes up the least space right underneath the legend
+        # which is why we have this here instead of a separate node
+        html += """
+              <TR>
+                <TD COLSPAN="2" BORDER="0">ROAs (prefix, origin, max_len)</TD>
+              </TR>
+              """
+        for roa_info in scenario.roa_infos:
+            html += f"""
+              <TR>
+                <TD>{roa_info.prefix}</TD>
+                <TD>{roa_info.origin}</TD>
+                <TD>{roa_info.max_length}</TD>
+              </TR>"""
+        html += """</TABLE>>"""
 
         kwargs = {"color": "black", "style": "filled", "fillcolor": "white"}
         self.dot.node("Legend", html, shape="plaintext", **kwargs)
@@ -210,7 +226,7 @@ class Diagram:
         # If the as obj is the attacker
         if as_obj.asn in scenario.attacker_asns:
             kwargs.update({"fillcolor": "#ff6060", "shape": "doublecircle"})
-            if as_obj.policy.__class__ not in (BGPPolicy, BGPSimplePolicy):
+            if as_obj.policy.__class__ not in (BGPFull, BGP):
                 kwargs["shape"] = "doubleoctagon"
             # If people complain about the red being too dark lol:
             kwargs.update({"fillcolor": "#FF7F7F"})
@@ -218,7 +234,7 @@ class Diagram:
         # As obj is the victim
         elif as_obj.asn in scenario.victim_asns:
             kwargs.update({"fillcolor": "#90ee90", "shape": "doublecircle"})
-            if as_obj.policy.__class__ not in (BGPPolicy, BGPSimplePolicy):
+            if as_obj.policy.__class__ not in (BGPFull, BGP):
                 kwargs["shape"] = "doubleoctagon"
 
         # As obj is not attacker or victim
@@ -230,7 +246,7 @@ class Diagram:
             elif traceback[as_obj.asn] == Outcomes.DISCONNECTED.value:
                 kwargs.update({"fillcolor": "grey:white"})
 
-            if as_obj.policy.__class__ not in [BGPPolicy, BGPSimplePolicy]:
+            if as_obj.policy.__class__ not in [BGPFull, BGP]:
                 kwargs["shape"] = "octagon"
         return kwargs
 

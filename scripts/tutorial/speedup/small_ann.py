@@ -12,16 +12,25 @@ class SmallAnn:
         self,
         *,
         prefix: str,
-        next_hop_asn: int,
         as_path: tuple[int],
-        seed_asn: Optional[int],
-        recv_relationship: "Relationships",
+        next_hop_asn: int = None,  # type: ignore
+        seed_asn: Optional[int] = None,
+        recv_relationship: Relationships = Relationships.ORIGIN,
         **kwargs,
     ) -> None:
         self.prefix = prefix
-        self.next_hop_asn = next_hop_asn
         self.as_path = as_path
-        self.seed_asn = seed_asn
+        if next_hop_asn is None:
+            if len(self.as_path) == 1:
+                self.next_hop_asn = self.as_path[0]
+            else:
+                raise ValueError("Must pass in next_hop_asn")
+        else:
+            self.next_hop_asn = next_hop_asn
+        if seed_asn is None and len(self.as_path) == 1:
+            self.seed_asn = self.as_path[0]
+        else:
+            self.seed_asn = seed_asn
         self.recv_relationship = recv_relationship
 
     def copy(
@@ -35,8 +44,8 @@ class SmallAnn:
         # Replace seed asn and traceback end every time by default
         kwargs = {
             "prefix": self.prefix,
-            "next_hop_asn": self.next_hop_asn,
             "as_path": self.as_path,
+            "next_hop_asn": self.next_hop_asn,
             "seed_asn": None,
             "recv_relationship": self.recv_relationship,
         }

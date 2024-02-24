@@ -4,7 +4,7 @@ from frozendict import frozendict
 
 from bgpy.enums import Relationships
 from bgpy.simulation_engine import Policy
-from bgpy.simulation_engine.policies import BGPSimplePolicy
+from bgpy.simulation_engine.policies import BGP
 
 from .base_simulation_engine import BaseSimulationEngine
 
@@ -24,7 +24,7 @@ class SimulationEngine(BaseSimulationEngine):
     def setup(
         self,
         announcements: tuple["Ann", ...] = (),
-        BasePolicyCls: type[Policy] = BGPSimplePolicy,
+        BasePolicyCls: type[Policy] = BGP,
         non_default_asn_cls_dict: frozendict[int, type[Policy]] = (
             frozendict()  # type: ignore
         ),

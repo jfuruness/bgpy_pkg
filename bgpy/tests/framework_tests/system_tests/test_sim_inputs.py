@@ -2,8 +2,8 @@ from pathlib import Path
 
 import pytest
 
-from bgpy.simulation_engine import BGPSimplePolicy
-from bgpy.simulation_engine import ROVSimplePolicy
+from bgpy.simulation_engine import BGP
+from bgpy.simulation_engine import ROV
 from bgpy.simulation_framework import SubprefixHijack
 from bgpy.simulation_framework import ScenarioConfig
 from bgpy.simulation_framework import Simulation
@@ -22,8 +22,8 @@ def test_sim_inputs(tmp_path: Path):
         scenario_configs=(
             ScenarioConfig(
                 ScenarioCls=SubprefixHijack,
-                AdoptPolicyCls=ROVSimplePolicy,
-                BasePolicyCls=BGPSimplePolicy,
+                AdoptPolicyCls=ROV,
+                BasePolicyCls=BGP,
                 num_attackers=1,
             ),
         ),

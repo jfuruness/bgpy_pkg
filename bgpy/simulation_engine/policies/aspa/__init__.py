@@ -1,7 +1,7 @@
-from .aspa_policy import ASPAPolicy
-from .aspa_simple_policy import ASPASimplePolicy
+from .aspa_full import ASPAFull
+from .aspa import ASPA
 
 __all__ = [
-    "ASPAPolicy",
-    "ASPASimplePolicy",
+    "ASPAFull",
+    "ASPA",
 ]

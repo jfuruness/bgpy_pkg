@@ -4,7 +4,7 @@ from .as_graph_info_000 import as_graph_info_000
 from bgpy.tests.engine_tests.utils import EngineTestConfig
 
 from bgpy.simulation_engine import (
-    BGPSimplePolicy,
+    BGP,
 )
 from bgpy.simulation_framework import (
     ScenarioConfig,
@@ -19,7 +19,7 @@ ex_config_000 = EngineTestConfig(
     desc=desc,
     scenario_config=ScenarioConfig(
         ScenarioCls=ValidPrefix,
-        BasePolicyCls=BGPSimplePolicy,
+        BasePolicyCls=BGP,
         override_attacker_asns=frozenset(),
         override_victim_asns=frozenset({ASNs.VICTIM.value}),
         override_non_default_asn_cls_dict=frozendict(),

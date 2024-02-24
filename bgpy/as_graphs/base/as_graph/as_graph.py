@@ -63,9 +63,7 @@ class ASGraph(YamlAble):
         self,
         as_graph_info: "ASGraphInfo",
         BaseASCls: type[AS] = AS,
-        BasePolicyCls: type[
-            bgpy.simulation_engine.Policy
-        ] = bgpy.simulation_engine.BGPSimplePolicy,
+        BasePolicyCls: type[bgpy.simulation_engine.Policy] = bgpy.simulation_engine.BGP,
         customer_cones: bool = True,
         yaml_as_dict: Optional[frozendict[int, AS]] = None,
         yaml_ixp_asns: frozenset[int] = frozenset(),
@@ -109,9 +107,9 @@ class ASGraph(YamlAble):
 
         # Used for iteration
         self.ases: tuple[AS, ...] = tuple(self.as_dict.values())
-        self.propagation_ranks: tuple[
-            tuple[AS, ...], ...
-        ] = self._get_propagation_ranks()
+        self.propagation_ranks: tuple[tuple[AS, ...], ...] = (
+            self._get_propagation_ranks()
+        )
 
     def _set_non_yaml_attrs(
         self,
@@ -168,9 +166,9 @@ class ASGraph(YamlAble):
         if additional_as_group_filters:
             as_group_filters.update(additional_as_group_filters)
 
-        self.as_group_filters: frozendict[
-            str, Callable[["ASGraph"], frozenset[AS]]
-        ] = frozendict(as_group_filters)
+        self.as_group_filters: frozendict[str, Callable[["ASGraph"], frozenset[AS]]] = (
+            frozendict(as_group_filters)
+        )
 
         # Some helpful sets of ases for faster loops
         as_groups: dict[str, frozenset[AS]] = dict()

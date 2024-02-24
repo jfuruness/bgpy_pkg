@@ -1,7 +1,7 @@
 scenario_cls,AdoptingPolicyCls,BasePolicyCls,PolicyCls,outcome_type,as_group,outcome,percent_adopt,propagation_round,value,yerr,scenario_config_label
-ValidPrefix,PseudoBGPSimple,BGPSimplePolicy,BGPSimplePolicy,DATA,all_wout_ixps,ATTACKER_SUCCESS,0,0,0.0,0.0,
-ValidPrefix,PseudoBGPSimple,BGPSimplePolicy,Policy,DATA,all_wout_ixps,ATTACKER_SUCCESS,0,0,0.0,0.0,
-ValidPrefix,PseudoBGPSimple,BGPSimplePolicy,BGPSimplePolicy,DATA,all_wout_ixps,VICTIM_SUCCESS,0,0,90.9090909090909,0.0,
-ValidPrefix,PseudoBGPSimple,BGPSimplePolicy,Policy,DATA,all_wout_ixps,VICTIM_SUCCESS,0,0,90.9090909090909,0.0,
-ValidPrefix,PseudoBGPSimple,BGPSimplePolicy,BGPSimplePolicy,DATA,all_wout_ixps,DISCONNECTED,0,0,9.090909090909092,0.0,
-ValidPrefix,PseudoBGPSimple,BGPSimplePolicy,Policy,DATA,all_wout_ixps,DISCONNECTED,0,0,9.090909090909092,0.0,
+ValidPrefix,PseudoBGP,BGP,BGP,DATA,all_wout_ixps,ATTACKER_SUCCESS,0,0,0.0,0.0,
+ValidPrefix,PseudoBGP,BGP,Policy,DATA,all_wout_ixps,ATTACKER_SUCCESS,0,0,0.0,0.0,
+ValidPrefix,PseudoBGP,BGP,BGP,DATA,all_wout_ixps,VICTIM_SUCCESS,0,0,90.9090909090909,0.0,
+ValidPrefix,PseudoBGP,BGP,Policy,DATA,all_wout_ixps,VICTIM_SUCCESS,0,0,90.9090909090909,0.0,
+ValidPrefix,PseudoBGP,BGP,BGP,DATA,all_wout_ixps,DISCONNECTED,0,0,9.090909090909092,0.0,
+ValidPrefix,PseudoBGP,BGP,Policy,DATA,all_wout_ixps,DISCONNECTED,0,0,9.090909090909092,0.0,

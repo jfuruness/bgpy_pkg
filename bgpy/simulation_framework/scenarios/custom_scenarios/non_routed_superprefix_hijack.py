@@ -1,13 +1,14 @@
-from typing import TYPE_CHECKING
+from typing import Optional, TYPE_CHECKING
 
 from bgpy.simulation_framework.scenarios.scenario import Scenario
+from bgpy.simulation_framework.scenarios.roa_info import ROAInfo
 from bgpy.enums import Prefixes
-from bgpy.enums import Relationships
 from bgpy.enums import Timestamps
 
 
 if TYPE_CHECKING:
     from bgpy.simulation_engine import Announcement as Ann
+    from bgpy.simulation_engine import BaseSimulationEngine
 
 
 class NonRoutedSuperprefixHijack(Scenario):
@@ -29,14 +30,23 @@ class NonRoutedSuperprefixHijack(Scenario):
             anns.append(
                 self.scenario_config.AnnCls(
                     prefix=Prefixes.SUPERPREFIX.value,
-                    next_hop_asn=attacker_asn,
                     as_path=(attacker_asn,),
                     timestamp=Timestamps.ATTACKER.value,
-                    seed_asn=attacker_asn,
-                    roa_valid_length=None,
-                    roa_origin=None,
-                    recv_relationship=Relationships.ORIGIN,
                 )
             )
-
         return tuple(anns)
+
+    def _get_roa_infos(
+        self,
+        *,
+        announcements: tuple["Ann", ...] = (),
+        engine: Optional["BaseSimulationEngine"] = None,
+        prev_scenario: Optional["Scenario"] = None,
+    ) -> tuple[ROAInfo, ...]:
+        """Returns a tuple of ROAInfo's
+
+        Not abstract and by default does nothing for
+        backwards compatability
+        """
+
+        return (ROAInfo(Prefixes.PREFIX.value, 0),)

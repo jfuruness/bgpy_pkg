@@ -1,7 +1,7 @@
 from collections import deque
 from typing import Callable, Optional, TYPE_CHECKING
 
-from bgpy.simulation_engine import BGPPolicy, ASPASimplePolicy, PathendSimplePolicy
+from bgpy.simulation_engine import BGPFull, ASPA, Pathend
 
 if TYPE_CHECKING:
     from bgpy.as_graphs import AS
@@ -86,15 +86,14 @@ def shortest_path_export_all_hijack(
             processed_anns.append(ann)
             continue
         elif any(
-            issubclass(x, PathendSimplePolicy)
+            issubclass(x, Pathend)
             for x in self_scenario.non_default_asn_cls_dict.values()
         ):
             shortest_as_path = _find_shortest_secondary_provider_path(
                 valid_ann.origin, engine
             )
         elif any(
-            issubclass(x, ASPASimplePolicy)
-            for x in self_scenario.non_default_asn_cls_dict.values()
+            issubclass(x, ASPA) for x in self_scenario.non_default_asn_cls_dict.values()
         ):
             shortest_as_path = _find_shortest_non_adopting_path_general(
                 valid_ann.origin, self_scenario, engine
@@ -160,14 +159,14 @@ def origin_spoofing_hijack(
     policies.add(self_scenario.scenario_config.AdoptPolicyCls)
     policies.add(self_scenario.scenario_config.BasePolicyCls)
 
-    bgp_policy_derived_classes = [x for x in policies if issubclass(x, BGPPolicy)]
+    bgp_policy_derived_classes = [x for x in policies if issubclass(x, BGPFull)]
 
     msg = (
-        f"{bgp_policy_derived_classes} are subclasses of BGPPolicy\n"
+        f"{bgp_policy_derived_classes} are subclasses of BGPFull\n"
         "Origin spoofing isn't compatible with the way we've implemented "
         "the RIBsIn, which deviates from real life (where announcements are "
         "just stored using path attributes). So you can't use origin spoofing "
-        "with policies derived from BGPPolicy, only BGPSimplePolicy"
+        "with policies derived from BGPFull, only BGP"
     )
     assert not bgp_policy_derived_classes, msg
 
