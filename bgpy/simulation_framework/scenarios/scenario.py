@@ -9,7 +9,7 @@ from typing import Any, Optional, Type, Union
 
 from frozendict import frozendict
 
-from roa_checker import ROAChecker
+from roa_checker import ROAChecker, ROAValidity
 
 from bgpy.simulation_engine import Announcement as Ann
 from bgpy.simulation_engine import BaseSimulationEngine
@@ -502,13 +502,14 @@ class Scenario(ABC):
         """Returns ROA origin"""
 
         # Get ROA origin
-        roa = roa_checker.get_roa(prefix, ann.origin)
+        roa = roa_checker.get_roa(prefix, origin)
         if roa:
             roa_origins = [x[0] for x in roa.origin_max_lengths]
             if len(set(roa_origins)) != 1:
                 raise NotImplementedError
             else:
                 [roa_origin] = roa_origins
+                assert isinstance(roa_origin, int), "for mypy"
                 return roa_origin
         else:
             return None
@@ -521,7 +522,7 @@ class Scenario(ABC):
     ) -> Optional[bool]:
         """Returns ROA validity"""
 
-        validity, _ = roa_checker.get_validity(prefix, ann.origin)
+        validity, _ = roa_checker.get_validity(prefix, origin)
         if validity in (
             ROAValidity.INVALID_LENGTH,
             ROAValidity.INVALID_LENGTH_AND_ORIGIN
