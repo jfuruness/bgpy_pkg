@@ -9,6 +9,8 @@ from typing import Any, Optional, Type, Union
 
 from frozendict import frozendict
 
+from roa_checker import ROAChecker
+
 from bgpy.simulation_engine import Announcement as Ann
 from bgpy.simulation_engine import BaseSimulationEngine
 from bgpy.simulation_engine import Policy
@@ -17,6 +19,7 @@ from bgpy.enums import (
 )
 
 from .preprocess_anns_funcs import noop, PREPROCESS_ANNS_FUNC_TYPE
+from .roa_info import ROAInfo
 from .scenario_config import ScenarioConfig
 
 pseudo_base_cls_dict: dict[type[Policy], type[Policy]] = dict()
@@ -66,8 +69,19 @@ class Scenario(ABC):
             self.announcements: tuple["Ann", ...] = (
                 self.scenario_config.override_announcements
             )
+            self.roas_infos: tuple[ROAInfo, ...] = self.scenario_config.override_roa_infos
         else:
             anns = self._get_announcements(engine=engine, prev_scenario=prev_scenario)
+            self.roa_infos = self._get_roa_infos(
+                announcements=anns,
+                engine=engine,
+                prev_scenario=prev_scenario
+            )
+            anns = self._add_roa_info_to_anns(
+                announcements=anns,
+                engine=engine,
+                prev_scenario=prev_scenario
+            )
             self.announcements = preprocess_anns_func(self, anns, engine, prev_scenario)
 
         self.ordered_prefix_subprefix_dict: dict[str, list[str]] = (
@@ -391,6 +405,55 @@ class Scenario(ABC):
 
         raise NotImplementedError
 
+    def _get_roa_infos(
+        self,
+        *,
+        announcements: tuple["Ann", ...] = (),
+        engine: Optional[BaseSimulationEngine] = None,
+        prev_scenario: Optional["Scenario"] = None,
+    ) -> tuple[ROAInfo, ...]:
+        """Returns a tuple of ROAInfo's
+
+        Not abstract and by default does nothing for
+        backwards compatability
+        """
+        return ()
+
+    def _add_roa_info_to_anns(
+        self,
+        *,
+        announcements: tuple["Ann", ...] = (),
+        engine: Optional[BaseSimulationEngine] = None,
+        prev_scenario: Optional["Scenario"] = None,
+    ) -> tuple["Ann", ...]:
+        """Adds ROA Info to Announcements"""
+
+        roa_checker = self._get_roa_checker()
+        processed_anns = list()
+        for ann in announcements:
+            prefix = ip_network(ann.prefix)
+
+            roa_origin = self._get_roa_origin(roa_checker, prefix, ann.origin)
+
+            roa_valid_length = self._get_roa_valid_length(
+                roa_checker,
+                prefix,
+                ann.origin
+            )
+
+            processed_anns.append(
+                ann.copy(
+                    {
+                        "roa_valid_length": roa_valid_length,
+                        "roa_origin": roa_origin,
+                        # Must add these two since copy overwrites them by default
+                        "seed_asn": ann.seed_asn,
+                        "traceback_end": ann.traceback_end,
+                    }
+                )
+            )
+        return tuple(processed_anns)
+
     def pre_aggregation_hook(
         self,
         engine: "BaseSimulationEngine",
@@ -413,6 +476,63 @@ class Scenario(ABC):
         """Useful hook for post propagation"""
 
         pass
+
+    ####################
+    # ROA Helper funcs #
+    ####################
+
+    def _get_roa_checker(self) -> ROAChecker:
+        """Returns ROAChecker populated with self.roa_infos"""
+
+        roa_checker = ROAChecker()
+        for roa in self.roa_infos:
+            roa_checker.insert(
+                roa.prefix,
+                roa.origin,
+                roa.max_length
+            )
+        return roa_checker
+
+    def _get_roa_origin(
+        self,
+        roa_checker: ROAChecker,
+        prefix: IPv4Network | IPv6Network,
+        origin: int
+    ) -> Optional[int]:
+        """Returns ROA origin"""
+
+        # Get ROA origin
+        roa = roa_checker.get_roa(prefix, ann.origin)
+        if roa:
+            roa_origins = [x[0] for x in roa.origin_max_lengths]
+            if len(set(roa_origins)) != 1:
+                raise NotImplementedError
+            else:
+                [roa_origin] = roa_origins
+                return roa_origin
+        else:
+            return None
+
+    def _get_roa_valid_length(
+        self,
+        roa_checker: ROAChecker,
+        prefix: IPv4Network | IPv6Network
+        origin: int
+    ) -> Optional[bool]:
+        """Returns ROA validity"""
+
+        validity, _ = roa_checker.get_validity(prefix, ann.origin)
+        if validity in (
+            ROAValidity.INVALID_LENGTH,
+            ROAValidity.INVALID_LENGTH_AND_ORIGIN
+        ):
+            return False
+        elif validity == ROAValidity.UNKNOWN:
+            return None
+        elif validity == ROAValidity.VALID:
+            return True
+        else:
+            raise NotImplementedError("Should never reach this")
 
     ################
     # Helper Funcs #

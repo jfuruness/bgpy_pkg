@@ -11,6 +11,7 @@ from bgpy.simulation_engine import Policy
 from bgpy.simulation_engine import BGP
 
 from .preprocess_anns_funcs import noop, PREPROCESS_ANNS_FUNC_TYPE
+from .roa_info import ROAInfo
 
 
 if TYPE_CHECKING:
@@ -75,6 +76,7 @@ class ScenarioConfig:
     #    frozendict[str, None]
     # ] = None
     override_announcements: tuple["Ann", ...] = ()
+    override_roa_infos: tuple[ROAInfo, ...] = ()
     # If you'd like to add an extra CSV label you do so here
     csv_label: str = ""
     # Deprecated param, don't use
