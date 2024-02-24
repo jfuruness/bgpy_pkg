@@ -77,7 +77,7 @@ class Diagram:
 
         # ROAs takes up the least space right underneath the legend
         # which is why we have this here instead of a separate node
-        html += f"""
+        html += """
               <TR>
                 <TD COLSPAN="2" BORDER="0">ROAs (prefix, origin, max_len)</TD>
               </TR>
