@@ -1,6 +1,7 @@
-from typing import TYPE_CHECKING
+from typing import Optional, TYPE_CHECKING
 
-from ..scenario import Scenario
+from bgpy.simulation_framework.scenarios.scenario import Scenario
+from bgpy.simulation_framework.scenarios.roa_info import ROAInfo
 from bgpy.enums import Prefixes
 from bgpy.enums import Relationships
 from bgpy.enums import Timestamps
@@ -8,6 +9,7 @@ from bgpy.enums import Timestamps
 
 if TYPE_CHECKING:
     from bgpy.simulation_engine import Announcement as Ann
+    from bgpy.simulation_engine import BaseSimulationEngine
 
 
 class ValidPrefix(Scenario):

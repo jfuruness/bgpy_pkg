@@ -1,5 +1,5 @@
 from dataclasses import dataclass, asdict, replace
-from typing import Any, Optional, TYPE_CHECKING
+from typing import Any, Optional
 
 from yamlable import YamlAble, yaml_info
 

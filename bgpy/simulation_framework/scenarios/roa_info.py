@@ -13,4 +13,3 @@ class ROAInfo:
         if self.max_length is None:
             assert "/" in self.prefix, f"Not a CIDR {self.prefix}"  # type: ignore
             object.__setattr__(self, "max_length", int(self.prefix.split("/")[-1]))
-
