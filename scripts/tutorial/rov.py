@@ -1,8 +1,8 @@
-from bgpy.simulation_engine import BGPSimplePolicy
+from bgpy.simulation_engine import BGP
 from bgpy.simulation_engine import Announcement as Ann
 
 
-class ROVPolicy(BGPSimplePolicy):
+class ROV(BGP):
     """An Policy that deploys ROV"""
 
     name: str = "TutorialROV"
@@ -20,6 +20,6 @@ class ROVPolicy(BGPSimplePolicy):
             return False
         # Use standard BGP to determine if the announcement is valid
         else:
-            return super(ROVPolicy, self)._valid_ann(  # type: ignore
+            return super(ROV, self)._valid_ann(  # type: ignore
                 ann, *args, **kwargs
             )

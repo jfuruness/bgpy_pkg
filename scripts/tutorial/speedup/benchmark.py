@@ -1,7 +1,7 @@
 from pathlib import Path
 from time import perf_counter
 
-from bgpy.simulation_engine import BGPSimplePolicy
+from bgpy.simulation_engine import BGP
 
 from bgpy.simulation_framework import (
     Simulation,
@@ -24,7 +24,7 @@ def main():
         scenario_configs=(
             ScenarioConfig(
                 ScenarioCls=ValidPrefix,
-                AdoptPolicyCls=BGPSimplePolicy,
+                AdoptPolicyCls=BGP,
             ),
         ),
         output_dir=Path.home() / "Desktop" / "benchmarks",
@@ -48,7 +48,7 @@ def main():
         scenario_configs=(
             ScenarioConfig(
                 ScenarioCls=ValidPrefix,
-                AdoptPolicyCls=BGPSimplePolicy,
+                AdoptPolicyCls=BGP,
                 AnnCls=SmallAnn,
             ),
         ),

@@ -1,9 +1,9 @@
 from bgpy.simulation_engine import Announcement as Ann
-from bgpy.simulation_engine import BGPSimplePolicy
+from bgpy.simulation_engine import BGP
 from bgpy.enums import Relationships
 
 
-class PeerROVPolicy(BGPSimplePolicy):
+class PeerROV(BGP):
     """An Policy that deploys PeerROV"""
 
     name: str = "TutorialPeerROV"
@@ -24,6 +24,6 @@ class PeerROVPolicy(BGPSimplePolicy):
         # Use standard BGP to determine if the announcement is valid
         else:
             # Mypy doesn't map superclasses properly
-            return super(PeerROVPolicy, self)._valid_ann(  # type: ignore
+            return super(PeerROV, self)._valid_ann(  # type: ignore
                 ann, *args, **kwargs
             )
