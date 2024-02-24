@@ -58,13 +58,12 @@ class SubprefixHijackWOutROAs(SubprefixHijack):
 class SubprefixHijackWROAs(SubprefixHijack):
     def _get_roa_infos(self, *args, **kwargs):
         assert len(self.victim_asns) == 1
-        victim_asn = [self.victim_asns]
+        roa_origin: int = next(iter(self.victim_asns))
         return tuple(
             [
                 ROAInfo(
                     prefix=Prefixes.PREFIX.value,
-                    origin=victim_asn,
-                    max_length=int(Prefixes.PREFIX.value.split("/")[-1])
+                    origin=roa_origin,
                 )
             ]
         )
@@ -80,7 +79,7 @@ def main():
     benchmark_sim_kwargs = {
         "percent_adoptions": (.1, .5, .8),
         "output_dir": Path.home() / "Desktop" / "roa_benchmarks",
-        "num_trials": 1,
+        "num_trials": 100,
         "parse_cpus": 1,
         "python_hash_seed": 0,
     }

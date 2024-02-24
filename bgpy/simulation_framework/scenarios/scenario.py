@@ -482,7 +482,7 @@ class Scenario(ABC):
 
         roa_checker = ROAChecker()
         for roa in self.roa_infos:
-            roa_checker.insert(roa.prefix, roa.origin, roa.max_length)
+            roa_checker.insert(ip_network(roa.prefix), roa.origin, roa.max_length)
         return roa_checker
 
     def _get_roa_origin(
