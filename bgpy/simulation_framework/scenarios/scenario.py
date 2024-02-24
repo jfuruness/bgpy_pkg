@@ -522,10 +522,10 @@ class Scenario(ABC):
             return False
         elif validity == ROAValidity.UNKNOWN:
             return None
-        elif validity == ROAValidity.VALID:
+        elif validity in (ROAValidity.VALID, ROAValidity.INVALID_ORIGIN):
             return True
         else:
-            raise NotImplementedError("Should never reach this")
+            raise NotImplementedError(f"Should never reach this {validity}")
 
     ################
     # Helper Funcs #
