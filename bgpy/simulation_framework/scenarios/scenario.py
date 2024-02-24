@@ -426,29 +426,32 @@ class Scenario(ABC):
     ) -> tuple["Ann", ...]:
         """Adds ROA Info to Announcements"""
 
-        roa_checker = self._get_roa_checker()
-        processed_anns = list()
-        for ann in announcements:
-            prefix = ip_network(ann.prefix)
+        if self.roa_infos:
+            roa_checker = self._get_roa_checker()
+            processed_anns = list()
+            for ann in announcements:
+                prefix = ip_network(ann.prefix)
 
-            roa_origin = self._get_roa_origin(roa_checker, prefix, ann.origin)
+                roa_origin = self._get_roa_origin(roa_checker, prefix, ann.origin)
 
-            roa_valid_length = self._get_roa_valid_length(
-                roa_checker, prefix, ann.origin
-            )
-
-            processed_anns.append(
-                ann.copy(
-                    {
-                        "roa_valid_length": roa_valid_length,
-                        "roa_origin": roa_origin,
-                        # Must add these two since copy overwrites them by default
-                        "seed_asn": ann.seed_asn,
-                        "traceback_end": ann.traceback_end,
-                    }
+                roa_valid_length = self._get_roa_valid_length(
+                    roa_checker, prefix, ann.origin
                 )
-            )
-        return tuple(processed_anns)
+
+                processed_anns.append(
+                    ann.copy(
+                        {
+                            "roa_valid_length": roa_valid_length,
+                            "roa_origin": roa_origin,
+                            # Must add these two since copy overwrites them by default
+                            "seed_asn": ann.seed_asn,
+                            "traceback_end": ann.traceback_end,
+                        }
+                    )
+                )
+            return tuple(processed_anns)
+        else:
+            return announcements
 
     def pre_aggregation_hook(
         self,

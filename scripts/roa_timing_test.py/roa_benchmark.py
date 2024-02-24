@@ -87,7 +87,7 @@ def main():
     sim = Simulation(
         scenario_configs=(
             ScenarioConfig(
-                ScenarioCls=SubprefixHijackWROAs,
+                ScenarioCls=SubprefixHijackWOutROAs,
                 AdoptPolicyCls=BGP,
             ),
         ),
@@ -104,7 +104,7 @@ def main():
     sim = Simulation(
         scenario_configs=(
             ScenarioConfig(
-                ScenarioCls=SubprefixHijackWOutROAs,
+                ScenarioCls=SubprefixHijackWROAs,
                 AdoptPolicyCls=BGP,
             ),
         ),
