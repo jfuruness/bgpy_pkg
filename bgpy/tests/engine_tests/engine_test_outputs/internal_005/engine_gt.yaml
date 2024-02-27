@@ -25,8 +25,8 @@ as_graph: !yamlable/CAIDAASGraph
             recv_relationship: !simulator_codec/Relationships
               name: CUSTOMERS
               value: 3
-            roa_origin: null
-            roa_valid_length: null
+            roa_origin: 777
+            roa_valid_length: true
             seed_asn: null
             timestamp: 0
             traceback_end: false
@@ -58,8 +58,8 @@ as_graph: !yamlable/CAIDAASGraph
             recv_relationship: !simulator_codec/Relationships
               name: CUSTOMERS
               value: 3
-            roa_origin: null
-            roa_valid_length: null
+            roa_origin: 777
+            roa_valid_length: true
             seed_asn: null
             timestamp: 0
             traceback_end: false
@@ -78,7 +78,7 @@ as_graph: !yamlable/CAIDAASGraph
       ixp: false
       peers: !!python/tuple
       - 2
-      policy: !yamlable/BGP
+      policy: !yamlable/ROV
         _local_rib: !simulator_codec/LocalRIB
           1.2.0.0/16: !yamlable/Announcement
             as_path: !!python/tuple
@@ -93,8 +93,8 @@ as_graph: !yamlable/CAIDAASGraph
             recv_relationship: !simulator_codec/Relationships
               name: PEERS
               value: 2
-            roa_origin: null
-            roa_valid_length: null
+            roa_origin: 777
+            roa_valid_length: true
             seed_asn: null
             timestamp: 0
             traceback_end: false
@@ -126,9 +126,26 @@ as_graph: !yamlable/CAIDAASGraph
             recv_relationship: !simulator_codec/Relationships
               name: PROVIDERS
               value: 1
-            roa_origin: null
-            roa_valid_length: null
+            roa_origin: 777
+            roa_valid_length: true
             seed_asn: null
+            timestamp: 0
+            traceback_end: false
+            withdraw: false
+          1.2.0.0/24: !yamlable/Announcement
+            as_path: !!python/tuple
+            - 666
+            bgpsec_as_path: !!python/tuple []
+            bgpsec_next_asn: null
+            next_hop_asn: 666
+            only_to_customers: null
+            prefix: 1.2.0.0/24
+            recv_relationship: !simulator_codec/Relationships
+              name: ORIGIN
+              value: 4
+            roa_origin: 777
+            roa_valid_length: false
+            seed_asn: 666
             timestamp: 0
             traceback_end: false
             withdraw: false
@@ -157,8 +174,8 @@ as_graph: !yamlable/CAIDAASGraph
             recv_relationship: !simulator_codec/Relationships
               name: ORIGIN
               value: 4
-            roa_origin: null
-            roa_valid_length: null
+            roa_origin: 777
+            roa_valid_length: true
             seed_asn: 777
             timestamp: 0
             traceback_end: false
