@@ -4,7 +4,7 @@ from frozendict import frozendict
 from bgpy.as_graphs import ASGraphInfo, PeerLink, CustomerProviderLink as CPLink
 from bgpy.enums import SpecialPercentAdoptions, ASNs
 from bgpy.simulation_engine import BaseSimulationEngine, Announcement
-from bgpy.simulation_framework import Scenario, ScenarioConfig, ROAInfo, ValidPrefix
+from bgpy.simulation_framework import Scenario, ScenarioConfig, ROAInfo
 from bgpy.simulation_framework.scenarios.preprocess_anns_funcs import (
     PREPROCESS_ANNS_FUNC_TYPE,
     noop,
@@ -39,23 +39,6 @@ class CustomScenario(Scenario):
             engine=engine,
             prev_scenario=prev_scenario,
         )
-        print(self.announcements)
-        print(self.roa_infos)
-
-    def _get_attacker_asns(
-        self,
-        override_attacker_asns: Optional[frozenset[int]],
-        engine: Optional[BaseSimulationEngine],
-        prev_scenario: Optional["Scenario"],
-    ) -> frozenset[int]:
-        # If this method is not overriden and there are no attackers in
-        # override_attacker_asns, an attacker AS is chosen at random. We instead want
-        # to return an empty set, so we ensure override_attack_asns is returned as long
-        # as it is defined.
-        if override_attacker_asns is not None:
-            return override_attacker_asns
-
-        return super()._get_attacker_asns(override_attacker_asns, engine, prev_scenario)
 
     def _get_announcements(self, *args, **kwargs):
         # Announcements will be populated from the scenario config's
@@ -93,6 +76,7 @@ internal_config_004 = EngineTestConfig(
     desc="Valid prefix done with custom announcements",
     scenario_config=ScenarioConfig(
         ScenarioCls=CustomScenario,
+        num_attackers=0,
         override_victim_asns=frozenset({ASNs.VICTIM.value}),
         override_attacker_asns=frozenset({}),
         override_announcements=anns,

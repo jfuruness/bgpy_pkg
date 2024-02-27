@@ -101,7 +101,7 @@ class Scenario(ABC):
         """Returns attacker ASN at random"""
 
         # This is coming from YAML, do not recalculate
-        if override_attacker_asns:
+        if override_attacker_asns is not None:
             attacker_asns = override_attacker_asns
             branch = 0
         # Reuse the attacker from the last scenario for comparability
@@ -190,7 +190,7 @@ class Scenario(ABC):
         """Returns victim ASN at random"""
 
         # This is coming from YAML, do not recalculate
-        if override_victim_asns:
+        if override_victim_asns is not None:
             victim_asns = override_victim_asns
         # Reuse the victim from the last scenario for comparability
         elif prev_scenario:
