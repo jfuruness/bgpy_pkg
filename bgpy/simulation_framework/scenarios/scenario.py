@@ -69,7 +69,7 @@ class Scenario(ABC):
             self.announcements: tuple["Ann", ...] = (
                 self.scenario_config.override_announcements
             )
-            self.roas_infos: tuple[ROAInfo, ...] = (
+            self.roa_infos: tuple[ROAInfo, ...] = (
                 self.scenario_config.override_roa_infos
             )
         else:
