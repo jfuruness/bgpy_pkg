@@ -249,8 +249,8 @@ class TestScenario:
         # Sample announcement sent from just the victim
         asn = ASNs.VICTIM.value
         anns = (Announcement(prefix="1.2.0.0/16", as_path=tuple([asn]), seed_asn=asn),)
-        override_victims = frozenset({asn})
-        override_attackers = frozenset()
+        override_victims = frozenset[int]({asn})
+        override_attackers = frozenset[int]()
 
         config = ScenarioConfig(
             ScenarioCls=SubprefixHijack,
@@ -275,8 +275,8 @@ class TestScenario:
         # Sample announcement sent from just the attacker
         asn = ASNs.ATTACKER.value
         anns = (Announcement(prefix="1.2.0.0/24", as_path=tuple([asn]), seed_asn=asn),)
-        override_victims = frozenset()
-        override_attackers = frozenset({asn})
+        override_victims = frozenset[int]()
+        override_attackers = frozenset[int]({asn})
 
         config = ScenarioConfig(
             ScenarioCls=SubprefixHijack,
@@ -322,14 +322,14 @@ class TestScenario:
 
         # First announcement should be validated by ROA
         assert valid.roa_origin == 777
-        assert valid.roa_valid_length == True
-        assert valid.valid_by_roa == True
+        assert valid.roa_valid_length
+        assert valid.valid_by_roa
 
         # Second announcement, from a different origin and more specific prefix, should
         # be invalidated
         assert malicious.roa_origin == 777
-        assert malicious.roa_valid_length == False
-        assert malicious.invalid_by_roa == True
+        assert not malicious.roa_valid_length
+        assert malicious.invalid_by_roa
 
     #######################
     # Adopting ASNs funcs #
