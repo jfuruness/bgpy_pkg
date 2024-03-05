@@ -283,19 +283,22 @@ class TestScenario:
         announcements.
         """
         # Subprefix hijack where attacker 666 sends a more specific prefix
+        victim = ASNs.VICTIM.value
+        attacker = ASNs.ATTACKER.value
         anns = (
-            Announcement(prefix="1.2.0.0/16", as_path=tuple([777]), seed_asn=777),
-            Announcement(prefix="1.2.0.0/24", as_path=tuple([666]), seed_asn=666),
+            Announcement(prefix="1.2.0.0/16", as_path=tuple([victim]), seed_asn=victim),
+            Announcement(
+                prefix="1.2.0.0/24", as_path=tuple([attacker]), seed_asn=attacker
+            ),
         )
-        roas = (ROAInfo(prefix="1.2.0.0/16", origin=777),)
+        roas = (ROAInfo(prefix="1.2.0.0/16", origin=victim),)
 
         config = ScenarioConfig(
             ScenarioCls=ValidPrefix,
-            override_victim_asns=frozenset({ASNs.VICTIM.value}),
-            override_attacker_asns=frozenset({ASNs.ATTACKER.value}),
+            override_victim_asns=frozenset({victim}),
+            override_attacker_asns=frozenset({attacker}),
             override_announcements=anns,
             override_roa_infos=roas,
-            override_non_default_asn_cls_dict=frozendict({3: ROV}),
         )
         scenario = ValidPrefix(scenario_config=config, engine=engine)
         scenario.announcements = scenario._add_roa_info_to_anns(
@@ -307,13 +310,13 @@ class TestScenario:
         valid, malicious = scenario.announcements
 
         # First announcement should be validated by ROA
-        assert valid.roa_origin == 777
+        assert valid.roa_origin == victim
         assert valid.roa_valid_length
         assert valid.valid_by_roa
 
         # Second announcement, from a different origin and more specific prefix, should
         # be invalidated
-        assert malicious.roa_origin == 777
+        assert malicious.roa_origin == victim
         assert not malicious.roa_valid_length
         assert malicious.invalid_by_roa
 
