@@ -246,18 +246,11 @@ class TestScenario:
         This trivial test ensures that the method does not regress to previous
         behavior, where a random attacker was selected.
         """
-        # Sample announcement sent from just the victim
-        asn = ASNs.VICTIM.value
-        anns = (Announcement(prefix="1.2.0.0/16", as_path=tuple([asn]), seed_asn=asn),)
-        override_victims = frozenset[int]({asn})
         override_attackers = frozenset[int]()
-
         config = ScenarioConfig(
             ScenarioCls=SubprefixHijack,
             num_attackers=0,
-            override_victim_asns=override_victims,
             override_attacker_asns=override_attackers,
-            override_announcements=anns,
         )
         scenario = SubprefixHijack(scenario_config=config, engine=engine)
         attackers = scenario._get_attacker_asns(override_attackers, engine, None)
@@ -272,20 +265,13 @@ class TestScenario:
         This trivial test ensures that the method does not regress to previous
         behavior, where a random victim was selected.
         """
-        # Sample announcement sent from just the attacker
-        asn = ASNs.ATTACKER.value
-        anns = (Announcement(prefix="1.2.0.0/24", as_path=tuple([asn]), seed_asn=asn),)
         override_victims = frozenset[int]()
-        override_attackers = frozenset[int]({asn})
-
         config = ScenarioConfig(
-            ScenarioCls=SubprefixHijack,
+            ScenarioCls=ValidPrefix,  # SubprefixHijack wont't work bc it needs 1 victim
             num_victims=0,
             override_victim_asns=override_victims,
-            override_attacker_asns=override_attackers,
-            override_announcements=anns,
         )
-        scenario = SubprefixHijack(scenario_config=config, engine=engine)
+        scenario = ValidPrefix(scenario_config=config, engine=engine)
         victims = scenario._get_victim_asns(override_victims, engine, None)
 
         assert victims == frozenset()
