@@ -180,7 +180,9 @@ class TestScenario:
         """
 
         num_victims = 2
-        scenario_config = ScenarioConfig(ScenarioCls=SubprefixHijack, num_victims=2)
+        scenario_config = ScenarioConfig(
+            ScenarioCls=NonRoutedPrefixHijack, num_victims=2
+        )
         scenario = NonRoutedPrefixHijack(scenario_config=scenario_config, engine=engine)
         victim_asns = scenario._get_victim_asns(
             override_victim_asns=None, engine=engine, prev_scenario=None
