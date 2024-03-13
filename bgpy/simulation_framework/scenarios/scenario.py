@@ -47,6 +47,13 @@ class Scenario(ABC):
         Any kwarg prefixed with default is only required for the test suite/YAML
         """
 
+        # Config's ScenarioCls must be the same as instantiated Scenario
+        assert scenario_config.ScenarioCls == self.__class__, (
+            "The config's scenario class is "
+            f"{scenario_config.ScenarioCls.__name__}, but the scenario used is "
+            f"{self.__class__.__name__}"
+        )
+
         self.scenario_config: ScenarioConfig = scenario_config
         self.percent_adoption: Union[float, SpecialPercentAdoptions] = percent_adoption
 
