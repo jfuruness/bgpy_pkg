@@ -1,10 +1,13 @@
-from typing import TYPE_CHECKING
+from typing import Optional, TYPE_CHECKING
 import warnings
 
 from bgpy.enums import ASGroups, Relationships, SpecialPercentAdoptions, Timestamps
+from bgpy.as_graphs.base.as_graph.customer_cone_funcs import _get_cone_size_helper
 
 from .valid_prefix import ValidPrefix
 from ..scenario import Scenario
+from ..scenario_config import ScenarioConfig
+from ..preprocess_anns_funcs import PREPROCESS_ANNS_FUNC_TYPE, noop
 
 
 if TYPE_CHECKING:
@@ -17,8 +20,23 @@ class AccidentalRouteLeak(ValidPrefix):
 
     min_propagation_rounds: int = 2
 
-    def __init__(self, *args, **kwargs) -> None:  # type: ignore
-        super().__init__(*args, **kwargs)
+    def __init__(
+        self,
+        *,
+        scenario_config: ScenarioConfig,
+        percent_adoption: float | SpecialPercentAdoptions = 0,
+        engine: Optional["BaseSimulationEngine"] = None,
+        prev_scenario: Optional["Scenario"] = None,
+        preprocess_anns_func: PREPROCESS_ANNS_FUNC_TYPE = noop,
+    ):
+
+        super().__init__(
+            scenario_config=scenario_config,
+            percent_adoption=percent_adoption,
+            engine=engine,
+            prev_scenario=prev_scenario,
+            preprocess_anns_func=preprocess_anns_func,
+        )
         if (
             self.scenario_config.attacker_subcategory_attr in self.warning_as_groups
             and not self.scenario_config.override_attacker_asns
@@ -31,6 +49,20 @@ class AccidentalRouteLeak(ValidPrefix):
                 "To suppress this warning, override warning_as_groups"
             )
             warnings.warn(msg, RuntimeWarning)
+
+        # Stores customer cones of attacker ASNs, used in untrackable func
+        self._attackers_customer_cones_asns: set[int] = set()
+        assert engine, "Need engine for customer cones"
+        for attacker_asn in self.attacker_asns:
+            self._attackers_customer_cones_asns.update(
+                self._get_cone_size_helper(
+                    engine.as_graph.as_dict[attacker_asn],
+                    dict(),
+                ),
+            )
+
+    # Just returns customer cone
+    _get_cone_size_helper = _get_cone_size_helper
 
     def post_propagation_hook(
         self,
@@ -71,6 +103,7 @@ class AccidentalRouteLeak(ValidPrefix):
 
         if propagation_round == 0:
             announcements: list["Ann"] = list(self.announcements)  # type: ignore
+            assert self.attacker_asns, "You must select at least 1 AS to leak"
             for attacker_asn in self.attacker_asns:
                 if not engine.as_graph.as_dict[attacker_asn].policy._local_rib:
                     print("Attacker did not recieve announcement, can't leak. ")
@@ -118,3 +151,14 @@ class AccidentalRouteLeak(ValidPrefix):
                 ASGroups.ALL_WOUT_IXPS.value,
             ]
         )
+
+    @property
+    def _untracked_asns(self) -> frozenset[int]:
+        """Returns ASNs that shouldn't be tracked by the metric tracker
+
+        By default just the default adopters and non adopters
+        however for the route leak, we don't want to track the customers of the
+        leaker, since you can not "leak" to your own customers
+        """
+
+        return super()._untracked_asns | self._attackers_customer_cones_asns
