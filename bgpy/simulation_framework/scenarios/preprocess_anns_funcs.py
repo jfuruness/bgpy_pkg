@@ -141,7 +141,6 @@ def neighbor_spoofing_hijack(
         if any(x in ann.as_path for x in self_scenario.attacker_asns):
             neighbor_asn = ann.as_path[0]
             assert neighbor_asn in self_scenario.attacker_asns
-            assert len(ann.as_path) > 1, "Can't make empty AS path"
             # Make the AS path be just the victim
             processed_ann = ann.copy(
                 {
@@ -221,6 +220,12 @@ def _find_shortest_secondary_provider_path(
         # for secondary_provider in first_provider.providers:
         #     return (secondary_provider.asn, first_provider.asn, root_asn)
         return (first_provider.asn, root_asn)
+    # Some ASes don't have providers, and are stubs that are peered
+    for first_peer in root_as_obj.peers:
+        return (first_peer.asn, root_asn)
+    # Strange case but it could happen
+    for first_customer in root_as_obj.customers:
+        return (first_customer.asn, root_asn)
     return None
 
 
