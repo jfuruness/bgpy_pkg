@@ -15,6 +15,8 @@ class Pathend(ROV):
     def _valid_ann(self, ann: "Ann", *args, **kwargs) -> bool:  # type: ignore
         """Returns announcement validity by checking pathend records"""
 
+        if ann.next_hop_asn != ann.as_path[0]:
+            return False
         origin_asn = ann.origin
         origin_as_obj = self.as_.as_graph.as_dict[origin_asn]
         # If the origin is deploying pathend and the path is longer than 1
