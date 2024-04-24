@@ -4,7 +4,7 @@ import gc
 from itertools import product
 from pathlib import Path
 import pickle
-from typing import Any
+from typing import Any, Optional
 
 import matplotlib  # type: ignore
 import matplotlib.pyplot as plt  # type: ignore
@@ -26,6 +26,10 @@ class GraphFactory:
         graph_dir: Path,
         # A nice way to substitute labels post run
         label_replacement_dict=None,
+        # Specifiy color of specific label
+        label_color_dict: Optional[dict[str, str]] = None,
+        # Order labels in legend
+        label_order: Optional[tuple[str]] = None,
         y_axis_label_replacement_dict=None,
         x_axis_label_replacement_dict=None,
         x_limit: int = 100,
@@ -60,6 +64,14 @@ class GraphFactory:
         if label_replacement_dict is None:
             label_replacement_dict = dict()
         self.label_replacement_dict = label_replacement_dict
+
+        if label_color_dict is None:
+            label_color_dict = dict()
+        self.label_color_dict = label_color_dict
+
+        if label_order is None:
+            label_order = tuple()
+        self.label_order = label_order
 
         if x_axis_label_replacement_dict is None:
             x_axis_label_replacement_dict = dict()
@@ -172,7 +184,7 @@ class GraphFactory:
                 yerr=[x["yerr"] for x in graph_rows_sorted],
                 label=self.label_replacement_dict.get(as_cls.name, as_cls.name),
                 ls=self.line_styles[i],
-                marker=self.markers[i],
+                marker=self.label_color_dict.get(as_cls.name, self.markers[i]),
             )
         # Set labels
         default_y_label = f"PERCENT {metric_key.outcome.name}".replace("_", " ")
