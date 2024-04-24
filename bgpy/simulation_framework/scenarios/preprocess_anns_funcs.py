@@ -136,14 +136,12 @@ def neighbor_spoofing_hijack(
     )
     processed_anns = list()
 
-    valid_ann = _get_valid_by_roa_ann(self_scenario.victim_asns, unprocessed_anns)
-
     for ann in unprocessed_anns:
         # If the announcement is from the attacker
-        if ann.invalid_by_roa:
-            if ann.prefix != valid_ann.prefix:
-                raise NotImplementedError("TODO: get the valid origin per prefix")
+        if any(x in ann.as_path for x in self_scenario.attacker_asns):
             neighbor_asn = ann.as_path[0]
+            assert neighbor_asn in self_scenario.attacker_asns
+            assert len(ann.as_path) > 1, "Can't make empty AS path"
             # Make the AS path be just the victim
             processed_ann = ann.copy(
                 {

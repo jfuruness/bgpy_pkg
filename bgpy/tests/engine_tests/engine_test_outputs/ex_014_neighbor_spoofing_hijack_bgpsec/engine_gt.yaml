@@ -15,7 +15,6 @@ as_graph: !yamlable/CAIDAASGraph
           1.2.0.0/16: !yamlable/Announcement
             as_path: !!python/tuple
             - 1
-            - 666
             - 777
             bgpsec_as_path: !!python/tuple []
             bgpsec_next_asn: null
@@ -160,7 +159,6 @@ as_graph: !yamlable/CAIDAASGraph
             as_path: !!python/tuple
             - 5
             - 1
-            - 666
             - 777
             bgpsec_as_path: !!python/tuple []
             bgpsec_next_asn: 5
@@ -381,7 +379,6 @@ as_graph: !yamlable/CAIDAASGraph
         _local_rib: !simulator_codec/LocalRIB
           1.2.0.0/16: !yamlable/Announcement
             as_path: !!python/tuple
-            - 666
             - 777
             bgpsec_as_path: !!python/tuple []
             bgpsec_next_asn: null
