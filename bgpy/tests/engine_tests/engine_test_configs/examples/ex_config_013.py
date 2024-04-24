@@ -14,16 +14,16 @@ from bgpy.simulation_framework import (
 
 
 desc = (
-    "Origin spoofing prefix hijack thwarting ROV\n"
+    "Nieghbor spoofing prefix hijack thwarting ROV\n"
     "This attack reaches more ASes than just the origin hijack"
 )
 
 ex_config_013 = EngineTestConfig(
-    name="ex_013_origin_spoofing_hijack_rov_simple",
+    name="ex_013_neighbor_spoofing_hijack_rov_simple",
     desc=desc,
     scenario_config=ScenarioConfig(
         ScenarioCls=PrefixHijack,
-        preprocess_anns_func=preprocess_anns_funcs.origin_spoofing_hijack,
+        preprocess_anns_func=preprocess_anns_funcs.neighbor_spoofing_hijack,
         BasePolicyCls=ROV,
         override_attacker_asns=frozenset({ASNs.ATTACKER.value}),
         override_victim_asns=frozenset({ASNs.VICTIM.value}),
