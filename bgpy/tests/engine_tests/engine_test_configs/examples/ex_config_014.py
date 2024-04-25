@@ -12,18 +12,18 @@ from bgpy.simulation_framework import (
 
 
 desc = (
-    "Origin spoofing prefix hijack with bgpsec simple\n"
+    "Neighbor spoofing prefix hijack with bgpsec simple\n"
     "BGPSec is security third, which doesn't amount to much\n"
     "AS 2 is saved, but as long as the chain is broken, AS 5"
     " is still hijacked"
 )
 
 ex_config_014 = EngineTestConfig(
-    name="ex_014_origin_spoofing_hijack_bgpsec",
+    name="ex_014_neighbor_spoofing_hijack_bgpsec",
     desc=desc,
     scenario_config=ScenarioConfig(
         ScenarioCls=PrefixHijack,
-        preprocess_anns_func=preprocess_anns_funcs.origin_spoofing_hijack,
+        preprocess_anns_func=preprocess_anns_funcs.neighbor_spoofing_hijack,
         BasePolicyCls=BGPSec,
         override_attacker_asns=frozenset({ASNs.ATTACKER.value}),
         override_victim_asns=frozenset({ASNs.VICTIM.value}),

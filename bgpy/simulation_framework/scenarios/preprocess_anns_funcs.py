@@ -123,7 +123,7 @@ def shortest_path_export_all_hijack(
     return tuple(processed_anns)
 
 
-def origin_spoofing_hijack(
+def neighbor_spoofing_hijack(
     self_scenario: "Scenario",
     unprocessed_anns: tuple["Ann", ...],
     engine: Optional["BaseSimulationEngine"],
@@ -131,20 +131,21 @@ def origin_spoofing_hijack(
 ) -> tuple["Ann", ...]:
     """Makes the attack use origin spoofing to be valid by ROA"""
 
+    unprocessed_anns = shortest_path_export_all_hijack(
+        self_scenario, unprocessed_anns, engine, prev_scenario
+    )
     processed_anns = list()
-
-    valid_ann = _get_valid_by_roa_ann(self_scenario.victim_asns, unprocessed_anns)
 
     for ann in unprocessed_anns:
         # If the announcement is from the attacker
-        if ann.invalid_by_roa:
-            if ann.prefix != valid_ann.prefix:
-                raise NotImplementedError("TODO: get the valid origin per prefix")
+        if any(x in ann.as_path for x in self_scenario.attacker_asns):
+            neighbor_asn = ann.as_path[0]
+            assert neighbor_asn in self_scenario.attacker_asns
             # Make the AS path be just the victim
             processed_ann = ann.copy(
                 {
-                    "as_path": (valid_ann.origin,),
-                    "next_hop_asn": ann.origin,
+                    "as_path": tuple(ann.as_path[1:]),
+                    "next_hop_asn": neighbor_asn,
                     # Ann.copy overwrites seed_asn and traceback by default
                     # so include these here to make sure that doesn't happen
                     "seed_asn": ann.seed_asn,
@@ -219,6 +220,12 @@ def _find_shortest_secondary_provider_path(
         # for secondary_provider in first_provider.providers:
         #     return (secondary_provider.asn, first_provider.asn, root_asn)
         return (first_provider.asn, root_asn)
+    # Some ASes don't have providers, and are stubs that are peered
+    for first_peer in root_as_obj.peers:
+        return (first_peer.asn, root_asn)
+    # Strange case but it could happen
+    for first_customer in root_as_obj.customers:
+        return (first_customer.asn, root_asn)
     return None
 
 
