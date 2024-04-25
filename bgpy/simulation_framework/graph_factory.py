@@ -26,10 +26,8 @@ class GraphFactory:
         graph_dir: Path,
         # A nice way to substitute labels post run
         label_replacement_dict=None,
-        # Specifiy color of specific label
-        label_color_dict: Optional[dict[str, str]] = None,
-        # Order labels in legend
-        label_order: Optional[tuple[str]] = None,
+        label_color_dict: Optional[dict[str, str]] = None,  # Specifiy color of label
+        ordered_labels: Optional[tuple] = None,  # Order labels in legend
         y_axis_label_replacement_dict=None,
         x_axis_label_replacement_dict=None,
         x_limit: int = 100,
@@ -69,9 +67,7 @@ class GraphFactory:
             label_color_dict = dict()
         self.label_color_dict = label_color_dict
 
-        if label_order is None:
-            label_order = tuple()
-        self.label_order = label_order
+        self.ordered_labels = ordered_labels
 
         if x_axis_label_replacement_dict is None:
             x_axis_label_replacement_dict = dict()
@@ -170,8 +166,24 @@ class GraphFactory:
             assert isinstance(percent_adopt, (float, SpecialPercentAdoptions))
             return float(percent_adopt)
 
+        # Sort graph data based on label order if it is specified
+        if self.ordered_labels is not None:
+
+            def sort_key(item):
+                as_cls, _ = item
+                name = as_cls.name
+                try:
+                    return self.ordered_labels.index(name)  # type: ignore
+                except:
+                    # Handle classes not in ordered_labels by putting them at the end
+                    return float("inf")
+
+            graph_data = sorted(as_cls_rows_dict.items(), key=sort_key)
+        else:
+            graph_data = as_cls_rows_dict.items()
+
         # Add the data from the lines
-        for i, (as_cls, graph_rows) in enumerate(as_cls_rows_dict.items()):
+        for i, (as_cls, graph_rows) in enumerate(graph_data):
             graph_rows_sorted = list(sorted(graph_rows, key=get_percent_adopt))
             # If no trial_data is present for a selection, value can be None
             # For example, if no stubs are selected to adopt, the graph for adopting
@@ -184,7 +196,8 @@ class GraphFactory:
                 yerr=[x["yerr"] for x in graph_rows_sorted],
                 label=self.label_replacement_dict.get(as_cls.name, as_cls.name),
                 ls=self.line_styles[i],
-                marker=self.label_color_dict.get(as_cls.name, self.markers[i]),
+                marker=self.markers[i],
+                color=self.label_color_dict.get(as_cls.name, None),
             )
         # Set labels
         default_y_label = f"PERCENT {metric_key.outcome.name}".replace("_", " ")
