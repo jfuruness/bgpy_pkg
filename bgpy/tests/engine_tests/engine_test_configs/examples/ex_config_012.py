@@ -19,11 +19,11 @@ desc = (
 )
 
 ex_config_012 = EngineTestConfig(
-    name="ex_012_origin_hijack_rov_simple",
+    name="ex_012_forged_origin_export_all_hijack_rov_simple",
     desc=desc,
     scenario_config=ScenarioConfig(
         ScenarioCls=PrefixHijack,
-        preprocess_anns_func=preprocess_anns_funcs.origin_hijack,
+        preprocess_anns_func=preprocess_anns_funcs.forged_origin_export_all_hijack,
         BasePolicyCls=ROV,
         override_attacker_asns=frozenset({ASNs.ATTACKER.value}),
         override_victim_asns=frozenset({ASNs.VICTIM.value}),

@@ -18,11 +18,11 @@ desc = (
 )
 
 ex_config_024 = EngineTestConfig(
-    name="ex_024_subprefix_origin_hijack_aspa_downstream_verification",
+    name="ex_024_subprefix_forged_origin_export_all_hijack_aspa_downstream_verification",
     desc=desc,
     scenario_config=ScenarioConfig(
         ScenarioCls=SubprefixHijack,
-        preprocess_anns_func=preprocess_anns_funcs.origin_hijack,
+        preprocess_anns_func=preprocess_anns_funcs.forged_origin_export_all_hijack,
         BasePolicyCls=BGPFull,
         override_attacker_asns=frozenset({ASNs.ATTACKER.value}),
         override_victim_asns=frozenset({ASNs.VICTIM.value}),
