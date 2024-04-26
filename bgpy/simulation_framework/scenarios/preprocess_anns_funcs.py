@@ -2,7 +2,7 @@ from collections import deque
 from typing import Callable, Optional, TYPE_CHECKING
 import warnings
 
-from bgpy.simulation_engine import BGPFull, ASPA, Pathend
+from bgpy.simulation_engine import BGPFull, ASPA, Pathend, PathEnd
 
 if TYPE_CHECKING:
     from bgpy.as_graphs import AS
@@ -97,7 +97,7 @@ def shortest_path_export_all_hijack(
             processed_anns.append(ann)
             continue
         elif any(
-            issubclass(x, Pathend)
+            issubclass(x, (Pathend, PathEnd))
             for x in self_scenario.non_default_asn_cls_dict.values()
         ):
             shortest_as_path = _find_shortest_secondary_provider_path(
