@@ -3,7 +3,7 @@ from bgpy.enums import ASNs
 from .as_graph_info_000 import as_graph_info_000
 from bgpy.tests.engine_tests.utils import EngineTestConfig
 
-from bgpy.simulation_engine import BGP, PathendFull
+from bgpy.simulation_engine import BGP, PathEndFull
 from bgpy.simulation_framework import (
     ScenarioConfig,
     PrefixHijack,
@@ -13,7 +13,7 @@ from bgpy.simulation_framework import (
 
 desc = (
     "Origin prefix hijack with pathend\n"
-    "Pathend checks the end of the path for valid providers\n"
+    "PathEnd checks the end of the path for valid providers\n"
     "and is thus protected against simple origin hijacks"
 )
 
@@ -28,8 +28,8 @@ ex_config_016 = EngineTestConfig(
         override_victim_asns=frozenset({ASNs.VICTIM.value}),
         override_non_default_asn_cls_dict=frozendict(
             {
-                1: PathendFull,
-                ASNs.VICTIM.value: PathendFull,
+                1: PathEndFull,
+                ASNs.VICTIM.value: PathEndFull,
             }
         ),
     ),
