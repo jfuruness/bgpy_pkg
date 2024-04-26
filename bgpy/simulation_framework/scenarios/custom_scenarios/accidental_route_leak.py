@@ -1,4 +1,4 @@
-from typing import Optional, TYPE_CHECKING
+from typing import Optional, Union, TYPE_CHECKING
 import warnings
 
 from bgpy.enums import ASGroups, Relationships, SpecialPercentAdoptions, Timestamps
@@ -30,6 +30,8 @@ class AccidentalRouteLeak(ValidPrefix):
         preprocess_anns_func: PREPROCESS_ANNS_FUNC_TYPE = noop,
     ):
 
+        assert engine, "Need engine for customer cones"
+        self._attackers_customer_cones_asns: set[int] = set()
         super().__init__(
             scenario_config=scenario_config,
             percent_adoption=percent_adoption,
@@ -49,17 +51,6 @@ class AccidentalRouteLeak(ValidPrefix):
                 "To suppress this warning, override warning_as_groups"
             )
             warnings.warn(msg, RuntimeWarning)
-
-        # Stores customer cones of attacker ASNs, used in untrackable func
-        self._attackers_customer_cones_asns: set[int] = set()
-        assert engine, "Need engine for customer cones"
-        for attacker_asn in self.attacker_asns:
-            self._attackers_customer_cones_asns.update(
-                self._get_cone_size_helper(
-                    engine.as_graph.as_dict[attacker_asn],
-                    dict(),
-                ),
-            )
 
     # Just returns customer cone
     _get_cone_size_helper = _get_cone_size_helper
@@ -126,7 +117,12 @@ class AccidentalRouteLeak(ValidPrefix):
         elif propagation_round > 1:
             raise NotImplementedError
 
-    def _get_attacker_asns(self, *args, **kwargs):
+    def _get_attacker_asns(
+        self,
+        override_attacker_asns: Optional[frozenset[int]],
+        engine: Optional["BaseSimulationEngine"],
+        prev_scenario: Optional["Scenario"],
+    ) -> frozenset[int]:
         """Gets attacker ASNs, overriding the valid prefix which has no attackers
 
         There is a very rare case where the attacker can not perform the route leak
@@ -138,7 +134,40 @@ class AccidentalRouteLeak(ValidPrefix):
         in extremely rare cases a valid result, and thus do not change the random
         selection. Doing so would also be a lot slower for a very extreme edge case
         """
-        return Scenario._get_attacker_asns(self, *args, **kwargs)
+
+        assert engine, "Need engine for attacker customer cones"
+        attacker_asns = Scenario._get_attacker_asns(
+            self, override_attacker_asns, engine, prev_scenario
+        )
+        # Stores customer cones of attacker ASNs
+        # used in untrackable func and when selecting victims
+        for attacker_asn in attacker_asns:
+            self._attackers_customer_cones_asns.update(
+                self._get_cone_size_helper(
+                    engine.as_graph.as_dict[attacker_asn],
+                    dict(),
+                ),
+            )
+        return attacker_asns
+
+    def _get_possible_victim_asns(
+        self,
+        engine: "BaseSimulationEngine",
+        percent_adoption: Union[float, SpecialPercentAdoptions],
+        prev_scenario: Optional["Scenario"],
+    ) -> frozenset[int]:
+        """Returns possible victim ASNs, defaulted from config
+
+        Modified to not allow victims to be in attackers customer cone,
+        since if a victim is the customer of leaker, it's not really a leak
+        """
+
+        possible_asns = super()._get_possible_victim_asns(
+            engine, percent_adoption, prev_scenario
+        )
+        # Remove attacker's customer conesfrom possible victims
+        possible_asns = possible_asns.difference(self._attackers_customer_cones_asns)
+        return possible_asns
 
     @property
     def warning_as_groups(self) -> frozenset[str]:

@@ -394,6 +394,8 @@ class Scenario(ABC):
             self.scenario_config.BasePolicyCls,
             self.non_default_asn_cls_dict,
             prev_scenario,
+            self.attacker_asns,
+            self.scenario_config.AttackerBasePolicyCls,
         )
 
     ##################

@@ -10,6 +10,7 @@ from .bgpsec import BGPSecFull
 from .bgpsec import BGPSec
 from .only_to_customers import OnlyToCustomers, OnlyToCustomersFull
 from .pathend import Pathend, PathendFull
+from .path_end import PathEnd, PathEndFull
 from .aspa import ASPA, ASPAFull
 
 __all__ = [
@@ -26,6 +27,8 @@ __all__ = [
     "OnlyToCustomersFull",
     "Pathend",
     "PathendFull",
+    "PathEnd",
+    "PathEndFull",
     "ASPA",
     "ASPAFull",
 ]

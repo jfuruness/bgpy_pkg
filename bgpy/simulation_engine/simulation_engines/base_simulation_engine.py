@@ -73,6 +73,8 @@ class BaseSimulationEngine(YamlAble, ABC):
             frozendict()  # type: ignore
         ),
         prev_scenario: Optional["Scenario"] = None,
+        attacker_asns: frozenset[int] = frozenset(),
+        AttackerBasePolicyCls: Optional[type[Policy]] = None,
     ) -> frozenset[type[Policy]]:
         """Sets AS classes and seeds announcements"""
 

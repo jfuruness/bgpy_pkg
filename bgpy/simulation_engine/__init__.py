@@ -19,6 +19,8 @@ from .policies import OnlyToCustomers
 from .policies import OnlyToCustomersFull
 from .policies import Pathend
 from .policies import PathendFull
+from .policies import PathEnd
+from .policies import PathEndFull
 from .policies import ASPA
 from .policies import ASPAFull
 
@@ -62,6 +64,8 @@ __all__ = [
     "OnlyToCustomers",
     "Pathend",
     "PathendFull",
+    "PathEnd",
+    "PathEndFull",
     "ASPA",
     "ASPAFull",
     "BGPSimplePolicy",

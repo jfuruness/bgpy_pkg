@@ -49,7 +49,7 @@ internal_config_004 = EngineTestConfig(
     ),
     scenario_config=ScenarioConfig(
         ScenarioCls=PrefixHijack,
-        preprocess_anns_func=preprocess_anns_funcs.origin_hijack,
+        preprocess_anns_func=preprocess_anns_funcs.forged_origin_export_all_hijack,
         BasePolicyCls=BGP,
         override_victim_asns=frozenset({ASNs.VICTIM.value}),
         override_attacker_asns=frozenset({ASNs.ATTACKER.value}),

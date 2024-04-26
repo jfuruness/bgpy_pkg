@@ -1,5 +1,6 @@
 from collections import deque
 from typing import Callable, Optional, TYPE_CHECKING
+import warnings
 
 from bgpy.simulation_engine import BGPFull, ASPA, Pathend
 
@@ -32,7 +33,7 @@ def noop(
     return unprocessed_anns
 
 
-def origin_hijack(
+def forged_origin_export_all_hijack(
     self_scenario: "Scenario",
     unprocessed_anns: tuple["Ann", ...],
     engine: Optional["BaseSimulationEngine"],
@@ -67,6 +68,16 @@ def origin_hijack(
     return tuple(processed_anns)
 
 
+def origin_hijack(*args, **kwargs):  # type: ignore
+    warnings.warn(
+        "origin_hijack is deprecated and will be removed in a future version."
+        " Please use forged_origin_export_all_hijack instead.",
+        DeprecationWarning,
+        stacklevel=2,
+    )
+    return forged_origin_export_all_hijack(*args, **kwargs)  # type: ignore
+
+
 def shortest_path_export_all_hijack(
     self_scenario: "Scenario",
     unprocessed_anns: tuple["Ann", ...],
@@ -99,7 +110,9 @@ def shortest_path_export_all_hijack(
                 valid_ann.origin, self_scenario, engine
             )
         else:
-            return origin_hijack(self_scenario, unprocessed_anns, engine, prev_scenario)
+            return forged_origin_export_all_hijack(
+                self_scenario, unprocessed_anns, engine, prev_scenario
+            )
 
         if shortest_as_path:
             # This can happen if the attacker is the shortest path

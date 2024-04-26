@@ -4,7 +4,6 @@ from frozendict import frozendict
 
 from bgpy.enums import Relationships
 from bgpy.simulation_engine import Policy
-from bgpy.simulation_engine.policies import BGP
 
 from .base_simulation_engine import BaseSimulationEngine
 
@@ -24,16 +23,22 @@ class SimulationEngine(BaseSimulationEngine):
     def setup(
         self,
         announcements: tuple["Ann", ...] = (),
-        BasePolicyCls: type[Policy] = BGP,
+        BasePolicyCls: type[Policy] = Policy,
         non_default_asn_cls_dict: frozendict[int, type[Policy]] = (
             frozendict()  # type: ignore
         ),
         prev_scenario: Optional["Scenario"] = None,
+        attacker_asns: frozenset[int] = frozenset(),
+        AttackerBasePolicyCls: Optional[type[Policy]] = None,
     ) -> frozenset[type[Policy]]:
         """Sets AS classes and seeds announcements"""
 
         policies_used: frozenset[type[Policy]] = self._set_as_classes(
-            BasePolicyCls, non_default_asn_cls_dict, prev_scenario
+            BasePolicyCls,
+            non_default_asn_cls_dict,
+            prev_scenario,
+            attacker_asns,
+            AttackerBasePolicyCls,
         )
         self._seed_announcements(announcements, prev_scenario)
         self.ready_to_run_round = 0
@@ -44,6 +49,8 @@ class SimulationEngine(BaseSimulationEngine):
         BasePolicyCls: type[Policy],
         non_default_asn_cls_dict: frozendict[int, type[Policy]],
         prev_scenario: Optional["Scenario"] = None,
+        attacker_asns: frozenset[int] = frozenset(),
+        AttackerBasePolicyCls: Optional[type[Policy]] = None,
     ) -> frozenset[type[Policy]]:
         """Resets Engine ASes and changes their AS class
 
@@ -60,8 +67,24 @@ class SimulationEngine(BaseSimulationEngine):
             del as_obj.policy.as_
             # set the AS class to be the proper type of AS
             Cls = non_default_asn_cls_dict.get(as_obj.asn, BasePolicyCls)
+            if AttackerBasePolicyCls and as_obj.asn in attacker_asns:
+                Cls = AttackerBasePolicyCls
             as_obj.policy = Cls(as_=as_obj)
             policy_classes_used.add(Cls)
+
+        # NOTE: even though the code below is more efficient than the code
+        # above, for some reason it just breaks without erroring
+        # likely a bug in pypy's weak references
+        # for some reason the attacker is just never seeded the announcements
+        # AttackerBasePolicyCls takes precendence for attacker_asns
+        # if AttackerBasePolicyCls is not None:
+        #    policy_classes_used.add(AttackerBasePolicyCls)
+        #    for asn in attacker_asns:
+        #        # Delete the old policy and remove references for RAM
+        #        del as_obj.policy.as_
+        #        # set the AS class to be the proper type of AS
+        #        as_obj.policy = AttackerBasePolicyCls(as_=as_obj)
+
         return frozenset(policy_classes_used)
 
     def _seed_announcements(
