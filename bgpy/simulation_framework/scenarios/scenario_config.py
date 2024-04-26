@@ -42,6 +42,8 @@ class ScenarioConfig:
     BasePolicyCls: type[Policy] = BGP
     # Fixed in post init, but can't show mypy for some reason
     AdoptPolicyCls: type[Policy] = MISSINGPolicy  # type: ignore
+    # Used to override attacker's base policy class
+    AttackerBasePolicyCls: Optional[type[Policy]] = None
     num_attackers: int = 1
     num_victims: int = 1
     # Adoption is equal across these atributes of the engine
