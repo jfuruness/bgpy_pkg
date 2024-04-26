@@ -67,17 +67,23 @@ class SimulationEngine(BaseSimulationEngine):
             del as_obj.policy.as_
             # set the AS class to be the proper type of AS
             Cls = non_default_asn_cls_dict.get(as_obj.asn, BasePolicyCls)
+            if AttackerBasePolicyCls and as_obj.asn in attacker_asns:
+                Cls = AttackerBasePolicyCls
             as_obj.policy = Cls(as_=as_obj)
             policy_classes_used.add(Cls)
 
+        # NOTE: even though the code below is more efficient than the code
+        # above, for some reason it just breaks without erroring
+        # likely a bug in pypy's weak references
+        # for some reason the attacker is just never seeded the announcements
         # AttackerBasePolicyCls takes precendence for attacker_asns
-        if AttackerBasePolicyCls is not None:
-            policy_classes_used.add(AttackerBasePolicyCls)
-            for asn in attacker_asns:
-                # Delete the old policy and remove references for RAM
-                del as_obj.policy.as_
-                # set the AS class to be the proper type of AS
-                as_obj.policy = AttackerBasePolicyCls(as_=as_obj)
+        # if AttackerBasePolicyCls is not None:
+        #    policy_classes_used.add(AttackerBasePolicyCls)
+        #    for asn in attacker_asns:
+        #        # Delete the old policy and remove references for RAM
+        #        del as_obj.policy.as_
+        #        # set the AS class to be the proper type of AS
+        #        as_obj.policy = AttackerBasePolicyCls(as_=as_obj)
 
         return frozenset(policy_classes_used)
 
