@@ -30,6 +30,7 @@ def main():
         output_dir=Path("~/Desktop/main_ex").expanduser(),
         num_trials=10,
         parse_cpus=1,
+        python_hash_seed=0,
     )
     sim.run()
 
