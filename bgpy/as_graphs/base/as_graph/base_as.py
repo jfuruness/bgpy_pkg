@@ -25,12 +25,11 @@ class AS(YamlAble):
         peers: tuple["AS", ...] = tuple(),
         providers: tuple["AS", ...] = tuple(),
         customers: tuple["AS", ...] = tuple(),
+        customer_cone_size: Optional[int] = None,
         as_rank: Optional[int] = None,
         propagation_rank: Optional[int] = None,
         policy: Optional["Policy"] = None,
         as_graph: Optional["ASGraph"] = None,
-        customer_cone_asns: frozenset[int] = frozenset(),
-        provider_cone_asns: frozenset[int] = frozenset(),
     ) -> None:
         # Make sure you're not accidentally passing in a string here
         self.asn: int = int(asn)
@@ -46,6 +45,7 @@ class AS(YamlAble):
         # Read Caida's paper to understand these
         self.input_clique: bool = input_clique
         self.ixp: bool = ixp
+        self.customer_cone_size: Optional[int] = customer_cone_size
         self.as_rank: Optional[int] = as_rank
         # Propagation rank. Rank leaves to clique
         self.propagation_rank: Optional[int] = propagation_rank
@@ -64,9 +64,6 @@ class AS(YamlAble):
             # Ignoring this because it gets set properly immediatly
             self.as_graph = None  # type: ignore
 
-        self.customer_cone_asns: frozenset[int] = customer_cone_asns
-        self.provider_cone_asns: frozenset[int] = provider_cone_asns
-
     def __lt__(self, as_obj: Any) -> bool:
         if isinstance(as_obj, AS):
             return self.asn < as_obj.asn
@@ -81,10 +78,6 @@ class AS(YamlAble):
 
     def __hash__(self) -> int:
         return self.hashed_asn
-
-    @property
-    def customer_cone_size(self) -> int:
-        return len(self.customer_cone_asns)
 
     @property
     def db_row(self) -> dict[str, str]:
@@ -172,8 +165,6 @@ class AS(YamlAble):
             "as_rank": self.as_rank,
             "propagation_rank": self.propagation_rank,
             "policy": self.policy,
-            "customer_cone_asns": sorted(self.customer_cone_asns),
-            "provider_cone_asns": sorted(self.provider_cone_asns),
         }
 
     @classmethod
@@ -183,8 +174,6 @@ class AS(YamlAble):
         dct["customer_asns"] = frozenset(dct["customers"])
         dct["peer_asns"] = frozenset(dct["peers"])
         dct["provider_asns"] = frozenset(dct["providers"])
-        dct["customer_cone_asns"] = frozenset(dct["customer_cone_asns"])
-        dct["provider_cone_asns"] = frozenset(dct["provider_cone_asns"])
         return cls(**dct)
 
 
