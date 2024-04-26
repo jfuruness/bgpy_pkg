@@ -2,7 +2,6 @@ from typing import Optional, TYPE_CHECKING
 import warnings
 
 from bgpy.enums import ASGroups, Relationships, SpecialPercentAdoptions, Timestamps
-from bgpy.as_graphs.base.as_graph.customer_cone_funcs import _get_cone_size_helper
 
 from .valid_prefix import ValidPrefix
 from ..scenario import Scenario
@@ -55,14 +54,8 @@ class AccidentalRouteLeak(ValidPrefix):
         assert engine, "Need engine for customer cones"
         for attacker_asn in self.attacker_asns:
             self._attackers_customer_cones_asns.update(
-                self._get_cone_size_helper(
-                    engine.as_graph.as_dict[attacker_asn],
-                    dict(),
-                ),
+                engine.as_graph.as_dict[attacker_asn].customer_cone_asns
             )
-
-    # Just returns customer cone
-    _get_cone_size_helper = _get_cone_size_helper
 
     def post_propagation_hook(
         self,

@@ -10,7 +10,7 @@ def _set_provider_cone_asns(self) -> None:
 
     cone_dict: dict[int, set[int]] = {}
     for as_obj in self:
-        provider_cone_asns: set[int] = self._get_cone_size_helper(
+        provider_cone_asns: set[int] = self._get_cone_helper(
             as_obj, cone_dict, Relationships.PROVIDERS
         )
         as_obj.provider_cone_asns = frozenset(provider_cone_asns)
@@ -30,7 +30,7 @@ def _set_customer_cone_asns(self) -> None:
         else:
             non_edges.append(as_obj)
     for as_obj in non_edges:
-        customer_cone_asns: set[int] = self._get_cone_size_helper(
+        customer_cone_asns: set[int] = self._get_cone_helper(
             as_obj, cone_dict, Relationships.CUSTOMERS
         )
         as_obj.customer_cone_asns = frozenset(customer_cone_asns)
@@ -53,7 +53,7 @@ def _get_cone_helper(
             raise NotImplementedError
         for neighbor_as in rel_neighbors:
             cone_dict[as_obj.asn].add(neighbor_as.asn)
-            self._get_cone_size_helper(neighbor_as, cone_dict)
+            self._get_cone_helper(neighbor_as, cone_dict, rel)
             cone_dict[as_obj.asn].update(cone_dict[neighbor_as.asn])
     return cone_dict[as_obj.asn]
 
