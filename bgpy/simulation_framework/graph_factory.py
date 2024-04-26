@@ -27,7 +27,7 @@ class GraphFactory:
         # A nice way to substitute labels post run
         label_replacement_dict=None,
         label_color_dict: Optional[dict[str, str]] = None,  # Specifiy color of label
-        ordered_labels: Optional[tuple] = None,  # Order labels in legend
+        ordered_labels: Optional[tuple[str]] = None,  # Order labels in legend
         y_axis_label_replacement_dict=None,
         x_axis_label_replacement_dict=None,
         x_limit: int = 100,
@@ -174,13 +174,13 @@ class GraphFactory:
                 name = as_cls.name
                 try:
                     return self.ordered_labels.index(name)  # type: ignore
-                except:
+                except ValueError:
                     # Handle classes not in ordered_labels by putting them at the end
                     return float("inf")
 
             graph_data = sorted(as_cls_rows_dict.items(), key=sort_key)
         else:
-            graph_data = as_cls_rows_dict.items()
+            graph_data = list(as_cls_rows_dict.items())
 
         # Add the data from the lines
         for i, (as_cls, graph_rows) in enumerate(graph_data):
