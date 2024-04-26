@@ -1,4 +1,5 @@
 from typing import Any, Callable, Optional
+import warnings
 from weakref import proxy
 
 from frozendict import frozendict
@@ -22,9 +23,10 @@ from .propagation_rank_funcs import _assign_ranks_helper
 from .propagation_rank_funcs import _get_propagation_ranks
 
 # Customer cone funcs
-from .customer_cone_funcs import _get_customer_cone_size
-from .customer_cone_funcs import _get_cone_size_helper
-from .customer_cone_funcs import _get_as_rank
+from .cone_funcs import _set_provider_cone_asns
+from .cone_funcs import _set_customer_cone_asns
+from .cone_funcs import _get_cone_helper
+from .cone_funcs import _get_as_rank
 
 import bgpy
 
@@ -46,8 +48,9 @@ class ASGraph(YamlAble):
     _get_propagation_ranks = _get_propagation_ranks
 
     # Customer cone funcs
-    _get_customer_cone_size = _get_customer_cone_size
-    _get_cone_size_helper = _get_cone_size_helper
+    _set_provider_cone_asns = _set_provider_cone_asns
+    _set_customer_cone_asns = _set_customer_cone_asns
+    _get_cone_helper = _get_cone_helper
     _get_as_rank = _get_as_rank
 
     def __init_subclass__(cls, *args, **kwargs):
@@ -64,7 +67,7 @@ class ASGraph(YamlAble):
         as_graph_info: "ASGraphInfo",
         BaseASCls: type[AS] = AS,
         BasePolicyCls: type[bgpy.simulation_engine.Policy] = bgpy.simulation_engine.BGP,
-        customer_cones: bool = True,
+        customer_cones: bool = False,
         yaml_as_dict: Optional[frozendict[int, AS]] = None,
         yaml_ixp_asns: frozenset[int] = frozenset(),
         # Users can pass in any additional AS groups they want to keep track of
@@ -73,6 +76,16 @@ class ASGraph(YamlAble):
         ] = frozendict(),
     ):
         """Reads in relationship data from a TSV and generate graph"""
+
+        if customer_cones:
+            warnings.warn(
+                "customer_cones argument is deprecated and "
+                "will be removed in a future release. "
+                "From now on customer cones are always used "
+                "(as well as provider cones).",
+                DeprecationWarning,
+                stacklevel=2
+            )
 
         if yaml_as_dict is not None:
             # We are coming from YAML, so init from YAML (for testing)
@@ -144,12 +157,10 @@ class ASGraph(YamlAble):
         self._assign_propagation_ranks()
         # Get the ranks for the graph
         self.propagation_ranks = self._get_propagation_ranks()
-        # We don't run this every time since it has the runtime greater than the
-        # entire graph generation
-        if customer_cones:
-            # Determine customer cones of all ases
-            self._get_customer_cone_size()
-            self._get_as_rank()
+        # Generates customer and provider cones, and uses that for as rank
+        self._set_provider_cone_asns()
+        self._set_customer_cone_asns()
+        self._get_as_rank()
 
     def _set_as_groups(
         self,
