@@ -84,7 +84,7 @@ class ASGraph(YamlAble):
                 "From now on customer cones are always used "
                 "(as well as provider cones).",
                 DeprecationWarning,
-                stacklevel=2
+                stacklevel=2,
             )
 
         if yaml_as_dict is not None:
