@@ -109,6 +109,14 @@ def shortest_path_export_all_hijack(
             shortest_as_path = _find_shortest_non_adopting_path_general(
                 valid_ann.origin, self_scenario, engine
             )
+            # Default to an origin hijacking. With ASPA, this will sometimes work,
+            # even at high adoption. ROV blocks it otherwise.
+            # Without this, additionally, neighbor spoofing hijack will break
+            # since you'll strip the attacker out of a path with only the attacker
+            if shortest_as_path is None:
+                return forged_origin_export_all_hijack(
+                    self_scenario, unprocessed_anns, engine, prev_scenario
+                )
         else:
             return forged_origin_export_all_hijack(
                 self_scenario, unprocessed_anns, engine, prev_scenario
