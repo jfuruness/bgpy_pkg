@@ -81,8 +81,8 @@ class CAIDAASGraphCollector(ASGraphCollector):
                 return [
                     x.get("href") for x in soup.select("a") if x.get("href") is not None
                 ]
-        except requests.exceptions.ReadTimeout:
-            print("Failed to get {url}")
+        except requests.exceptions.ReadTimeout as e:
+            print(f"Failed to get {url} due to {e}")
             raise
 
     #########################
