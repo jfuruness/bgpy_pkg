@@ -15,6 +15,7 @@ from .scenarios import NonRoutedSuperprefixHijack
 from .scenarios import NonRoutedSuperprefixPrefixHijack
 from .scenarios import ValidPrefix
 
+from .dependent_simulation import DependentSimulation
 from .simulation import Simulation
 
 
@@ -35,5 +36,6 @@ __all__ = [
     "NonRoutedSuperprefixHijack",
     "NonRoutedSuperprefixPrefixHijack",
     "ValidPrefix",
+    "DependentSimulation",
     "Simulation",
 ]
