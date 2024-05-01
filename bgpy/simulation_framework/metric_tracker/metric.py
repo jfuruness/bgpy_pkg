@@ -19,6 +19,8 @@ class Metric:
         as_classes_used: frozenset[Type[Policy]],
         percents: Optional[defaultdict[MetricKey, list[float]]] = None,
     ) -> None:
+        # At this point the PolicyCls is None for the metric_key,
+        # it's later added in the save_percents
         self.metric_key: MetricKey = metric_key
         self.as_classes_used: frozenset[Type[Policy]] = as_classes_used
         self._numerators: dict[type[Policy], float] = {k: 0 for k in as_classes_used}

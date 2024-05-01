@@ -6,7 +6,7 @@ from bgpy.simulation_framework import (
     DependentSimulation,
     PrefixHijack,
     ScenarioConfig,
-    preprocess_anns_funcs
+    preprocess_anns_funcs,
 )
 
 

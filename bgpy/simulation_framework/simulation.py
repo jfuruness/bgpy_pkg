@@ -112,7 +112,9 @@ class Simulation:
 
         self.metric_keys: tuple[MetricKey, ...] = metric_keys
 
+        scenario_labels = list()
         for scenario_config in self.scenario_configs:
+            scenario_labels.append(scenario_config.scenario_label)
             if isinstance(scenario_config.AdoptPolicyCls, BGPFull) and not isinstance(
                 scenario_config.BasePolicyCls, BGPFull
             ):
@@ -121,6 +123,15 @@ class Simulation:
                     "but your BasePolicyCls is not. You may want to pass in "
                     "BasePolicyCls=BGPFull to your scenario_config"
                 )
+
+        if len(set(scenario_labels)) != len(scenario_labels):
+            raise ValueError(
+                "Each ScenarioConfig uses a scenario_label when aggregating results "
+                "which by default is set to the AdoptPolicyCls's name attribute. "
+                "Since you have two ScenarioConfig's with the same label, metrics "
+                "won't aggregate properly. Please pass in a scenario_label= with a "
+                "unique label name to your config"
+            )
 
     def _validate_scenario_configs(self) -> None:
         """validates that the scenario configs

@@ -46,6 +46,7 @@ def _get_announcements(self, *args, **kwargs):
 class SubprefixHijackWOutROAs(SubprefixHijack):
     def _get_roa_infos(*args, **kwargs):
         return ()
+
     _get_announcements = _get_announcements
 
 
@@ -71,7 +72,7 @@ def main():
     assert False, "Run with pypy3 -O"
 
     benchmark_sim_kwargs = {
-        "percent_adoptions": (.1, .5, .8),
+        "percent_adoptions": (0.1, 0.5, 0.8),
         "output_dir": Path.home() / "Desktop" / "roa_benchmarks",
         "num_trials": 100,
         "parse_cpus": 1,
@@ -85,7 +86,7 @@ def main():
                 AdoptPolicyCls=BGP,
             ),
         ),
-        **benchmark_sim_kwargs
+        **benchmark_sim_kwargs,
     )
     start = perf_counter()
     sim.run(GraphFactoryCls=None)

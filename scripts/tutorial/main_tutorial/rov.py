@@ -20,6 +20,4 @@ class ROV(BGP):
             return False
         # Use standard BGP to determine if the announcement is valid
         else:
-            return super(ROV, self)._valid_ann(  # type: ignore
-                ann, *args, **kwargs
-            )
+            return super(ROV, self)._valid_ann(ann, *args, **kwargs)  # type: ignore

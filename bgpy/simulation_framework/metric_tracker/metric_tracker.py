@@ -128,6 +128,7 @@ class MetricTracker:
                     "value": mean(trial_data) if trial_data else None,
                     "yerr": self._get_yerr(trial_data),
                     "scenario_config_label": data_key.scenario_config.csv_label,
+                    "scenario_label": data_key.scenario_config.scenario_label,
                 }
                 rows.append(row)
         return rows

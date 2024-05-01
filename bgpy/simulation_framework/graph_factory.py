@@ -137,9 +137,9 @@ class GraphFactory:
             f"/{metric_key.plane.name}"
             f"/{metric_key.outcome.name}.png"
         ).replace(" ", "")
-        as_cls_rows_dict = defaultdict(list)
+        label_rows_dict = defaultdict(list)
         for row in relevant_rows:
-            as_cls_rows_dict[row["data_key"].scenario_config.AdoptPolicyCls].append(row)
+            label_rows_dict[row["data_key"].scenario_config.scenario_label].append(row)
 
         matplotlib.use("Agg")
         fig, ax = plt.subplots()
@@ -159,7 +159,7 @@ class GraphFactory:
             return float(percent_adopt)
 
         # Add the data from the lines
-        for i, (as_cls, graph_rows) in enumerate(as_cls_rows_dict.items()):
+        for i, (label, graph_rows) in enumerate(label_rows_dict.items()):
             graph_rows_sorted = list(sorted(graph_rows, key=get_percent_adopt))
             # If no trial_data is present for a selection, value can be None
             # For example, if no stubs are selected to adopt, the graph for adopting
@@ -170,7 +170,7 @@ class GraphFactory:
                 [float(x["data_key"].percent_adopt) * 100 for x in graph_rows_sorted],
                 [x["value"] for x in graph_rows_sorted],
                 yerr=[x["yerr"] for x in graph_rows_sorted],
-                label=self.label_replacement_dict.get(as_cls.name, as_cls.name),
+                label=self.label_replacement_dict.get(label, label),
                 ls=self.line_styles[i],
                 marker=self.markers[i],
             )

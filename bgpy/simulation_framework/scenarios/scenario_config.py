@@ -80,8 +80,10 @@ class ScenarioConfig:
     override_announcements: tuple["Ann", ...] = ()
     override_roa_infos: tuple[ROAInfo, ...] = ()
     # If you'd like to add an extra CSV label you do so here
+    # This only adds basically your own notes, isn't used for
+    # anything in particular
     csv_label: str = ""
-    # Deprecated param, don't use
+    # Defaults to the AdoptPolicyCls's name property in post_init
     scenario_label: str = ""
 
     def __post_init__(self):
@@ -128,6 +130,9 @@ class ScenarioConfig:
                 f"and is instead {type(self.hardcoded_asn_cls_dict)}. Please "
                 "change the type to frozendict so that it is hashable"
             )
+
+        if not self.scenario_label:
+            object.__setattr__(self, "scenario_label", self.AdoptPolicyCls.name)
 
     ##############
     # Yaml Funcs #
