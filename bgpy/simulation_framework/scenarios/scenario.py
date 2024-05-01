@@ -266,9 +266,23 @@ class Scenario(ABC):
         if override_non_default_asn_cls_dict is not None:
             # Must ignore type here since mypy doesn't understand frozendict
             return override_non_default_asn_cls_dict  # type: ignore
-        # By default, use the last engine input to maintain static
-        # adoption across the graph
-        elif prev_scenario:
+        # By default, use the last scenario to maintain static
+        # adoption, so that in the same trial you can compare different
+        # AdoptPolicyCls's for the same set of adopting ASes.
+        # HOWEVER - if the hardcoded_asn_cls_dict is set, then the set
+        # of adopting ASes can no longer be the same for multiple different
+        # AdoptPolicyCls's.
+        # You could in theory check if the hardcoded_asn_cls_dict would be the
+        # same, but this would drastically increase runtime, and really, it's
+        # okay for this to change from policy to policy. Enough trials should
+        # always be done to have sufficiently low confidencebars, reusing the
+        # same adopting set was just for convenience and to be able to run
+        # less trials by reducing variance
+        elif (
+            prev_scenario
+            and len(prev_scenario.scenario_config.hardcoded_asn_cls_dict) == 0
+            and len(self.scenario_config.hardcoded_asn_cls_dict) == 0
+        ):
             non_default_asn_cls_dict = dict()
             for asn, OldPolicyCls in prev_scenario.non_default_asn_cls_dict.items():
                 HardcodedCls = self.scenario_config.hardcoded_asn_cls_dict.get(asn)
