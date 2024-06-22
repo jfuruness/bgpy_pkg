@@ -49,6 +49,8 @@ class Announcement(YamlAble):
     bgpsec_as_path: tuple[int, ...] = ()
     # RFC 9234 OTC attribute (Used in OnlyToCustomers Policy)
     only_to_customers: Optional[int] = None
+    # ROV++ attribute
+    rovpp_blackhole: bool = False
 
     def __post_init__(self):
         """Defaults seed_asn and next_hop_asn"""
