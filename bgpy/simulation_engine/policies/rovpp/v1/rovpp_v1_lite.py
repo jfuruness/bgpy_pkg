@@ -1,10 +1,12 @@
-from typing import TYPE_CHECKING
+from typing import Iterator, TYPE_CHECKING
 
-
+from bgpy.enums import Relationships, Timestamps
 from bgpy.simulation_engine.policies.rov import ROV
 
 if TYPE_CHECKING:
+    from bgpy.as_graphs import AS
     from bgpy.simulation_engine import Announcement as Ann
+    from bgpy.simulation_framework import Scenario
 
 
 class ROVPPV1Lite(ROV):
@@ -14,6 +16,18 @@ class ROVPPV1Lite(ROV):
     """
 
     name: str = "ROV++V1 Lite"
+
+    def _policy_propagate(
+        self,
+        neighbor: "AS",
+        ann: "Ann",
+        propagate_to: Relationships,
+        send_rels: set[Relationships]
+    ) -> bool:
+        """Only propagate announcements that aren't blackholes"""
+
+        # Policy handled this ann for propagation (and did nothing if blackhole)
+        return ann.rovpp_blackhole
 
     def process_incoming_anns(
         self,
@@ -49,20 +63,34 @@ class ROVPPV1Lite(ROV):
         add it to the local RIB as a blackhole
         """
 
-
-        non_routed_blackholes = self._get_non_routed_blackholes_to_add(
-            from_rel, scenario
-        )
+        non_routed_blackholes = self._get_non_routed_blackholes_to_add(scenario)
         routed_blackholes = self._get_routed_blackholes_to_add(from_rel, scenario)
-        self._add_blackholes_to_local_rib(non_routed_blackholes + blackholes)
+        self._add_blackholes_to_local_rib(non_routed_blackholes + routed_blackholes)
 
     def _get_non_routed_blackholes_to_add(
         self,
-        from_rel: "Relationships",
         scenario: "Scenario"
     ) -> tuple["Ann", ...]:
         """Get all the bholes for non routed prefixes to prevent superprefix attacks"""
-        raise NotImplementedError
+
+        non_routed_blackholes_to_add = list()
+        for roa_info in self.scenario.roa_infos:
+            # ROA is non routed
+            if roa_info.non_routed:
+                blackhole_ann = self.scenario.scenario_config.AnnCls(
+                    prefix=roa_info.prefix,
+                    next_hop_asn=self.as_.asn,
+                    as_path=(self.as_.asn,),
+                    timestamp=Timestamps.VICTIM.value,
+                    seed_asn=None,
+                    roa_valid_length=True,
+                    roa_origin=roa_info.origin,
+                    recv_relationship=Relationships.ORIGIN,
+                    traceback_end=True,
+                    rovpp_blackhole=True,
+                )
+                non_routed_blackholes_to_add.append(blackhole_ann)
+        return tuple(non_routed_blackholes_to_add)
 
     def _get_routed_blackholes_to_add(
         self,
@@ -74,30 +102,41 @@ class ROVPPV1Lite(ROV):
         blackholes_to_add = list()
         # Then add blackholes for anns in local RIB when you've
         # recieved an invalid subprefix from the same neighbor
-        for prefix, ann in self.local_rib.items():
-            # For each subprefix in this scenario of the prefix within the local RIB
-            for subprefix in scenario.ordered_prefix_subprefix_dict[prefix]:
-                # For each subprefix ann that was recieved
-                # NOTE: these wouldn't be in the local RIB since they're invalid
-                # and dropped by default (but they are recieved so we can check there)
-                for sub_ann in self._recv_q.get_ann_list(subprefix):
-                    # Holes are only from same neighbor
-                    if (
-                        sub_ann.invalid_by_roa
-                        and sub_ann.as_path[0] == ann.as_path[0]
-                    ):
-                        blackhole = self._copy_and_process(
-                            ann,
-                            from_rel,
-                            overwrite_default_kwargs={
-                                "traceback_end": True,
-                                "rovpp_blackhole": True,
-                            }
-                        )
-                        blackholes_to_add.append(blackhole)
+        for _, ann in self.local_rib.items():
+            for sub_ann in self._invalid_subprefixes_from_same_neighbor(scenario, ann):
+                blackhole = self._copy_and_process(
+                    sub_ann,
+                    from_rel,
+                    overwrite_default_kwargs={
+                        "traceback_end": True,
+                        "rovpp_blackhole": True,
+                    }
+                )
+                blackholes_to_add.append(blackhole)
         return tuple(blackholes_to_add)
 
-    def _add_blackholes_to_local_rib(self, blackholes: tuple[Ann, ...]) -> None:
+    def _invalid_subprefixes_from_same_neighbor(
+        self,
+        scenario: "Scenario",
+        ann: "Ann"
+    ) -> Iterator["Ann"]:
+        """Returns all invalid subprefixes of announcement from the same neighbor"""
+
+        # For each subprefix in this scenario of the prefix within the local RIB
+        for subprefix in scenario.ordered_prefix_subprefix_dict[ann.prefix]:
+            # For each subprefix ann that was recieved
+            # NOTE: these wouldn't be in the local RIB since they're invalid
+            # and dropped by default (but they are recieved so we can check there)
+            for sub_ann in self._recv_q.get_ann_list(subprefix):
+                # Holes are only from same neighbor
+                if (
+                    sub_ann.invalid_by_roa
+                    # Check the first one in the path since it's already processed
+                    and sub_ann.as_path[0] == ann.as_path[1]
+                ):
+                    yield sub_ann
+
+    def _add_blackholes_to_local_rib(self, blackholes: tuple["Ann", ...]) -> None:
         """Adds all blackholes to the local RIB"""
 
         for blackhole in blackholes:
@@ -118,6 +157,7 @@ class ROVPPV1Lite(ROV):
         # not going to implement because of that, and because I don't think there's
         # a need to, because as far as I know there aren't any two round attacks
         # against ROV++. If someone comes up with one let me know and I can try to
-        # help out.
+        # help out, email at jfuruness@gmail.com.
+        # NOTE: Additionally, we don't account for withdrawals at all...
         if propagation_round != 0:
             raise NotImplementedError("TODO: support ROV++ for multiple rounds")
