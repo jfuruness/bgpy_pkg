@@ -5,5 +5,5 @@ __all__ = [
     "ROVPPV2Lite",
     "ROVPPV2LiteFull",
     "ROVPPV2ImprovedLite",
-    "ROVPPV2ImprovedLiteFull"
+    "ROVPPV2ImprovedLiteFull",
 ]

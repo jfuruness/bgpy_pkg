@@ -22,7 +22,7 @@ class ROVPPV2Lite(ROVPPV1Lite):
         neighbor: "AS",
         ann: "Ann",
         propagate_to: Relationships,
-        send_rels: set[Relationships]
+        send_rels: set[Relationships],
     ) -> bool:
         """Deals with blackhole propagation
 
@@ -39,9 +39,7 @@ class ROVPPV2Lite(ROVPPV1Lite):
             return False
 
     def _send_competing_hijack_allowed(
-        self,
-        ann: "Ann",
-        propagate_to: Relationships
+        self, ann: "Ann", propagate_to: Relationships
     ) -> bool:
         """You can send blackhole to customers if from peer/provider
         and either subprefix or non routed"""

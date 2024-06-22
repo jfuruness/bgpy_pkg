@@ -27,9 +27,7 @@ class ROVPPV2ImprovedLite(ROVPPV2Lite):
     name: str = "ROV++V2i Lite"
 
     def _send_competing_hijack_allowed(
-        self,
-        ann: "Ann",
-        propagate_to: Relationships
+        self, ann: "Ann", propagate_to: Relationships
     ) -> bool:
         """You can send blackhole if either subprefix or non routed
 
@@ -42,7 +40,6 @@ class ROVPPV2ImprovedLite(ROVPPV2Lite):
             # From peer/provider
             # ann.recv_relationship
             # in [Relationships.PEERS, Relationships.PROVIDERS, Relationships.ORIGIN]
-
             # Sending to customers
             propagate_to == Relationships.CUSTOMERS
             # subprefix or non routed (don't send blackholes for prefixes)

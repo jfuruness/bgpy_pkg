@@ -22,7 +22,7 @@ class ROVPPV1Lite(ROV):
         neighbor: "AS",
         ann: "Ann",
         propagate_to: Relationships,
-        send_rels: set[Relationships]
+        send_rels: set[Relationships],
     ) -> bool:
         """Only propagate announcements that aren't blackholes"""
 
@@ -35,7 +35,7 @@ class ROVPPV1Lite(ROV):
         from_rel: Relationships,
         propagation_round: int,
         scenario: "Scenario",
-        reset_q: bool = True
+        reset_q: bool = True,
     ) -> None:
         """Processes all incoming announcements from a specific rel"""
 
@@ -68,8 +68,7 @@ class ROVPPV1Lite(ROV):
         self._add_blackholes_to_local_rib(non_routed_blackholes + routed_blackholes)
 
     def _get_non_routed_blackholes_to_add(
-        self,
-        scenario: "Scenario"
+        self, scenario: "Scenario"
     ) -> tuple["Ann", ...]:
         """Get all the bholes for non routed prefixes to prevent superprefix attacks"""
 
@@ -93,9 +92,7 @@ class ROVPPV1Lite(ROV):
         return tuple(non_routed_blackholes_to_add)
 
     def _get_routed_blackholes_to_add(
-        self,
-        from_rel: "Relationships",
-        scenario: "Scenario"
+        self, from_rel: "Relationships", scenario: "Scenario"
     ) -> tuple["Ann", ...]:
         """Get all the bholes from the anns you just recieved"""
 
@@ -110,15 +107,13 @@ class ROVPPV1Lite(ROV):
                     overwrite_default_kwargs={
                         "traceback_end": True,
                         "rovpp_blackhole": True,
-                    }
+                    },
                 )
                 blackholes_to_add.append(blackhole)
         return tuple(blackholes_to_add)
 
     def _invalid_subprefixes_from_same_neighbor(
-        self,
-        scenario: "Scenario",
-        ann: "Ann"
+        self, scenario: "Scenario", ann: "Ann"
     ) -> Iterator["Ann"]:
         """Returns all invalid subprefixes of announcement from the same neighbor"""
 
