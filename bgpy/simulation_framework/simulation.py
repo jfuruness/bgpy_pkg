@@ -1,3 +1,4 @@
+from copy import deepcopy
 import gc
 from itertools import product
 from multiprocessing import cpu_count
@@ -417,6 +418,10 @@ class Simulation:
 
         if kwargs is None:
             kwargs = dict()
+        else:
+            # This prevents problems if kwargs is reused more than once
+            # outside of this file, since we modify it
+            kwargs = deepcopy(kwargs)
         # Set defaults for kwargs
         kwargs["pickle_path"] = kwargs.pop("pickle_path", self.pickle_path)
         kwargs["graph_dir"] = kwargs.pop("graph_dir", self.output_dir / "graphs")
