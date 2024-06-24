@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING
 
 
-from bgpy.simulation_engine.policies.rov_full import ROVFull
+from bgpy.simulation_engine.policies.rov import ROVFull
 
 from .rovpp_v1_lite import ROVPPV1Lite
 

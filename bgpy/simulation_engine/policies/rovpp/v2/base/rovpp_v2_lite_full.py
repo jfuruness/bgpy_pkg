@@ -1,4 +1,4 @@
-from bgpy.simulation_engine.policies.rov_full import ROVFull
+from bgpy.simulation_engine.policies.rov import ROVFull
 
 from .rovpp_v2_lite import ROVPPV2Lite
 
