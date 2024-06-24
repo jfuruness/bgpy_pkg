@@ -25,7 +25,7 @@ default_kwargs = {
             0.99,
     ),
     "num_trials": 1 if "quick" in str(sys.argv) else 1000,
-    "parse_cpus": cpu_count() - 2,
+    "parse_cpus": 1 if "quick" in str(sys.argv) else cpu_count() - 2,
 }
 
 
