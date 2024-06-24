@@ -68,5 +68,9 @@ class BGPiSec(BGP):
     ) -> bool:
         """Determine if an announcement is valid or should be dropped"""
 
-        # BGP Loop Prevention Check
-        return self.as_.asn not in ann.as_path
+        # Need to do all bgpisec mechanisms here
+        # protected OTC
+        # provider cone ID
+        # transitive signatures
+        # maybe others that I'm missing...
+        raise NotImplementedError
