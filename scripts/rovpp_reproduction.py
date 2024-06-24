@@ -2,16 +2,21 @@ from multiprocessing import cpu_count
 from pathlib import Path
 import sys
 import time
+from typing import Iterable
 
-from bgpy.enums import ASGroups, SpecialPercentAdoptions
+from bgpy.enums import ASGroups, Plane, Outcomes, SpecialPercentAdoptions
 from bgpy.simulation_engine import ROVPPV1Lite, ROVPPV2Lite, ROV
 
 from bgpy.simulation_framework import (
     Simulation,
-    PrefixHijack,
     SubprefixHijack,
+    NonRoutedPrefixHijack,
+    NonRoutedSuperprefixPrefixHijack,
     ScenarioConfig,
 )
+from bgpy.simulation_framework.metric_tracker.metric_key import MetricKey
+
+
 
 DIR = Path.home() / "Desktop" / "rovpp_reproduction"
 
@@ -24,22 +29,34 @@ default_kwargs = {
             0.8,
             0.99,
     ),
-    "num_trials": 1 if "quick" in str(sys.argv) else 1000,
+    "num_trials": 1 if "quick" in str(sys.argv) else 50,
     "parse_cpus": 1 if "quick" in str(sys.argv) else cpu_count() - 2,
 }
 
 
 ROVPP_CLASSES = (ROVPPV2Lite, ROVPPV1Lite, ROV)
 
+def get_rovpp_metric_keys() -> Iterable[MetricKey]:
+    """Returns all possible metric key combos for ROV++
+
+    Modified from the utils file within the sim framework"""
+
+    for plane in [Plane.DATA]:
+        for as_group in [ASGroups.ALL_WOUT_IXPS, ASGroups.STUBS_OR_MH]:
+            for outcome in [x for x in Outcomes if x != Outcomes.UNDETERMINED]:
+                yield MetricKey(plane=plane, as_group=as_group, outcome=outcome)
+
+
+
 def run_fig678():
     """Runs fig6,7,8 from ROV++ paper with policies that are implemented in BGPy
 
     fig 6 looks at the adopting_is_any
-    NOTE: for fig7 and 8 we only track __all ases__ whereas fig 7 and 8
-    in the paper only looked at edge ASes
-    I can fix this later but due to time constraints going to leave it for now
-    fig 7 looked at adopting_is_true
-    fig 8 looked at adopting_is_false
+    fig 7 looked at adopting_is_true from stubs or multihomed
+    fig 8 looked at adopting_is_false from stubs or multihomed
+
+    CAVEAT - in the ROV++ paper we simulated non-lite versions, but BGPy has only
+    the recommended lite versions
     """
 
     sim = Simulation(
@@ -50,6 +67,7 @@ def run_fig678():
             ) for Cls in ROVPP_CLASSES
         ],
         output_dir=DIR / "fig678",
+        metric_keys=tuple(list(get_rovpp_metric_keys())),
         **default_kwargs,  # type: ignore
     )
     sim.run()
@@ -58,7 +76,10 @@ def run_fig678():
 def run_fig9():
     """Runs fig9 from ROV++ paper with policies that are implemented in BGPy
 
-    fig 9 in the paper looked at only edge ASes, leaving this difference for now
+    for this fig, adopting_is_False, and from stubs or multihomed
+
+    CAVEAT - in the ROV++ paper we simulated non-lite versions, but BGPy has only
+    the recommended lite versions
     """
 
     sim = Simulation(
@@ -69,6 +90,7 @@ def run_fig9():
             ) for Cls in ROVPP_CLASSES
         ],
         output_dir=DIR / "fig9",
+        metric_keys=tuple(list(get_rovpp_metric_keys())),
         **default_kwargs,  # type: ignore
     )
     sim.run()
@@ -77,7 +99,10 @@ def run_fig9():
 def run_fig10():
     """Runs fig10 from ROV++ paper with policies that are implemented in BGPy
 
-    fig 10 in the paper looked at only edge ASes, leaving this difference for now
+    for this fig, adopting_is_False, and from stubs or multihomed
+
+    CAVEAT - in the ROV++ paper we simulated non-lite versions, but BGPy has only
+    the recommended lite versions
     """
 
     sim = Simulation(
@@ -88,6 +113,7 @@ def run_fig10():
             ) for Cls in ROVPP_CLASSES
         ],
         output_dir=DIR / "fig10",
+        metric_keys=tuple(list(get_rovpp_metric_keys())),
         **default_kwargs,  # type: ignore
     )
     sim.run()

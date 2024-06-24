@@ -119,6 +119,9 @@ class ROVPPV1Lite(ROV):
     ) -> Iterator["Ann"]:
         """Returns all invalid subprefixes of announcement from the same neighbor"""
 
+        # If we are the origin, then there are zero invalid anns from the same neighbor
+        if ann.recv_relationship == Relationships.ORIGIN:
+            return ()
         # For each subprefix in this scenario of the prefix within the local RIB
         for subprefix in scenario.ordered_prefix_subprefix_dict[ann.prefix]:
             # For each subprefix ann that was recieved
