@@ -75,10 +75,10 @@ class ROVPPV1Lite(ROV):
         """Get all the bholes for non routed prefixes to prevent superprefix attacks"""
 
         non_routed_blackholes_to_add = list()
-        for roa_info in self.scenario.roa_infos:
+        for roa_info in scenario.roa_infos:
             # ROA is non routed
             if roa_info.non_routed:
-                blackhole_ann = self.scenario.scenario_config.AnnCls(
+                blackhole_ann = scenario.scenario_config.AnnCls(
                     prefix=roa_info.prefix,
                     next_hop_asn=self.as_.asn,
                     as_path=(self.as_.asn,),
@@ -101,7 +101,7 @@ class ROVPPV1Lite(ROV):
         blackholes_to_add = list()
         # Then add blackholes for anns in local RIB when you've
         # recieved an invalid subprefix from the same neighbor
-        for _, ann in self.local_rib.items():
+        for _, ann in self._local_rib.items():
             for sub_ann in self._invalid_subprefixes_from_same_neighbor(scenario, ann):
                 blackhole = self._copy_and_process(
                     sub_ann,
