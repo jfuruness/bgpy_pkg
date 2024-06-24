@@ -30,7 +30,7 @@ default_kwargs = {
             0.99,
     ),
     "num_trials": 1 if "quick" in str(sys.argv) else 50,
-    "parse_cpus": 1 if "quick" in str(sys.argv) else cpu_count() - 2,
+    "parse_cpus": cpu_count() - 2,
 }
 
 
@@ -130,6 +130,7 @@ def main():
 
 
 if __name__ == "__main__":
+    print("NOTE: this is only running with 10 trials. Increase # of trials for more precision")
     start = time.perf_counter()
     main()
     print(f"{time.perf_counter() - start}s for all sims")
