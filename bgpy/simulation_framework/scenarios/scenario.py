@@ -564,6 +564,11 @@ class Scenario(ABC):
         prefixes = set([])
         for ann in self.announcements:
             prefixes.add(ann.prefix)
+        # Add ROA prefixes here, so that if we blackhole a non routed
+        # prefix of a superprefix hijack this won't break
+        # (since the prefix would only exist in the ROA)
+        for roa in self.roa_infos:
+            prefixes.add(roa.prefix)
         # Do this here for speed
         prefixes: list[Union[IPv4Network, IPv6Network]] = [  # type: ignore
             ip_network(x) for x in prefixes

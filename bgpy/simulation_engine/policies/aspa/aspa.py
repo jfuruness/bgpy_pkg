@@ -1,14 +1,16 @@
 from typing import TYPE_CHECKING
 
 from bgpy.enums import Relationships
-from bgpy.simulation_engine.policies.bgp import BGP
+from bgpy.simulation_engine.policies.rov import ROV
 
 if TYPE_CHECKING:
     from bgpy.simulation_engine import Announcement as Ann
 
 
-class ASPA(BGP):
+class ASPA(ROV):
     """An Policy that deploys ASPA
+
+    We adopt from ROV since deploying ASPA makes no sense without ROV
 
     We experimented with adding a cache to the provider_check
     but this has a negligable impact on performance

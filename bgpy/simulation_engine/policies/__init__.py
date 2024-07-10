@@ -11,6 +11,15 @@ from .bgpsec import BGPSec
 from .only_to_customers import OnlyToCustomers, OnlyToCustomersFull
 from .pathend import Pathend, PathendFull
 from .path_end import PathEnd, PathEndFull
+from .rovpp import (
+    ROVPPV1Lite,
+    ROVPPV1LiteFull,
+    ROVPPV2Lite,
+    ROVPPV2LiteFull,
+    ROVPPV2ImprovedLite,
+    ROVPPV2ImprovedLiteFull,
+)
+
 from .aspa import ASPA, ASPAFull
 
 __all__ = [
@@ -29,6 +38,12 @@ __all__ = [
     "PathendFull",
     "PathEnd",
     "PathEndFull",
+    "ROVPPV1Lite",
+    "ROVPPV1LiteFull",
+    "ROVPPV2Lite",
+    "ROVPPV2LiteFull",
+    "ROVPPV2ImprovedLite",
+    "ROVPPV2ImprovedLiteFull",
     "ASPA",
     "ASPAFull",
 ]

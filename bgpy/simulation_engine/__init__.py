@@ -37,6 +37,12 @@ from .policies import OnlyToCustomers as OnlyToCustomersSimplePolicy
 from .policies import OnlyToCustomersFull as OnlyToCustomersPolicy
 from .policies import Pathend as PathendSimplePolicy
 from .policies import PathendFull as PathendPolicy
+from .policies import ROVPPV1Lite
+from .policies import ROVPPV1LiteFull
+from .policies import ROVPPV2Lite
+from .policies import ROVPPV2LiteFull
+from .policies import ROVPPV2ImprovedLite
+from .policies import ROVPPV2ImprovedLiteFull
 from .policies import ASPA as ASPASimplePolicy
 from .policies import ASPAFull as ASPAPolicy
 
@@ -66,6 +72,12 @@ __all__ = [
     "PathendFull",
     "PathEnd",
     "PathEndFull",
+    "ROVPPV1Lite",
+    "ROVPPV1LiteFull",
+    "ROVPPV2Lite",
+    "ROVPPV2LiteFull",
+    "ROVPPV2ImprovedLite",
+    "ROVPPV2ImprovedLiteFull",
     "ASPA",
     "ASPAFull",
     "BGPSimplePolicy",

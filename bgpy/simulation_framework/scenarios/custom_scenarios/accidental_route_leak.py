@@ -48,7 +48,11 @@ class AccidentalRouteLeak(ValidPrefix):
                 f"{self.scenario_config.attacker_subcategory_attr} "
                 f"for your scenario {self.__class__.__name__}, "
                 f"but {self.__class__.__name__} can't leak from stubs. "
-                "To suppress this warning, override warning_as_groups"
+                "To suppress this warning, override warning_as_groups. "
+                "To change the ASGroup to something other than stubs, you can "
+                " set attacker_subcategory_attr=ASGroups.MULTIHOMED.value, "
+                " in the scenario config after importing like "
+                "from bgpy.enums import ASGroups"
             )
             warnings.warn(msg, RuntimeWarning)
 
