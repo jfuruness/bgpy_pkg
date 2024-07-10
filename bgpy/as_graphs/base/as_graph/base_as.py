@@ -133,7 +133,10 @@ class AS(YamlAble):
     def transit(self) -> bool:
         """Returns True if AS is a transit AS by RFC1772"""
 
-        return len(self.customers) > 1
+        return (
+            len(self.customers) > 0
+            and len(self.customers) + len(self.peers) + len(self.providers) > 1
+        )
 
     @cached_property
     def stubs(self) -> tuple["AS", ...]:
