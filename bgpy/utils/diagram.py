@@ -188,7 +188,7 @@ class Diagram:
                 mask = "/" + ann.prefix.split("/")[-1]
                 path = ", ".join(str(x) for x in ann.as_path)
                 ann_help = ""
-                if getattr(ann, "blackhole", False):
+                if getattr(ann, "rovpp_blackhole", False):
                     ann_help = "&#10041;"
                 elif getattr(ann, "preventive", False):
                     ann_help = "&#128737;"
