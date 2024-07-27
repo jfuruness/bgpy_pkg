@@ -541,7 +541,7 @@ class Scenario(ABC):
         elif outcome.validity in (ROAValidity.VALID, ROAValidity.INVALID_ORIGIN):
             return True
         else:
-            raise NotImplementedError(f"Should never reach this {validity}")
+            raise NotImplementedError(f"Should never reach this {outcome.validity}")
 
     ################
     # Helper Funcs #
