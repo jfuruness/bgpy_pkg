@@ -52,4 +52,6 @@ class ValidPrefix(Scenario):
     ) -> tuple[ROA, ...]:
         """Returns a tuple of ROAs"""
 
-        return tuple([ROA(ip_network(Prefixes.PREFIX.value), x) for x in self.victim_asns])
+        return tuple(
+            [ROA(ip_network(Prefixes.PREFIX.value), x) for x in self.victim_asns]
+        )
