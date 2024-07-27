@@ -1,7 +1,5 @@
 from . import preprocess_anns_funcs
 
-from .roa_info import ROAInfo
-
 from .scenario_config import ScenarioConfig
 from .scenario import Scenario
 

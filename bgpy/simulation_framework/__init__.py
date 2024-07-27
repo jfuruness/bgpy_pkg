@@ -3,7 +3,6 @@ from .graph_factory import GraphFactory
 from .metric_tracker import MetricTracker
 
 from .scenarios import preprocess_anns_funcs
-from .scenarios import ROAInfo
 from .scenarios import ScenarioConfig
 from .scenarios import Scenario
 from .scenarios import AccidentalRouteLeak
@@ -25,7 +24,6 @@ __all__ = [
     "GraphFactory",
     "MetricTracker",
     "preprocess_anns_funcs",
-    "ROAInfo",
     "ScenarioConfig",
     "Scenario",
     "AccidentalRouteLeak",

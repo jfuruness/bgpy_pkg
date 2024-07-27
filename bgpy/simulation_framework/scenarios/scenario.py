@@ -9,7 +9,7 @@ from typing import Any, Optional, Type, Union
 
 from frozendict import frozendict
 
-from roa_checker import ROAChecker, ROAValidity
+from roa_checker import ROAChecker, ROAValidity, ROA
 
 from bgpy.simulation_engine import Announcement as Ann
 from bgpy.simulation_engine import BaseSimulationEngine
@@ -19,7 +19,6 @@ from bgpy.enums import (
 )
 
 from .preprocess_anns_funcs import noop, PREPROCESS_ANNS_FUNC_TYPE
-from .roa_info import ROAInfo
 from .scenario_config import ScenarioConfig
 
 pseudo_base_cls_dict: dict[type[Policy], type[Policy]] = dict()
@@ -76,12 +75,10 @@ class Scenario(ABC):
             self.announcements: tuple["Ann", ...] = (
                 self.scenario_config.override_announcements
             )
-            self.roa_infos: tuple[ROAInfo, ...] = (
-                self.scenario_config.override_roa_infos
-            )
+            self.roas: tuple[ROA, ...] = self.scenario_config.override_roas
         else:
             anns = self._get_announcements(engine=engine, prev_scenario=prev_scenario)
-            self.roa_infos = self._get_roa_infos(
+            self.roas = self._get_roas(
                 announcements=anns, engine=engine, prev_scenario=prev_scenario
             )
             anns = self._add_roa_info_to_anns(
@@ -426,14 +423,14 @@ class Scenario(ABC):
 
         raise NotImplementedError
 
-    def _get_roa_infos(
+    def _get_roas(
         self,
         *,
         announcements: tuple["Ann", ...] = (),
         engine: Optional[BaseSimulationEngine] = None,
         prev_scenario: Optional["Scenario"] = None,
-    ) -> tuple[ROAInfo, ...]:
-        """Returns a tuple of ROAInfo's
+    ) -> tuple[ROA, ...]:
+        """Returns a tuple of ROA's
 
         Not abstract and by default does nothing for
         backwards compatability
@@ -449,7 +446,7 @@ class Scenario(ABC):
     ) -> tuple["Ann", ...]:
         """Adds ROA Info to Announcements"""
 
-        if self.roa_infos:
+        if self.roas:
             roa_checker = self._get_roa_checker()
             processed_anns = list()
             for ann in announcements:
@@ -504,11 +501,11 @@ class Scenario(ABC):
     ####################
 
     def _get_roa_checker(self) -> ROAChecker:
-        """Returns ROAChecker populated with self.roa_infos"""
+        """Returns ROAChecker populated with self.roas"""
 
         roa_checker = ROAChecker()
         for roa in self.roa_infos:
-            roa_checker.insert(ip_network(roa.prefix), roa.origin, roa.max_length)
+            roa_checker.insert(roa.prefix, roa)
         return roa_checker
 
     def _get_roa_origin(
@@ -517,17 +514,13 @@ class Scenario(ABC):
         """Returns ROA origin"""
 
         # Get ROA origin
-        roa = roa_checker.get_roa(prefix, origin)
-        if roa:
-            roa_origins = [x[0] for x in roa.origin_max_lengths]
-            if len(set(roa_origins)) != 1:
-                raise NotImplementedError
-            else:
-                [roa_origin] = roa_origins
-                assert isinstance(roa_origin, int), "for mypy"
-                return roa_origin
-        else:
+        roas = roa_checker.get_relevant_roas(prefix)
+        if len(roas) == 0:
             return None
+        elif len(roas) == 1:
+            return roas[0].origin
+        else:
+            raise NotImplementedError
 
     def _get_roa_valid_length(
         self,
@@ -537,15 +530,15 @@ class Scenario(ABC):
     ) -> Optional[bool]:
         """Returns ROA validity"""
 
-        validity, _ = roa_checker.get_validity(prefix, origin)
-        if validity in (
+        outcome = roa_checker.get_roa_outcome(prefix, origin)
+        if outcome.validity in (
             ROAValidity.INVALID_LENGTH,
             ROAValidity.INVALID_LENGTH_AND_ORIGIN,
         ):
             return False
-        elif validity == ROAValidity.UNKNOWN:
+        elif outcome.validity == ROAValidity.UNKNOWN:
             return None
-        elif validity in (ROAValidity.VALID, ROAValidity.INVALID_ORIGIN):
+        elif outcome.validity in (ROAValidity.VALID, ROAValidity.INVALID_ORIGIN):
             return True
         else:
             raise NotImplementedError(f"Should never reach this {validity}")

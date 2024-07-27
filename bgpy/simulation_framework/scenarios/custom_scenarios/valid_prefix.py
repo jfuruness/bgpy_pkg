@@ -1,7 +1,9 @@
+from ipaddress import ip_network
 from typing import Optional, TYPE_CHECKING
 
+from roa_checker import ROA
+
 from bgpy.simulation_framework.scenarios.scenario import Scenario
-from bgpy.simulation_framework.scenarios.roa_info import ROAInfo
 from bgpy.enums import Prefixes
 from bgpy.enums import Relationships
 from bgpy.enums import Timestamps
@@ -41,13 +43,13 @@ class ValidPrefix(Scenario):
     def _get_attacker_asns(self, *args, **kwargs):
         return set()
 
-    def _get_roa_infos(
+    def _get_roas(
         self,
         *,
         announcements: tuple["Ann", ...] = (),
         engine: Optional["BaseSimulationEngine"] = None,
         prev_scenario: Optional["Scenario"] = None,
-    ) -> tuple[ROAInfo, ...]:
-        """Returns a tuple of ROAInfo's"""
+    ) -> tuple[ROA, ...]:
+        """Returns a tuple of ROAs"""
 
-        return tuple([ROAInfo(Prefixes.PREFIX.value, x) for x in self.victim_asns])
+        return tuple([ROA(ip_network(Prefixes.PREFIX.value), x) for x in self.victim_asns])
