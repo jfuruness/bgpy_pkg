@@ -82,12 +82,12 @@ class Diagram:
                 <TD COLSPAN="2" BORDER="0">ROAs (prefix, origin, max_len)</TD>
               </TR>
               """
-        for roa_info in scenario.roa_infos:
+        for roa in scenario.roas:
             html += f"""
               <TR>
-                <TD>{roa_info.prefix}</TD>
-                <TD>{roa_info.origin}</TD>
-                <TD>{roa_info.max_length}</TD>
+                <TD>{roa.prefix}</TD>
+                <TD>{roa.origin}</TD>
+                <TD>{roa.max_length}</TD>
               </TR>"""
         html += """</TABLE>>"""
 

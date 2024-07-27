@@ -1,12 +1,14 @@
+from ipaddress import ip_network
 import random
 
 from frozendict import frozendict
 import pytest
 
+from roa_checker import ROA
+
 from bgpy.enums import ASNs, Prefixes
 from bgpy.simulation_framework import (
     ScenarioConfig,
-    ROAInfo,
     SubprefixHijack,
     ValidPrefix,
     NonRoutedPrefixHijack,
@@ -293,14 +295,14 @@ class TestScenario:
                 prefix="1.2.0.0/24", as_path=tuple([attacker]), seed_asn=attacker
             ),
         )
-        roas = (ROAInfo(prefix="1.2.0.0/16", origin=victim),)
+        roas = (ROA(prefix=ip_network("1.2.0.0/16"), origin=victim),)
 
         config = ScenarioConfig(
             ScenarioCls=ValidPrefix,
             override_victim_asns=frozenset({victim}),
             override_attacker_asns=frozenset({attacker}),
             override_announcements=anns,
-            override_roa_infos=roas,
+            override_roas=roas,
         )
         scenario = ValidPrefix(scenario_config=config, engine=engine)
         scenario.announcements = scenario._add_roa_info_to_anns(

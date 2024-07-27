@@ -75,17 +75,17 @@ class ROVPPV1Lite(ROV):
         """Get all the bholes for non routed prefixes to prevent superprefix attacks"""
 
         non_routed_blackholes_to_add = list()
-        for roa_info in scenario.roa_infos:
+        for roa in scenario.roas:
             # ROA is non routed
-            if roa_info.non_routed:
+            if not roa.routed:
                 blackhole_ann = scenario.scenario_config.AnnCls(
-                    prefix=roa_info.prefix,
+                    prefix=str(roa.prefix),
                     next_hop_asn=self.as_.asn,
                     as_path=(self.as_.asn,),
                     timestamp=Timestamps.VICTIM.value,
                     seed_asn=None,
                     roa_valid_length=True,
-                    roa_origin=roa_info.origin,
+                    roa_origin=roa.origin,
                     recv_relationship=Relationships.ORIGIN,
                     traceback_end=True,
                     rovpp_blackhole=True,

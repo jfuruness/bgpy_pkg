@@ -504,7 +504,7 @@ class Scenario(ABC):
         """Returns ROAChecker populated with self.roas"""
 
         roa_checker = ROAChecker()
-        for roa in self.roa_infos:
+        for roa in self.roas:
             roa_checker.insert(roa.prefix, roa)
         return roa_checker
 
@@ -518,7 +518,7 @@ class Scenario(ABC):
         if len(roas) == 0:
             return None
         elif len(roas) == 1:
-            return roas[0].origin
+            return int(roas[0].origin)
         else:
             raise NotImplementedError
 
@@ -560,8 +560,8 @@ class Scenario(ABC):
         # Add ROA prefixes here, so that if we blackhole a non routed
         # prefix of a superprefix hijack this won't break
         # (since the prefix would only exist in the ROA)
-        for roa in self.roa_infos:
-            prefixes.add(roa.prefix)
+        for roa in self.roas:
+            prefixes.add(str(roa.prefix))
         # Do this here for speed
         prefixes: list[Union[IPv4Network, IPv6Network]] = [  # type: ignore
             ip_network(x) for x in prefixes

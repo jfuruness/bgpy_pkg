@@ -15,7 +15,6 @@ from .custom_scenarios import ValidPrefix
 
 __all__ = [
     "preprocess_anns_funcs",
-    "ROAInfo",
     "ScenarioConfig",
     "Scenario",
     "AccidentalRouteLeak",
