@@ -518,7 +518,8 @@ class Scenario(ABC):
         if len(roas) == 0:
             return None
         elif len(roas) == 1:
-            return int(roas[0].origin)
+            [roa] = roas
+            return int(roa.origin)
         else:
             raise NotImplementedError
 
