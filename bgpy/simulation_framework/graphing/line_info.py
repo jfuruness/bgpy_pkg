@@ -8,7 +8,7 @@ class LineInfo:
     label: str
     marker: str
     ls: str
-    flat: bool = False
+    unrelated_to_adoption: bool = False
     hardcoded_xs: tuple[float, ...] = ()
     hardcoded_ys: tuple[float, ...] = ()
     hardcoded_yerrs: tuple[float, ...] = ()

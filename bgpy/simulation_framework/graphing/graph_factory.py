@@ -5,6 +5,7 @@ import gc
 from itertools import product
 from pathlib import Path
 import pickle
+from statistics import mean
 from typing import Any
 
 from frozendict import frozendict
@@ -42,14 +43,12 @@ class GraphFactory:
         self.graph_dir.mkdir(parents=True, exist_ok=True)
 
         self.label_replacement_dict = label_replacement_dict
-
         self.x_axis_label_replacement_dict = x_axis_label_replacement_dict
-
         self.y_axis_label_replacement_dict = y_axis_label_replacement_dict
         self.x_limit = x_limit
         self.y_limit = y_limit
-
         self.metric_keys: tuple[MetricKey, ...] = metric_keys
+        self.line_info_dict = line_info_dict
 
     def _get_filtered_graph_rows(self, rows_from_pickle):
         """Get only the latest propagation round, or raise an error"""
@@ -205,13 +204,47 @@ class GraphFactory:
             # stub ASes will have no data points
             # This is proper, rather than defaulting to 0 or 100, which causes problems
             graph_rows_sorted = [x for x in graph_rows_sorted if x["value"] is not None]
+
             line_info = self._get_line_info(label)
+
             ax.errorbar(
-                [float(x["data_key"].percent_adopt) * 100 for x in graph_rows_sorted],
-                [x["value"] for x in graph_rows_sorted],
-                yerr=[x["yerr"] for x in graph_rows_sorted],
+                self._get_xs(graph_rows_sorted, line_info),
+                self._get_ys(graph_rows_sorted, line_info),
+                self._get_yerrs(graph_rows_sorted, line_info),
                 **asdict(line_info),
             )
+
+    def _get_xs(self, graph_rows_sorted, line_info):
+        """Gets the xs for a given line"""
+
+        if line_info.override_xs:
+            return line_info.override_xs
+        else:
+            return [float(x["data_key"].percent_adopt) * 100 for x in graph_rows_sorted]
+
+    def _get_ys(self, graph_rows_sorted, line_info):
+        """Gets the ys for a given line"""
+
+        default_ys = [x["value"] for x in graph_rows_sorted]
+        if line_info.override_ys:
+            return line_info.override_ys
+        # Line is unrelated to percent adoption, average together
+        elif line_info.unrelated_to_adoption:
+            return [mean(default_ys)] * len(default_ys)
+        else:
+            return default_ys
+
+    def _get_yerrs(self, graph_rows_sorted, line_info):
+        """Gets the yerrs for a given line"""
+
+        default_yerrs = [x["yerr"] for x in graph_rows_sorted]
+        if line_info.override_yerrs:
+            return line_info.override_yerrs
+        # Line is unrelated to percent adoption, average together
+        elif line_info.unrelated_to_adoption:
+            return [mean(default_yerrs)] * len(default_yerrs)
+        else:
+            return default_yerrs
 
     def _get_line_info(self, label, label_num):
         """Gets line info for a given label
