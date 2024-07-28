@@ -22,14 +22,18 @@ class ASGraphAnalyzer(BaseASGraphAnalyzer):
         scenario: "Scenario",
         data_plane_tracking: bool = True,
         control_plane_tracking: bool = False,
+        # Most to least specific
+        ordered_prefixes: tuple[str, ...] = (),
     ) -> None:
         self.engine: BaseSimulationEngine = engine
         self.scenario: "Scenario" = scenario
-        self._most_specific_ann_dict: dict[AS, Optional["Ann"]] = {
-            # Get the most specific ann in the rib
-            as_obj: self._get_most_specific_ann(as_obj)
-            for as_obj in engine.as_graph
-        }
+        if not ordered_prefixes:
+            ordered_prefixes = tuple(
+                list(self.scenario.ordered_prefix_subprefix_dict.keys())
+            )
+        self._most_specific_ann_dict: dict[AS, Optional["Ann"]] = (
+            self._get_most_specific_ann_dict(engine, ordered_prefixes)
+        )
         self._data_plane_outcomes: dict[int, int] = dict()
         self._control_plane_outcomes: dict[int, int] = dict()
         self.outcomes: dict[int, dict[int, int]] = {
@@ -39,14 +43,28 @@ class ASGraphAnalyzer(BaseASGraphAnalyzer):
         self.data_plane_tracking: bool = data_plane_tracking
         self.control_plane_tracking: bool = control_plane_tracking
 
-    def _get_most_specific_ann(self, as_obj: AS) -> Optional["Ann"]:
+    def _get_most_specific_ann_dict(
+        self, engine: BaseSimulationEngine, ordered_prefixes: tuple[str, ...]
+    ) -> dict[AS, Optional["Ann"]]:
+        """Gets the most specific ann in a list of ordered prefixes
+
+        ordered prefixes start with the most specific, and move to least specific
+        """
+
+        return {
+            x: self._get_most_specific_ann(x, ordered_prefixes) for x in engine.as_graph
+        }
+
+    def _get_most_specific_ann(  # type: ignore
+        self, as_obj: AS, ordered_prefixes: tuple[str, ...]
+    ) -> Optional["Ann"]:
         """Returns the most specific announcement that exists in a rib
 
         as_obj is the as
         ordered prefixes are prefixes ordered from most specific to least
         """
 
-        for prefix in self.scenario.ordered_prefix_subprefix_dict:
+        for prefix in ordered_prefixes:
             most_specific_ann = as_obj.policy._local_rib.get(prefix)
             if most_specific_ann:
                 # Mypy doesn't recognize that this is always an annoucnement
