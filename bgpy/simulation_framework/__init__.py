@@ -1,5 +1,5 @@
 from .as_graph_analyzers import BaseASGraphAnalyzer, ASGraphAnalyzer
-from .graph_factory import GraphFactory
+from .graphing import GraphFactory, LineInfo
 from .metric_tracker import MetricTracker
 
 from .scenarios import preprocess_anns_funcs
@@ -22,6 +22,7 @@ __all__ = [
     "ASGraphAnalyzer",
     "BaseASGraphAnalyzer",
     "GraphFactory",
+    "LineInfo",
     "MetricTracker",
     "preprocess_anns_funcs",
     "ScenarioConfig",
