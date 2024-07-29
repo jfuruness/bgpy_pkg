@@ -20,6 +20,8 @@ from bgpy.simulation_framework.metric_tracker.metric_key import MetricKey
 from bgpy.simulation_framework.utils import get_all_metric_keys
 
 
+
+
 class GraphFactory:
     """Automates graphing of default graphs"""
 
@@ -35,6 +37,8 @@ class GraphFactory:
         y_limit: int = 100,
         metric_keys: tuple[MetricKey, ...] = tuple(list(get_all_metric_keys())),
         line_info_dict: frozendict[str, LineInfo] = frozendict(),
+        strongest_attacker_labels: tuple[str, ...] = (),
+        strongest_attacker_legend_label: str = "Strongest Attacker"
     ) -> None:
         self.pickle_path: Path = pickle_path
         with self.pickle_path.open("rb") as f:
@@ -49,6 +53,8 @@ class GraphFactory:
         self.y_limit = y_limit
         self.metric_keys: tuple[MetricKey, ...] = metric_keys
         self.line_info_dict = line_info_dict
+        self.strongest_attacker_labels: tuple[str, ...] = strongest_attacker_labels
+        self.strongest_attacker_legend_label: str = strongest_attacker_legend_label
 
     def _get_filtered_graph_rows(self, rows_from_pickle):
         """Get only the latest propagation round, or raise an error"""
@@ -144,9 +150,20 @@ class GraphFactory:
 
         self._customize_graph(fig, ax, metric_key)
 
-        self._graph_data(ax, label_rows_dict)
+        (
+            non_aggregated_data_dict,
+            max_attacker_data_dict,
+        ) = self._graph_data(ax, label_rows_dict)
 
-        self._add_legend(fig, ax, metric_key, relevant_rows, adopting)
+        self._add_legend(
+            fig,
+            ax,
+            metric_key,
+            relevant_rows,
+            adopting,
+            non_aggregated_data_dict,
+            max_attacker_dict,
+        )
 
         plt.tight_layout()
 
@@ -186,33 +203,104 @@ class GraphFactory:
         ax.set_xlabel(x_label)
 
     def _graph_data(self, ax, label_rows_dict):
-        def get_percent_adopt(graph_row) -> float:
-            """Extractions percent adoption for sort comparison
 
-            Need separate function for mypy puposes
-            """
+        # Used for random markers/line styles
+        line_properties_generator = LinePropertiesGenerator()
 
-            percent_adopt = graph_row["data_key"].percent_adopt
-            assert isinstance(percent_adopt, (float, SpecialPercentAdoptions))
-            return float(percent_adopt)
+        # Get the line data dict
+        line_data_dict = dict()
+        for label, graph_rows in label_rows_dict.items():
+            line_data_dict[label] = self._get_line_data(label, graph_rows, line_properties_generator)
 
-        # Add the data from the lines
-        for i, (label, graph_rows) in enumerate(label_rows_dict.items()):
-            graph_rows_sorted = list(sorted(graph_rows, key=get_percent_adopt))
-            # If no trial_data is present for a selection, value can be None
-            # For example, if no stubs are selected to adopt, the graph for adopting
-            # stub ASes will have no data points
-            # This is proper, rather than defaulting to 0 or 100, which causes problems
-            graph_rows_sorted = [x for x in graph_rows_sorted if x["value"] is not None]
+        # Add all lines that aren't aggregated into a strongest attacker aggregation
+        self._plot_non_aggregated_lines(ax, line_data_dict)
 
-            line_info = self._get_line_info(label)
+        (
+            non_aggregated_line_data_dict,
+            max_attacker_data_dict
+        ) = self._plot_strongest_attacker_line(ax, line_data_dict)
+        return non_aggregated_line_data_dict, max_attacker_data_dict
 
-            ax.errorbar(
-                self._get_xs(graph_rows_sorted, line_info),
-                self._get_ys(graph_rows_sorted, line_info),
-                self._get_yerrs(graph_rows_sorted, line_info),
-                **asdict(line_info),
-            )
+    def _plot_strongest_attacker_line(ax, line_data_dict):
+
+        max_attacker_data_dict = dict()
+        # Add all lines that are aggregated
+        for label in self.strongest_attacker_labels:
+            max_attacker_data_dict[label] = line_data_dict.pop(label)
+
+        scatter_plots = {label: {"xs": [], "ys": []} for label in self.strongest_attacker_labels}
+
+        agg_xs = next(max_attacker_data_dict.values()).xs
+        agg_ys = list()
+        agg_yerrs = list()
+        for i, x in enumerate(agg_xs):
+            best_label = None
+            max_val = None
+            new_yerr = None
+            for line_data in max_attacker_data_dict.values():
+                if max_val is None or line_data.ys[i] > max_val:
+                    best_label = line_data.label
+                    max_val = line_data.ys[i]
+                    new_yerr = line_data.yerrs[i]
+            agg_ys.append(max_val)
+            agg_yerrs.append(new_yerr)
+            scatter_plots[label]["xs"].append(x)
+            scatter_plots[label]["ys"].append(max_val)
+
+        # NOTE: must use none to avoid plotting a marker here
+        agg_line_data = LineData(
+            self.strongest_attack_label,
+            formatted_graph_rows=None,
+            line_info=LineInfo(
+                self.strongest_attack_label,
+                marker=".",
+                ls="solid",
+                color="gray",
+                _fmt="none"  # Suppresses markers
+            ),
+            xs=agg_xs,
+            ys=agg_ys,
+            yerrs=agg_yerrs,
+        )
+
+
+
+
+
+
+        raise NotImplementedError("Strongest attack plotting and adding to line data dict")
+
+    def _get_line_data(self, label, graph_rows, line_properties_generator) -> LineData:
+        """Gets the complete line data for a specific line"""
+
+        formatted_graph_rows = self._get_formatted_graph_rows(graph_rows)
+
+        line_info = self._get_line_info(label, line_properties_generator)
+
+        xs = self._get_xs(formatted_graph_rows, line_info)
+        ys = self._get_ys(formatted_graph_rows, line_info)
+        yerrs = self._get_yerrs(formatted_graph_rows, line_info)
+
+        return LineData(label=label, formatted_graph_rows=formatted_graph_rows, line_info=line_info, xs=xs, ys=ys, yerrs=yerrs)
+
+    def _get_formatted_graph_rows(self, graph_rows):
+        graph_rows_sorted = list(sorted(graph_rows, key=self._get_percent_adopt))
+        # If no trial_data is present for a selection, value can be None
+        # For example, if no stubs are selected to adopt, the graph for adopting
+        # stub ASes will have no data points
+        # This is proper, rather than defaulting to 0 or 100, which causes problems
+        return [x for x in graph_rows_sorted if x["value"] is not None]
+
+    def _get_percent_adopt(self, graph_row) -> float:
+        """Extractions percent adoption for sort comparison
+
+        Need separate function for mypy puposes
+        Used in _generate_graph
+        """
+
+        percent_adopt = graph_row["data_key"].percent_adopt
+        assert isinstance(percent_adopt, (float, SpecialPercentAdoptions))
+        return float(percent_adopt)
 
     def _get_xs(self, graph_rows_sorted, line_info):
         """Gets the xs for a given line"""
@@ -246,16 +334,18 @@ class GraphFactory:
         else:
             return default_yerrs
 
-    def _get_line_info(self, label, label_num):
+    def _get_line_info(self, label, line_properties_generator) -> LineInfo:
         """Gets line info for a given label
 
         This pertains only to label, marker, and line styles, not x and y data
         i.e. info that is persistent accross the line
         """
 
-        line_info = LineInfo(
-            label=label, ls=self.line_styles[label_num], marker=self.markers[label_num]
-        )
+        marker = line_properties_generator.get_marker()
+        ls = line_properties_generator.get_line_style()
+        color = line_properties_generator.get_color()
+        line_info = LineInfo(label=label, marker=marker, ls=ls, color=color)
+
         if len(self.label_replacement_dict) > 0:
             # TODO: Deprecate
             return replace(
@@ -264,7 +354,23 @@ class GraphFactory:
         else:
             return self.line_info_dict.get(label, line_info)
 
-    def _add_legend(self, fig, ax, metric_key, relevant_rows, adopting):
+    def _plot_non_aggregated_lines(self, line_data_dict):
+        """Add all lines that aren't aggregated into a strongest attacker aggregation"""
+
+        for label, line_data in line_data_dict.items():
+            if label not in self.strongest_attacker_labels:
+                ax.errorbar(
+                    line_data.xs,
+                    line_data.ys,
+                    line_data.yerrs,
+                    label=line_data.line_info.label,
+                    marker=line_data.line_info.marker,
+                    ls=line_data.line_info.ls,
+                    fmt=line_data.line_info._fmt,
+                    color=line_data.color,
+                )
+
+    def _add_legend(self, fig, ax, metric_key, relevant_rows, adopting, non_aggregated_data_dict, max_attacker_data_dict):
         """Add legend to the graph"""
 
         # This is to avoid warnings
@@ -297,19 +403,3 @@ class GraphFactory:
         # If you run the simulations on a machine with many cores and lots of trials,
         # this bug leaks enough memory to crash the server, so we must garbage collect
         gc.collect()
-
-    @cached_property
-    def markers(self) -> tuple[str, ...]:
-        # Leaving this as a list here for mypy
-        markers = [".", "1", "*", "x", "d", "2", "3", "4"]
-        markers += markers.copy()[0:-2:2]
-        markers += markers.copy()[::-1]
-        return tuple(markers)
-
-    @cached_property
-    def line_styles(self) -> tuple[str, ...]:
-        # Leaving this as a list here for mypy
-        styles = ["-", "--", "-.", ":", "solid", "dotted", "dashdot", "dashed"]
-        styles += styles.copy()[::-1]
-        styles += styles.copy()[0:-2:2]
-        return tuple(styles)
