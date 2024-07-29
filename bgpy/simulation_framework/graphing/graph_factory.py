@@ -10,6 +10,7 @@ from typing import Any
 
 from frozendict import frozendict
 import matplotlib  # type: ignore
+import matplotlib.patches as mpatches
 import matplotlib.pyplot as plt  # type: ignore
 from tqdm import tqdm
 
@@ -165,6 +166,16 @@ class GraphFactory:
             max_attacker_dict,
         )
 
+        self._add_strongest_attacker_legend(
+            fig,
+            ax,
+            metric_key,
+            relevant_rows,
+            adopting,
+            non_aggregated_data_dict,
+            max_attacker_dict,
+        )
+
         plt.tight_layout()
 
         self._save_and_close_graph(fig, ax, graph_name)
@@ -230,6 +241,7 @@ class GraphFactory:
 
         scatter_plots = {label: {"xs": [], "ys": []} for label in self.strongest_attacker_labels}
 
+        # Populate the new agg line and scatter plots
         agg_xs = next(max_attacker_data_dict.values()).xs
         agg_ys = list()
         agg_yerrs = list()
@@ -247,7 +259,7 @@ class GraphFactory:
             scatter_plots[label]["xs"].append(x)
             scatter_plots[label]["ys"].append(max_val)
 
-        # NOTE: must use none to avoid plotting a marker here
+        # Create the aggregate line
         agg_line_data = LineData(
             self.strongest_attack_label,
             formatted_graph_rows=None,
@@ -262,13 +274,13 @@ class GraphFactory:
             ys=agg_ys,
             yerrs=agg_yerrs,
         )
+        line_data_dict[self.strongest_attacker_label] = agg_line_data
+        self._plot_line_data(ax, agg_line_data)
 
+        self._plot_scatter_plots(axs, scatter_plots, max_attacker_data_dict)
 
+        return line_data_dict, max_attacker_data_dict
 
-
-
-
-        raise NotImplementedError("Strongest attack plotting and adding to line data dict")
 
     def _get_line_data(self, label, graph_rows, line_properties_generator) -> LineData:
         """Gets the complete line data for a specific line"""
@@ -354,21 +366,40 @@ class GraphFactory:
         else:
             return self.line_info_dict.get(label, line_info)
 
-    def _plot_non_aggregated_lines(self, line_data_dict):
+    def _plot_non_aggregated_lines(self, ax, line_data_dict):
         """Add all lines that aren't aggregated into a strongest attacker aggregation"""
 
         for label, line_data in line_data_dict.items():
             if label not in self.strongest_attacker_labels:
-                ax.errorbar(
-                    line_data.xs,
-                    line_data.ys,
-                    line_data.yerrs,
-                    label=line_data.line_info.label,
-                    marker=line_data.line_info.marker,
-                    ls=line_data.line_info.ls,
-                    fmt=line_data.line_info._fmt,
-                    color=line_data.color,
-                )
+                self._plot_line_data(ax, line_data)
+
+    def _plot_line_data(self, ax, line_data: LineData) -> None:
+        """Plots line data"""
+
+        ax.errorbar(
+            line_data.xs,
+            line_data.ys,
+            line_data.yerrs,
+            label=line_data.line_info.label,
+            marker=line_data.line_info.marker,
+            ls=line_data.line_info.ls,
+            fmt=line_data.line_info._fmt,
+            color=line_data.color,
+        )
+
+    def _plot_scatter_plots(self, axs, scatter_plots, max_attacker_data_dict) -> None:
+
+        # Plot scatter plots
+        for label, point_dict in scatter_lots.items():
+            axs.scatter(
+                point_dict["xs"],
+                point_dict["ys"],
+                marker=max_attacker_data_dict[label].line_info.marker,
+                ls=max_attacker_data_dict[label].line_info.ls,
+                # Not needed I guess
+                # label=max_attacker_data_dict[label].line_info.label,
+                color=max_attacker_data_dict[label].line_info.color,
+            )
 
     def _add_legend(self, fig, ax, metric_key, relevant_rows, adopting, non_aggregated_data_dict, max_attacker_data_dict):
         """Add legend to the graph"""
@@ -376,6 +407,22 @@ class GraphFactory:
         # This is to avoid warnings
         handles, labels = ax.get_legend_handles_labels()
         ax.legend(handles, labels)
+
+    def _add_strongest_attacker_legend(self, fig, ax, metric_key, relevant_rows, adopting, non_aggregated_data_dict, max_attacker_data_dict):
+        """Add legend to the graph"""
+
+        legend_elements = list()
+        for label, line_data in max_attacker_data_dict.items():
+            legend_elements.append(
+                mpatches.Patch(color=line_data.line_info.color, marker=line_data.line_info.marker, label=line_data.label))
+
+        # https://riptutorial.com/matplotlib/example/32429/multiple-legends-on-the-same-axes
+        # https://matplotlib.org/3.1.1/gallery/text_labels_and_annotations/custom_legends.html
+        axs.legend(handles=legend_elements,
+                   loc='upper right',
+                   bbox_to_anchor=(1, 1))
+        axs.add_artist(first)
+        self.second_legend = []
 
     def _save_and_close_graph(self, fig, ax, graph_name):
         """Saves and closes the graph"""
