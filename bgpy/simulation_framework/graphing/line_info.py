@@ -15,3 +15,7 @@ class LineInfo:
     hardcoded_yerrs: tuple[float, ...] = ()
     # Set to none for aggregating strongest attackerinternally
     _fmt: str = ''
+
+    def __post_init__(self):
+        assert len(self.hardcoded_xs) == len(self.hardcoded_ys)
+        assert len(self.hardcoded_ys) == len(self.hardcoded_yerrs)

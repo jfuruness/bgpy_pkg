@@ -1,5 +1,5 @@
 from .as_graph_analyzers import BaseASGraphAnalyzer, ASGraphAnalyzer
-from .graphing import GraphFactory, LineInfo
+from .graphing import GraphFactory, LineData, LineInfo
 from .metric_tracker import MetricTracker
 
 from .scenarios import preprocess_anns_funcs
@@ -14,7 +14,6 @@ from .scenarios import NonRoutedSuperprefixHijack
 from .scenarios import NonRoutedSuperprefixPrefixHijack
 from .scenarios import ValidPrefix
 
-from .dependent_simulation import DependentSimulation
 from .simulation import Simulation
 
 
@@ -22,6 +21,7 @@ __all__ = [
     "ASGraphAnalyzer",
     "BaseASGraphAnalyzer",
     "GraphFactory",
+    "LineData",
     "LineInfo",
     "MetricTracker",
     "preprocess_anns_funcs",
@@ -35,6 +35,5 @@ __all__ = [
     "NonRoutedSuperprefixHijack",
     "NonRoutedSuperprefixPrefixHijack",
     "ValidPrefix",
-    "DependentSimulation",
     "Simulation",
 ]
