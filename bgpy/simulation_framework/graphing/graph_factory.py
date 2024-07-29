@@ -21,8 +21,6 @@ from bgpy.simulation_framework.metric_tracker.metric_key import MetricKey
 from bgpy.simulation_framework.utils import get_all_metric_keys
 
 
-
-
 class GraphFactory:
     """Automates graphing of default graphs"""
 
@@ -39,7 +37,7 @@ class GraphFactory:
         metric_keys: tuple[MetricKey, ...] = tuple(list(get_all_metric_keys())),
         line_info_dict: frozendict[str, LineInfo] = frozendict(),
         strongest_attacker_labels: tuple[str, ...] = (),
-        strongest_attacker_legend_label: str = "Strongest Attacker"
+        strongest_attacker_legend_label: str = "Strongest Attacker",
     ) -> None:
         self.pickle_path: Path = pickle_path
         with self.pickle_path.open("rb") as f:
@@ -214,32 +212,34 @@ class GraphFactory:
         ax.set_xlabel(x_label)
 
     def _graph_data(self, ax, label_rows_dict):
-
         # Used for random markers/line styles
         line_properties_generator = LinePropertiesGenerator()
 
         # Get the line data dict
         line_data_dict = dict()
         for label, graph_rows in label_rows_dict.items():
-            line_data_dict[label] = self._get_line_data(label, graph_rows, line_properties_generator)
+            line_data_dict[label] = self._get_line_data(
+                label, graph_rows, line_properties_generator
+            )
 
         # Add all lines that aren't aggregated into a strongest attacker aggregation
         self._plot_non_aggregated_lines(ax, line_data_dict)
 
         (
             non_aggregated_line_data_dict,
-            max_attacker_data_dict
+            max_attacker_data_dict,
         ) = self._plot_strongest_attacker_line(ax, line_data_dict)
         return non_aggregated_line_data_dict, max_attacker_data_dict
 
     def _plot_strongest_attacker_line(ax, line_data_dict):
-
         max_attacker_data_dict = dict()
         # Add all lines that are aggregated
         for label in self.strongest_attacker_labels:
             max_attacker_data_dict[label] = line_data_dict.pop(label)
 
-        scatter_plots = {label: {"xs": [], "ys": []} for label in self.strongest_attacker_labels}
+        scatter_plots = {
+            label: {"xs": [], "ys": []} for label in self.strongest_attacker_labels
+        }
 
         # Populate the new agg line and scatter plots
         agg_xs = next(max_attacker_data_dict.values()).xs
@@ -268,7 +268,7 @@ class GraphFactory:
                 marker=".",
                 ls="solid",
                 color="gray",
-                _fmt="none"  # Suppresses markers
+                _fmt="none",  # Suppresses markers
             ),
             xs=agg_xs,
             ys=agg_ys,
@@ -281,7 +281,6 @@ class GraphFactory:
 
         return line_data_dict, max_attacker_data_dict
 
-
     def _get_line_data(self, label, graph_rows, line_properties_generator) -> LineData:
         """Gets the complete line data for a specific line"""
 
@@ -293,7 +292,14 @@ class GraphFactory:
         ys = self._get_ys(formatted_graph_rows, line_info)
         yerrs = self._get_yerrs(formatted_graph_rows, line_info)
 
-        return LineData(label=label, formatted_graph_rows=formatted_graph_rows, line_info=line_info, xs=xs, ys=ys, yerrs=yerrs)
+        return LineData(
+            label=label,
+            formatted_graph_rows=formatted_graph_rows,
+            line_info=line_info,
+            xs=xs,
+            ys=ys,
+            yerrs=yerrs,
+        )
 
     def _get_formatted_graph_rows(self, graph_rows):
         graph_rows_sorted = list(sorted(graph_rows, key=self._get_percent_adopt))
@@ -388,7 +394,6 @@ class GraphFactory:
         )
 
     def _plot_scatter_plots(self, axs, scatter_plots, max_attacker_data_dict) -> None:
-
         # Plot scatter plots
         for label, point_dict in scatter_lots.items():
             axs.scatter(
@@ -401,26 +406,47 @@ class GraphFactory:
                 color=max_attacker_data_dict[label].line_info.color,
             )
 
-    def _add_legend(self, fig, ax, metric_key, relevant_rows, adopting, non_aggregated_data_dict, max_attacker_data_dict):
+    def _add_legend(
+        self,
+        fig,
+        ax,
+        metric_key,
+        relevant_rows,
+        adopting,
+        non_aggregated_data_dict,
+        max_attacker_data_dict,
+    ):
         """Add legend to the graph"""
 
         # This is to avoid warnings
         handles, labels = ax.get_legend_handles_labels()
         ax.legend(handles, labels)
 
-    def _add_strongest_attacker_legend(self, fig, ax, metric_key, relevant_rows, adopting, non_aggregated_data_dict, max_attacker_data_dict):
+    def _add_strongest_attacker_legend(
+        self,
+        fig,
+        ax,
+        metric_key,
+        relevant_rows,
+        adopting,
+        non_aggregated_data_dict,
+        max_attacker_data_dict,
+    ):
         """Add legend to the graph"""
 
         legend_elements = list()
         for label, line_data in max_attacker_data_dict.items():
             legend_elements.append(
-                mpatches.Patch(color=line_data.line_info.color, marker=line_data.line_info.marker, label=line_data.label))
+                mpatches.Patch(
+                    color=line_data.line_info.color,
+                    marker=line_data.line_info.marker,
+                    label=line_data.label,
+                )
+            )
 
         # https://riptutorial.com/matplotlib/example/32429/multiple-legends-on-the-same-axes
         # https://matplotlib.org/3.1.1/gallery/text_labels_and_annotations/custom_legends.html
-        axs.legend(handles=legend_elements,
-                   loc='upper right',
-                   bbox_to_anchor=(1, 1))
+        axs.legend(handles=legend_elements, loc="upper right", bbox_to_anchor=(1, 1))
         axs.add_artist(first)
         self.second_legend = []
 
