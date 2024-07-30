@@ -1,6 +1,8 @@
 from dataclasses import dataclass
 from typing import Any
 
+from .line_info import LineInfo
+
 
 @dataclass(frozen=True)
 class LineData:

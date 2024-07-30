@@ -12,6 +12,38 @@ from bgpy.simulation_framework.utils import get_all_metric_keys
 
 from ..line_info import LineInfo
 
+# NOTE: mypy won't accept these unless they're outside the class
+from .preprocessing_funcs import (
+    _preprocessing_steps,
+    _get_graph_name,
+    _customize_graph,
+    _get_line_data_dict,
+    _add_hardcoded_lines_to_line_data_dict,
+    _get_line_data,
+    _get_formatted_graph_rows,
+    _get_percent_adopt,
+    _get_xs,
+    _get_ys,
+    _get_yerrs,
+    _get_line_info,
+)
+from .generate_graph_funcs import (
+    _generate_graph,
+    _graph_data,
+    _plot_non_aggregated_lines,
+    _plot_strongest_attacker_line,
+    _get_agg_data,
+    _get_agg_line_data,
+    _plot_line_data,
+    _plot_scatter_plots,
+)
+
+from .add_legends_and_save_funcs import (
+    _add_legends_and_save,
+    _add_legend,
+    _add_strongest_attacker_legend,
+)
+
 
 class GraphFactory:
     """Automates graphing of default graphs"""
@@ -124,33 +156,32 @@ class GraphFactory:
                 relevant_rows.append(row)
         return relevant_rows
 
-    from .preprocessing_funcs import (
-        _preprocessing_steps,
-        _get_graph_name,
-        _customize_graph,
-        _get_line_data_dict,
-        _add_hardcoded_lines_to_line_data_dict,
-        _get_line_data,
-        _get_formatted_graph_rows,
-        _get_percent_adopt,
-        _get_xs,
-        _get_ys,
-        _get_yerrs,
-        _get_line_info,
-    )
-    from .generate_graph_funcs import (
-        _generate_graph,
-        _graph_data,
-        _plot_non_aggregated_lines,
-        _plot_strongest_attacker_line,
-        _get_agg_data,
-        _get_agg_line_data,
-        _plot_line_data,
-        _plot_scatter_plots,
-    )
 
-    from .add_legends_and_save_funcs import (
-        _add_legends_and_save,
-        _add_legend,
-        _add_strongest_attacker_legend,
-    )
+    # NOTE: mypy won't accept these unless they're outside the class
+    # Preprocess funcs
+    _preprocessing_steps=_preprocessing_steps
+    _get_graph_name=_get_graph_name
+    _customize_graph=_customize_graph
+    _get_line_data_dict=_get_line_data_dict
+    _add_hardcoded_lines_to_line_data_dict=_add_hardcoded_lines_to_line_data_dict
+    _get_line_data=_get_line_data
+    _get_formatted_graph_rows=_get_formatted_graph_rows
+    _get_percent_adopt=_get_percent_adopt
+    _get_xs=_get_xs
+    _get_ys=_get_ys
+    _get_yerrs=_get_yerrs
+    _get_line_info=_get_line_info
+    # Generate=Generate graph=graph funcs=funcs
+    _generate_graph=_generate_graph
+    _graph_data=_graph_data
+    _plot_non_aggregated_lines=_plot_non_aggregated_lines
+    _plot_strongest_attacker_line=_plot_strongest_attacker_line
+    _get_agg_data=_get_agg_data
+    _get_agg_line_data=_get_agg_line_data
+    _plot_line_data=_plot_line_data
+    _plot_scatter_plots=_plot_scatter_plots
+
+    # Add=Add legends=legends and=and save=save funcs=funcs
+    _add_legends_and_save=_add_legends_and_save
+    _add_legend=_add_legend
+    _add_strongest_attacker_legend=_add_strongest_attacker_legend

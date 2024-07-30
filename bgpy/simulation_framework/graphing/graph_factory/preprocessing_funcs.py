@@ -185,4 +185,6 @@ def _get_line_info(self, label, line_properties_generator) -> LineInfo:
         # TODO: Deprecate
         return replace(line_info, label=self.label_replacement_dict.get(label, label))
     else:
-        return self.line_info_dict.get(label, line_info)
+        rv = self.line_info_dict.get(label, line_info)
+        assert isinstance(rv, LineInfo), "For Mypy"
+        return rv

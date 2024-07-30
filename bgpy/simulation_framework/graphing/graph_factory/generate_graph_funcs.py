@@ -73,7 +73,7 @@ def _plot_strongest_attacker_line(self, ax, line_data_dict):
 
 
 def _get_agg_data(self, max_attacker_data_dict):
-    scatter_plots = {
+    scatter_plots: dict[str, dict[str, list[float]]] = {  # type: ignore
         label: {"xs": [], "ys": []} for label in self.strongest_attacker_labels
     }
 
@@ -86,12 +86,14 @@ def _get_agg_data(self, max_attacker_data_dict):
         max_val = None
         new_yerr = None
         for line_data in max_attacker_data_dict.values():
-            if max_val is None or line_data.ys[i] > max_val:
+            if max_val is None or line_data.ys[i] > max_val:  # type: ignore
                 best_label = line_data.label
                 max_val = line_data.ys[i]
                 new_yerr = line_data.yerrs[i]
         agg_ys.append(max_val)
         agg_yerrs.append(new_yerr)
+        assert isinstance(best_label, str), "For mypy"
+        assert isinstance(max_val, float), "For mypy"
         scatter_plots[best_label]["xs"].append(x)
         scatter_plots[best_label]["ys"].append(max_val)
     return agg_xs, agg_ys, agg_yerrs, scatter_plots
@@ -125,7 +127,7 @@ def _plot_line_data(self, ax, line_data: LineData) -> None:
         marker=line_data.line_info.marker,
         ls=line_data.line_info.ls,
         fmt=line_data.line_info._fmt,
-        color=line_data.color,
+        color=line_data.line_info.color,
     )
 
 
