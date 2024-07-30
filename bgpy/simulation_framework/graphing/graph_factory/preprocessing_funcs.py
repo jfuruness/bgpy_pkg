@@ -53,15 +53,11 @@ def _customize_graph(self, fig, ax, metric_key):
     plt.ylim(0, self.y_limit)
     # Set labels
     default_y_label = f"PERCENT {metric_key.outcome.name}".replace("_", " ")
-    y_label = self.y_axis_label_replacement_dict.get(
-        default_y_label, default_y_label
-    )
+    y_label = self.y_axis_label_replacement_dict.get(default_y_label, default_y_label)
     ax.set_ylabel(y_label)
 
     default_x_label = "Percent Adoption"
-    x_label = self.x_axis_label_replacement_dict.get(
-        default_x_label, default_x_label
-    )
+    x_label = self.x_axis_label_replacement_dict.get(default_x_label, default_x_label)
     ax.set_xlabel(x_label)
 
 
@@ -85,14 +81,14 @@ def _add_hardcoded_lines_to_line_data_dict(self, line_data_dict) -> None:
 
     for label, line_info in self.line_info_dict.items():
         # This is a hardcoded line that was not yet added
-        if (label not in line_data_dict and line_info.hardcoded_xs):
+        if label not in line_data_dict and line_info.hardcoded_xs:
             line_data_dict[label] = LineData(
                 label=label,
                 formatted_graph_rows=None,
                 line_info=line_info,
                 xs=line_info.hardcoded_xs,
                 ys=line_info.hardcoded_ys,
-                yerrs=line_info.hardcoded_yerrs
+                yerrs=line_info.hardcoded_yerrs,
             )
 
 
@@ -187,8 +183,6 @@ def _get_line_info(self, label, line_properties_generator) -> LineInfo:
 
     if len(self.label_replacement_dict) > 0:
         # TODO: Deprecate
-        return replace(
-            line_info, label=self.label_replacement_dict.get(label, label)
-        )
+        return replace(line_info, label=self.label_replacement_dict.get(label, label))
     else:
         return self.line_info_dict.get(label, line_info)

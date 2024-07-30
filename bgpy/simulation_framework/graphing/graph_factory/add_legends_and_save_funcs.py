@@ -56,8 +56,13 @@ def _add_legend(
     # This is to avoid warnings
     handles, labels = ax.get_legend_handles_labels()
     labels_handles_dict = {label: handle for label, handle in zip(labels, handles)}
-    mean_y_dict = {label: mean(line_data.ys) for label, line_data in non_aggregated_data_dict.items()}
-    sorted_labels = [l for (h, l) in sorted(zip(handles, labels), key=lambda x: mean_y_dict[x[1]])]
+    mean_y_dict = {
+        label: mean(line_data.ys)
+        for label, line_data in non_aggregated_data_dict.items()
+    }
+    sorted_labels = [
+        l for (h, l) in sorted(zip(handles, labels), key=lambda x: mean_y_dict[x[1]])
+    ]
     sorted_handles = [labels_handles_dict[label] for label in sorted_labels]
 
     return ax.legend(sorted_handles, sorted_labels)
