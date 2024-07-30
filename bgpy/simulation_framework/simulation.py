@@ -15,7 +15,7 @@ from bgpy.as_graphs.caida_as_graph import CAIDAASGraphConstructor
 
 
 from .as_graph_analyzers import BaseASGraphAnalyzer, ASGraphAnalyzer
-from .graph_factory import GraphFactory
+from .graphing import GraphFactory
 from .metric_tracker import MetricTracker
 from .metric_tracker.metric_key import MetricKey
 from .scenarios import Scenario

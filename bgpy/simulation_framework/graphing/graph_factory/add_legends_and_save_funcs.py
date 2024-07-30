@@ -100,31 +100,32 @@ def _add_strongest_attacker_legend(
     ax.legend(handles=legend_elements)
     ax.add_artist(first_legend)
 
-    def _save_and_close_graph(self, fig, ax, graph_name):
-        """Saves and closes the graph"""
 
-        plt.tight_layout()
+def _save_and_close_graph(self, fig, ax, graph_name):
+    """Saves and closes the graph"""
 
-        path = self.graph_dir / graph_name
-        path.parent.mkdir(parents=True, exist_ok=True)
-        plt.savefig(path)
-        # https://stackoverflow.com/a/33343289/8903959
-        ax.cla()
-        plt.cla()
-        plt.clf()
-        # If you just close the fig, on machines with many CPUs and trials,
-        # there is some sort of a memory leak that occurs. See stackoverflow
-        # comment above
-        plt.close(fig)
-        # If you are running one simulation after the other, matplotlib
-        # basically leaks memory. I couldn't find the original issue, but
-        # here is a note in one of their releases saying to just call the garbage
-        # collector: https://matplotlib.org/stable/users/prev_whats_new/
-        # whats_new_3.6.0.html#garbage-collection-is-no-longer-run-on-figure-close
-        # and here is the stackoverflow post on this topic:
-        # https://stackoverflow.com/a/33343289/8903959
-        # Even if this works without garbage collection in 3.5.2, that will break
-        # as soon as we upgrade to the latest matplotlib which no longer does
-        # If you run the simulations on a machine with many cores and lots of trials,
-        # this bug leaks enough memory to crash the server, so we must garbage collect
-        gc.collect()
+    plt.tight_layout()
+
+    path = self.graph_dir / graph_name
+    path.parent.mkdir(parents=True, exist_ok=True)
+    plt.savefig(path)
+    # https://stackoverflow.com/a/33343289/8903959
+    ax.cla()
+    plt.cla()
+    plt.clf()
+    # If you just close the fig, on machines with many CPUs and trials,
+    # there is some sort of a memory leak that occurs. See stackoverflow
+    # comment above
+    plt.close(fig)
+    # If you are running one simulation after the other, matplotlib
+    # basically leaks memory. I couldn't find the original issue, but
+    # here is a note in one of their releases saying to just call the garbage
+    # collector: https://matplotlib.org/stable/users/prev_whats_new/
+    # whats_new_3.6.0.html#garbage-collection-is-no-longer-run-on-figure-close
+    # and here is the stackoverflow post on this topic:
+    # https://stackoverflow.com/a/33343289/8903959
+    # Even if this works without garbage collection in 3.5.2, that will break
+    # as soon as we upgrade to the latest matplotlib which no longer does
+    # If you run the simulations on a machine with many cores and lots of trials,
+    # this bug leaks enough memory to crash the server, so we must garbage collect
+    gc.collect()
