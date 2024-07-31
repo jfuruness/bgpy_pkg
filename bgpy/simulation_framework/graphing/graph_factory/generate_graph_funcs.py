@@ -98,6 +98,7 @@ def _get_agg_data(self, max_attacker_data_dict):
         agg_ys.append(max_val)
         assert isinstance(best_label, str), "For mypy"
         assert isinstance(max_val, float), "For mypy"
+        assert isinstance(new_yerr, float), "For mypy"
         scatter_plots[best_label]["xs"].append(x)
         scatter_plots[best_label]["ys"].append(max_val)
         scatter_plots[best_label]["yerrs"].append(new_yerr)

@@ -263,7 +263,7 @@ class Simulation:
             desc = f"Simulating {self.output_dir.name}"
             with tqdm(total=sum(len(x) for x in chunks), desc=desc) as pbar:
                 tasks = [p.apply_async(self._run_chunk, x) for x in enumerate(chunks)]
-                completed = []
+                completed = []  # type: ignore
                 while tasks:
                     completed, tasks = self._get_completed_and_tasks(completed, tasks)
                     self._update_tqdm_progress_bar(pbar)
@@ -308,13 +308,14 @@ class Simulation:
 
         prev_scenario = None
 
-        for i, (percent_adopt, trial) in self._get_run_chunk_iter(percent_adopt_trials):
+        iterable = self._get_run_chunk_iter(percent_adopt_trials)
+        for i, (percent_adopt, trial) in iterable:  # type: ignore
             for scenario_config in self.scenario_configs:
                 # Create the scenario for this trial
                 assert scenario_config.ScenarioCls, "ScenarioCls is None"
                 scenario = scenario_config.ScenarioCls(
                     scenario_config=scenario_config,
-                    percent_adoption=percent_adopt,
+                    percent_adoption=percent_adopt,  # type: ignore
                     engine=engine,
                     prev_scenario=prev_scenario,
                     preprocess_anns_func=scenario_config.preprocess_anns_func,
@@ -326,8 +327,8 @@ class Simulation:
                 for propagation_round in range(scenario_config.propagation_rounds):
                     self._single_engine_run(
                         engine=engine,
-                        percent_adopt=percent_adopt,
-                        trial=trial,
+                        percent_adopt=percent_adopt,  # type: ignore
+                        trial=trial,  # type: ignore
                         scenario=scenario,
                         propagation_round=propagation_round,
                         metric_tracker=metric_tracker,
@@ -361,20 +362,20 @@ class Simulation:
     def _get_run_chunk_iter(
         self,
         percent_adopt_trials: list[tuple[Union[float, SpecialPercentAdoptions], int]],
-    ) -> Iterator[tuple[int, Union[float, SpecialPercentAdoptions], int]]:
+    ) -> Iterator[tuple[int, tuple[Union[float, SpecialPercentAdoptions], int]]]:
         """Returns iterator for trials with or without progress bar
 
         If there's only 1 cpu, run the progress bar here, else we run it elsewhere
         """
 
         if self.parse_cpus == 1:
-            return tqdm(
+            return tqdm(  # type: ignore
                 enumerate(percent_adopt_trials),
                 total=len(percent_adopt_trials),
                 desc=f"Simulating {self.output_dir.name}",
             )
         else:
-            return enumerate(percent_adopt_trials)
+            return enumerate(percent_adopt_trials)  # type: ignore
 
     def _write_tqdm_progress(self, chunk_id: int, index: int) -> None:
         """Writes total number of percent adoption trial pairs to file"""
