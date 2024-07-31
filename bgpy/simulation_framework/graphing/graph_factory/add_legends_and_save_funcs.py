@@ -1,7 +1,6 @@
 import gc
 from statistics import mean
 
-import matplotlib.patches as mpatches
 import matplotlib.pyplot as plt  # type: ignore
 
 
@@ -17,7 +16,7 @@ def _add_legends_and_save(
     graph_name,
 ):
 
-    first_legend = self._add_legend(
+    first_legend, aggregated_labels_handles_dict = self._add_legend(
         fig,
         ax,
         metric_key,
@@ -36,6 +35,7 @@ def _add_legends_and_save(
         non_aggregated_data_dict,
         max_attacker_dict,
         first_legend,
+        aggregated_labels_handles_dict,
     )
 
     self._save_and_close_graph(fig, ax, graph_name)
@@ -55,21 +55,35 @@ def _add_legend(
 
     # This is to avoid warnings
     handles, labels = ax.get_legend_handles_labels()
-    labels_handles_dict = {label: handle for label, handle in zip(labels, handles)}
+
+    # non aggregated
+    non_aggregated_labels = set([x.label for x in non_aggregated_data_dict.values()])
+    non_aggregated_labels_handles_dict = dict()
+    aggregated_labels_handles_dict = dict()
+    for handle, label in zip(handles, labels):
+        # This is a placeholder line, don't plot in the legend
+        if label == self.strongest_attacker_legend_label:
+            continue
+        elif label in non_aggregated_labels:
+            non_aggregated_labels_handles_dict[label] = handle
+        else:
+            aggregated_labels_handles_dict[label] = handle
+
     mean_y_dict = {
         line_data.line_info.label: mean(line_data.ys)
         for label, line_data in non_aggregated_data_dict.items()
     }
     sorted_labels = [
-        x[1] for x in sorted(
-            zip(handles, labels),
-            key=lambda x: mean_y_dict[x[1]],
+        label for label in sorted(
+            non_aggregated_labels_handles_dict,
+            key=lambda label: mean_y_dict[label],
             reverse=True
         )
     ]
-    sorted_handles = [labels_handles_dict[label] for label in sorted_labels]
+    sorted_handles = [non_aggregated_labels_handles_dict[lbl] for lbl in sorted_labels]
 
-    return ax.legend(sorted_handles, sorted_labels)
+    first_legend = ax.legend(sorted_handles, sorted_labels)
+    return first_legend, aggregated_labels_handles_dict
 
 
 def _add_strongest_attacker_legend(
@@ -82,6 +96,7 @@ def _add_strongest_attacker_legend(
     non_aggregated_data_dict,
     max_attacker_data_dict,
     first_legend,
+    aggregated_labels_handles_dict,
 ):
     """Add second legend for strongest attacker"""
 
@@ -89,26 +104,28 @@ def _add_strongest_attacker_legend(
     if not self.strongest_attacker_labels:
         return
 
-    legend_elements = list()
-    for label, line_data in max_attacker_data_dict.items():
-        legend_elements.append(
-            mpatches.Patch(
-                color=line_data.line_info.color,
-                marker=line_data.line_info.marker,
-                label=line_data.label,
-            )
-        )
-
-    # https://riptutorial.com/matplotlib/example/32429/multiple-legends-on-the-same-axes
-    # https://matplotlib.org/3.1.1/gallery/text_labels_and_annotations/custom_legends.html
-    ax.legend(handles=legend_elements)
     ax.add_artist(first_legend)
+    # First you must draw the legend so that you can get it's location
+    plt.tight_layout()
+    # https://stackoverflow.com/a/43748841/8903959
+    fig.canvas.draw()
+
+    bbox = first_legend.get_window_extent()
+    # Transform the bounding box into figure coordinates
+    bbox_transformed = bbox.transformed(fig.transFigure.inverted())
+
+    ax.legend(
+        handles=list(aggregated_labels_handles_dict.values()),
+        title=self.strongest_attacker_legend_label,
+        # Upper right corner should line up
+        loc="upper right",
+        bbox_to_anchor=(bbox_transformed.x1, bbox_transformed.y0),
+        bbox_transform=fig.transFigure,
+    )
 
 
 def _save_and_close_graph(self, fig, ax, graph_name):
     """Saves and closes the graph"""
-
-    plt.tight_layout()
 
     path = self.graph_dir / graph_name
     path.parent.mkdir(parents=True, exist_ok=True)

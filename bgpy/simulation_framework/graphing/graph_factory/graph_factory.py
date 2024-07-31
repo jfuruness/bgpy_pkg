@@ -34,6 +34,7 @@ from .generate_graph_funcs import (
     _plot_strongest_attacker_line,
     _get_agg_data,
     _get_agg_line_data,
+    _get_scatter_line_data_dict,
     _plot_line_data,
     _plot_scatter_plots,
 )
@@ -178,6 +179,7 @@ class GraphFactory:
     _plot_strongest_attacker_line = _plot_strongest_attacker_line
     _get_agg_data = _get_agg_data
     _get_agg_line_data = _get_agg_line_data
+    _get_scatter_line_data_dict=_get_scatter_line_data_dict
     _plot_line_data = _plot_line_data
     _plot_scatter_plots = _plot_scatter_plots
 

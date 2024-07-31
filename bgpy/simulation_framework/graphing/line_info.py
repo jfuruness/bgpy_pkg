@@ -1,4 +1,7 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
+from typing import Any
+
+from frozendict import frozendict
 
 from .line_properties_generator import LinePropertiesGenerator
 
@@ -17,8 +20,7 @@ class LineInfo:
     hardcoded_xs: tuple[float, ...] = ()
     hardcoded_ys: tuple[float, ...] = ()
     hardcoded_yerrs: tuple[float, ...] = ()
-    # Set to none for aggregating strongest attackerinternally
-    _fmt: str = ""
+    extra_kwargs: frozendict[str, Any] = field(default_factory=lambda: frozendict({}))
 
     def __post_init__(self):
         assert len(self.hardcoded_xs) == len(self.hardcoded_ys)
