@@ -104,7 +104,7 @@ def _get_line_data(self, label, graph_rows, line_properties_generator) -> LineDa
     yerrs = self._get_yerrs(formatted_graph_rows, line_info)
 
     return LineData(
-        label=label,
+        label=line_info.label,
         formatted_graph_rows=formatted_graph_rows,
         line_info=line_info,
         xs=xs,

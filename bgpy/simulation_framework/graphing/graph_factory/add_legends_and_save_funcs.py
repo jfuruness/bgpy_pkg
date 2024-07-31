@@ -57,7 +57,7 @@ def _add_legend(
     handles, labels = ax.get_legend_handles_labels()
     labels_handles_dict = {label: handle for label, handle in zip(labels, handles)}
     mean_y_dict = {
-        label: mean(line_data.ys)
+        line_data.line_info.label: mean(line_data.ys)
         for label, line_data in non_aggregated_data_dict.items()
     }
     sorted_labels = [
