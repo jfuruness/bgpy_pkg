@@ -3,12 +3,16 @@ import gc
 from itertools import product
 from multiprocessing import cpu_count
 from multiprocessing import Pool
-from pathlib import Path
-from typing import Optional, Union
-import random
 import os
+from pathlib import Path
+import random
+import shutil
+from tempfile import TemporaryDirectory
+import time
+from typing import Iterator, Optional, Union
 
 from frozendict import frozendict
+from tqdm import tqdm
 
 from bgpy.as_graphs.base import ASGraphConstructor, ASGraph
 from bgpy.as_graphs.caida_as_graph import CAIDAASGraphConstructor
@@ -51,7 +55,7 @@ class Simulation:
         ),
         num_trials: int = 2,
         output_dir: Path = Path("/tmp/sims"),
-        parse_cpus: int = cpu_count(),
+        parse_cpus: int = max(cpu_count() - 1, 1),
         python_hash_seed: Optional[int] = None,
         ASGraphConstructorCls: type[ASGraphConstructor] = CAIDAASGraphConstructor,
         as_graph_constructor_kwargs=frozendict(
@@ -134,6 +138,13 @@ class Simulation:
                 "unique label name to your config"
             )
 
+        # Can't delete this since it gets deleted in multiprocessing for some reason
+        # NOTE: Once pypy gets to 3.12, just pass delete=False to this
+        with TemporaryDirectory() as tmp_dir:
+            tmp_dir_str = tmp_dir
+        self._tqdm_tracking_dir: Path = Path(tmp_dir_str)
+        self._tqdm_tracking_dir.mkdir(parents=True)
+
     def _validate_scenario_configs(self) -> None:
         """validates that the scenario configs
 
@@ -178,6 +189,7 @@ class Simulation:
         # This object holds a lot of memory, good to get rid of it
         del metric_tracker
         gc.collect()
+        shutil.rmtree(self._tqdm_tracking_dir)
 
     def _seed_random(self, seed_suffix: str = "") -> None:
         """Seeds randomness"""
@@ -239,11 +251,42 @@ class Simulation:
         return [self._run_chunk(i, x) for i, x in enumerate(self._get_chunks(1))]
 
     def _get_mp_results(self, parse_cpus: int) -> list[MetricTracker]:
-        """Get results from multiprocessing"""
+        """Get results from multiprocessing
+
+        Previously used starmap, but now we have tqdm
+        """
 
         # Pool is much faster than ProcessPoolExecutor
         with Pool(parse_cpus) as p:
-            return p.starmap(self._run_chunk, enumerate(self._get_chunks(parse_cpus)))
+            # return p.starmap(self._run_chunk, enumerate(self._get_chunks(parse_cpus)))
+            chunks = self._get_chunks(self.parse_cpus)
+            desc = f"Simulating {self.output_dir.name}"
+            with tqdm(total=sum(len(x) for x in chunks), desc=desc) as pbar:
+                tasks = [p.apply_async(self._run_chunk, x) for x in enumerate(chunks)]
+                completed = []
+                while tasks:
+                    completed, tasks = self._get_completed_and_tasks(completed, tasks)
+                    self._update_tqdm_progress_bar(pbar)
+                    time.sleep(.5)
+        return completed
+
+    def _get_completed_and_tasks(self, completed, tasks):
+        """Moves completed tasks into completed"""
+        new_tasks = list()
+        for task in tasks:
+            if task.ready():
+                completed.append(task.get())
+            else:
+                new_tasks.append(task)
+        return completed, new_tasks
+
+    def _update_tqdm_progress_bar(self, pbar: tqdm) -> None:
+        """Updates tqdm progress bar"""
+
+        total_completed = 0
+        for file_path in self._tqdm_tracking_dir.iterdir():
+            total_completed += int(file_path.read_text())
+        pbar.update(total_completed - pbar.n)
 
     ############################
     # Data Aggregation Methods #
@@ -259,23 +302,13 @@ class Simulation:
         # Must also seed randomness here since we don't want multiproc to be the same
         self._seed_random(seed_suffix=str(chunk_id))
 
-        # Engine is not picklable or dillable AT ALL, so do it here
-        # (after the multiprocess process has started)
-        # Changing recursion depth does nothing
-        # Making nothing a reference does nothing
-        constructor_kwargs = dict(self.as_graph_constructor_kwargs)
-        constructor_kwargs["tsv_path"] = None
-        as_graph: ASGraph = self.ASGraphConstructorCls(**constructor_kwargs).run()
-        engine = self.SimulationEngineCls(
-            as_graph,
-            cached_as_graph_tsv_path=self.as_graph_constructor_kwargs.get("tsv_path"),
-        )
+        engine = self._get_engine_for_run_chunk()
 
         metric_tracker = self.MetricTrackerCls(metric_keys=self.metric_keys)
 
         prev_scenario = None
 
-        for percent_adopt, trial in percent_adopt_trials:
+        for i, (percent_adopt, trial) in self._get_run_chunk_iter(percent_adopt_trials):
             for scenario_config in self.scenario_configs:
                 # Create the scenario for this trial
                 assert scenario_config.ScenarioCls, "ScenarioCls is None"
@@ -286,8 +319,6 @@ class Simulation:
                     prev_scenario=prev_scenario,
                     preprocess_anns_func=scenario_config.preprocess_anns_func,
                 )
-
-                self._print_progress(percent_adopt, scenario, trial)
 
                 # Change AS Classes, seed announcements before propagation
                 scenario.setup_engine(engine, prev_scenario)
@@ -304,24 +335,54 @@ class Simulation:
                 prev_scenario = scenario
             # Reset scenario for next round of trials
             prev_scenario = None
+            # Used to track progress with tqdm
+            if i % 5 == 0 or i < 5:
+                self._write_tqdm_progress(chunk_id, i)
+
+        self._write_tqdm_progress(chunk_id, i)
 
         return metric_tracker
 
-    def _print_progress(
-        self,
-        percent_adopt: Union[float | SpecialPercentAdoptions],
-        scenario: Scenario,
-        trial: int,
-    ) -> None:
-        """Printing progress"""
+    def _get_engine_for_run_chunk(self) -> BaseSimulationEngine:
+        """Returns SimulationEngine for the _run_chunk method
 
-        if not isinstance(percent_adopt, (float, SpecialPercentAdoptions)):
-            raise Exception("Percent Adoptions not float or SpecialPercentAdoptions")
-        elif float(percent_adopt) > 1:
-            raise Exception("Percent Adoptions must be decimals less than 1")
+        engine isn't picklable or dillable, as it has weakrefs, which
+        will deserialize to dead refs
+        """
+        constructor_kwargs = dict(self.as_graph_constructor_kwargs)
+        constructor_kwargs["tsv_path"] = None
+        as_graph: ASGraph = self.ASGraphConstructorCls(**constructor_kwargs).run()
+        engine = self.SimulationEngineCls(
+            as_graph,
+            cached_as_graph_tsv_path=self.as_graph_constructor_kwargs.get("tsv_path"),
+        )
+        return engine
+
+    def _get_run_chunk_iter(
+        self,
+        percent_adopt_trials: list[tuple[Union[float, SpecialPercentAdoptions], int]],
+    ) -> Iterator[tuple[int, Union[float, SpecialPercentAdoptions], int]]:
+        """Returns iterator for trials with or without progress bar
+
+        If there's only 1 cpu, run the progress bar here, else we run it elsewhere
+        """
+
+        if self.parse_cpus == 1:
+            return tqdm(
+                enumerate(percent_adopt_trials),
+                total=len(percent_adopt_trials),
+                desc=f"Simulating {self.output_dir.name}"
+            )
         else:
-            name = scenario.__class__.__name__
-            print(f"{float(percent_adopt) * 100}% {name} #{trial}", end=" " * 10 + "\r")
+            return enumerate(percent_adopt_trials)
+
+    def _write_tqdm_progress(self, chunk_id: int, index: int) -> None:
+        """Writes total number of percent adoption trial pairs to file"""
+
+        # If self.parse_cpus == 1, then no multiprocessing is used
+        if self.parse_cpus > 1:
+            with (self._tqdm_tracking_dir / f"{chunk_id}.txt").open("w") as f:
+                f.write(str(index + 1))
 
     def _single_engine_run(
         self,
