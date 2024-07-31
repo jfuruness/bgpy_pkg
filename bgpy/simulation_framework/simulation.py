@@ -267,7 +267,7 @@ class Simulation:
                 while tasks:
                     completed, tasks = self._get_completed_and_tasks(completed, tasks)
                     self._update_tqdm_progress_bar(pbar)
-                    time.sleep(.5)
+                    time.sleep(0.5)
         return completed
 
     def _get_completed_and_tasks(self, completed, tasks):
@@ -371,7 +371,7 @@ class Simulation:
             return tqdm(
                 enumerate(percent_adopt_trials),
                 total=len(percent_adopt_trials),
-                desc=f"Simulating {self.output_dir.name}"
+                desc=f"Simulating {self.output_dir.name}",
             )
         else:
             return enumerate(percent_adopt_trials)

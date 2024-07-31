@@ -74,10 +74,11 @@ def _add_legend(
         for label, line_data in non_aggregated_data_dict.items()
     }
     sorted_labels = [
-        label for label in sorted(
+        label
+        for label in sorted(
             non_aggregated_labels_handles_dict,
             key=lambda label: mean_y_dict[label],
-            reverse=True
+            reverse=True,
         )
     ]
     sorted_handles = [non_aggregated_labels_handles_dict[lbl] for lbl in sorted_labels]

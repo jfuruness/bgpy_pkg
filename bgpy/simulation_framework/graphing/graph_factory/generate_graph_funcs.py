@@ -78,7 +78,8 @@ def _plot_strongest_attacker_line(self, ax, line_data_dict):
 
 def _get_agg_data(self, max_attacker_data_dict):
     scatter_plots: dict[str, dict[str, list[float]]] = {  # type: ignore
-        label: {"xs": [], "ys": [], "yerrs": []} for label in self.strongest_attacker_labels
+        label: {"xs": [], "ys": [], "yerrs": []}
+        for label in self.strongest_attacker_labels
     }
 
     # Populate the new agg line and scatter plots
@@ -135,7 +136,7 @@ def _get_scatter_line_data_dict(self, scatter_plots, max_attacker_dict):
                         # Old line color
                         "ecolor": old_line_data.line_info.color,
                         "zorder": 3,
-                    }
+                    },
                 },
             ),
             xs=point_dict["xs"],
