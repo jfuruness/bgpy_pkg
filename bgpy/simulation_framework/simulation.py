@@ -113,8 +113,6 @@ class Simulation:
         self.data_plane_tracking: bool = data_plane_tracking
         self.control_plane_tracking: bool = control_plane_tracking
 
-        self._validate_scenario_configs()
-
         self.metric_keys: tuple[MetricKey, ...] = metric_keys
 
         scenario_labels = list()
@@ -144,37 +142,6 @@ class Simulation:
             tmp_dir_str = tmp_dir
         self._tqdm_tracking_dir: Path = Path(tmp_dir_str)
         self._tqdm_tracking_dir.mkdir(parents=True)
-
-    def _validate_scenario_configs(self) -> None:
-        """validates that the scenario configs
-
-        adopt and base policies don't overlap with the hardcoded asns
-
-        If they do, setting and unsetting from scenario to scenario will fail
-
-        If they do overlap, just make a subclass of the Policy you are using
-        in the hardcoded ASNs
-        """
-
-        adopt_and_base_policies = set()
-        for scenario_config in self.scenario_configs:
-            adopt_and_base_policies.add(scenario_config.AdoptPolicyCls)
-            adopt_and_base_policies.add(scenario_config.BasePolicyCls)
-
-        hardcoded_asn_policies = set()
-        for scenario_config in self.scenario_configs:
-            for value in scenario_config.hardcoded_asn_cls_dict:
-                hardcoded_asn_policies.add(value)
-
-        diff = adopt_and_base_policies.intersection(hardcoded_asn_policies)
-
-        msg = (
-            "Can't have AdoptPolicyCls or BasePolicyCls be in the harcoded_asn_cls_dict"
-            " since this will not be set properly when comparing multiple scenarios"
-            " instead, for the hardcoded_asn_cls_dict, take the subclass of your policy"
-            " and use that instead"
-        )
-        assert len(diff) == 0, msg
 
     def run(
         self,
@@ -218,16 +185,16 @@ class Simulation:
         else:
             # Results are a list of lists of metric trackers that we then sum
             return sum(
-                self._get_mp_results(self.parse_cpus), start=self.MetricTrackerCls()
+                self._get_mp_results(), start=self.MetricTrackerCls()
             )
 
     ###########################
     # Multiprocessing Methods #
     ###########################
 
-    def _get_chunks(
+    def _get_chunks(  # type: ignore
         self, cpus: int
-    ) -> list[list[tuple[Union[float, SpecialPercentAdoptions], int]]]:
+    ) -> list[list[Union[float, SpecialPercentAdoptions]]]:
         """Returns chunks of trial inputs based on number of CPUs running
 
         Not a generator since we need this for multiprocessing
@@ -237,20 +204,15 @@ class Simulation:
         ) so we must divy up the work beforehand
         """
 
-        # https://stackoverflow.com/a/34032549/8903959
-        combos = product(self.percent_adoptions, list(range(self.num_trials)))
-        percents_trials = [tuple(x) for x in combos]
-
-        # https://stackoverflow.com/a/2136090/8903959
-        # mypy can't seem to handle these types?
-        return [percents_trials[i::cpus] for i in range(cpus)]  # type: ignore
+        trials_list = list(range(self.num_trials))
+        return [trials_list[i::cpus] for i in range(cpus)]  # type: ignore
 
     def _get_single_process_results(self) -> list[MetricTracker]:
         """Get all results when using single processing"""
 
         return [self._run_chunk(i, x) for i, x in enumerate(self._get_chunks(1))]
 
-    def _get_mp_results(self, parse_cpus: int) -> list[MetricTracker]:
+    def _get_mp_results(self) -> list[MetricTracker]:
         """Get results from multiprocessing
 
         Previously used starmap, but now we have tqdm
@@ -295,7 +257,7 @@ class Simulation:
     def _run_chunk(
         self,
         chunk_id: int,
-        percent_adopt_trials: list[tuple[Union[float, SpecialPercentAdoptions], int]],
+        trials: list[int],
     ) -> MetricTracker:
         """Runs a chunk of trial inputs"""
 
@@ -306,39 +268,43 @@ class Simulation:
 
         metric_tracker = self.MetricTrackerCls(metric_keys=self.metric_keys)
 
-        prev_scenario = None
-
-        iterable = self._get_run_chunk_iter(percent_adopt_trials)
-        for i, (percent_adopt, trial) in iterable:  # type: ignore
-            for scenario_config in self.scenario_configs:
-                # Create the scenario for this trial
-                assert scenario_config.ScenarioCls, "ScenarioCls is None"
-                scenario = scenario_config.ScenarioCls(
-                    scenario_config=scenario_config,
-                    percent_adoption=percent_adopt,  # type: ignore
-                    engine=engine,
-                    prev_scenario=prev_scenario,
-                    preprocess_anns_func=scenario_config.preprocess_anns_func,
-                )
-
-                # Change AS Classes, seed announcements before propagation
-                scenario.setup_engine(engine, prev_scenario)
-                # For each round of propagation run the engine
-                for propagation_round in range(scenario_config.propagation_rounds):
-                    self._single_engine_run(
+        for i, trial in self._get_run_chunk_iter(trials):
+            # Use the same attacker victim pairs across all percent adoptions
+            trial_attacker_asns = None
+            trial_victim_asns = None
+            for percent_adopt in self.percent_adoptions:
+                # Use the same adopting asns across all scenarios configs
+                adopting_asns = None
+                for scenario_config in self.scenario_configs:
+                    # Create the scenario for this trial
+                    assert scenario_config.ScenarioCls, "ScenarioCls is None"
+                    scenario = scenario_config.ScenarioCls(
+                        scenario_config=scenario_config,
+                        percent_adoption=percent_adopt,  # type: ignore
                         engine=engine,
-                        percent_adopt=percent_adopt,  # type: ignore
-                        trial=trial,  # type: ignore
-                        scenario=scenario,
-                        propagation_round=propagation_round,
-                        metric_tracker=metric_tracker,
+                        preprocess_anns_func=scenario_config.preprocess_anns_func,
+                        attacker_asns=trial_attacker_asns,
+                        victim_asns=trial_victim_asns,
+                        adopting_asns=adopting_asns,
                     )
-                prev_scenario = scenario
-            # Reset scenario for next round of trials
-            prev_scenario = None
+
+                    # Change AS Classes, seed announcements before propagation
+                    scenario.setup_engine(engine)
+                    # For each round of propagation run the engine
+                    for propagation_round in range(scenario_config.propagation_rounds):
+                        self._single_engine_run(
+                            engine=engine,
+                            percent_adopt=percent_adopt,  # type: ignore
+                            trial=trial,  # type: ignore
+                            scenario=scenario,
+                            propagation_round=propagation_round,
+                            metric_tracker=metric_tracker,
+                        )
+                    trial_attacker_asns=scenario.attacker_asns
+                    trial_victim_asns=scenario.victim_asns
+                    adopting_asns=scenario.adopting_asns
             # Used to track progress with tqdm
-            if i % 5 == 0 or i < 5:
-                self._write_tqdm_progress(chunk_id, i)
+            self._write_tqdm_progress(chunk_id, i)
 
         self._write_tqdm_progress(chunk_id, i)
 
@@ -361,8 +327,8 @@ class Simulation:
 
     def _get_run_chunk_iter(
         self,
-        percent_adopt_trials: list[tuple[Union[float, SpecialPercentAdoptions], int]],
-    ) -> Iterator[tuple[int, tuple[Union[float, SpecialPercentAdoptions], int]]]:
+        trials: list[int]],
+    ) -> Iterator[tuple[int, int]]:
         """Returns iterator for trials with or without progress bar
 
         If there's only 1 cpu, run the progress bar here, else we run it elsewhere
@@ -370,12 +336,12 @@ class Simulation:
 
         if self.parse_cpus == 1:
             return tqdm(  # type: ignore
-                enumerate(percent_adopt_trials),
-                total=len(percent_adopt_trials),
+                enumerate(trials),
+                total=len(trials),
                 desc=f"Simulating {self.output_dir.name}",
             )
         else:
-            return enumerate(percent_adopt_trials)  # type: ignore
+            return enumerate(trials)  # type: ignore
 
     def _write_tqdm_progress(self, chunk_id: int, index: int) -> None:
         """Writes total number of percent adoption trial pairs to file"""

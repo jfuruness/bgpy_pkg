@@ -27,7 +27,6 @@ class SimulationEngine(BaseSimulationEngine):
         non_default_asn_cls_dict: frozendict[int, type[Policy]] = (
             frozendict()  # type: ignore
         ),
-        prev_scenario: Optional["Scenario"] = None,
         attacker_asns: frozenset[int] = frozenset(),
         AttackerBasePolicyCls: Optional[type[Policy]] = None,
     ) -> frozenset[type[Policy]]:
@@ -36,11 +35,10 @@ class SimulationEngine(BaseSimulationEngine):
         policies_used: frozenset[type[Policy]] = self._set_as_classes(
             BasePolicyCls,
             non_default_asn_cls_dict,
-            prev_scenario,
             attacker_asns,
             AttackerBasePolicyCls,
         )
-        self._seed_announcements(announcements, prev_scenario)
+        self._seed_announcements(announcements)
         self.ready_to_run_round = 0
         return policies_used
 
@@ -48,7 +46,6 @@ class SimulationEngine(BaseSimulationEngine):
         self,
         BasePolicyCls: type[Policy],
         non_default_asn_cls_dict: frozendict[int, type[Policy]],
-        prev_scenario: Optional["Scenario"] = None,
         attacker_asns: frozenset[int] = frozenset(),
         AttackerBasePolicyCls: Optional[type[Policy]] = None,
     ) -> frozenset[type[Policy]]:
@@ -87,11 +84,7 @@ class SimulationEngine(BaseSimulationEngine):
 
         return frozenset(policy_classes_used)
 
-    def _seed_announcements(
-        self,
-        announcements: tuple["Ann", ...] = (),
-        prev_scenario: Optional["Scenario"] = None,
-    ) -> None:
+    def _seed_announcements(self, announcements: tuple["Ann", ...] = ()) -> None:
         """Seeds announcement at the proper AS
 
         Since this is the simulator engine, we should

@@ -48,7 +48,6 @@ class ValidPrefix(Scenario):
         *,
         announcements: tuple["Ann", ...] = (),
         engine: Optional["BaseSimulationEngine"] = None,
-        prev_scenario: Optional["Scenario"] = None,
     ) -> tuple[ROA, ...]:
         """Returns a tuple of ROAs"""
 

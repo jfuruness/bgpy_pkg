@@ -1,4 +1,3 @@
-import abc
 from dataclasses import asdict, dataclass, field
 from typing import Any, Optional, TYPE_CHECKING
 
@@ -17,12 +16,9 @@ from .preprocess_anns_funcs import noop, PREPROCESS_ANNS_FUNC_TYPE
 if TYPE_CHECKING:
     from .scenario import Scenario
 
-pseudo_base_cls_dict: dict[type[Policy], type[Policy]] = dict()
-
 
 class MISSINGPolicy(Policy):
     name: str = "missing"
-    pass
 
 
 @dataclass(frozen=True)
@@ -64,19 +60,7 @@ class ScenarioConfig:
     # Only necessary if coming from YAML or the test suite
     override_attacker_asns: Optional[frozenset[int]] = None
     override_victim_asns: Optional[frozenset[int]] = None
-    # For some reason mypy has trouble with empty frozendicts
-    # So I've included that as a second option for typing purposes
-    # (specifically with the tests)
-    override_non_default_asn_cls_dict: Any = None
-    # Unfortunately this causes lots of errors in mypy, even though
-    # it's correct. No idea why it's failing here, possibly something
-    # internal to frozendict. Either way, it doesn't matter, this is
-    # pretty much only used within the tests, which would fail if this
-    # was wrong anyways
-    # override_non_default_asn_cls_dict: Union[
-    #    Optional[frozendict[int, type[Policy]]],
-    #    frozendict[str, None]
-    # ] = None
+    override_non_default_asn_cls_dict: Optional[frozenset[int]] = None
     override_announcements: tuple["Ann", ...] = ()
     override_roas: tuple[ROA, ...] = ()
     # If you'd like to add an extra CSV label you do so here
@@ -112,17 +96,7 @@ class ScenarioConfig:
             )
 
         if self.AdoptPolicyCls == MISSINGPolicy:
-            # mypy says this is unreachable, which is wrong
-            global pseudo_base_cls_dict  # type: ignore
-            AdoptPolicyCls = pseudo_base_cls_dict.get(self.BasePolicyCls)
-            if not AdoptPolicyCls:
-                name: str = f"Pseudo {self.BasePolicyCls.name}".replace(" ", "")
-                PseudoBaseCls = type(name, (self.BasePolicyCls,), {"name": name})
-                pseudo_base_cls_dict[self.BasePolicyCls] = PseudoBaseCls
-                # Must set for pickling purposes
-                setattr(abc, name, PseudoBaseCls)
-                AdoptPolicyCls = PseudoBaseCls
-            object.__setattr__(self, "AdoptPolicyCls", AdoptPolicyCls)
+            object.__setattr__(self, "AdoptPolicyCls", self.BasePolicyCls)
         # Better error messages when setting this var
         if not isinstance(self.hardcoded_asn_cls_dict, frozendict):  # type: ignore
             raise TypeError(

@@ -26,7 +26,6 @@ class AccidentalRouteLeak(ValidPrefix):
         scenario_config: ScenarioConfig,
         percent_adoption: float | SpecialPercentAdoptions = 0,
         engine: Optional["BaseSimulationEngine"] = None,
-        prev_scenario: Optional["Scenario"] = None,
         preprocess_anns_func: PREPROCESS_ANNS_FUNC_TYPE = noop,
     ):
 
@@ -36,7 +35,6 @@ class AccidentalRouteLeak(ValidPrefix):
             scenario_config=scenario_config,
             percent_adoption=percent_adoption,
             engine=engine,
-            prev_scenario=prev_scenario,
             preprocess_anns_func=preprocess_anns_func,
         )
         if (
@@ -124,8 +122,8 @@ class AccidentalRouteLeak(ValidPrefix):
     def _get_attacker_asns(
         self,
         override_attacker_asns: Optional[frozenset[int]],
+        attacker_asns: Optional[frozenset[int]],
         engine: Optional["BaseSimulationEngine"],
-        prev_scenario: Optional["Scenario"],
     ) -> frozenset[int]:
         """Gets attacker ASNs, overriding the valid prefix which has no attackers
 
@@ -141,7 +139,7 @@ class AccidentalRouteLeak(ValidPrefix):
 
         assert engine, "Need engine for attacker customer cones"
         attacker_asns = Scenario._get_attacker_asns(
-            self, override_attacker_asns, engine, prev_scenario
+            self, override_attacker_asns, attacker_asns, engine
         )
         # Stores customer cones of attacker ASNs
         # used in untrackable func and when selecting victims
@@ -158,7 +156,6 @@ class AccidentalRouteLeak(ValidPrefix):
         self,
         engine: "BaseSimulationEngine",
         percent_adoption: Union[float, SpecialPercentAdoptions],
-        prev_scenario: Optional["Scenario"],
     ) -> frozenset[int]:
         """Returns possible victim ASNs, defaulted from config
 
@@ -167,7 +164,7 @@ class AccidentalRouteLeak(ValidPrefix):
         """
 
         possible_asns = super()._get_possible_victim_asns(
-            engine, percent_adoption, prev_scenario
+            engine, percent_adoption
         )
         # Remove attacker's customer conesfrom possible victims
         possible_asns = possible_asns.difference(self._attackers_customer_cones_asns)

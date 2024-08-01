@@ -16,7 +16,6 @@ PREPROCESS_ANNS_FUNC_TYPE = Callable[
         "Scenario",
         tuple["Ann", ...],
         Optional["BaseSimulationEngine"],
-        Optional["Scenario"],
     ],
     tuple["Ann", ...],
 ]
@@ -26,7 +25,6 @@ def noop(
     self_scenario: "Scenario",
     unprocessed_anns: tuple["Ann", ...],
     engine: Optional["BaseSimulationEngine"],
-    prev_scenario: Optional["Scenario"],
 ) -> tuple["Ann", ...]:
     """No op, the default preprocessing step"""
 
@@ -37,7 +35,6 @@ def forged_origin_export_all_hijack(
     self_scenario: "Scenario",
     unprocessed_anns: tuple["Ann", ...],
     engine: Optional["BaseSimulationEngine"],
-    prev_scenario: Optional["Scenario"],
 ) -> tuple["Ann", ...]:
     """Makes the attack use an origin hijack to be valid by ROA"""
 
@@ -82,7 +79,6 @@ def shortest_path_export_all_hijack(
     self_scenario: "Scenario",
     unprocessed_anns: tuple["Ann", ...],
     engine: Optional["BaseSimulationEngine"],
-    prev_scenario: Optional["Scenario"],
 ) -> tuple["Ann", ...]:
     """Makes the attack use shortest path export all to bypass pathsec protections
 
@@ -115,11 +111,11 @@ def shortest_path_export_all_hijack(
             # since you'll strip the attacker out of a path with only the attacker
             if shortest_as_path is None:
                 return forged_origin_export_all_hijack(
-                    self_scenario, unprocessed_anns, engine, prev_scenario
+                    self_scenario, unprocessed_anns, engine
                 )
         else:
             return forged_origin_export_all_hijack(
-                self_scenario, unprocessed_anns, engine, prev_scenario
+                self_scenario, unprocessed_anns, engine
             )
 
         if shortest_as_path:
@@ -148,12 +144,11 @@ def neighbor_spoofing_hijack(
     self_scenario: "Scenario",
     unprocessed_anns: tuple["Ann", ...],
     engine: Optional["BaseSimulationEngine"],
-    prev_scenario: Optional["Scenario"],
 ) -> tuple["Ann", ...]:
     """Makes the attack use origin spoofing to be valid by ROA"""
 
     unprocessed_anns = shortest_path_export_all_hijack(
-        self_scenario, unprocessed_anns, engine, prev_scenario
+        self_scenario, unprocessed_anns, engine
     )
     processed_anns = list()
 
