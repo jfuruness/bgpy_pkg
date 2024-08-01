@@ -1,6 +1,6 @@
 from .as_graph_analyzers import BaseASGraphAnalyzer, ASGraphAnalyzer
 from .graphing import GraphFactory, LineData, LineInfo, LinePropertiesGenerator
-from .metric_tracker import MetricTracker, GraphCategory
+from .graph_data_aggregator import GraphDataAggregator, GraphCategory
 
 from .scenarios import preprocess_anns_funcs
 from .scenarios import ScenarioConfig
@@ -24,7 +24,7 @@ __all__ = [
     "LineData",
     "LineInfo",
     "LinePropertiesGenerator",
-    "MetricTracker",
+    "GraphDataAggregator",
     "preprocess_anns_funcs",
     "ScenarioConfig",
     "Scenario",

@@ -19,7 +19,7 @@ from bgpy.as_graphs.caida_as_graph import CAIDAASGraphConstructor
 
 from .as_graph_analyzers import BaseASGraphAnalyzer, ASGraphAnalyzer
 from .graphing import GraphFactory
-from .metric_tracker import MetricTracker, GraphCategory
+from .graph_data_aggregator import GraphDataAggregator, GraphCategory
 from .scenarios import Scenario
 from .scenarios import ScenarioConfig
 from .scenarios import SubprefixHijack
@@ -70,10 +70,10 @@ class Simulation:
         ),
         SimulationEngineCls: type[BaseSimulationEngine] = SimulationEngine,
         ASGraphAnalyzerCls: type[BaseASGraphAnalyzer] = ASGraphAnalyzer,
-        MetricTrackerCls: type[MetricTracker] = MetricTracker,
-        # Data plane tracking for traceback and MetricTrackerCls
+        GraphDataAggregatorCls: type[GraphDataAggregator] = GraphDataAggregator,
+        # Data plane tracking for traceback and GraphDataAggregatorCls
         data_plane_tracking: bool = True,
-        # Control plane trackign for traceback and MetricTrackerCls
+        # Control plane trackign for traceback and GraphDataAggregatorCls
         control_plane_tracking: bool = False,
         graph_categories: tuple[GraphCategory, ...] = tuple(
             list(get_all_graph_categories())
@@ -108,7 +108,7 @@ class Simulation:
         self.SimulationEngineCls: type[BaseSimulationEngine] = SimulationEngineCls
 
         self.ASGraphAnalyzerCls: type[BaseASGraphAnalyzer] = ASGraphAnalyzerCls
-        self.MetricTrackerCls: type[MetricTracker] = MetricTrackerCls
+        self.GraphDataAggregatorCls: type[GraphDataAggregator] = GraphDataAggregatorCls
 
         self.data_plane_tracking: bool = data_plane_tracking
         self.control_plane_tracking: bool = control_plane_tracking
@@ -150,11 +150,11 @@ class Simulation:
     ) -> None:
         """Runs the simulation and write the data"""
 
-        metric_tracker = self._get_data()
-        metric_tracker.write_data(csv_path=self.csv_path, pickle_path=self.pickle_path)
+        graph_data_aggregator = self._get_data()
+        graph_data_aggregator.write_data(csv_path=self.csv_path, pickle_path=self.pickle_path)
         self._graph_data(GraphFactoryCls, graph_factory_kwargs)
         # This object holds a lot of memory, good to get rid of it
-        del metric_tracker
+        del graph_data_aggregator
         gc.collect()
         shutil.rmtree(self._tqdm_tracking_dir)
 
@@ -179,12 +179,12 @@ class Simulation:
         if self.parse_cpus == 1:
             # Results are a list of lists of metric trackers that we then sum
             return sum(
-                self._get_single_process_results(), start=self.MetricTrackerCls()
+                self._get_single_process_results(), start=self.GraphDataAggregatorCls()
             )
         # Multiprocess
         else:
             # Results are a list of lists of metric trackers that we then sum
-            return sum(self._get_mp_results(), start=self.MetricTrackerCls())
+            return sum(self._get_mp_results(), start=self.GraphDataAggregatorCls())
 
     ###########################
     # Multiprocessing Methods #
@@ -203,12 +203,12 @@ class Simulation:
         trials_list = list(range(self.num_trials))
         return [trials_list[i::cpus] for i in range(cpus)]
 
-    def _get_single_process_results(self) -> list[MetricTracker]:
+    def _get_single_process_results(self) -> list[GraphDataAggregator]:
         """Get all results when using single processing"""
 
         return [self._run_chunk(i, x) for i, x in enumerate(self._get_chunks(1))]
 
-    def _get_mp_results(self) -> list[MetricTracker]:
+    def _get_mp_results(self) -> list[GraphDataAggregator]:
         """Get results from multiprocessing
 
         Previously used starmap, but now we have tqdm
@@ -250,7 +250,7 @@ class Simulation:
     # Data Aggregation Methods #
     ############################
 
-    def _run_chunk(self, chunk_id: int, trials: list[int]) -> MetricTracker:
+    def _run_chunk(self, chunk_id: int, trials: list[int]) -> GraphDataAggregator:
         """Runs a chunk of trial inputs"""
 
         # Must also seed randomness here since we don't want multiproc to be the same
@@ -258,7 +258,7 @@ class Simulation:
 
         engine = self._get_engine_for_run_chunk()
 
-        metric_tracker = self.MetricTrackerCls(graph_categories=self.graph_categories)
+        graph_data_aggregator = self.GraphDataAggregatorCls(graph_categories=self.graph_categories)
 
         for i, trial in self._get_run_chunk_iter(trials):
             # Use the same attacker victim pairs across all percent adoptions
@@ -290,7 +290,7 @@ class Simulation:
                             trial=trial,  # type: ignore
                             scenario=scenario,
                             propagation_round=propagation_round,
-                            metric_tracker=metric_tracker,
+                            graph_data_aggregator=graph_data_aggregator,
                         )
                     trial_attacker_asns = scenario.attacker_asns
                     trial_victim_asns = scenario.victim_asns
@@ -300,7 +300,7 @@ class Simulation:
 
         self._write_tqdm_progress(chunk_id, i)
 
-        return metric_tracker
+        return graph_data_aggregator
 
     def _get_engine_for_run_chunk(self) -> BaseSimulationEngine:
         """Returns SimulationEngine for the _run_chunk method
@@ -348,7 +348,7 @@ class Simulation:
         trial: int,
         scenario: Scenario,
         propagation_round: int,
-        metric_tracker: MetricTracker,
+        graph_data_aggregator: GraphDataAggregator,
     ) -> None:
         """Single engine run"""
 
@@ -369,7 +369,7 @@ class Simulation:
             trial,
             scenario,
             propagation_round,
-            metric_tracker,
+            graph_data_aggregator,
         )
 
         # By default, this is a no op
@@ -387,7 +387,7 @@ class Simulation:
         trial: int,
         scenario: Scenario,
         propagation_round: int,
-        metric_tracker: MetricTracker,
+        graph_data_aggregator: GraphDataAggregator,
     ) -> dict[int, dict[int, int]]:
         # Save all engine run info
         # The reason we aggregate info right now, instead of saving
@@ -400,7 +400,7 @@ class Simulation:
             control_plane_tracking=self.control_plane_tracking,
         ).analyze()
 
-        metric_tracker.track_trial_metrics(
+        graph_data_aggregator.track_trial_metrics(
             engine=engine,
             percent_adopt=percent_adopt,
             trial=trial,
