@@ -23,9 +23,7 @@ class SimulationEngine(BaseSimulationEngine):
     def setup(self, scenario: "Scenario") -> frozenset[type[Policy]]:
         """Sets AS classes and seeds announcements"""
 
-        policies_used: frozenset[type[Policy]] = self._set_as_classes(
-            scenario
-        )
+        policies_used: frozenset[type[Policy]] = self._set_as_classes(scenario)
         self._seed_announcements(scenario.announcements)
         self.ready_to_run_round = 0
         return policies_used

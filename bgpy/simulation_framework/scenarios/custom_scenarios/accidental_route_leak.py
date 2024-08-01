@@ -163,9 +163,7 @@ class AccidentalRouteLeak(ValidPrefix):
         since if a victim is the customer of leaker, it's not really a leak
         """
 
-        possible_asns = super()._get_possible_victim_asns(
-            engine, percent_adoption
-        )
+        possible_asns = super()._get_possible_victim_asns(engine, percent_adoption)
         # Remove attacker's customer conesfrom possible victims
         possible_asns = possible_asns.difference(self._attackers_customer_cones_asns)
         return possible_asns

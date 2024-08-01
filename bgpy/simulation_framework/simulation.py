@@ -184,9 +184,7 @@ class Simulation:
         # Multiprocess
         else:
             # Results are a list of lists of metric trackers that we then sum
-            return sum(
-                self._get_mp_results(), start=self.MetricTrackerCls()
-            )
+            return sum(self._get_mp_results(), start=self.MetricTrackerCls())
 
     ###########################
     # Multiprocessing Methods #
@@ -300,9 +298,9 @@ class Simulation:
                             propagation_round=propagation_round,
                             metric_tracker=metric_tracker,
                         )
-                    trial_attacker_asns=scenario.attacker_asns
-                    trial_victim_asns=scenario.victim_asns
-                    adopting_asns=scenario.adopting_asns
+                    trial_attacker_asns = scenario.attacker_asns
+                    trial_victim_asns = scenario.victim_asns
+                    adopting_asns = scenario.adopting_asns
             # Used to track progress with tqdm
             self._write_tqdm_progress(chunk_id, i)
 
@@ -327,7 +325,7 @@ class Simulation:
 
     def _get_run_chunk_iter(
         self,
-        trials: list[int]],
+        trials: list[int],
     ) -> Iterator[tuple[int, int]]:
         """Returns iterator for trials with or without progress bar
 

@@ -63,9 +63,7 @@ class Scenario(ABC):
         )
 
         self.victim_asns: frozenset[int] = self._get_victim_asns(
-            scenario_config.override_victim_asns,
-            victim_asns,
-            engine
+            scenario_config.override_victim_asns, victim_asns, engine
         )
         raise NotImplementedError("Destroy these adoption funcs")
         self.adopting_asns: frozenset[int] = self._get_adopting_asns(
@@ -343,7 +341,7 @@ class Scenario(ABC):
             return self.AttackerBasePolicyCls
         elif asn in self._default_adopters:
             return self.AdoptPolicyCls
-        elif (Cls := self.scenario_config.hardcoded_asn_cls_dict.get(asn)):
+        elif Cls := self.scenario_config.hardcoded_asn_cls_dict.get(asn):
             return Cls
         elif asn in self.adopting_asns:
             return self.AdoptPolicyCls
@@ -531,7 +529,7 @@ class Scenario(ABC):
             self.scenario_config,
             override_attacker_asns=self.attacker_asns,
             override_victim_asns=self.victim_asns,
-            override_adopting_asns=self.adopting_asns
+            override_adopting_asns=self.adopting_asns,
             override_announcements=self.announcements,
         )
 
