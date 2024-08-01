@@ -332,13 +332,23 @@ class Scenario(ABC):
     def setup_engine(self, engine: BaseSimulationEngine) -> None:
         """Sets up engine"""
 
-        self.policy_classes_used = engine.setup(
-            self.announcements,
-            self.scenario_config.BasePolicyCls,
-            self.non_default_asn_cls_dict,
-            self.attacker_asns,
-            self.scenario_config.AttackerBasePolicyCls,
-        )
+        # TODO: MOVE OUTSIDE OF THIS CLASS!!!!
+        self.policy_classes_used = engine.setup(self)
+
+    def get_policy_cls(self, as_obj: AS) -> type[Policy]:
+        """Returns the policy class for a given AS to set"""
+
+        asn = as_obj.asn
+        if self.AttackerBasePolicyCls and asn in self.attacker_asns:
+            return self.AttackerBasePolicyCls
+        elif asn in self._default_adopters:
+            return self.AdoptPolicyCls
+        elif (Cls := self.scenario_config.hardcoded_asn_cls_dict.get(asn)):
+            return Cls
+        elif asn in self.adopting_asns:
+            return self.AdoptPolicyCls
+        else:
+            return self.BasePolicyCls
 
     ##################
     # Subclass Funcs #

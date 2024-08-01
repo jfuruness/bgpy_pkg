@@ -72,7 +72,6 @@ class BaseSimulationEngine(YamlAble, ABC):
         non_default_asn_cls_dict: frozendict[int, type[Policy]] = (
             frozendict()  # type: ignore
         ),
-        prev_scenario: Optional["Scenario"] = None,
         attacker_asns: frozenset[int] = frozenset(),
         AttackerBasePolicyCls: Optional[type[Policy]] = None,
     ) -> frozenset[type[Policy]]:
