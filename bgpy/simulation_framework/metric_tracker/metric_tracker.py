@@ -14,7 +14,7 @@ from .metric_key import MetricKey
 from bgpy.enums import Plane, SpecialPercentAdoptions, Outcomes
 from bgpy.simulation_engine import BaseSimulationEngine
 from bgpy.simulation_framework.scenarios import Scenario
-from bgpy.simulation_framework.utils import get_all_metric_keys
+from bgpy.simulation_framework.utils import get_all_graph_types
 
 
 class MetricTracker:
@@ -23,7 +23,7 @@ class MetricTracker:
     def __init__(
         self,
         data: Optional[defaultdict[DataKey, list[float]]] = None,
-        metric_keys: tuple[MetricKey, ...] = tuple(list(get_all_metric_keys())),
+        metric_keys: tuple[MetricKey, ...] = tuple(list(get_all_graph_types())),
     ):
         """Inits data"""
 

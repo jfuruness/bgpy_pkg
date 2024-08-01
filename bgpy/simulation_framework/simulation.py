@@ -24,7 +24,7 @@ from .metric_tracker.metric_key import MetricKey
 from .scenarios import Scenario
 from .scenarios import ScenarioConfig
 from .scenarios import SubprefixHijack
-from .utils import get_all_metric_keys
+from .utils import get_all_graph_types
 
 from bgpy.enums import SpecialPercentAdoptions
 from bgpy.simulation_engine import BaseSimulationEngine, SimulationEngine
@@ -76,7 +76,7 @@ class Simulation:
         data_plane_tracking: bool = True,
         # Control plane trackign for traceback and MetricTrackerCls
         control_plane_tracking: bool = False,
-        metric_keys: tuple[MetricKey, ...] = tuple(list(get_all_metric_keys())),
+        metric_keys: tuple[MetricKey, ...] = tuple(list(get_all_graph_types())),
     ) -> None:
         """Downloads relationship data, runs simulation
 

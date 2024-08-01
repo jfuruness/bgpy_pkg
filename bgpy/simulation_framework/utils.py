@@ -9,7 +9,7 @@ from bgpy.enums import ASGroups, Plane, Outcomes
 from bgpy.simulation_framework.metric_tracker.metric_key import MetricKey
 
 
-def get_all_metric_keys() -> Iterable[MetricKey]:
+def get_all_graph_types() -> Iterable[MetricKey]:
     """Returns all possible metric key combos"""
 
     for plane in [Plane.DATA]:
