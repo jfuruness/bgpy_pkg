@@ -109,13 +109,9 @@ class GraphFactory:
     def generate_graphs(self) -> None:
         """Generates default graphs"""
 
-        # Each metric key here contains plane, as group, and outcome
-        # In other words, aech type of graph
-        # This line combines that with adoption status
-        graph_infos = list(product(self.metric_keys, [True, False, Any]))
-
-        for metric_key, adopting in tqdm(
-            graph_infos, total=len(graph_infos), desc="Writing Graphs"
+        # Each metric key contains the type of graph
+        for metric_key in tqdm(
+            self.metric_keys, total=len(self.metric_keys), desc="Writing Graphs"
         ):
             relevant_rows = self._get_relevant_rows(metric_key, adopting)
             self._generate_graph(metric_key, relevant_rows, adopting=adopting)
@@ -128,33 +124,24 @@ class GraphFactory:
         #    propagation_round
         #    percent_adopt
         #    scenario_config
-        # metric_key: MetricKey
-        #     Plane
-        #     as_group
-        #     outcome
-        #     PolicyCls
+        #     metric_key: MetricKey
+        #         Plane
+        #         as_group
+        #         outcome
+        #         in_adopting_asns
         # Value: float
         # Yerr: yerr
+
+        DataKey is the point for a scenario_config, like 50% adoption
+        of prefix hijack against ROV. MetricKey is the type of graph.
+        So for each metric key - get all data points for that graph and
+        graph them
         """
 
         relevant_rows = list()
         for row in self.graph_rows:
             # Get all the rows that correspond to that type of graph
-            BasePolicyCls = row["data_key"].scenario_config.BasePolicyCls
-            AdoptPolicyCls = row["data_key"].scenario_config.AdoptPolicyCls
-            if (
-                row["metric_key"].plane == metric_key.plane
-                and row["metric_key"].as_group == metric_key.as_group
-                and row["metric_key"].outcome == metric_key.outcome
-                and (
-                    (row["metric_key"].PolicyCls == BasePolicyCls and adopting is False)
-                    or (
-                        row["metric_key"].PolicyCls == AdoptPolicyCls
-                        and adopting is True
-                    )
-                    or (row["metric_key"].PolicyCls == Policy and adopting is Any)
-                )
-            ):
+            if row["data_key"].metric_key == metric_key:
                 relevant_rows.append(row)
         return relevant_rows
 

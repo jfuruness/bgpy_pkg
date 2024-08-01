@@ -22,18 +22,16 @@ class MetricTracker:
 
     def __init__(
         self,
-        data: Optional[defaultdict[DataKey, list[Metric]]] = None,
+        data: Optional[defaultdict[DataKey, list[float]]] = None,
         metric_keys: tuple[MetricKey, ...] = tuple(list(get_all_metric_keys())),
     ):
         """Inits data"""
 
-        # This is a list of all the trial info
-        # You must save info trial by trial, so that you can join
-        # After a return from multiprocessing
+        # Data is the key for single data point on a graph
         # key DataKey (prop_round, percent_adopt, scenario_label, MetricKey)
-        # value is a list of metric instances
+        # metric_key contains filtering info for the type of graph/data we collect
         if data:
-            self.data: defaultdict[DataKey, list[Metric]] = data
+            self.data: defaultdict[DataKey, list[float]] = data
         else:
             self.data = defaultdict(list)
 
@@ -55,13 +53,13 @@ class MetricTracker:
             # For BGPy __main__ using 100 trials, 3 percent adoptions, 1 scenario
             # on a lenovo laptop
             # 1.5s
-            # new_data: defaultdict[DataKey, list[Metric]] = deepcopy(self.data)
+            # new_data: defaultdict[DataKey, list[float]] = deepcopy(self.data)
             # .04s, but dangerous
-            # new_data: defaultdict[DataKey, list[Metric]] = self.data
+            # new_data: defaultdict[DataKey, list[float]] = self.data
             # for k, v in other.data.items():
             #     new_data[k].extend(v)
             # .04s, not dangerous
-            new_data: defaultdict[DataKey, list[Metric]] = defaultdict(list)
+            new_data: defaultdict[DataKey, list[float]] = defaultdict(list)
             for obj in (self, other):
                 for k, v in obj.data.items():
                     new_data[k].extend(v)
@@ -71,91 +69,6 @@ class MetricTracker:
 
     def __radd__(self, other):
         return self.__add__(other)
-
-    ######################
-    # Data Writing Funcs #
-    ######################
-
-    def write_data(
-        self,
-        csv_path: Path,
-        pickle_path: Path,
-    ) -> None:
-        """Writes data to CSV and pickles it"""
-
-        with csv_path.open("w") as f:
-            rows = self.get_csv_rows()
-            writer = csv.DictWriter(f, fieldnames=list(rows[0].keys()))
-            writer.writeheader()
-            writer.writerows(rows)
-
-        with pickle_path.open("wb") as f:
-            pickle.dump(self.get_pickle_data(), f)
-
-    def get_csv_rows(self) -> list[dict[str, Any]]:
-        """Returns rows for a CSV"""
-
-        rows = list()
-        for data_key, metric_list in self.data.items():
-            agg_percents = sum(metric_list, start=metric_list[0]).percents
-            # useful for debugging individual trials
-            # from pprint import pprint
-            # pprint(data_key)
-            # for x in metric_list:
-            #     pprint(x.metric_key)
-            #     pprint(x.percents)
-            # input("waiting")
-            for metric_key, trial_data in agg_percents.items():
-                assert metric_key.PolicyCls
-                row = {
-                    "scenario_cls": data_key.scenario_config.ScenarioCls.__name__,
-                    "AdoptingPolicyCls": (
-                        data_key.scenario_config.AdoptPolicyCls.__name__
-                    ),
-                    "BasePolicyCls": data_key.scenario_config.BasePolicyCls.__name__,
-                    "PolicyCls": metric_key.PolicyCls.__name__,
-                    "outcome_type": metric_key.plane.name,
-                    "as_group": metric_key.as_group.value,
-                    "outcome": metric_key.outcome.name,
-                    "percent_adopt": data_key.percent_adopt,
-                    "propagation_round": data_key.propagation_round,
-                    # trial_data can sometimes be empty
-                    # for example, if we have 1 adopting AS for stubs_and_multihomed
-                    # and that AS is multihomed, and not a stub, then for stubs,
-                    # no ASes adopt, and trial_data is empty
-                    # This is the proper way to do it, rather than defaulting trial_data
-                    # to [0], which skews results when aggregating trials
-                    "value": mean(trial_data) if trial_data else None,
-                    "yerr": self._get_yerr(trial_data),
-                    "scenario_config_label": data_key.scenario_config.csv_label,
-                    "scenario_label": data_key.scenario_config.scenario_label,
-                }
-                rows.append(row)
-        return rows
-
-    def get_pickle_data(self):
-        agg_data = list()
-        for data_key, metric_list in self.data.items():
-            agg_percents = sum(metric_list, start=metric_list[0]).percents
-            for metric_key, trial_data in agg_percents.items():
-                row = {
-                    "data_key": data_key,
-                    "metric_key": metric_key,
-                    "value": mean(trial_data) if trial_data else None,
-                    "yerr": self._get_yerr(trial_data),
-                }
-                agg_data.append(row)
-        return agg_data
-
-    def _get_yerr(self, trial_data: list[float]) -> float:
-        """Returns 90% confidence interval for graphing"""
-
-        if len(trial_data) > 1:
-            yerr_num = 1.645 * 2 * stdev(trial_data)
-            yerr_denom = sqrt(len(trial_data))
-            return float(yerr_num / yerr_denom)
-        else:
-            return 0
 
     ######################
     # Track Metric Funcs #
@@ -177,39 +90,7 @@ class MetricTracker:
         is because the engines are very large and this would take a lot longer
         """
 
-        self._track_trial_metrics(
-            engine=engine,
-            percent_adopt=percent_adopt,
-            trial=trial,
-            scenario=scenario,
-            propagation_round=propagation_round,
-            outcomes=outcomes,
-        )
-        self._track_trial_metrics_hook(
-            engine=engine,
-            percent_adopt=percent_adopt,
-            trial=trial,
-            scenario=scenario,
-            propagation_round=propagation_round,
-            outcomes=outcomes,
-        )
-
-    def _track_trial_metrics(
-        self,
-        *,
-        engine: BaseSimulationEngine,
-        percent_adopt: Union[float, SpecialPercentAdoptions],
-        trial: int,
-        scenario: Scenario,
-        propagation_round: int,
-        outcomes: dict[int, dict[int, int]],
-    ) -> None:
-        """Tracks all metrics from a single trial, adding to self.data
-
-        TODO: This should really be cleaned up, but good enough for now
-        """
-
-        metrics = [Metric(x, scenario.policy_classes_used) for x in self.metric_keys]
+        metrics = [Metric(x) for x in self.metric_keys]
         self._populate_metrics(
             metrics=metrics, engine=engine, scenario=scenario, outcomes=outcomes
         )
@@ -220,7 +101,7 @@ class MetricTracker:
                 scenario_config=scenario.scenario_config,
                 metric_key=metric.metric_key,
             )
-            self.data[key].append(metric)
+            self.data[key].append(metric.get_percent())
 
     def _populate_metrics(
         self,
@@ -230,7 +111,7 @@ class MetricTracker:
         scenario: Scenario,
         outcomes: dict[int, dict[int, int]],
     ) -> None:
-        """Populates all metrics with data"""
+        """Populates all metrics with data for the current engine run"""
 
         ctrl_plane_outcomes = outcomes[Plane.CTRL.value]
         data_plane_outcomes = outcomes[Plane.DATA.value]
@@ -259,20 +140,75 @@ class MetricTracker:
                     ctrl_plane_outcome=ctrl_plane_outcome,
                     data_plane_outcome=data_plane_outcome,
                 )
-        # Only call this once or else it adds significant amounts of time
-        for metric in metrics:
-            metric.save_percents()
 
-    def _track_trial_metrics_hook(
+    ######################
+    # Data Writing Funcs #
+    ######################
+
+    def write_data(
         self,
-        *,
-        engine: BaseSimulationEngine,
-        percent_adopt: Union[float, SpecialPercentAdoptions],
-        trial: int,
-        scenario: Scenario,
-        propagation_round: int,
-        outcomes,
+        csv_path: Path,
+        pickle_path: Path,
     ) -> None:
-        """Hook function for easy subclassing by a user"""
+        """Writes data to CSV and pickles it"""
 
-        pass
+        with csv_path.open("w") as f:
+            rows = self.get_csv_rows()
+            writer = csv.DictWriter(f, fieldnames=list(rows[0].keys()))
+            writer.writeheader()
+            writer.writerows(rows)
+
+        with pickle_path.open("wb") as f:
+            pickle.dump(self.get_pickle_data(), f)
+
+    def get_csv_rows(self) -> list[dict[str, Any]]:
+        """Returns rows for a CSV"""
+
+        rows = list()
+        for data_key, percent_list in self.data.items():
+            row = {
+                "scenario_cls": data_key.scenario_config.ScenarioCls.__name__,
+                "AdoptingPolicyCls": (
+                    data_key.scenario_config.AdoptPolicyCls.__name__
+                ),
+                "BasePolicyCls": data_key.scenario_config.BasePolicyCls.__name__,
+                "in_adopting_asns": str(metric_key.in_adopting_asns),
+                "outcome_type": metric_key.plane.name,
+                "as_group": metric_key.as_group.value,
+                "outcome": metric_key.outcome.name,
+                "percent_adopt": data_key.percent_adopt,
+                "propagation_round": data_key.propagation_round,
+                # percent_list can sometimes be empty
+                # for example, if we have 1 adopting AS for stubs_and_multihomed
+                # and that AS is multihomed, and not a stub, then for stubs,
+                # no ASes adopt, and trial_data is empty
+                # This is the proper way to do it, rather than defaulting trial_data
+                # to [0], which skews results when aggregating trials
+                "value": mean(percent_list) if percent_list else None,
+                "yerr": self._get_yerr(percent_list),
+                "scenario_config_label": data_key.scenario_config.csv_label,
+                "scenario_label": data_key.scenario_config.scenario_label,
+            }
+            rows.append(row)
+        return rows
+
+    def get_pickle_data(self):
+        agg_data = list()
+        for data_key, percent_list in self.data.items():
+            row = {
+                "data_key": data_key,
+                "value": mean(percent_list) if percent_list else None,
+                "yerr": self._get_yerr(percent_list),
+            }
+            agg_data.append(row)
+        return agg_data
+
+    def _get_yerr(self, trial_data: list[float]) -> float:
+        """Returns 90% confidence interval for graphing"""
+
+        if len(trial_data) > 1:
+            yerr_num = 1.645 * 2 * stdev(trial_data)
+            yerr_denom = sqrt(len(trial_data))
+            return float(yerr_num / yerr_denom)
+        else:
+            return 0

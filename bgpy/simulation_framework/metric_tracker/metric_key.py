@@ -12,4 +12,4 @@ class MetricKey:
     plane: Plane
     as_group: ASGroups
     outcome: Outcomes
-    PolicyCls: Optional[type[Policy]] = None
+    in_adopting_asns: bool | type[Any]
