@@ -76,7 +76,7 @@ internal_config_001 = EngineTestConfig(
         ScenarioCls=Custom01ValidPrefix,
         BasePolicyCls=BGPFull,
         override_victim_asns=frozenset({2}),
-        override_non_default_asn_cls_dict=frozendict(),
+        hardcoded_asn_cls_dict=frozendict(),
     ),
     as_graph_info=as_graph_info,
 )

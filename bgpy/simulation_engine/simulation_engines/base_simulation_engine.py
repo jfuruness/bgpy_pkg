@@ -65,16 +65,7 @@ class BaseSimulationEngine(YamlAble, ABC):
     ###############
 
     @abstractmethod
-    def setup(
-        self,
-        announcements: tuple["Ann", ...] = (),
-        BasePolicyCls: type[Policy] = Policy,
-        non_default_asn_cls_dict: frozendict[int, type[Policy]] = (
-            frozendict()  # type: ignore
-        ),
-        attacker_asns: frozenset[int] = frozenset(),
-        AttackerBasePolicyCls: Optional[type[Policy]] = None,
-    ) -> frozenset[type[Policy]]:
+    def setup(self, scenario: "Scenario") -> frozenset[type[Policy]]:
         """Sets AS classes and seeds announcements"""
 
         raise NotImplementedError

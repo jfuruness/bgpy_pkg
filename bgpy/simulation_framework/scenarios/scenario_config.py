@@ -60,7 +60,7 @@ class ScenarioConfig:
     # Only necessary if coming from YAML or the test suite
     override_attacker_asns: Optional[frozenset[int]] = None
     override_victim_asns: Optional[frozenset[int]] = None
-    override_non_default_asn_cls_dict: Optional[frozenset[int]] = None
+    override_adopting_asns: Optional[frozenset[int]] = None
     override_announcements: tuple["Ann", ...] = ()
     override_roas: tuple[ROA, ...] = ()
     # If you'd like to add an extra CSV label you do so here

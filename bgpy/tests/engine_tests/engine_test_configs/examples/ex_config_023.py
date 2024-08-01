@@ -39,7 +39,7 @@ ex_config_023 = EngineTestConfig(
         BasePolicyCls=BGP,
         override_attacker_asns=frozenset({ASNs.ATTACKER.value}),
         override_victim_asns=frozenset({ASNs.VICTIM.value}),
-        override_non_default_asn_cls_dict=frozendict(
+        hardcoded_asn_cls_dict=frozendict(
             {
                 2: ASPA,
                 ASNs.VICTIM.value: ASPA,

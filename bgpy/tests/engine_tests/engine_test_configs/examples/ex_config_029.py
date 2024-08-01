@@ -40,7 +40,7 @@ ex_config_029 = EngineTestConfig(
         AdoptPolicyCls=ASPA,
         override_attacker_asns=frozenset({ASNs.ATTACKER.value}),
         override_victim_asns=frozenset({ASNs.VICTIM.value}),
-        override_non_default_asn_cls_dict=frozendict(
+        hardcoded_asn_cls_dict=frozendict(
             {
                 4: ASPA,
                 ASNs.VICTIM.value: ASPA,

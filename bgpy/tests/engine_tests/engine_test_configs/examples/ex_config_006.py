@@ -23,7 +23,7 @@ ex_config_006 = EngineTestConfig(
         BasePolicyCls=BGP,
         override_attacker_asns=frozenset({ASNs.ATTACKER.value}),
         override_victim_asns=frozenset({ASNs.VICTIM.value}),
-        override_non_default_asn_cls_dict=frozendict({9: PeerROV}),
+        hardcoded_asn_cls_dict=frozendict({9: PeerROV}),
     ),
     as_graph_info=as_graph_info_000,
 )

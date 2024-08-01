@@ -68,7 +68,6 @@ class Scenario(ABC):
         self.victim_asns: frozenset[int] = self._get_victim_asns(
             scenario_config.override_victim_asns, victim_asns, engine
         )
-        raise NotImplementedError("Destroy these adoption funcs")
         self.adopting_asns: frozenset[int] = self._get_adopting_asns(
             scenario_config.override_adopting_asns,
             adopting_asns,
@@ -187,7 +186,6 @@ class Scenario(ABC):
         override_victim_asns: Optional[frozenset[int]],
         prev_victim_asns: Optional[frozenset[int]],
         engine: Optional[BaseSimulationEngine],
-        prev_scenario: Optional["Scenario"],
     ) -> frozenset[int]:
         """Returns victim ASN at random"""
 
@@ -340,16 +338,16 @@ class Scenario(ABC):
         """Returns the policy class for a given AS to set"""
 
         asn = as_obj.asn
-        if self.AttackerBasePolicyCls and asn in self.attacker_asns:
-            return self.AttackerBasePolicyCls
+        if self.scenario_config.AttackerBasePolicyCls and asn in self.attacker_asns:
+            return self.scenario_config.AttackerBasePolicyCls
         elif asn in self._default_adopters:
-            return self.AdoptPolicyCls
+            return self.scenario_config.AdoptPolicyCls
         elif Cls := self.scenario_config.hardcoded_asn_cls_dict.get(asn):
             return Cls
         elif asn in self.adopting_asns:
-            return self.AdoptPolicyCls
+            return self.scenario_config.AdoptPolicyCls
         else:
-            return self.BasePolicyCls
+            return self.scenario_config.BasePolicyCls
 
     ##################
     # Subclass Funcs #

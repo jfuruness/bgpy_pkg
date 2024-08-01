@@ -27,7 +27,7 @@ ex_config_013 = EngineTestConfig(
         BasePolicyCls=ROV,
         override_attacker_asns=frozenset({ASNs.ATTACKER.value}),
         override_victim_asns=frozenset({ASNs.VICTIM.value}),
-        override_non_default_asn_cls_dict=frozendict({}),
+        hardcoded_asn_cls_dict=frozendict({}),
     ),
     as_graph_info=as_graph_info_000,
 )

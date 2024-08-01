@@ -28,11 +28,12 @@ class TestScenario:
             ScenarioCls=SubprefixHijack,
             AnnCls=Announcement,
             BasePolicyCls=BGP,
+            AdoptPolicyCls=BGPFull,
             num_attackers=num_attackers,
             num_victims=num_victims,
             override_attacker_asns=frozenset(range(num_attackers)),
             override_victim_asns=frozenset(range(num_victims)),
-            override_non_default_asn_cls_dict=frozendict({1: BGPFull}),
+            override_adopting_asns=frozenset({1}),
         )
         SubprefixHijack(scenario_config=scenario_config)
 
@@ -87,7 +88,7 @@ class TestScenario:
         scenario = SubprefixHijack(
             scenario_config=ScenarioConfig(ScenarioCls=SubprefixHijack),
             engine=engine,
-            prev_scenario=prev_scenario,
+            attacker_asns=prev_scenario.attacker_asns
         )
         assert prev_scenario.attacker_asns == scenario.attacker_asns
         assert prev_scenario.victim_asns == scenario.victim_asns
@@ -156,7 +157,7 @@ class TestScenario:
         )
         scenario = SubprefixHijack(scenario_config=scenario_config, engine=engine)
         attacker_asns = scenario._get_attacker_asns(
-            override_attacker_asns=None, engine=engine, prev_scenario=None
+            override_attacker_asns=None, prev_attacker_asns=None, engine=engine
         )
         # Check for #1
         assert attacker_asns
@@ -164,7 +165,7 @@ class TestScenario:
         assert len(attacker_asns) == num_attackers
         # Check for number 3
         attacker_asns_2 = scenario._get_attacker_asns(
-            override_attacker_asns=None, engine=engine, prev_scenario=None
+            override_attacker_asns=None, prev_attacker_asns=None, engine=engine
         )
         assert attacker_asns != attacker_asns_2
 
@@ -187,7 +188,7 @@ class TestScenario:
         )
         scenario = NonRoutedPrefixHijack(scenario_config=scenario_config, engine=engine)
         victim_asns = scenario._get_victim_asns(
-            override_victim_asns=None, engine=engine, prev_scenario=None
+            override_victim_asns=None, prev_victim_asns=None, engine=engine
         )
         # Check for #1
         assert victim_asns
@@ -195,7 +196,7 @@ class TestScenario:
         assert len(victim_asns) == num_victims
         # Check for number 3
         victim_asns_2 = scenario._get_victim_asns(
-            override_victim_asns=None, engine=engine, prev_scenario=None
+            override_victim_asns=None, prev_victim_asns=None, engine=engine
         )
 
         assert victim_asns != victim_asns_2
@@ -213,7 +214,7 @@ class TestScenario:
             scenario_config=ScenarioConfig(ScenarioCls=SubprefixHijack), engine=engine
         )
         assert scenario._get_possible_attacker_asns(
-            engine=engine, percent_adoption=0.5, prev_scenario=None
+            engine=engine, percent_adoption=0.5
         )
 
     def test_get_possible_victim_asns(self, engine):
@@ -223,7 +224,7 @@ class TestScenario:
             scenario_config=ScenarioConfig(ScenarioCls=SubprefixHijack), engine=engine
         )
         assert scenario._get_possible_victim_asns(
-            engine=engine, percent_adoption=0.5, prev_scenario=None
+            engine=engine, percent_adoption=0.5
         )
 
     def test_get_announcements(self, engine):
@@ -257,7 +258,7 @@ class TestScenario:
             override_attacker_asns=override_attackers,
         )
         scenario = SubprefixHijack(scenario_config=config, engine=engine)
-        attackers = scenario._get_attacker_asns(override_attackers, engine, None)
+        attackers = scenario._get_attacker_asns(override_attackers, None, engine)
 
         assert attackers == frozenset()
 
@@ -276,7 +277,7 @@ class TestScenario:
             override_victim_asns=override_victims,
         )
         scenario = ValidPrefix(scenario_config=config, engine=engine)
-        victims = scenario._get_victim_asns(override_victims, engine, None)
+        victims = scenario._get_victim_asns(override_victims, None, engine)
 
         assert victims == frozenset()
 
@@ -327,28 +328,6 @@ class TestScenario:
     #######################
     # Adopting ASNs funcs #
     #######################
-
-    def test_get_non_default_asn_cls_dict_no_prev_scenario_no_adopt(self, engine):
-        """Tests that the non default as cls dict is set properly
-
-        No prev_scenario and no adopt AS Cls - should be the result of the
-        get_adopting_asns_dict
-        """
-
-        scenario_config = ScenarioConfig(
-            ScenarioCls=SubprefixHijack,
-            AdoptPolicyCls=ROV,
-            BasePolicyCls=BGP,
-        )
-        scenario = SubprefixHijack(
-            scenario_config=scenario_config, percent_adoption=0.5, engine=engine
-        )
-        non_default_asn_cls_dict = scenario._get_non_default_asn_cls_dict(
-            override_non_default_asn_cls_dict=None, engine=engine, prev_scenario=None
-        )
-
-        assert ROV in list(non_default_asn_cls_dict.values())
-        assert BGP not in list(non_default_asn_cls_dict.values())
 
     def test_default_adopters(self, engine):
         """Ensures that the default adopters returns the victims"""

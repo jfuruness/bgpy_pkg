@@ -189,9 +189,7 @@ class Simulation:
     # Multiprocessing Methods #
     ###########################
 
-    def _get_chunks(  # type: ignore
-        self, cpus: int
-    ) -> list[list[Union[float, SpecialPercentAdoptions]]]:
+    def _get_chunks(self, cpus: int) -> list[list[int]]:
         """Returns chunks of trial inputs based on number of CPUs running
 
         Not a generator since we need this for multiprocessing
@@ -202,7 +200,7 @@ class Simulation:
         """
 
         trials_list = list(range(self.num_trials))
-        return [trials_list[i::cpus] for i in range(cpus)]  # type: ignore
+        return [trials_list[i::cpus] for i in range(cpus)]
 
     def _get_single_process_results(self) -> list[MetricTracker]:
         """Get all results when using single processing"""
@@ -251,11 +249,7 @@ class Simulation:
     # Data Aggregation Methods #
     ############################
 
-    def _run_chunk(
-        self,
-        chunk_id: int,
-        trials: list[int],
-    ) -> MetricTracker:
+    def _run_chunk(self, chunk_id: int, trials: list[int]) -> MetricTracker:
         """Runs a chunk of trial inputs"""
 
         # Must also seed randomness here since we don't want multiproc to be the same
@@ -322,10 +316,7 @@ class Simulation:
         )
         return engine
 
-    def _get_run_chunk_iter(
-        self,
-        trials: list[int],
-    ) -> Iterator[tuple[int, int]]:
+    def _get_run_chunk_iter(self, trials: list[int]) -> Iterator[tuple[int, int]]:
         """Returns iterator for trials with or without progress bar
 
         If there's only 1 cpu, run the progress bar here, else we run it elsewhere
