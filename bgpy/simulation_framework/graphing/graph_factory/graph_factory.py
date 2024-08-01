@@ -60,14 +60,15 @@ class GraphFactory:
         x_axis_label_replacement_dict=frozendict(),
         x_limit: int = 100,
         y_limit: int = 100,
-        metric_keys: tuple[MetricKey, ...] = tuple(list(get_all_graph_categories())),
         line_info_dict: frozendict[str, LineInfo] = frozendict(),
         strongest_attacker_labels: tuple[str, ...] = (),
         strongest_attacker_legend_label: str = "Strongest Attacker",
     ) -> None:
         self.pickle_path: Path = pickle_path
         with self.pickle_path.open("rb") as f:
-            self.graph_rows = self._get_filtered_graph_rows(pickle.load(f))
+            self.graph_data = self._get_last_propagation_round_graph_data(
+                pickle.load(f)
+            )
         self.graph_dir: Path = graph_dir
         self.graph_dir.mkdir(parents=True, exist_ok=True)
 
@@ -76,74 +77,43 @@ class GraphFactory:
         self.y_axis_label_replacement_dict = y_axis_label_replacement_dict
         self.x_limit = x_limit
         self.y_limit = y_limit
-        self.metric_keys: tuple[MetricKey, ...] = metric_keys
         self.line_info_dict = line_info_dict
         self.strongest_attacker_labels: tuple[str, ...] = strongest_attacker_labels
         self.strongest_attacker_legend_label: str = strongest_attacker_legend_label
 
-    def _get_filtered_graph_rows(self, rows_from_pickle):
+    def _get_last_propagation_round_graph_data(self, pickle_graph_data):
         """Get only the latest propagation round, or raise an error"""
 
         # Find the latest propagation round
-        max_prop_round = max(x["data_key"].propagation_round for x in rows_from_pickle)
+        max_propagation_round = 0
+        for data_dict in pickle_graph_data.values():
+            for data_point_key in data_dict:
+                max_propagation_round = max(
+                    data_point_key.propagation_round,
+                    propagation_round
+                )
+
+
+        filtered_graph_data = {x: dict() for x in pickle_graph_data}
         # Get only data from the latest propagation round
-        graph_rows = [
-            x
-            for x in rows_from_pickle
-            if x["data_key"].propagation_round == max_prop_round
-        ]
+        for graph_category, data_dict in pickle_graph_data.items():
+            for data_point_key, data in data_dict.items():
+                if data_point_key.propagation_round == max_propagation_round:
+                    filtered_graph_data[data_point_key] = data
+                    assert data_point_key.propagation_round == (
+                        data_point_key.scenario_config.propagation_rounds
+                    ), "These two numbers should be the same"
 
-        # Ensure that we aren't comparing differing numbers of propagation rounds
-        propagation_rounds = [
-            x["data_key"].scenario_config.propagation_rounds for x in graph_rows
-        ]
-        if len(set(propagation_rounds)) != 1:
-            raise NotImplementedError(
-                "Default grapher doesn't account for differing propagation rounds, "
-                "You'll need to write your own GraphFactory and pass it into "
-                "sim.run with sim.run(GraphFactoryCls=MyGraphFactoryCls)"
-            )
-
-        return graph_rows
+        return filtered_graph_data
 
     def generate_graphs(self) -> None:
         """Generates default graphs"""
 
         # Each metric key contains the type of graph
-        for metric_key in tqdm(
-            self.metric_keys, total=len(self.metric_keys), desc="Writing Graphs"
+        for graph_category, data_dict in tqdm(
+            self.graph_data.items(), total=len(self.graph_data), desc="Graphing"
         ):
-            relevant_rows = self._get_relevant_rows(metric_key, adopting)
-            self._generate_graph(metric_key, relevant_rows, adopting=adopting)
-
-    def _get_relevant_rows(self, metric_key, adopting: bool):
-        """Gets the relevant graphing rows for a given metric_key/graph
-
-        # Row is:
-        # data_key: DataKey
-        #    propagation_round
-        #    percent_adopt
-        #    scenario_config
-        #     metric_key: MetricKey
-        #         Plane
-        #         as_group
-        #         outcome
-        #         in_adopting_asns
-        # Value: float
-        # Yerr: yerr
-
-        DataKey is the point for a scenario_config, like 50% adoption
-        of prefix hijack against ROV. MetricKey is the type of graph.
-        So for each metric key - get all data points for that graph and
-        graph them
-        """
-
-        relevant_rows = list()
-        for row in self.graph_rows:
-            # Get all the rows that correspond to that type of graph
-            if row["data_key"].metric_key == metric_key:
-                relevant_rows.append(row)
-        return relevant_rows
+            self._generate_graph(graph_category, data_dict)
 
     # NOTE: mypy won't accept these unless they're outside the class
     # Preprocess funcs

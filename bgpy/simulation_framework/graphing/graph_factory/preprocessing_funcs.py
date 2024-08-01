@@ -12,38 +12,41 @@ from ..line_info import LineInfo
 from ..line_properties_generator import LinePropertiesGenerator
 
 
-def _preprocessing_steps(self, metric_key, relevant_rows, adopting):
+def _preprocessing_steps(
+    self,
+    graph_category: GraphCategory
+    data_dict: dict[DataPointKey, dict[str, float]]
+):
 
-    graph_name = self._get_graph_name(metric_key, relevant_rows, adopting)
+    graph_name = self._get_graph_name(graph_category)
 
-    label_rows_dict = defaultdict(list)
-    for row in relevant_rows:
-        label_rows_dict[row["data_key"].scenario_config.scenario_label].append(row)
+    label_rows_dict: defaultdict[str, list[dict[str, float | DataPointKey]]] = defaultdict(list)
+    for data_point_key, data in data_dict.items():
+        new_data: dict[str, float | DataPointKey] = data.copy()
+        new_data["data_point_key"] = data_point_key
+        label_rows_dict[data_point_key.scenario_config.scenario_label].append(new_data)
 
     matplotlib.use("Agg")
     fig, ax = plt.subplots()
 
-    self._customize_graph(fig, ax, metric_key)
+    self._customize_graph(fig, ax, graph_category)
 
     line_data_dict = self._get_line_data_dict(ax, label_rows_dict)
 
     return graph_name, line_data_dict, fig, ax
 
 
-def _get_graph_name(self, metric_key, relevant_rows, adopting) -> str:
-    adopting_str = str(adopting) if isinstance(adopting, bool) else "Any"
-    scenario_config = relevant_rows[0]["data_key"].scenario_config
-    mod_name = scenario_config.preprocess_anns_func.__name__
+def _get_graph_name(self, graph_category: GraphCategory) -> str:
+
     return (
-        f"{scenario_config.ScenarioCls.__name__}_{mod_name}"
-        f"/{metric_key.as_group.value}"
-        f"/adopting_is_{adopting_str}"
-        f"/{metric_key.plane.name}"
-        f"/{metric_key.outcome.name}.png"
+        f"{graph_category.as_group.value}"
+        f"/in_adopting_asns_is_{graph_category.in_adopting_asns}"
+        f"/{graph_category.plane.name}"
+        f"/{graph_category.outcome.name}.png"
     ).replace(" ", "")
 
 
-def _customize_graph(self, fig, ax, metric_key):
+def _customize_graph(self, fig, ax, graph_category: GraphCategory):
     """Customizes graph properties"""
 
     fig.set_dpi(300)
@@ -52,21 +55,21 @@ def _customize_graph(self, fig, ax, metric_key):
     plt.xlim(0, self.x_limit)
     plt.ylim(0, self.y_limit)
     # Set labels
-    default_y_label = f"PERCENT {metric_key.outcome.name}".replace("_", " ")
+    default_y_label = f"PERCENT {graph_category.outcome.name}".replace("_", " ").title()
     y_label = self.y_axis_label_replacement_dict.get(default_y_label, default_y_label)
     ax.set_ylabel(y_label)
 
-    default_x_label = "Percent Adoption"
+    default_x_label = "Percent Adoption".title()
     x_label = self.x_axis_label_replacement_dict.get(default_x_label, default_x_label)
     ax.set_xlabel(x_label)
 
 
-def _get_line_data_dict(self, ax, label_rows_dict):
+def _get_line_data_dict(self, ax, label_rows_dict: defaultdict[str, list[dict[str, float | DataPointKey]]]) -> dict[str, LineData]:
     # Used for random markers/line styles
     line_properties_generator = LinePropertiesGenerator()
 
     # Get the line data dict
-    line_data_dict = dict()
+    line_data_dict: dict[str, LineData] = dict()
     for label, graph_rows in label_rows_dict.items():
         line_data_dict[label] = self._get_line_data(
             label, graph_rows, line_properties_generator
@@ -76,7 +79,7 @@ def _get_line_data_dict(self, ax, label_rows_dict):
     return line_data_dict
 
 
-def _add_hardcoded_lines_to_line_data_dict(self, line_data_dict) -> None:
+def _add_hardcoded_lines_to_line_data_dict(self, line_data_dict: dict[str, LineData]) -> None:
     """Add hardcoded lines to the data dictionary"""
 
     for label, line_info in self.line_info_dict.items():
@@ -92,7 +95,7 @@ def _add_hardcoded_lines_to_line_data_dict(self, line_data_dict) -> None:
             )
 
 
-def _get_line_data(self, label, graph_rows, line_properties_generator) -> LineData:
+def _get_line_data(self, label: str, graph_rows: list[dict[str, float | DataPointKey]], line_properties_generator: LinePropertiesGenerator) -> LineData:
     """Gets the complete line data for a specific line"""
 
     formatted_graph_rows = self._get_formatted_graph_rows(graph_rows)
@@ -113,7 +116,7 @@ def _get_line_data(self, label, graph_rows, line_properties_generator) -> LineDa
     )
 
 
-def _get_formatted_graph_rows(self, graph_rows):
+def _get_formatted_graph_rows(self, graph_rows: list[dict[str, float | DataPointKey]]) -> list[dict[str, float | DataPointKey]]:
     graph_rows_sorted = list(sorted(graph_rows, key=self._get_percent_adopt))
     # If no trial_data is present for a selection, value can be None
     # For example, if no stubs are selected to adopt, the graph for adopting
@@ -122,28 +125,28 @@ def _get_formatted_graph_rows(self, graph_rows):
     return [x for x in graph_rows_sorted if x["value"] is not None]
 
 
-def _get_percent_adopt(self, graph_row) -> float:
+def _get_percent_adopt(self, graph_row: dict[str, float | DataPointKey]) -> float:
     """Extractions percent adoption for sort comparison
 
     Need separate function for mypy puposes
     Used in _generate_graph
     """
 
-    percent_adopt = graph_row["data_key"].percent_adopt
+    percent_adopt = graph_row["data_point_key"].percent_adopt
     assert isinstance(percent_adopt, (float, SpecialPercentAdoptions))
     return float(percent_adopt)
 
 
-def _get_xs(self, graph_rows_sorted, line_info):
+def _get_xs(self, graph_rows_sorted: list[dict[str, float | DataPointKey], line_info: LineInfo) -> list[float]:
     """Gets the xs for a given line"""
 
     if line_info.hardcoded_xs:
         return line_info.hardcoded_xs
     else:
-        return [float(x["data_key"].percent_adopt) * 100 for x in graph_rows_sorted]
+        return [float(x["data_point_key"].percent_adopt) * 100 for x in graph_rows_sorted]
 
 
-def _get_ys(self, graph_rows_sorted, line_info):
+def _get_ys(self, graph_rows_sorted: list[dict[str, float | DataPointKey], line_info: LineInfo) -> list[float]:
     """Gets the ys for a given line"""
 
     default_ys = [x["value"] for x in graph_rows_sorted]
@@ -156,7 +159,7 @@ def _get_ys(self, graph_rows_sorted, line_info):
         return default_ys
 
 
-def _get_yerrs(self, graph_rows_sorted, line_info):
+def _get_yerrs(self, graph_rows_sorted: list[dict[str, float | DataPointKey], line_info: LineInfo) -> list[float]:
     """Gets the yerrs for a given line"""
 
     default_yerrs = [x["yerr"] for x in graph_rows_sorted]
@@ -169,7 +172,7 @@ def _get_yerrs(self, graph_rows_sorted, line_info):
         return default_yerrs
 
 
-def _get_line_info(self, label, line_properties_generator) -> LineInfo:
+def _get_line_info(self, label: str, line_properties_generator: LinePropertiesGenerator) -> LineInfo:
     """Gets line info for a given label
 
     This pertains only to label, marker, and line styles, not x and y data

@@ -8,14 +8,18 @@ from ..line_data import LineData
 from ..line_info import LineInfo
 
 
-def _generate_graph(self, metric_key: MetricKey, relevant_rows, adopting) -> None:
+def _generate_graph(
+    self,
+    graph_category: GraphCategory,
+    data_dict: dict[DataPointKey, dict[str, float]]
+) -> None:
     """Writes a graph to the graph dir"""
 
-    if not relevant_rows:
+    if not data_dict:
         return
 
     graph_name, line_data_dict, fig, ax = self._preprocessing_steps(
-        metric_key, relevant_rows, adopting
+        graph_category, data_dict
     )
 
     (
@@ -26,16 +30,14 @@ def _generate_graph(self, metric_key: MetricKey, relevant_rows, adopting) -> Non
     self._add_legends_and_save(
         fig,
         ax,
-        metric_key,
-        relevant_rows,
-        adopting,
+        graph_category,
         non_aggregated_data_dict,
         max_attacker_data_dict,
         graph_name,
     )
 
 
-def _graph_data(self, ax, line_data_dict):
+def _graph_data(self, ax, line_data_dict: dict[str, LineData]):
     # Add all lines that aren't aggregated into a strongest attacker aggregation
     self._plot_non_aggregated_lines(ax, line_data_dict)
 
@@ -46,7 +48,7 @@ def _graph_data(self, ax, line_data_dict):
     return non_aggregated_line_data_dict, max_attacker_data_dict
 
 
-def _plot_non_aggregated_lines(self, ax, line_data_dict):
+def _plot_non_aggregated_lines(self, ax, line_data_dict: dict[str, LineData]) -> None:
     """Add all lines that aren't aggregated into a strongest attacker aggregation"""
 
     for label, line_data in line_data_dict.items():
@@ -54,7 +56,7 @@ def _plot_non_aggregated_lines(self, ax, line_data_dict):
             self._plot_line_data(ax, line_data)
 
 
-def _plot_strongest_attacker_line(self, ax, line_data_dict):
+def _plot_strongest_attacker_line(self, ax, line_data_dict: dict[str, LineData]):
     max_attacker_data_dict = dict()
     # Add all lines that are aggregated
     for label in self.strongest_attacker_labels:
