@@ -1,0 +1,10 @@
+scenario_cls,AdoptingPolicyCls,BasePolicyCls,PolicyCls,outcome_type,as_group,outcome,percent_adopt,propagation_round,value,yerr,scenario_config_label,scenario_label
+SubprefixHijack,BGP,BGP,PeerROV,DATA,all_wout_ixps,ATTACKER_SUCCESS,0,0,100.0,0.0,,BGP
+SubprefixHijack,BGP,BGP,BGP,DATA,all_wout_ixps,ATTACKER_SUCCESS,0,0,100.0,0.0,,BGP
+SubprefixHijack,BGP,BGP,Policy,DATA,all_wout_ixps,ATTACKER_SUCCESS,0,0,100.0,0.0,,BGP
+SubprefixHijack,BGP,BGP,PeerROV,DATA,all_wout_ixps,VICTIM_SUCCESS,0,0,0.0,0.0,,BGP
+SubprefixHijack,BGP,BGP,BGP,DATA,all_wout_ixps,VICTIM_SUCCESS,0,0,0.0,0.0,,BGP
+SubprefixHijack,BGP,BGP,Policy,DATA,all_wout_ixps,VICTIM_SUCCESS,0,0,0.0,0.0,,BGP
+SubprefixHijack,BGP,BGP,PeerROV,DATA,all_wout_ixps,DISCONNECTED,0,0,0.0,0.0,,BGP
+SubprefixHijack,BGP,BGP,BGP,DATA,all_wout_ixps,DISCONNECTED,0,0,0.0,0.0,,BGP
+SubprefixHijack,BGP,BGP,Policy,DATA,all_wout_ixps,DISCONNECTED,0,0,0.0,0.0,,BGP

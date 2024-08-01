@@ -88,7 +88,8 @@ class TestScenario:
         scenario = SubprefixHijack(
             scenario_config=ScenarioConfig(ScenarioCls=SubprefixHijack),
             engine=engine,
-            attacker_asns=prev_scenario.attacker_asns
+            attacker_asns=prev_scenario.attacker_asns,
+            victim_asns=prev_scenario.victim_asns,
         )
         assert prev_scenario.attacker_asns == scenario.attacker_asns
         assert prev_scenario.victim_asns == scenario.victim_asns

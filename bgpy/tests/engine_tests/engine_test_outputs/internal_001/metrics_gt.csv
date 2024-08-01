@@ -1,0 +1,7 @@
+scenario_cls,AdoptingPolicyCls,BasePolicyCls,PolicyCls,outcome_type,as_group,outcome,percent_adopt,propagation_round,value,yerr,scenario_config_label,scenario_label
+Custom01ValidPrefix,BGPFull,BGPFull,BGPFull,DATA,all_wout_ixps,ATTACKER_SUCCESS,0,2,0.0,0.0,,BGP Full
+Custom01ValidPrefix,BGPFull,BGPFull,Policy,DATA,all_wout_ixps,ATTACKER_SUCCESS,0,2,0.0,0.0,,BGP Full
+Custom01ValidPrefix,BGPFull,BGPFull,BGPFull,DATA,all_wout_ixps,VICTIM_SUCCESS,0,2,100.0,0.0,,BGP Full
+Custom01ValidPrefix,BGPFull,BGPFull,Policy,DATA,all_wout_ixps,VICTIM_SUCCESS,0,2,100.0,0.0,,BGP Full
+Custom01ValidPrefix,BGPFull,BGPFull,BGPFull,DATA,all_wout_ixps,DISCONNECTED,0,2,0.0,0.0,,BGP Full
+Custom01ValidPrefix,BGPFull,BGPFull,Policy,DATA,all_wout_ixps,DISCONNECTED,0,2,0.0,0.0,,BGP Full

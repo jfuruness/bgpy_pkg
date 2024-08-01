@@ -92,16 +92,11 @@ def shortest_path_export_all_hijack(
         if not ann.invalid_by_roa:
             processed_anns.append(ann)
             continue
-        elif any(
-            issubclass(x, (Pathend, PathEnd))
-            for x in self_scenario.non_default_asn_cls_dict.values()
-        ):
+        elif issubclass(self_scenario.scenario_config.AdoptPolicyCls, (Pathend, PathEnd)):
             shortest_as_path = _find_shortest_secondary_provider_path(
                 valid_ann.origin, engine
             )
-        elif any(
-            issubclass(x, ASPA) for x in self_scenario.non_default_asn_cls_dict.values()
-        ):
+        elif issubclass(self_scenario.scenario_config.AdoptPolicyCls, ASPA):
             shortest_as_path = _find_shortest_non_adopting_path_general(
                 valid_ann.origin, self_scenario, engine
             )
@@ -172,7 +167,7 @@ def neighbor_spoofing_hijack(
         else:
             processed_anns.append(ann)
 
-    policies = set(list(self_scenario.non_default_asn_cls_dict.values()))
+    policies = set(list(self_scenario.scenario_config.hardcoded_asn_cls_dict.values()))
     policies.add(self_scenario.scenario_config.AdoptPolicyCls)
     policies.add(self_scenario.scenario_config.BasePolicyCls)
 
@@ -261,9 +256,7 @@ def _find_shortest_non_adopting_path_general(
     AdoptPolicyCls = self_scenario.scenario_config.AdoptPolicyCls
 
     def get_policy(as_: "AS") -> type["Policy"]:
-        return self_scenario.non_default_asn_cls_dict.get(  # type: ignore
-            as_.asn, self_scenario.scenario_config.BasePolicyCls
-        )
+        return self_scenario.get_policy_cls(as_)
 
     assert engine, "mypy"
     root_as = engine.as_graph.as_dict[root_asn]
