@@ -1,6 +1,6 @@
 from .as_graph_analyzers import BaseASGraphAnalyzer, ASGraphAnalyzer
 from .graphing import GraphFactory, LineData, LineInfo, LinePropertiesGenerator
-from .metric_tracker import MetricTracker
+from .metric_tracker import MetricTracker, GraphCategory
 
 from .scenarios import preprocess_anns_funcs
 from .scenarios import ScenarioConfig
@@ -37,4 +37,5 @@ __all__ = [
     "NonRoutedSuperprefixPrefixHijack",
     "ValidPrefix",
     "Simulation",
+    "GraphCategory",
 ]

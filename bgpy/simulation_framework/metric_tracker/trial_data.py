@@ -10,16 +10,11 @@ from bgpy.simulation_framework.scenarios import Scenario
 from .metric_key import MetricKey
 
 
-class Metric:
-    """Tracks a single metric"""
+class TrialData:
+    """Tracks trial data for a single graph category (for a single trial)"""
 
-    def __init__(
-        self,
-        metric_key: MetricKey,
-    ) -> None:
-        # At this point the PolicyCls is None for the metric_key,
-        # it's later added in the save_percents
-        self.metric_key: MetricKey = metric_key
+    def __init__(self, graph_category: GraphCategory) -> None:
+        self.graph_category: GraphCategory = graph_category
         self._numerator: float = 0
         self._denominator: float = 0
 
@@ -68,15 +63,13 @@ class Metric:
     ) -> bool:
         """Adds to the denominator if it is within the as group and adopting"""
 
-        if as_obj.asn in engine.as_graph.asn_groups[self.metric_key.as_group.value]:
-
-            adopting = as_obj.asn in scenario.adopting_asns
-            if self.metric_key.in_adopting_asns is Any:
+        if as_obj.asn in engine.as_graph.asn_groups[self.graph_category.as_group.value]:
+            if self.graph_category.in_adopting_asns is Any:
                 self._denominator += 1
                 return True
             else:
-                adopting = as_obj.asn in scenario.adopting_asns
-                if adopting:
+                in_adopting_asns = as_obj.asn in scenario.adopting_asns
+                if self.graph_category.in_adopting_asns is in_adopting_asns:
                     self._denominator += 1
                     return True
         return False
@@ -104,5 +97,5 @@ class Metric:
 
         # NOTE: no need to check the group again, we already checked it
         # in the add denominator func
-        if outcome == self.metric_key.outcome.value:
+        if outcome == self.graph_category.outcome.value:
             self._numerator += 1

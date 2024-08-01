@@ -8,7 +8,7 @@ from tqdm import tqdm
 
 from bgpy.simulation_engine import Policy
 from bgpy.simulation_framework.metric_tracker.metric_key import MetricKey
-from bgpy.simulation_framework.utils import get_all_graph_types
+from bgpy.simulation_framework.utils import get_all_graph_categories
 
 from ..line_info import LineInfo
 
@@ -60,7 +60,7 @@ class GraphFactory:
         x_axis_label_replacement_dict=frozendict(),
         x_limit: int = 100,
         y_limit: int = 100,
-        metric_keys: tuple[MetricKey, ...] = tuple(list(get_all_graph_types())),
+        metric_keys: tuple[MetricKey, ...] = tuple(list(get_all_graph_categories())),
         line_info_dict: frozendict[str, LineInfo] = frozendict(),
         strongest_attacker_labels: tuple[str, ...] = (),
         strongest_attacker_legend_label: str = "Strongest Attacker",

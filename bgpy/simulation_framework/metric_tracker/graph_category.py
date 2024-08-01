@@ -6,8 +6,8 @@ from bgpy.simulation_engine import Policy
 
 
 @dataclass(frozen=True, slots=True)
-class MetricKey:
-    """Key for storing data within each metric"""
+class GraphCategory:
+    """Properties for the type of graph you want"""
 
     plane: Plane
     as_group: ASGroups

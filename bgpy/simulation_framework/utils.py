@@ -6,17 +6,17 @@ from typing import Iterable
 from requests_cache import CachedSession
 
 from bgpy.enums import ASGroups, Plane, Outcomes
-from bgpy.simulation_framework.metric_tracker.metric_key import MetricKey
+from bgpy.simulation_framework import GraphCategory
 
 
-def get_all_graph_types() -> Iterable[MetricKey]:
+def get_all_graph_categories() -> Iterable[GraphCategory]:
     """Returns all possible metric key combos"""
 
     for plane in [Plane.DATA]:
         for as_group in [ASGroups.ALL_WOUT_IXPS]:
             for outcome in [x for x in Outcomes if x != Outcomes.UNDETERMINED]:
                 for in_adopting_asns in (Any, True, False):
-                    yield MetricKey(
+                    yield GraphCategory(
                         plane=plane,
                         as_group=as_group,
                         outcome=outcome,

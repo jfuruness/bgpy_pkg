@@ -19,12 +19,11 @@ from bgpy.as_graphs.caida_as_graph import CAIDAASGraphConstructor
 
 from .as_graph_analyzers import BaseASGraphAnalyzer, ASGraphAnalyzer
 from .graphing import GraphFactory
-from .metric_tracker import MetricTracker
-from .metric_tracker.metric_key import MetricKey
+from .metric_tracker import MetricTracker, GraphCategory
 from .scenarios import Scenario
 from .scenarios import ScenarioConfig
 from .scenarios import SubprefixHijack
-from .utils import get_all_graph_types
+from .utils import get_all_graph_categories
 
 from bgpy.enums import SpecialPercentAdoptions
 from bgpy.simulation_engine import BaseSimulationEngine, SimulationEngine
@@ -76,7 +75,9 @@ class Simulation:
         data_plane_tracking: bool = True,
         # Control plane trackign for traceback and MetricTrackerCls
         control_plane_tracking: bool = False,
-        metric_keys: tuple[MetricKey, ...] = tuple(list(get_all_graph_types())),
+        graph_categories: tuple[GraphCategory, ...] = tuple(
+            list(get_all_graph_categories())
+        ),
     ) -> None:
         """Downloads relationship data, runs simulation
 
@@ -112,7 +113,7 @@ class Simulation:
         self.data_plane_tracking: bool = data_plane_tracking
         self.control_plane_tracking: bool = control_plane_tracking
 
-        self.metric_keys: tuple[MetricKey, ...] = metric_keys
+        self.graph_categories: tuple[GraphCategory, ...] = graph_categories
 
         scenario_labels = list()
         for scenario_config in self.scenario_configs:
@@ -257,7 +258,7 @@ class Simulation:
 
         engine = self._get_engine_for_run_chunk()
 
-        metric_tracker = self.MetricTrackerCls(metric_keys=self.metric_keys)
+        metric_tracker = self.MetricTrackerCls(graph_categories=self.graph_categories)
 
         for i, trial in self._get_run_chunk_iter(trials):
             # Use the same attacker victim pairs across all percent adoptions
@@ -441,7 +442,7 @@ class Simulation:
         # Set defaults for kwargs
         kwargs["pickle_path"] = kwargs.pop("pickle_path", self.pickle_path)
         kwargs["graph_dir"] = kwargs.pop("graph_dir", self.output_dir / "graphs")
-        kwargs["metric_keys"] = kwargs.pop("metric_keys", self.metric_keys)
+        kwargs["graph_categories"] = kwargs.pop("graph_categories", self.graph_categories)
         if GraphFactoryCls:
             GraphFactoryCls(**kwargs).generate_graphs()
             print(f"\nWrote graphs to {kwargs['graph_dir']}")
