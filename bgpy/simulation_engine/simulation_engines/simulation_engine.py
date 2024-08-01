@@ -1,6 +1,5 @@
 from typing import Any, Optional, TYPE_CHECKING
 
-from frozendict import frozendict
 
 from bgpy.enums import Relationships
 from bgpy.simulation_engine import Policy

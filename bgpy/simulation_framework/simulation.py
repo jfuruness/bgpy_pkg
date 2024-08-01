@@ -1,6 +1,5 @@
 from copy import deepcopy
 import gc
-from itertools import product
 from multiprocessing import cpu_count
 from multiprocessing import Pool
 import os
@@ -217,7 +216,7 @@ class Simulation:
         """
 
         # Pool is much faster than ProcessPoolExecutor
-        with Pool(parse_cpus) as p:
+        with Pool(self.parse_cpus) as p:
             # return p.starmap(self._run_chunk, enumerate(self._get_chunks(parse_cpus)))
             chunks = self._get_chunks(self.parse_cpus)
             desc = f"Simulating {self.output_dir.name}"

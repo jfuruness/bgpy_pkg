@@ -1,13 +1,13 @@
 from abc import ABC, abstractmethod
 from dataclasses import replace
-import math
-import random
+from functools import cached_property
 from ipaddress import ip_network
 from ipaddress import IPv4Network
 from ipaddress import IPv6Network
-from typing import Any, Optional, Type, Union
+import math
+import random
+from typing import Any, Optional, Type, TYPE_CHECKING, Union
 
-from frozendict import frozendict
 
 from roa_checker import ROAChecker, ROAValidity, ROA
 
@@ -20,6 +20,9 @@ from bgpy.enums import (
 
 from .preprocess_anns_funcs import noop, PREPROCESS_ANNS_FUNC_TYPE
 from .scenario_config import ScenarioConfig
+
+if TYPE_CHECKING:
+    from bgpy.as_graphs import AS
 
 
 class Scenario(ABC):
@@ -289,7 +292,7 @@ class Scenario(ABC):
 
             try:
                 # https://stackoverflow.com/a/15837796/8903959
-                adopting_asns.extend(random.sample(tuple(possible_adopters_tup), k))
+                adopting_asns.extend(random.sample(tuple(possible_adopters), k))
             except ValueError:
                 raise ValueError(f"{k} can't be sampled from {len(possible_adopters)}")
         return frozenset(adopting_asns)
@@ -333,7 +336,7 @@ class Scenario(ABC):
         # TODO: MOVE OUTSIDE OF THIS CLASS!!!!
         self.policy_classes_used = engine.setup(self)
 
-    def get_policy_cls(self, as_obj: AS) -> type[Policy]:
+    def get_policy_cls(self, as_obj: "AS") -> type[Policy]:
         """Returns the policy class for a given AS to set"""
 
         asn = as_obj.asn
