@@ -115,7 +115,9 @@ class ASPA(ROV):
         """Downstream ramp length function, responsible for the qualification into either Invalid or Unknown/Valid
         in combination with the maximum upstream ramp length results"""
         as_path = ann.as_path
-        uppercase_j = iterate_check_func_over_asn_path(as_path, self._provider_or_peer_check)
+        uppercase_j = iterate_check_func_over_asn_path(
+            as_path, self._provider_or_peer_check
+        )
         # If there is no such J, the maximum down-ramp length is set equal to the AS_PATH length N
         if uppercase_j == len(as_path) - 1:
             max_down_ramp = len(as_path)
