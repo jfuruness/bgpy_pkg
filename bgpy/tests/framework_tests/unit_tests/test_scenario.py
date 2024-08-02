@@ -1,7 +1,6 @@
 from ipaddress import ip_network
 import random
 
-from frozendict import frozendict
 import pytest
 
 from roa_checker import ROA
@@ -13,7 +12,7 @@ from bgpy.simulation_framework import (
     ValidPrefix,
     NonRoutedPrefixHijack,
 )
-from bgpy.simulation_engine import Announcement, BGP, BGPFull, ROV
+from bgpy.simulation_engine import Announcement, BGP, BGPFull
 
 
 @pytest.mark.framework

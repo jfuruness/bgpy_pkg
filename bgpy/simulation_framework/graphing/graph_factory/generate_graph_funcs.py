@@ -2,7 +2,7 @@ from dataclasses import replace
 
 from frozendict import frozendict
 
-from bgpy.simulation_framework.metric_tracker.metric_key import MetricKey
+from bgpy.simulation_framework import GraphCategory, DataPointKey
 
 from ..line_data import LineData
 from ..line_info import LineInfo

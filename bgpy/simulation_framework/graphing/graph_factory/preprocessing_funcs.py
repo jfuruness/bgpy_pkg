@@ -6,6 +6,7 @@ import matplotlib  # type: ignore
 import matplotlib.pyplot as plt  # type: ignore
 
 from bgpy.enums import SpecialPercentAdoptions
+from bgpy.simulation_framework import GraphCategory, DataPointKey
 
 from ..line_data import LineData
 from ..line_info import LineInfo

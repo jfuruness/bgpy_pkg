@@ -2,7 +2,6 @@ from abc import ABC, abstractmethod
 from pathlib import Path
 from typing import Any, Optional, TYPE_CHECKING
 
-from frozendict import frozendict
 from yamlable import YamlAble, yaml_info, yaml_info_decorate
 
 from ..policies import Policy
@@ -10,7 +9,6 @@ from ..policies import Policy
 # https://stackoverflow.com/a/57005931/8903959
 if TYPE_CHECKING:
     from bgpy.as_graphs import ASGraph
-    from bgpy.simulation_engine.announcement import Announcement as Ann
     from bgpy.simulation_framework import Scenario
 
 

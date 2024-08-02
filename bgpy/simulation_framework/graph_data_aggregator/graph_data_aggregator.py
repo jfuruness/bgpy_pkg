@@ -66,7 +66,7 @@ class GraphDataAggregator:
             #     new_data[k].extend(v)
             # .04s, not dangerous
             new_data: dict[GraphCategory, defaultdict[DataPointKey, list[float]]] = {
-                x: defaultdict(list) for x in graph_categories
+                x: defaultdict(list) for x in self.graph_categories
             }
             for obj in (self, other):
                 for k, v in obj.data.items():
@@ -117,7 +117,7 @@ class GraphDataAggregator:
             scenario_config=scenario.scenario_config,
         )
 
-        for trial_data in trial_data:
+        for trial_data in trial_datas:
             # Cpmvert trial data as a percent
             # Ex: # of ASes attacker success and adopting / adopting
             self.data[trial_data.graph_category][data_point_key].append(
@@ -127,7 +127,7 @@ class GraphDataAggregator:
     def _aggregate_trial_data(
         self,
         *,
-        percents: list[Percent],
+        trial_datas: list[TrialData],
         engine: BaseSimulationEngine,
         scenario: Scenario,
         outcomes: dict[int, dict[int, int]],

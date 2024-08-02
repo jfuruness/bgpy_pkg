@@ -1,13 +1,10 @@
-from collections import defaultdict
-from dataclasses import replace
-from typing import Optional, Type
+from typing import Any, Optional
 
 from bgpy.enums import Plane
 from bgpy.as_graphs import AS
-from bgpy.simulation_engine import Policy, BaseSimulationEngine
+from bgpy.simulation_engine import BaseSimulationEngine
 from bgpy.simulation_framework.scenarios import Scenario
-
-from .metric_key import MetricKey
+from .graph_category import GraphCategory
 
 
 class TrialData:

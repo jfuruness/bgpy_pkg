@@ -1,7 +1,7 @@
 import re
 from datetime import date
 from pathlib import Path
-from typing import Iterable
+from typing import Any, Iterable
 
 from requests_cache import CachedSession
 
