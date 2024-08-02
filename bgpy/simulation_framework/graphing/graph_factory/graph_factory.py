@@ -5,7 +5,7 @@ from frozendict import frozendict
 from tqdm import tqdm
 
 from bgpy.simulation_framework.graph_data_aggregator.graph_data_aggregator import (
-    PICKLE_DATA_TYPE
+    PICKLE_DATA_TYPE,
 )
 
 from ..line_info import LineInfo

@@ -60,9 +60,7 @@ class GraphDataAggregator:
             err = "All processes should use the same graph categories?"
             assert other.graph_categories == self.graph_categories, err
             # Time trials show that building a new dict here makes the most sense
-            new_data: DATA_TYPE = {
-                x: defaultdict(list) for x in self.graph_categories
-            }
+            new_data: DATA_TYPE = {x: defaultdict(list) for x in self.graph_categories}
             for obj in (self, other):
                 for graph_category, data_dict in obj.data.items():
                     for data_point_key, percents in data_dict.items():
@@ -231,7 +229,12 @@ class GraphDataAggregator:
                     )
         return agg_data
 
-    def _data_is_storable(self, percent_list: list[float], data_point_key: DataPointKey, graph_category: GraphCategory) -> bool:
+    def _data_is_storable(
+        self,
+        percent_list: list[float],
+        data_point_key: DataPointKey,
+        graph_category: GraphCategory,
+    ) -> bool:
         """Determines if there is data to be stored, else raise warning
 
         If there are no percents listed, then nothing was tracked for this

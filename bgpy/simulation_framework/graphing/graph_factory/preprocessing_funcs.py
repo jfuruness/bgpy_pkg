@@ -18,9 +18,7 @@ def _preprocessing_steps(
 
     graph_name = self._get_graph_name(graph_category)
 
-    label_rows_dict: defaultdict[str, list[DataPointAggData]] = (
-        defaultdict(list)
-    )
+    label_rows_dict: defaultdict[str, list[DataPointAggData]] = defaultdict(list)
     for data_point_key, data in data_dict.items():
         label_rows_dict[data_point_key.scenario_config.scenario_label].append(data)
 
@@ -143,9 +141,9 @@ def _get_xs(
     if line_info.hardcoded_xs:
         return line_info.hardcoded_xs
     else:
-        return tuple([
-            float(x.data_point_key.percent_adopt) * 100 for x in graph_rows_sorted
-        ])
+        return tuple(
+            [float(x.data_point_key.percent_adopt) * 100 for x in graph_rows_sorted]
+        )
 
 
 def _get_ys(

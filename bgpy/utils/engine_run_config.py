@@ -4,7 +4,7 @@ from bgpy.as_graphs import ASGraphInfo, ASGraph, CAIDAASGraph
 from bgpy.simulation_framework.scenarios import ScenarioConfig
 from bgpy.simulation_engine import BaseSimulationEngine, SimulationEngine
 from bgpy.simulation_framework.graph_data_aggregator.graph_data_aggregator import (
-    GraphDataAggregator
+    GraphDataAggregator,
 )
 from bgpy.simulation_framework.as_graph_analyzers import (
     BaseASGraphAnalyzer,
