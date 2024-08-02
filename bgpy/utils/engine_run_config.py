@@ -3,7 +3,9 @@ from dataclasses import dataclass
 from bgpy.as_graphs import ASGraphInfo, ASGraph, CAIDAASGraph
 from bgpy.simulation_framework.scenarios import ScenarioConfig
 from bgpy.simulation_engine import BaseSimulationEngine, SimulationEngine
-from bgpy.simulation_framework.metric_tracker.metric_tracker import MetricTracker
+from bgpy.simulation_framework.graph_data_aggregator.graph_data_aggregator import (
+    GraphDataAggregator
+)
 from bgpy.simulation_framework.as_graph_analyzers import (
     BaseASGraphAnalyzer,
     ASGraphAnalyzer,
@@ -24,6 +26,6 @@ class EngineRunConfig:
     as_graph_info: ASGraphInfo
     ASGraphCls: type[ASGraph] = CAIDAASGraph
     SimulationEngineCls: type[BaseSimulationEngine] = SimulationEngine  # type: ignore
-    MetricTrackerCls: type[MetricTracker] = MetricTracker
+    GraphDataAggregatorCls: type[GraphDataAggregator] = GraphDataAggregator
     ASGraphAnalyzerCls: type[BaseASGraphAnalyzer] = ASGraphAnalyzer
     DiagramCls: type[Diagram] = Diagram

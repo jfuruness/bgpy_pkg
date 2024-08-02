@@ -404,7 +404,7 @@ class Simulation:
             control_plane_tracking=self.control_plane_tracking,
         ).analyze()
 
-        graph_data_aggregator.track_trial_metrics(
+        graph_data_aggregator.aggregate_and_store_trial_data(
             engine=engine,
             percent_adopt=percent_adopt,
             trial=trial,

@@ -1,6 +1,6 @@
 from .as_graph_analyzers import BaseASGraphAnalyzer, ASGraphAnalyzer
 from .graphing import GraphFactory, LineData, LineInfo, LinePropertiesGenerator
-from .graph_data_aggregator import GraphDataAggregator, GraphCategory
+from .graph_data_aggregator import GraphDataAggregator, GraphCategory, DataPointAggData, DataPointKey
 
 from .scenarios import preprocess_anns_funcs
 from .scenarios import ScenarioConfig
@@ -25,6 +25,9 @@ __all__ = [
     "LineInfo",
     "LinePropertiesGenerator",
     "GraphDataAggregator",
+    "DataPointKey",
+    "GraphCategory",
+    "DataPointAggData",
     "preprocess_anns_funcs",
     "ScenarioConfig",
     "Scenario",

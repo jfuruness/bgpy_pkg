@@ -6,7 +6,7 @@ from .simulator_codec import SimulatorCodec
 from bgpy.as_graphs.base import AS
 from bgpy.simulation_engine import BaseSimulationEngine
 from bgpy.simulation_framework import Scenario
-from bgpy.simulation_framework import MetricTracker
+from bgpy.simulation_framework import GraphDataAggregator
 from bgpy.enums import Plane, SpecialPercentAdoptions, Outcomes
 
 
@@ -69,7 +69,7 @@ class EngineRunner:
         # This comment is no longer relevant, we just store the ASN
         # Convert this to just be {ASN: Outcome} (Not the AS object)
         outcomes_yaml = dict(data_plane_outcomes)
-        metric_tracker = self._get_trial_metrics(
+        graph_data_aggregator = self._get_graph_data(
             engine=engine,
             percent_adopt=0,
             trial=0,
@@ -78,11 +78,11 @@ class EngineRunner:
             outcomes=outcomes,
         )
         # Store engine and traceback YAML
-        self._store_data(engine, outcomes_yaml, metric_tracker)
+        self._store_data(engine, outcomes_yaml, graph_data_aggregator)
         # Create diagrams before the test can fail
-        self._generate_diagrams(scenario, metric_tracker)
+        self._generate_diagrams(scenario, graph_data_aggregator)
 
-        return engine, outcomes_yaml, metric_tracker, scenario
+        return engine, outcomes_yaml, graph_data_aggregator, scenario
 
     def _get_engine(self) -> BaseSimulationEngine:
         """Creates and engine and sets it up for runs"""
@@ -94,7 +94,7 @@ class EngineRunner:
 
         return self.conf.SimulationEngineCls(as_graph)
 
-    def _get_trial_metrics(
+    def _get_graph_data(
         self,
         engine: BaseSimulationEngine,
         percent_adopt: float | SpecialPercentAdoptions,
@@ -102,10 +102,10 @@ class EngineRunner:
         scenario: Scenario,
         propagation_round: int,
         outcomes: dict[int, dict[int, int]],
-    ) -> MetricTracker:
+    ) -> GraphDataAggregator:
         # Get stored metrics
-        metric_tracker = self.conf.MetricTrackerCls()
-        metric_tracker.track_trial_metrics(
+        graph_data_aggregator = self.conf.GraphDataAggregatorCls()
+        graph_data_aggregator.aggregate_and_store_trial_data(
             engine=engine,
             percent_adopt=0,
             trial=0,
@@ -113,14 +113,14 @@ class EngineRunner:
             propagation_round=self.conf.scenario_config.propagation_rounds - 1,
             outcomes=outcomes,
         )
-        assert isinstance(metric_tracker, MetricTracker)
-        return metric_tracker
+        assert isinstance(graph_data_aggregator, GraphDataAggregator)
+        return graph_data_aggregator
 
     def _store_data(
         self,
         engine: BaseSimulationEngine,
         outcomes: dict[int, int],
-        metric_tracker: MetricTracker,
+        graph_data_aggregator: GraphDataAggregator,
     ):
         """Stores YAML for the engine, outcomes, and CSV for metrics.
 
@@ -131,16 +131,16 @@ class EngineRunner:
         self.codec.dump(engine, path=self.engine_guess_path)
         # Save outcomes
         self.codec.dump(outcomes, path=self.outcomes_guess_path)
-        self._store_metrics(metric_tracker)
+        self._store_graph_data(graph_data_aggregator)
 
-    def _store_metrics(self, metric_tracker: MetricTracker) -> None:
-        metric_tracker.write_data(
-            csv_path=self.metrics_guess_path_csv,
-            pickle_path=self.metrics_guess_path_pickle,
+    def _store_graph_data(self, graph_data_aggregator: GraphDataAggregator) -> None:
+        graph_data_aggregator.write_data(
+            csv_path=self.graph_data_guess_path_csv,
+            pickle_path=self.graph_data_guess_path_pickle,
         )
 
     def _generate_diagrams(
-        self, scenario: Scenario, metric_tracker: MetricTracker
+        self, scenario: Scenario, graph_data_aggregator: GraphDataAggregator
     ) -> tuple[
         BaseSimulationEngine,
         dict[int, Outcomes],
@@ -162,7 +162,7 @@ class EngineRunner:
             scenario,  # type: ignore
             outcomes_guess,
             f"({self.conf.name})\n{self.conf.desc}",  # type: ignore
-            metric_tracker,
+            graph_data_aggregator,
             diagram_obj_ranks,
             static_order=static_order,
             path=self.storage_dir / "guess.gv",
@@ -221,13 +221,13 @@ class EngineRunner:
         return self.storage_dir / "outcomes_guess.yaml"
 
     @property
-    def metrics_guess_path_csv(self) -> Path:
+    def graph_data_guess_path_csv(self) -> Path:
         """Returns the path to the metrics guess YAML"""
 
-        return self.storage_dir / "metrics_guess.csv"
+        return self.storage_dir / "graph_data_guess.csv"
 
     @property
-    def metrics_guess_path_pickle(self) -> Path:
+    def graph_data_guess_path_pickle(self) -> Path:
         """Returns the path to the metrics guess YAML"""
 
-        return self.storage_dir / "metrics_guess.pickle"
+        return self.storage_dir / "graph_data_guess.pickle"

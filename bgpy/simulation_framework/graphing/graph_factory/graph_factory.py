@@ -4,6 +4,10 @@ import pickle
 from frozendict import frozendict
 from tqdm import tqdm
 
+from bgpy.simulation_framework.graph_data_aggregator.graph_data_aggregator import (
+    PICKLE_DATA_TYPE
+)
+
 from ..line_info import LineInfo
 
 # NOTE: mypy won't accept these unless they're outside the class
@@ -14,7 +18,6 @@ from .preprocessing_funcs import (
     _get_line_data_dict,
     _add_hardcoded_lines_to_line_data_dict,
     _get_line_data,
-    _get_formatted_graph_rows,
     _get_percent_adopt,
     _get_xs,
     _get_ys,
@@ -60,8 +63,8 @@ class GraphFactory:
     ) -> None:
         self.pickle_path: Path = pickle_path
         with self.pickle_path.open("rb") as f:
-            self.graph_data = self._get_last_propagation_round_graph_data(
-                pickle.load(f)
+            self.graph_data: PICKLE_DATA_TYPE = (
+                self._get_last_propagation_round_graph_data(pickle.load(f))
             )
         self.graph_dir: Path = graph_dir
         self.graph_dir.mkdir(parents=True, exist_ok=True)
@@ -86,7 +89,7 @@ class GraphFactory:
                     data_point_key.propagation_round, max_propagation_round
                 )
 
-        filtered_graph_data = {x: dict() for x in pickle_graph_data}
+        filtered_graph_data: PICKLE_DATA_TYPE = {x: dict() for x in pickle_graph_data}
         # Get only data from the latest propagation round
         for graph_category, data_dict in pickle_graph_data.items():
             for data_point_key, data in data_dict.items():
@@ -115,7 +118,6 @@ class GraphFactory:
     _get_line_data_dict = _get_line_data_dict
     _add_hardcoded_lines_to_line_data_dict = _add_hardcoded_lines_to_line_data_dict
     _get_line_data = _get_line_data
-    _get_formatted_graph_rows = _get_formatted_graph_rows
     _get_percent_adopt = _get_percent_adopt
     _get_xs = _get_xs
     _get_ys = _get_ys

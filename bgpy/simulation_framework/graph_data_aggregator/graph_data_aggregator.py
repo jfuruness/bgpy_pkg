@@ -6,7 +6,9 @@ import pickle
 from statistics import mean
 from statistics import stdev
 from typing import Any, Optional, Union
+from warnings import warn
 
+from .data_point_agg_data import DataPointAggData
 from .data_point_key import DataPointKey
 from .trial_data import TrialData
 from .graph_category import GraphCategory
@@ -17,12 +19,16 @@ from bgpy.simulation_framework.scenarios import Scenario
 from bgpy.simulation_framework.utils import get_all_graph_categories
 
 
+DATA_TYPE = dict[GraphCategory, defaultdict[DataPointKey, list[float]]]
+PICKLE_DATA_TYPE = dict[GraphCategory, dict[DataPointKey, DataPointAggData]]
+
+
 class GraphDataAggregator:
     """Aggregates data for all the graphs"""
 
     def __init__(
         self,
-        data: Optional[defaultdict[DataPointKey, list[float]]] = None,
+        data: Optional[DATA_TYPE] = None,
         graph_categories: tuple[GraphCategory, ...] = tuple(
             list(get_all_graph_categories())
         ),
@@ -33,9 +39,7 @@ class GraphDataAggregator:
         # key DataKey (prop_round, percent_adopt, scenario_label, MetricKey)
         # metric_key contains filtering info for the type of graph/data we collect
         if data:
-            self.data: dict[GraphCategory, defaultdict[DataPointKey, list[float]]] = (
-                data
-            )
+            self.data: DATA_TYPE = data
         else:
             self.data = {x: defaultdict(list) for x in graph_categories}
 
@@ -55,22 +59,14 @@ class GraphDataAggregator:
         if isinstance(other, GraphDataAggregator):
             err = "All processes should use the same graph categories?"
             assert other.graph_categories == self.graph_categories, err
-            # Deepcopy is slow, but fine here since it's only called once after sims
-            # For BGPy __main__ using 100 trials, 3 percent adoptions, 1 scenario
-            # on a lenovo laptop
-            # 1.5s
-            # new_data: defaultdict[DataKey, list[float]] = deepcopy(self.data)
-            # .04s, but dangerous
-            # new_data: defaultdict[DataKey, list[float]] = self.data
-            # for k, v in other.data.items():
-            #     new_data[k].extend(v)
-            # .04s, not dangerous
-            new_data: dict[GraphCategory, defaultdict[DataPointKey, list[float]]] = {
+            # Time trials show that building a new dict here makes the most sense
+            new_data: DATA_TYPE = {
                 x: defaultdict(list) for x in self.graph_categories
             }
             for obj in (self, other):
-                for k, v in obj.data.items():
-                    new_data[k].extend(v)
+                for graph_category, data_dict in obj.data.items():
+                    for data_point_key, percents in data_dict.items():
+                        new_data[graph_category][data_point_key].extend(percents)
             return self.__class__(data=new_data)
         else:
             return NotImplemented
@@ -120,9 +116,11 @@ class GraphDataAggregator:
         for trial_data in trial_datas:
             # Cpmvert trial data as a percent
             # Ex: # of ASes attacker success and adopting / adopting
-            self.data[trial_data.graph_category][data_point_key].append(
-                trial_data.get_percent()
-            )
+            percent = trial_data.get_percent()
+            # If there are no ASes tracked in this graph category,
+            # percent is None, and there's nothing to track
+            if percent:
+                self.data[trial_data.graph_category][data_point_key].append(percent)
 
     def _aggregate_trial_data(
         self,
@@ -188,43 +186,70 @@ class GraphDataAggregator:
         rows = list()
         for graph_category, data_dict in self.data.items():
             for data_point_key, percent_list in data_dict.items():
-                row = {
-                    "scenario_cls": data_point_key.scenario_config.ScenarioCls.__name__,
-                    "AdoptingPolicyCls": (
-                        data_point_key.scenario_config.AdoptPolicyCls.__name__
-                    ),
-                    "BasePolicyCls": (
-                        data_point_key.scenario_config.BasePolicyCls.__name__
-                    ),
-                    "in_adopting_asns": str(graph_category.in_adopting_asns),
-                    "outcome_type": graph_category.plane.name,
-                    "as_group": graph_category.as_group.value,
-                    "outcome": graph_category.outcome.name,
-                    "percent_adopt": data_point_key.percent_adopt,
-                    "propagation_round": data_point_key.propagation_round,
-                    # percent_list can sometimes be empty
-                    # for example, if we have 1 adopting AS for stubs_and_multihomed
-                    # and that AS is multihomed, and not a stub, then for stubs,
-                    # no ASes adopt, and trial_data is empty
-                    # This is the proper way to do it, rather than defaulting trial_data
-                    # to [0], which skews results when aggregating trials
-                    "value": mean(percent_list) if percent_list else None,
-                    "yerr": self._get_yerr(percent_list),
-                    "scenario_config_label": data_point_key.scenario_config.csv_label,
-                    "scenario_label": data_point_key.scenario_config.scenario_label,
-                }
-                rows.append(row)
+                # If there are no percents listed, then nothing was tracked for this
+                # data point and we shouldn't store it at all, lest it mess us up later
+                if self._data_is_storable(percent_list, data_point_key, graph_category):
+                    row = {
+                        "scenario_cls": data_point_key.scenario_config.ScenarioCls.__name__,
+                        "AdoptingPolicyCls": (
+                            data_point_key.scenario_config.AdoptPolicyCls.__name__
+                        ),
+                        "BasePolicyCls": (
+                            data_point_key.scenario_config.BasePolicyCls.__name__
+                        ),
+                        "in_adopting_asns": str(graph_category.in_adopting_asns),
+                        "outcome_type": graph_category.plane.name,
+                        "as_group": graph_category.as_group.value,
+                        "outcome": graph_category.outcome.name,
+                        "percent_adopt": data_point_key.percent_adopt,
+                        "propagation_round": data_point_key.propagation_round,
+                        # percent_list can sometimes be empty
+                        # for example, if we have 1 adopting AS for stubs_and_multihomed
+                        # and that AS is multihomed, and not a stub, then for stubs,
+                        # no ASes adopt, and trial_data is empty
+                        # This is the proper way to do it, rather than defaulting trial_data
+                        # to [0], which skews results when aggregating trials
+                        "value": mean(percent_list) if percent_list else None,
+                        "yerr": self._get_yerr(percent_list),
+                        "scenario_config_label": data_point_key.scenario_config.csv_label,
+                        "scenario_label": data_point_key.scenario_config.scenario_label,
+                    }
+                    rows.append(row)
         return rows
 
     def get_pickle_data(self):
-        agg_data = {x: dict() for x in self.graph_categories}
+        agg_data: PICKLE_DATA_TYPE = {x: dict() for x in self.graph_categories}
         for graph_category, data_dict in self.data.items():
             for data_point_key, percent_list in data_dict.items():
-                agg_data[graph_category][data_point_key] = {
-                    "value": mean(percent_list) if percent_list else None,
-                    "yerr": self._get_yerr(percent_list),
-                }
+                # If there are no percents listed, then nothing was tracked for this
+                # data point and we shouldn't store it at all, lest it mess us up later
+                if self._data_is_storable(percent_list, data_point_key, graph_category):
+                    agg_data[graph_category][data_point_key] = DataPointAggData(
+                        value=mean(percent_list),
+                        yerr=self._get_yerr(percent_list),
+                        data_point_key=data_point_key,
+                    )
         return agg_data
+
+    def _data_is_storable(self, percent_list: list[float], data_point_key: DataPointKey, graph_category: GraphCategory) -> bool:
+        """Determines if there is data to be stored, else raise warning
+
+        If there are no percents listed, then nothing was tracked for this
+        data point and we shouldn't store it at all, lest it mess us up later
+        """
+
+        if percent_list:
+            return True
+        else:
+            warn(
+                f"GraphCategory {graph_category} "
+                f"had no data for DataPointKey {data_point_key}. "
+                "This means on that graph, for that data point, zero ASes "
+                " fell into that category, regardless of outcome, "
+                "so nothing was tracked or plotted for that data point. "
+                "It's possible that this is fine, although it is extremely unusual"
+            )
+            return False
 
     def _get_yerr(self, percent_list: list[float]) -> float:
         """Returns 90% confidence interval for graphing"""

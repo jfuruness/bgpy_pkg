@@ -2,14 +2,14 @@ from dataclasses import replace
 
 from frozendict import frozendict
 
-from bgpy.simulation_framework import GraphCategory, DataPointKey
+from bgpy.simulation_framework import GraphCategory, DataPointKey, DataPointAggData
 
 from ..line_data import LineData
 from ..line_info import LineInfo
 
 
 def _generate_graph(
-    self, graph_category: GraphCategory, data_dict: dict[DataPointKey, dict[str, float]]
+    self, graph_category: GraphCategory, data_dict: dict[DataPointKey, DataPointAggData]
 ) -> None:
     """Writes a graph to the graph dir"""
 

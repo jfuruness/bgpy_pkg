@@ -258,7 +258,8 @@ def _find_shortest_non_adopting_path_general(
     AdoptPolicyCls = self_scenario.scenario_config.AdoptPolicyCls
 
     def get_policy(as_: "AS") -> type["Policy"]:
-        return self_scenario.get_policy_cls(as_)
+        # Even with an assert, mypy breaks here
+        return self_scenario.get_policy_cls(as_)  # type: ignore
 
     assert engine, "mypy"
     root_as = engine.as_graph.as_dict[root_asn]

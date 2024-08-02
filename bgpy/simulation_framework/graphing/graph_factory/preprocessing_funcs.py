@@ -2,11 +2,10 @@ from collections import defaultdict
 from dataclasses import replace
 from statistics import mean
 
-import matplotlib  # type: ignore
-import matplotlib.pyplot as plt  # type: ignore
+import matplotlib
+import matplotlib.pyplot as plt
 
-from bgpy.enums import SpecialPercentAdoptions
-from bgpy.simulation_framework import GraphCategory, DataPointKey
+from bgpy.simulation_framework import GraphCategory, DataPointKey, DataPointAggData
 
 from ..line_data import LineData
 from ..line_info import LineInfo
@@ -14,18 +13,16 @@ from ..line_properties_generator import LinePropertiesGenerator
 
 
 def _preprocessing_steps(
-    self, graph_category: GraphCategory, data_dict: dict[DataPointKey, dict[str, float]]
+    self, graph_category: GraphCategory, data_dict: dict[DataPointKey, DataPointAggData]
 ):
 
     graph_name = self._get_graph_name(graph_category)
 
-    label_rows_dict: defaultdict[str, list[dict[str, float | DataPointKey]]] = (
+    label_rows_dict: defaultdict[str, list[DataPointAggData]] = (
         defaultdict(list)
     )
     for data_point_key, data in data_dict.items():
-        new_data: dict[str, float | DataPointKey] = data.copy()
-        new_data["data_point_key"] = data_point_key
-        label_rows_dict[data_point_key.scenario_config.scenario_label].append(new_data)
+        label_rows_dict[data_point_key.scenario_config.scenario_label].append(data)
 
     matplotlib.use("Agg")
     fig, ax = plt.subplots()
@@ -66,7 +63,7 @@ def _customize_graph(self, fig, ax, graph_category: GraphCategory):
 
 
 def _get_line_data_dict(
-    self, ax, label_rows_dict: defaultdict[str, list[dict[str, float | DataPointKey]]]
+    self, ax, label_rows_dict: defaultdict[str, list[DataPointAggData]]
 ) -> dict[str, LineData]:
     # Used for random markers/line styles
     line_properties_generator = LinePropertiesGenerator()
@@ -108,7 +105,9 @@ def _get_line_data(
 ) -> LineData:
     """Gets the complete line data for a specific line"""
 
-    formatted_graph_rows = self._get_formatted_graph_rows(graph_rows)
+    formatted_graph_rows: list[dict[str, float | DataPointKey]] = sorted(
+        graph_rows, key=self._get_percent_adopt
+    )
 
     line_info = self._get_line_info(label, line_properties_generator)
 
@@ -126,68 +125,55 @@ def _get_line_data(
     )
 
 
-def _get_formatted_graph_rows(
-    self, graph_rows: list[dict[str, float | DataPointKey]]
-) -> list[dict[str, float | DataPointKey]]:
-    graph_rows_sorted = list(sorted(graph_rows, key=self._get_percent_adopt))
-    # If no trial_data is present for a selection, value can be None
-    # For example, if no stubs are selected to adopt, the graph for adopting
-    # stub ASes will have no data points
-    # This is proper, rather than defaulting to 0 or 100, which causes problems
-    return [x for x in graph_rows_sorted if x["value"] is not None]
-
-
-def _get_percent_adopt(self, graph_row: dict[str, float | DataPointKey]) -> float:
+def _get_percent_adopt(self, graph_row: DataPointAggData) -> float:
     """Extractions percent adoption for sort comparison
 
     Need separate function for mypy puposes
     Used in _generate_graph
     """
 
-    percent_adopt = graph_row["data_point_key"].percent_adopt
-    assert isinstance(percent_adopt, (float, SpecialPercentAdoptions))
-    return float(percent_adopt)
+    return float(graph_row.data_point_key.percent_adopt)
 
 
 def _get_xs(
-    self, graph_rows_sorted: list[dict[str, float | DataPointKey]], line_info: LineInfo
-) -> list[float]:
+    self, graph_rows_sorted: list[DataPointAggData], line_info: LineInfo
+) -> tuple[float, ...]:
     """Gets the xs for a given line"""
 
     if line_info.hardcoded_xs:
         return line_info.hardcoded_xs
     else:
-        return [
-            float(x["data_point_key"].percent_adopt) * 100 for x in graph_rows_sorted
-        ]
+        return tuple([
+            float(x.data_point_key.percent_adopt) * 100 for x in graph_rows_sorted
+        ])
 
 
 def _get_ys(
-    self, graph_rows_sorted: list[dict[str, float | DataPointKey]], line_info: LineInfo
-) -> list[float]:
+    self, graph_rows_sorted: list[DataPointAggData], line_info: LineInfo
+) -> tuple[float, ...]:
     """Gets the ys for a given line"""
 
-    default_ys = [x["value"] for x in graph_rows_sorted]
+    default_ys = tuple([x.value for x in graph_rows_sorted])
     if line_info.hardcoded_ys:
         return line_info.hardcoded_ys
     # Line is unrelated to percent adoption, average together
     elif line_info.unrelated_to_adoption:
-        return [mean(default_ys)] * len(default_ys)
+        return tuple([mean(default_ys)] * len(default_ys))
     else:
         return default_ys
 
 
 def _get_yerrs(
-    self, graph_rows_sorted: list[dict[str, float | DataPointKey]], line_info: LineInfo
-) -> list[float]:
+    self, graph_rows_sorted: list[DataPointAggData], line_info: LineInfo
+) -> tuple[float, ...]:
     """Gets the yerrs for a given line"""
 
-    default_yerrs = [x["yerr"] for x in graph_rows_sorted]
+    default_yerrs = tuple([x.yerr for x in graph_rows_sorted])
     if line_info.hardcoded_yerrs:
         return line_info.hardcoded_yerrs
     # Line is unrelated to percent adoption, average together
     elif line_info.unrelated_to_adoption:
-        return [mean(default_yerrs)] * len(default_yerrs)
+        return tuple([mean(default_yerrs)] * len(default_yerrs))
     else:
         return default_yerrs
 

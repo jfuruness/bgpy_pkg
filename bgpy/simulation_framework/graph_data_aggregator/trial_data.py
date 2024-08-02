@@ -84,9 +84,9 @@ class TrialData:
         NOTE: This should only be called if _add_denominator returns True
         """
 
-        if self.metric_key.plane == Plane.DATA:
+        if self.graph_category.plane == Plane.DATA:
             outcome = data_plane_outcome
-        elif self.metric_key.plane == Plane.CTRL:
+        elif self.graph_category.plane == Plane.CTRL:
             outcome = ctrl_plane_outcome
         else:
             raise NotImplementedError
