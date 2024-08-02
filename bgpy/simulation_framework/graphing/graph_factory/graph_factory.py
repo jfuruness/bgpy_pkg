@@ -89,10 +89,8 @@ class GraphFactory:
         for data_dict in pickle_graph_data.values():
             for data_point_key in data_dict:
                 max_propagation_round = max(
-                    data_point_key.propagation_round,
-                    propagation_round
+                    data_point_key.propagation_round, propagation_round
                 )
-
 
         filtered_graph_data = {x: dict() for x in pickle_graph_data}
         # Get only data from the latest propagation round

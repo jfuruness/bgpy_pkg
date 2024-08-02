@@ -214,9 +214,7 @@ class TestScenario:
         scenario = SubprefixHijack(
             scenario_config=ScenarioConfig(ScenarioCls=SubprefixHijack), engine=engine
         )
-        assert scenario._get_possible_attacker_asns(
-            engine=engine, percent_adoption=0.5
-        )
+        assert scenario._get_possible_attacker_asns(engine=engine, percent_adoption=0.5)
 
     def test_get_possible_victim_asns(self, engine):
         """Tests that a set is returned with at least a few ases"""
@@ -224,9 +222,7 @@ class TestScenario:
         scenario = SubprefixHijack(
             scenario_config=ScenarioConfig(ScenarioCls=SubprefixHijack), engine=engine
         )
-        assert scenario._get_possible_victim_asns(
-            engine=engine, percent_adoption=0.5
-        )
+        assert scenario._get_possible_victim_asns(engine=engine, percent_adoption=0.5)
 
     def test_get_announcements(self, engine):
         """Tests the get_announcements of a subclass of scenario

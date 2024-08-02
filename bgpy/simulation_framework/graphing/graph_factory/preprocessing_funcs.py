@@ -13,14 +13,14 @@ from ..line_properties_generator import LinePropertiesGenerator
 
 
 def _preprocessing_steps(
-    self,
-    graph_category: GraphCategory
-    data_dict: dict[DataPointKey, dict[str, float]]
+    self, graph_category: GraphCategory, data_dict: dict[DataPointKey, dict[str, float]]
 ):
 
     graph_name = self._get_graph_name(graph_category)
 
-    label_rows_dict: defaultdict[str, list[dict[str, float | DataPointKey]]] = defaultdict(list)
+    label_rows_dict: defaultdict[str, list[dict[str, float | DataPointKey]]] = (
+        defaultdict(list)
+    )
     for data_point_key, data in data_dict.items():
         new_data: dict[str, float | DataPointKey] = data.copy()
         new_data["data_point_key"] = data_point_key
@@ -64,7 +64,9 @@ def _customize_graph(self, fig, ax, graph_category: GraphCategory):
     ax.set_xlabel(x_label)
 
 
-def _get_line_data_dict(self, ax, label_rows_dict: defaultdict[str, list[dict[str, float | DataPointKey]]]) -> dict[str, LineData]:
+def _get_line_data_dict(
+    self, ax, label_rows_dict: defaultdict[str, list[dict[str, float | DataPointKey]]]
+) -> dict[str, LineData]:
     # Used for random markers/line styles
     line_properties_generator = LinePropertiesGenerator()
 
@@ -79,7 +81,9 @@ def _get_line_data_dict(self, ax, label_rows_dict: defaultdict[str, list[dict[st
     return line_data_dict
 
 
-def _add_hardcoded_lines_to_line_data_dict(self, line_data_dict: dict[str, LineData]) -> None:
+def _add_hardcoded_lines_to_line_data_dict(
+    self, line_data_dict: dict[str, LineData]
+) -> None:
     """Add hardcoded lines to the data dictionary"""
 
     for label, line_info in self.line_info_dict.items():
@@ -95,7 +99,12 @@ def _add_hardcoded_lines_to_line_data_dict(self, line_data_dict: dict[str, LineD
             )
 
 
-def _get_line_data(self, label: str, graph_rows: list[dict[str, float | DataPointKey]], line_properties_generator: LinePropertiesGenerator) -> LineData:
+def _get_line_data(
+    self,
+    label: str,
+    graph_rows: list[dict[str, float | DataPointKey]],
+    line_properties_generator: LinePropertiesGenerator,
+) -> LineData:
     """Gets the complete line data for a specific line"""
 
     formatted_graph_rows = self._get_formatted_graph_rows(graph_rows)
@@ -116,7 +125,9 @@ def _get_line_data(self, label: str, graph_rows: list[dict[str, float | DataPoin
     )
 
 
-def _get_formatted_graph_rows(self, graph_rows: list[dict[str, float | DataPointKey]]) -> list[dict[str, float | DataPointKey]]:
+def _get_formatted_graph_rows(
+    self, graph_rows: list[dict[str, float | DataPointKey]]
+) -> list[dict[str, float | DataPointKey]]:
     graph_rows_sorted = list(sorted(graph_rows, key=self._get_percent_adopt))
     # If no trial_data is present for a selection, value can be None
     # For example, if no stubs are selected to adopt, the graph for adopting
@@ -137,16 +148,22 @@ def _get_percent_adopt(self, graph_row: dict[str, float | DataPointKey]) -> floa
     return float(percent_adopt)
 
 
-def _get_xs(self, graph_rows_sorted: list[dict[str, float | DataPointKey], line_info: LineInfo) -> list[float]:
+def _get_xs(
+    self, graph_rows_sorted: list[dict[str, float | DataPointKey]], line_info: LineInfo
+) -> list[float]:
     """Gets the xs for a given line"""
 
     if line_info.hardcoded_xs:
         return line_info.hardcoded_xs
     else:
-        return [float(x["data_point_key"].percent_adopt) * 100 for x in graph_rows_sorted]
+        return [
+            float(x["data_point_key"].percent_adopt) * 100 for x in graph_rows_sorted
+        ]
 
 
-def _get_ys(self, graph_rows_sorted: list[dict[str, float | DataPointKey], line_info: LineInfo) -> list[float]:
+def _get_ys(
+    self, graph_rows_sorted: list[dict[str, float | DataPointKey]], line_info: LineInfo
+) -> list[float]:
     """Gets the ys for a given line"""
 
     default_ys = [x["value"] for x in graph_rows_sorted]
@@ -159,7 +176,9 @@ def _get_ys(self, graph_rows_sorted: list[dict[str, float | DataPointKey], line_
         return default_ys
 
 
-def _get_yerrs(self, graph_rows_sorted: list[dict[str, float | DataPointKey], line_info: LineInfo) -> list[float]:
+def _get_yerrs(
+    self, graph_rows_sorted: list[dict[str, float | DataPointKey]], line_info: LineInfo
+) -> list[float]:
     """Gets the yerrs for a given line"""
 
     default_yerrs = [x["yerr"] for x in graph_rows_sorted]
@@ -172,7 +191,9 @@ def _get_yerrs(self, graph_rows_sorted: list[dict[str, float | DataPointKey], li
         return default_yerrs
 
 
-def _get_line_info(self, label: str, line_properties_generator: LinePropertiesGenerator) -> LineInfo:
+def _get_line_info(
+    self, label: str, line_properties_generator: LinePropertiesGenerator
+) -> LineInfo:
     """Gets line info for a given label
 
     This pertains only to label, marker, and line styles, not x and y data

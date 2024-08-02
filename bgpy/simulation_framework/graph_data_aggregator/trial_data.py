@@ -34,14 +34,13 @@ class TrialData:
         data_plane_outcome: int,
     ):
 
-        within_denom =  self._add_denominator(
+        within_denom = self._add_denominator(
             as_obj=as_obj,
             engine=engine,
             scenario=scenario,
             ctrl_plane_outcome=ctrl_plane_outcome,
             data_plane_outcome=data_plane_outcome,
         )
-
 
         if within_denom:
             self._add_numerator(

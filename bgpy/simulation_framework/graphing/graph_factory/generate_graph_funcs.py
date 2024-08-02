@@ -9,9 +9,7 @@ from ..line_info import LineInfo
 
 
 def _generate_graph(
-    self,
-    graph_category: GraphCategory,
-    data_dict: dict[DataPointKey, dict[str, float]]
+    self, graph_category: GraphCategory, data_dict: dict[DataPointKey, dict[str, float]]
 ) -> None:
     """Writes a graph to the graph dir"""
 

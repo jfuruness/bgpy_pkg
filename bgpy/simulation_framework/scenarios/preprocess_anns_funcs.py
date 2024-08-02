@@ -92,7 +92,9 @@ def shortest_path_export_all_hijack(
         if not ann.invalid_by_roa:
             processed_anns.append(ann)
             continue
-        elif issubclass(self_scenario.scenario_config.AdoptPolicyCls, (Pathend, PathEnd)):
+        elif issubclass(
+            self_scenario.scenario_config.AdoptPolicyCls, (Pathend, PathEnd)
+        ):
             shortest_as_path = _find_shortest_secondary_provider_path(
                 valid_ann.origin, engine
             )

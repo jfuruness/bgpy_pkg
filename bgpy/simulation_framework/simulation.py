@@ -151,7 +151,9 @@ class Simulation:
         """Runs the simulation and write the data"""
 
         graph_data_aggregator = self._get_data()
-        graph_data_aggregator.write_data(csv_path=self.csv_path, pickle_path=self.pickle_path)
+        graph_data_aggregator.write_data(
+            csv_path=self.csv_path, pickle_path=self.pickle_path
+        )
         self._graph_data(GraphFactoryCls, graph_factory_kwargs)
         # This object holds a lot of memory, good to get rid of it
         del graph_data_aggregator
@@ -258,7 +260,9 @@ class Simulation:
 
         engine = self._get_engine_for_run_chunk()
 
-        graph_data_aggregator = self.GraphDataAggregatorCls(graph_categories=self.graph_categories)
+        graph_data_aggregator = self.GraphDataAggregatorCls(
+            graph_categories=self.graph_categories
+        )
 
         for i, trial in self._get_run_chunk_iter(trials):
             # Use the same attacker victim pairs across all percent adoptions
@@ -442,7 +446,9 @@ class Simulation:
         # Set defaults for kwargs
         kwargs["pickle_path"] = kwargs.pop("pickle_path", self.pickle_path)
         kwargs["graph_dir"] = kwargs.pop("graph_dir", self.output_dir / "graphs")
-        kwargs["graph_categories"] = kwargs.pop("graph_categories", self.graph_categories)
+        kwargs["graph_categories"] = kwargs.pop(
+            "graph_categories", self.graph_categories
+        )
         if GraphFactoryCls:
             GraphFactoryCls(**kwargs).generate_graphs()
             print(f"\nWrote graphs to {kwargs['graph_dir']}")

@@ -7,9 +7,9 @@ from statistics import mean
 from statistics import stdev
 from typing import Any, Optional, Union
 
-from .data_key import DataKey
-from .metric import Metric
-from .metric_key import MetricKey
+from .data_point_key import DataPointKey
+from .trial_data import TrialData
+from .graph_category import GraphCategory
 
 from bgpy.enums import Plane, SpecialPercentAdoptions, Outcomes
 from bgpy.simulation_engine import BaseSimulationEngine
@@ -22,8 +22,10 @@ class GraphDataAggregator:
 
     def __init__(
         self,
-        data: Optional[defaultdict[DataKey, list[float]]] = None,
-        graph_categories: tuple[GraphCategory, ...] = tuple(list(get_all_graph_categories())),
+        data: Optional[defaultdict[DataPointKey, list[float]]] = None,
+        graph_categories: tuple[GraphCategory, ...] = tuple(
+            list(get_all_graph_categories())
+        ),
     ):
         """Inits data"""
 
@@ -31,7 +33,9 @@ class GraphDataAggregator:
         # key DataKey (prop_round, percent_adopt, scenario_label, MetricKey)
         # metric_key contains filtering info for the type of graph/data we collect
         if data:
-            self.data: dict[GraphCategory, defaultdict[DataPointKey, list[float]] = data
+            self.data: dict[GraphCategory, defaultdict[DataPointKey, list[float]]] = (
+                data
+            )
         else:
             self.data = {x: defaultdict(list) for x in graph_categories}
 
@@ -61,7 +65,7 @@ class GraphDataAggregator:
             # for k, v in other.data.items():
             #     new_data[k].extend(v)
             # .04s, not dangerous
-            new_data: dict[GraphCategory, defaultdict[DataPointKey, list[float]] = {
+            new_data: dict[GraphCategory, defaultdict[DataPointKey, list[float]]] = {
                 x: defaultdict(list) for x in graph_categories
             }
             for obj in (self, other):
