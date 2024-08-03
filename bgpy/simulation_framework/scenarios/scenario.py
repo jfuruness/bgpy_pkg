@@ -18,7 +18,6 @@ from bgpy.enums import (
     SpecialPercentAdoptions,
 )
 
-from .preprocess_anns_funcs import noop, PREPROCESS_ANNS_FUNC_TYPE
 from .scenario_config import ScenarioConfig
 
 if TYPE_CHECKING:
@@ -39,7 +38,6 @@ class Scenario(ABC):
         scenario_config: ScenarioConfig,
         percent_adoption: Union[float, SpecialPercentAdoptions] = 0,
         engine: Optional[BaseSimulationEngine] = None,
-        preprocess_anns_func: PREPROCESS_ANNS_FUNC_TYPE = noop,
         attacker_asns: Optional[frozenset[int]] = None,
         victim_asns: Optional[frozenset[int]] = None,
         adopting_asns: Optional[frozenset[int]] = None,
@@ -83,13 +81,11 @@ class Scenario(ABC):
             anns = self._get_announcements(engine=engine)
             self.roas = self._get_roas(announcements=anns, engine=engine)
             anns = self._add_roa_info_to_anns(announcements=anns, engine=engine)
-            self.announcements = preprocess_anns_func(self, anns, engine)
+            self.announcements = anns
 
         self.ordered_prefix_subprefix_dict: dict[str, list[str]] = (
             self._get_ordered_prefix_subprefix_dict()
         )
-
-        self.policy_classes_used: frozenset[Type[Policy]] = frozenset()
 
     #################
     # Get attackers #
@@ -329,10 +325,12 @@ class Scenario(ABC):
     #############################
 
     def setup_engine(self, engine: BaseSimulationEngine) -> None:
-        """Sets up engine"""
+        """Sets up engine
 
-        # TODO: MOVE OUTSIDE OF THIS CLASS!!!!
-        self.policy_classes_used = engine.setup(self)
+        Left this here so that it can be used as a hook
+        """
+
+        engine.setup(self)
 
     def get_policy_cls(self, as_obj: "AS") -> type[Policy]:
         """Returns the policy class for a given AS to set"""

@@ -19,15 +19,14 @@ class SimulationEngine(BaseSimulationEngine):
     # Setup funcs #
     ###############
 
-    def setup(self, scenario: "Scenario") -> frozenset[type[Policy]]:
+    def setup(self, scenario: "Scenario") -> None:
         """Sets AS classes and seeds announcements"""
 
-        policies_used: frozenset[type[Policy]] = self._set_as_classes(scenario)
+        self._set_as_classes(scenario)
         self._seed_announcements(scenario.announcements)
         self.ready_to_run_round = 0
-        return policies_used
 
-    def _set_as_classes(self, scenario: "Scenario") -> frozenset[type[Policy]]:
+    def _set_as_classes(self, scenario: "Scenario") -> None:
         """Resets Engine ASes and changes their AS class
 
         We do this here because we already seed from the scenario
@@ -36,7 +35,6 @@ class SimulationEngine(BaseSimulationEngine):
         and have each do half and half
         """
 
-        policy_classes_used = set()
         # Done here to save as much time  as possible
         for as_obj in self.as_graph:
             # Delete the old policy and remove references so that RAM can be reclaimed
@@ -44,8 +42,6 @@ class SimulationEngine(BaseSimulationEngine):
             # set the AS class to be the proper type of AS
             Cls = scenario.get_policy_cls(as_obj)
             as_obj.policy = Cls(as_=as_obj)
-            policy_classes_used.add(Cls)
-        return frozenset(policy_classes_used)
 
     def _seed_announcements(self, announcements: tuple["Ann", ...] = ()) -> None:
         """Seeds announcement at the proper AS

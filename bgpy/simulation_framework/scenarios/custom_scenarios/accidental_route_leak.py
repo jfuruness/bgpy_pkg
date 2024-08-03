@@ -7,7 +7,6 @@ from bgpy.as_graphs.base.as_graph.customer_cone_funcs import _get_cone_size_help
 from .valid_prefix import ValidPrefix
 from ..scenario import Scenario
 from ..scenario_config import ScenarioConfig
-from ..preprocess_anns_funcs import PREPROCESS_ANNS_FUNC_TYPE, noop
 
 
 if TYPE_CHECKING:
@@ -15,7 +14,7 @@ if TYPE_CHECKING:
     from bgpy.simulation_engine import Announcement as Ann
 
 
-class AccidentalRouteLeak(ValidPrefix):
+class AccidentalRouteLeak(VictimsPrefix):
     """An accidental route leak of a valid prefix"""
 
     min_propagation_rounds: int = 2
@@ -24,10 +23,13 @@ class AccidentalRouteLeak(ValidPrefix):
         self,
         *,
         scenario_config: ScenarioConfig,
-        percent_adoption: float | SpecialPercentAdoptions = 0,
+        percent_adoption: Union[float, SpecialPercentAdoptions] = 0,
         engine: Optional["BaseSimulationEngine"] = None,
-        preprocess_anns_func: PREPROCESS_ANNS_FUNC_TYPE = noop,
+        attacker_asns: Optional[frozenset[int]] = None,
+        victim_asns: Optional[frozenset[int]] = None,
+        adopting_asns: Optional[frozenset[int]] = None,
     ):
+
 
         assert engine, "Need engine for customer cones"
         self._attackers_customer_cones_asns: set[int] = set()
@@ -35,7 +37,9 @@ class AccidentalRouteLeak(ValidPrefix):
             scenario_config=scenario_config,
             percent_adoption=percent_adoption,
             engine=engine,
-            preprocess_anns_func=preprocess_anns_func,
+            attacker_asns=attacker_asns,
+            victim_asns=victim_asns,
+            adopting_asns=adopting_asns,
         )
         if (
             self.scenario_config.attacker_subcategory_attr in self.warning_as_groups

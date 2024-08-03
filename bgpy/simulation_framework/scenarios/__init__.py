@@ -1,5 +1,3 @@
-from . import preprocess_anns_funcs
-
 from .scenario_config import ScenarioConfig
 from .scenario import Scenario
 
@@ -14,7 +12,6 @@ from .custom_scenarios import ValidPrefix
 
 
 __all__ = [
-    "preprocess_anns_funcs",
     "ScenarioConfig",
     "Scenario",
     "AccidentalRouteLeak",

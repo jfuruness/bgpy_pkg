@@ -63,7 +63,7 @@ class BaseSimulationEngine(YamlAble, ABC):
     ###############
 
     @abstractmethod
-    def setup(self, scenario: "Scenario") -> frozenset[type[Policy]]:
+    def setup(self, scenario: "Scenario") -> None:
         """Sets AS classes and seeds announcements"""
 
         raise NotImplementedError

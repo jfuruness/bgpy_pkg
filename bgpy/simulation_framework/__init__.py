@@ -7,7 +7,6 @@ from .graph_data_aggregator import (
     DataPointKey,
 )
 
-from .scenarios import preprocess_anns_funcs
 from .scenarios import ScenarioConfig
 from .scenarios import Scenario
 from .scenarios import AccidentalRouteLeak
@@ -33,7 +32,6 @@ __all__ = [
     "DataPointKey",
     "GraphCategory",
     "DataPointAggData",
-    "preprocess_anns_funcs",
     "ScenarioConfig",
     "Scenario",
     "AccidentalRouteLeak",

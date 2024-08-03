@@ -278,7 +278,6 @@ class Simulation:
                         scenario_config=scenario_config,
                         percent_adoption=percent_adopt,  # type: ignore
                         engine=engine,
-                        preprocess_anns_func=scenario_config.preprocess_anns_func,
                         attacker_asns=trial_attacker_asns,
                         victim_asns=trial_victim_asns,
                         adopting_asns=adopting_asns,

@@ -9,7 +9,6 @@ from .rov import (
 from .bgpsec import BGPSecFull
 from .bgpsec import BGPSec
 from .only_to_customers import OnlyToCustomers, OnlyToCustomersFull
-from .pathend import Pathend, PathendFull
 from .path_end import PathEnd, PathEndFull
 from .rovpp import (
     ROVPPV1Lite,

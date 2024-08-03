@@ -10,8 +10,6 @@ from bgpy.simulation_engine import Announcement as Ann
 from bgpy.simulation_engine import Policy
 from bgpy.simulation_engine import BGP
 
-from .preprocess_anns_funcs import noop, PREPROCESS_ANNS_FUNC_TYPE
-
 
 if TYPE_CHECKING:
     from .scenario import Scenario
@@ -31,7 +29,6 @@ class ScenarioConfig:
     ScenarioCls: type["Scenario"]
     # Set in post_init
     propagation_rounds: int = None  # type: ignore
-    preprocess_anns_func: PREPROCESS_ANNS_FUNC_TYPE = noop
     # This is the base type of announcement for this class
     # You can specify a different base ann
     AnnCls: type[Ann] = Ann
