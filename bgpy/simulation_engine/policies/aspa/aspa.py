@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Callable
 
 from bgpy.enums import Relationships
 from bgpy.simulation_engine.policies.rov import ROV
@@ -8,15 +8,15 @@ if TYPE_CHECKING:
 
 
 class ASPA(ROV):
-    """An Policy that deploys ASPA
+    """A Policy that deploys ASPA
 
     We adopt from ROV since deploying ASPA makes no sense without ROV
 
     We experimented with adding a cache to the provider_check
-    but this has a negligable impact on performance
+    but this has a negligible impact on performance
 
     Removing the path reversals sped up performance by about 5%
-    but made the code a lot less readable and deviated from the RFC
+    but made the code a lot less readable and deviated from the RFC,
     so we decided to forgo those as well
     """
 
@@ -27,9 +27,10 @@ class ASPA(ROV):
 
         assert len(set(ann.as_path)) == len(ann.as_path), "We deal with prepending"
 
+        # Note: This first if check has to be removed if you want to implement
+        # route server to RS-Client behaviour
         if ann.next_hop_asn != ann.as_path[0]:
             return False
-        # If ann.aspa is set, only accept from a provider
         elif from_rel.value in (
             Relationships.CUSTOMERS.value,
             Relationships.PEERS.value,
@@ -40,104 +41,144 @@ class ASPA(ROV):
         else:
             raise NotImplementedError("Should never reach here")
 
-    def _upstream_check(self, ann: "Ann", from_rel: Relationships) -> bool:
+    def _upstream_check(self, ann: "Ann", from_rel: "Relationships") -> bool:
         """ASPA upstream check"""
 
         # Upstream check
         if len(ann.as_path) == 1:
             return super()._valid_ann(ann, from_rel)
         else:
-            reversed_path = ann.as_path[::-1]  # type: ignore
             # For every adopting ASPA AS in the path,
             # The next ASN in the path must be in their providers list
-            for i in range(len(reversed_path) - 1):
-                if not self._provider_check(reversed_path[i], reversed_path[i + 1]):
-                    return False
 
-        return super()._valid_ann(ann, from_rel)  # type: ignore
-
-    def _downstream_check(self, ann: "Ann", from_rel: Relationships) -> bool:
-        """ASPA downstream check"""
-        # downstream check
-        if len(ann.as_path) <= 2:
-            return super()._valid_ann(ann, from_rel)
-        else:
-            u_min = self._calculate_u_min(ann)  # type: ignore
-            v_max = self._calculate_v_max(ann)
-
-            if u_min <= v_max:
+            # 4. If max_up_ramp < N, the procedure halts with the outcome "Invalid".
+            if self.get_max_up_ramp_length(ann) < len(ann.as_path):
                 return False
-            else:
-                # NOTE: everything past step 4 in the RFC does not result
-                # in "invalid", so we omit them
+
+            # No need to actually verify the min_up_ramp as we accept Unknown announcements
+            # 5. If min_up_ramp < N, the procedure halts with the outcome "Unknown".
+            if self.get_min_up_ramp_length(ann) < len(ann.as_path):
+                # Valid as we do not invalidate Unknown announcements
                 return super()._valid_ann(ann, from_rel)
 
-    def _calculate_u_min(self, ann: "Ann") -> int:
-        """Calculates u_min from ASPA RFC"""
+        # Actually ASPA-valid
+        return super()._valid_ann(ann, from_rel)
 
-        path = ann.as_path
+    def get_max_up_ramp_length(self, ann: "Ann") -> int:
+        """Upstream ramp length function, responsible for the qualification into either Invalid or Unknown/Valid"""
+        reversed_path = ann.as_path[::-1]
+        uppercase_i = iterate_check_func_over_asn_path(
+            reversed_path, self._provider_or_peer_check
+        )
 
-        N = len(path)
+        # If there is no such I, the maximum up-ramp length is set equal to the AS_PATH length N
+        if uppercase_i == len(reversed_path) - 1:
+            max_up_ramp = len(reversed_path)
+        else:
+            max_up_ramp = uppercase_i
 
-        def convert_u_to_index(u: int) -> int:
-            """Converts u to index in array
+        return max_up_ramp
 
-            For example, take AS path 1, 2, 666, 777
-            In the ASPA RFC, this is  N, 3, 2,   1 indexed
-            And in Python, this is    0, 1, 2,   3 indexed
-            So to go from u to python index, you do:
-            """
-            return N - u
+    def get_min_up_ramp_length(self, ann: "Ann") -> int:
+        """Upstream ramp length function, responsible for the qualification into either Unknown or Valid"""
+        reversed_path = ann.as_path[::-1]
+        uppercase_i = iterate_check_func_over_asn_path(
+            reversed_path, self._provider_check
+        )
+        # If there is no such I, the AS_PATH consists of only "Provider+" pairs;
+        # so the minimum up-ramp length is set equal to the AS_PATH length N.
+        if uppercase_i == len(reversed_path) - 1:
+            min_up_ramp = len(reversed_path)
+        else:
+            min_up_ramp = uppercase_i
 
-        # https://datatracker.ietf.org/doc/html/draft-ietf-sidrops-aspa-verification-16
-        u_min = len(path) + 1  # type: ignore
-        for u in range(2, N + 1):
-            u_minus_one_index = convert_u_to_index(u - 1)
-            u_index = convert_u_to_index(u)
-            # False from this func is the same as "Not Provider+" from the ASPA RFC
-            if not self._provider_check(path[u_minus_one_index], path[u_index]):
-                u_min = u
-                break
-        return u_min
+        return min_up_ramp
 
-    def _calculate_v_max(self, ann: "Ann") -> int:
-        """Calculates v_max from ASPA RFC"""
+    def _downstream_check(self, ann: "Ann", from_rel: "Relationships") -> bool:
+        """ASPA downstream check"""
+        # downstream check
 
-        N = len(ann.as_path)
+        # 4. If max_up_ramp + max_down_ramp < N, the procedure halts with the outcome "Invalid".
+        max_up_ramp = self.get_max_up_ramp_length(ann)
+        if max_up_ramp + self.get_max_down_ramp_length(ann) < len(ann.as_path):
+            return False
 
-        def convert_v_to_index(v: int) -> int:
-            """Converts v to index in array
+        # 5. If min_up_ramp + min_down_ramp < N, the procedure halts with the outcome "Unknown".
+        min_up_ramp = self.get_min_up_ramp_length(ann)
+        if min_up_ramp + self.get_min_down_ramp_length(ann) < len(ann.as_path):
+            return super()._valid_ann(ann, from_rel)
 
-            For example, take AS path 1, 2, 666, 777
-            In the ASPA RFC, this is  N, 3, 2,   1 indexed
-            And in Python, this is    0, 1, 2,   3 indexed
-            So to go from v to python index, you do:
-            """
-            return N - v
+        # Actually ASPA valid
+        return super()._valid_ann(ann, from_rel)
 
-        v_max = 0
-        for v in range(N - 1, 1 - 1, -1):
-            v_index = convert_v_to_index(v)
-            v_plus_one_index = convert_v_to_index(v + 1)
-            # The provider check returning false is the same as the hop func
-            # described in the ASPA RFC section 5 returning "Not Provider+"
-            if not self._provider_check(
-                ann.as_path[v_plus_one_index], ann.as_path[v_index]
-            ):
-                v_max = v
-                break
-        return v_max
+    def get_max_down_ramp_length(self, ann: "Ann") -> int:
+        """Downstream ramp length function, responsible for the qualification into either Invalid or Unknown/Valid
+        in combination with the maximum upstream ramp length results"""
+        as_path = ann.as_path
+        uppercase_j = iterate_check_func_over_asn_path(
+            as_path, self._provider_or_peer_check
+        )
+        # If there is no such J, the maximum down-ramp length is set equal to the AS_PATH length N
+        if uppercase_j == len(as_path) - 1:
+            max_down_ramp = len(as_path)
+        else:
+            max_down_ramp = uppercase_j
+        return max_down_ramp
+
+    def get_min_down_ramp_length(self, ann: "Ann") -> int:
+        """Downstream ramp length function, responsible for the qualification into either Unknown or Valid
+        in combination with the minimum upstream ramp length results"""
+        as_path = ann.as_path
+        uppercase_j = iterate_check_func_over_asn_path(as_path, self._provider_check)
+
+        # If there is no such J, the minimum down-ramp length is set equal to the AS_PATH length N.
+        if uppercase_j == len(as_path) - 1:
+            min_down_ramp = len(as_path)
+        else:
+            min_down_ramp = uppercase_j
+
+        return min_down_ramp
 
     def _provider_check(self, asn1: int, asn2: int) -> bool:
-        """Returns False if asn2 is not in asn1's provider_asns, AND asn1 adopts ASPAi
+        """Returns True if asn2 is the provider of asn1. If asn1 does not adopt
+        ASPA, the function returns False. This function equals Provider+ from the RFC
 
-        This also essentially can take the place of the "hop check" listed in
-        ASPA RFC section 5
+        This function is used to establish the length of the min_up_ramp
+        and min_down_ramp
+        """
+        cur_as_obj = self.as_.as_graph.as_dict[asn1]
+        if isinstance(cur_as_obj.policy, ASPA):
+            next_as_obj = self.as_.as_graph.as_dict[asn2]
+            return next_as_obj.asn in cur_as_obj.provider_asns
+        else:
+            return False
+
+    def _provider_or_peer_check(self, asn1: int, asn2: int) -> bool:
+        """Returns False if asn2 is not in asn1's provider_asns, AND asn1 adopts ASPA
+
+        This function is used to establish the length of the max_up_ramp
+        and max_down_ramp and its boolean True equals "No Attestation" or "Provider+"
         """
 
         cur_as_obj = self.as_.as_graph.as_dict[asn1]
-        if isinstance(cur_as_obj.policy, ASPA):
+        if not isinstance(cur_as_obj.policy, ASPA):
+            return True
+        else:
             next_as_obj = self.as_.as_graph.as_dict[asn2]
             if next_as_obj.asn not in cur_as_obj.provider_asns:
                 return False
         return True
+
+
+def iterate_check_func_over_asn_path(
+    reversed_path: tuple[int, ...], check_func: Callable
+) -> int:
+    """Utility function for ASPA as not to have too much code repetition and to keep
+    the path iteration logic unified"""
+    current_checked_length = 0
+    for i in range(len(reversed_path) - 1):
+        if check_func(reversed_path[i], reversed_path[i + 1]):
+            current_checked_length += 1
+        else:
+            break
+    return current_checked_length
