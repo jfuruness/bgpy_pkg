@@ -1,15 +1,17 @@
 from dataclasses import replace
+from typing import TYPE_CHECKING
 
 from frozendict import frozendict
-
-from bgpy.simulation_framework import GraphCategory, DataPointKey, DataPointAggData
 
 from ..line_data import LineData
 from ..line_info import LineInfo
 
+if TYPE_CHECKING:
+    from bgpy.simulation_framework import GraphCategory, DataPointKey, DataPointAggData
+
 
 def _generate_graph(
-    self, graph_category: GraphCategory, data_dict: dict[DataPointKey, DataPointAggData]
+    self, graph_category: "GraphCategory", data_dict: dict["DataPointKey", "DataPointAggData"]
 ) -> None:
     """Writes a graph to the graph dir"""
 

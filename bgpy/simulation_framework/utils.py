@@ -6,7 +6,7 @@ from typing import Any, Iterable
 from requests_cache import CachedSession
 
 from bgpy.enums import ASGroups, Plane, Outcomes
-from bgpy.simulation_framework import GraphCategory
+from bgpy.simulation_framework.graph_data_aggregator.graph_category import GraphCategory
 
 
 def get_all_graph_categories() -> Iterable[GraphCategory]:

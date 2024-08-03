@@ -1,24 +1,27 @@
 from collections import defaultdict
 from dataclasses import replace
 from statistics import mean
+from typing import TYPE_CHECKING
 
 import matplotlib
 import matplotlib.pyplot as plt
-
-from bgpy.simulation_framework import GraphCategory, DataPointKey, DataPointAggData
 
 from ..line_data import LineData
 from ..line_info import LineInfo
 from ..line_properties_generator import LinePropertiesGenerator
 
+if TYPE_CHECKING:
+    from bgpy.simulation_framework.graph_data_aggregator import (
+        GraphCategory, DataPointKey, DataPointAggData
+    )
 
 def _preprocessing_steps(
-    self, graph_category: GraphCategory, data_dict: dict[DataPointKey, DataPointAggData]
+    self, graph_category: "GraphCategory", data_dict: dict["DataPointKey", "DataPointAggData"]
 ):
 
     graph_name = self._get_graph_name(graph_category)
 
-    label_rows_dict: defaultdict[str, list[DataPointAggData]] = defaultdict(list)
+    label_rows_dict: defaultdict[str, list["DataPointAggData"]] = defaultdict(list)
     for data_point_key, data in data_dict.items():
         label_rows_dict[data_point_key.scenario_config.scenario_label].append(data)
 
@@ -32,7 +35,7 @@ def _preprocessing_steps(
     return graph_name, line_data_dict, fig, ax
 
 
-def _get_graph_name(self, graph_category: GraphCategory) -> str:
+def _get_graph_name(self, graph_category: "GraphCategory") -> str:
 
     return (
         f"{graph_category.as_group.value}"
@@ -42,7 +45,7 @@ def _get_graph_name(self, graph_category: GraphCategory) -> str:
     ).replace(" ", "")
 
 
-def _customize_graph(self, fig, ax, graph_category: GraphCategory):
+def _customize_graph(self, fig, ax, graph_category: "GraphCategory"):
     """Customizes graph properties"""
 
     fig.set_dpi(300)
@@ -61,7 +64,7 @@ def _customize_graph(self, fig, ax, graph_category: GraphCategory):
 
 
 def _get_line_data_dict(
-    self, ax, label_rows_dict: defaultdict[str, list[DataPointAggData]]
+    self, ax, label_rows_dict: defaultdict[str, list["DataPointAggData"]]
 ) -> dict[str, LineData]:
     # Used for random markers/line styles
     line_properties_generator = LinePropertiesGenerator()
@@ -98,12 +101,12 @@ def _add_hardcoded_lines_to_line_data_dict(
 def _get_line_data(
     self,
     label: str,
-    graph_rows: list[dict[str, float | DataPointKey]],
+    graph_rows: list["DataPointAggData"],
     line_properties_generator: LinePropertiesGenerator,
 ) -> LineData:
     """Gets the complete line data for a specific line"""
 
-    formatted_graph_rows: list[dict[str, float | DataPointKey]] = sorted(
+    formatted_graph_rows: list["DataPointAggData"] = sorted(
         graph_rows, key=self._get_percent_adopt
     )
 
@@ -123,7 +126,7 @@ def _get_line_data(
     )
 
 
-def _get_percent_adopt(self, graph_row: DataPointAggData) -> float:
+def _get_percent_adopt(self, graph_row: "DataPointAggData") -> float:
     """Extractions percent adoption for sort comparison
 
     Need separate function for mypy puposes
@@ -134,7 +137,7 @@ def _get_percent_adopt(self, graph_row: DataPointAggData) -> float:
 
 
 def _get_xs(
-    self, graph_rows_sorted: list[DataPointAggData], line_info: LineInfo
+    self, graph_rows_sorted: list["DataPointAggData"], line_info: LineInfo
 ) -> tuple[float, ...]:
     """Gets the xs for a given line"""
 
@@ -147,7 +150,7 @@ def _get_xs(
 
 
 def _get_ys(
-    self, graph_rows_sorted: list[DataPointAggData], line_info: LineInfo
+    self, graph_rows_sorted: list["DataPointAggData"], line_info: LineInfo
 ) -> tuple[float, ...]:
     """Gets the ys for a given line"""
 
@@ -162,7 +165,7 @@ def _get_ys(
 
 
 def _get_yerrs(
-    self, graph_rows_sorted: list[DataPointAggData], line_info: LineInfo
+    self, graph_rows_sorted: list["DataPointAggData"], line_info: LineInfo
 ) -> tuple[float, ...]:
     """Gets the yerrs for a given line"""
 
