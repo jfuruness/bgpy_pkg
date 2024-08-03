@@ -14,7 +14,7 @@ class ROAInfo:
         prefix_length = int(self.prefix.split("/")[-1])
 
         if self.max_length is None:
-            object.__setattr__(self, "max_length", prefix_length)
+            object.__setattr__(self, "max_length", prefix_length)  # type: ignore
 
         msg = (
             "Due to a bug in the ROAChecker, max length MUST be equal to the prefix "
@@ -23,7 +23,7 @@ class ROAInfo:
             "To work around this - simply have a ROA for every prefix length, and that "
             "will have the same affect as a single ROA with a greater max length"
         )
-        if self.max_length != self.prefix_length:
+        if self.max_length != prefix_length:
             raise ValueError(msg)
 
     @property
