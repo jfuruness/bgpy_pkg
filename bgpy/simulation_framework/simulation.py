@@ -446,9 +446,6 @@ class Simulation:
         # Set defaults for kwargs
         kwargs["pickle_path"] = kwargs.pop("pickle_path", self.pickle_path)
         kwargs["graph_dir"] = kwargs.pop("graph_dir", self.output_dir / "graphs")
-        kwargs["graph_categories"] = kwargs.pop(
-            "graph_categories", self.graph_categories
-        )
         if GraphFactoryCls:
             GraphFactoryCls(**kwargs).generate_graphs()
             print(f"\nWrote graphs to {kwargs['graph_dir']}")

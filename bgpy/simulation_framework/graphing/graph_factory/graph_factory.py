@@ -94,10 +94,16 @@ class GraphFactory:
         for graph_category, data_dict in pickle_graph_data.items():
             for data_point_key, data in data_dict.items():
                 if data_point_key.propagation_round == max_propagation_round:
-                    filtered_graph_data[data_point_key] = data
-                    assert data_point_key.propagation_round == (
+                    filtered_graph_data[graph_category][data_point_key] = data
+                    err = (
+                        "These two numbers should be the same. "
+                        f"{data_point_key.propagation_round + 1} "
+                        f"{data_point_key.scenario_config.propagation_rounds} "
+                    )
+                    # Add one due to index 0 when comparing to total
+                    assert data_point_key.propagation_round + 1 == (
                         data_point_key.scenario_config.propagation_rounds
-                    ), "These two numbers should be the same"
+                    ), err
 
         return filtered_graph_data
 
