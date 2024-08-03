@@ -12,11 +12,16 @@ from ..line_properties_generator import LinePropertiesGenerator
 
 if TYPE_CHECKING:
     from bgpy.simulation_framework.graph_data_aggregator import (
-        GraphCategory, DataPointKey, DataPointAggData
+        GraphCategory,
+        DataPointKey,
+        DataPointAggData,
     )
 
+
 def _preprocessing_steps(
-    self, graph_category: "GraphCategory", data_dict: dict["DataPointKey", "DataPointAggData"]
+    self,
+    graph_category: "GraphCategory",
+    data_dict: dict["DataPointKey", "DataPointAggData"],
 ):
 
     graph_name = self._get_graph_name(graph_category)

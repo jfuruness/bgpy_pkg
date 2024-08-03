@@ -11,7 +11,9 @@ if TYPE_CHECKING:
 
 
 def _generate_graph(
-    self, graph_category: "GraphCategory", data_dict: dict["DataPointKey", "DataPointAggData"]
+    self,
+    graph_category: "GraphCategory",
+    data_dict: dict["DataPointKey", "DataPointAggData"],
 ) -> None:
     """Writes a graph to the graph dir"""
 
