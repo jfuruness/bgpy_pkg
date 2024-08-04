@@ -12,7 +12,8 @@ authors = [
     {name = "Justin Furuness", email = "jfuruness@gmail.com"},
     {name = "Cameron Morris", email = "cameron.morris@uconn.edu"},
     {name = "Reynaldo Morillo", email = "reynaldo.morillo@uconn.edu"},
-    {name = "Arvind Kasiliya", email = "arvind.kasiliya@uconn.edu"}
+    {name = "Arvind Kasiliya", email = "arvind.kasiliya@uconn.edu"},
+    {name = "Joel Braun", email = "joel.braun@de-cix.net"}
 ]
 maintainers = [
   {name = "Justin Furuness", email = "jfuruness@gmail.com"}
