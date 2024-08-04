@@ -6,8 +6,7 @@ from bgpy.tests.engine_tests.utils import EngineTestConfig
 from bgpy.simulation_engine import BGP, PathEndFull
 from bgpy.simulation_framework import (
     ScenarioConfig,
-    PrefixHijack,
-    preprocess_anns_funcs,
+    ForgedOriginHijack,
 )
 
 
@@ -21,8 +20,7 @@ ex_config_016 = EngineTestConfig(
     name="ex_016_origin_prefix_hijack_pathend",
     desc=desc,
     scenario_config=ScenarioConfig(
-        ScenarioCls=PrefixHijack,
-        preprocess_anns_func=preprocess_anns_funcs.forged_origin_export_all_hijack,
+        ScenarioCls=ForgedOriginHijack,
         BasePolicyCls=BGP,
         override_attacker_asns=frozenset({ASNs.ATTACKER.value}),
         override_victim_asns=frozenset({ASNs.VICTIM.value}),

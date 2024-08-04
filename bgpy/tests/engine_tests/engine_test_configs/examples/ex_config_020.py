@@ -7,7 +7,6 @@ from bgpy.simulation_engine import BGPFull, OnlyToCustomersFull
 from bgpy.simulation_framework import (
     ScenarioConfig,
     AccidentalRouteLeak,
-    preprocess_anns_funcs,
 )
 
 
@@ -23,7 +22,6 @@ ex_config_020 = EngineTestConfig(
     desc=desc,
     scenario_config=ScenarioConfig(
         ScenarioCls=AccidentalRouteLeak,
-        preprocess_anns_func=preprocess_anns_funcs.noop,
         BasePolicyCls=BGPFull,
         override_attacker_asns=frozenset({ASNs.ATTACKER.value}),
         override_victim_asns=frozenset({ASNs.VICTIM.value}),

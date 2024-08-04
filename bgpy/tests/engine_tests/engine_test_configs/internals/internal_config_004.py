@@ -4,9 +4,8 @@ from bgpy.as_graphs import ASGraphInfo, PeerLink, CustomerProviderLink as CPLink
 from bgpy.enums import ASNs
 from bgpy.simulation_engine import BGP, ASPA
 from bgpy.simulation_framework import (
-    PrefixHijack,
+    ForgedOriginHijack,
     ScenarioConfig,
-    preprocess_anns_funcs,
 )
 from bgpy.tests.engine_tests.utils import EngineTestConfig
 
@@ -48,8 +47,7 @@ internal_config_004 = EngineTestConfig(
         " prevent it from popping up again"
     ),
     scenario_config=ScenarioConfig(
-        ScenarioCls=PrefixHijack,
-        preprocess_anns_func=preprocess_anns_funcs.forged_origin_export_all_hijack,
+        ScenarioCls=ForgedOriginHijack,
         BasePolicyCls=BGP,
         override_victim_asns=frozenset({ASNs.VICTIM.value}),
         override_attacker_asns=frozenset({ASNs.ATTACKER.value}),

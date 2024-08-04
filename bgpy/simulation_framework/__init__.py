@@ -13,9 +13,12 @@ from .scenarios import AccidentalRouteLeak
 from .scenarios import PrefixHijack
 from .scenarios import SubprefixHijack
 from .scenarios import NonRoutedPrefixHijack
-from .scenarios import SuperprefixPrefixHijack
 from .scenarios import NonRoutedSuperprefixHijack
 from .scenarios import NonRoutedSuperprefixPrefixHijack
+from .scenarios import ForgedOriginHijack
+from .scenarios import FirstASNStrippingHijack
+from .scenarios import ShortestPathHijack
+from .scenarios import SuperprefixPrefixHijack
 from .scenarios import ValidPrefix
 
 from .simulation import Simulation
@@ -34,14 +37,17 @@ __all__ = [
     "DataPointAggData",
     "ScenarioConfig",
     "Scenario",
+    "Simulation",
+    "GraphCategory",
     "AccidentalRouteLeak",
     "PrefixHijack",
     "SubprefixHijack",
     "NonRoutedPrefixHijack",
-    "SuperprefixPrefixHijack",
     "NonRoutedSuperprefixHijack",
     "NonRoutedSuperprefixPrefixHijack",
+    "ForgedOriginHijack",
+    "FirstASNStrippingHijack",
+    "ShortestPathHijack",
+    "SuperprefixPrefixHijack",
     "ValidPrefix",
-    "Simulation",
-    "GraphCategory",
 ]
