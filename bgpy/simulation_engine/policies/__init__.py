@@ -1,15 +1,17 @@
-from .policy import Policy
+from .aspa import ASPA, ASPAFull
 from .bgp import BGP, BGPFull
+from .bgpsec import BGPSecFull
+from .bgpsec import BGPSec
+from .custom_attackers import ShortestPathASPAAttacker, FirstASNStrippingASPAAttacker
+from .only_to_customers import OnlyToCustomers, OnlyToCustomersFull
+from .path_end import PathEnd, PathEndFull
+from .policy import Policy
 from .rov import (
     PeerROV,
     PeerROVFull,
     ROV,
     ROVFull,
 )
-from .bgpsec import BGPSecFull
-from .bgpsec import BGPSec
-from .only_to_customers import OnlyToCustomers, OnlyToCustomersFull
-from .path_end import PathEnd, PathEndFull
 from .rovpp import (
     ROVPPV1Lite,
     ROVPPV1LiteFull,
@@ -18,8 +20,6 @@ from .rovpp import (
     ROVPPV2ImprovedLite,
     ROVPPV2ImprovedLiteFull,
 )
-
-from .aspa import ASPA, ASPAFull
 
 __all__ = [
     "BGP",
@@ -33,8 +33,6 @@ __all__ = [
     "BGPSec",
     "OnlyToCustomers",
     "OnlyToCustomersFull",
-    "Pathend",
-    "PathendFull",
     "PathEnd",
     "PathEndFull",
     "ROVPPV1Lite",
@@ -45,4 +43,6 @@ __all__ = [
     "ROVPPV2ImprovedLiteFull",
     "ASPA",
     "ASPAFull",
+    "ShortestPathASPAAttacker",
+    "FirstASNStrippingASPAAttacker",
 ]

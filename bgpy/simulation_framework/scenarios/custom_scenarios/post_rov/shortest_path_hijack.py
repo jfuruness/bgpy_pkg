@@ -1,12 +1,43 @@
+from collections import deque
 from typing import Optional, TYPE_CHECKING
 import warnings
 
+from bgpy.as_graphs import AS
 from bgpy.enums import Prefixes
 from bgpy.enums import Timestamps
 
+from bgpy.simulation_engine import (
+    BGP,
+    BGPFull,
+    Policy,
+    PeerROV,
+    PeerROVFull,
+    ROV,
+    ROVFull,
+    BGPSecFull,
+    BGPSec,
+    OnlyToCustomers,
+    OnlyToCustomersFull,
+    PathEnd,
+    PathEndFull,
+    ROVPPV1Lite,
+    ROVPPV1LiteFull,
+    ROVPPV2Lite,
+    ROVPPV2LiteFull,
+    ROVPPV2ImprovedLite,
+    ROVPPV2ImprovedLiteFull,
+    ASPA,
+    ASPAFull,
+    ShortestPathASPAAttacker
+)
 from bgpy.simulation_framework.scenarios.custom_scenarios.victims_prefix import (
     VictimsPrefix,
 )
+from bgpy.simulation_framework.scenarios.custom_scenarios.pre_rov import (
+    PrefixHijack,
+)
+
+from .forged_origin_hijack import ForgedOriginHijack
 
 if TYPE_CHECKING:
     from bgpy.simulation_engine import Announcement as Ann, BaseSimulationEngine
@@ -14,6 +45,8 @@ if TYPE_CHECKING:
 
 class ShortestPathHijack(VictimsPrefix):
     """Shortest path allowed by defense set by AdoptPolicyCls against a prefix"""
+
+    RequiredASPAAttackerCls = ShortestPathASPAAttacker
 
     def _get_announcements(
         self,
@@ -39,13 +72,13 @@ class ShortestPathHijack(VictimsPrefix):
         """Returns announcements for the shortest path attacker"""
 
         if self.scenario_config.AdoptPolicyCls in self.pre_rov_policy_classes:
-            return self._get_prefix_attacker_anns(*args, **kwargs)
+            return self._get_prefix_attacker_anns(engine=engine)
         elif self.scenario_config.AdoptPolicyCls in self.rov_policy_classes:
-            return self._get_forged_origin_attack_anns(*args, **kwargs)
+            return self._get_forged_origin_attack_anns(engine=engine)
         elif self.scenario_config.AdoptPolicyCls in (PathEnd, PathEndFull):
-            return self._get_pathend_attack_anns(*args, **kwargs)
+            return self._get_pathend_attack_anns(engine=engine)
         elif self.scenario_config.AdoptPolicyCls in (ASPA, ASPAFull):
-            return self._get_aspa_attack_anns(*args, **kwargs)
+            return self._get_aspa_attack_anns(engine=engine)
         else:
             raise NotImplementedError(
                 "Need to code shortest path attack against "
@@ -69,6 +102,7 @@ class ShortestPathHijack(VictimsPrefix):
             raise NotImplementedError
 
         root_as_obj = engine.as_graph.as_dict[next(iter(self.victim_asns))]
+        root_asn = root_as_obj.asn
         shortest_valid_path = None
         for first_provider in root_as_obj.providers:
             # You only need legit origin and their provider, you don't need three
@@ -117,11 +151,12 @@ class ShortestPathHijack(VictimsPrefix):
         if len(self.victim_asns) > 1:
             raise NotImplementedError
 
-        if self.scenario_config.AttackerAdoptPolicyCls != ASPAShortestPathAttacker:
+        if self.scenario_config.AttackerAdoptPolicyCls != RequiredASPAAttackerCls::
             raise ValueError(
                 "For a shortest path export all attack against ASPA, "
-                "scenario_config.AttackerAdoptPolicyCls must be "
-                "ASPAShortestPathAttacker"
+                "scenario_config.AttackerAdoptPolicyCls must be set to "
+                "ASPAShortestPathAttacker, which you can import like "
+                "from bgpy.simulation_engine import ShortestPathASPAAttacker"
             )
         assert engine, "mypy"
 
@@ -239,7 +274,7 @@ class ShortestPathHijack(VictimsPrefix):
                     if provider_path is not None:
                         if shortest_provider_path is None:
                             shortest_provider_path = provider_path
-                        elif len(provider_path) < len(shortest_provider_path):  # type: ignore
+                        elif len(provider_path) < len(shortest_provider_path):
                             shortest_provider_path = provider_path
                 # relevant to root ASN
                 if shortest_provider_path:
@@ -296,7 +331,7 @@ class ShortestPathHijack(VictimsPrefix):
                 ROVPPV1LiteFull,
                 ROVPPV2Lite,
                 ROVPPV2LiteFull,
-                ROVPPV2ImprovedList,
+                ROVPPV2ImprovedLite,
                 ROVPPV2ImprovedLiteFull,
             }
         )

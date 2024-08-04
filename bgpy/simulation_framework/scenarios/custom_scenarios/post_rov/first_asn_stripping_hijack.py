@@ -8,6 +8,8 @@ if TYPE_CHECKING:
 class FirstASNStrippingHijack(ShortestPathHijack):
     """An extension of the shortest path hijack that strips the first ASN"""
 
+    RequiredASPAAttackerCls = FirstASNStrippingASPAAttacker
+
     def _get_announcements(
         self,
         *,

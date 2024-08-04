@@ -4,7 +4,7 @@ import warnings
 from bgpy.enums import ASGroups, Relationships, SpecialPercentAdoptions, Timestamps
 from bgpy.as_graphs.base.as_graph.customer_cone_funcs import _get_cone_size_helper
 
-from .valid_prefix import ValidPrefix
+from .victims_prefix import VictimsPrefix
 from ..scenario import Scenario
 from ..scenario_config import ScenarioConfig
 
