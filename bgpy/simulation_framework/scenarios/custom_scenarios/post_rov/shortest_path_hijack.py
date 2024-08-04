@@ -28,7 +28,7 @@ from bgpy.simulation_engine import (
     ROVPPV2ImprovedLiteFull,
     ASPA,
     ASPAFull,
-    ShortestPathASPAAttacker
+    ShortestPathASPAAttacker,
 )
 from bgpy.simulation_framework.scenarios.custom_scenarios.victims_prefix import (
     VictimsPrefix,
@@ -151,7 +151,7 @@ class ShortestPathHijack(VictimsPrefix):
         if len(self.victim_asns) > 1:
             raise NotImplementedError
 
-        if self.scenario_config.AttackerAdoptPolicyCls != RequiredASPAAttackerCls::
+        if self.scenario_config.AttackerAdoptPolicyCls != self.RequiredASPAAttackerCls:
             raise ValueError(
                 "For a shortest path export all attack against ASPA, "
                 "scenario_config.AttackerAdoptPolicyCls must be set to "

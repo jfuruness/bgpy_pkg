@@ -2,8 +2,9 @@ from typing import TYPE_CHECKING
 
 from bgpy.enums import Relationships
 from bgpy.simulation_engine import BGP
-from bgpy.simulation_framework.scenarios.custom_scenarios.post_rov.shortest_path_hijack\
-    import ShortestPathHijack
+from bgpy.simulation_framework.scenarios.custom_scenarios.post_rov.shortest_path_hijack import (
+    ShortestPathHijack,
+)
 
 
 if TYPE_CHECKING:

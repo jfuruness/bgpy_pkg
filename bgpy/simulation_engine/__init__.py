@@ -43,6 +43,7 @@ from .policies import ROVPPV2ImprovedLite
 from .policies import ROVPPV2ImprovedLiteFull
 from .policies import ASPA as ASPASimplePolicy
 from .policies import ASPAFull as ASPAPolicy
+
 # Custom attacker policies
 from .policies import ShortestPathASPAAttacker
 from .policies import FirstASNStrippingASPAAttacker

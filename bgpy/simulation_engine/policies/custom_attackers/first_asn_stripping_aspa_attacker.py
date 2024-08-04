@@ -2,7 +2,9 @@ from typing import TYPE_CHECKING
 
 from bgpy.enums import Relationships
 from bgpy.simulation_engine import BGP
-from bgpy.simulation_framework.scenarios.custom_scenarios.post_rov.first_asn_stripping_hijack import FirstASNStrippingHijack
+from bgpy.simulation_framework.scenarios.custom_scenarios.post_rov.first_asn_stripping_hijack import (
+    FirstASNStrippingHijack,
+)
 
 
 if TYPE_CHECKING:
