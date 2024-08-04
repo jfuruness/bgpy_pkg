@@ -6,7 +6,7 @@ from ipaddress import IPv4Network
 from ipaddress import IPv6Network
 import math
 import random
-from typing import Any, Optional, Type, TYPE_CHECKING, Union
+from typing import Any, Optional, TYPE_CHECKING, Union
 
 
 from roa_checker import ROAChecker, ROAValidity, ROA

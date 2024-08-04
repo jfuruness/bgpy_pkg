@@ -28,7 +28,7 @@ class SuperprefixPrefixHijack(VictimsPrefix):
         """Returns victim+attacker prefix ann, attacker superprefix ann"""
 
         # First get anns for the victim
-        anns = list(super()._get_announcements(*args, **kwargs))
+        anns = list(super()._get_announcements(engine=engine))
 
         for attacker_asn in self.attacker_asns:
             anns.append(

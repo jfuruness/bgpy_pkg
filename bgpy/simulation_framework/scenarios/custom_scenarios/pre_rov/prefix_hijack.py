@@ -24,8 +24,8 @@ class PrefixHijack(VictimsPrefix):
         """
 
         # First get the victim's announcements
-        victim_anns = super()._get_announcements(*args, **kwargs)
-        attacker_anns = self._get_prefix_attacker_anns(*args, **kwargs)
+        victim_anns = super()._get_announcements(engine=engine)
+        attacker_anns = self._get_prefix_attacker_anns(engine=engine)
         return victim_anns + attacker_anns
 
     def _get_prefix_attacker_anns(

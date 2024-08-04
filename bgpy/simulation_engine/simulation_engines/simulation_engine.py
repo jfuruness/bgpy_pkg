@@ -2,7 +2,6 @@ from typing import Any, Optional, TYPE_CHECKING
 
 
 from bgpy.enums import Relationships
-from bgpy.simulation_engine import Policy
 
 from .base_simulation_engine import BaseSimulationEngine
 

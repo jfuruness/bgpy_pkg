@@ -1,4 +1,6 @@
 from typing import Optional, TYPE_CHECKING
+
+from bgpy.simulation_engine.policies.custom_attackers.first_asn_stripping_aspa_attacker import FirstASNStrippingASPAAttacker
 from .shortest_path_hijack import ShortestPathHijack
 
 if TYPE_CHECKING:
@@ -40,7 +42,7 @@ class FirstASNStrippingHijack(ShortestPathHijack):
                         # Remove the attacker's ASN
                         "as_path": ann.as_path[1:],
                         # Attacker still wants the traffic
-                        "next_hop_asn": neighbor_asn,
+                        "next_hop_asn": ann.seed_asn,
                         # Must add seed_asn since copying overwrites this
                         "seed_asn": ann.seed_asn,
                     }
