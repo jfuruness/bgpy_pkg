@@ -4,7 +4,7 @@ from bgpy.enums import Prefixes
 from bgpy.enums import Timestamps
 
 from bgpy.simulation_framework.scenarios.custom_scenarios.victims_prefix import (
-    VictimsPrefix
+    VictimsPrefix,
 )
 
 if TYPE_CHECKING:
@@ -38,7 +38,6 @@ class ForgedOriginHijack(VictimsPrefix):
         *,
         engine: Optional["BaseSimulationEngine"] = None,
     ) -> tuple["Ann", ...]:
-
         """Returns attacker anns for a forged origin hijack"""
 
         anns = list()
@@ -51,4 +50,4 @@ class ForgedOriginHijack(VictimsPrefix):
                     next_hop_asn=attacker_asn,
                 )
             )
-       return tuple(anns)
+        return tuple(anns)

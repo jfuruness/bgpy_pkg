@@ -30,7 +30,6 @@ class AccidentalRouteLeak(VictimsPrefix):
         adopting_asns: Optional[frozenset[int]] = None,
     ):
 
-
         assert engine, "Need engine for customer cones"
         self._attackers_customer_cones_asns: set[int] = set()
         super().__init__(

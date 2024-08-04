@@ -5,7 +5,7 @@ from bgpy.enums import Prefixes
 from bgpy.enums import Timestamps
 
 from bgpy.simulation_framework.scenarios.custom_scenarios.victims_prefix import (
-    VictimsPrefix
+    VictimsPrefix,
 )
 
 if TYPE_CHECKING:
@@ -20,7 +20,6 @@ class ShortestPathHijack(VictimsPrefix):
         *,
         engine: Optional["BaseSimulationEngine"] = None,
     ) -> tuple["Ann", ...]:
-
         """Returns the two announcements seeded for this engine input
 
         This engine input is for a prefix hijack,
@@ -69,7 +68,7 @@ class ShortestPathHijack(VictimsPrefix):
         if len(self.victim_asns) > 1:
             raise NotImplementedError
 
-        root_as_obj = engine.as_graph.as_dict[next(iter(self.victim_asns))]\
+        root_as_obj = engine.as_graph.as_dict[next(iter(self.victim_asns))]
         shortest_valid_path = None
         for first_provider in root_as_obj.providers:
             # You only need legit origin and their provider, you don't need three
@@ -96,7 +95,6 @@ class ShortestPathHijack(VictimsPrefix):
             )
             shortest_valid_path = ()
 
-
         anns = list()
         for attacker_asn in self.attacker_asns:
             anns.append(
@@ -107,14 +105,13 @@ class ShortestPathHijack(VictimsPrefix):
                     next_hop_asn=attacker_asn,
                 )
             )
-       return tuple(anns)
+        return tuple(anns)
 
     def _get_aspa_attack_anns(
         self,
         *,
         engine: Optional["BaseSimulationEngine"] = None,
     ) -> tuple["Ann", ...]:
-
         """Get shortest path undetected by ASPA"""
 
         if len(self.victim_asns) > 1:
@@ -129,8 +126,7 @@ class ShortestPathHijack(VictimsPrefix):
         assert engine, "mypy"
 
         shortest_valid_path = self._find_shortest_valley_free_non_adopting_path(
-            root_asn=next(iter(self.victim_asns[0])),
-            engine=engine
+            root_asn=next(iter(self.victim_asns[0])), engine=engine
         )
 
         anns = list()
@@ -143,7 +139,7 @@ class ShortestPathHijack(VictimsPrefix):
                     next_hop_asn=attacker_asn,
                 )
             )
-       return tuple(anns)
+        return tuple(anns)
 
     def _find_shortest_valley_free_non_adopting_path(
         self,
@@ -291,15 +287,16 @@ class ShortestPathHijack(VictimsPrefix):
         """These are policy classes that are susceptible to forged-origin attacks"""
 
         return frozenset(
-            {ROV,
-             ROVFull,
-             PeerROV,
-             PeerROVFull,
-             ROVPPV1Lite,
-             ROVPPV1LiteFull,
-             ROVPPV2Lite,
-             ROVPPV2LiteFull,
-             ROVPPV2ImprovedList,
-             ROVPPV2ImprovedLiteFull
+            {
+                ROV,
+                ROVFull,
+                PeerROV,
+                PeerROVFull,
+                ROVPPV1Lite,
+                ROVPPV1LiteFull,
+                ROVPPV2Lite,
+                ROVPPV2LiteFull,
+                ROVPPV2ImprovedList,
+                ROVPPV2ImprovedLiteFull,
             }
         )

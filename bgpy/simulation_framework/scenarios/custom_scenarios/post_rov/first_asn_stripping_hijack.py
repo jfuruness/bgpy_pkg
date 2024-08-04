@@ -13,7 +13,6 @@ class FirstASNStrippingHijack(ShortestPathHijack):
         *,
         engine: Optional["BaseSimulationEngine"] = None,
     ) -> tuple["Ann", ...]:
-
         """Returns the two announcements seeded for this engine input
 
         This engine input is for a prefix hijack,
@@ -41,7 +40,7 @@ class FirstASNStrippingHijack(ShortestPathHijack):
                         # Attacker still wants the traffic
                         "next_hop_asn": neighbor_asn,
                         # Must add seed_asn since copying overwrites this
-                        "seed_asn": ann.seed_asn
+                        "seed_asn": ann.seed_asn,
                     }
                 )
             )

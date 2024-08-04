@@ -1,7 +1,7 @@
 from typing import Optional, TYPE_CHECKING
 
 from bgpy.simulation_framework.scenarios.custom_scenarios.victims_prefix import (
-    VictimsPrefix
+    VictimsPrefix,
 )
 from bgpy.enums import Prefixes
 from bgpy.enums import Timestamps
