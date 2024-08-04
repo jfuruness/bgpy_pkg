@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING
+from typing import Optional, TYPE_CHECKING
 
 from bgpy.enums import Prefixes
 from bgpy.enums import Timestamps
@@ -8,7 +8,7 @@ from bgpy.simulation_framework.scenarios.custom_scenarios.victims_prefix import 
 )
 
 if TYPE_CHECKING:
-    from bgpy.simulation_engine import Announcement as Ann
+    from bgpy.simulation_engine import Announcement as Ann, BaseSimulationEngine
 
 
 class ForgedOriginHijack(VictimsPrefix):
@@ -17,7 +17,11 @@ class ForgedOriginHijack(VictimsPrefix):
     Same ROAs as the VictimsPrefix, which is why we subclassed it it
     """
 
-    def _get_announcements(self, *args, **kwargs) -> tuple["Ann", ...]:
+    def _get_announcements(
+        self,
+        *,
+        engine: Optional["BaseSimulationEngine"] = None,
+    ) -> tuple["Ann", ...]:
         """Returns the two announcements seeded for this engine input
 
         This engine input is for a prefix hijack,
@@ -25,11 +29,16 @@ class ForgedOriginHijack(VictimsPrefix):
         """
 
         # First get the victims prefix
-        victim_anns = super()._get_announcements(*args, **kwargs)
-        attacker_anns = self._get_forged_origin_attacker_anns(*args, **kwargs)
+        victim_anns = super()._get_announcements(engine=engine)
+        attacker_anns = self._get_forged_origin_attacker_anns(engine=engine)
         return victim_anns + attacker_anns
 
-    def _get_forged_origin_attacker_anns(self, *args, **kwargs) -> tuple["Ann", ...]:
+    def _get_forged_origin_attacker_anns(
+        self,
+        *,
+        engine: Optional["BaseSimulationEngine"] = None,
+    ) -> tuple["Ann", ...]:
+
         """Returns attacker anns for a forged origin hijack"""
 
         anns = list()

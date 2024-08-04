@@ -16,7 +16,11 @@ if TYPE_CHECKING:
 class NonRoutedPrefixHijack(Scenario):
     """Non routed prefix hijack (ROA of AS 0)"""
 
-    def _get_announcements(self, *args, **kwargs) -> tuple["Ann", ...]:
+    def _get_announcements(
+        self,
+        *,
+        engine: Optional["BaseSimulationEngine"] = None,
+    ) -> tuple["Ann", ...]:
         """Returns non routed prefix announcement from attacker
 
         for subclasses of this EngineInput, you can set AnnCls equal to

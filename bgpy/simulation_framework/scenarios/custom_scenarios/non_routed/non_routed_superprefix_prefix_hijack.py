@@ -21,7 +21,11 @@ class NonRoutedSuperprefixPrefixHijack(Scenario):
     hijacking a non routed prefix that has a non routed ROA
     """
 
-    def _get_announcements(self, *args, **kwargs) -> tuple["Ann", ...]:
+    def _get_announcements(
+        self,
+        *,
+        engine: Optional["BaseSimulationEngine"] = None,
+    ) -> tuple["Ann", ...]:
         """Returns a superprefix announcement for this engine input
 
         for subclasses of this EngineInput, you can set AnnCls equal to

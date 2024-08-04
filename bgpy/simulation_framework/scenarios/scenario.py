@@ -354,7 +354,8 @@ class Scenario(ABC):
     @abstractmethod
     def _get_announcements(
         self,
-        engine: Optional[BaseSimulationEngine] = None,
+        *,
+        engine: Optional["BaseSimulationEngine"] = None,
     ) -> tuple["Ann", ...]:
         """Returns announcements"""
 

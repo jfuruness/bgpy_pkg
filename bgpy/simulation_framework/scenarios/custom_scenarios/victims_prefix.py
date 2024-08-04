@@ -21,7 +21,11 @@ class VictimsPrefix(Scenario):
     attackers, even though only the victims prefix is used
     """
 
-    def _get_announcements(self, *args, **kwargs) -> tuple["Ann", ...]:
+    def _get_announcements(
+        self,
+        *,
+        engine: Optional["BaseSimulationEngine"] = None,
+    ) -> tuple["Ann", ...]:
         """Returns a valid prefix announcement
 
         for subclasses of this EngineInput, you can set AnnCls equal to

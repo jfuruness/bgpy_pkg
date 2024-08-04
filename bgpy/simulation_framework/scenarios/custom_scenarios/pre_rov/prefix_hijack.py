@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING
+from typing import Optional, TYPE_CHECKING
 
 from bgpy.enums import Prefixes
 from bgpy.enums import Timestamps
@@ -6,13 +6,17 @@ from bgpy.scenarios.custom_scenarios.victims_prefix import VictimsPrefix
 
 
 if TYPE_CHECKING:
-    from bgpy.simulation_engine import Announcement as Ann
+    from bgpy.simulation_engine import Announcement as Ann, BaseSimulationEngine
 
 
 class PrefixHijack(VictimsPrefix):
     """Prefix hijack where both attacker and victim compete for a prefix"""
 
-    def _get_announcements(self, *args, **kwargs) -> tuple["Ann", ...]:
+    def _get_announcements(
+        self,
+        *,
+        engine: Optional["BaseSimulationEngine"] = None,
+    ) -> tuple["Ann", ...]:
         """Returns the two announcements seeded for this scenario
 
         This scenario is for a prefix hijack,
@@ -24,7 +28,11 @@ class PrefixHijack(VictimsPrefix):
         attacker_anns = self._get_prefix_attacker_anns(*args, **kwargs)
         return victim_anns + attacker_anns
 
-    def _get_prefix_attacker_anns(self, *args, **kwargs) -> tuple["Ann"]:
+    def _get_prefix_attacker_anns(
+        self,
+        *,
+        engine: Optional["BaseSimulationEngine"] = None,
+    ) -> tuple["Ann", ...]:
         """Returns attacker's announcements for a prefix hijack"""
 
         anns = list()

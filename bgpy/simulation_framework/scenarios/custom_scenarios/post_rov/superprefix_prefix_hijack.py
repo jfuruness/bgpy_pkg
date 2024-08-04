@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING
+from typing import Optional, TYPE_CHECKING
 
 from bgpy.simulation_framework.scenarios.custom_scenarios.victims_prefix import (
     VictimsPrefix
@@ -8,7 +8,7 @@ from bgpy.enums import Timestamps
 
 
 if TYPE_CHECKING:
-    from bgpy.simulation_engine import Announcement as Ann
+    from bgpy.simulation_engine import Announcement as Ann, BaseSimulationEngine
 
 
 class SuperprefixPrefixHijack(VictimsPrefix):
@@ -20,7 +20,11 @@ class SuperprefixPrefixHijack(VictimsPrefix):
     and the victim announces their own prefix
     """
 
-    def _get_announcements(self, *args, **kwargs) -> tuple["Ann", ...]:
+    def _get_announcements(
+        self,
+        *,
+        engine: Optional["BaseSimulationEngine"] = None,
+    ) -> tuple["Ann", ...]:
         """Returns victim+attacker prefix ann, attacker superprefix ann"""
 
         # First get anns for the victim
