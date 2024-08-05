@@ -4,10 +4,7 @@ from .as_graph_info_000 import as_graph_info_000
 from bgpy.tests.engine_tests.utils import EngineTestConfig
 
 from bgpy.simulation_engine import BGP, ASPA, ShortestPathASPAAttacker
-from bgpy.simulation_framework import (
-    ScenarioConfig,
-    ShortestPathHijack
-)
+from bgpy.simulation_framework import ScenarioConfig, ShortestPathHijack
 
 
 desc = (
