@@ -31,8 +31,9 @@ class ShortestPathASPAAttacker(BGP):
 
         err = "This class is only meant for subclasses of ShortestPathHijack"
         # Must... avoid... circular... imports!!
-        ScenarioCls = bgpy.simulation_framework.scenarios.custom_scenarios.\
-            post_rov.shortest_path_hijack.ShortestPathHijack
+        ScenarioCls = (
+            bgpy.simulation_framework.scenarios.custom_scenarios.post_rov.shortest_path_hijack.ShortestPathHijack
+        )
         assert isinstance(scenario, ScenarioCls), err
         return super().process_incoming_anns(
             from_rel=from_rel,
