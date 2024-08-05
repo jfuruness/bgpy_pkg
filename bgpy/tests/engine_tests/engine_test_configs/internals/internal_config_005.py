@@ -41,9 +41,7 @@ as_graph_info = ASGraphInfo(
 
 internal_config_005 = EngineTestConfig(
     name="internal_config_005",
-    desc=(
-        "Shortest path hijack, different for customers and providers"
-    ),
+    desc=("Shortest path hijack, different for customers and providers"),
     scenario_config=ScenarioConfig(
         ScenarioCls=ShortestPathPrefixHijack,
         BasePolicyCls=BGP,
