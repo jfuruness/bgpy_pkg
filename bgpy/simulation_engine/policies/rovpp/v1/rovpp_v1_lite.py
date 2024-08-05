@@ -87,7 +87,6 @@ class ROVPPV1Lite(ROV):
                     roa_valid_length=True,
                     roa_origin=roa.origin,
                     recv_relationship=Relationships.ORIGIN,
-                    traceback_end=True,
                     rovpp_blackhole=True,
                 )
                 non_routed_blackholes_to_add.append(blackhole_ann)
@@ -107,7 +106,7 @@ class ROVPPV1Lite(ROV):
                     sub_ann,
                     from_rel,
                     overwrite_default_kwargs={
-                        "traceback_end": True,
+                        "next_hop_asn": self.as_.asn,
                         "rovpp_blackhole": True,
                     },
                 )

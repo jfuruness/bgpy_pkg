@@ -56,7 +56,7 @@ class FirstASNStrippingASPAAttacker(BGP):
         if ann.from_rel == Relationships.ORIGIN:
             # Only need origin hijack when sending to customers,
             # but we also strip attacker's ASN
-            new_ann = ann.copy({"as_path": (ann.origin)})
+            new_ann = ann.copy({"as_path": (ann.origin), "seed_asn": None})
             self._process_outgoing_ann(neighbor, new_ann, propagate_to, send_rels)
             return True
         else:

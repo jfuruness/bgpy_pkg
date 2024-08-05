@@ -111,8 +111,8 @@ class AccidentalRouteLeak(VictimsPrefix):
                             {
                                 "recv_relationship": Relationships.CUSTOMERS,
                                 "seed_asn": attacker_asn,
-                                "traceback_end": True,
                                 "timestamp": Timestamps.ATTACKER.value,
+                                "next_hop_asn": attacker_asn,
                             }
                         )
                     )

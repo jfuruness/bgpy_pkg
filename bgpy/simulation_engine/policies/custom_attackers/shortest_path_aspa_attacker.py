@@ -54,7 +54,9 @@ class ShortestPathASPAAttacker(BGP):
         # This ann is originating from here, the attacker, so it's an attacker's ann
         if ann.from_rel == Relationships.ORIGIN:
             # Only need origin hijack when sending to customers
-            new_ann = ann.copy({"as_path": (self.as_.asn, ann.origin)})
+            new_ann = ann.copy(
+                {"as_path": (self.as_.asn, ann.origin), "seed_asn": None},
+            )
             self._process_outgoing_ann(neighbor, new_ann, propagate_to, send_rels)
             return True
         else:

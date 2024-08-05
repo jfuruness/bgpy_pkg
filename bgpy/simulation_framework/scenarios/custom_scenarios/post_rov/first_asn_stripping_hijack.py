@@ -1,6 +1,6 @@
 from typing import Optional, TYPE_CHECKING
 
-from bgpy.simulation_engine.policies.custom_attackers.first_asn_stripping_aspa_attacker import (
+from bgpy.simulation_engine.policies.custom_attackers.first_asn_stripping_aspa_attacker import (  # noqa
     FirstASNStrippingASPAAttacker,
 )
 from .shortest_path_hijack import ShortestPathHijack
@@ -36,18 +36,13 @@ class FirstASNStrippingHijack(ShortestPathHijack):
         engine: Optional["BaseSimulationEngine"] = None,
     ) -> tuple["Ann", ...]:
         attacker_anns = self._get_shortest_path_attacker_anns()
-        stripped_anns = list()
+        stripped_anns: list["Ann"] = list()
         for ann in attacker_anns:
-            stripped_anns.append(
-                ann.copy(
-                    {
-                        # Remove the attacker's ASN
-                        "as_path": ann.as_path[1:],
-                        # Attacker still wants the traffic
-                        "next_hop_asn": ann.seed_asn,
-                        # Must add seed_asn since copying overwrites this
-                        "seed_asn": ann.seed_asn,
-                    }
-                )
-            )
+            # Remove the attacker's ASN
+            if len(ann.as_path) > 1:
+                stripped_ann = ann.copy({"as_path": ann.as_path[1:]})
+            # Can't remove the first asn in a path length of 1
+            else:
+                stripped_ann = ann
+            stripped_anns.append(stripped_ann)
         return tuple(stripped_anns)

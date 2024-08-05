@@ -34,11 +34,6 @@ class Announcement(YamlAble):
     timestamp: int = 0
     # Used for classes derived from BGPFull
     withdraw: bool = False
-    # Deprecated attr. This existed before next_hop_asn
-    # next_hop_asn should be set instead of this now
-    # Currently functionality is unchanged but it just
-    # shouldn't be used.
-    traceback_end: bool = False
     # ROV, ROV++ optional attributes
     roa_valid_length: Optional[bool] = None
     roa_origin: Optional[int] = None
@@ -55,9 +50,8 @@ class Announcement(YamlAble):
     def __post_init__(self):
         """Defaults seed_asn and next_hop_asn"""
 
-        if self.seed_asn is None:
-            if len(self.as_path) == 1:
-                object.__setattr__(self, "seed_asn", self.as_path[0])
+        if self.seed_asn is None and len(self.as_path) == 1:
+            object.__setattr__(self, "seed_asn", self.as_path[0])
         if self.next_hop_asn is None:
             if len(self.as_path) == 1:  # type: ignore
                 object.__setattr__(self, "next_hop_asn", self.as_path[0])
@@ -79,14 +73,12 @@ class Announcement(YamlAble):
     ) -> "Announcement":
         """Creates a new ann with proper sim attrs"""
 
-        # Replace seed asn and traceback end every time by default
-        kwargs = {"seed_asn": None, "traceback_end": False}
         if overwrite_default_kwargs:
-            kwargs.update(overwrite_default_kwargs)
-
-        # Mypy says it gets this wrong
-        # https://github.com/microsoft/pyright/issues/1047#issue-705124399
-        return replace(self, **kwargs)  # type: ignore
+            # Mypy says it gets this wrong
+            # https://github.com/microsoft/pyright/issues/1047#issue-705124399
+            return replace(self, **overwrite_default_kwargs)  # type: ignore
+        else:
+            return replace(self)  # type: ignore
 
     def bgpsec_valid(self, asn: int) -> bool:
         """Returns True if valid by BGPSec else False"""

@@ -98,7 +98,7 @@ def process_incoming_anns(
             # Best ann has already been processed
 
             withdraw_ann: "Ann" = _local_rib_ann.copy(
-                overwrite_default_kwargs={"withdraw": True}
+                overwrite_default_kwargs={"withdraw": True, "seed_asn": None}
             )
 
             self._withdraw_ann_from_neighbors(withdraw_ann)

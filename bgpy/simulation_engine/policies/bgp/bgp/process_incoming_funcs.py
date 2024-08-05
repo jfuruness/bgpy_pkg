@@ -64,6 +64,7 @@ def process_incoming_anns(
         # This is a new best ann. Process it and add it to the local rib
         if og_ann != current_ann:
             assert current_ann, "mypy type check"
+            assert current_ann.seed_asn in (None, self.as_.asn), "Seed ASN is wrong"
             # Save to local rib
             self._local_rib.add_ann(current_ann)
 
@@ -95,6 +96,7 @@ def _copy_and_process(
     kwargs: dict[str, Any] = {
         "as_path": (self.as_.asn,) + ann.as_path,
         "recv_relationship": recv_relationship,
+        "seed_asn": None,
     }
 
     if overwrite_default_kwargs:

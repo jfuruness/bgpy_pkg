@@ -399,9 +399,6 @@ class Scenario(ABC):
                         {
                             "roa_valid_length": roa_valid_length,
                             "roa_origin": roa_origin,
-                            # Must add these two since copy overwrites them by default
-                            "seed_asn": ann.seed_asn,
-                            "traceback_end": getattr(ann, "traceback_end", False),
                         }
                     )
                 )
