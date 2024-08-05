@@ -19,7 +19,7 @@ class TrialData:
         if self._numerator == 0 and self._denominator == 0:
             return None
         else:
-            return self._numerator / self._denominator
+            return self._numerator * 100 / self._denominator
 
     def add_data(
         self,

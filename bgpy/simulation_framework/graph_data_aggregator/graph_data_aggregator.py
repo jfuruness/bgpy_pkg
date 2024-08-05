@@ -117,7 +117,7 @@ class GraphDataAggregator:
             percent = trial_data.get_percent()
             # If there are no ASes tracked in this graph category,
             # percent is None, and there's nothing to track
-            if percent:
+            if percent is not None:
                 self.data[trial_data.graph_category][data_point_key].append(percent)
 
     def _aggregate_trial_data(
