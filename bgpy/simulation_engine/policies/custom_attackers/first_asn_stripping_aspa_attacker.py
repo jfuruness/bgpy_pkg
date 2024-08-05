@@ -1,10 +1,8 @@
 from typing import TYPE_CHECKING
 
 from bgpy.enums import Relationships
-from bgpy.simulation_engine import BGP
-from bgpy.simulation_framework.scenarios.custom_scenarios.post_rov.first_asn_stripping_hijack import (
-    FirstASNStrippingHijack,
-)
+from bgpy.simulation_engine.policies.bgp import BGP
+import bgpy
 
 
 if TYPE_CHECKING:
@@ -33,7 +31,10 @@ class FirstASNStrippingASPAAttacker(BGP):
         """Asserts that we are using the FirstASNStrippingHijack, then calls super"""
 
         err = "This class is only meant for subclasses of FirstASNStrippingHijack"
-        assert isinstance(scenario, FirstASNStrippingHijack), err
+        # Must... avoid... circular... imports!!
+        ScenarioCls = bgpy.simulation_framework.scenarios.custom_scenarios.\
+            post_rov.first_asn_stripping_hijack.FirstASNStrippingHijack
+        assert isinstance(scenario, ScenarioCls), err
         return super().process_incoming_anns(
             from_rel=from_rel,
             propagation_round=propagation_round,

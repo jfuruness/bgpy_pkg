@@ -1,10 +1,8 @@
 from typing import TYPE_CHECKING
 
 from bgpy.enums import Relationships
-from bgpy.simulation_engine import BGP
-from bgpy.simulation_framework.scenarios.custom_scenarios.post_rov.shortest_path_hijack import (
-    ShortestPathHijack,
-)
+from bgpy.simulation_engine.policies.bgp import BGP
+import bgpy
 
 
 if TYPE_CHECKING:
@@ -32,7 +30,10 @@ class ShortestPathASPAAttacker(BGP):
         """Asserts that we are using the ShortestPathHijack, then calls super"""
 
         err = "This class is only meant for subclasses of ShortestPathHijack"
-        assert isinstance(scenario, ShortestPathHijack), err
+        # Must... avoid... circular... imports!!
+        ScenarioCls = bgpy.simulation_framework.scenarios.custom_scenarios.\
+            post_rov.shortest_path_hijack.ShortestPathHijack
+        assert isinstance(scenario, ScenarioCls), err
         return super().process_incoming_anns(
             from_rel=from_rel,
             propagation_round=propagation_round,

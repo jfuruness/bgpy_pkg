@@ -1,5 +1,5 @@
-from .aspa import ASPA, ASPAFull
 from .bgp import BGP, BGPFull
+from .aspa import ASPA, ASPAFull
 from .bgpsec import BGPSecFull
 from .bgpsec import BGPSec
 from .custom_attackers import ShortestPathASPAAttacker, FirstASNStrippingASPAAttacker
