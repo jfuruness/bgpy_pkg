@@ -15,9 +15,9 @@ from .scenarios import SubprefixHijack
 from .scenarios import NonRoutedPrefixHijack
 from .scenarios import NonRoutedSuperprefixHijack
 from .scenarios import NonRoutedSuperprefixPrefixHijack
-from .scenarios import ForgedOriginHijack
-from .scenarios import FirstASNStrippingHijack
-from .scenarios import ShortestPathHijack
+from .scenarios import ForgedOriginPrefixHijack
+from .scenarios import FirstASNStrippingPrefixHijack
+from .scenarios import ShortestPathPrefixHijack
 from .scenarios import SuperprefixPrefixHijack
 from .scenarios import ValidPrefix
 
@@ -45,9 +45,9 @@ __all__ = [
     "NonRoutedPrefixHijack",
     "NonRoutedSuperprefixHijack",
     "NonRoutedSuperprefixPrefixHijack",
-    "ForgedOriginHijack",
-    "FirstASNStrippingHijack",
-    "ShortestPathHijack",
+    "ForgedOriginPrefixHijack",
+    "FirstASNStrippingPrefixHijack",
+    "ShortestPathPrefixHijack",
     "SuperprefixPrefixHijack",
     "ValidPrefix",
 ]

@@ -1,4 +1,4 @@
-from .first_asn_stripping_aspa_attacker import FirstASNStrippingASPAAttacker
-from .shortest_path_aspa_attacker import ShortestPathASPAAttacker
+from .first_asn_stripping_aspa_attacker import FirstASNStrippingPrefixASPAAttacker
+from .shortest_path_aspa_attacker import ShortestPathPrefixASPAAttacker
 
-__all__ = ["FirstASNStrippingASPAAttacker", "ShortestPathASPAAttacker"]
+__all__ = ["FirstASNStrippingPrefixASPAAttacker", "ShortestPathPrefixASPAAttacker"]

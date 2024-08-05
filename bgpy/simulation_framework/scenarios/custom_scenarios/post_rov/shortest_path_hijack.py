@@ -28,7 +28,7 @@ from bgpy.simulation_engine import (
     ROVPPV2ImprovedLiteFull,
     ASPA,
     ASPAFull,
-    ShortestPathASPAAttacker,
+    ShortestPathPrefixASPAAttacker,
 )
 from bgpy.simulation_framework.scenarios.custom_scenarios.victims_prefix import (
     VictimsPrefix,
@@ -37,16 +37,16 @@ from bgpy.simulation_framework.scenarios.custom_scenarios.pre_rov import (
     PrefixHijack,
 )
 
-from .forged_origin_hijack import ForgedOriginHijack
+from .forged_origin_hijack import ForgedOriginPrefixHijack
 
 if TYPE_CHECKING:
     from bgpy.simulation_engine import Announcement as Ann, BaseSimulationEngine
 
 
-class ShortestPathHijack(VictimsPrefix):
+class ShortestPathPrefixHijack(VictimsPrefix):
     """Shortest path allowed by defense set by AdoptPolicyCls against a prefix"""
 
-    RequiredASPAAttackerCls = ShortestPathASPAAttacker
+    RequiredASPAAttackerCls = ShortestPathPrefixASPAAttacker
 
     def _get_announcements(
         self,
@@ -89,7 +89,7 @@ class ShortestPathHijack(VictimsPrefix):
 
     _get_prefix_attacker_anns = PrefixHijack._get_prefix_attacker_anns
     _get_forged_origin_attacker_anns = (
-        ForgedOriginHijack._get_forged_origin_attacker_anns
+        ForgedOriginPrefixHijack._get_forged_origin_attacker_anns
     )
 
     def _get_pathend_attack_anns(
@@ -159,8 +159,8 @@ class ShortestPathHijack(VictimsPrefix):
             raise ValueError(
                 "For a shortest path export all attack against ASPA, "
                 "scenario_config.AttackerAdoptPolicyCls must be set to "
-                "ASPAShortestPathAttacker, which you can import like "
-                "from bgpy.simulation_engine import ShortestPathASPAAttacker"
+                "ASPAShortestPathPrefixAttacker, which you can import like "
+                "from bgpy.simulation_engine import ShortestPathPrefixASPAAttacker"
             )
         assert engine, "mypy"
 

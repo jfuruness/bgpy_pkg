@@ -29,8 +29,8 @@ from .policies import ROVPPV2ImprovedLite
 from .policies import ROVPPV2ImprovedLiteFull
 
 # Custom attacker policies
-from .policies import ShortestPathASPAAttacker
-from .policies import FirstASNStrippingASPAAttacker
+from .policies import ShortestPathPrefixASPAAttacker
+from .policies import FirstASNStrippingPrefixASPAAttacker
 
 
 from .simulation_engines import BaseSimulationEngine
@@ -64,8 +64,8 @@ __all__ = [
     "ROVPPV2ImprovedLiteFull",
     "ASPA",
     "ASPAFull",
-    "ShortestPathASPAAttacker",
-    "FirstASNStrippingASPAAttacker",
+    "ShortestPathPrefixASPAAttacker",
+    "FirstASNStrippingPrefixASPAAttacker",
     "BaseSimulationEngine",
     "SimulationEngine",
 ]

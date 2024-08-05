@@ -8,7 +8,7 @@ from bgpy.enums import ASNs
 from bgpy.simulation_engine import BGP, ASPA
 from bgpy.simulation_framework import (
     ScenarioConfig,
-    ForgedOriginHijack,
+    ForgedOriginPrefixHijack,
 )
 
 
@@ -33,7 +33,7 @@ ex_config_023 = EngineTestConfig(
     name="ex_023_origin_aspa_simple_downstream_verification",
     desc=desc,
     scenario_config=ScenarioConfig(
-        ScenarioCls=ForgedOriginHijack,
+        ScenarioCls=ForgedOriginPrefixHijack,
         BasePolicyCls=BGP,
         override_attacker_asns=frozenset({ASNs.ATTACKER.value}),
         override_victim_asns=frozenset({ASNs.VICTIM.value}),

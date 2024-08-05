@@ -11,7 +11,7 @@ if TYPE_CHECKING:
     from bgpy.simulation_engine import Announcement as Ann, BaseSimulationEngine
 
 
-class ForgedOriginHijack(VictimsPrefix):
+class ForgedOriginPrefixHijack(VictimsPrefix):
     """Extension of prefix hijack where attacker appends legit origin to avoid ROV
 
     Same ROAs as the VictimsPrefix, which is why we subclassed it it

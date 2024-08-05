@@ -8,7 +8,7 @@ from bgpy.simulation_engine import (
 )
 from bgpy.simulation_framework import (
     ScenarioConfig,
-    ForgedOriginHijack,
+    ForgedOriginPrefixHijack,
 )
 
 
@@ -21,7 +21,7 @@ ex_config_012 = EngineTestConfig(
     name="ex_012_forged_origin_export_all_hijack_rov_simple",
     desc=desc,
     scenario_config=ScenarioConfig(
-        ScenarioCls=ForgedOriginHijack,
+        ScenarioCls=ForgedOriginPrefixHijack,
         BasePolicyCls=ROV,
         override_attacker_asns=frozenset({ASNs.ATTACKER.value}),
         override_victim_asns=frozenset({ASNs.VICTIM.value}),

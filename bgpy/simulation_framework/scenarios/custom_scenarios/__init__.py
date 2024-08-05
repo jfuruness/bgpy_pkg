@@ -4,9 +4,9 @@ from .pre_rov import SubprefixHijack
 from .non_routed import NonRoutedPrefixHijack
 from .non_routed import NonRoutedSuperprefixHijack
 from .non_routed import NonRoutedSuperprefixPrefixHijack
-from .post_rov import ForgedOriginHijack
-from .post_rov import FirstASNStrippingHijack
-from .post_rov import ShortestPathHijack
+from .post_rov import ForgedOriginPrefixHijack
+from .post_rov import FirstASNStrippingPrefixHijack
+from .post_rov import ShortestPathPrefixHijack
 from .post_rov import SuperprefixPrefixHijack
 from .valid_prefix import ValidPrefix
 
@@ -18,9 +18,9 @@ __all__ = [
     "NonRoutedPrefixHijack",
     "NonRoutedSuperprefixHijack",
     "NonRoutedSuperprefixPrefixHijack",
-    "ForgedOriginHijack",
-    "FirstASNStrippingHijack",
-    "ShortestPathHijack",
+    "ForgedOriginPrefixHijack",
+    "FirstASNStrippingPrefixHijack",
+    "ShortestPathPrefixHijack",
     "SuperprefixPrefixHijack",
     "ValidPrefix",
 ]

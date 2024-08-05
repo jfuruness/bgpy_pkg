@@ -5,7 +5,7 @@ from bgpy.tests.engine_tests.utils import EngineTestConfig
 from bgpy.simulation_engine import BGP, ASPA
 from bgpy.simulation_framework import (
     ScenarioConfig,
-    ForgedOriginHijack,
+    ForgedOriginPrefixHijack,
 )
 
 from bgpy.as_graphs.base.links import CustomerProviderLink as CPLink
@@ -33,7 +33,7 @@ ex_config_029 = EngineTestConfig(
     name="ex_029_aspa_weirdness",
     desc=desc,
     scenario_config=ScenarioConfig(
-        ScenarioCls=ForgedOriginHijack,
+        ScenarioCls=ForgedOriginPrefixHijack,
         BasePolicyCls=BGP,
         AdoptPolicyCls=ASPA,
         override_attacker_asns=frozenset({ASNs.ATTACKER.value}),

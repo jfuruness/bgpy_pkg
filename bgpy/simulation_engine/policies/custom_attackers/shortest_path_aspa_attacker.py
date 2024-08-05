@@ -11,11 +11,11 @@ if TYPE_CHECKING:
     from bgpy.as_graphs import AS
 
 
-class ShortestPathASPAAttacker(BGP):
+class ShortestPathPrefixASPAAttacker(BGP):
     """Shortest path ASPA attacker uses origin hijacks to customers with ASPA
 
-    This is meant to be used with the ShortestPathHijack, but for ASPA, to
-    customers the ShortestPath is a forged-origin hijack
+    This is meant to be used with the ShortestPathPrefixHijack, but for ASPA, to
+    customers the ShortestPathPrefix is a forged-origin hijack
     """
 
     # mypy doesn't understand the multiple file superclass
@@ -27,12 +27,12 @@ class ShortestPathASPAAttacker(BGP):
         scenario: "Scenario",
         reset_q: bool = True,
     ) -> None:
-        """Asserts that we are using the ShortestPathHijack, then calls super"""
+        """Asserts that we are using the ShortestPathPrefixHijack, then calls super"""
 
-        err = "This class is only meant for subclasses of ShortestPathHijack"
+        err = "This class is only meant for subclasses of ShortestPathPrefixHijack"
         # Must... avoid... circular... imports!!
         ScenarioCls = (
-            bgpy.simulation_framework.scenarios.custom_scenarios.post_rov.shortest_path_hijack.ShortestPathHijack
+            bgpy.simulation_framework.scenarios.custom_scenarios.post_rov.shortest_path_hijack.ShortestPathPrefixHijack
         )
         assert isinstance(scenario, ScenarioCls), err
         return super().process_incoming_anns(

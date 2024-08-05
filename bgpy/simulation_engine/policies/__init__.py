@@ -2,7 +2,10 @@ from .bgp import BGP, BGPFull
 from .aspa import ASPA, ASPAFull
 from .bgpsec import BGPSecFull
 from .bgpsec import BGPSec
-from .custom_attackers import ShortestPathASPAAttacker, FirstASNStrippingASPAAttacker
+from .custom_attackers import (
+    ShortestPathPrefixASPAAttacker,
+    FirstASNStrippingPrefixASPAAttacker,
+)
 from .only_to_customers import OnlyToCustomers, OnlyToCustomersFull
 from .path_end import PathEnd, PathEndFull
 from .policy import Policy
@@ -43,6 +46,6 @@ __all__ = [
     "ROVPPV2ImprovedLiteFull",
     "ASPA",
     "ASPAFull",
-    "ShortestPathASPAAttacker",
-    "FirstASNStrippingASPAAttacker",
+    "ShortestPathPrefixASPAAttacker",
+    "FirstASNStrippingPrefixASPAAttacker",
 ]

@@ -11,11 +11,11 @@ if TYPE_CHECKING:
     from bgpy.as_graphs import AS
 
 
-class FirstASNStrippingASPAAttacker(BGP):
+class FirstASNStrippingPrefixASPAAttacker(BGP):
     """Shortest path ASPA attacker uses origin hijacks to customers with ASPA
 
-    This is meant to be used with the FirstASNStrippingHijack, but for ASPA, to
-    customers the FirstASNStripping is a forged-origin hijack (and we strip the
+    This is meant to be used with the FirstASNStrippingPrefixHijack, but for ASPA, to
+    customers the FirstASNStrippingPrefix is a forged-origin hijack (and we strip the
     first ASN from the path)
     """
 
@@ -28,12 +28,12 @@ class FirstASNStrippingASPAAttacker(BGP):
         scenario: "Scenario",
         reset_q: bool = True,
     ) -> None:
-        """Asserts that we are using the FirstASNStrippingHijack, then calls super"""
+        """Asserts that we are using the FirstASNStrippingPrefixHijack, then calls super"""
 
-        err = "This class is only meant for subclasses of FirstASNStrippingHijack"
+        err = "This class is only meant for subclasses of FirstASNStrippingPrefixHijack"
         # Must... avoid... circular... imports!!
         ScenarioCls = (
-            bgpy.simulation_framework.scenarios.custom_scenarios.post_rov.first_asn_stripping_hijack.FirstASNStrippingHijack
+            bgpy.simulation_framework.scenarios.custom_scenarios.post_rov.first_asn_stripping_hijack.FirstASNStrippingPrefixHijack
         )
         assert isinstance(scenario, ScenarioCls), err
         return super().process_incoming_anns(

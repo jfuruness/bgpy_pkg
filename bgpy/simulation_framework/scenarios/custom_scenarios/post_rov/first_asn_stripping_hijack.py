@@ -1,21 +1,21 @@
 from typing import Optional, TYPE_CHECKING
 
 from bgpy.simulation_engine.policies.custom_attackers.first_asn_stripping_aspa_attacker import (  # noqa
-    FirstASNStrippingASPAAttacker,
+    FirstASNStrippingPrefixASPAAttacker,
 )
 from bgpy.simulation_framework.scenarios.custom_scenarios.victims_prefix import (
     VictimsPrefix,
 )
-from .shortest_path_hijack import ShortestPathHijack
+from .shortest_path_hijack import ShortestPathPrefixHijack
 
 if TYPE_CHECKING:
     from bgpy.simulation_engine import Announcement as Ann, BaseSimulationEngine
 
 
-class FirstASNStrippingHijack(ShortestPathHijack):
+class FirstASNStrippingPrefixHijack(ShortestPathPrefixHijack):
     """An extension of the shortest path hijack that strips the first ASN"""
 
-    RequiredASPAAttackerCls = FirstASNStrippingASPAAttacker
+    RequiredASPAAttackerCls = FirstASNStrippingPrefixASPAAttacker
 
     def _get_announcements(
         self,

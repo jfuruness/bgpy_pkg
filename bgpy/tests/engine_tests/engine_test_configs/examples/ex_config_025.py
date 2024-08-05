@@ -3,10 +3,10 @@ from bgpy.enums import ASNs
 from .as_graph_info_000 import as_graph_info_000
 from bgpy.tests.engine_tests.utils import EngineTestConfig
 
-from bgpy.simulation_engine import BGP, ASPA, ShortestPathASPAAttacker
+from bgpy.simulation_engine import BGP, ASPA, ShortestPathPrefixASPAAttacker
 from bgpy.simulation_framework import (
     ScenarioConfig,
-    ShortestPathHijack,
+    ShortestPathPrefixHijack,
 )
 
 
@@ -19,8 +19,8 @@ ex_config_025 = EngineTestConfig(
     name="ex_025_shortest_path_export_all_aspa_simple_customer",
     desc=desc,
     scenario_config=ScenarioConfig(
-        ScenarioCls=ShortestPathHijack,
-        AttackerBasePolicyCls=ShortestPathASPAAttacker,
+        ScenarioCls=ShortestPathPrefixHijack,
+        AttackerBasePolicyCls=ShortestPathPrefixASPAAttacker,
         BasePolicyCls=BGP,
         AdoptPolicyCls=ASPA,
         override_attacker_asns=frozenset({ASNs.ATTACKER.value}),

@@ -6,7 +6,7 @@ from bgpy.tests.engine_tests.utils import EngineTestConfig
 from bgpy.simulation_engine import BGP, BGPSec
 from bgpy.simulation_framework import (
     ScenarioConfig,
-    FirstASNStrippingHijack,
+    FirstASNStrippingPrefixHijack,
 )
 
 
@@ -21,7 +21,7 @@ ex_config_014 = EngineTestConfig(
     name="ex_014_neighbor_spoofing_hijack_bgpsec",
     desc=desc,
     scenario_config=ScenarioConfig(
-        ScenarioCls=FirstASNStrippingHijack,
+        ScenarioCls=FirstASNStrippingPrefixHijack,
         BasePolicyCls=BGPSec,
         override_attacker_asns=frozenset({ASNs.ATTACKER.value}),
         override_victim_asns=frozenset({ASNs.VICTIM.value}),
