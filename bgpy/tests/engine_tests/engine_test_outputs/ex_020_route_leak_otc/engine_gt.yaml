@@ -31,7 +31,6 @@ as_graph: !yamlable/CAIDAASGraph
             rovpp_blackhole: false
             seed_asn: null
             timestamp: 0
-            traceback_end: false
             withdraw: false
         _recv_q: !simulator_codec/RecvQueue {}
         _ribs_in: !simulator_codec/RIBsIn
@@ -58,7 +57,6 @@ as_graph: !yamlable/CAIDAASGraph
                 rovpp_blackhole: false
                 seed_asn: null
                 timestamp: 0
-                traceback_end: false
                 withdraw: false
           666:
             1.2.0.0/16: !yamlable/AnnInfo
@@ -81,9 +79,8 @@ as_graph: !yamlable/CAIDAASGraph
                 roa_origin: 777
                 roa_valid_length: true
                 rovpp_blackhole: false
-                seed_asn: null
+                seed_asn: 666
                 timestamp: 1
-                traceback_end: false
                 withdraw: false
         _ribs_out: !simulator_codec/RIBsOut
           666:
@@ -106,7 +103,6 @@ as_graph: !yamlable/CAIDAASGraph
               rovpp_blackhole: false
               seed_asn: null
               timestamp: 0
-              traceback_end: false
               withdraw: false
         _send_q: !simulator_codec/SendQueue {}
       propagation_rank: 1
@@ -142,7 +138,6 @@ as_graph: !yamlable/CAIDAASGraph
             rovpp_blackhole: false
             seed_asn: null
             timestamp: 0
-            traceback_end: false
             withdraw: false
         _recv_q: !simulator_codec/RecvQueue {}
         _ribs_in: !simulator_codec/RIBsIn
@@ -169,7 +164,6 @@ as_graph: !yamlable/CAIDAASGraph
                 rovpp_blackhole: false
                 seed_asn: null
                 timestamp: 0
-                traceback_end: false
                 withdraw: false
           666:
             1.2.0.0/16: !yamlable/AnnInfo
@@ -192,9 +186,8 @@ as_graph: !yamlable/CAIDAASGraph
                 roa_origin: 777
                 roa_valid_length: true
                 rovpp_blackhole: false
-                seed_asn: null
+                seed_asn: 666
                 timestamp: 1
-                traceback_end: false
                 withdraw: false
           777:
             1.2.0.0/16: !yamlable/AnnInfo
@@ -217,7 +210,6 @@ as_graph: !yamlable/CAIDAASGraph
                 rovpp_blackhole: false
                 seed_asn: 777
                 timestamp: 0
-                traceback_end: false
                 withdraw: false
         _ribs_out: !simulator_codec/RIBsOut
           8:
@@ -238,7 +230,6 @@ as_graph: !yamlable/CAIDAASGraph
               rovpp_blackhole: false
               seed_asn: null
               timestamp: 0
-              traceback_end: false
               withdraw: false
           666:
             1.2.0.0/16: !yamlable/Announcement
@@ -258,7 +249,6 @@ as_graph: !yamlable/CAIDAASGraph
               rovpp_blackhole: false
               seed_asn: null
               timestamp: 0
-              traceback_end: false
               withdraw: false
           777:
             1.2.0.0/16: !yamlable/Announcement
@@ -278,7 +268,6 @@ as_graph: !yamlable/CAIDAASGraph
               rovpp_blackhole: false
               seed_asn: null
               timestamp: 0
-              traceback_end: false
               withdraw: false
         _send_q: !simulator_codec/SendQueue {}
       propagation_rank: 1
@@ -314,7 +303,6 @@ as_graph: !yamlable/CAIDAASGraph
             rovpp_blackhole: false
             seed_asn: null
             timestamp: 0
-            traceback_end: false
             withdraw: false
         _recv_q: !simulator_codec/RecvQueue {}
         _ribs_in: !simulator_codec/RIBsIn
@@ -341,7 +329,6 @@ as_graph: !yamlable/CAIDAASGraph
                 rovpp_blackhole: false
                 seed_asn: null
                 timestamp: 0
-                traceback_end: false
                 withdraw: false
         _ribs_out: !simulator_codec/RIBsOut {}
         _send_q: !simulator_codec/SendQueue {}
@@ -375,7 +362,6 @@ as_graph: !yamlable/CAIDAASGraph
             rovpp_blackhole: false
             seed_asn: null
             timestamp: 0
-            traceback_end: false
             withdraw: false
         _recv_q: !simulator_codec/RecvQueue {}
         _ribs_in: !simulator_codec/RIBsIn
@@ -402,7 +388,6 @@ as_graph: !yamlable/CAIDAASGraph
                 rovpp_blackhole: false
                 seed_asn: null
                 timestamp: 0
-                traceback_end: false
                 withdraw: false
           777:
             1.2.0.0/16: !yamlable/AnnInfo
@@ -425,7 +410,6 @@ as_graph: !yamlable/CAIDAASGraph
                 rovpp_blackhole: false
                 seed_asn: 777
                 timestamp: 0
-                traceback_end: false
                 withdraw: false
         _ribs_out: !simulator_codec/RIBsOut
           9:
@@ -446,7 +430,6 @@ as_graph: !yamlable/CAIDAASGraph
               rovpp_blackhole: false
               seed_asn: null
               timestamp: 0
-              traceback_end: false
               withdraw: false
           777:
             1.2.0.0/16: !yamlable/Announcement
@@ -466,7 +449,6 @@ as_graph: !yamlable/CAIDAASGraph
               rovpp_blackhole: false
               seed_asn: null
               timestamp: 0
-              traceback_end: false
               withdraw: false
         _send_q: !simulator_codec/SendQueue {}
       propagation_rank: 1
@@ -520,7 +502,6 @@ as_graph: !yamlable/CAIDAASGraph
             rovpp_blackhole: false
             seed_asn: null
             timestamp: 0
-            traceback_end: false
             withdraw: false
         _recv_q: !simulator_codec/RecvQueue {}
         _ribs_in: !simulator_codec/RIBsIn
@@ -546,7 +527,6 @@ as_graph: !yamlable/CAIDAASGraph
                 rovpp_blackhole: false
                 seed_asn: null
                 timestamp: 0
-                traceback_end: false
                 withdraw: false
           9:
             1.2.0.0/16: !yamlable/AnnInfo
@@ -571,7 +551,6 @@ as_graph: !yamlable/CAIDAASGraph
                 rovpp_blackhole: false
                 seed_asn: null
                 timestamp: 0
-                traceback_end: false
                 withdraw: false
           11:
             1.2.0.0/16: !yamlable/AnnInfo
@@ -596,7 +575,6 @@ as_graph: !yamlable/CAIDAASGraph
                 rovpp_blackhole: false
                 seed_asn: null
                 timestamp: 0
-                traceback_end: false
                 withdraw: false
         _ribs_out: !simulator_codec/RIBsOut
           1:
@@ -618,7 +596,6 @@ as_graph: !yamlable/CAIDAASGraph
               rovpp_blackhole: false
               seed_asn: null
               timestamp: 0
-              traceback_end: false
               withdraw: false
           2:
             1.2.0.0/16: !yamlable/Announcement
@@ -639,7 +616,6 @@ as_graph: !yamlable/CAIDAASGraph
               rovpp_blackhole: false
               seed_asn: null
               timestamp: 0
-              traceback_end: false
               withdraw: false
           9:
             1.2.0.0/16: !yamlable/Announcement
@@ -660,7 +636,6 @@ as_graph: !yamlable/CAIDAASGraph
               rovpp_blackhole: false
               seed_asn: null
               timestamp: 0
-              traceback_end: false
               withdraw: false
           11:
             1.2.0.0/16: !yamlable/Announcement
@@ -681,7 +656,6 @@ as_graph: !yamlable/CAIDAASGraph
               rovpp_blackhole: false
               seed_asn: null
               timestamp: 0
-              traceback_end: false
               withdraw: false
         _send_q: !simulator_codec/SendQueue {}
       propagation_rank: 2
@@ -719,7 +693,6 @@ as_graph: !yamlable/CAIDAASGraph
             rovpp_blackhole: false
             seed_asn: null
             timestamp: 0
-            traceback_end: false
             withdraw: false
         _recv_q: !simulator_codec/RecvQueue {}
         _ribs_in: !simulator_codec/RIBsIn
@@ -745,7 +718,6 @@ as_graph: !yamlable/CAIDAASGraph
                 rovpp_blackhole: false
                 seed_asn: null
                 timestamp: 0
-                traceback_end: false
                 withdraw: false
           8:
             1.2.0.0/16: !yamlable/AnnInfo
@@ -770,7 +742,6 @@ as_graph: !yamlable/CAIDAASGraph
                 rovpp_blackhole: false
                 seed_asn: null
                 timestamp: 0
-                traceback_end: false
                 withdraw: false
           10:
             1.2.0.0/16: !yamlable/AnnInfo
@@ -794,7 +765,6 @@ as_graph: !yamlable/CAIDAASGraph
                 rovpp_blackhole: false
                 seed_asn: null
                 timestamp: 0
-                traceback_end: false
                 withdraw: false
           11:
             1.2.0.0/16: !yamlable/AnnInfo
@@ -819,7 +789,6 @@ as_graph: !yamlable/CAIDAASGraph
                 rovpp_blackhole: false
                 seed_asn: null
                 timestamp: 0
-                traceback_end: false
                 withdraw: false
         _ribs_out: !simulator_codec/RIBsOut
           3:
@@ -841,7 +810,6 @@ as_graph: !yamlable/CAIDAASGraph
               rovpp_blackhole: false
               seed_asn: null
               timestamp: 0
-              traceback_end: false
               withdraw: false
           4:
             1.2.0.0/16: !yamlable/Announcement
@@ -862,7 +830,6 @@ as_graph: !yamlable/CAIDAASGraph
               rovpp_blackhole: false
               seed_asn: null
               timestamp: 0
-              traceback_end: false
               withdraw: false
           8:
             1.2.0.0/16: !yamlable/Announcement
@@ -883,7 +850,6 @@ as_graph: !yamlable/CAIDAASGraph
               rovpp_blackhole: false
               seed_asn: null
               timestamp: 0
-              traceback_end: false
               withdraw: false
           10:
             1.2.0.0/16: !yamlable/Announcement
@@ -904,7 +870,6 @@ as_graph: !yamlable/CAIDAASGraph
               rovpp_blackhole: false
               seed_asn: null
               timestamp: 0
-              traceback_end: false
               withdraw: false
           11:
             1.2.0.0/16: !yamlable/Announcement
@@ -925,7 +890,6 @@ as_graph: !yamlable/CAIDAASGraph
               rovpp_blackhole: false
               seed_asn: null
               timestamp: 0
-              traceback_end: false
               withdraw: false
         _send_q: !simulator_codec/SendQueue {}
       propagation_rank: 2
@@ -960,7 +924,6 @@ as_graph: !yamlable/CAIDAASGraph
             rovpp_blackhole: false
             seed_asn: null
             timestamp: 0
-            traceback_end: false
             withdraw: false
         _recv_q: !simulator_codec/RecvQueue {}
         _ribs_in: !simulator_codec/RIBsIn
@@ -987,7 +950,6 @@ as_graph: !yamlable/CAIDAASGraph
                 rovpp_blackhole: false
                 seed_asn: null
                 timestamp: 0
-                traceback_end: false
                 withdraw: false
           11:
             1.2.0.0/16: !yamlable/AnnInfo
@@ -1012,7 +974,6 @@ as_graph: !yamlable/CAIDAASGraph
                 rovpp_blackhole: false
                 seed_asn: null
                 timestamp: 0
-                traceback_end: false
                 withdraw: false
           12:
             1.2.0.0/16: !yamlable/AnnInfo
@@ -1037,7 +998,6 @@ as_graph: !yamlable/CAIDAASGraph
                 rovpp_blackhole: false
                 seed_asn: null
                 timestamp: 0
-                traceback_end: false
                 withdraw: false
           777:
             1.2.0.0/16: !yamlable/AnnInfo
@@ -1060,7 +1020,6 @@ as_graph: !yamlable/CAIDAASGraph
                 rovpp_blackhole: false
                 seed_asn: 777
                 timestamp: 0
-                traceback_end: false
                 withdraw: false
         _ribs_out: !simulator_codec/RIBsOut
           9:
@@ -1081,7 +1040,6 @@ as_graph: !yamlable/CAIDAASGraph
               rovpp_blackhole: false
               seed_asn: null
               timestamp: 0
-              traceback_end: false
               withdraw: false
           11:
             1.2.0.0/16: !yamlable/Announcement
@@ -1101,7 +1059,6 @@ as_graph: !yamlable/CAIDAASGraph
               rovpp_blackhole: false
               seed_asn: null
               timestamp: 0
-              traceback_end: false
               withdraw: false
           12:
             1.2.0.0/16: !yamlable/Announcement
@@ -1121,7 +1078,6 @@ as_graph: !yamlable/CAIDAASGraph
               rovpp_blackhole: false
               seed_asn: null
               timestamp: 0
-              traceback_end: false
               withdraw: false
           777:
             1.2.0.0/16: !yamlable/Announcement
@@ -1141,7 +1097,6 @@ as_graph: !yamlable/CAIDAASGraph
               rovpp_blackhole: false
               seed_asn: null
               timestamp: 0
-              traceback_end: false
               withdraw: false
         _send_q: !simulator_codec/SendQueue {}
       propagation_rank: 1
@@ -1179,7 +1134,6 @@ as_graph: !yamlable/CAIDAASGraph
             rovpp_blackhole: false
             seed_asn: null
             timestamp: 0
-            traceback_end: false
             withdraw: false
         _recv_q: !simulator_codec/RecvQueue {}
         _ribs_in: !simulator_codec/RIBsIn
@@ -1206,7 +1160,6 @@ as_graph: !yamlable/CAIDAASGraph
                 rovpp_blackhole: false
                 seed_asn: null
                 timestamp: 0
-                traceback_end: false
                 withdraw: false
           9:
             1.2.0.0/16: !yamlable/AnnInfo
@@ -1231,7 +1184,6 @@ as_graph: !yamlable/CAIDAASGraph
                 rovpp_blackhole: false
                 seed_asn: null
                 timestamp: 0
-                traceback_end: false
                 withdraw: false
           10:
             1.2.0.0/16: !yamlable/AnnInfo
@@ -1255,7 +1207,6 @@ as_graph: !yamlable/CAIDAASGraph
                 rovpp_blackhole: false
                 seed_asn: null
                 timestamp: 0
-                traceback_end: false
                 withdraw: false
         _ribs_out: !simulator_codec/RIBsOut
           8:
@@ -1277,7 +1228,6 @@ as_graph: !yamlable/CAIDAASGraph
               rovpp_blackhole: false
               seed_asn: null
               timestamp: 0
-              traceback_end: false
               withdraw: false
           9:
             1.2.0.0/16: !yamlable/Announcement
@@ -1298,7 +1248,6 @@ as_graph: !yamlable/CAIDAASGraph
               rovpp_blackhole: false
               seed_asn: null
               timestamp: 0
-              traceback_end: false
               withdraw: false
           10:
             1.2.0.0/16: !yamlable/Announcement
@@ -1319,7 +1268,6 @@ as_graph: !yamlable/CAIDAASGraph
               rovpp_blackhole: false
               seed_asn: null
               timestamp: 0
-              traceback_end: false
               withdraw: false
         _send_q: !simulator_codec/SendQueue {}
       propagation_rank: 3
@@ -1353,7 +1301,6 @@ as_graph: !yamlable/CAIDAASGraph
             rovpp_blackhole: false
             seed_asn: null
             timestamp: 0
-            traceback_end: false
             withdraw: false
         _recv_q: !simulator_codec/RecvQueue {}
         _ribs_in: !simulator_codec/RIBsIn
@@ -1379,7 +1326,6 @@ as_graph: !yamlable/CAIDAASGraph
                 rovpp_blackhole: false
                 seed_asn: null
                 timestamp: 0
-                traceback_end: false
                 withdraw: false
         _ribs_out: !simulator_codec/RIBsOut
           10:
@@ -1401,7 +1347,6 @@ as_graph: !yamlable/CAIDAASGraph
               rovpp_blackhole: false
               seed_asn: null
               timestamp: 0
-              traceback_end: false
               withdraw: false
         _send_q: !simulator_codec/SendQueue {}
       propagation_rank: 2
@@ -1423,7 +1368,7 @@ as_graph: !yamlable/CAIDAASGraph
             - 777
             bgpsec_as_path: !!python/tuple []
             bgpsec_next_asn: null
-            next_hop_asn: 2
+            next_hop_asn: 666
             only_to_customers: 2
             prefix: 1.2.0.0/16
             recv_relationship: !simulator_codec/Relationships
@@ -1434,7 +1379,6 @@ as_graph: !yamlable/CAIDAASGraph
             rovpp_blackhole: false
             seed_asn: 666
             timestamp: 1
-            traceback_end: true
             withdraw: false
         _recv_q: !simulator_codec/RecvQueue {}
         _ribs_in: !simulator_codec/RIBsIn {}
@@ -1456,9 +1400,8 @@ as_graph: !yamlable/CAIDAASGraph
               roa_origin: 777
               roa_valid_length: true
               rovpp_blackhole: false
-              seed_asn: null
+              seed_asn: 666
               timestamp: 1
-              traceback_end: false
               withdraw: false
           2:
             1.2.0.0/16: !yamlable/Announcement
@@ -1477,9 +1420,8 @@ as_graph: !yamlable/CAIDAASGraph
               roa_origin: 777
               roa_valid_length: true
               rovpp_blackhole: false
-              seed_asn: null
+              seed_asn: 666
               timestamp: 1
-              traceback_end: false
               withdraw: false
         _send_q: !simulator_codec/SendQueue {}
       propagation_rank: 0
@@ -1512,7 +1454,6 @@ as_graph: !yamlable/CAIDAASGraph
             rovpp_blackhole: false
             seed_asn: 777
             timestamp: 0
-            traceback_end: false
             withdraw: false
         _recv_q: !simulator_codec/RecvQueue {}
         _ribs_in: !simulator_codec/RIBsIn {}
@@ -1534,7 +1475,6 @@ as_graph: !yamlable/CAIDAASGraph
               rovpp_blackhole: false
               seed_asn: 777
               timestamp: 0
-              traceback_end: false
               withdraw: false
           4:
             1.2.0.0/16: !yamlable/Announcement
@@ -1553,7 +1493,6 @@ as_graph: !yamlable/CAIDAASGraph
               rovpp_blackhole: false
               seed_asn: 777
               timestamp: 0
-              traceback_end: false
               withdraw: false
           10:
             1.2.0.0/16: !yamlable/Announcement
@@ -1572,7 +1511,6 @@ as_graph: !yamlable/CAIDAASGraph
               rovpp_blackhole: false
               seed_asn: 777
               timestamp: 0
-              traceback_end: false
               withdraw: false
         _send_q: !simulator_codec/SendQueue {}
       propagation_rank: 0

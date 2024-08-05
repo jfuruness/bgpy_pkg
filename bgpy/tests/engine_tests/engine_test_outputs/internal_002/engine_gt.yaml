@@ -31,7 +31,6 @@ as_graph: !yamlable/CAIDAASGraph
             rovpp_blackhole: false
             seed_asn: null
             timestamp: 0
-            traceback_end: false
             withdraw: false
         _recv_q: !simulator_codec/RecvQueue {}
         _ribs_in: !simulator_codec/RIBsIn
@@ -56,7 +55,6 @@ as_graph: !yamlable/CAIDAASGraph
                 rovpp_blackhole: false
                 seed_asn: 2
                 timestamp: 0
-                traceback_end: false
                 withdraw: false
           3: {}
         _ribs_out: !simulator_codec/RIBsOut
@@ -78,7 +76,6 @@ as_graph: !yamlable/CAIDAASGraph
               rovpp_blackhole: false
               seed_asn: null
               timestamp: 0
-              traceback_end: false
               withdraw: false
         _send_q: !simulator_codec/SendQueue {}
       propagation_rank: 1
@@ -111,7 +108,6 @@ as_graph: !yamlable/CAIDAASGraph
             rovpp_blackhole: false
             seed_asn: 2
             timestamp: 0
-            traceback_end: false
             withdraw: false
         _recv_q: !simulator_codec/RecvQueue {}
         _ribs_in: !simulator_codec/RIBsIn {}
@@ -133,7 +129,6 @@ as_graph: !yamlable/CAIDAASGraph
               rovpp_blackhole: false
               seed_asn: 2
               timestamp: 0
-              traceback_end: false
               withdraw: false
         _send_q: !simulator_codec/SendQueue {}
       propagation_rank: 2
@@ -184,7 +179,6 @@ as_graph: !yamlable/CAIDAASGraph
             rovpp_blackhole: false
             seed_asn: null
             timestamp: 0
-            traceback_end: false
             withdraw: false
         _recv_q: !simulator_codec/RecvQueue {}
         _ribs_in: !simulator_codec/RIBsIn
@@ -210,7 +204,6 @@ as_graph: !yamlable/CAIDAASGraph
                 rovpp_blackhole: false
                 seed_asn: null
                 timestamp: 0
-                traceback_end: false
                 withdraw: false
         _ribs_out: !simulator_codec/RIBsOut {}
         _send_q: !simulator_codec/SendQueue {}

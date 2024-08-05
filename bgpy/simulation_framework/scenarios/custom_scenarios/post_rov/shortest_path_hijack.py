@@ -76,7 +76,7 @@ class ShortestPathHijack(VictimsPrefix):
             return self._get_prefix_attacker_anns(engine=engine)  # type: ignore
         elif self.scenario_config.AdoptPolicyCls in self.rov_policy_classes:
             # mypy failing here for no reason
-            return self._get_forged_origin_attack_anns(engine=engine)  # type: ignore
+            return self._get_forged_origin_attacker_anns(engine=engine)  # type: ignore
         elif self.scenario_config.AdoptPolicyCls in (PathEnd, PathEndFull):
             return self._get_pathend_attack_anns(engine=engine)
         elif self.scenario_config.AdoptPolicyCls in (ASPA, ASPAFull):

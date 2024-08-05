@@ -17,7 +17,7 @@ def seed_ann(self: "BGP", ann: "Ann") -> None:
     """
 
     # Ensure we aren't replacing anything
-    err = "Seeding conflict"
+    err = f"Seeding conflict {ann} {self._local_rib.get(ann.prefix)}"
     assert self._local_rib.get(ann.prefix) is None, err
     # Seed by placing in the local rib
     self._local_rib.add_ann(ann)

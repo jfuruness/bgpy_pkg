@@ -52,7 +52,7 @@ class ShortestPathASPAAttacker(BGP):
         """As defined in ASPA V16 RFC section 12, use origin hijack for customers"""
 
         # This ann is originating from here, the attacker, so it's an attacker's ann
-        if ann.from_rel == Relationships.ORIGIN:
+        if ann.recv_relationship == Relationships.ORIGIN:
             # Only need origin hijack when sending to customers
             new_ann = ann.copy(
                 {"as_path": (self.as_.asn, ann.origin), "seed_asn": None},

@@ -3,6 +3,9 @@ from typing import Optional, TYPE_CHECKING
 from bgpy.simulation_engine.policies.custom_attackers.first_asn_stripping_aspa_attacker import (  # noqa
     FirstASNStrippingASPAAttacker,
 )
+from bgpy.simulation_framework.scenarios.custom_scenarios.victims_prefix import (
+    VictimsPrefix,
+)
 from .shortest_path_hijack import ShortestPathHijack
 
 if TYPE_CHECKING:
@@ -26,7 +29,7 @@ class FirstASNStrippingHijack(ShortestPathHijack):
         """
 
         # First get the victims prefix
-        victim_anns = super()._get_announcements(engine=engine)
+        victim_anns = VictimsPrefix._get_announcements(self, engine=engine)
         attacker_anns = self._get_first_asn_stripped_attacker_anns(engine=engine)
         return victim_anns + attacker_anns
 

@@ -30,7 +30,6 @@ as_graph: !yamlable/CAIDAASGraph
             rovpp_blackhole: false
             seed_asn: null
             timestamp: 1
-            traceback_end: false
             withdraw: false
         _recv_q: !simulator_codec/RecvQueue {}
       propagation_rank: 0
@@ -53,7 +52,7 @@ as_graph: !yamlable/CAIDAASGraph
             - 777
             bgpsec_as_path: !!python/tuple []
             bgpsec_next_asn: null
-            next_hop_asn: 777
+            next_hop_asn: 666
             only_to_customers: null
             prefix: 1.2.0.0/16
             recv_relationship: !simulator_codec/Relationships
@@ -64,7 +63,6 @@ as_graph: !yamlable/CAIDAASGraph
             rovpp_blackhole: false
             seed_asn: 666
             timestamp: 1
-            traceback_end: true
             withdraw: false
         _recv_q: !simulator_codec/RecvQueue {}
       propagation_rank: 0
@@ -96,7 +94,6 @@ as_graph: !yamlable/CAIDAASGraph
             rovpp_blackhole: false
             seed_asn: 777
             timestamp: 0
-            traceback_end: false
             withdraw: false
         _recv_q: !simulator_codec/RecvQueue {}
       propagation_rank: 0

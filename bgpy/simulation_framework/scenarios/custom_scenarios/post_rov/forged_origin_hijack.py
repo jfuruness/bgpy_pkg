@@ -50,6 +50,7 @@ class ForgedOriginHijack(VictimsPrefix):
                     as_path=(attacker_asn, victim_asn),
                     timestamp=Timestamps.ATTACKER.value,
                     next_hop_asn=attacker_asn,
+                    seed_asn=attacker_asn,
                 )
             )
         return tuple(anns)

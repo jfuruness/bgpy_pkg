@@ -1,7 +1,6 @@
 import csv
 from pathlib import Path
 import pickle
-from pprint import pformat
 
 from bgpy.enums import Outcomes
 from bgpy.simulation_engine import BaseSimulationEngine
@@ -203,10 +202,15 @@ class EngineTester(EngineRunner):
             graph_data_guess = pickle.load(f)
         with self.graph_data_ground_truth_path_pickle.open("rb") as f:
             graph_data_gt = pickle.load(f)
-        err = f"{pformat(graph_data_guess[0])} {pformat(graph_data_gt[0])}"
-        guess_set = set([str(x) for x in graph_data_guess])
-        gt_set = set([str(x) for x in graph_data_gt])
-        assert guess_set == gt_set, err
+
+        for graph_category, data_point_dict in graph_data_guess.items():
+            for data_point_key, agg_trial_data in data_point_dict.items():
+                assert graph_data_gt[graph_category][data_point_key] == agg_trial_data
+        for graph_category, data_point_dict in graph_data_gt.items():
+            for data_point_key, agg_trial_data in data_point_dict.items():
+                assert graph_data_guess[graph_category][data_point_key] == (
+                    agg_trial_data
+                )
 
     #########
     # Paths #

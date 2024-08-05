@@ -29,7 +29,6 @@ as_graph: !yamlable/CAIDAASGraph
             rovpp_blackhole: false
             seed_asn: null
             timestamp: 1
-            traceback_end: false
             withdraw: false
         _recv_q: !simulator_codec/RecvQueue {}
       propagation_rank: 1
@@ -65,7 +64,6 @@ as_graph: !yamlable/CAIDAASGraph
             rovpp_blackhole: false
             seed_asn: null
             timestamp: 1
-            traceback_end: false
             withdraw: false
         _recv_q: !simulator_codec/RecvQueue {}
       propagation_rank: 1
@@ -129,7 +127,6 @@ as_graph: !yamlable/CAIDAASGraph
             rovpp_blackhole: false
             seed_asn: null
             timestamp: 1
-            traceback_end: false
             withdraw: false
         _recv_q: !simulator_codec/RecvQueue {}
       propagation_rank: 2
@@ -165,7 +162,6 @@ as_graph: !yamlable/CAIDAASGraph
             rovpp_blackhole: false
             seed_asn: null
             timestamp: 1
-            traceback_end: false
             withdraw: false
         _recv_q: !simulator_codec/RecvQueue {}
       propagation_rank: 2
@@ -221,7 +217,6 @@ as_graph: !yamlable/CAIDAASGraph
             rovpp_blackhole: false
             seed_asn: null
             timestamp: 1
-            traceback_end: false
             withdraw: false
         _recv_q: !simulator_codec/RecvQueue {}
       propagation_rank: 1
@@ -260,7 +255,6 @@ as_graph: !yamlable/CAIDAASGraph
             rovpp_blackhole: false
             seed_asn: null
             timestamp: 1
-            traceback_end: false
             withdraw: false
         _recv_q: !simulator_codec/RecvQueue {}
       propagation_rank: 3
@@ -305,7 +299,6 @@ as_graph: !yamlable/CAIDAASGraph
             rovpp_blackhole: false
             seed_asn: 666
             timestamp: 1
-            traceback_end: false
             withdraw: false
         _recv_q: !simulator_codec/RecvQueue {}
       propagation_rank: 0
@@ -340,7 +333,6 @@ as_graph: !yamlable/CAIDAASGraph
             rovpp_blackhole: false
             seed_asn: null
             timestamp: 1
-            traceback_end: false
             withdraw: false
         _recv_q: !simulator_codec/RecvQueue {}
       propagation_rank: 0
