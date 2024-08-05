@@ -167,13 +167,17 @@ class ShortestPathPrefixHijack(VictimsPrefix):
         shortest_valid_path = self._find_shortest_valley_free_non_adopting_path(
             root_asn=next(iter(self.victim_asns)), engine=engine
         )
-
         anns = list()
         for attacker_asn in self.attacker_asns:
+            # There are cases where the attacker is a part of this
+            # We add the attacker later so just remove it here
+            current_shortest_valid_path = tuple([
+                x for x in shortest_valid_path if x != attacker_asn
+            ])
             anns.append(
                 self.scenario_config.AnnCls(
                     prefix=Prefixes.PREFIX.value,
-                    as_path=(attacker_asn,) + shortest_valid_path,
+                    as_path=(attacker_asn,) + current_shortest_valid_path,
                     timestamp=Timestamps.ATTACKER.value,
                     next_hop_asn=attacker_asn,
                     seed_asn=attacker_asn,

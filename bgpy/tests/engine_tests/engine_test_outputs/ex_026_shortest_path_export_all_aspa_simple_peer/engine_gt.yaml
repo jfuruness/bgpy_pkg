@@ -16,6 +16,9 @@ as_graph: !yamlable/CAIDAASGraph
             as_path: !!python/tuple
             - 1
             - 666
+            - 3
+            - 9
+            - 4
             - 777
             bgpsec_as_path: !!python/tuple []
             bgpsec_next_asn: null
