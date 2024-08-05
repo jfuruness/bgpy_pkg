@@ -21,7 +21,8 @@ class FirstASNStrippingASPAAttacker(BGP):
     first ASN from the path)
     """
 
-    def process_incoming_anns(
+    # Mypy doesn't understand superclass since superclass is in a seperate file
+    def process_incoming_anns(  # type: ignore
         self,
         *,
         from_rel: "Relationships",

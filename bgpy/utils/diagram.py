@@ -12,7 +12,7 @@ from bgpy.simulation_framework import Scenario
 
 if TYPE_CHECKING:
     from bgpy.as_graphs.base.as_graph import AS
-    from bgpy.simulation_framework.metric_tracker import MetricTracker
+    from bgpy.simulation_framework.graph_data_aggregator import GraphDataAggregator
 
 
 class Diagram:
@@ -30,7 +30,7 @@ class Diagram:
         # Just the data plane
         traceback: dict[int, int],
         description: str,
-        metric_tracker: "MetricTracker",
+        graph_data_aggregator: "GraphDataAggregator",
         diagram_ranks: tuple[tuple["AS", ...], ...],
         static_order: bool = False,
         path: Optional[Path] = None,

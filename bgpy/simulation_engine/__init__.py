@@ -21,21 +21,12 @@ from .policies import PathEnd
 from .policies import PathEndFull
 from .policies import ASPA
 from .policies import ASPAFull
-
-# Old - just keeping these around for backwards compatability
-from .policies import BGPFull as BGPPolicy
-from .policies import PeerROVFull as PeerROVPolicy
-from .policies import ROVFull as ROVPolicy
-from .policies import BGPSecFull as BGPSecPolicy
-from .policies import OnlyToCustomersFull as OnlyToCustomersPolicy
-from .policies import PathendFull as PathendPolicy
 from .policies import ROVPPV1Lite
 from .policies import ROVPPV1LiteFull
 from .policies import ROVPPV2Lite
 from .policies import ROVPPV2LiteFull
 from .policies import ROVPPV2ImprovedLite
 from .policies import ROVPPV2ImprovedLiteFull
-from .policies import ASPAFull as ASPAPolicy
 
 # Custom attacker policies
 from .policies import ShortestPathASPAAttacker
@@ -73,12 +64,6 @@ __all__ = [
     "ROVPPV2ImprovedLiteFull",
     "ASPA",
     "ASPAFull",
-    "BGPPolicy",
-    "PeerROVPolicy",
-    "ROVPolicy",
-    "BGPSecPolicy",
-    "OnlyToCustomersPolicy",
-    "ASPAPolicy",
     "ShortestPathASPAAttacker",
     "FirstASNStrippingASPAAttacker",
     "BaseSimulationEngine",

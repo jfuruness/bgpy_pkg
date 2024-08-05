@@ -30,6 +30,7 @@ class SubprefixHijack(VictimsPrefix):
 
         # First get victim's anns
         victim_anns = super()._get_announcements(engine=engine)
+        assert isinstance(victim_anns, tuple), "mypy"
         attacker_anns = self._get_subprefix_attacker_anns(engine=engine)
         return victim_anns + attacker_anns
 

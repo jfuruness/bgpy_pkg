@@ -20,7 +20,8 @@ class ShortestPathASPAAttacker(BGP):
     customers the ShortestPath is a forged-origin hijack
     """
 
-    def process_incoming_anns(
+    # mypy doesn't understand the multiple file superclass
+    def process_incoming_anns(  # type: ignore
         self,
         *,
         from_rel: "Relationships",

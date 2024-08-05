@@ -72,9 +72,11 @@ class ShortestPathHijack(VictimsPrefix):
         """Returns announcements for the shortest path attacker"""
 
         if self.scenario_config.AdoptPolicyCls in self.pre_rov_policy_classes:
-            return self._get_prefix_attacker_anns(engine=engine)
+            # invalid self - mypy. It's right but doesn't matter
+            return self._get_prefix_attacker_anns(engine=engine)  # type: ignore
         elif self.scenario_config.AdoptPolicyCls in self.rov_policy_classes:
-            return self._get_forged_origin_attack_anns(engine=engine)
+            # mypy failing here for no reason
+            return self._get_forged_origin_attack_anns(engine=engine)  # type: ignore
         elif self.scenario_config.AdoptPolicyCls in (PathEnd, PathEndFull):
             return self._get_pathend_attack_anns(engine=engine)
         elif self.scenario_config.AdoptPolicyCls in (ASPA, ASPAFull):
@@ -103,7 +105,7 @@ class ShortestPathHijack(VictimsPrefix):
 
         root_as_obj = engine.as_graph.as_dict[next(iter(self.victim_asns))]
         root_asn = root_as_obj.asn
-        shortest_valid_path = None
+        shortest_valid_path: tuple[int, ...] | None = None
         for first_provider in root_as_obj.providers:
             # You only need legit origin and their provider, you don't need three
             # for secondary_provider in first_provider.providers:
@@ -129,6 +131,7 @@ class ShortestPathHijack(VictimsPrefix):
             )
             shortest_valid_path = ()
 
+        assert shortest_valid_path is not None, "mypy"
         anns = list()
         for attacker_asn in self.attacker_asns:
             anns.append(
@@ -151,7 +154,7 @@ class ShortestPathHijack(VictimsPrefix):
         if len(self.victim_asns) > 1:
             raise NotImplementedError
 
-        if self.scenario_config.AttackerAdoptPolicyCls != self.RequiredASPAAttackerCls:
+        if self.scenario_config.AttackerBasePolicyCls != self.RequiredASPAAttackerCls:
             raise ValueError(
                 "For a shortest path export all attack against ASPA, "
                 "scenario_config.AttackerAdoptPolicyCls must be set to "
@@ -161,7 +164,7 @@ class ShortestPathHijack(VictimsPrefix):
         assert engine, "mypy"
 
         shortest_valid_path = self._find_shortest_valley_free_non_adopting_path(
-            root_asn=next(iter(self.victim_asns[0])), engine=engine
+            root_asn=next(iter(self.victim_asns)), engine=engine
         )
 
         anns = list()
@@ -268,7 +271,7 @@ class ShortestPathHijack(VictimsPrefix):
         non_adopting_customer_asns = set()
         for propagation_rank in reversed(engine.as_graph.propagation_ranks):
             for as_obj in propagation_rank:
-                shortest_provider_path = None
+                shortest_provider_path: tuple[int, ...] | None = None
                 for provider_asn in as_obj.provider_asns:
                     provider_path = visited.get(provider_asn)
                     if provider_path is not None:
@@ -307,7 +310,7 @@ class ShortestPathHijack(VictimsPrefix):
     ######################
 
     @property
-    def pre_rov_policy_classes(self) -> frozenset[type[Policy], ...]:
+    def pre_rov_policy_classes(self) -> frozenset[type[Policy]]:
         """These are policy classes that are susceptible to pre_rov attacks
 
         such as prefix hijack, subprefix hijack
@@ -318,7 +321,7 @@ class ShortestPathHijack(VictimsPrefix):
         )
 
     @property
-    def rov_policy_classes(self) -> frozenset[type[Policy], ...]:
+    def rov_policy_classes(self) -> frozenset[type[Policy]]:
         """These are policy classes that are susceptible to forged-origin attacks"""
 
         return frozenset(

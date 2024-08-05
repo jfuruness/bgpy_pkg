@@ -40,12 +40,14 @@ class ForgedOriginHijack(VictimsPrefix):
     ) -> tuple["Ann", ...]:
         """Returns attacker anns for a forged origin hijack"""
 
+        victim_asn = next(iter(self.victim_asns))
+
         anns = list()
         for attacker_asn in self.attacker_asns:
             anns.append(
                 self.scenario_config.AnnCls(
                     prefix=Prefixes.PREFIX.value,
-                    as_path=(attacker_asn, self.victim_asns[0]),
+                    as_path=(attacker_asn, victim_asn),
                     timestamp=Timestamps.ATTACKER.value,
                     next_hop_asn=attacker_asn,
                 )
