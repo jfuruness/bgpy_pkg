@@ -176,7 +176,7 @@ class ShortestPathHijack(VictimsPrefix):
                     as_path=(attacker_asn,) + shortest_valid_path,
                     timestamp=Timestamps.ATTACKER.value,
                     next_hop_asn=attacker_asn,
-                    seed_asn=attacker_asn
+                    seed_asn=attacker_asn,
                 )
             )
         return tuple(anns)
