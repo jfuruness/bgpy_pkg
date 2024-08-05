@@ -32,7 +32,7 @@ class ShortestPathPrefixASPAAttacker(BGP):
         err = "This class is only meant for subclasses of ShortestPathPrefixHijack"
         # Must... avoid... circular... imports!!
         ScenarioCls = (
-            bgpy.simulation_framework.scenarios.custom_scenarios.post_rov.shortest_path_hijack.ShortestPathPrefixHijack
+            bgpy.simulation_framework.scenarios.custom_scenarios.post_rov.shortest_path_hijack.ShortestPathPrefixHijack  # noqa
         )
         assert isinstance(scenario, ScenarioCls), err
         return super().process_incoming_anns(
@@ -52,7 +52,12 @@ class ShortestPathPrefixASPAAttacker(BGP):
         """As defined in ASPA V16 RFC section 12, use origin hijack for customers"""
 
         # This ann is originating from here, the attacker, so it's an attacker's ann
-        if ann.recv_relationship == Relationships.ORIGIN:
+        # If as path length is 1 (like it would be against BGP), don't modify it
+        if (
+            propagate_to == Relationships.CUSTOMERS
+            and ann.recv_relationship == Relationships.ORIGIN
+            and len(ann.as_path) > 1
+        ):
             # Only need origin hijack when sending to customers
             new_ann = ann.copy(
                 {"as_path": (self.as_.asn, ann.origin), "seed_asn": None},
