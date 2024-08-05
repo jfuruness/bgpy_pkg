@@ -171,9 +171,9 @@ class ShortestPathPrefixHijack(VictimsPrefix):
         for attacker_asn in self.attacker_asns:
             # There are cases where the attacker is a part of this
             # We add the attacker later so just remove it here
-            current_shortest_valid_path = tuple([
-                x for x in shortest_valid_path if x != attacker_asn
-            ])
+            current_shortest_valid_path = tuple(
+                [x for x in shortest_valid_path if x != attacker_asn]
+            )
             anns.append(
                 self.scenario_config.AnnCls(
                     prefix=Prefixes.PREFIX.value,
