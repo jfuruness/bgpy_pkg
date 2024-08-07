@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "bgpy_pkg"
-version = "8.1.0"
+version = "8.1.1"
 requires-python = ">=3.10"
 description = "Simulates BGP and ROV in an extensible manner"
 readme = "README.md"
@@ -13,7 +13,7 @@ authors = [
     {name = "Cameron Morris", email = "cameron.morris@uconn.edu"},
     {name = "Reynaldo Morillo", email = "reynaldo.morillo@uconn.edu"},
     {name = "Arvind Kasiliya", email = "arvind.kasiliya@uconn.edu"},
-    {name = "Joel Braun", email = "joel.braun@de-cix.net"}
+    {name = "Joel Braun", email = "joelbraun@protonmail.com"}
 ]
 maintainers = [
   {name = "Justin Furuness", email = "jfuruness@gmail.com"}
