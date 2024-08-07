@@ -25,7 +25,10 @@ class AS(YamlAble):
         peers: tuple["AS", ...] = tuple(),
         providers: tuple["AS", ...] = tuple(),
         customers: tuple["AS", ...] = tuple(),
+        customer_cone_asns: Optional[frozenset[int]] = None,
         customer_cone_size: Optional[int] = None,
+        provider_cone_asns: Optional[frozenset[int]] = None,
+        provider_cone_size: Optional[int] = None,
         as_rank: Optional[int] = None,
         propagation_rank: Optional[int] = None,
         policy: Optional["Policy"] = None,
@@ -45,7 +48,10 @@ class AS(YamlAble):
         # Read Caida's paper to understand these
         self.input_clique: bool = input_clique
         self.ixp: bool = ixp
+        self.customer_cone_asns: Optional[frozenset[int]] = customer_cone_asns
         self.customer_cone_size: Optional[int] = customer_cone_size
+        self.provider_cone_asns: Optional[frozenset[int]] = provider_cone_asns
+        self.provider_cone_size: Optional[int] = provider_cone_size
         self.as_rank: Optional[int] = as_rank
         # Propagation rank. Rank leaves to clique
         self.propagation_rank: Optional[int] = propagation_rank
@@ -84,6 +90,9 @@ class AS(YamlAble):
         def asns(as_objs: tuple["AS", ...]) -> str:
             return "{" + ",".join(str(x.asn) for x in sorted(as_objs)) + "}"
 
+        def frozenset_asns(asns: frozenset[int]) -> str:
+            return "{" + ",".join(str(asn) for asn in sorted(asns)) + "}"
+
         def _format(x: Any) -> str:
             if (isinstance(x, list) or isinstance(x, tuple)) and all(
                 [isinstance(y, AS) for y in x]
@@ -94,6 +103,8 @@ class AS(YamlAble):
                 return ""
             elif any(isinstance(x, my_type) for my_type in (str, int, float)):
                 return str(x)
+            elif isinstance(x, frozenset):
+                return frozenset_asns(x)
             else:
                 raise Exception(f"improper format type: {type(x)} {x}")
 
@@ -108,7 +119,10 @@ class AS(YamlAble):
             "providers",
             "input_clique",
             "ixp",
+            "customer_cone_asns",
             "customer_cone_size",
+            "provider_cone_asns",
+            "provider_cone_size",
             "as_rank",
             "propagation_rank",
             # Don't forget the properties
@@ -164,7 +178,10 @@ class AS(YamlAble):
             "providers": tuple([x.asn for x in self.providers]),
             "input_clique": self.input_clique,
             "ixp": self.ixp,
+            "customer_cone_asns": self.customer_cone_asns,
             "customer_cone_size": self.customer_cone_size,
+            "provider_cone_asns": self.provider_cone_asns,
+            "provider_cone_size": self.provider_cone_size,
             "as_rank": self.as_rank,
             "propagation_rank": self.propagation_rank,
             "policy": self.policy,
@@ -177,6 +194,10 @@ class AS(YamlAble):
         dct["customer_asns"] = frozenset(dct["customers"])
         dct["peer_asns"] = frozenset(dct["peers"])
         dct["provider_asns"] = frozenset(dct["providers"])
+        if dct["customer_cone_asns"] is not None:
+            dct["customer_cone_asns"] = frozenset(dct["customer_cone_asns"])
+        if dct["provider_cone_asns"] is not None:
+            dct["provider_cone_asns"] = frozenset(dct["provider_cone_asns"])
         return cls(**dct)
 
 

@@ -21,10 +21,14 @@ from .propagation_rank_funcs import _assign_propagation_ranks
 from .propagation_rank_funcs import _assign_ranks_helper
 from .propagation_rank_funcs import _get_propagation_ranks
 
-# Customer cone funcs
-from .customer_cone_funcs import _get_customer_cone_size
-from .customer_cone_funcs import _get_cone_size_helper
-from .customer_cone_funcs import _get_as_rank
+from .cone_funcs import (
+    _get_size_of_and_store_cone,
+    _get_and_store_customer_cone_and_set_size,
+    _get_and_store_provider_cone_and_set_size,
+    _get_and_store_provider_cone_and_set_size,
+    _get_cone_helper,
+    _get_as_rank,
+)
 
 import bgpy
 
@@ -45,9 +49,18 @@ class ASGraph(YamlAble):
     _assign_ranks_helper = _assign_ranks_helper
     _get_propagation_ranks = _get_propagation_ranks
 
-    # Customer cone funcs
-    _get_customer_cone_size = _get_customer_cone_size
-    _get_cone_size_helper = _get_cone_size_helper
+    # Cone funcs
+    _get_size_of_and_store_cone = _get_size_of_and_store_cone
+    _get_and_store_customer_cone_and_set_size = (
+        _get_and_store_customer_cone_and_set_size
+    )
+    _get_and_store_provider_cone_and_set_size = (
+        _get_and_store_provider_cone_and_set_size
+    )
+    _get_and_store_provider_cone_and_set_size = (
+        _get_and_store_provider_cone_and_set_size
+    )
+    _get_cone_helper = _get_cone_helper
     _get_as_rank = _get_as_rank
 
     def __init_subclass__(cls, *args, **kwargs):
@@ -64,7 +77,10 @@ class ASGraph(YamlAble):
         as_graph_info: "ASGraphInfo",
         BaseASCls: type[AS] = AS,
         BasePolicyCls: type[bgpy.simulation_engine.Policy] = bgpy.simulation_engine.BGP,
-        customer_cones: bool = True,
+        store_customer_cone_size: bool = True,
+        store_customer_cone_asns: bool = False,
+        store_provider_cone_size: bool = False,
+        store_provider_cone_asns: bool = False,
         yaml_as_dict: Optional[frozendict[int, AS]] = None,
         yaml_ixp_asns: frozenset[int] = frozenset(),
         # Users can pass in any additional AS groups they want to keep track of
@@ -80,7 +96,13 @@ class ASGraph(YamlAble):
         else:
             # init as normal, through the as_graph_info
             self._set_non_yaml_attrs(
-                as_graph_info, BaseASCls, BasePolicyCls, customer_cones
+                as_graph_info,
+                BaseASCls,
+                BasePolicyCls,
+                store_customer_cone_size,
+                store_customer_cone_asns,
+                store_provider_cone_size,
+                store_provider_cone_asns,
             )
         # Set the AS and ASN group groups
         self._set_as_groups(additional_as_group_filters)
@@ -116,7 +138,10 @@ class ASGraph(YamlAble):
         as_graph_info: ASGraphInfo,
         BaseASCls: type["AS"],
         BasePolicyCls: type["bgpy.simulation_engine.Policy"],
-        customer_cones: bool,
+        store_customer_cone_size: bool,
+        store_customer_cone_asns: bool,
+        store_provider_cone_size: bool,
+        store_provider_cone_asns: bool,
     ) -> None:
         """Generates the AS graph normally (not from YAML)"""
 
@@ -146,10 +171,20 @@ class ASGraph(YamlAble):
         self.propagation_ranks = self._get_propagation_ranks()
         # We don't run this every time since it has the runtime greater than the
         # entire graph generation
-        if customer_cones:
+        if any([store_customer_cone_size, store_customer_cone_asns]):
             # Determine customer cones of all ases
-            self._get_customer_cone_size()
+            self._get_size_of_and_store_cone(
+                rel_attr=Relationships.CUSTOMERS.value.lower(),
+                store_cone_asns=store_customer_cone_asns,
+            )
             self._get_as_rank()
+
+        if any([store_provider_cone_size, store_provider_cone_asns]):
+            self._get_size_of_and_store_cone(
+                rel_attr=Relationships.PROVIDERS.value.lower(),
+                store_cone_asns=store_provider_cone_asns,
+            )
+
 
     def _set_as_groups(
         self,
