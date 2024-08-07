@@ -9,7 +9,7 @@ import random
 from typing import Any, Optional, TYPE_CHECKING, Union
 
 
-from roa_checker import ROAChecker, ROAValidity, ROA
+from roa_checker import ROA
 
 from bgpy.simulation_engine import Announcement as Ann
 from bgpy.simulation_engine import BaseSimulationEngine
@@ -18,7 +18,13 @@ from bgpy.enums import (
     SpecialPercentAdoptions,
 )
 
-from .scenario_config import ScenarioConfig
+from ..scenario_config import ScenarioConfig
+from .roa_helper_funcs import (
+    _add_roa_info_to_anns,
+    _get_roa_checker,
+    _get_roa_origin,
+    _get_roa_valid_length,
+)
 
 if TYPE_CHECKING:
     from bgpy.as_graphs import AS
@@ -27,7 +33,12 @@ if TYPE_CHECKING:
 class Scenario(ABC):
     """Contains information regarding a scenario/attack
 
-    This represents a single trial
+    This represents a single trial and a single engine run
+
+    NOTE: I wanted to split this class out into multiple files,
+    but that will totally break mypy for subclassing. So for now,
+    only the ROA funcs are moved out until this is fixed (since they
+    are very unlikely to be subclassed).
     """
 
     min_propagation_rounds: int = 1
@@ -374,38 +385,6 @@ class Scenario(ABC):
         """
         return ()
 
-    def _add_roa_info_to_anns(
-        self,
-        *,
-        announcements: tuple["Ann", ...] = (),
-        engine: Optional[BaseSimulationEngine] = None,
-    ) -> tuple["Ann", ...]:
-        """Adds ROA Info to Announcements"""
-
-        if self.roas:
-            roa_checker = self._get_roa_checker()
-            processed_anns = list()
-            for ann in announcements:
-                prefix = ip_network(ann.prefix)
-
-                roa_origin = self._get_roa_origin(roa_checker, prefix, ann.origin)
-
-                roa_valid_length = self._get_roa_valid_length(
-                    roa_checker, prefix, ann.origin
-                )
-
-                processed_anns.append(
-                    ann.copy(
-                        {
-                            "roa_valid_length": roa_valid_length,
-                            "roa_origin": roa_origin,
-                        }
-                    )
-                )
-            return tuple(processed_anns)
-        else:
-            return announcements
-
     def pre_aggregation_hook(
         self,
         engine: "BaseSimulationEngine",
@@ -433,48 +412,10 @@ class Scenario(ABC):
     # ROA Helper funcs #
     ####################
 
-    def _get_roa_checker(self) -> ROAChecker:
-        """Returns ROAChecker populated with self.roas"""
-
-        roa_checker = ROAChecker()
-        for roa in self.roas:
-            roa_checker.insert(roa.prefix, roa)
-        return roa_checker
-
-    def _get_roa_origin(
-        self, roa_checker: ROAChecker, prefix: IPv4Network | IPv6Network, origin: int
-    ) -> Optional[int]:
-        """Returns ROA origin"""
-
-        roas = roa_checker.get_relevant_roas(prefix)
-        if len(roas) == 0:
-            return None
-        elif len(roas) == 1:
-            [roa] = roas
-            return int(roa.origin)
-        else:
-            raise NotImplementedError
-
-    def _get_roa_valid_length(
-        self,
-        roa_checker: ROAChecker,
-        prefix: IPv4Network | IPv6Network,
-        origin: int,
-    ) -> Optional[bool]:
-        """Returns ROA validity"""
-
-        outcome = roa_checker.get_roa_outcome(prefix, origin)
-        if outcome.validity in (
-            ROAValidity.INVALID_LENGTH,
-            ROAValidity.INVALID_LENGTH_AND_ORIGIN,
-        ):
-            return False
-        elif outcome.validity == ROAValidity.UNKNOWN:
-            return None
-        elif outcome.validity in (ROAValidity.VALID, ROAValidity.INVALID_ORIGIN):
-            return True
-        else:
-            raise NotImplementedError(f"Should never reach this {outcome.validity}")
+    _add_roa_info_to_anns = _add_roa_info_to_anns
+    _get_roa_checker = _get_roa_checker
+    _get_roa_origin = _get_roa_origin
+    _get_roa_valid_length = _get_roa_valid_length
 
     ################
     # Helper Funcs #
