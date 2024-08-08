@@ -173,14 +173,14 @@ class ASGraph(YamlAble):
         if any([store_customer_cone_size, store_customer_cone_asns]):
             # Determine customer cones of all ases
             self._get_size_of_and_store_cone(
-                rel_attr=Relationships.CUSTOMERS.value.lower(),
+                rel_attr=Relationships.CUSTOMERS.name.lower(),
                 store_cone_asns=store_customer_cone_asns,
             )
             self._get_as_rank()
 
         if any([store_provider_cone_size, store_provider_cone_asns]):
             self._get_size_of_and_store_cone(
-                rel_attr=Relationships.PROVIDERS.value.lower(),
+                rel_attr=Relationships.PROVIDERS.name.lower(),
                 store_cone_asns=store_provider_cone_asns,
             )
 

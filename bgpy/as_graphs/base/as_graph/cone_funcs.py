@@ -31,7 +31,7 @@ def _get_and_store_customer_cone_and_set_size(self, store_asns: bool = False) ->
     for as_obj in non_edges:
         # NOTE: This also updates the cone_dict behind the scenes
         customer_cone: set[int] = self._get_cone_helper(
-            as_obj, cone_dict, Relationships.CUSTOMERS.value.lower()
+            as_obj, cone_dict, Relationships.CUSTOMERS.name.lower()
         )
         as_obj.customer_cone_size = len(customer_cone)
         if store_asns:
@@ -44,7 +44,7 @@ def _get_and_store_provider_cone_and_set_size(self, store_asns: bool = False) ->
     for as_obj in self:
         # NOTE: This also updates the cone_dict behind the scenes
         provider_cone: set[int] = self._get_cone_helper(
-            as_obj, cone_dict, Relationships.PROVIDERS.value.lower()
+            as_obj, cone_dict, Relationships.PROVIDERS.name.lower()
         )
         as_obj.provider_cone_size = len(provider_cone)
         if store_asns:
