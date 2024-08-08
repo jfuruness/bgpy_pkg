@@ -4,6 +4,7 @@ as_graph: !yamlable/CAIDAASGraph
     1: !yamlable/AS
       as_rank: 0
       asn: 1
+      customer_cone_asns: null
       customer_cone_size: 0
       customers: !!python/tuple []
       input_clique: false
@@ -33,10 +34,13 @@ as_graph: !yamlable/CAIDAASGraph
             withdraw: false
         _recv_q: !simulator_codec/RecvQueue {}
       propagation_rank: 0
+      provider_cone_asns: null
+      provider_cone_size: null
       providers: !!python/tuple []
     666: !yamlable/AS
       as_rank: 0
       asn: 666
+      customer_cone_asns: null
       customer_cone_size: 0
       customers: !!python/tuple []
       input_clique: false
@@ -66,10 +70,13 @@ as_graph: !yamlable/CAIDAASGraph
             withdraw: false
         _recv_q: !simulator_codec/RecvQueue {}
       propagation_rank: 0
+      provider_cone_asns: null
+      provider_cone_size: null
       providers: !!python/tuple []
     777: !yamlable/AS
       as_rank: 0
       asn: 777
+      customer_cone_asns: null
       customer_cone_size: 0
       customers: !!python/tuple []
       input_clique: false
@@ -97,6 +104,8 @@ as_graph: !yamlable/CAIDAASGraph
             withdraw: false
         _recv_q: !simulator_codec/RecvQueue {}
       propagation_rank: 0
+      provider_cone_asns: null
+      provider_cone_size: null
       providers: !!python/tuple []
   ixp_asns: []
 cached_as_graph_tsv_path: null
