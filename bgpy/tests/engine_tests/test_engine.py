@@ -1,4 +1,5 @@
 from pathlib import Path
+from typing import Optional
 
 import pytest
 
@@ -15,14 +16,14 @@ class TestEngine:
     """
 
     @pytest.mark.parametrize("conf", engine_test_configs)
-    def test_engine(self, conf: EngineTestConfig, overwrite: bool):
+    def test_engine(self, conf: EngineTestConfig, overwrite: bool, dpi: Optional[int]):
         """Performs a system test on the engine
 
         See README for in depth details
         """
 
         EngineTester(
-            base_dir=self.base_dir, conf=conf, overwrite=overwrite
+            base_dir=self.base_dir, conf=conf, overwrite=overwrite, dpi=dpi
         ).test_engine()
 
     @property
