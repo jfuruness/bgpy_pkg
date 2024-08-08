@@ -115,6 +115,10 @@ class Simulation:
         # So that multiprocessing doesn't interfere with one another
         self.ASGraphConstructorCls: type[ASGraphConstructor] = ASGraphConstructorCls
         self.as_graph_constructor_kwargs = as_graph_constructor_kwargs
+        # Validate before building the graph to give the user a few seconds to kill
+        # the program if desired (if RAM would run out) or validation errors before
+        # multi-second as graph loading takes place
+        self._validate_init()
         self.ASGraphConstructorCls(**as_graph_constructor_kwargs).run()
 
         self.SimulationEngineCls: type[BaseSimulationEngine] = SimulationEngineCls
@@ -127,7 +131,6 @@ class Simulation:
 
         self.graph_categories: tuple[GraphCategory, ...] = graph_categories
 
-        self._validate()
         # Can't delete this since it gets deleted in multiprocessing for some reason
         # NOTE: Once pypy gets to 3.12, just pass delete=False to this
         with TemporaryDirectory() as tmp_dir:
@@ -135,7 +138,7 @@ class Simulation:
         self._tqdm_tracking_dir: Path = Path(tmp_dir_str)
         self._tqdm_tracking_dir.mkdir(parents=True)
 
-    def _validate(self):
+    def _validate_init(self):
         """Validates inputs to __init__
 
         Specifically checks for:
@@ -179,12 +182,9 @@ class Simulation:
         NOTE: all these values where obtained using pypy3.10 on a laptop
         """
 
-        store_customer_cone_asns = self.as_graph_constructor_kwargs.get(
-            "store_customer_cone_asns", False
-        )
-        store_provider_cone_asns = self.as_graph_constructor_kwargs.get(
-            "store_provider_cone_asns", False
-        )
+        graph_kwargs = self.as_graph_constructor_kwargs.get("as_graph_kwargs", {})
+        store_customer_cone_asns = graph_kwargs.get("store_customer_cone_asns", False)
+        store_provider_cone_asns = graph_kwargs.get("store_provider_cone_asns", False)
 
         # NOTE: These are for PyPy, not Python
         # How much RAM for storing both provider and customer cones
@@ -200,10 +200,13 @@ class Simulation:
         expected_total_gb_ram = self.parse_cpus * total_gb_ram_per_core
         # Gets available RAM and converts to GB
         total_gb_ram = psutil.virtual_memory().available / (1024**3)
+
+        print(f"Expected RAM usage: {expected_total_gb_ram:.2f}")
+        print(f"Available RAM: {total_gb_ram:.2f}")
         if expected_total_gb_ram * 1.1 > total_gb_ram:
             warn(
-                "Estimated RAM is {expected_total_gb_ram}GB "
-                "but your machine has only {total_gb_ram}GB available, "
+                f"Estimated RAM usage is {expected_total_gb_ram:.2f}GB "
+                f"but your machine has only {total_gb_ram:.2f}GB available, "
                 "maybe use less cores or don't store provider/customer cones?"
             )
 
