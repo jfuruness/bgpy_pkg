@@ -6,7 +6,7 @@ from yamlable import yaml_info, YamlAble, yaml_info_decorate
 
 from .base_as import AS
 
-from bgpy.enums import ASGroups
+from bgpy.enums import ASGroups, Relationships
 
 
 # can't import into class due to mypy issue
@@ -24,7 +24,6 @@ from .propagation_rank_funcs import _get_propagation_ranks
 from .cone_funcs import (
     _get_size_of_and_store_cone,
     _get_and_store_customer_cone_and_set_size,
-    _get_and_store_provider_cone_and_set_size,
     _get_and_store_provider_cone_and_set_size,
     _get_cone_helper,
     _get_as_rank,
