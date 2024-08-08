@@ -9,9 +9,11 @@ import shutil
 from tempfile import TemporaryDirectory
 import time
 from typing import Iterator, Optional, Union
+from warnings import warn
 
 from frozendict import frozendict
 from tqdm import tqdm
+import psutil
 
 from bgpy.as_graphs.base import ASGraphConstructor, ASGraph
 from bgpy.as_graphs.caida_as_graph import CAIDAASGraphConstructor
@@ -66,6 +68,9 @@ class Simulation:
                 ),
                 "as_graph_kwargs": frozendict(
                     {
+                        # When no ASNs are stored, .9gb/core
+                        # When one set of cones is stored, 1.6gb/core
+                        # When both sets of cones are stored, 2.3gb/core
                         "store_customer_cone_size": True,
                         "store_customer_cone_asns": False,
                         "store_provider_cone_size": False,
@@ -122,6 +127,31 @@ class Simulation:
 
         self.graph_categories: tuple[GraphCategory, ...] = graph_categories
 
+        self._validate()
+        # Can't delete this since it gets deleted in multiprocessing for some reason
+        # NOTE: Once pypy gets to 3.12, just pass delete=False to this
+        with TemporaryDirectory() as tmp_dir:
+            tmp_dir_str = tmp_dir
+        self._tqdm_tracking_dir: Path = Path(tmp_dir_str)
+        self._tqdm_tracking_dir.mkdir(parents=True)
+
+    def _validate(self):
+        """Validates inputs to __init__
+
+        Specifically checks for:
+        1. scenario config mismatch between adopting and base policies
+        2. duplicate scenario labels
+        3. RAM constraints
+        """
+
+        self._validate_scenario_configs()
+        self._validate_ram()
+
+    def _validate_scenario_configs(self) -> None:
+        """Validates ScenarioConfigs
+
+        prevents duplicate scenario labels and ensures no mixups using BGPFull"""
+
         scenario_labels = list()
         for scenario_config in self.scenario_configs:
             scenario_labels.append(scenario_config.scenario_label)
@@ -143,12 +173,39 @@ class Simulation:
                 "unique label name to your config"
             )
 
-        # Can't delete this since it gets deleted in multiprocessing for some reason
-        # NOTE: Once pypy gets to 3.12, just pass delete=False to this
-        with TemporaryDirectory() as tmp_dir:
-            tmp_dir_str = tmp_dir
-        self._tqdm_tracking_dir: Path = Path(tmp_dir_str)
-        self._tqdm_tracking_dir.mkdir(parents=True)
+    def _validate_ram(self) -> None:
+        """Validates that the RAM will not run out of bounds
+
+        NOTE: all these values where obtained using pypy3.10 on a laptop
+        """
+
+        store_customer_cone_asns = self.as_graph_constructor_kwargs.get(
+            "store_customer_cone_asns", False
+        )
+        store_provider_cone_asns = self.as_graph_constructor_kwargs.get(
+            "store_provider_cone_asns", False
+        )
+
+        # NOTE: These are for PyPy, not Python
+        # How much RAM for storing both provider and customer cones
+        if store_customer_cone_asns and store_provider_cone_asns:
+            total_gb_ram_per_core = 2.3
+        # How much RAM for storing either provider or customer cone
+        elif store_customer_cone_asns and store_provider_cone_asns:
+            total_gb_ram_per_core = 1.6
+        # By default sims take ~1gb/core
+        else:
+            total_gb_ram_per_core = 0.9
+
+        expected_total_gb_ram = self.parse_cpus * total_gb_ram_per_core
+        # Gets available RAM and converts to GB
+        total_gb_ram = psutil.virtual_memory().available / (1024**3)
+        if expected_total_gb_ram * 1.1 > total_gb_ram:
+            warn(
+                "Estimated RAM is {expected_total_gb_ram}GB "
+                "but your machine has only {total_gb_ram}GB available, "
+                "maybe use less cores or don't store provider/customer cones?"
+            )
 
     def run(
         self,

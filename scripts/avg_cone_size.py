@@ -21,6 +21,8 @@ def main():
             pass
     customer_cone_sizes = [len(x.customer_cone_asns) for x in bgp_dag]
     provider_cone_sizes = [len(x.provider_cone_asns) for x in bgp_dag]
+    provider_cone_size_attrs = [x.provider_cone_size for x in bgp_dag]
+
 
     mean_cc = sum(provider_cone_sizes) / len(provider_cone_sizes)
     # for c, p in zip(customer_cone_sizes, provider_cone_sizes):
