@@ -35,6 +35,7 @@ class Diagram:
         static_order: bool = False,
         path: Optional[Path] = None,
         view: bool = False,
+        dpi: Optional[int] = None,
     ) -> None:
         self._add_legend(traceback, scenario)
         display_next_hop_asn = self._display_next_hop_asn(engine, scenario)
@@ -42,7 +43,7 @@ class Diagram:
         self._add_edges(engine)
         self._add_diagram_ranks(diagram_ranks, static_order)
         self._add_description(description, display_next_hop_asn)
-        self._render(path=path, view=view)
+        self._render(path=path, view=view, dpi=dpi)
 
     def _add_legend(self, traceback: dict[int, int], scenario: Scenario) -> None:
         """Adds legend to the graph with outcome counts"""
@@ -301,5 +302,9 @@ class Diagram:
         # https://stackoverflow.com/a/57461245/8903959
         self.dot.attr(label=description)
 
-    def _render(self, path: Optional[Path] = None, view: bool = False) -> None:
+    def _render(
+        self, path: Optional[Path] = None, view: bool = False, dpi: Optional[int] = None
+    ) -> None:
+        if dpi:
+            self.dot.attr(dpi=str(dpi))
         self.dot.render(path, view=view)

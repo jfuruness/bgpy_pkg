@@ -54,9 +54,33 @@ def overwrite(pytestconfig):
     return pytestconfig.getoption("overwrite")
 
 
+@pytest.fixture(scope="session")
+def dpi(pytestconfig):
+    return pytestconfig.getoption("dpi")
+
+
 # https://stackoverflow.com/a/66597438/8903959
 def pytest_addoption(parser):
     # View test PDF when complete
-    parser.addoption("--view", action="store_true", default=False)
+    parser.addoption(
+        "--view",
+        action="store_true",
+        default=False,
+        help="View the diagrams in a PDF after tests run",
+    )
     # Overwrite ground truth
-    parser.addoption("--overwrite", action="store_true", default=False)
+    parser.addoption(
+        "--overwrite",
+        action="store_true",
+        default=False,
+        help="Overwrite the ground truths of the tests",
+    )
+    # Store DPI
+    parser.addoption(
+        "--dpi",
+        "--DPI",
+        action="store",
+        type=int,
+        default=96,
+        help="Store the DPI to render the diagrams",
+    )

@@ -1,4 +1,5 @@
 from pathlib import Path
+from typing import Optional
 
 from .engine_run_config import EngineRunConfig
 from .simulator_codec import SimulatorCodec
@@ -18,6 +19,7 @@ class EngineRunner:
         base_dir: Path,
         conf: EngineRunConfig,
         codec: SimulatorCodec = SimulatorCodec(),
+        dpi: Optional[int] = None,
     ) -> None:
         self.conf: EngineRunConfig = conf
         self.codec: SimulatorCodec = codec
@@ -26,6 +28,7 @@ class EngineRunner:
 
         self.storage_dir: Path = self.base_dir / self.conf.name
         self.storage_dir.mkdir(parents=True, exist_ok=True)
+        self.dpi: Optional[int] = dpi
 
     def run_engine(self):
         """Performs a single engine run
@@ -166,6 +169,7 @@ class EngineRunner:
             static_order=static_order,
             path=self.storage_dir / "guess.gv",
             view=False,
+            dpi=self.dpi,
         )
 
         return engine_guess, outcomes_guess, diagram_obj_ranks

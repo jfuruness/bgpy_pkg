@@ -172,6 +172,7 @@ class EngineTester(EngineRunner):
             static_order=static_order,
             path=self.storage_dir / "ground_truth.gv",
             view=False,
+            dpi=self.dpi,
         )
 
     def _compare_data(self) -> None:
