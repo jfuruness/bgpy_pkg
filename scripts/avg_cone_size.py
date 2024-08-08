@@ -1,4 +1,4 @@
-from statistics import mean
+from statistics import mean, median
 
 from frozendict import frozendict
 
@@ -29,9 +29,12 @@ def main():
     #     input(c)
     #     input(p)
     print(f"{mean(customer_cone_sizes)} mean cc")
-    print(f"{sum(customer_cone_sizes)} mean cc")
+    print(f"{sum(customer_cone_sizes)} sum cc")
     print(f"{mean(provider_cone_sizes)} mean pc")
-    print(f"{sum(provider_cone_sizes)} mean pc")
+    print(f"{sum(provider_cone_sizes)} sum pc")
+    print(f"{median(customer_cone_sizes)} median cc")
+    print(f"{median(provider_cone_sizes)} median pc")
+
 
 if __name__ == "__main__":
     main()
