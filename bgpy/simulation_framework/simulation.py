@@ -64,12 +64,14 @@ class Simulation:
                         "cache_dir": Path("/tmp/as_graph_collector_cache"),
                     }
                 ),
-                "as_graph_kwargs": frozendict({
-                    "store_customer_cone_size": True,
-                    "store_customer_cone_asns": False,
-                    "store_provider_cone_size": False,
-                    "store_provider_cone_asns": False,
-                }),
+                "as_graph_kwargs": frozendict(
+                    {
+                        "store_customer_cone_size": True,
+                        "store_customer_cone_asns": False,
+                        "store_provider_cone_size": False,
+                        "store_provider_cone_asns": False,
+                    }
+                ),
                 "tsv_path": None,  # Path.home() / "Desktop" / "caida.tsv",
             }
         ),

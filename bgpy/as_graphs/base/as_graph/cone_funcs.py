@@ -6,7 +6,7 @@ from .base_as import AS
 def _get_size_of_and_store_cone(
     self,
     rel_attr: str = Relationships.CUSTOMERS.name.lower(),
-    store_cone_asns: bool = False
+    store_cone_asns: bool = False,
 ) -> None:
 
     if rel_attr == Relationships.PROVIDERS.name.lower():
@@ -69,7 +69,6 @@ def _get_cone_helper(
                 self._get_cone_helper(neighbor, cone_dict, rel_attr)
             cone_dict[as_asn].update(cone_dict[neighbor.asn])
     return cone_dict[as_asn]
-
 
 
 def _get_as_rank(self) -> None:

@@ -185,7 +185,6 @@ class ASGraph(YamlAble):
                 store_cone_asns=store_provider_cone_asns,
             )
 
-
     def _set_as_groups(
         self,
         additional_as_group_filters: Optional[
