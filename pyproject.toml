@@ -44,17 +44,17 @@ classifiers = [
 ]
 dependencies = [
     "beautifulsoup4==4.12.3",
-    "frozendict==2.4.0",
-    "graphviz==0.20.1",
-    "matplotlib==3.8.3",
-    "pillow==10.2.0",
+    "frozendict==2.4.4",
+    "graphviz==0.20.3",
+    "matplotlib==3.9.1.post1",
+    "pillow==10.4.0",
     "psutil==6.0.0",
-    "requests==2.31.0",
-    "requests-cache==1.2.0",
-    "roa-checker==3.0.0",
-    "pytest==8.0.1",
-    "PyYAML~=6.0",
-    "tqdm==4.66.2",
+    "pytest==8.3.2",
+    "PyYAML==6.0.2",
+    "requests==2.32.3",
+    "requests-cache==1.2.1",
+    "roa-checker==3.0.1",
+    "tqdm==4.66.5",
     "yamlable==1.1.1",
 ]
 
@@ -67,15 +67,15 @@ bgpy = "bgpy.__main__:main"
 
 [project.optional-dependencies]
 test = [
-    "black==24.2.0",
-    "pre-commit==3.6.2",
-    "types-requests==2.31.0.20240218",
-    "types-PyYAML==6.0.12.12",
-    "mypy==1.8.0",
-    "flake8==7.0.0",
-    "tox==4.13.0",
-    "pytest-xdist==3.5.0",
-    "ruff==0.2.2",
+    "black==24.8.0",
+    "pre-commit==3.8.0",
+    "types-requests==2.32.0.20240712",
+    "types-PyYAML==6.0.12.20240808",
+    "mypy==1.11.1",
+    "flake8==7.1.1",
+    "tox==4.17.1",
+    "pytest-xdist==3.6.1",
+    "ruff==0.5.7",
 ]
 
 [tool.setuptools]
