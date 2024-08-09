@@ -1,5 +1,5 @@
 from .first_asn_stripping_prefix_aspa_attacker import (
-    FirstASNStrippingPrefixASPAAttacker
+    FirstASNStrippingPrefixASPAAttacker,
 )
 from .shortest_path_prefix_aspa_attacker import ShortestPathPrefixASPAAttacker
 
