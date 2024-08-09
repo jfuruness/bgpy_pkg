@@ -41,7 +41,7 @@ class ROVPPV1Lite(ROV):
     ) -> None:
         """Processes all incoming announcements from a specific rel"""
 
-        super(ROVPPV1Lite, self).process_incoming_anns(
+        super().process_incoming_anns(
             from_rel=from_rel,
             propagation_round=propagation_round,
             scenario=scenario,
@@ -120,7 +120,7 @@ class ROVPPV1Lite(ROV):
 
         # If we are the origin, then there are zero invalid anns from the same neighbor
         if ann.recv_relationship == Relationships.ORIGIN:
-            return ()
+            return ()  # type: ignore
         # For each subprefix in this scenario of the prefix within the local RIB
         for subprefix in scenario.ordered_prefix_subprefix_dict[ann.prefix]:
             # For each subprefix ann that was recieved

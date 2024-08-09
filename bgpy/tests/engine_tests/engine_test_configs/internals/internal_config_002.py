@@ -40,7 +40,8 @@ class Custom02ValidPrefix(ValidPrefix):
 
     min_propagation_rounds: int = 4
 
-    def post_propagation_hook(self, engine=None, propagation_round=0, *args, **kwargs):
+    # Going to just suppress mypy err here since I don't want to rewrite Cameron's func
+    def post_propagation_hook(self, engine=None, propagation_round=0, *args, **kwargs):  # type: ignore
         if propagation_round == 1:  # second round
             ann = deepcopy(
                 engine.as_graph.as_dict[2].policy._local_rib.get(Prefixes.PREFIX.value)

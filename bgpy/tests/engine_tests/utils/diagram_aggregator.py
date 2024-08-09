@@ -38,7 +38,8 @@ class DiagramAggregator:
             save_all=True,
             append_images=converted_images[1:],
         )
-        for img in converted_images:
+        # mypy breaking over a for loop for some reason
+        for img in converted_images:  # type: ignore
             img.close()
 
     @property

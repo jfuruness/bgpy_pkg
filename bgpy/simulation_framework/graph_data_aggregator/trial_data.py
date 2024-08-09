@@ -60,7 +60,7 @@ class TrialData:
         """Adds to the denominator if it is within the as group and adopting"""
 
         if as_obj.asn in engine.as_graph.asn_groups[self.graph_category.as_group.value]:
-            if self.graph_category.in_adopting_asns is Any:
+            if self.graph_category.in_adopting_asns is Any:  # type: ignore
                 self._denominator += 1
                 return True
             else:
