@@ -313,7 +313,7 @@ class Simulation:
         total_completed = 0
         for file_path in self._tqdm_tracking_dir.iterdir():
             total_completed += int(file_path.read_text())
-        pbar.n = total_completed - pbar.n
+        pbar.n = total_completed
         pbar.refresh()
 
     ############################
