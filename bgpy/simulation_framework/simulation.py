@@ -331,8 +331,7 @@ class Simulation:
             graph_categories=self.graph_categories
         )
 
-        chunk = self._get_run_chunk_iter(trials)
-        for i, trial in chunk:
+        for i, trial in self._get_run_chunk_iter(trials):
             # Use the same attacker victim pairs across all percent adoptions
             trial_attacker_asns = None
             trial_victim_asns = None
@@ -369,7 +368,7 @@ class Simulation:
             # Used to track progress with tqdm
             self._write_tqdm_progress(chunk_id, i)
 
-        self._write_tqdm_progress(chunk_id, len(chunk))
+        self._write_tqdm_progress(chunk_id, len(trials))
 
         return graph_data_aggregator
 
