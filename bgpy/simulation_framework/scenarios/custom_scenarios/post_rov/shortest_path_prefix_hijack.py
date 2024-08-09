@@ -37,7 +37,7 @@ from bgpy.simulation_framework.scenarios.custom_scenarios.pre_rov import (
     PrefixHijack,
 )
 
-from .forged_origin_hijack import ForgedOriginPrefixHijack
+from .forged_origin_prefix_hijack import ForgedOriginPrefixHijack
 
 if TYPE_CHECKING:
     from bgpy.simulation_engine import Announcement as Ann, BaseSimulationEngine

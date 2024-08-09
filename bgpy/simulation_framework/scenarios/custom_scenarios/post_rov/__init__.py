@@ -1,6 +1,6 @@
-from .forged_origin_hijack import ForgedOriginPrefixHijack
-from .first_asn_stripping_hijack import FirstASNStrippingPrefixHijack
-from .shortest_path_hijack import ShortestPathPrefixHijack
+from .forged_origin_prefix_hijack import ForgedOriginPrefixHijack
+from .first_asn_stripping_prefix_hijack import FirstASNStrippingPrefixHijack
+from .shortest_path_prefix_hijack import ShortestPathPrefixHijack
 from .superprefix_prefix_hijack import SuperprefixPrefixHijack
 
 __all__ = [

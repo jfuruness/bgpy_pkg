@@ -6,7 +6,7 @@ from bgpy.simulation_engine.policies.custom_attackers.first_asn_stripping_aspa_a
 from bgpy.simulation_framework.scenarios.custom_scenarios.victims_prefix import (
     VictimsPrefix,
 )
-from .shortest_path_hijack import ShortestPathPrefixHijack
+from .shortest_path_prefix_hijack import ShortestPathPrefixHijack
 
 if TYPE_CHECKING:
     from bgpy.simulation_engine import Announcement as Ann, BaseSimulationEngine
