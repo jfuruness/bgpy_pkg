@@ -1,6 +1,6 @@
 from typing import Any, Optional, TYPE_CHECKING
 
-from bgpy.simulation_engine.policies.bgp import BGP
+from bgpy.simulation_engine.policies.rov import ROV
 
 if TYPE_CHECKING:
     from bgpy.as_graphs import AS
@@ -8,7 +8,7 @@ if TYPE_CHECKING:
     from bgpy.simulation_engine.announcement import Announcement as Ann
 
 
-class BGPSec(BGP):
+class BGPSec(ROV):
     """Represents BGPSec
 
     Since there are no real world implementations,
@@ -16,6 +16,9 @@ class BGPSec(BGP):
     which is in line with the majority of users
     for the survey results in "A Survey of Interdomain Routing Policies"
     https://www.cs.bu.edu/~goldbe/papers/survey.pdf
+
+    Also - this adopts from ROV since it's extremely unlikely that an AS
+    would deploy BGPSec without first deploying ROV
     """
 
     name = "BGPSec"
