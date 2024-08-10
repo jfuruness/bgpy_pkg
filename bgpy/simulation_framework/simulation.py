@@ -369,7 +369,7 @@ class Simulation:
             # Used to track progress with tqdm
             self._write_tqdm_progress(chunk_id, i)
 
-        self._write_tqdm_progress(chunk_id, len(trials))
+        self._write_tqdm_progress(chunk_id, len(trials) - 1)
 
         return graph_data_aggregator
 
