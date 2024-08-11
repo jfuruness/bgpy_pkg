@@ -322,9 +322,7 @@ class ShortestPathPrefixHijack(VictimsPrefix):
         such as prefix hijack, subprefix hijack
         """
 
-        return frozenset(
-            {BGP, BGPFull, BGPSec, BGPSecFull, OnlyToCustomers, OnlyToCustomersFull}
-        )
+        return frozenset({BGP, BGPFull, OnlyToCustomers, OnlyToCustomersFull})
 
     @property
     def rov_policy_classes(self) -> frozenset[type[Policy]]:
@@ -332,6 +330,8 @@ class ShortestPathPrefixHijack(VictimsPrefix):
 
         return frozenset(
             {
+                BGPSec,
+                BGPSecFull,
                 ROV,
                 ROVFull,
                 PeerROV,
