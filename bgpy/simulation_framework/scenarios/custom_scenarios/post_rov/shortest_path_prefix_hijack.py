@@ -77,9 +77,9 @@ class ShortestPathPrefixHijack(VictimsPrefix):
         elif self.scenario_config.AdoptPolicyCls in self.rov_policy_classes:
             # mypy failing here for no reason
             return self._get_forged_origin_attacker_anns(engine=engine)  # type: ignore
-        elif self.scenario_config.AdoptPolicyCls in (PathEnd, PathEndFull):
+        elif self.scenario_config.AdoptPolicyCls in self.pathend_policy_classes:
             return self._get_pathend_attack_anns(engine=engine)
-        elif self.scenario_config.AdoptPolicyCls in (ASPA, ASPAFull):
+        elif self.scenario_config.AdoptPolicyCls in self.aspa_policy_classes:
             return self._get_aspa_attack_anns(engine=engine)
         else:
             raise NotImplementedError(
@@ -344,3 +344,21 @@ class ShortestPathPrefixHijack(VictimsPrefix):
                 ROVPPV2ImprovedLiteFull,
             }
         )
+
+    @property
+    def pathend_policy_classes(self) -> frozenset[type[Policy]]:
+        """Policies susceptible to a Pathend Shortest Path attack
+
+        i.e the third hop is where the attacker is placed
+        """
+
+        return frozenset({PathEnd, PathEndFull})
+
+    @property
+    def aspa_policy_classes(self) -> frozenset[type[Policy]]:
+        """Policies susceptible to an ASPA Shortest Path attack
+
+        i.e. shortest contiguous chain of ASPA providers ending in non adopter
+        """
+
+        return frozenset({ASPA, ASPAFull})

@@ -16,6 +16,12 @@ class OnlyToCustomers(BGP):
     def _valid_ann(self, ann: "Ann", from_rel: Relationships) -> bool:  # type: ignore
         """Returns False if from peer/customer when only_to_customers is set"""
 
+        otc_valid = self._only_to_customers_valid(ann, from_rel)
+        return otc_valid and super()._valid_ann(ann, from_rel)
+
+    def _only_to_customers_valid(self, ann: "Ann", from_rel: Relationships) -> bool:
+        """Returns validity for OTC attributes"""
+
         if (
             ann.only_to_customers
             and from_rel.value == Relationships.PEERS.value
@@ -25,7 +31,7 @@ class OnlyToCustomers(BGP):
         elif ann.only_to_customers and from_rel.value == Relationships.CUSTOMERS.value:
             return False
         else:
-            return super()._valid_ann(ann, from_rel)
+            return True
 
     def _policy_propagate(  # type: ignore
         self,
