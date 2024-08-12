@@ -79,20 +79,32 @@ class GraphFactory:
         self.strongest_attacker_legend_label: str = strongest_attacker_legend_label
 
     def _get_last_propagation_round_graph_data(self, pickle_graph_data):
-        """Get only the latest propagation round, or raise an error"""
+        """Get only the latest propagation round for each scenario
+
+        or raise an error
+        """
+
+        scenario_labels_max_round = dict()
+        for data_dict in pickle_graph_data:
+            for data_point_key in data_dict:
+                scenario_labels_max_round[
+                    data_point_key.scenario_config.scenario_label
+                ] = 0
 
         # Find the latest propagation round
-        max_propagation_round = 0
         for data_dict in pickle_graph_data.values():
             for data_point_key in data_dict:
-                max_propagation_round = max(
-                    data_point_key.propagation_round, max_propagation_round
+                label = data_point_key.scenario_config.scenario_label
+                scenario_labels_max_round[label] = max(
+                    data_point_key.propagation_round, scenario_labels_max_round[label]
                 )
 
         filtered_graph_data: PICKLE_DATA_TYPE = {x: dict() for x in pickle_graph_data}
-        # Get only data from the latest propagation round
+        # Get only data from the latest propagation round for each scenario label
         for graph_category, data_dict in pickle_graph_data.items():
             for data_point_key, data in data_dict.items():
+                label = data_point_key.scenario_config.scenario_label
+                max_propagation_round = scenario_labels_max_round[label]
                 if data_point_key.propagation_round == max_propagation_round:
                     filtered_graph_data[graph_category][data_point_key] = data
                     err = (
