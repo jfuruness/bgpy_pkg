@@ -85,7 +85,7 @@ class GraphFactory:
         """
 
         scenario_labels_max_round = dict()
-        for data_dict in pickle_graph_data:
+        for data_dict in pickle_graph_data.values():
             for data_point_key in data_dict:
                 scenario_labels_max_round[
                     data_point_key.scenario_config.scenario_label
