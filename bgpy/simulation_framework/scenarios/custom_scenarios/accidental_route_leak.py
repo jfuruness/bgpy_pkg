@@ -109,10 +109,9 @@ class AccidentalRouteLeak(VictimsPrefix):
                     announcements.append(
                         ann.copy(
                             {
-                                "recv_relationship": Relationships.CUSTOMERS,
+                                "recv_relationship": Relationships.ORIGIN,
                                 "seed_asn": attacker_asn,
                                 "timestamp": Timestamps.ATTACKER.value,
-                                "next_hop_asn": attacker_asn,
                             }
                         )
                     )
