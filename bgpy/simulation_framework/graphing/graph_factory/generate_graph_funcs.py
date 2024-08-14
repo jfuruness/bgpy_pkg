@@ -46,7 +46,7 @@ def _graph_data(self, ax, line_data_dict: dict[str, LineData]):
     (
         non_aggregated_line_data_dict,
         max_attacker_data_dict,
-    ) = self._plot_strongest_attacker_line(ax, line_data_dict)
+    ) = self._plot_strongest_attacker_lines(ax, line_data_dict)
     return non_aggregated_line_data_dict, max_attacker_data_dict
 
 
@@ -54,26 +54,28 @@ def _plot_non_aggregated_lines(self, ax, line_data_dict: dict[str, LineData]) ->
     """Add all lines that aren't aggregated into a strongest attacker aggregation"""
 
     for label, line_data in line_data_dict.items():
-        if label not in self.strongest_attacker_labels:
+        # Labels to aggregate for the strongest attacker shouldn't be plotted
+        if label not in self.labels_to_aggregate:
             self._plot_line_data(ax, line_data)
 
 
-def _plot_strongest_attacker_line(self, ax, line_data_dict: dict[str, LineData]):
-    max_attacker_data_dict = dict()
+def _plot_strongest_attacker_lines(self, ax, line_data_dict: dict[str, LineData]):
     # Add all lines that are aggregated
-    for label in self.strongest_attacker_labels:
-        max_attacker_data_dict[label] = line_data_dict.pop(label)
+    max_attacker_data_dict: dict[str, LineData] = {
+        label: line_data_dict.pop(label) for label in self.labels_to_aggregate
+    }
 
-    if self.strongest_attacker_labels:
+    if self.labels_to_aggregate:
 
-        agg_xs, agg_ys, agg_yerrs, scatter_line_data_dict = self._get_agg_data(
+        strongest_agg_dict, scatter_line_data_dict = self._get_agg_data(
             max_attacker_data_dict
         )
-        agg_line_data = self._get_agg_line_data(agg_xs, agg_ys, agg_yerrs)
 
-        line_data_dict[self.strongest_attacker_legend_label] = agg_line_data
+        agg_line_datas = self._get_agg_line_data(strongest_agg_dict)
 
-        self._plot_line_data(ax, agg_line_data)
+        for agg_line_data in agg_line_datas:
+            line_data_dict[agg_line_data.label] = agg_line_data
+            self._plot_line_data(ax, agg_line_data)
 
         self._plot_scatter_plots(ax, scatter_line_data_dict)
 
@@ -81,36 +83,50 @@ def _plot_strongest_attacker_line(self, ax, line_data_dict: dict[str, LineData])
 
 
 def _get_agg_data(self, max_attacker_data_dict):
+    # Gets all lines that will be in the scatter plot
+    # So basically each line beforehand, but some X values will
+    # be removed if they aren't the strongest listed
     scatter_plots: dict[str, dict[str, list[float]]] = {  # type: ignore
         label: {"xs": [], "ys": [], "yerrs": []}
-        for label in self.strongest_attacker_labels
+        for label in self.labels_to_aggregate
     }
 
-    # Populate the new agg line and scatter plots
+    # Get all strongest attacker lines. No data point markers, but the
+    # line itself that will be plotted
     agg_xs = list(max_attacker_data_dict.values())[0].xs
-    agg_ys = list()
-    agg_yerrs = [0 for _ in agg_xs]
-    for i, x in enumerate(agg_xs):
-        best_label = None
-        max_val = None
-        new_yerr = None
-        for label, line_data in max_attacker_data_dict.items():
-            if max_val is None or line_data.ys[i] > max_val:  # type: ignore
-                best_label = label
-                max_val = line_data.ys[i]
-                new_yerr = line_data.yerrs[i]
-        agg_ys.append(max_val)
-        assert isinstance(best_label, str), "For mypy"
-        assert isinstance(max_val, float), "For mypy"
-        assert isinstance(new_yerr, float), "For mypy"
-        scatter_plots[best_label]["xs"].append(x)
-        scatter_plots[best_label]["ys"].append(max_val)
-        scatter_plots[best_label]["yerrs"].append(new_yerr)
+    strongest_agg_dict: dict[str, dict[str, list[float]]] = {  # type: ignore
+        label: {"agg_xs": agg_xs, "agg_ys": [], "agg_yerrs": [0 for _ in agg_xs]}
+        for label in self.strongest_attacker_dict
+    }
+
+
+    # Populate the new agg line and scatter plots
+    for strongest_attacker_label, labels_to_agg in self.strongest_attacker_dict.items():
+        # {agg_xs, agg_ys, agg_yerrs}
+        cur_data = strongest_agg_dict[strongest_attacker_label]
+
+        for i, x in enumerate(cur_data["agg_xs"]):
+            best_label = None
+            max_val = None
+            new_yerr = None
+            for label in labels_to_agg:
+                line_data = max_attacker_data_dict[label]
+                if max_val is None or line_data.ys[i] > max_val:  # type: ignore
+                    best_label = label
+                    max_val = line_data.ys[i]
+                    new_yerr = line_data.yerrs[i]
+            cur_data["agg_ys"].append(max_val)
+            assert isinstance(best_label, str), "For mypy"
+            assert isinstance(max_val, float), "For mypy"
+            assert isinstance(new_yerr, float), "For mypy"
+            scatter_plots[best_label]["xs"].append(x)
+            scatter_plots[best_label]["ys"].append(max_val)
+            scatter_plots[best_label]["yerrs"].append(new_yerr)
 
     scatter_line_data_dict = self._get_scatter_line_data_dict(
         scatter_plots, max_attacker_data_dict
     )
-    return agg_xs, agg_ys, agg_yerrs, scatter_line_data_dict
+    return strongest_agg_dict, scatter_line_data_dict
 
 
 def _get_scatter_line_data_dict(self, scatter_plots, max_attacker_dict):
@@ -151,22 +167,27 @@ def _get_scatter_line_data_dict(self, scatter_plots, max_attacker_dict):
     return scatter_line_data_dict
 
 
-def _get_agg_line_data(self, agg_xs, agg_ys, agg_yerrs):
-    return LineData(
-        self.strongest_attacker_legend_label,
-        formatted_graph_rows=None,
-        line_info=LineInfo(
-            self.strongest_attacker_legend_label,
-            marker=".",
-            ls="solid",
-            color="gray",
-            # Ms stands for marker size
-            extra_kwargs=frozendict({"zorder": 0, "ms": 0, "elinewidth": 0}),
-        ),
-        xs=agg_xs,
-        ys=agg_ys,
-        yerrs=agg_yerrs,
-    )
+def _get_agg_line_data(self, strongest_agg_dict) -> tuple[LineData, ...]:
+    line_data = list()
+    for agg_label, agg_data_dict in strongest_agg_dict.items():
+        line_datas.append(
+            LineData(
+                agg_label,
+                formatted_graph_rows=None,
+                line_info=LineInfo(
+                    agg_label,
+                    marker=".",
+                    ls="solid",
+                    color="gray",
+                    # Ms stands for marker size
+                    extra_kwargs=frozendict({"zorder": 0, "ms": 0, "elinewidth": 0}),
+                ),
+                xs=agg_data_dict["agg_xs"],
+                ys=agg_data_dict["agg_ys"],
+                yerrs=agg_data_dict["agg_yerrs"],
+            )
+        )
+    return tuple(line_data)
 
 
 def _plot_line_data(self, ax, line_data: LineData):

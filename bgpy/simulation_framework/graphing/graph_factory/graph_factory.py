@@ -1,3 +1,4 @@
+from functools import cached_property
 from pathlib import Path
 import pickle
 
@@ -28,7 +29,7 @@ from .generate_graph_funcs import (
     _generate_graph,
     _graph_data,
     _plot_non_aggregated_lines,
-    _plot_strongest_attacker_line,
+    _plot_strongest_attacker_lines,
     _get_agg_data,
     _get_agg_line_data,
     _get_scatter_line_data_dict,
@@ -58,8 +59,7 @@ class GraphFactory:
         x_limit: int = 100,
         y_limit: int = 100,
         line_info_dict: frozendict[str, LineInfo] = frozendict(),
-        strongest_attacker_labels: tuple[str, ...] = (),
-        strongest_attacker_legend_label: str = "Strongest Attacker",
+        strongest_attacker_dict: frozendict[str, tuple[str, ...]] = frozendict(),
     ) -> None:
         self.pickle_path: Path = pickle_path
         with self.pickle_path.open("rb") as f:
@@ -75,8 +75,9 @@ class GraphFactory:
         self.x_limit = x_limit
         self.y_limit = y_limit
         self.line_info_dict = line_info_dict
-        self.strongest_attacker_labels: tuple[str, ...] = strongest_attacker_labels
-        self.strongest_attacker_legend_label: str = strongest_attacker_legend_label
+        self.strongest_attacker_dict: frozendict[str, tuple[str, ...]] = )
+            strongest_attacker_dict
+        )
 
     def _get_last_propagation_round_graph_data(self, pickle_graph_data):
         """Get only the latest propagation round for each scenario
@@ -128,6 +129,17 @@ class GraphFactory:
         ):
             self._generate_graph(graph_category, data_dict)
 
+    @cached_property
+    def labels_to_aggregate(self) -> frozenset[str]:
+        """Returns labels to aggregate for the strongest attacker labels"""
+
+        labels_to_aggregate: str[str] = set()
+        for label_list in self.strongest_attacker_dict.values():
+            for label in label_list:
+                labels_to_aggregate.add(label)
+        return frozenset(labels_to_aggregate)
+
+
     # NOTE: mypy won't accept these unless they're outside the class
     # Preprocess funcs
     _preprocessing_steps = _preprocessing_steps
@@ -145,7 +157,7 @@ class GraphFactory:
     _generate_graph = _generate_graph
     _graph_data = _graph_data
     _plot_non_aggregated_lines = _plot_non_aggregated_lines
-    _plot_strongest_attacker_line = _plot_strongest_attacker_line
+    _plot_strongest_attacker_lines = _plot_strongest_attacker_lines
     _get_agg_data = _get_agg_data
     _get_agg_line_data = _get_agg_line_data
     _get_scatter_line_data_dict = _get_scatter_line_data_dict

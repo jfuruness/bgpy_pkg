@@ -54,7 +54,7 @@ def _add_legend(
     aggregated_labels_handles_dict = dict()
     for handle, label in zip(handles, labels):
         # This is a placeholder line, don't plot in the legend
-        if label == self.strongest_attacker_legend_label:
+        if label in self.strongest_attacker_dict:
             continue
         elif label in non_aggregated_labels:
             non_aggregated_labels_handles_dict[label] = handle
@@ -92,7 +92,7 @@ def _add_strongest_attacker_legend(
     """Add second legend for strongest attacker"""
 
     # Only run if there is a secondary strongest attacker
-    if not self.strongest_attacker_labels:
+    if not self.strongest_attacker_dict:
         return
 
     ax.add_artist(first_legend)
