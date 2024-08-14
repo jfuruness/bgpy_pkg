@@ -133,7 +133,7 @@ class GraphFactory:
     def labels_to_aggregate(self) -> frozenset[str]:
         """Returns labels to aggregate for the strongest attacker labels"""
 
-        labels_to_aggregate: str[str] = set()
+        labels_to_aggregate: set[str] = set()
         for label_list in self.strongest_attacker_dict.values():
             for label in label_list:
                 labels_to_aggregate.add(label)
