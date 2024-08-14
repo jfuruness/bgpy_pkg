@@ -1,5 +1,7 @@
 from .as_graph_analyzers import (
-    BaseASGraphAnalyzer, ASGraphAnalyzer, InterceptionASGraphAnalyzer
+    BaseASGraphAnalyzer,
+    ASGraphAnalyzer,
+    InterceptionASGraphAnalyzer,
 )
 from .graphing import GraphFactory, LineData, LineInfo, LinePropertiesGenerator
 from .graph_data_aggregator import (

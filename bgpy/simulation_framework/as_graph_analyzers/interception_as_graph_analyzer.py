@@ -51,7 +51,7 @@ class InterceptionASGraphAnalyzer(ASGraphAnalyzer):
                     # Next AS tunnels back to victim, return attacker success
                     if next_as_outcome_int in (
                         Outcomes.ATTACKER_SUCCESS.value,
-                        Outcomes.VICTIM_SUCCESS.value
+                        Outcomes.VICTIM_SUCCESS.value,
                     ):
                         self._data_plane_outcomes[as_obj.asn] = outcome_int
                         return outcome_int
