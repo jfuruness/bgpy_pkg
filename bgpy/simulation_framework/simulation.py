@@ -370,10 +370,10 @@ class Simulation:
                 # Used to track progress with tqdm
                 total_completed = (
                     (trial_index + 1) * len(self.percent_adoptions)
-                    + percent_adopt_index + 1
+                    + percent_adopt_index
+                    + 1
                 )
                 self._write_tqdm_progress(chunk_id, total_completed)
-
 
         self._write_tqdm_progress(chunk_id, len(trials) * len(self.percent_adoptions))
 
