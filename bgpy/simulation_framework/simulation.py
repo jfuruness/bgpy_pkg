@@ -288,7 +288,8 @@ class Simulation:
             # return p.starmap(self._run_chunk, enumerate(self._get_chunks(parse_cpus)))
             chunks = self._get_chunks(self.parse_cpus)
             desc = f"Simulating {self.output_dir.name}"
-            with tqdm(total=sum(len(x) for x in chunks), desc=desc) as pbar:
+            total = sum(len(x) for x in chunks) * len(self.percent_adoptions)
+            with tqdm(total=total, desc=desc) as pbar:
                 tasks = [p.apply_async(self._run_chunk, x) for x in enumerate(chunks)]
                 completed = []  # type: ignore
                 while tasks:
@@ -332,11 +333,11 @@ class Simulation:
             graph_categories=self.graph_categories
         )
 
-        for i, trial in self._get_run_chunk_iter(trials):
+        for trial_index, trial in self._get_run_chunk_iter(trials):
             # Use the same attacker victim pairs across all percent adoptions
             trial_attacker_asns = None
             trial_victim_asns = None
-            for percent_adopt in self.percent_adoptions:
+            for percent_adopt_index, percent_adopt in enumerate(self.percent_adoptions):
                 # Use the same adopting asns across all scenarios configs
                 adopting_asns = None
                 for scenario_config in self.scenario_configs:
@@ -366,10 +367,15 @@ class Simulation:
                     trial_attacker_asns = scenario.attacker_asns
                     trial_victim_asns = scenario.victim_asns
                     adopting_asns = scenario.adopting_asns
-            # Used to track progress with tqdm
-            self._write_tqdm_progress(chunk_id, i)
+                # Used to track progress with tqdm
+                total_completed = (
+                    (trial_index + 1) * len(self.percent_adoptions)
+                    + percent_adopt_index + 1
+                )
+                self._write_tqdm_progress(chunk_id, total_completed)
 
-        self._write_tqdm_progress(chunk_id, len(trials) - 1)
+
+        self._write_tqdm_progress(chunk_id, len(trials) * len(self.percent_adoptions))
 
         return graph_data_aggregator
 
@@ -397,19 +403,19 @@ class Simulation:
         if self.parse_cpus == 1:
             return tqdm(  # type: ignore
                 enumerate(trials),
-                total=len(trials),
+                total=len(trials) * len(self.percent_adoptions),
                 desc=f"Simulating {self.output_dir.name}",
             )
         else:
             return enumerate(trials)  # type: ignore
 
-    def _write_tqdm_progress(self, chunk_id: int, index: int) -> None:
+    def _write_tqdm_progress(self, chunk_id: int, completed: int) -> None:
         """Writes total number of percent adoption trial pairs to file"""
 
         # If self.parse_cpus == 1, then no multiprocessing is used
         if self.parse_cpus > 1:
             with (self._tqdm_tracking_dir / f"{chunk_id}.txt").open("w") as f:
-                f.write(str(index + 1))
+                f.write(str(completed))
 
     def _single_engine_run(
         self,
