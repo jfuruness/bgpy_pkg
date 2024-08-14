@@ -1,4 +1,6 @@
-from .as_graph_analyzers import BaseASGraphAnalyzer, ASGraphAnalyzer
+from .as_graph_analyzers import (
+    BaseASGraphAnalyzer, ASGraphAnalyzer, InterceptionASGraphAnalyzer
+)
 from .graphing import GraphFactory, LineData, LineInfo, LinePropertiesGenerator
 from .graph_data_aggregator import (
     GraphDataAggregator,
@@ -27,6 +29,7 @@ from .simulation import Simulation
 __all__ = [
     "ASGraphAnalyzer",
     "BaseASGraphAnalyzer",
+    "InterceptionASGraphAnalyzer",
     "GraphFactory",
     "LineData",
     "LineInfo",
