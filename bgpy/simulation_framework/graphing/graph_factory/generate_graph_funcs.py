@@ -87,8 +87,7 @@ def _get_agg_data(self, max_attacker_data_dict):
     # So basically each line beforehand, but some X values will
     # be removed if they aren't the strongest listed
     scatter_plots: dict[str, dict[str, list[float]]] = {  # type: ignore
-        label: {"xs": [], "ys": [], "yerrs": []}
-        for label in self.labels_to_aggregate
+        label: {"xs": [], "ys": [], "yerrs": []} for label in self.labels_to_aggregate
     }
 
     # Get all strongest attacker lines. No data point markers, but the
@@ -98,7 +97,6 @@ def _get_agg_data(self, max_attacker_data_dict):
         label: {"agg_xs": agg_xs, "agg_ys": [], "agg_yerrs": [0 for _ in agg_xs]}
         for label in self.strongest_attacker_dict
     }
-
 
     # Populate the new agg line and scatter plots
     for strongest_attacker_label, labels_to_agg in self.strongest_attacker_dict.items():
@@ -168,7 +166,7 @@ def _get_scatter_line_data_dict(self, scatter_plots, max_attacker_dict):
 
 
 def _get_agg_line_data(self, strongest_agg_dict) -> tuple[LineData, ...]:
-    line_data = list()
+    line_datas = list()
     for agg_label, agg_data_dict in strongest_agg_dict.items():
         line_datas.append(
             LineData(
@@ -187,7 +185,7 @@ def _get_agg_line_data(self, strongest_agg_dict) -> tuple[LineData, ...]:
                 yerrs=agg_data_dict["agg_yerrs"],
             )
         )
-    return tuple(line_data)
+    return tuple(line_datas)
 
 
 def _plot_line_data(self, ax, line_data: LineData):

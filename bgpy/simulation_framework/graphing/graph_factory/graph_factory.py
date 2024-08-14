@@ -75,7 +75,7 @@ class GraphFactory:
         self.x_limit = x_limit
         self.y_limit = y_limit
         self.line_info_dict = line_info_dict
-        self.strongest_attacker_dict: frozendict[str, tuple[str, ...]] = )
+        self.strongest_attacker_dict: frozendict[str, tuple[str, ...]] = (
             strongest_attacker_dict
         )
 
@@ -138,7 +138,6 @@ class GraphFactory:
             for label in label_list:
                 labels_to_aggregate.add(label)
         return frozenset(labels_to_aggregate)
-
 
     # NOTE: mypy won't accept these unless they're outside the class
     # Preprocess funcs
