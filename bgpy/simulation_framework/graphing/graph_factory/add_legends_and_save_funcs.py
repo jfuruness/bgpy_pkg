@@ -115,7 +115,7 @@ def _add_strongest_attacker_legend(
     # This way the same handle isn't repeated multiple times
     handles = list()
     used_labels = set()
-    for label, handle in aggregated_labels_dict.items():
+    for label, handle in aggregated_labels_handles_dict.items():
         label_to_use = label_to_legend_label_dict[label]
         if label_to_use not in used_labels:
             used_labels.add(label_to_use)
