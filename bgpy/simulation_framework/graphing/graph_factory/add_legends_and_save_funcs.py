@@ -105,9 +105,25 @@ def _add_strongest_attacker_legend(
     # Transform the bounding box into figure coordinates
     bbox_transformed = bbox.transformed(fig.transFigure.inverted())
 
+    label_to_legend_label_dict = dict()
+    for line_info_tup in self.strongest_attacker_dict.values():
+        for line_info in line_info_tup:
+            label_to_legend_label_dict[line_info.label] = (
+                line_info.strongest_attacker_legend_label
+            )
+
+    # This way the same handle isn't repeated multiple times
+    handles = list()
+    used_labels = set()
+    for label, handle in aggregated_labels_dict.items():
+        label_to_use = label_to_legend_label_dict[label]
+        if label_to_use not in used_labels:
+            used_labels.add(label_to_use)
+            handles.append(handle)
+
     ax.legend(
-        handles=list(aggregated_labels_handles_dict.values()),
-        title=self.strongest_attacker_legend_label,
+        handles=handles,
+        title="Strongest Attacker",
         # Upper right corner should line up
         loc="upper right",
         bbox_to_anchor=(bbox_transformed.x1, bbox_transformed.y0),

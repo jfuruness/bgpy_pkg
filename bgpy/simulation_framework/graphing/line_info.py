@@ -1,5 +1,5 @@
 from dataclasses import dataclass, field
-from typing import Any
+from typing import Any, Optional
 
 from frozendict import frozendict
 
@@ -21,6 +21,7 @@ class LineInfo:
     hardcoded_ys: tuple[float, ...] = ()
     hardcoded_yerrs: tuple[float, ...] = ()
     extra_kwargs: frozendict[str, Any] = field(default_factory=lambda: frozendict({}))
+    strongest_attacker_legend_label: Optional[str] = None
 
     def __post_init__(self):
         assert len(self.hardcoded_xs) == len(self.hardcoded_ys)

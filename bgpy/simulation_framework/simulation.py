@@ -313,7 +313,11 @@ class Simulation:
 
         total_completed = 0
         for file_path in self._tqdm_tracking_dir.iterdir():
-            total_completed += int(file_path.read_text())
+            try:
+                total_completed += int(file_path.read_text())
+            # Can happen write when file is being written when it's empty
+            except ValueError:
+                pass
         pbar.n = total_completed
         pbar.refresh()
 

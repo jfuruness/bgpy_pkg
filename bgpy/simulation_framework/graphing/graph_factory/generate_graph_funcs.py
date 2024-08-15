@@ -130,6 +130,18 @@ def _get_agg_data(self, max_attacker_data_dict):
 def _get_scatter_line_data_dict(self, scatter_plots, max_attacker_dict):
     """Converts scatter plots into proper line data for plotting"""
 
+    raise NotImplementedError(
+        "Create a dict of strongest_attacker_legend_label: marker "
+        "then set that as the marker for each strongest_attacker_legend_label"
+    )
+    label_to_marker_dict = dict()
+    for line_info_tup in self.strongest_attacker_dict.values():
+        for line_info in line_info_tup:
+            label_to_marker_dict[line_info.strongest_attacker_legend_label] = (
+                line_info.marker
+            )
+    }
+
     scatter_line_data_dict = dict()
     for label, point_dict in scatter_plots.items():
         old_line_data = max_attacker_dict[label]
@@ -140,20 +152,24 @@ def _get_scatter_line_data_dict(self, scatter_plots, max_attacker_dict):
             # This makes the line dissapear
             line_info=replace(
                 old_line_data.line_info,
+                marker=label_to_marker_dict[
+                    old_line_data.line_info.strongest_attacker_legend_label
+                ],
                 ls="solid",
                 color="grey",
                 extra_kwargs={
                     **dict(old_line_data.line_info.extra_kwargs),
                     **{
                         # Marker face color
-                        "mfc": old_line_data.line_info.color,
+                        # Since lines are colored, make color grey
+                        "mfc": "gray"  # old_line_data.line_info.color,
                         # Marker edge color
-                        "mec": old_line_data.line_info.color,
+                        "mec": "gray"  # old_line_data.line_info.color,
                         # Marker size
                         "ms": 20,
                         "markeredgewidth": 3,
                         # Old line color
-                        "ecolor": old_line_data.line_info.color,
+                        "ecolor": "gray"  # old_line_data.line_info.color,
                         "zorder": 3,
                     },
                 },
@@ -175,8 +191,9 @@ def _get_agg_line_data(self, strongest_agg_dict) -> tuple[LineData, ...]:
                 line_info=LineInfo(
                     agg_label,
                     marker=".",
-                    ls="solid",
-                    color="gray",
+                    # Reuse the same line style and color as the aggregated lines
+                    ls=self.strongest_attacker_dict[agg_label][0].ls,
+                    color=self.strongest_attacker_dict[agg_label][0].color,
                     # Ms stands for marker size
                     extra_kwargs=frozendict({"zorder": 0, "ms": 0, "elinewidth": 0}),
                 ),

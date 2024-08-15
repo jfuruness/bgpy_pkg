@@ -75,7 +75,7 @@ class GraphFactory:
         self.x_limit = x_limit
         self.y_limit = y_limit
         self.line_info_dict = line_info_dict
-        self.strongest_attacker_dict: frozendict[str, tuple[str, ...]] = (
+        self.strongest_attacker_dict: frozendict[str, tuple[LineInfo, ...]] = (
             strongest_attacker_dict
         )
 
@@ -125,7 +125,9 @@ class GraphFactory:
 
         # Each metric key contains the type of graph
         for graph_category, data_dict in tqdm(
-            self.graph_data.items(), total=len(self.graph_data), desc="Graphing"
+            self.graph_data.items(),
+            total=len(self.graph_data),
+            desc=f"Graphing {self.pickle_path.parent}"
         ):
             self._generate_graph(graph_category, data_dict)
 
@@ -134,9 +136,9 @@ class GraphFactory:
         """Returns labels to aggregate for the strongest attacker labels"""
 
         labels_to_aggregate: set[str] = set()
-        for label_list in self.strongest_attacker_dict.values():
-            for label in label_list:
-                labels_to_aggregate.add(label)
+        for line_infos in self.strongest_attacker_dict.values():
+            for line_info in line_infos:
+                labels_to_aggregate.add(line_info.label)
         return frozenset(labels_to_aggregate)
 
     # NOTE: mypy won't accept these unless they're outside the class
