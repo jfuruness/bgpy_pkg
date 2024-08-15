@@ -59,7 +59,7 @@ class GraphFactory:
         x_limit: int = 100,
         y_limit: int = 100,
         line_info_dict: frozendict[str, LineInfo] = frozendict(),
-        strongest_attacker_dict: frozendict[str, tuple[str, ...]] = frozendict(),
+        strongest_attacker_dict: frozendict[str, tuple[LineInfo, ...]] = frozendict(),
     ) -> None:
         self.pickle_path: Path = pickle_path
         with self.pickle_path.open("rb") as f:

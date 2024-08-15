@@ -130,10 +130,6 @@ def _get_agg_data(self, max_attacker_data_dict):
 def _get_scatter_line_data_dict(self, scatter_plots, max_attacker_dict):
     """Converts scatter plots into proper line data for plotting"""
 
-    raise NotImplementedError(
-        "Create a dict of strongest_attacker_legend_label: marker "
-        "then set that as the marker for each strongest_attacker_legend_label"
-    )
     label_to_marker_dict = dict()
     for line_info_tup in self.strongest_attacker_dict.values():
         for line_info in line_info_tup:
