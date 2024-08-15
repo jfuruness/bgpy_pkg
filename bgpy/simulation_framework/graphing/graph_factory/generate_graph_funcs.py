@@ -140,7 +140,6 @@ def _get_scatter_line_data_dict(self, scatter_plots, max_attacker_dict):
             label_to_marker_dict[line_info.strongest_attacker_legend_label] = (
                 line_info.marker
             )
-    }
 
     scatter_line_data_dict = dict()
     for label, point_dict in scatter_plots.items():
@@ -162,14 +161,14 @@ def _get_scatter_line_data_dict(self, scatter_plots, max_attacker_dict):
                     **{
                         # Marker face color
                         # Since lines are colored, make color grey
-                        "mfc": "gray"  # old_line_data.line_info.color,
+                        "mfc": "gray",  # old_line_data.line_info.color,
                         # Marker edge color
-                        "mec": "gray"  # old_line_data.line_info.color,
+                        "mec": "gray",  # old_line_data.line_info.color,
                         # Marker size
                         "ms": 20,
                         "markeredgewidth": 3,
                         # Old line color
-                        "ecolor": "gray"  # old_line_data.line_info.color,
+                        "ecolor": "gray",  # old_line_data.line_info.color,
                         "zorder": 3,
                     },
                 },

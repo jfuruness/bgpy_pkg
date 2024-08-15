@@ -127,7 +127,7 @@ class GraphFactory:
         for graph_category, data_dict in tqdm(
             self.graph_data.items(),
             total=len(self.graph_data),
-            desc=f"Graphing {self.pickle_path.parent}"
+            desc=f"Graphing {self.pickle_path.parent}",
         ):
             self._generate_graph(graph_category, data_dict)
 
