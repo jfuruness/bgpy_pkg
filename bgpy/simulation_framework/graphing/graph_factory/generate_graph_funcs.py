@@ -100,9 +100,10 @@ def _get_agg_data(self, max_attacker_data_dict):
     }
 
     # Populate the new agg line and scatter plots
-    for strongest_attacker_label, line_infos_to_agg in (
-        self.strongest_attacker_dict.items()
-    ):
+    for (
+        strongest_attacker_label,
+        line_infos_to_agg,
+    ) in self.strongest_attacker_dict.items():
         # {agg_xs, agg_ys, agg_yerrs}
         cur_data = strongest_agg_dict[strongest_attacker_label]
 
@@ -157,7 +158,9 @@ def _get_scatter_line_data_dict(self, scatter_plots, max_attacker_dict):
                 color="grey",
                 extra_kwargs={
                     **dict(
-                        **{"lw": 0,},
+                        **{
+                            "lw": 0,
+                        },
                         **old_line_data.line_info.extra_kwargs,
                     ),
                     **{

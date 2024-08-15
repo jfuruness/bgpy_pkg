@@ -38,7 +38,14 @@ class LinePropertiesGenerator:
         """Returns line_styles allowed for papers"""
 
         return [
-            "-", "--", "-.", ":", "solid", "dotted", "dashdot", "dashed",
+            "-",
+            "--",
+            "-.",
+            ":",
+            "solid",
+            "dotted",
+            "dashdot",
+            "dashed",
         ]
 
     @property
@@ -46,6 +53,17 @@ class LinePropertiesGenerator:
         """Returns colors allowed for papers"""
 
         return [
-            "b", "g", "r", "c", "m", "y", "darkorange", "darkgoldenrod",
-            "lightcoral", "sienna", "gold", "darkolivegreen", "steelblue"
+            "b",
+            "g",
+            "r",
+            "c",
+            "m",
+            "y",
+            "darkorange",
+            "darkgoldenrod",
+            "lightcoral",
+            "sienna",
+            "gold",
+            "darkolivegreen",
+            "steelblue",
         ]
