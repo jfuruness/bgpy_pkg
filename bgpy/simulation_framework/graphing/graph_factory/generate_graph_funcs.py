@@ -64,6 +64,7 @@ def _plot_strongest_attacker_lines(self, ax, line_data_dict: dict[str, LineData]
     max_attacker_data_dict: dict[str, LineData] = dict()
     for label in self.labels_to_aggregate:
         line_infos = line_data_dict.pop(label, None)
+        assert line_infos, "Did you pass in the wrong strongest attacker dict?"
         max_attacker_data_dict[label] = line_infos
 
     if self.labels_to_aggregate:
