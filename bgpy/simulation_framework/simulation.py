@@ -407,7 +407,7 @@ class Simulation:
         if self.parse_cpus == 1:
             return tqdm(  # type: ignore
                 enumerate(trials),
-                total=len(trials) * len(self.percent_adoptions),
+                total=len(trials),
                 desc=f"Simulating {self.output_dir.name}",
             )
         else:
