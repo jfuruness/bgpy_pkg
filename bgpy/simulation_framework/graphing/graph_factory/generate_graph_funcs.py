@@ -61,9 +61,10 @@ def _plot_non_aggregated_lines(self, ax, line_data_dict: dict[str, LineData]) ->
 
 def _plot_strongest_attacker_lines(self, ax, line_data_dict: dict[str, LineData]):
     # Add all lines that are aggregated
-    max_attacker_data_dict: dict[str, LineData] = {
-        label: line_data_dict.pop(label) for label in self.labels_to_aggregate
-    }
+    max_attacker_data_dict: dict[str, LineData] = dict()
+    for label in self.labels_to_aggregate:
+        line_infos = line_data_dict.pop(label, None)
+        max_attacker_data_dict[label] = line_infos
 
     if self.labels_to_aggregate:
 
@@ -99,7 +100,9 @@ def _get_agg_data(self, max_attacker_data_dict):
     }
 
     # Populate the new agg line and scatter plots
-    for strongest_attacker_label, labels_to_agg in self.strongest_attacker_dict.items():
+    for strongest_attacker_label, line_infos_to_agg in (
+        self.strongest_attacker_dict.items()
+    ):
         # {agg_xs, agg_ys, agg_yerrs}
         cur_data = strongest_agg_dict[strongest_attacker_label]
 
@@ -107,15 +110,15 @@ def _get_agg_data(self, max_attacker_data_dict):
             best_label = None
             max_val = None
             new_yerr = None
-            for label in labels_to_agg:
-                line_data = max_attacker_data_dict[label]
+            for line_info in line_infos_to_agg:
+                line_data = max_attacker_data_dict[line_info.label]
                 if max_val is None or line_data.ys[i] > max_val:  # type: ignore
-                    best_label = label
+                    best_label = line_info.label
                     max_val = line_data.ys[i]
                     new_yerr = line_data.yerrs[i]
             assert isinstance(best_label, str), "For mypy"
             assert isinstance(max_val, float), "For mypy"
-            assert isinstance(new_yerr, float), "For mypy"
+            assert isinstance(new_yerr, (float, int)), f"mypy {line_infos_to_agg}"
             cur_data["agg_ys"].append(max_val)
             scatter_plots[best_label]["xs"].append(x)
             scatter_plots[best_label]["ys"].append(max_val)
@@ -153,7 +156,10 @@ def _get_scatter_line_data_dict(self, scatter_plots, max_attacker_dict):
                 ls="solid",
                 color="grey",
                 extra_kwargs={
-                    **dict(old_line_data.line_info.extra_kwargs),
+                    **dict(
+                        **{"lw": 0,},
+                        **old_line_data.line_info.extra_kwargs,
+                    ),
                     **{
                         # Marker face color
                         # Since lines are colored, make color grey

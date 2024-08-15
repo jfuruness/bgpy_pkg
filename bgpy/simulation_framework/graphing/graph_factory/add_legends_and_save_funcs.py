@@ -54,9 +54,7 @@ def _add_legend(
     aggregated_labels_handles_dict = dict()
     for handle, label in zip(handles, labels):
         # This is a placeholder line, don't plot in the legend
-        if label in self.strongest_attacker_dict:
-            continue
-        elif label in non_aggregated_labels:
+        if label in non_aggregated_labels:
             non_aggregated_labels_handles_dict[label] = handle
         else:
             aggregated_labels_handles_dict[label] = handle
@@ -114,14 +112,15 @@ def _add_strongest_attacker_legend(
 
     # This way the same handle isn't repeated multiple times
     handles = list()
-    used_labels = set()
+    used_labels = list()
     for label, handle in aggregated_labels_handles_dict.items():
         label_to_use = label_to_legend_label_dict[label]
         if label_to_use not in used_labels:
-            used_labels.add(label_to_use)
+            used_labels.append(label_to_use)
             handles.append(handle)
 
     ax.legend(
+        labels=used_labels,
         handles=handles,
         title="Strongest Attacker",
         # Upper right corner should line up

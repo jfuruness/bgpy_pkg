@@ -31,16 +31,21 @@ class LinePropertiesGenerator:
     def accepted_markers(self) -> list[str]:
         """Returns markers allowed for papers"""
 
-        return [".", "1", "*", "x", "d", "2", "3", "4"]
+        return [".", "1", "*", "x", "d", "2", "3", "4", "v", "+", "s"]
 
     @property
     def accepted_line_styles(self) -> list[str]:
         """Returns line_styles allowed for papers"""
 
-        return ["-", "--", "-.", ":", "solid", "dotted", "dashdot", "dashed"]
+        return [
+            "-", "--", "-.", ":", "solid", "dotted", "dashdot", "dashed",
+        ]
 
     @property
     def accepted_colors(self) -> list[str]:
         """Returns colors allowed for papers"""
 
-        return ["b", "g", "r", "c", "m", "y", "darkorange", "darkgoldenrod"]
+        return [
+            "b", "g", "r", "c", "m", "y", "darkorange", "darkgoldenrod",
+            "lightcoral", "sienna", "gold", "darkolivegreen", "steelblue"
+        ]

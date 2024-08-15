@@ -74,9 +74,24 @@ class GraphFactory:
         self.y_axis_label_replacement_dict = y_axis_label_replacement_dict
         self.x_limit = x_limit
         self.y_limit = y_limit
-        self.line_info_dict = line_info_dict
+        # Get all the labels included to filter line_info_dict and strongest_attackerdct
+        labels = set()
+        for data_dict in self.graph_data.values():
+            for data_point_key in data_dict:
+                labels.add(data_point_key.scenario_config.scenario_label)
+
+        # Filter these to only include relevant labels/infos
+        self.line_info_dict = {
+            k: v for k, v in line_info_dict.items() if k in labels or v.hardcoded_xs
+        }
         self.strongest_attacker_dict: frozendict[str, tuple[LineInfo, ...]] = (
-            strongest_attacker_dict
+            frozendict(
+                {
+                    k: tuple([x for x in v if x.label in labels])
+                    for k, v in strongest_attacker_dict.items()
+                    if tuple([x for x in v if x.label in labels])
+                }
+            )
         )
 
     def _get_last_propagation_round_graph_data(self, pickle_graph_data):
