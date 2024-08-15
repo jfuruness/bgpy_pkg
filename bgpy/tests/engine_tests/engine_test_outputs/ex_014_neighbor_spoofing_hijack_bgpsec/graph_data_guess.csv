@@ -1,7 +1,7 @@
 scenario_cls,AdoptingPolicyCls,BasePolicyCls,in_adopting_asns,outcome_type,as_group,outcome,percent_adopt,propagation_round,value,yerr,scenario_config_label,scenario_label
-FirstASNStrippingPrefixHijack,BGPSec,BGPSec,typing.Any,DATA,all_wout_ixps,ATTACKER_SUCCESS,0,0,0.0,0,,BGPSec
-FirstASNStrippingPrefixHijack,BGPSec,BGPSec,False,DATA,all_wout_ixps,ATTACKER_SUCCESS,0,0,0.0,0,,BGPSec
-FirstASNStrippingPrefixHijack,BGPSec,BGPSec,typing.Any,DATA,all_wout_ixps,VICTIM_SUCCESS,0,0,90.0,0,,BGPSec
-FirstASNStrippingPrefixHijack,BGPSec,BGPSec,False,DATA,all_wout_ixps,VICTIM_SUCCESS,0,0,90.0,0,,BGPSec
-FirstASNStrippingPrefixHijack,BGPSec,BGPSec,typing.Any,DATA,all_wout_ixps,DISCONNECTED,0,0,10.0,0,,BGPSec
-FirstASNStrippingPrefixHijack,BGPSec,BGPSec,False,DATA,all_wout_ixps,DISCONNECTED,0,0,10.0,0,,BGPSec
+FirstASNStrippingPrefixHijack,BGPSec,BGPSec,typing.Any,DATA,all_wout_ixps,ATTACKER_SUCCESS,0,0,20.0,0,,BGPSec
+FirstASNStrippingPrefixHijack,BGPSec,BGPSec,False,DATA,all_wout_ixps,ATTACKER_SUCCESS,0,0,20.0,0,,BGPSec
+FirstASNStrippingPrefixHijack,BGPSec,BGPSec,typing.Any,DATA,all_wout_ixps,VICTIM_SUCCESS,0,0,80.0,0,,BGPSec
+FirstASNStrippingPrefixHijack,BGPSec,BGPSec,False,DATA,all_wout_ixps,VICTIM_SUCCESS,0,0,80.0,0,,BGPSec
+FirstASNStrippingPrefixHijack,BGPSec,BGPSec,typing.Any,DATA,all_wout_ixps,DISCONNECTED,0,0,0.0,0,,BGPSec
+FirstASNStrippingPrefixHijack,BGPSec,BGPSec,False,DATA,all_wout_ixps,DISCONNECTED,0,0,0.0,0,,BGPSec
