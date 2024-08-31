@@ -67,6 +67,7 @@ bgpy = "bgpy.__main__:main"
 
 [project.optional-dependencies]
 test = [
+    "isort==5.13.2",
     "black==24.8.0",
     "pre-commit==3.8.0",
     "types-requests==2.32.0.20240712",
@@ -144,3 +145,7 @@ exclude_lines = [
     # Code that isn't meant to be run
     "if __name__ == .__main__.:"
 ]
+
+[tool.isort]
+profile = "black"
+src_paths = ["bgpy"]

@@ -1,11 +1,12 @@
 from functools import cached_property
-from typing import Any, Optional, TYPE_CHECKING
-from weakref import proxy, CallableProxyType
+from typing import TYPE_CHECKING, Any, Optional
+from weakref import CallableProxyType, proxy
 
-from yamlable import yaml_info, YamlAble
+from yamlable import YamlAble, yaml_info
 
 if TYPE_CHECKING:
     from bgpy.simulation_engine import Policy
+
     from .as_graph import ASGraph
 
 

@@ -1,6 +1,7 @@
 from dataclasses import dataclass, field
 
-from .links import Link, PeerLink, CustomerProviderLink as CPLink
+from .links import CustomerProviderLink as CPLink
+from .links import Link, PeerLink
 
 
 @dataclass(frozen=True, slots=True)

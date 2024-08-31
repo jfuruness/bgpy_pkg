@@ -1,13 +1,14 @@
-from abc import ABC, abstractmethod
 import csv
-from frozendict import frozendict
+from abc import ABC, abstractmethod
 from pathlib import Path
-from typing import Optional, TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
+
+from frozendict import frozendict
 
 if TYPE_CHECKING:
+    from .as_graph import ASGraph
     from .as_graph_collector import ASGraphCollector
     from .as_graph_info import ASGraphInfo
-    from .as_graph import ASGraph
 
 
 class ASGraphConstructor(ABC):

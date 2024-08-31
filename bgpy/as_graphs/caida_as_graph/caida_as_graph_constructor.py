@@ -4,16 +4,16 @@ from typing import Optional
 from frozendict import frozendict
 
 from bgpy.as_graphs.base import (
+    ASGraph,
     ASGraphCollector,
     ASGraphConstructor,
     ASGraphInfo,
-    ASGraph,
-    PeerLink,
-    CustomerProviderLink as CPLink,
 )
+from bgpy.as_graphs.base import CustomerProviderLink as CPLink
+from bgpy.as_graphs.base import PeerLink
 
-from .caida_as_graph_collector import CAIDAASGraphCollector
 from .caida_as_graph import CAIDAASGraph
+from .caida_as_graph_collector import CAIDAASGraphCollector
 
 
 class CAIDAASGraphConstructor(ASGraphConstructor):

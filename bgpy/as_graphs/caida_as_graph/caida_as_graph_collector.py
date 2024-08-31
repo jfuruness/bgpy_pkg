@@ -1,12 +1,12 @@
 import bz2
+import shutil
 from datetime import datetime, timedelta
 from functools import cached_property
 from pathlib import Path
-import shutil
 from tempfile import TemporaryDirectory
 
-from bs4 import BeautifulSoup as Soup
 import requests
+from bs4 import BeautifulSoup as Soup
 
 from bgpy.as_graphs.base import ASGraphCollector
 

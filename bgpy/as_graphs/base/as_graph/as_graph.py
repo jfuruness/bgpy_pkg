@@ -2,36 +2,36 @@ from typing import Any, Callable, Optional
 from weakref import proxy
 
 from frozendict import frozendict
-from yamlable import yaml_info, YamlAble, yaml_info_decorate
+from yamlable import YamlAble, yaml_info, yaml_info_decorate
 
-from .base_as import AS
-
+import bgpy
 from bgpy.enums import ASGroups, Relationships
 
+from ..as_graph_info import ASGraphInfo
+from .base_as import AS
+from .cone_funcs import (
+    _get_and_store_customer_cone_and_set_size,
+    _get_and_store_provider_cone_and_set_size,
+    _get_as_rank,
+    _get_cone_helper,
+    _get_size_of_and_store_cone,
+)
 
 # can't import into class due to mypy issue
 # https://github.com/python/mypy/issues/7045
 # Graph building functionality
-from .graph_building_funcs import _gen_graph
-from .graph_building_funcs import _add_relationships
-from .graph_building_funcs import _make_relationships_tuples
-
-# propagation rank building funcs
-from .propagation_rank_funcs import _assign_propagation_ranks
-from .propagation_rank_funcs import _assign_ranks_helper
-from .propagation_rank_funcs import _get_propagation_ranks
-
-from .cone_funcs import (
-    _get_size_of_and_store_cone,
-    _get_and_store_customer_cone_and_set_size,
-    _get_and_store_provider_cone_and_set_size,
-    _get_cone_helper,
-    _get_as_rank,
+from .graph_building_funcs import (
+    _add_relationships,
+    _gen_graph,
+    _make_relationships_tuples,
 )
 
-import bgpy
-
-from ..as_graph_info import ASGraphInfo
+# propagation rank building funcs
+from .propagation_rank_funcs import (
+    _assign_propagation_ranks,
+    _assign_ranks_helper,
+    _get_propagation_ranks,
+)
 
 
 @yaml_info(yaml_tag="ASGraph")
