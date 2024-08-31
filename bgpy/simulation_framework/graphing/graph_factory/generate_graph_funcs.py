@@ -7,7 +7,7 @@ from ..line_data import LineData
 from ..line_info import LineInfo
 
 if TYPE_CHECKING:
-    from bgpy.simulation_framework import GraphCategory, DataPointKey, DataPointAggData
+    from bgpy.simulation_framework import DataPointAggData, DataPointKey, GraphCategory
 
 
 def _generate_graph(

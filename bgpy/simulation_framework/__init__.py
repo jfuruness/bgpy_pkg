@@ -1,32 +1,31 @@
 from .as_graph_analyzers import (
-    BaseASGraphAnalyzer,
     ASGraphAnalyzer,
+    BaseASGraphAnalyzer,
     InterceptionASGraphAnalyzer,
 )
-from .graphing import GraphFactory, LineData, LineInfo, LinePropertiesGenerator
 from .graph_data_aggregator import (
-    GraphDataAggregator,
-    GraphCategory,
     DataPointAggData,
     DataPointKey,
+    GraphCategory,
+    GraphDataAggregator,
 )
-
-from .scenarios import ScenarioConfig
-from .scenarios import Scenario
-from .scenarios import AccidentalRouteLeak
-from .scenarios import PrefixHijack
-from .scenarios import SubprefixHijack
-from .scenarios import NonRoutedPrefixHijack
-from .scenarios import NonRoutedSuperprefixHijack
-from .scenarios import NonRoutedSuperprefixPrefixHijack
-from .scenarios import ForgedOriginPrefixHijack
-from .scenarios import FirstASNStrippingPrefixHijack
-from .scenarios import ShortestPathPrefixHijack
-from .scenarios import SuperprefixPrefixHijack
-from .scenarios import ValidPrefix
-
+from .graphing import GraphFactory, LineData, LineInfo, LinePropertiesGenerator
+from .scenarios import (
+    AccidentalRouteLeak,
+    FirstASNStrippingPrefixHijack,
+    ForgedOriginPrefixHijack,
+    NonRoutedPrefixHijack,
+    NonRoutedSuperprefixHijack,
+    NonRoutedSuperprefixPrefixHijack,
+    PrefixHijack,
+    Scenario,
+    ScenarioConfig,
+    ShortestPathPrefixHijack,
+    SubprefixHijack,
+    SuperprefixPrefixHijack,
+    ValidPrefix,
+)
 from .simulation import Simulation
-
 
 __all__ = [
     "ASGraphAnalyzer",

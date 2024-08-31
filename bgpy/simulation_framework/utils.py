@@ -5,7 +5,7 @@ from typing import Any, Iterable
 
 from requests_cache import CachedSession
 
-from bgpy.enums import ASGroups, Plane, Outcomes
+from bgpy.enums import ASGroups, Outcomes, Plane
 from bgpy.simulation_framework.graph_data_aggregator.graph_category import GraphCategory
 
 

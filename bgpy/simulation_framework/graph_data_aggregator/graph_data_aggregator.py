@@ -1,23 +1,21 @@
-from collections import defaultdict
 import csv
+import pickle
+from collections import defaultdict
 from math import sqrt
 from pathlib import Path
-import pickle
-from statistics import mean
-from statistics import stdev
+from statistics import mean, stdev
 from typing import Any, Optional, Union
 from warnings import warn
 
-from .data_point_agg_data import DataPointAggData
-from .data_point_key import DataPointKey
-from .trial_data import TrialData
-from .graph_category import GraphCategory
-
-from bgpy.enums import Plane, SpecialPercentAdoptions, Outcomes
+from bgpy.enums import Outcomes, Plane, SpecialPercentAdoptions
 from bgpy.simulation_engine import BaseSimulationEngine
 from bgpy.simulation_framework.scenarios import Scenario
 from bgpy.simulation_framework.utils import get_all_graph_categories
 
+from .data_point_agg_data import DataPointAggData
+from .data_point_key import DataPointKey
+from .graph_category import GraphCategory
+from .trial_data import TrialData
 
 DATA_TYPE = dict[GraphCategory, defaultdict[DataPointKey, list[float]]]
 PICKLE_DATA_TYPE = dict[GraphCategory, dict[DataPointKey, DataPointAggData]]

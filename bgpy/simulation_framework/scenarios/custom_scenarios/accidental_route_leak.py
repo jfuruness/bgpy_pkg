@@ -1,17 +1,16 @@
-from typing import Optional, Union, TYPE_CHECKING
 import warnings
+from typing import TYPE_CHECKING, Optional, Union
 
-from bgpy.enums import ASGroups, Relationships, SpecialPercentAdoptions, Timestamps
 from bgpy.as_graphs.base.as_graph.customer_cone_funcs import _get_cone_size_helper
+from bgpy.enums import ASGroups, Relationships, SpecialPercentAdoptions, Timestamps
 
-from .victims_prefix import VictimsPrefix
 from ..scenario import Scenario
 from ..scenario_config import ScenarioConfig
-
+from .victims_prefix import VictimsPrefix
 
 if TYPE_CHECKING:
-    from bgpy.simulation_engine import BaseSimulationEngine
     from bgpy.simulation_engine import Announcement as Ann
+    from bgpy.simulation_engine import BaseSimulationEngine
 
 
 class AccidentalRouteLeak(VictimsPrefix):

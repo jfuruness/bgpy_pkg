@@ -1,6 +1,6 @@
+import pickle
 from functools import cached_property
 from pathlib import Path
-import pickle
 
 from frozendict import frozendict
 from tqdm import tqdm
@@ -10,38 +10,37 @@ from bgpy.simulation_framework.graph_data_aggregator.graph_data_aggregator impor
 )
 
 from ..line_info import LineInfo
-
-# NOTE: mypy won't accept these unless they're outside the class
-from .preprocessing_funcs import (
-    _preprocessing_steps,
-    _get_graph_name,
-    _customize_graph,
-    _get_line_data_dict,
-    _add_hardcoded_lines_to_line_data_dict,
-    _get_line_data,
-    _get_percent_adopt,
-    _get_xs,
-    _get_ys,
-    _get_yerrs,
-    _get_line_info,
+from .add_legends_and_save_funcs import (
+    _add_legend,
+    _add_legends_and_save,
+    _add_strongest_attacker_legend,
+    _save_and_close_graph,
 )
 from .generate_graph_funcs import (
     _generate_graph,
-    _graph_data,
-    _plot_non_aggregated_lines,
-    _plot_strongest_attacker_lines,
     _get_agg_data,
     _get_agg_line_data,
     _get_scatter_line_data_dict,
+    _graph_data,
     _plot_line_data,
+    _plot_non_aggregated_lines,
     _plot_scatter_plots,
+    _plot_strongest_attacker_lines,
 )
 
-from .add_legends_and_save_funcs import (
-    _add_legends_and_save,
-    _add_legend,
-    _add_strongest_attacker_legend,
-    _save_and_close_graph,
+# NOTE: mypy won't accept these unless they're outside the class
+from .preprocessing_funcs import (
+    _add_hardcoded_lines_to_line_data_dict,
+    _customize_graph,
+    _get_graph_name,
+    _get_line_data,
+    _get_line_data_dict,
+    _get_line_info,
+    _get_percent_adopt,
+    _get_xs,
+    _get_yerrs,
+    _get_ys,
+    _preprocessing_steps,
 )
 
 

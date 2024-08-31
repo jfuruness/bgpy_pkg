@@ -1,4 +1,4 @@
-from typing import Optional, TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 
 from bgpy.simulation_engine.policies.custom_attackers.first_asn_stripping_prefix_aspa_attacker import (  # noqa
     FirstASNStrippingPrefixASPAAttacker,
@@ -6,10 +6,12 @@ from bgpy.simulation_engine.policies.custom_attackers.first_asn_stripping_prefix
 from bgpy.simulation_framework.scenarios.custom_scenarios.victims_prefix import (
     VictimsPrefix,
 )
+
 from .shortest_path_prefix_hijack import ShortestPathPrefixHijack
 
 if TYPE_CHECKING:
-    from bgpy.simulation_engine import Announcement as Ann, BaseSimulationEngine
+    from bgpy.simulation_engine import Announcement as Ann
+    from bgpy.simulation_engine import BaseSimulationEngine
 
 
 class FirstASNStrippingPrefixHijack(ShortestPathPrefixHijack):

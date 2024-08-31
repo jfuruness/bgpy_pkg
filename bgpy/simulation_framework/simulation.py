@@ -1,37 +1,35 @@
-from copy import deepcopy
 import gc
-from multiprocessing import cpu_count
-from multiprocessing import Pool
 import os
-from pathlib import Path
 import random
 import shutil
-from tempfile import TemporaryDirectory
 import time
+from copy import deepcopy
+from multiprocessing import Pool, cpu_count
+from pathlib import Path
+from tempfile import TemporaryDirectory
 from typing import Iterator, Optional, Union
 from warnings import warn
 
+import psutil
 from frozendict import frozendict
 from tqdm import tqdm
-import psutil
 
-from bgpy.as_graphs.base import ASGraphConstructor, ASGraph
+from bgpy.as_graphs.base import ASGraph, ASGraphConstructor
 from bgpy.as_graphs.caida_as_graph import CAIDAASGraphConstructor
-
-
-from .as_graph_analyzers import BaseASGraphAnalyzer, ASGraphAnalyzer
-from .graphing import GraphFactory
-from .graph_data_aggregator import GraphDataAggregator, GraphCategory
-from .scenarios import Scenario
-from .scenarios import ScenarioConfig
-from .scenarios import SubprefixHijack
-from .utils import get_all_graph_categories
-
 from bgpy.enums import SpecialPercentAdoptions
-from bgpy.simulation_engine import BaseSimulationEngine, SimulationEngine
-from bgpy.simulation_engine import BGP
-from bgpy.simulation_engine import BGPFull
-from bgpy.simulation_engine import ROV
+from bgpy.simulation_engine import (
+    BGP,
+    ROV,
+    BaseSimulationEngine,
+    BGPFull,
+    SimulationEngine,
+)
+
+from .as_graph_analyzers import ASGraphAnalyzer, BaseASGraphAnalyzer
+from .graph_data_aggregator import GraphCategory, GraphDataAggregator
+from .graphing import GraphFactory
+from .scenarios import Scenario, ScenarioConfig, SubprefixHijack
+from .utils import get_all_graph_categories
 
 
 class Simulation:

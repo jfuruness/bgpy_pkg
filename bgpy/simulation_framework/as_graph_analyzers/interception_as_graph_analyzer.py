@@ -1,10 +1,9 @@
-from typing import Optional, TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 
 from bgpy.as_graphs import AS
 from bgpy.enums import Outcomes
 
 from .as_graph_analyzer import ASGraphAnalyzer
-
 
 if TYPE_CHECKING:
     from bgpy.simulation_engine import Announcement as Ann

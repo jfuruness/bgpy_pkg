@@ -1,14 +1,13 @@
-from typing import Optional, TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 
+from bgpy.enums import Prefixes, Timestamps
 from bgpy.simulation_framework.scenarios.custom_scenarios.victims_prefix import (
     VictimsPrefix,
 )
-from bgpy.enums import Prefixes
-from bgpy.enums import Timestamps
-
 
 if TYPE_CHECKING:
-    from bgpy.simulation_engine import Announcement as Ann, BaseSimulationEngine
+    from bgpy.simulation_engine import Announcement as Ann
+    from bgpy.simulation_engine import BaseSimulationEngine
 
 
 class SuperprefixPrefixHijack(VictimsPrefix):

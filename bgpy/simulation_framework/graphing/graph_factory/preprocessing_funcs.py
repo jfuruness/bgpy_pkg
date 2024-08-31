@@ -12,9 +12,9 @@ from ..line_properties_generator import LinePropertiesGenerator
 
 if TYPE_CHECKING:
     from bgpy.simulation_framework.graph_data_aggregator import (
-        GraphCategory,
-        DataPointKey,
         DataPointAggData,
+        DataPointKey,
+        GraphCategory,
     )
 
 

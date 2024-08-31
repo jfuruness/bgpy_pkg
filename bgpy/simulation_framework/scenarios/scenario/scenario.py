@@ -1,22 +1,16 @@
+import math
+import random
 from abc import ABC, abstractmethod
 from dataclasses import replace
 from functools import cached_property
-from ipaddress import ip_network
-from ipaddress import IPv4Network
-from ipaddress import IPv6Network
-import math
-import random
-from typing import Any, Optional, TYPE_CHECKING, Union
-
+from ipaddress import IPv4Network, IPv6Network, ip_network
+from typing import TYPE_CHECKING, Any, Optional, Union
 
 from roa_checker import ROA
 
+from bgpy.enums import SpecialPercentAdoptions
 from bgpy.simulation_engine import Announcement as Ann
-from bgpy.simulation_engine import BaseSimulationEngine
-from bgpy.simulation_engine import Policy
-from bgpy.enums import (
-    SpecialPercentAdoptions,
-)
+from bgpy.simulation_engine import BaseSimulationEngine, Policy
 
 from ..scenario_config import ScenarioConfig
 from .roa_helper_funcs import (

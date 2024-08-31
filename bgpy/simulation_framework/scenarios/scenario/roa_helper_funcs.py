@@ -1,14 +1,10 @@
-from ipaddress import ip_network
-from ipaddress import IPv4Network
-from ipaddress import IPv6Network
+from ipaddress import IPv4Network, IPv6Network, ip_network
 from typing import Optional
-
 
 from roa_checker import ROAChecker, ROAValidity
 
 from bgpy.simulation_engine import Announcement as Ann
 from bgpy.simulation_engine import BaseSimulationEngine
-
 
 """ROA helper funcs. I would move more but that would break mypy"""
 

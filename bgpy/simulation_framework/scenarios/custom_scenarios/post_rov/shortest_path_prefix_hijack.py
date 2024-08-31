@@ -1,46 +1,43 @@
-from collections import deque
-from typing import Optional, TYPE_CHECKING
 import warnings
+from collections import deque
+from typing import TYPE_CHECKING, Optional
 
 from bgpy.as_graphs import AS
-from bgpy.enums import Prefixes
-from bgpy.enums import Timestamps
-
+from bgpy.enums import Prefixes, Timestamps
 from bgpy.simulation_engine import (
+    ASPA,
     BGP,
-    BGPFull,
-    Policy,
-    PeerROV,
-    PeerROVFull,
     ROV,
-    ROVFull,
-    BGPSecFull,
+    ASPAFull,
+    BGPFull,
     BGPSec,
+    BGPSecFull,
     OnlyToCustomers,
     OnlyToCustomersFull,
     PathEnd,
     PathEndFull,
+    PeerROV,
+    PeerROVFull,
+    Policy,
+    ROVFull,
     ROVPPV1Lite,
     ROVPPV1LiteFull,
-    ROVPPV2Lite,
-    ROVPPV2LiteFull,
     ROVPPV2ImprovedLite,
     ROVPPV2ImprovedLiteFull,
-    ASPA,
-    ASPAFull,
+    ROVPPV2Lite,
+    ROVPPV2LiteFull,
     ShortestPathPrefixASPAAttacker,
 )
+from bgpy.simulation_framework.scenarios.custom_scenarios.pre_rov import PrefixHijack
 from bgpy.simulation_framework.scenarios.custom_scenarios.victims_prefix import (
     VictimsPrefix,
-)
-from bgpy.simulation_framework.scenarios.custom_scenarios.pre_rov import (
-    PrefixHijack,
 )
 
 from .forged_origin_prefix_hijack import ForgedOriginPrefixHijack
 
 if TYPE_CHECKING:
-    from bgpy.simulation_engine import Announcement as Ann, BaseSimulationEngine
+    from bgpy.simulation_engine import Announcement as Ann
+    from bgpy.simulation_engine import BaseSimulationEngine
 
 
 class ShortestPathPrefixHijack(VictimsPrefix):

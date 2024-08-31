@@ -1,15 +1,13 @@
 from dataclasses import asdict, dataclass, field
-from typing import Any, Optional, TYPE_CHECKING
+from typing import TYPE_CHECKING, Any, Optional
 
 from frozendict import frozendict
 from roa_checker import ROA
 
 from bgpy.enums import ASGroups
-
+from bgpy.simulation_engine import BGP
 from bgpy.simulation_engine import Announcement as Ann
 from bgpy.simulation_engine import Policy
-from bgpy.simulation_engine import BGP
-
 
 if TYPE_CHECKING:
     from .scenario import Scenario
