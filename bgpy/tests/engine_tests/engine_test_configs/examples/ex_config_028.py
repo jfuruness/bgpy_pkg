@@ -1,14 +1,11 @@
 from frozendict import frozendict
+
 from bgpy.enums import ASNs
-from .as_graph_info_000 import as_graph_info_000
+from bgpy.simulation_engine import ASPA, BGP
+from bgpy.simulation_framework import AccidentalRouteLeak, ScenarioConfig
 from bgpy.tests.engine_tests.utils import EngineTestConfig
 
-from bgpy.simulation_engine import BGP, ASPA
-from bgpy.simulation_framework import (
-    ScenarioConfig,
-    AccidentalRouteLeak,
-)
-
+from .as_graph_info_000 import as_graph_info_000
 
 desc = (
     "Route leak to check when v_max_complement==u_min\n"

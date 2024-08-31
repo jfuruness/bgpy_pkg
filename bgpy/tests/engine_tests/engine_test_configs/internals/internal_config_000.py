@@ -1,19 +1,14 @@
-from frozendict import frozendict
 from copy import deepcopy
 
-from bgpy.tests.engine_tests.utils import EngineTestConfig
+from frozendict import frozendict
 
-from bgpy.as_graphs import PeerLink, CustomerProviderLink as CPLink
 from bgpy.as_graphs import ASGraphInfo
-
-from bgpy.enums import SpecialPercentAdoptions
-from bgpy.simulation_engine import BGPFull, BaseSimulationEngine
-from bgpy.simulation_framework import (
-    ValidPrefix,
-    ScenarioConfig,
-)
-from bgpy.enums import Prefixes
-
+from bgpy.as_graphs import CustomerProviderLink as CPLink
+from bgpy.as_graphs import PeerLink
+from bgpy.enums import Prefixes, SpecialPercentAdoptions
+from bgpy.simulation_engine import BaseSimulationEngine, BGPFull
+from bgpy.simulation_framework import ScenarioConfig, ValidPrefix
+from bgpy.tests.engine_tests.utils import EngineTestConfig
 
 as_graph_info = ASGraphInfo(
     peer_links=frozenset([PeerLink(1, 3), PeerLink(1, 5)]),

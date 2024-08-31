@@ -1,7 +1,6 @@
 import pytest
 
 from bgpy.as_graphs import CAIDAASGraphConstructor
-
 from bgpy.simulation_engine import SimulationEngine
 
 

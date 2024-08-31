@@ -1,14 +1,11 @@
 from frozendict import frozendict
+
 from bgpy.enums import ASNs
-from .as_graph_info_000 import as_graph_info_000
+from bgpy.simulation_engine import ASPAFull, BGPFull
+from bgpy.simulation_framework import AccidentalRouteLeak, ScenarioConfig
 from bgpy.tests.engine_tests.utils import EngineTestConfig
 
-from bgpy.simulation_engine import BGPFull, ASPAFull
-from bgpy.simulation_framework import (
-    ScenarioConfig,
-    AccidentalRouteLeak,
-)
-
+from .as_graph_info_000 import as_graph_info_000
 
 desc = "accidental route leak against ASPA"
 

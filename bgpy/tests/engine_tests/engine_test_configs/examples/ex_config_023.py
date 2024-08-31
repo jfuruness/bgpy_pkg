@@ -1,16 +1,11 @@
 from frozendict import frozendict
-from bgpy.tests.engine_tests.utils import EngineTestConfig
 
-from bgpy.as_graphs.base.links import CustomerProviderLink as CPLink
 from bgpy.as_graphs import ASGraphInfo
+from bgpy.as_graphs.base.links import CustomerProviderLink as CPLink
 from bgpy.enums import ASNs
-
-from bgpy.simulation_engine import BGP, ASPA
-from bgpy.simulation_framework import (
-    ScenarioConfig,
-    ForgedOriginPrefixHijack,
-)
-
+from bgpy.simulation_engine import ASPA, BGP
+from bgpy.simulation_framework import ForgedOriginPrefixHijack, ScenarioConfig
+from bgpy.tests.engine_tests.utils import EngineTestConfig
 
 as_graph_info_no_downstream = ASGraphInfo(
     customer_provider_links=frozenset(

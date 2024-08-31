@@ -1,19 +1,14 @@
-from frozendict import frozendict
 from copy import deepcopy
 
-from bgpy.tests.engine_tests.utils import EngineTestConfig
+from frozendict import frozendict
 
-
-from bgpy.simulation_engine import BGPFull
-from bgpy.simulation_framework import (
-    ValidPrefix,
-    ScenarioConfig,
-)
-from bgpy.enums import Prefixes
-
-from bgpy.as_graphs import PeerLink, CustomerProviderLink as CPLink
 from bgpy.as_graphs import ASGraphInfo
-
+from bgpy.as_graphs import CustomerProviderLink as CPLink
+from bgpy.as_graphs import PeerLink
+from bgpy.enums import Prefixes
+from bgpy.simulation_engine import BGPFull
+from bgpy.simulation_framework import ScenarioConfig, ValidPrefix
+from bgpy.tests.engine_tests.utils import EngineTestConfig
 
 r"""Graph to test relationship preference
 

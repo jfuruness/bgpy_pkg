@@ -30,7 +30,6 @@ from .ex_config_028 import ex_config_028
 from .ex_config_029 import ex_config_029
 from .ex_config_030 import ex_config_030
 
-
 example_configs = [
     ex_config_000,
     ex_config_001,

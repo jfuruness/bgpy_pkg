@@ -1,14 +1,11 @@
 from frozendict import frozendict
+
 from bgpy.enums import ASNs
-from .as_graph_info_000 import as_graph_info_000
+from bgpy.simulation_engine import BGP, BGPSec
+from bgpy.simulation_framework import FirstASNStrippingPrefixHijack, ScenarioConfig
 from bgpy.tests.engine_tests.utils import EngineTestConfig
 
-from bgpy.simulation_engine import BGP, BGPSec
-from bgpy.simulation_framework import (
-    ScenarioConfig,
-    FirstASNStrippingPrefixHijack,
-)
-
+from .as_graph_info_000 import as_graph_info_000
 
 desc = (
     "Neighbor spoofing prefix hijack with bgpsec simple\n"

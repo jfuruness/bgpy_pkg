@@ -1,14 +1,11 @@
 from frozendict import frozendict
+
 from bgpy.enums import ASNs
-from .as_graph_info_000 import as_graph_info_000
+from bgpy.simulation_engine import ASPA, BGP, ShortestPathPrefixASPAAttacker
+from bgpy.simulation_framework import ScenarioConfig, ShortestPathPrefixHijack
 from bgpy.tests.engine_tests.utils import EngineTestConfig
 
-from bgpy.simulation_engine import BGP, ASPA, ShortestPathPrefixASPAAttacker
-from bgpy.simulation_framework import (
-    ScenarioConfig,
-    ShortestPathPrefixHijack,
-)
-
+from .as_graph_info_000 import as_graph_info_000
 
 desc = (
     "shortest path export all against ASPASimple from a customer\n"

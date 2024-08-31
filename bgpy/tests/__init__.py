@@ -1,6 +1,4 @@
-from .engine_tests import DiagramAggregator
-from .engine_tests import EngineTester
-from .engine_tests import EngineTestConfig
+from .engine_tests import DiagramAggregator, EngineTestConfig, EngineTester
 
 __all__ = [
     "DiagramAggregator",

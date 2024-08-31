@@ -1,17 +1,10 @@
 from frozendict import frozendict
-from bgpy.tests.engine_tests.utils import EngineTestConfig
 
-
-from bgpy.simulation_engine import BGP, OnlyToCustomers
-from bgpy.simulation_framework import (
-    AccidentalRouteLeak,
-    ScenarioConfig,
-)
+from bgpy.as_graphs import ASGraphInfo, PeerLink
 from bgpy.enums import ASNs
-
-from bgpy.as_graphs import PeerLink
-from bgpy.as_graphs import ASGraphInfo
-
+from bgpy.simulation_engine import BGP, OnlyToCustomers
+from bgpy.simulation_framework import AccidentalRouteLeak, ScenarioConfig
+from bgpy.tests.engine_tests.utils import EngineTestConfig
 
 r"""Graph to test OTC from a peer
 

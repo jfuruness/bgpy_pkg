@@ -1,16 +1,11 @@
 from frozendict import frozendict
+
 from bgpy.enums import ASNs
-from .as_graph_info_000 import as_graph_info_000
+from bgpy.simulation_engine import BGP
+from bgpy.simulation_framework import ScenarioConfig, SubprefixHijack
 from bgpy.tests.engine_tests.utils import EngineTestConfig
 
-from bgpy.simulation_engine import (
-    BGP,
-)
-from bgpy.simulation_framework import (
-    ScenarioConfig,
-    SubprefixHijack,
-)
-
+from .as_graph_info_000 import as_graph_info_000
 
 desc = (
     "Subprefix hijack with BGP Simple"

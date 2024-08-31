@@ -1,13 +1,11 @@
-from pathlib import Path
 import subprocess
 import sys
+from pathlib import Path
 
 import pytest
 
 from bgpy.as_graphs import CAIDAASGraphCollector
-
 from bgpy.tests.engine_tests import DiagramAggregator
-
 
 DIAGRAM_PATH = Path(__file__).parent / "engine_tests" / "engine_test_outputs"
 

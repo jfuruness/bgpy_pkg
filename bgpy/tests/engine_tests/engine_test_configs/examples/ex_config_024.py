@@ -1,14 +1,11 @@
 from frozendict import frozendict
+
 from bgpy.enums import ASNs
+from bgpy.simulation_engine import ASPAFull, BGPFull
+from bgpy.simulation_framework import ForgedOriginPrefixHijack, ScenarioConfig
 from bgpy.tests.engine_tests.utils import EngineTestConfig
 
-from bgpy.simulation_engine import BGPFull, ASPAFull
-from bgpy.simulation_framework import (
-    ScenarioConfig,
-    ForgedOriginPrefixHijack,
-)
 from .ex_config_023 import as_graph_info_no_downstream
-
 
 desc = (
     "Origin hijack against ASPASimple\n"
