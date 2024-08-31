@@ -149,5 +149,5 @@ exclude_lines = [
 [tool.isort]
 profile = "black"
 src_paths = ["bgpy"]
-known_my_packages = ["bgpy"]
-sections = "FUTURE,STDLIB,THIRDPARTY,MY_PACKAGES,LOCALFOLDER"
+known_org_packages = ["bgpy"]
+sections = "FUTURE,STDLIB,THIRDPARTY,ORG_PACKAGES,LOCALFOLDER"
