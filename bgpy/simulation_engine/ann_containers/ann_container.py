@@ -1,5 +1,5 @@
-from collections import UserDict
 import pprint
+from collections import UserDict
 from typing import Any, Generic, TypeVar
 
 KeyType = TypeVar("KeyType")

@@ -1,4 +1,4 @@
-from dataclasses import dataclass, asdict, replace
+from dataclasses import asdict, dataclass, replace
 from typing import Any, Optional
 
 from yamlable import YamlAble, yaml_info

@@ -1,11 +1,12 @@
-from typing import Any, Optional, TYPE_CHECKING
+from typing import TYPE_CHECKING, Any, Optional
 
 from bgpy.simulation_engine.ann_containers import RecvQueue
 
 if TYPE_CHECKING:
     from bgpy.enums import Relationships
-    from bgpy.simulation_framework import Scenario
     from bgpy.simulation_engine.announcement import Announcement as Ann
+    from bgpy.simulation_framework import Scenario
+
     from .bgp import BGP
 
 

@@ -1,8 +1,8 @@
-from .recv_queue import RecvQueue
-from .send_queue import SendQueue, SendInfo
 from .local_rib import LocalRIB
+from .recv_queue import RecvQueue
+from .ribs_in import AnnInfo, RIBsIn
 from .ribs_out import RIBsOut
-from .ribs_in import RIBsIn, AnnInfo
+from .send_queue import SendInfo, SendQueue
 
 __all__ = [
     "RecvQueue",

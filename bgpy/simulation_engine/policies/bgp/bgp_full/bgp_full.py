@@ -1,22 +1,16 @@
-from typing import Optional, TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 
-from .propagate_funcs import _propagate
-from .propagate_funcs import _process_outgoing_ann
-from .propagate_funcs import _prev_sent
-from .propagate_funcs import _send_anns
-
-from .process_incoming_funcs import process_incoming_anns
-from .process_incoming_funcs import _new_ann_better
-from .process_incoming_funcs import _process_incoming_withdrawal
-from .process_incoming_funcs import _withdraw_ann_from_neighbors
-from .process_incoming_funcs import _select_best_ribs_in
-
+from bgpy.simulation_engine.ann_containers import RIBsIn, RIBsOut, SendQueue
 from bgpy.simulation_engine.policies.bgp import BGP
 
-from bgpy.simulation_engine.ann_containers import RIBsIn
-from bgpy.simulation_engine.ann_containers import RIBsOut
-from bgpy.simulation_engine.ann_containers import SendQueue
-
+from .process_incoming_funcs import (
+    _new_ann_better,
+    _process_incoming_withdrawal,
+    _select_best_ribs_in,
+    _withdraw_ann_from_neighbors,
+    process_incoming_anns,
+)
+from .propagate_funcs import _prev_sent, _process_outgoing_ann, _propagate, _send_anns
 
 if TYPE_CHECKING:
     from bgpy.enums import Relationships

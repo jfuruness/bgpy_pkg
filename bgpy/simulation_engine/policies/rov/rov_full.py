@@ -1,6 +1,6 @@
-from .rov import ROV
-
 from bgpy.simulation_engine.policies.bgp.bgp_full import BGPFull
+
+from .rov import ROV
 
 
 class ROVFull(ROV, BGPFull):

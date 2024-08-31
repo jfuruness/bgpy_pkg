@@ -1,6 +1,6 @@
-from .ann_container import AnnContainer
-
 from bgpy.simulation_engine import Announcement as Ann
+
+from .ann_container import AnnContainer
 
 
 class RecvQueue(AnnContainer[str, list["Ann"]]):

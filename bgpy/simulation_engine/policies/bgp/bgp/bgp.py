@@ -1,32 +1,37 @@
-from typing import Any, Optional, TYPE_CHECKING
+from typing import TYPE_CHECKING, Any, Optional
 from weakref import CallableProxyType
 
-# Propagation functionality
-from .propagate_funcs import propagate_to_providers
-from .propagate_funcs import propagate_to_customers
-from .propagate_funcs import propagate_to_peers
-from .propagate_funcs import _propagate
-from .propagate_funcs import _policy_propagate
-from .propagate_funcs import _process_outgoing_ann
-from .propagate_funcs import _prev_sent
-
-# Process incoming announcements
-from .process_incoming_funcs import seed_ann
-from .process_incoming_funcs import receive_ann
-from .process_incoming_funcs import process_incoming_anns
-from .process_incoming_funcs import _valid_ann
-from .process_incoming_funcs import _copy_and_process
-from .process_incoming_funcs import _reset_q
+from bgpy.simulation_engine.ann_containers import LocalRIB, RecvQueue
+from bgpy.simulation_engine.policies.policy import Policy
 
 # Gao rexford functions
-from .gao_rexford import _get_best_ann_by_gao_rexford
-from .gao_rexford import _get_best_ann_by_local_pref
-from .gao_rexford import _get_best_ann_by_as_path
-from .gao_rexford import _get_best_ann_by_lowest_neighbor_asn_tiebreaker
+from .gao_rexford import (
+    _get_best_ann_by_as_path,
+    _get_best_ann_by_gao_rexford,
+    _get_best_ann_by_local_pref,
+    _get_best_ann_by_lowest_neighbor_asn_tiebreaker,
+)
 
-from bgpy.simulation_engine.policies.policy import Policy
-from bgpy.simulation_engine.ann_containers import LocalRIB
-from bgpy.simulation_engine.ann_containers import RecvQueue
+# Process incoming announcements
+from .process_incoming_funcs import (
+    _copy_and_process,
+    _reset_q,
+    _valid_ann,
+    process_incoming_anns,
+    receive_ann,
+    seed_ann,
+)
+
+# Propagation functionality
+from .propagate_funcs import (
+    _policy_propagate,
+    _prev_sent,
+    _process_outgoing_ann,
+    _propagate,
+    propagate_to_customers,
+    propagate_to_peers,
+    propagate_to_providers,
+)
 
 if TYPE_CHECKING:
     from bgpy.as_graphs import AS

@@ -1,8 +1,8 @@
 from typing import Iterator, Optional
 
-from .ann_container import AnnContainer
-
 from bgpy.simulation_engine import Announcement as Ann
+
+from .ann_container import AnnContainer
 
 
 class RIBsOut(AnnContainer[int, dict[str, Ann]]):

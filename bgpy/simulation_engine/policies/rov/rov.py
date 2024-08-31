@@ -1,6 +1,5 @@
 from typing import TYPE_CHECKING
 
-
 from bgpy.simulation_engine.policies.bgp import BGP
 
 if TYPE_CHECKING:

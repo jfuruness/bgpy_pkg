@@ -1,11 +1,11 @@
 from dataclasses import dataclass
-from typing import Iterator, Optional, TYPE_CHECKING
+from typing import TYPE_CHECKING, Iterator, Optional
 
 from yamlable import YamlAble, yaml_info
 
-from .ann_container import AnnContainer
-
 from bgpy.simulation_engine import Announcement as Ann
+
+from .ann_container import AnnContainer
 
 if TYPE_CHECKING:
     from bgpy.as_graphs import AS

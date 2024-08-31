@@ -1,4 +1,4 @@
-from typing import Any, Optional, TYPE_CHECKING
+from typing import TYPE_CHECKING, Any, Optional
 
 from bgpy.simulation_engine.policies.rov import ROV
 

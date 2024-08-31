@@ -1,6 +1,6 @@
-from .only_to_customers import OnlyToCustomers
-
 from bgpy.simulation_engine.policies.bgp.bgp_full import BGPFull
+
+from .only_to_customers import OnlyToCustomers
 
 
 class OnlyToCustomersFull(OnlyToCustomers, BGPFull):

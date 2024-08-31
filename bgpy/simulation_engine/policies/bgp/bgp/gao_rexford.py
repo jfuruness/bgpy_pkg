@@ -1,4 +1,4 @@
-from typing import Optional, TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 
 from bgpy.simulation_engine.announcement import Announcement as Ann
 

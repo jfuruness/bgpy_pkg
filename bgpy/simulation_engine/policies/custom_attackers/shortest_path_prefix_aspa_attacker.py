@@ -1,14 +1,13 @@
 from typing import TYPE_CHECKING
 
+import bgpy
 from bgpy.enums import Relationships
 from bgpy.simulation_engine.policies.bgp import BGP
-import bgpy
-
 
 if TYPE_CHECKING:
+    from bgpy.as_graphs import AS
     from bgpy.simulation_engine import Announcement as Ann
     from bgpy.simulation_framework import Scenario
-    from bgpy.as_graphs import AS
 
 
 class ShortestPathPrefixASPAAttacker(BGP):

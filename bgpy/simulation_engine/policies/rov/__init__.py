@@ -1,7 +1,7 @@
-from .peer_rov_full import PeerROVFull
 from .peer_rov import PeerROV
-from .rov_full import ROVFull
+from .peer_rov_full import PeerROVFull
 from .rov import ROV
+from .rov_full import ROVFull
 
 __all__ = [
     "PeerROV",

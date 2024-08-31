@@ -2,10 +2,10 @@ from typing import TYPE_CHECKING
 
 from bgpy.enums import Relationships
 
-
 if TYPE_CHECKING:
     from bgpy.as_graphs import AS
     from bgpy.simulation_engines.announcement import Announcement as Ann
+
     from .bgp import BGP
 
 
