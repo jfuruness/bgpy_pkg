@@ -67,7 +67,6 @@ bgpy = "bgpy.__main__:main"
 
 [project.optional-dependencies]
 test = [
-    "isort==5.13.2",
     "black==24.8.0",
     "pre-commit==3.8.0",
     "types-requests==2.32.0.20240712",
@@ -146,8 +145,21 @@ exclude_lines = [
     "if __name__ == .__main__.:"
 ]
 
-[tool.isort]
-profile = "black"
-src_paths = ["bgpy"]
-known_org_packages = ["bgpy"]
-sections = "FUTURE,STDLIB,THIRDPARTY,ORG_PACKAGES,LOCALFOLDER"
+# https://docs.astral.sh/ruff/configuration/
+[tool.ruff.lint]
+select = [
+    # Defaults
+    "E4",
+    "E7",
+    "E9",
+    "F",
+    # Isort
+    "I001",
+    "I002"
+]
+
+ignore = []
+unfixable = []
+
+[tool.ruff.lint.isort]
+known-first-party = ["bgpy"]

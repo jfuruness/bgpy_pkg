@@ -23,7 +23,6 @@ def _preprocessing_steps(
     graph_category: "GraphCategory",
     data_dict: dict["DataPointKey", "DataPointAggData"],
 ):
-
     graph_name = self._get_graph_name(graph_category)
 
     label_rows_dict: defaultdict[str, list["DataPointAggData"]] = defaultdict(list)
@@ -41,7 +40,6 @@ def _preprocessing_steps(
 
 
 def _get_graph_name(self, graph_category: "GraphCategory") -> str:
-
     return (
         f"{graph_category.as_group.value}"
         f"/in_adopting_asns_is_{graph_category.in_adopting_asns}"

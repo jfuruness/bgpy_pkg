@@ -58,7 +58,7 @@ def process_incoming_anns(
                 assert (
                     self._ribs_in.get_unprocessed_ann_recv_rel(ann.as_path[0], prefix)
                     is None
-                ), (str(self.as_.asn) + " " + str(ann) + err)
+                ), str(self.as_.asn) + " " + str(ann) + err
 
                 self._ribs_in.add_unprocessed_ann(ann, from_rel)
             # Process withdrawals even for invalid anns in the ribs_in

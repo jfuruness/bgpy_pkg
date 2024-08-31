@@ -13,7 +13,6 @@ tqdm==4.66.5
 yamlable==1.1.1
 
 
-isort==5.13.2"
 black==24.8.0
 pre-commit==3.8.0
 types-requests==2.32.0.20240712

@@ -68,7 +68,6 @@ def _plot_strongest_attacker_lines(self, ax, line_data_dict: dict[str, LineData]
         max_attacker_data_dict[label] = line_infos
 
     if self.labels_to_aggregate:
-
         strongest_agg_dict, scatter_line_data_dict = self._get_agg_data(
             max_attacker_data_dict
         )

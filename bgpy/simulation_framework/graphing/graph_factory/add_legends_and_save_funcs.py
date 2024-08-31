@@ -13,7 +13,6 @@ def _add_legends_and_save(
     max_attacker_dict,
     graph_name,
 ):
-
     first_legend, aggregated_labels_handles_dict = self._add_legend(
         fig,
         ax,

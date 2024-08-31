@@ -31,7 +31,6 @@ class TrialData:
         ctrl_plane_outcome: int,
         data_plane_outcome: int,
     ):
-
         within_denom = self._add_denominator(
             as_obj=as_obj,
             engine=engine,

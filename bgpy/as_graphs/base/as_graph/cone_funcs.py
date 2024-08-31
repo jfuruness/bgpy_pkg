@@ -10,7 +10,6 @@ def _get_size_of_and_store_cone(
     rel_attr: str = Relationships.CUSTOMERS.name.lower(),
     store_cone_asns: bool = False,
 ) -> None:
-
     if rel_attr == Relationships.PROVIDERS.name.lower():
         self._get_and_store_provider_cone_and_set_size(store_cone_asns)
     elif rel_attr == Relationships.CUSTOMERS.name.lower():
