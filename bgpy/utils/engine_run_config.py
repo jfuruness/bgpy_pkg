@@ -1,15 +1,16 @@
 from dataclasses import dataclass
 
-from bgpy.as_graphs import ASGraphInfo, ASGraph, CAIDAASGraph
-from bgpy.simulation_framework.scenarios import ScenarioConfig
+from bgpy.as_graphs import ASGraph, ASGraphInfo, CAIDAASGraph
 from bgpy.simulation_engine import BaseSimulationEngine, SimulationEngine
+from bgpy.simulation_framework.as_graph_analyzers import (
+    ASGraphAnalyzer,
+    BaseASGraphAnalyzer,
+)
 from bgpy.simulation_framework.graph_data_aggregator.graph_data_aggregator import (
     GraphDataAggregator,
 )
-from bgpy.simulation_framework.as_graph_analyzers import (
-    BaseASGraphAnalyzer,
-    ASGraphAnalyzer,
-)
+from bgpy.simulation_framework.scenarios import ScenarioConfig
+
 from .diagram import Diagram
 
 

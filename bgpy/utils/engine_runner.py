@@ -1,14 +1,13 @@
 from pathlib import Path
 from typing import Optional
 
+from bgpy.as_graphs.base import AS
+from bgpy.enums import Outcomes, Plane, SpecialPercentAdoptions
+from bgpy.simulation_engine import BaseSimulationEngine
+from bgpy.simulation_framework import GraphDataAggregator, Scenario
+
 from .engine_run_config import EngineRunConfig
 from .simulator_codec import SimulatorCodec
-
-from bgpy.as_graphs.base import AS
-from bgpy.simulation_engine import BaseSimulationEngine
-from bgpy.simulation_framework import Scenario
-from bgpy.simulation_framework import GraphDataAggregator
-from bgpy.enums import Plane, SpecialPercentAdoptions, Outcomes
 
 
 class EngineRunner:

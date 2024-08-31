@@ -1,13 +1,11 @@
+import ipaddress
 from pathlib import Path
-from typing import Optional, TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 
 from graphviz import Digraph
-import ipaddress
 
 from bgpy.enums import Outcomes
-from bgpy.simulation_engine import BGPFull
-from bgpy.simulation_engine import BGP
-from bgpy.simulation_engine import BaseSimulationEngine
+from bgpy.simulation_engine import BGP, BaseSimulationEngine, BGPFull
 from bgpy.simulation_framework import Scenario
 
 if TYPE_CHECKING:

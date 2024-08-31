@@ -1,11 +1,13 @@
 # YAML STUFF
-from yamlable import YamlCodec
 from typing import Any, Iterable
-import yaml
 
-from .simulator_loader import SimulatorLoader
+import yaml
+from yamlable import YamlCodec
+
 from bgpy.enums import YamlAbleEnum
 from bgpy.simulation_engine.ann_containers.ann_container import AnnContainer
+
+from .simulator_loader import SimulatorLoader
 
 # 2-way mappings between the types and the yaml tags
 types_to_yaml_tags = {X: X.yaml_suffix() for X in YamlAbleEnum.yamlable_enums()}
