@@ -1,12 +1,8 @@
 from pathlib import Path
 
-from bgpy.simulation_engine import ROV
 from bgpy.enums import SpecialPercentAdoptions
-from bgpy.simulation_framework import (
-    Simulation,
-    SubprefixHijack,
-    ScenarioConfig,
-)
+from bgpy.simulation_engine import ROV
+from bgpy.simulation_framework import ScenarioConfig, Simulation, SubprefixHijack
 
 
 def main():

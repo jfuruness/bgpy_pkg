@@ -1,3 +1,4 @@
+# Skip isort formatting due to circular imports if Announcement isn't first
 from .announcement import Announcement  # isort: skip
 from .ann_containers import LocalRIB, RecvQueue, RIBsIn, RIBsOut, SendQueue
 

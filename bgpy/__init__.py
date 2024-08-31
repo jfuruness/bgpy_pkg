@@ -1,9 +1,12 @@
-from . import simulation_engine
-from . import as_graphs
-from . import enums
-from . import simulation_framework
-from . import tests
-from . import utils
+# Modifying the order of these causes lots of circular imports, so skip isort
+from . import (  # isort: skip
+    simulation_engine,
+    as_graphs,
+    enums,
+    simulation_framework,
+    tests,
+    utils,
+)
 
 __all__ = [
     "as_graphs",
