@@ -18,7 +18,7 @@ class EngineRunner:
         base_dir: Path,
         conf: EngineRunConfig,
         codec: SimulatorCodec = SimulatorCodec(),
-        dpi: Optional[int] = None,
+        dpi: int | None = None,
     ) -> None:
         self.conf: EngineRunConfig = conf
         self.codec: SimulatorCodec = codec
@@ -27,7 +27,7 @@ class EngineRunner:
 
         self.storage_dir: Path = self.base_dir / self.conf.name
         self.storage_dir.mkdir(parents=True, exist_ok=True)
-        self.dpi: Optional[int] = dpi
+        self.dpi: int | None = dpi
 
     def run_engine(self):
         """Performs a single engine run

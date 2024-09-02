@@ -13,7 +13,7 @@ def _add_roa_info_to_anns(
     self,
     *,
     announcements: tuple["Ann", ...] = (),
-    engine: Optional[BaseSimulationEngine] = None,
+    engine: BaseSimulationEngine | None = None,
 ) -> tuple["Ann", ...]:
     """Adds ROA Info to Announcements"""
 
@@ -53,7 +53,7 @@ def _get_roa_checker(self) -> ROAChecker:
 
 def _get_roa_origin(
     self, roa_checker: ROAChecker, prefix: IPv4Network | IPv6Network, origin: int
-) -> Optional[int]:
+) -> int | None:
     """Returns ROA origin"""
 
     roas = roa_checker.get_relevant_roas(prefix)
@@ -71,7 +71,7 @@ def _get_roa_valid_length(
     roa_checker: ROAChecker,
     prefix: IPv4Network | IPv6Network,
     origin: int,
-) -> Optional[bool]:
+) -> bool | None:
     """Returns ROA validity"""
 
     outcome = roa_checker.get_roa_outcome(prefix, origin)

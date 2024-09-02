@@ -37,7 +37,7 @@ class Simulation:
 
     def __init__(
         self,
-        percent_adoptions: tuple[Union[float, SpecialPercentAdoptions], ...] = (
+        percent_adoptions: tuple[float | SpecialPercentAdoptions, ...] = (
             0.1,
             0.5,
             0.8,
@@ -54,7 +54,7 @@ class Simulation:
         num_trials: int = 2,
         output_dir: Path = Path("/tmp/sims"),
         parse_cpus: int = max(cpu_count() - 1, 1),
-        python_hash_seed: Optional[int] = None,
+        python_hash_seed: int | None = None,
         ASGraphConstructorCls: type[ASGraphConstructor] = CAIDAASGraphConstructor,
         as_graph_constructor_kwargs=frozendict(
             {
@@ -95,7 +95,7 @@ class Simulation:
         mp_method: Multiprocessing method
         """
 
-        self.percent_adoptions: tuple[Union[float, SpecialPercentAdoptions], ...] = (
+        self.percent_adoptions: tuple[float | SpecialPercentAdoptions, ...] = (
             percent_adoptions
         )
         self.num_trials: int = num_trials
@@ -104,7 +104,7 @@ class Simulation:
         self.parse_cpus: int = parse_cpus
         self.scenario_configs: tuple[ScenarioConfig, ...] = scenario_configs
 
-        self.python_hash_seed: Optional[int] = python_hash_seed
+        self.python_hash_seed: int | None = python_hash_seed
         self._seed_random()
 
         # Done here so that the caida files are cached
@@ -208,7 +208,7 @@ class Simulation:
 
     def run(
         self,
-        GraphFactoryCls: Optional[type[GraphFactory]] = GraphFactory,
+        GraphFactoryCls: type[GraphFactory] | None = GraphFactory,
         graph_factory_kwargs=None,
     ) -> None:
         """Runs the simulation and write the data"""
@@ -421,7 +421,7 @@ class Simulation:
         self,
         *,
         engine: BaseSimulationEngine,
-        percent_adopt: Union[float, SpecialPercentAdoptions],
+        percent_adopt: float | SpecialPercentAdoptions,
         trial: int,
         scenario: Scenario,
         propagation_round: int,
@@ -460,7 +460,7 @@ class Simulation:
     def _collect_engine_run_data(
         self,
         engine: SimulationEngine,
-        percent_adopt: Union[float, SpecialPercentAdoptions],
+        percent_adopt: float | SpecialPercentAdoptions,
         trial: int,
         scenario: Scenario,
         propagation_round: int,
@@ -505,7 +505,7 @@ class Simulation:
 
     def _graph_data(
         self,
-        GraphFactoryCls: Optional[type[GraphFactory]] = GraphFactory,
+        GraphFactoryCls: type[GraphFactory] | None = GraphFactory,
         kwargs=None,
     ) -> None:
         """Generates some default graphs"""

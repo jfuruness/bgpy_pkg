@@ -55,7 +55,7 @@ class BGPSec(ROV):
         self,
         ann: "Ann",
         recv_relationship: "Relationships",
-        overwrite_default_kwargs: Optional[dict[Any, Any]] = None,
+        overwrite_default_kwargs: dict[Any, Any] | None = None,
     ) -> "Ann":
         """Sets the bgpsec_as_path.
 

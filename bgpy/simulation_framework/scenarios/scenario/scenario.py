@@ -41,11 +41,11 @@ class Scenario(ABC):
         self,
         *,
         scenario_config: ScenarioConfig,
-        percent_adoption: Union[float, SpecialPercentAdoptions] = 0,
-        engine: Optional[BaseSimulationEngine] = None,
-        attacker_asns: Optional[frozenset[int]] = None,
-        victim_asns: Optional[frozenset[int]] = None,
-        adopting_asns: Optional[frozenset[int]] = None,
+        percent_adoption: float | SpecialPercentAdoptions = 0,
+        engine: BaseSimulationEngine | None = None,
+        attacker_asns: frozenset[int] | None = None,
+        victim_asns: frozenset[int] | None = None,
+        adopting_asns: frozenset[int] | None = None,
     ):
         """inits attrs
 
@@ -60,7 +60,7 @@ class Scenario(ABC):
         )
 
         self.scenario_config: ScenarioConfig = scenario_config
-        self.percent_adoption: Union[float, SpecialPercentAdoptions] = percent_adoption
+        self.percent_adoption: float | SpecialPercentAdoptions = percent_adoption
 
         self.attacker_asns: frozenset[int] = self._get_attacker_asns(
             scenario_config.override_attacker_asns,
@@ -98,9 +98,9 @@ class Scenario(ABC):
 
     def _get_attacker_asns(
         self,
-        override_attacker_asns: Optional[frozenset[int]],
-        prev_attacker_asns: Optional[frozenset[int]],
-        engine: Optional[BaseSimulationEngine],
+        override_attacker_asns: frozenset[int] | None,
+        prev_attacker_asns: frozenset[int] | None,
+        engine: BaseSimulationEngine | None,
     ) -> frozenset[int]:
         """Returns attacker ASN at random"""
 
@@ -166,7 +166,7 @@ class Scenario(ABC):
     def _get_possible_attacker_asns(
         self,
         engine: BaseSimulationEngine,
-        percent_adoption: Union[float, SpecialPercentAdoptions],
+        percent_adoption: float | SpecialPercentAdoptions,
     ) -> frozenset[int]:
         """Returns possible attacker ASNs, defaulted from config"""
 
@@ -184,9 +184,9 @@ class Scenario(ABC):
 
     def _get_victim_asns(
         self,
-        override_victim_asns: Optional[frozenset[int]],
-        prev_victim_asns: Optional[frozenset[int]],
-        engine: Optional[BaseSimulationEngine],
+        override_victim_asns: frozenset[int] | None,
+        prev_victim_asns: frozenset[int] | None,
+        engine: BaseSimulationEngine | None,
     ) -> frozenset[int]:
         """Returns victim ASN at random"""
 
@@ -220,7 +220,7 @@ class Scenario(ABC):
     def _get_possible_victim_asns(
         self,
         engine: BaseSimulationEngine,
-        percent_adoption: Union[float, SpecialPercentAdoptions],
+        percent_adoption: float | SpecialPercentAdoptions,
     ) -> frozenset[int]:
         """Returns possible victim ASNs, defaulted from config"""
 
@@ -240,9 +240,9 @@ class Scenario(ABC):
 
     def _get_adopting_asns(
         self,
-        override_adopting_asns: Optional[frozenset[int]],
-        adopting_asns: Optional[frozenset[int]],
-        engine: Optional[BaseSimulationEngine],
+        override_adopting_asns: frozenset[int] | None,
+        adopting_asns: frozenset[int] | None,
+        engine: BaseSimulationEngine | None,
     ) -> frozenset[int]:
         """Returns all asns that will be adopting self.AdoptPolicyCls"""
 
@@ -370,7 +370,7 @@ class Scenario(ABC):
         self,
         *,
         announcements: tuple["Ann", ...] = (),
-        engine: Optional[BaseSimulationEngine] = None,
+        engine: BaseSimulationEngine | None = None,
     ) -> tuple[ROA, ...]:
         """Returns a tuple of ROA's
 
@@ -431,7 +431,7 @@ class Scenario(ABC):
         for roa in self.roas:
             prefixes.add(str(roa.prefix))
         # Do this here for speed
-        prefixes: list[Union[IPv4Network, IPv6Network]] = [  # type: ignore
+        prefixes: list[IPv4Network | IPv6Network] = [  # type: ignore
             ip_network(x) for x in prefixes
         ]
         # Sort prefixes with most specific prefix first

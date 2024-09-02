@@ -33,7 +33,7 @@ class ScenarioConfig:
     # Fixed in post init, but can't show mypy for some reason
     AdoptPolicyCls: type[Policy] = MISSINGPolicy  # type: ignore
     # Used to override attacker's base policy class
-    AttackerBasePolicyCls: Optional[type[Policy]] = None
+    AttackerBasePolicyCls: type[Policy] | None = None
     num_attackers: int = 1
     num_victims: int = 1
     # Adoption is equal across these atributes of the engine
@@ -52,9 +52,9 @@ class ScenarioConfig:
         default_factory=frozendict  # type: ignore
     )
     # Only necessary if coming from YAML or the test suite
-    override_attacker_asns: Optional[frozenset[int]] = None
-    override_victim_asns: Optional[frozenset[int]] = None
-    override_adopting_asns: Optional[frozenset[int]] = None
+    override_attacker_asns: frozenset[int] | None = None
+    override_victim_asns: frozenset[int] | None = None
+    override_adopting_asns: frozenset[int] | None = None
     override_announcements: tuple["Ann", ...] = ()
     override_roas: tuple[ROA, ...] = ()
     # If you'd like to add an extra CSV label you do so here

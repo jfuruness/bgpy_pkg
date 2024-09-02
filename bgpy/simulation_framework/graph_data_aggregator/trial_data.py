@@ -16,7 +16,7 @@ class TrialData:
         self._numerator: float = 0
         self._denominator: float = 0
 
-    def get_percent(self) -> Optional[float]:
+    def get_percent(self) -> float | None:
         if self._numerator == 0 and self._denominator == 0:
             return None
         else:

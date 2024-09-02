@@ -14,8 +14,8 @@ if TYPE_CHECKING:
 @yaml_info(yaml_tag="SendInfo")
 @dataclass
 class SendInfo(YamlAble):
-    withdrawal_ann: Optional[Ann] = None
-    ann: Optional[Ann] = None
+    withdrawal_ann: Ann | None = None
+    ann: Ann | None = None
 
     @property
     def anns(self):
@@ -68,7 +68,7 @@ class SendQueue(AnnContainer[int, dict[str, SendInfo]]):
             # Add announcement
             send_info.ann = ann
 
-    def get_send_info(self, neighbor_obj: "AS", prefix: str) -> Optional[Ann]:
+    def get_send_info(self, neighbor_obj: "AS", prefix: str) -> Ann | None:
         """Returns the SendInfo for a neighbor AS and prefix"""
 
         return self.data.get(neighbor_obj.asn, dict()).get(prefix)

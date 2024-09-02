@@ -24,7 +24,7 @@ class CAIDAASGraphConstructor(ASGraphConstructor):
         ASGraphCls: type[ASGraph] = CAIDAASGraph,
         as_graph_collector_kwargs=frozendict(),
         as_graph_kwargs=frozendict(),
-        tsv_path: Optional[Path] = None,
+        tsv_path: Path | None = None,
         stubs: bool = True,
     ) -> None:
         super().__init__(

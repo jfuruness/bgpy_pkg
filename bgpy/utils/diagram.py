@@ -31,9 +31,9 @@ class Diagram:
         graph_data_aggregator: "GraphDataAggregator",
         diagram_ranks: tuple[tuple["AS", ...], ...],
         static_order: bool = False,
-        path: Optional[Path] = None,
+        path: Path | None = None,
         view: bool = False,
-        dpi: Optional[int] = None,
+        dpi: int | None = None,
     ) -> None:
         self._add_legend(traceback, scenario)
         display_next_hop_asn = self._display_next_hop_asn(engine, scenario)
@@ -301,7 +301,7 @@ class Diagram:
         self.dot.attr(label=description)
 
     def _render(
-        self, path: Optional[Path] = None, view: bool = False, dpi: Optional[int] = None
+        self, path: Path | None = None, view: bool = False, dpi: int | None = None
     ) -> None:
         if dpi:
             self.dot.attr(dpi=str(dpi))

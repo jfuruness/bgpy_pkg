@@ -18,7 +18,7 @@ class ASGraphConstructor(ABC):
         ASGraphCls: type["ASGraph"],
         as_graph_collector_kwargs=frozendict(),
         as_graph_kwargs=frozendict(),
-        tsv_path: Optional[Path] = None,
+        tsv_path: Path | None = None,
         stubs: bool = True,
     ) -> None:
         """Stores download time and cache_dir instance vars and creates dir"""
@@ -28,7 +28,7 @@ class ASGraphConstructor(ABC):
         )
         self.ASGraphCls: type["ASGraph"] = ASGraphCls
         self.as_graph_kwargs = as_graph_kwargs
-        self.tsv_path: Optional[Path] = tsv_path
+        self.tsv_path: Path | None = tsv_path
         self.stubs: bool = stubs
 
     def run(self) -> "ASGraph":
@@ -68,7 +68,7 @@ class ASGraphConstructor(ABC):
                 provider.customers = customers
 
     @staticmethod
-    def write_tsv(as_graph: "ASGraph", tsv_path: Optional[Path] = None) -> None:
+    def write_tsv(as_graph: "ASGraph", tsv_path: Path | None = None) -> None:
         """Writes AS Graph to TSV"""
 
         if tsv_path:

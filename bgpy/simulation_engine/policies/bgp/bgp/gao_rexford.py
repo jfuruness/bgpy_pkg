@@ -8,7 +8,7 @@ if TYPE_CHECKING:
 
 def _get_best_ann_by_gao_rexford(
     self: "BGP",
-    current_ann: Optional[Ann],
+    current_ann: Ann | None,
     new_ann: Ann,
 ) -> Ann:
     """Determines if the new ann > current ann by Gao Rexford"""
@@ -43,7 +43,7 @@ def _get_best_ann_by_gao_rexford(
 
 def _get_best_ann_by_local_pref(
     self: "BGP", current_ann: Ann, new_ann: Ann
-) -> Optional[Ann]:
+) -> Ann | None:
     """Returns best announcement by local pref, or None if tie"""
 
     if current_ann.recv_relationship.value > new_ann.recv_relationship.value:
@@ -56,7 +56,7 @@ def _get_best_ann_by_local_pref(
 
 def _get_best_ann_by_as_path(
     self: "BGP", current_ann: Ann, new_ann: Ann
-) -> Optional[Ann]:
+) -> Ann | None:
     """Returns best announcement by as path length, or None if tie
 
     Shorter AS Paths are better

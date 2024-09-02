@@ -26,12 +26,12 @@ class AS(YamlAble):
         peers: tuple["AS", ...] = tuple(),
         providers: tuple["AS", ...] = tuple(),
         customers: tuple["AS", ...] = tuple(),
-        customer_cone_asns: Optional[frozenset[int]] = None,
-        customer_cone_size: Optional[int] = None,
-        provider_cone_asns: Optional[frozenset[int]] = None,
-        provider_cone_size: Optional[int] = None,
-        as_rank: Optional[int] = None,
-        propagation_rank: Optional[int] = None,
+        customer_cone_asns: frozenset[int] | None = None,
+        customer_cone_size: int | None = None,
+        provider_cone_asns: frozenset[int] | None = None,
+        provider_cone_size: int | None = None,
+        as_rank: int | None = None,
+        propagation_rank: int | None = None,
         policy: Optional["Policy"] = None,
         as_graph: Optional["ASGraph"] = None,
     ) -> None:
@@ -49,13 +49,13 @@ class AS(YamlAble):
         # Read Caida's paper to understand these
         self.input_clique: bool = input_clique
         self.ixp: bool = ixp
-        self.customer_cone_asns: Optional[frozenset[int]] = customer_cone_asns
-        self.customer_cone_size: Optional[int] = customer_cone_size
-        self.provider_cone_asns: Optional[frozenset[int]] = provider_cone_asns
-        self.provider_cone_size: Optional[int] = provider_cone_size
-        self.as_rank: Optional[int] = as_rank
+        self.customer_cone_asns: frozenset[int] | None = customer_cone_asns
+        self.customer_cone_size: int | None = customer_cone_size
+        self.provider_cone_asns: frozenset[int] | None = provider_cone_asns
+        self.provider_cone_size: int | None = provider_cone_size
+        self.as_rank: int | None = as_rank
         # Propagation rank. Rank leaves to clique
-        self.propagation_rank: Optional[int] = propagation_rank
+        self.propagation_rank: int | None = propagation_rank
 
         # Hash in advance and only once since this gets called a lot
         self.hashed_asn = hash(self.asn)

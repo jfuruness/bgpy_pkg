@@ -80,7 +80,7 @@ class ASGraph(YamlAble):
         store_customer_cone_asns: bool = False,
         store_provider_cone_size: bool = False,
         store_provider_cone_asns: bool = False,
-        yaml_as_dict: Optional[frozendict[int, AS]] = None,
+        yaml_as_dict: frozendict[int, AS] | None = None,
         yaml_ixp_asns: frozenset[int] = frozenset(),
         # Users can pass in any additional AS groups they want to keep track of
         additional_as_group_filters: frozendict[
@@ -186,9 +186,7 @@ class ASGraph(YamlAble):
 
     def _set_as_groups(
         self,
-        additional_as_group_filters: Optional[
-            frozendict[str, Callable[["ASGraph"], frozenset[AS]]]
-        ],
+        additional_as_group_filters: frozendict[str, Callable[["ASGraph"], frozenset[AS]]] | None,
     ) -> None:
         """Sets the AS Groups"""
 

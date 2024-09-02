@@ -10,5 +10,5 @@ class DataPointKey:
     """Key for the data stored in a single point in a graph"""
 
     propagation_round: int
-    percent_adopt: Union[float, SpecialPercentAdoptions]
+    percent_adopt: float | SpecialPercentAdoptions
     scenario_config: ScenarioConfig

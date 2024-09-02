@@ -33,14 +33,14 @@ class BaseSimulationEngine(YamlAble, ABC):
         self,
         as_graph: "ASGraph",
         # Useful for C++ Engine
-        cached_as_graph_tsv_path: Optional[Path] = None,
+        cached_as_graph_tsv_path: Path | None = None,
         ready_to_run_round: int = -1,
     ) -> None:
         """Saves read_to_run_rund attr and inits superclass"""
 
         self.as_graph = as_graph
         # Useful for C++ version
-        self.cached_as_graph_tsv_path: Optional[Path] = cached_as_graph_tsv_path
+        self.cached_as_graph_tsv_path: Path | None = cached_as_graph_tsv_path
         # This indicates whether or not the simulator has been set up for a run
         # We use a number instead of a bool so that we can indicate for
         # each round whether it is ready to run or not

@@ -22,11 +22,11 @@ class AccidentalRouteLeak(VictimsPrefix):
         self,
         *,
         scenario_config: ScenarioConfig,
-        percent_adoption: Union[float, SpecialPercentAdoptions] = 0,
+        percent_adoption: float | SpecialPercentAdoptions = 0,
         engine: Optional["BaseSimulationEngine"] = None,
-        attacker_asns: Optional[frozenset[int]] = None,
-        victim_asns: Optional[frozenset[int]] = None,
-        adopting_asns: Optional[frozenset[int]] = None,
+        attacker_asns: frozenset[int] | None = None,
+        victim_asns: frozenset[int] | None = None,
+        adopting_asns: frozenset[int] | None = None,
     ):
         assert engine, "Need engine for customer cones"
         self._attackers_customer_cones_asns: set[int] = set()
@@ -121,8 +121,8 @@ class AccidentalRouteLeak(VictimsPrefix):
 
     def _get_attacker_asns(
         self,
-        override_attacker_asns: Optional[frozenset[int]],
-        attacker_asns: Optional[frozenset[int]],
+        override_attacker_asns: frozenset[int] | None,
+        attacker_asns: frozenset[int] | None,
         engine: Optional["BaseSimulationEngine"],
     ) -> frozenset[int]:
         """Gets attacker ASNs, overriding the valid prefix which has no attackers
@@ -155,7 +155,7 @@ class AccidentalRouteLeak(VictimsPrefix):
     def _get_possible_victim_asns(
         self,
         engine: "BaseSimulationEngine",
-        percent_adoption: Union[float, SpecialPercentAdoptions],
+        percent_adoption: float | SpecialPercentAdoptions,
     ) -> frozenset[int]:
         """Returns possible victim ASNs, defaulted from config
 

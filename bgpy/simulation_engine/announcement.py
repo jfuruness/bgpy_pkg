@@ -15,7 +15,7 @@ class Announcement(YamlAble):
     as_path: tuple[int, ...]
     # Equivalent to the next hop in a normal BGP announcement
     next_hop_asn: int = None  # type: ignore
-    seed_asn: Optional[int] = None
+    seed_asn: int | None = None
     recv_relationship: Relationships = Relationships.ORIGIN
 
     #############################
@@ -35,15 +35,15 @@ class Announcement(YamlAble):
     # Used for classes derived from BGPFull
     withdraw: bool = False
     # ROV, ROV++ optional attributes
-    roa_valid_length: Optional[bool] = None
-    roa_origin: Optional[int] = None
+    roa_valid_length: bool | None = None
+    roa_origin: int | None = None
     # BGPsec optional attributes
     # BGPsec next ASN that should receive the control plane announcement
     # NOTE: this is the opposite direction of next_hop, for the data plane
-    bgpsec_next_asn: Optional[int] = None
+    bgpsec_next_asn: int | None = None
     bgpsec_as_path: tuple[int, ...] = ()
     # RFC 9234 OTC attribute (Used in OnlyToCustomers Policy)
-    only_to_customers: Optional[int] = None
+    only_to_customers: int | None = None
     # ROV++ attribute
     rovpp_blackhole: bool = False
 
@@ -69,7 +69,7 @@ class Announcement(YamlAble):
             raise NotImplementedError
 
     def copy(
-        self, overwrite_default_kwargs: Optional[dict[Any, Any]] = None
+        self, overwrite_default_kwargs: dict[Any, Any] | None = None
     ) -> "Announcement":
         """Creates a new ann with proper sim attrs"""
 

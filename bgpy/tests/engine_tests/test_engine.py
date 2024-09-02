@@ -15,7 +15,7 @@ class TestEngine:
     """
 
     @pytest.mark.parametrize("conf", engine_test_configs)
-    def test_engine(self, conf: EngineTestConfig, overwrite: bool, dpi: Optional[int]):
+    def test_engine(self, conf: EngineTestConfig, overwrite: bool, dpi: int | None):
         """Performs a system test on the engine
 
         See README for in depth details

@@ -42,8 +42,8 @@ class BGP(Policy):
 
     def __init__(
         self,
-        _local_rib: Optional[LocalRIB] = None,
-        _recv_q: Optional[RecvQueue] = None,
+        _local_rib: LocalRIB | None = None,
+        _recv_q: RecvQueue | None = None,
         as_: Optional["AS"] = None,
     ) -> None:
         """Add local rib and data structures here

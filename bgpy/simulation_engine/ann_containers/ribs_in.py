@@ -33,7 +33,7 @@ class RIBsIn(AnnContainer[int, dict[str, AnnInfo]]):
 
     def get_unprocessed_ann_recv_rel(
         self, neighbor_asn: int, prefix: str
-    ) -> Optional[AnnInfo]:
+    ) -> AnnInfo | None:
         """Returns AnnInfo for a neighbor ASN and prefix
 
         We don't use defaultdict here because that's not yamlable

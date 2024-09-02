@@ -26,7 +26,7 @@ class GraphDataAggregator:
 
     def __init__(
         self,
-        data: Optional[DATA_TYPE] = None,
+        data: DATA_TYPE | None = None,
         graph_categories: tuple[GraphCategory, ...] = tuple(get_all_graph_categories()),
     ) -> None:
         """Inits data"""
@@ -76,7 +76,7 @@ class GraphDataAggregator:
         self,
         *,
         engine: BaseSimulationEngine,
-        percent_adopt: Union[float, SpecialPercentAdoptions],
+        percent_adopt: float | SpecialPercentAdoptions,
         trial: int,
         scenario: Scenario,
         propagation_round: int,

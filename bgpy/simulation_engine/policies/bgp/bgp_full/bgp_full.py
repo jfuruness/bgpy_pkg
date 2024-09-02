@@ -23,9 +23,9 @@ class BGPFull(BGP):
     def __init__(
         self,
         *args,
-        _ribs_in: Optional[RIBsIn] = None,
-        _ribs_out: Optional[RIBsOut] = None,
-        _send_q: Optional[SendQueue] = None,
+        _ribs_in: RIBsIn | None = None,
+        _ribs_out: RIBsOut | None = None,
+        _send_q: SendQueue | None = None,
         **kwargs,
     ):
         super(BGPFull, self).__init__(*args, **kwargs)

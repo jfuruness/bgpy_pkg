@@ -11,7 +11,7 @@ class RIBsOut(AnnContainer[int, dict[str, Ann]]):
     neighbor: {prefix: announcement}
     """
 
-    def get_ann(self, neighbor_asn: int, prefix: str) -> Optional[Ann]:
+    def get_ann(self, neighbor_asn: int, prefix: str) -> Ann | None:
         """Returns Ann for a given neighbor asn and prefix"""
 
         return self.data.get(neighbor_asn, dict()).get(prefix)

@@ -45,7 +45,7 @@ def process_incoming_anns(
     # For each prefix, get all anns recieved
     for prefix, ann_list in self._recv_q.items():
         # Get announcement currently in local rib
-        current_ann: Optional["Ann"] = self._local_rib.get(prefix)
+        current_ann: "Ann" | None = self._local_rib.get(prefix)
         og_ann = current_ann
 
         # Seeded Ann will never be overriden, so continue
@@ -87,7 +87,7 @@ def _copy_and_process(
     self: "BGP",
     ann: "Ann",
     recv_relationship: "Relationships",
-    overwrite_default_kwargs: Optional[dict[Any, Any]] = None,
+    overwrite_default_kwargs: dict[Any, Any] | None = None,
 ) -> "Ann":
     """Deep copies ann and modifies attrs
 

@@ -21,7 +21,7 @@ class LineInfo:
     hardcoded_ys: tuple[float, ...] = ()
     hardcoded_yerrs: tuple[float, ...] = ()
     extra_kwargs: frozendict[str, Any] = field(default_factory=lambda: frozendict({}))
-    strongest_attacker_legend_label: Optional[str] = None
+    strongest_attacker_legend_label: str | None = None
 
     def __post_init__(self):
         assert len(self.hardcoded_xs) == len(self.hardcoded_ys)
