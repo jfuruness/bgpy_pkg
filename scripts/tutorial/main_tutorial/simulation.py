@@ -1,12 +1,12 @@
 from multiprocessing import cpu_count
 from pathlib import Path
 
-from subprefix_hijack import SubprefixHijack
 from peer_rov import PeerROV
 from rov import ROV
+from subprefix_hijack import SubprefixHijack
 
 from bgpy.enums import SpecialPercentAdoptions
-from bgpy.simulation_framework import Simulation, ScenarioConfig
+from bgpy.simulation_framework import ScenarioConfig, Simulation
 
 
 def main():

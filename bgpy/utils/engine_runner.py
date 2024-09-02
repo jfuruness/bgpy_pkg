@@ -195,7 +195,7 @@ class EngineRunner:
             for rank in self.conf.as_graph_info.diagram_ranks:
                 hardcoded_rank_asns.extend(rank)
             err = "Hardcoded rank ASNs do not match AS graph ASNs"
-            assert set(list(engine_guess.as_graph.as_dict.keys())) == set(
+            assert set(engine_guess.as_graph.as_dict.keys()) == set(
                 hardcoded_rank_asns
             ), err
         else:

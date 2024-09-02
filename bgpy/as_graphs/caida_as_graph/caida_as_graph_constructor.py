@@ -8,9 +8,9 @@ from bgpy.as_graphs.base import (
     ASGraphCollector,
     ASGraphConstructor,
     ASGraphInfo,
+    PeerLink,
 )
 from bgpy.as_graphs.base import CustomerProviderLink as CPLink
-from bgpy.as_graphs.base import PeerLink
 
 from .caida_as_graph import CAIDAASGraph
 from .caida_as_graph_collector import CAIDAASGraphCollector

@@ -27,10 +27,8 @@ class GraphDataAggregator:
     def __init__(
         self,
         data: Optional[DATA_TYPE] = None,
-        graph_categories: tuple[GraphCategory, ...] = tuple(
-            list(get_all_graph_categories())
-        ),
-    ):
+        graph_categories: tuple[GraphCategory, ...] = tuple(get_all_graph_categories()),
+    ) -> None:
         """Inits data"""
 
         # Data is the key for single data point on a graph

@@ -1,15 +1,15 @@
 import cProfile
 import io
 import pstats
-from pathlib import Path
 import time
+from pathlib import Path
 
-from bgpy.simulation_engine import ROV
 from bgpy.enums import SpecialPercentAdoptions
+from bgpy.simulation_engine import ROV
 from bgpy.simulation_framework import (
+    ScenarioConfig,
     Simulation,
     SubprefixHijack,
-    ScenarioConfig,
 )
 
 

@@ -1,6 +1,6 @@
-from bgpy.simulation_engine import Announcement as Ann
-from bgpy.simulation_engine import BGP
 from bgpy.enums import Relationships
+from bgpy.simulation_engine import BGP
+from bgpy.simulation_engine import Announcement as Ann
 
 
 class PeerROV(BGP):

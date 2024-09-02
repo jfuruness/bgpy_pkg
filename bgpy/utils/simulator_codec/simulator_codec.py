@@ -1,5 +1,6 @@
 # YAML STUFF
-from typing import Any, Iterable
+from collections.abc import Iterable
+from typing import Any
 
 import yaml
 from yamlable import YamlCodec
@@ -35,7 +36,7 @@ class SimulatorCodec(YamlCodec):
     def is_yaml_tag_supported(cls, yaml_tag_suffix: str) -> bool:
         """return True if the given yaml tag suffix is supported"""
 
-        return yaml_tag_suffix in yaml_tags_to_types.keys()
+        return yaml_tag_suffix in yaml_tags_to_types
 
     @classmethod
     def from_yaml_dict(cls, yaml_tag_suffix: str, dct, **kwargs):
@@ -80,7 +81,8 @@ class SimulatorCodec(YamlCodec):
 
     def load(self, path):
         with path.open(mode="r") as f:
-            return yaml.load(f, Loader=SimulatorLoader)
+            # This isn't insecure, ignore S506
+            return yaml.load(f, Loader=SimulatorLoader)  # noqa: S506
 
 
 SimulatorCodec.register_with_pyyaml()

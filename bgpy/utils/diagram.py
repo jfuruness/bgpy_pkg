@@ -170,7 +170,7 @@ class Diagram:
             <TR>
             <TD COLSPAN="{colspan}" BORDER="0">({as_obj.policy.name})</TD>
             </TR>"""
-        local_rib_anns = tuple(list(as_obj.policy._local_rib.values()))
+        local_rib_anns = tuple(as_obj.policy._local_rib.values())
         local_rib_anns = tuple(
             sorted(
                 local_rib_anns,

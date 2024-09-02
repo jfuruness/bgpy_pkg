@@ -1,10 +1,8 @@
-from typing import Optional, TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 
-from bgpy.simulation_framework.scenarios.scenario import Scenario
+from bgpy.enums import Prefixes, Timestamps
 from bgpy.simulation_framework.scenarios.roa_info import ROAInfo
-from bgpy.enums import Prefixes
-from bgpy.enums import Timestamps
-
+from bgpy.simulation_framework.scenarios.scenario import Scenario
 
 if TYPE_CHECKING:
     from bgpy.simulation_engine import Announcement as Ann

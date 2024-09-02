@@ -16,13 +16,12 @@ from pathlib import Path
 from frozendict import frozendict
 
 from bgpy.as_graphs import CAIDAASGraphConstructor
-from bgpy.enums import ASGroups
+from bgpy.enums import ASGroups, SpecialPercentAdoptions
 from bgpy.simulation_engine import ROV
-from bgpy.enums import SpecialPercentAdoptions
 from bgpy.simulation_framework import (
+    ScenarioConfig,
     Simulation,
     SubprefixHijack,
-    ScenarioConfig,
 )
 
 

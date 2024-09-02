@@ -5,9 +5,8 @@ from frozendict import frozendict
 from roa_checker import ROA
 
 from bgpy.enums import ASGroups
-from bgpy.simulation_engine import BGP
+from bgpy.simulation_engine import BGP, Policy
 from bgpy.simulation_engine import Announcement as Ann
-from bgpy.simulation_engine import Policy
 
 if TYPE_CHECKING:
     from .scenario import Scenario

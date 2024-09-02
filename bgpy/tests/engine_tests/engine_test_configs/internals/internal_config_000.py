@@ -2,9 +2,8 @@ from copy import deepcopy
 
 from frozendict import frozendict
 
-from bgpy.as_graphs import ASGraphInfo
+from bgpy.as_graphs import ASGraphInfo, PeerLink
 from bgpy.as_graphs import CustomerProviderLink as CPLink
-from bgpy.as_graphs import PeerLink
 from bgpy.enums import Prefixes, SpecialPercentAdoptions
 from bgpy.simulation_engine import BaseSimulationEngine, BGPFull
 from bgpy.simulation_framework import ScenarioConfig, ValidPrefix

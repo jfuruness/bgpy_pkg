@@ -85,9 +85,7 @@ class Simulation:
         data_plane_tracking: bool = True,
         # Control plane trackign for traceback and GraphDataAggregatorCls
         control_plane_tracking: bool = False,
-        graph_categories: tuple[GraphCategory, ...] = tuple(
-            list(get_all_graph_categories())
-        ),
+        graph_categories: tuple[GraphCategory, ...] = tuple(get_all_graph_categories()),
     ) -> None:
         """Downloads relationship data, runs simulation
 

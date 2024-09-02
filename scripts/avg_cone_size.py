@@ -2,7 +2,8 @@ from statistics import mean, median
 
 from frozendict import frozendict
 
-from bgpy.as_graphs import CAIDAASGraphConstructor, AS
+from bgpy.as_graphs import AS, CAIDAASGraphConstructor
+
 
 def main():
     bgp_dag = CAIDAASGraphConstructor(

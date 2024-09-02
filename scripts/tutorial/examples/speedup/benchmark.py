@@ -1,15 +1,14 @@
 from pathlib import Path
 from time import perf_counter
 
-from bgpy.simulation_engine import BGP
+from small_ann import SmallAnn
 
+from bgpy.simulation_engine import BGP
 from bgpy.simulation_framework import (
-    Simulation,
     ScenarioConfig,
+    Simulation,
     ValidPrefix,
 )
-
-from small_ann import SmallAnn
 
 
 def main():
