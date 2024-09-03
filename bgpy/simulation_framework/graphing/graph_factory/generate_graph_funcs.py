@@ -93,7 +93,7 @@ def _get_agg_data(self, max_attacker_data_dict):
 
     # Get all strongest attacker lines. No data point markers, but the
     # line itself that will be plotted
-    agg_xs = list(max_attacker_data_dict.values())[0].xs
+    agg_xs = next(iter(max_attacker_data_dict.values())).xs
     strongest_agg_dict: dict[str, dict[str, list[float]]] = {  # type: ignore
         label: {"agg_xs": agg_xs, "agg_ys": [], "agg_yerrs": [0 for _ in agg_xs]}
         for label in self.strongest_attacker_dict
@@ -158,9 +158,7 @@ def _get_scatter_line_data_dict(self, scatter_plots, max_attacker_dict):
                 color="grey",
                 extra_kwargs={
                     **dict(
-                        **{
-                            "lw": 0,
-                        },
+                        lw=0,
                         **old_line_data.line_info.extra_kwargs,
                     ),
                     # Marker face color

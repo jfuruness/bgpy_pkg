@@ -5,14 +5,15 @@ from dataclasses import replace
 from functools import cached_property
 from ipaddress import IPv4Network, IPv6Network, ip_network
 from typing import TYPE_CHECKING, Any, Optional
+from warnings import warn
 
 from roa_checker import ROA
 
 from bgpy.shared.enums import SpecialPercentAdoptions
 from bgpy.simulation_engine import Announcement as Ann
 from bgpy.simulation_engine import BaseSimulationEngine, Policy
-
 from bgpy.simulation_framework.scenarios.scenario_config import ScenarioConfig
+
 from .roa_helper_funcs import (
     _add_roa_info_to_anns,
     _get_roa_checker,
@@ -292,8 +293,10 @@ class Scenario(ABC):
             try:
                 # https://stackoverflow.com/a/15837796/8903959
                 adopting_asns.extend(random.sample(tuple(possible_adopters), k))
-            except ValueError:
-                raise ValueError(f"{k} can't be sampled from {len(possible_adopters)}")
+            except ValueError as e:
+                raise ValueError(
+                    f"{k} can't be sampled from {len(possible_adopters)}"
+                ) from e
         return frozenset(adopting_asns)
 
     @cached_property
@@ -317,13 +320,27 @@ class Scenario(ABC):
         return self._default_adopters | self._default_non_adopters | hardcoded_asns
 
     @property
-    def _untracked_asns(self) -> frozenset[int]:
+    def untracked_asns(self) -> frozenset[int]:
         """Returns ASNs that shouldn't be tracked by the metric tracker
 
         By default just the default adopters and non adopters
         """
 
         return self._default_adopters | self._default_non_adopters
+
+    @property
+    def _untracked_asns(self) -> frozenset[int]:
+        """Returns ASNs that shouldn't be tracked by the metric tracker
+
+        By default just the default adopters and non adopters
+        """
+
+        warn(
+            "Instead of ._untracked_asns, please use .untracked_asns",
+            DeprecationWarning,
+            stacklevel=2
+        )
+        return self.untracked_asns
 
     #############################
     # Engine Manipulation Funcs #

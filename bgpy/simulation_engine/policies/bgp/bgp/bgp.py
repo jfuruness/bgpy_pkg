@@ -1,6 +1,5 @@
 from typing import TYPE_CHECKING, Any, Optional
 from warnings import warn
-from weakref import CallableProxyType
 
 from bgpy.simulation_engine.ann_containers import LocalRIB, RecvQueue
 from bgpy.simulation_engine.policies.policy import Policy
@@ -35,6 +34,8 @@ from .propagate_funcs import (
 )
 
 if TYPE_CHECKING:
+    from weakref import CallableProxyType
+
     from bgpy.as_graphs import AS
 
 

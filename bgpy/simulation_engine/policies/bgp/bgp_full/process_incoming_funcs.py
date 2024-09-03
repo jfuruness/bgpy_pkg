@@ -1,9 +1,8 @@
 from typing import TYPE_CHECKING, Optional
 
-
 if TYPE_CHECKING:
-    from bgpy.simulation_engine.ann_containers import AnnInfo, SendInfo
     from bgpy.shared.enums import Relationships
+    from bgpy.simulation_engine.ann_containers import AnnInfo, SendInfo
     from bgpy.simulation_engine.announcement import Announcement as Ann
     from bgpy.simulation_framework import Scenario
 

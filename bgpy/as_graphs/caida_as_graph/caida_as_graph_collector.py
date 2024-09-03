@@ -9,7 +9,7 @@ import requests
 from bs4 import BeautifulSoup as Soup
 
 from bgpy.as_graphs.base import ASGraphCollector
-from bgpy.shared.exceptions import NoCAIDAURLException
+from bgpy.shared.exceptions import NoCAIDAURLError
 
 
 class CAIDAASGraphCollector(ASGraphCollector):
@@ -66,7 +66,7 @@ class CAIDAASGraphCollector(ASGraphCollector):
         if len(urls) > 0:
             return str(urls[0])
         else:  # pragma: no cover
-            raise NoCAIDAURLException("No Urls")
+            raise NoCAIDAURLError("No Urls")
 
     def _get_hrefs(self, url: str) -> list[str]:
         """Returns hrefs from a tags at a given url"""

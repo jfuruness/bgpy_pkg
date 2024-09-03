@@ -58,14 +58,13 @@ class ASPA(ROV):
         # Upstream check
         if len(ann.as_path) == 1:
             return super()._valid_ann(ann, from_rel)
-        else:
-            # For every adopting ASPA AS in the path,
-            # The next ASN in the path must be in their providers list
-            # Since this is checking from customers
+        # For every adopting ASPA AS in the path,
+        # The next ASN in the path must be in their providers list
+        # Since this is checking from customers
 
-            # 4. If max_up_ramp < N, the procedure halts with the outcome "Invalid".
-            if self._get_max_up_ramp_length(ann) < len(ann.as_path):
-                return False
+        # 4. If max_up_ramp < N, the procedure halts with the outcome "Invalid".
+        elif self._get_max_up_ramp_length(ann) < len(ann.as_path):
+            return False
 
         # ASPA valid or unknown
         return super()._valid_ann(ann, from_rel)

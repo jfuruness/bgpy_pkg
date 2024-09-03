@@ -130,7 +130,7 @@ class GraphDataAggregator:
         data_plane_outcomes = outcomes[Plane.DATA.value]
 
         # Don't count these!
-        uncountable_asns = scenario._untracked_asns
+        uncountable_asns = scenario.untracked_asns
 
         for as_obj in engine.as_graph:
             # Don't count preset ASNs

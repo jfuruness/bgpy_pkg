@@ -1,8 +1,8 @@
 from datetime import date
 from getpass import getuser
 from pathlib import Path
-from platformdirs import PlatformDirs
 
+from platformdirs import PlatformDirs
 
 DIRS: PlatformDirs = PlatformDirs("bgpy", getuser())
 

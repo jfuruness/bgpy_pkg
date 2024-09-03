@@ -95,8 +95,8 @@ class AS(YamlAble):
             return "{" + ",".join(str(asn) for asn in sorted(asns)) + "}"
 
         def _format(x: Any) -> str:
-            if (isinstance(x, list) or isinstance(x, tuple)) and all(
-                [isinstance(y, AS) for y in x]
+            if (isinstance(x, (list, tuple))) and all(
+                isinstance(y, AS) for y in x
             ):
                 assert not isinstance(x, list), "these should all be tuples"
                 return asns(x)  # type: ignore

@@ -84,7 +84,7 @@ def _make_relationships_tuples(self):
     setup_rel_attrs = ("peers_setup_set", "providers_setup_set", "customers_setup_set")
 
     for as_obj in self:
-        for rel_attr, setup_rel_attr in zip(rel_attrs, setup_rel_attrs):
+        for rel_attr, setup_rel_attr in zip(rel_attrs, setup_rel_attrs, strict=False):
             # Conver the setup attribute to tuple
             # Must be sorted or else yaml dumps differently
             sorted_ases = sorted(getattr(as_obj, setup_rel_attr), key=lambda x: x.asn)

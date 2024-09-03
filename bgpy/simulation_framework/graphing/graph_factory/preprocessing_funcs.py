@@ -3,12 +3,14 @@ from dataclasses import replace
 from statistics import mean
 from typing import TYPE_CHECKING
 
-import matplotlib
+import matplotlib as mpl
 import matplotlib.pyplot as plt
 
 from bgpy.simulation_framework.graphing.line_data import LineData
 from bgpy.simulation_framework.graphing.line_info import LineInfo
-from bgpy.simulation_framework.graphing.line_properties_generator import LinePropertiesGenerator
+from bgpy.simulation_framework.graphing.line_properties_generator import (
+    LinePropertiesGenerator,
+)
 
 if TYPE_CHECKING:
     from bgpy.simulation_framework.graph_data_aggregator import (
@@ -29,7 +31,7 @@ def _preprocessing_steps(
     for data_point_key, data in data_dict.items():
         label_rows_dict[data_point_key.scenario_config.scenario_label].append(data)
 
-    matplotlib.use("Agg")
+    mpl.use("Agg")
     fig, ax = plt.subplots()
 
     self._customize_graph(fig, ax, graph_category)

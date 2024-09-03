@@ -1,10 +1,10 @@
-from datetime import date
 import gc
 import os
 import random
 import shutil
 import time
 from copy import deepcopy
+from datetime import date
 from multiprocessing import Pool, cpu_count
 from pathlib import Path
 from tempfile import TemporaryDirectory
@@ -17,10 +17,7 @@ from tqdm import tqdm
 
 from bgpy.as_graphs.base import ASGraph, ASGraphConstructor
 from bgpy.as_graphs.caida_as_graph import CAIDAASGraphConstructor
-from bgpy.shared.constants import (
-    DIRS,
-    SINGLE_DAY_CACHE_DIR
-)
+from bgpy.shared.constants import DIRS, SINGLE_DAY_CACHE_DIR
 from bgpy.shared.enums import SpecialPercentAdoptions
 from bgpy.simulation_engine import (
     BGP,
@@ -47,15 +44,13 @@ class Simulation:
             0.5,
             0.8,
         ),
-        scenario_configs: tuple[ScenarioConfig, ...] = tuple(
-            [
+        scenario_configs: tuple[ScenarioConfig, ...] = (
                 ScenarioConfig(
                     ScenarioCls=SubprefixHijack,
                     AdoptPolicyCls=ROV,
                     BasePolicyCls=BGP,
                 )
-            ]
-        ),
+            ,),
         num_trials: int = 2,
         output_dir: Path = Path(DIRS.user_desktop_dir) / "bgp_sims" / str(date.today()),
         parse_cpus: int = max(cpu_count() - 1, 1),
@@ -163,7 +158,7 @@ class Simulation:
             if isinstance(scenario_config.AdoptPolicyCls, BGPFull) and not isinstance(
                 scenario_config.BasePolicyCls, BGPFull
             ):
-                raise ValueError(
+                raise TypeError(
                     "You have an AdoptPolicyCls inheriting from BGPFull "
                     "but your BasePolicyCls is not. You may want to pass in "
                     "BasePolicyCls=BGPFull to your scenario_config"

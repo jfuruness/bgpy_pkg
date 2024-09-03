@@ -199,9 +199,9 @@ class EngineTester(EngineRunner):
 
         # Compare metrics YAML
         with self.graph_data_guess_path_pickle.open("rb") as f:
-            graph_data_guess = pickle.load(f)
+            graph_data_guess = pickle.load(f)  # noqa: S301
         with self.graph_data_ground_truth_path_pickle.open("rb") as f:
-            graph_data_gt = pickle.load(f)
+            graph_data_gt = pickle.load(f)  # noqa: S301
 
         for graph_category, data_point_dict in graph_data_guess.items():
             for data_point_key, agg_trial_data in data_point_dict.items():

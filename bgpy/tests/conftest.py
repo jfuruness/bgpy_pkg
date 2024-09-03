@@ -36,14 +36,14 @@ def pytest_sessionfinish(session, exitstatus):
                 # https://stackoverflow.com/q/19453338/8903959
                 agg_path = DiagramAggregator(DIAGRAM_PATH).aggregated_diagrams_path
                 command = "open" if sys.platform == "darwin" else "xdg-open"
-                subprocess.call([command, str(agg_path)])
+                subprocess.call([command, str(agg_path)])  # noqa: S603
         # If the diagram aggregator errors out due to a test failure,
         # the actual test failure is suppressed for some reason and only the diagram
         # aggregator error is raised (likely due to some pytest internals)
         # I've never encountered a legitimate error with the PDF generation, and if
         # the PDF generation fails, but the tests pass, I think it's okay to pass
         # If there's a better workaround for this, I don't know it.
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             print(f"Diagram aggregator failed, typically caused by a test failure {e}")
 
 

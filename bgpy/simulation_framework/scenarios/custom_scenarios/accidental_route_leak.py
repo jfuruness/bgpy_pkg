@@ -2,11 +2,15 @@ import warnings
 from typing import TYPE_CHECKING, Optional
 
 from bgpy.as_graphs.base.as_graph.customer_cone_funcs import _get_cone_size_helper
-from bgpy.shared.enums import ASGroups, Relationships, SpecialPercentAdoptions, Timestamps
-
-
+from bgpy.shared.enums import (
+    ASGroups,
+    Relationships,
+    SpecialPercentAdoptions,
+    Timestamps,
+)
 from bgpy.simulation_framework.scenarios.scenario import Scenario
 from bgpy.simulation_framework.scenarios.scenario_config import ScenarioConfig
+
 from .victims_prefix import VictimsPrefix
 
 if TYPE_CHECKING:

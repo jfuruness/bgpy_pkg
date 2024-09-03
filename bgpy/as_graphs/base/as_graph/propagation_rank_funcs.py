@@ -27,7 +27,7 @@ def _get_propagation_ranks(self) -> tuple[tuple[AS, ...], ...]:
     max_rank: int = max(x.propagation_rank for x in self)
     # Create a list of empty lists
     # Ignore types here for speed purposes
-    ranks: list[list[AS]] = list(list() for _ in range(max_rank + 1))
+    ranks: list[list[AS]] = [list() for _ in range(max_rank + 1)]
     # Append the ASes into their proper rank
     for as_obj in self:
         ranks[as_obj.propagation_rank].append(as_obj)

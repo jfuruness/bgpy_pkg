@@ -5,9 +5,9 @@ from frozendict import frozendict
 from yamlable import YamlAble, yaml_info, yaml_info_decorate
 
 import bgpy
+from bgpy.as_graphs.base.as_graph_info import ASGraphInfo
 from bgpy.shared.enums import ASGroups, Relationships
 
-from bgpy.as_graphs.base.as_graph_info import ASGraphInfo
 from .base_as import AS
 from .cone_funcs import (
     _get_and_store_customer_cone_and_set_size,
@@ -270,7 +270,7 @@ class ASGraph(YamlAble):
         """Optional method called when yaml.dump is called"""
 
         return {
-            "as_dict": {asn: as_obj for asn, as_obj in self.as_dict.items()},
+            "as_dict": dict(self.as_dict.items()),
             "ixp_asns": list(self.ixp_asns),
         }
 

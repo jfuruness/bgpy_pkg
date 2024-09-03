@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING
 
-from bgpy.shared.exceptions import GaoRexfordException
+from bgpy.shared.exceptions import GaoRexfordError
 from bgpy.simulation_engine.announcement import Announcement as Ann
 
 if TYPE_CHECKING:
@@ -39,7 +39,7 @@ def _get_best_ann_by_gao_rexford(
                 return self._get_best_ann_by_lowest_neighbor_asn_tiebreaker(
                     current_ann, new_ann
                 )
-        raise GaoRexfordException("No ann was chosen")
+        raise GaoRexfordError("No ann was chosen")
 
 
 def _get_best_ann_by_local_pref(

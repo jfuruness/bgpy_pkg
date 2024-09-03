@@ -1,12 +1,13 @@
 import pickle
 from functools import cached_property
 from pathlib import Path
+from typing import TYPE_CHECKING
 
 from frozendict import frozendict
 from tqdm import tqdm
 
-
 from bgpy.simulation_framework.graphing.line_info import LineInfo
+
 from .add_legends_and_save_funcs import (
     _add_legend,
     _add_legends_and_save,
@@ -39,7 +40,6 @@ from .preprocessing_funcs import (
     _get_ys,
     _preprocessing_steps,
 )
-from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from bgpy.simulation_framework.graph_data_aggregator.graph_data_aggregator import (
@@ -66,7 +66,7 @@ class GraphFactory:
         self.pickle_path: Path = pickle_path
         with self.pickle_path.open("rb") as f:
             self.graph_data: PICKLE_DATA_TYPE = (
-                self._get_last_propagation_round_graph_data(pickle.load(f))
+                self._get_last_propagation_round_graph_data(pickle.load(f))  # noqa: S301
             )
         self.graph_dir: Path = graph_dir
         self.graph_dir.mkdir(parents=True, exist_ok=True)

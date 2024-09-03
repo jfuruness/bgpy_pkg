@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING, Any, Optional
 
-from bgpy.shared.exceptions import GaoRexfordException
+from bgpy.shared.exceptions import GaoRexfordError
 from bgpy.simulation_engine.policies.rov import ROV
 
 if TYPE_CHECKING:
@@ -127,4 +127,4 @@ class BGPSec(ROV):
                         return self._get_best_ann_by_lowest_neighbor_asn_tiebreaker(
                             current_ann, new_ann
                         )
-            raise GaoRexfordException("No ann was chosen")
+            raise GaoRexfordError("No ann was chosen")

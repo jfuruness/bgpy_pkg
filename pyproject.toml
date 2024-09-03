@@ -234,6 +234,10 @@ ignore = [
     # which is wrong. If something is deprecated, it'll raise a DeprecationWarning
     # Since this only had false positives for me, omitting it
     "UP035",
+    # Wants to turn isinstance(a, (x, y)) into isinstance(a, x | y)
+    # imo the first version is totally fine and most code will be formatted that way
+    # And the pep doesn't even advocate for switching lol
+    "UP038",
     # Ensures that you don't have pass in blank funcs that have a docstring
     # imo blank funcs are more readable with a pass than without a pass
     # because without a pass, maybe the developer just didn't finish the func
@@ -245,6 +249,13 @@ ignore = [
     # an abstract decorator. However - this just raises false positives on hook
     # methods
     "B027",
+    # Use `contextlib.suppress(ValueError)` instead of `try`-`except`-`pass`"
+    # imo - most programmers don't know this, and would prefer to read it the other way
+    "SIM105",
+    # Combines if statements in such a way that makes them unreadable imo
+    "SIM103",
+    # Combines multiple with statements. Imo makes it less readable
+    "SIM117",
 ]
 unfixable = []
 [tool.ruff.lint.per-file-ignores]
@@ -260,7 +271,7 @@ known-first-party = ["bgpy"]
 [tool.ruff.lint.flake8-bugbear]
 # Allow default arguments like, e.g., `data: frozendict[str, str] = frozendict()
 # Otherwise this tool complains that it's a mutable return
-extend-immutable-calls = ["frozendict.frozendict"]
+extend-immutable-calls = ["frozendict.frozendict", "datetime.date.today"]
 
 [tool.ruff.lint.flake8-pytest-style]
 # Says that using pytest.mark.marker_name shouldn't have parens

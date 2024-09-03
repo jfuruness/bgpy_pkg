@@ -1,6 +1,7 @@
 
-from .ann_container import AnnContainer
 from typing import TYPE_CHECKING
+
+from .ann_container import AnnContainer
 
 if TYPE_CHECKING:
     from bgpy.simulation_engine import Announcement as Ann
