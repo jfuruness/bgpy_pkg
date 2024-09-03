@@ -15,12 +15,10 @@ def propagate_to_providers(self) -> None:
     Propogate ann's that have a recv_rel of origin or customer to providers
     """
 
-    send_rels: set[Relationships] = set(
-        [
+    send_rels: set[Relationships] = {
             Relationships.ORIGIN,
             Relationships.CUSTOMERS,
-        ]
-    )
+        }
     self._propagate(Relationships.PROVIDERS, send_rels)
 
 
@@ -28,14 +26,12 @@ def propagate_to_customers(self) -> None:
     """Propogates to customers"""
 
     # Anns that have any of these as recv_rel get propogated
-    send_rels: set[Relationships] = set(
-        [
+    send_rels: set[Relationships] = {
             Relationships.ORIGIN,
             Relationships.CUSTOMERS,
             Relationships.PEERS,
             Relationships.PROVIDERS,
-        ]
-    )
+        }
     self._propagate(Relationships.CUSTOMERS, send_rels)
 
 
@@ -43,12 +39,10 @@ def propagate_to_peers(self) -> None:
     """Propogates to peers"""
 
     # Anns that have any of these as recv_rel get propogated
-    send_rels: set[Relationships] = set(
-        [
+    send_rels: set[Relationships] = {
             Relationships.ORIGIN,
             Relationships.CUSTOMERS,
-        ]
-    )
+        }
     self._propagate(Relationships.PEERS, send_rels)
 
 
@@ -71,7 +65,7 @@ def _propagate(
     else:
         raise NotImplementedError
 
-    for prefix, unprocessed_ann in self.local_rib.items():
+    for _prefix, unprocessed_ann in self.local_rib.items():
         # Starting in v4 we must set the next_hop when sending
         # Copying announcements is a bottleneck for sims,
         # so we try to do this as little as possible

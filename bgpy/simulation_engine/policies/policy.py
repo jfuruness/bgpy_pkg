@@ -1,5 +1,5 @@
 from abc import ABCMeta, abstractmethod
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, ClassVar
 
 from yamlable import YamlAble, yaml_info_decorate
 
@@ -11,8 +11,8 @@ if TYPE_CHECKING:
 
 class Policy(YamlAble, metaclass=ABCMeta):
     name: str = "AbstractPolicy"
-    subclass_to_name_dict: dict[type["Policy"], str] = {}
-    name_to_subclass_dict: dict[str, type["Policy"]] = {}
+    subclass_to_name_dict: ClassVar[dict[type["Policy"], str]] = dict()
+    name_to_subclass_dict: ClassVar[dict[str, type["Policy"]]] = dict()
 
     def __init_subclass__(cls, *args, **kwargs):
         """This method essentially creates a list of all subclasses

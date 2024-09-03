@@ -422,7 +422,7 @@ class Scenario(ABC):
         thus the type ignores
         """
 
-        prefixes = set([])
+        prefixes = set()
         for ann in self.announcements:
             prefixes.add(ann.prefix)
         # Add ROA prefixes here, so that if we blackhole a non routed

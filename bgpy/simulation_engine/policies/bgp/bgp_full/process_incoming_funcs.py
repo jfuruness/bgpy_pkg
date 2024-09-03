@@ -254,7 +254,8 @@ def _withdraw_ann_from_neighbors(self: "BGPFull", withdraw_ann: "Ann"):
 def _select_best_ribs_in(self: "BGPFull", prefix: str) -> Optional["Ann"]:
     """Selects best ann from ribs in
 
-    Remember, ribs in anns are NOT deep copied"""
+    Remember, ribs in anns are NOT deep copied
+    """
 
     # Get the best announcement
     best_unprocessed_ann: Ann | None = None

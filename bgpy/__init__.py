@@ -13,6 +13,7 @@ from . import (  # isort: skip
 )
 
 __all__ = [
+    "shared",
     "as_graphs",
     "enums",
     "simulation_engine",

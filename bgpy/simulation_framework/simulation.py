@@ -154,7 +154,8 @@ class Simulation:
     def _validate_scenario_configs(self) -> None:
         """Validates ScenarioConfigs
 
-        prevents duplicate scenario labels and ensures no mixups using BGPFull"""
+        prevents duplicate scenario labels and ensures no mixups using BGPFull
+        """
 
         scenario_labels = list()
         for scenario_config in self.scenario_configs:

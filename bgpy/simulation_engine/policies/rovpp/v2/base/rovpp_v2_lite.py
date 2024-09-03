@@ -43,7 +43,8 @@ class ROVPPV2Lite(ROVPPV1Lite):
         self, ann: "Ann", propagate_to: Relationships
     ) -> bool:
         """You can send blackhole to customers if from peer/provider
-        and either subprefix or non routed"""
+        and either subprefix or non routed
+        """
         return (
             # From peer/provider
             ann.recv_relationship

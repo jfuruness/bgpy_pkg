@@ -1,6 +1,6 @@
 import pprint
 from collections import UserDict
-from typing import Any, Generic, TypeVar
+from typing import Any, ClassVar, Generic, TypeVar
 
 KeyType = TypeVar("KeyType")
 ValueType = TypeVar("ValueType")
@@ -18,7 +18,7 @@ class AnnContainer(UserDict[KeyType, ValueType], Generic[KeyType, ValueType]):
     https://github.com/python/cpython/blob/main/Lib/collections/__init__.py#L1117
     """
 
-    subclasses: set["AnnContainer[Any, Any]"] = set()
+    subclasses: ClassVar[set["AnnContainer[Any, Any]"]] = set()
 
     def __init_subclass__(cls, *args, **kwargs):
         """This method essentially creates a list of all subclasses

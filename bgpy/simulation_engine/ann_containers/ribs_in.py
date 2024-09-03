@@ -48,7 +48,8 @@ class RIBsIn(AnnContainer[int, dict[str, AnnInfo]]):
     ):
         """Adds an unprocessed ann to ribs in
 
-        We don't use default dict here because it's not yamlable"""
+        We don't use default dict here because it's not yamlable
+        """
 
         # Shorten the var name
         ann = unprocessed_ann

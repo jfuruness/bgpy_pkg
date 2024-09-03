@@ -102,7 +102,7 @@ class AccidentalRouteLeak(VictimsPrefix):
             for attacker_asn in self.attacker_asns:
                 if not engine.as_graph.as_dict[attacker_asn].policy.local_rib:
                     print("Attacker did not recieve announcement, can't leak. ")
-                for prefix, ann in engine.as_graph.as_dict[
+                for _prefix, ann in engine.as_graph.as_dict[
                     attacker_asn
                 ].policy.local_rib.items():
                     announcements.append(

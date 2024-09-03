@@ -241,6 +241,10 @@ ignore = [
     # that this func is meant to be blank
     # Just my opinion though.
     "PIE790",
+    # Ensures that you don't have empty methods in an abstract class without
+    # an abstract decorator. However - this just raises false positives on hook
+    # methods
+    "B027",
 ]
 unfixable = []
 [tool.ruff.lint.per-file-ignores]

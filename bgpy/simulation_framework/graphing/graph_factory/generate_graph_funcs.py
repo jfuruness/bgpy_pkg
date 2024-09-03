@@ -163,19 +163,17 @@ def _get_scatter_line_data_dict(self, scatter_plots, max_attacker_dict):
                         },
                         **old_line_data.line_info.extra_kwargs,
                     ),
-                    **{
-                        # Marker face color
-                        # Since lines are colored, make color grey
-                        "mfc": "gray",  # old_line_data.line_info.color,
-                        # Marker edge color
-                        "mec": "gray",  # old_line_data.line_info.color,
-                        # Marker size
-                        "ms": 20,
-                        "markeredgewidth": 3,
-                        # Old line color
-                        "ecolor": "gray",  # old_line_data.line_info.color,
-                        "zorder": 3,
-                    },
+                    # Marker face color
+                    # Since lines are colored, make color grey
+                    "mfc": "gray",  # old_line_data.line_info.color,
+                    # Marker edge color
+                    "mec": "gray",  # old_line_data.line_info.color,
+                    # Marker size
+                    "ms": 20,
+                    "markeredgewidth": 3,
+                    # Old line color
+                    "ecolor": "gray",  # old_line_data.line_info.color,
+                    "zorder": 3,
                 },
             ),
             xs=point_dict["xs"],

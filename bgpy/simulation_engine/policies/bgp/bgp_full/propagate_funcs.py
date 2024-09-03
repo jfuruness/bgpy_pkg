@@ -46,7 +46,7 @@ def _send_anns(self, propagate_to: "Relationships"):
 
     neighbors: list[AS] = getattr(self.as_, propagate_to.name.lower())
 
-    for neighbor, prefix, ann in self.send_q.info(neighbors):
+    for neighbor, _prefix, ann in self.send_q.info(neighbors):
         neighbor.policy.receive_ann(ann)
         # Update Ribs out if it's not a withdraw
         if not ann.withdraw:
