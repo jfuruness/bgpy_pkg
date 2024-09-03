@@ -58,7 +58,7 @@ class BGP(Policy):
         self.local_rib = local_rib if local_rib else LocalRIB()
         self.recv_q = recv_q if recv_q else RecvQueue()
         # This gets set within the AS class so it's fine
-        self.as_: CallableProxyType["AS"] = as_  # type: ignore
+        self.as_: CallableProxyType[AS] = as_  # type: ignore
 
     @property
     def _local_rib(self) -> LocalRIB:

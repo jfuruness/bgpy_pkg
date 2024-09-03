@@ -25,7 +25,7 @@ def _preprocessing_steps(
 ):
     graph_name = self._get_graph_name(graph_category)
 
-    label_rows_dict: defaultdict[str, list["DataPointAggData"]] = defaultdict(list)
+    label_rows_dict: defaultdict[str, list[DataPointAggData]] = defaultdict(list)
     for data_point_key, data in data_dict.items():
         label_rows_dict[data_point_key.scenario_config.scenario_label].append(data)
 
@@ -109,7 +109,7 @@ def _get_line_data(
 ) -> LineData:
     """Gets the complete line data for a specific line"""
 
-    formatted_graph_rows: list["DataPointAggData"] = sorted(
+    formatted_graph_rows: list[DataPointAggData] = sorted(
         graph_rows, key=self._get_percent_adopt
     )
 

@@ -190,14 +190,14 @@ class ASGraph(YamlAble):
     ) -> None:
         """Sets the AS Groups"""
 
-        as_group_filters: dict[str, Callable[["ASGraph"], frozenset[AS]]] = dict(
+        as_group_filters: dict[str, Callable[[ASGraph], frozenset[AS]]] = dict(
             self._default_as_group_filters
         )
 
         if additional_as_group_filters:
             as_group_filters.update(additional_as_group_filters)
 
-        self.as_group_filters: frozendict[str, Callable[["ASGraph"], frozenset[AS]]] = (
+        self.as_group_filters: frozendict[str, Callable[[ASGraph], frozenset[AS]]] = (
             frozendict(as_group_filters)
         )
 

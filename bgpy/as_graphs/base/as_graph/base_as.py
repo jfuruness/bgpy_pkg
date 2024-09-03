@@ -42,9 +42,9 @@ class AS(YamlAble):
         self.provider_asns: frozenset[int] = provider_asns
         self.customer_asns: frozenset[int] = customer_asns
 
-        self.peers: tuple["AS", ...] = peers
-        self.providers: tuple["AS", ...] = providers
-        self.customers: tuple["AS", ...] = customers
+        self.peers: tuple[AS, ...] = peers
+        self.providers: tuple[AS, ...] = providers
+        self.customers: tuple[AS, ...] = customers
 
         # Read Caida's paper to understand these
         self.input_clique: bool = input_clique
@@ -66,7 +66,7 @@ class AS(YamlAble):
 
         # # This is useful for some policies to have knowledge of the graph
         if as_graph is not None:
-            self.as_graph: CallableProxyType["ASGraph"] = proxy(as_graph)
+            self.as_graph: CallableProxyType[ASGraph] = proxy(as_graph)
         else:
             # Ignoring this because it gets set properly immediatly
             self.as_graph = None  # type: ignore

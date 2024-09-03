@@ -23,10 +23,10 @@ class ASGraphConstructor(ABC):
     ) -> None:
         """Stores download time and cache_dir instance vars and creates dir"""
 
-        self.as_graph_collector: "ASGraphCollector" = ASGraphCollectorCls(
+        self.as_graph_collector: ASGraphCollector = ASGraphCollectorCls(
             **as_graph_collector_kwargs
         )
-        self.ASGraphCls: type["ASGraph"] = ASGraphCls
+        self.ASGraphCls: type[ASGraph] = ASGraphCls
         self.as_graph_kwargs = as_graph_kwargs
         self.tsv_path: Path | None = tsv_path
         self.stubs: bool = stubs

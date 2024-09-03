@@ -205,7 +205,7 @@ class ShortestPathPrefixHijack(VictimsPrefix):
         visited = dict()
 
         # First, use BFS on provider relationships
-        queue: deque[tuple["AS", tuple[int, ...]]] = deque([(root_as, (root_as.asn,))])
+        queue: deque[tuple[AS, tuple[int, ...]]] = deque([(root_as, (root_as.asn,))])
         while queue:
             as_, as_path = queue.popleft()
             if as_.asn not in visited:

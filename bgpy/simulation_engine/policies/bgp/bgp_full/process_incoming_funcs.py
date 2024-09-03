@@ -23,8 +23,8 @@ def process_incoming_anns(
 
     for prefix, anns in self.recv_q.items():
         # Get announcement currently in local rib
-        local_rib_ann: "Ann" | None = self.local_rib.get(prefix)
-        current_ann: "Ann" | None = local_rib_ann
+        local_rib_ann: Ann | None = self.local_rib.get(prefix)
+        current_ann: Ann | None = local_rib_ann
         current_processed: bool = True
 
         # Announcement will never be overriden, so continue
@@ -65,7 +65,7 @@ def process_incoming_anns(
             if ann.withdraw:
                 if self._process_incoming_withdrawal(ann, from_rel):
                     # the above will return true if the local rib is changed
-                    updated_loc_rib_ann: "Ann" | None = self.local_rib.get(prefix)
+                    updated_loc_rib_ann: Ann | None = self.local_rib.get(prefix)
                     if current_processed:
                         current_ann = updated_loc_rib_ann
                     else:
@@ -96,7 +96,7 @@ def process_incoming_anns(
         if local_rib_ann is not None and local_rib_ann is not current_ann:
             # Best ann has already been processed
 
-            withdraw_ann: "Ann" = local_rib_ann.copy(
+            withdraw_ann: Ann = local_rib_ann.copy(
                 overwrite_default_kwargs={"withdraw": True, "seed_asn": None}
             )
 
@@ -199,7 +199,7 @@ def _process_incoming_withdrawal(
     self.ribs_in.remove_entry(neighbor, prefix)
 
     # Remove ann from local rib
-    withdraw_ann: "Ann" = self._copy_and_process(
+    withdraw_ann: Ann = self._copy_and_process(
         ann, recv_relationship, overwrite_default_kwargs={"withdraw": True}
     )
     if withdraw_ann.prefix_path_attributes_eq(self.local_rib.get(prefix)):
@@ -207,7 +207,7 @@ def _process_incoming_withdrawal(
         # Also remove from neighbors
         self._withdraw_ann_from_neighbors(withdraw_ann)
 
-        best_ann: "Ann" | None = self._select_best_ribs_in(prefix)
+        best_ann: Ann | None = self._select_best_ribs_in(prefix)
 
         # Put new ann in local rib
         if best_ann is not None:
@@ -257,8 +257,8 @@ def _select_best_ribs_in(self: "BGPFull", prefix: str) -> Optional["Ann"]:
     Remember, ribs in anns are NOT deep copied"""
 
     # Get the best announcement
-    best_unprocessed_ann: "Ann" | None = None
-    best_recv_relationship: "Relationships" | None = None
+    best_unprocessed_ann: Ann | None = None
+    best_recv_relationship: Relationships | None = None
     for ann_info in self.ribs_in.get_ann_infos(prefix):
         new_unprocessed_ann = ann_info.unprocessed_ann
         new_recv_relationship = ann_info.recv_relationship

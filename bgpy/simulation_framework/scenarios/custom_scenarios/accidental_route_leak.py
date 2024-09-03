@@ -96,7 +96,7 @@ class AccidentalRouteLeak(VictimsPrefix):
         """
 
         if propagation_round == 0:
-            announcements: list["Ann"] = list(self.announcements)  # type: ignore
+            announcements: list[Ann] = list(self.announcements)  # type: ignore
             assert self.attacker_asns, "You must select at least 1 AS to leak"
             for attacker_asn in self.attacker_asns:
                 if not engine.as_graph.as_dict[attacker_asn].policy.local_rib:
