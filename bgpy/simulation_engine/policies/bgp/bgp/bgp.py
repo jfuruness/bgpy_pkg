@@ -66,17 +66,17 @@ class BGP(Policy):
             "Please use .local_rib instead of ._local_rib. "
             "This will be removed in a later version",
             DeprecationWarning,
-            stack_level=2,
+            stacklevel=2,
         )
         return self.local_rib
 
     @property
-    def _recv_q(self) -> LocalRIB:
+    def _recv_q(self) -> RecvQueue:
         warn(
             "Please use .recv_q instead of ._recv_q. "
             "This will be removed in a later version",
             DeprecationWarning,
-            stack_level=2,
+            stacklevel=2,
         )
         return self.recv_q
 

@@ -39,8 +39,8 @@ class BGPFull(BGP):
         warn(
             "Please use .ribs_in instead of ._ribs_in. "
             "This will be removed in a later version",
-            DeprecationWarning,
-            stack_level=2,
+            category=DeprecationWarning,
+            stacklevel=2,
         )
         return self.ribs_in
 
@@ -49,8 +49,8 @@ class BGPFull(BGP):
         warn(
             "Please use .ribs_out instead of ._ribs_out. "
             "This will be removed in a later version",
-            DeprecationWarning,
-            stack_level=2,
+            category=DeprecationWarning,
+            stacklevel=2,
         )
         return self.ribs_out
 
@@ -59,8 +59,8 @@ class BGPFull(BGP):
         warn(
             "Please use .send_q instead of ._send_q. "
             "This will be removed in a later version",
-            DeprecationWarning,
-            stack_level=2,
+            category=DeprecationWarning,
+            stacklevel=2,
         )
         return self.send_q
 
