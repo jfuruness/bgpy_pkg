@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING, Optional
 
-from bgpy.simulation_engine.policies.custom_attackers.first_asn_stripping_prefix_aspa_attacker import (
+from bgpy.simulation_engine.policies.custom_attackers.first_asn_stripping_prefix_aspa_attacker import (  # noqa: E501
     FirstASNStrippingPrefixASPAAttacker,
 )
 from bgpy.simulation_framework.scenarios.custom_scenarios.victims_prefix import (

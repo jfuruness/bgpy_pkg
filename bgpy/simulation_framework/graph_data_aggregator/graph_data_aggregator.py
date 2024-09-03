@@ -184,7 +184,9 @@ class GraphDataAggregator:
                 # data point and we shouldn't store it at all, lest it mess us up later
                 if self._data_is_storable(percent_list, data_point_key, graph_category):
                     row = {
-                        "scenario_cls": data_point_key.scenario_config.ScenarioCls.__name__,
+                        "scenario_cls": (
+                            data_point_key.scenario_config.ScenarioCls.__name__
+                        ),
                         "AdoptingPolicyCls": (
                             data_point_key.scenario_config.AdoptPolicyCls.__name__
                         ),
@@ -201,11 +203,14 @@ class GraphDataAggregator:
                         # for example, if we have 1 adopting AS for stubs_and_multihomed
                         # and that AS is multihomed, and not a stub, then for stubs,
                         # no ASes adopt, and trial_data is empty
-                        # This is the proper way to do it, rather than defaulting trial_data
+                        # This is the proper way to do it,
+                        # rather than defaulting trial_data
                         # to [0], which skews results when aggregating trials
                         "value": mean(percent_list) if percent_list else None,
                         "yerr": self._get_yerr(percent_list),
-                        "scenario_config_label": data_point_key.scenario_config.csv_label,
+                        "scenario_config_label": (
+                            data_point_key.scenario_config.csv_label
+                        ),
                         "scenario_label": data_point_key.scenario_config.scenario_label,
                     }
                     rows.append(row)
