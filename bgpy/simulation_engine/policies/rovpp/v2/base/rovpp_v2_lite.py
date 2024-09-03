@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING
 
-from bgpy.enums import Relationships
+from bgpy.shared.enums import Relationships
 from bgpy.simulation_engine.policies.rovpp.v1.rovpp_v1_lite import ROVPPV1Lite
 
 if TYPE_CHECKING:

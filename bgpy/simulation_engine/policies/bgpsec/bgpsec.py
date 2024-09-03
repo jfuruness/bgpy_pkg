@@ -1,11 +1,11 @@
 from typing import TYPE_CHECKING, Any, Optional
 
-from bgpy.exceptions import GaoRexfordException
+from bgpy.shared.exceptions import GaoRexfordException
 from bgpy.simulation_engine.policies.rov import ROV
 
 if TYPE_CHECKING:
     from bgpy.as_graphs import AS
-    from bgpy.enums import Relationships
+    from bgpy.shared.enums import Relationships
     from bgpy.simulation_engine.announcement import Announcement as Ann
 
 

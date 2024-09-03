@@ -5,7 +5,7 @@ from frozendict import frozendict
 from yamlable import YamlAble, yaml_info, yaml_info_decorate
 
 import bgpy
-from bgpy.enums import ASGroups, Relationships
+from bgpy.shared.enums import ASGroups, Relationships
 
 from bgpy.as_graphs.base.as_graph_info import ASGraphInfo
 from .base_as import AS

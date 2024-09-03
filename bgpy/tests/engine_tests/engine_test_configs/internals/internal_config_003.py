@@ -1,7 +1,7 @@
 from frozendict import frozendict
 
 from bgpy.as_graphs import ASGraphInfo, PeerLink
-from bgpy.enums import ASNs
+from bgpy.shared.enums import ASNs
 from bgpy.simulation_engine import BGP, OnlyToCustomers
 from bgpy.simulation_framework import AccidentalRouteLeak, ScenarioConfig
 from bgpy.tests.engine_tests.utils import EngineTestConfig

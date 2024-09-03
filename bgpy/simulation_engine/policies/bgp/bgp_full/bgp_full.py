@@ -14,7 +14,7 @@ from .process_incoming_funcs import (
 from .propagate_funcs import _prev_sent, _process_outgoing_ann, _propagate, _send_anns
 
 if TYPE_CHECKING:
-    from bgpy.enums import Relationships
+    from bgpy.shared.enums import Relationships
     from bgpy.simulation_engine.announcement import Announcement as Ann
 
 

@@ -4,7 +4,7 @@ from ipaddress import ip_network
 import pytest
 from roa_checker import ROA
 
-from bgpy.enums import ASNs, Prefixes
+from bgpy.shared.enums import ASNs, Prefixes
 from bgpy.simulation_engine import BGP, Announcement, BGPFull
 from bgpy.simulation_framework import (
     NonRoutedPrefixHijack,

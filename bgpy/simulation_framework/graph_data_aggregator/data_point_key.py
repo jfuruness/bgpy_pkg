@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from bgpy.enums import SpecialPercentAdoptions
+from bgpy.shared.enums import SpecialPercentAdoptions
 from bgpy.simulation_framework.scenarios import ScenarioConfig
 
 

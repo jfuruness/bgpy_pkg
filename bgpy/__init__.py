@@ -1,9 +1,12 @@
 # Modifying the order of these causes lots of circular imports, so skip isort
+
+# For backwards compatability
+from .shared import enums
+
 from . import (  # isort: skip
+    shared,
     simulation_engine,
     as_graphs,
-    enums,
-    exceptions,
     simulation_framework,
     tests,
     utils,

@@ -3,7 +3,7 @@ from typing import Any, Optional
 
 from yamlable import YamlAble, yaml_info
 
-from bgpy.enums import Relationships
+from bgpy.shared.enums import Relationships
 
 
 @yaml_info(yaml_tag="Announcement")

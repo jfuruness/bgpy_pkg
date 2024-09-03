@@ -16,7 +16,7 @@ from tqdm import tqdm
 
 from bgpy.as_graphs.base import ASGraph, ASGraphConstructor
 from bgpy.as_graphs.caida_as_graph import CAIDAASGraphConstructor
-from bgpy.enums import SpecialPercentAdoptions
+from bgpy.shared.enums import SpecialPercentAdoptions
 from bgpy.simulation_engine import (
     BGP,
     ROV,

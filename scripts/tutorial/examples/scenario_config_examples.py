@@ -16,7 +16,7 @@ from pathlib import Path
 from frozendict import frozendict
 
 from bgpy.as_graphs import CAIDAASGraphConstructor
-from bgpy.enums import ASGroups, SpecialPercentAdoptions
+from bgpy.shared.enums import ASGroups, SpecialPercentAdoptions
 from bgpy.simulation_engine import ROV
 from bgpy.simulation_framework import (
     ScenarioConfig,

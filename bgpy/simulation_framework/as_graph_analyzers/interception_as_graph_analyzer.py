@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING, Optional
 
 from bgpy.as_graphs import AS
-from bgpy.enums import Outcomes
+from bgpy.shared.enums import Outcomes
 
 from .as_graph_analyzer import ASGraphAnalyzer
 

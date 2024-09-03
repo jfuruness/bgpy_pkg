@@ -1,6 +1,6 @@
 """Functions to determine customer cone size"""
 
-from bgpy.enums import Relationships
+from bgpy.shared.enums import Relationships
 
 from .base_as import AS
 

@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING
 
 from graphviz import Digraph
 
-from bgpy.enums import Outcomes
+from bgpy.shared.enums import Outcomes
 from bgpy.simulation_engine import BGP, BaseSimulationEngine, BGPFull
 from bgpy.simulation_framework import Scenario
 

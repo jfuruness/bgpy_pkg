@@ -4,7 +4,7 @@ from frozendict import frozendict
 
 from bgpy.as_graphs import ASGraphInfo, PeerLink
 from bgpy.as_graphs import CustomerProviderLink as CPLink
-from bgpy.enums import Prefixes, SpecialPercentAdoptions
+from bgpy.shared.enums import Prefixes, SpecialPercentAdoptions
 from bgpy.simulation_engine import BaseSimulationEngine, BGPFull
 from bgpy.simulation_framework import ScenarioConfig, ValidPrefix
 from bgpy.tests.engine_tests.utils import EngineTestConfig

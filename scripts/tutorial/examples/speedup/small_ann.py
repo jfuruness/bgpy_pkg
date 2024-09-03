@@ -1,6 +1,6 @@
 from typing import Any, Optional
 
-from bgpy.enums import Relationships
+from bgpy.shared.enums import Relationships
 
 
 class SmallAnn:

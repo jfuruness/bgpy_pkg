@@ -5,7 +5,7 @@ from typing import Any
 import yaml
 from yamlable import YamlCodec
 
-from bgpy.enums import YamlAbleEnum
+from bgpy.shared.enums import YamlAbleEnum
 from bgpy.simulation_engine.ann_containers.ann_container import AnnContainer
 
 from .simulator_loader import SimulatorLoader

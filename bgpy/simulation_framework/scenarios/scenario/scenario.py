@@ -8,7 +8,7 @@ from typing import TYPE_CHECKING, Any, Optional
 
 from roa_checker import ROA
 
-from bgpy.enums import SpecialPercentAdoptions
+from bgpy.shared.enums import SpecialPercentAdoptions
 from bgpy.simulation_engine import Announcement as Ann
 from bgpy.simulation_engine import BaseSimulationEngine, Policy
 

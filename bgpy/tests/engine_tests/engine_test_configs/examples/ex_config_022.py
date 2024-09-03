@@ -1,6 +1,6 @@
 from frozendict import frozendict
 
-from bgpy.enums import ASNs
+from bgpy.shared.enums import ASNs
 from bgpy.simulation_engine import ASPAFull, BGPFull
 from bgpy.simulation_framework import AccidentalRouteLeak, ScenarioConfig
 from bgpy.tests.engine_tests.utils import EngineTestConfig

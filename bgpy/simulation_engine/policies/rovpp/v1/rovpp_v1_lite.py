@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING, Iterator
 
-from bgpy.enums import Relationships, Timestamps
+from bgpy.shared.enums import Relationships, Timestamps
 from bgpy.simulation_engine.policies.rov import ROV
 
 if TYPE_CHECKING:

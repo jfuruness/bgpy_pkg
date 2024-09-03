@@ -1,4 +1,4 @@
-from bgpy.enums import Relationships
+from bgpy.shared.enums import Relationships
 from bgpy.simulation_engine import BGP
 from bgpy.simulation_engine import Announcement as Ann
 

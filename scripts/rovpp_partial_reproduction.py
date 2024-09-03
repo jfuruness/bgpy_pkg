@@ -4,7 +4,7 @@ from multiprocessing import cpu_count
 from pathlib import Path
 from typing import Iterable
 
-from bgpy.enums import ASGroups, Outcomes, Plane, SpecialPercentAdoptions
+from bgpy.shared.enums import ASGroups, Outcomes, Plane, SpecialPercentAdoptions
 from bgpy.simulation_engine import ROV, ROVPPV1Lite, ROVPPV2Lite
 from bgpy.simulation_framework import (
     NonRoutedPrefixHijack,

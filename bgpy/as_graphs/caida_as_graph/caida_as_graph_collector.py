@@ -9,7 +9,7 @@ import requests
 from bs4 import BeautifulSoup as Soup
 
 from bgpy.as_graphs.base import ASGraphCollector
-from bgpy.exceptions import NoCAIDAURLException
+from bgpy.shared.exceptions import NoCAIDAURLException
 
 
 class CAIDAASGraphCollector(ASGraphCollector):

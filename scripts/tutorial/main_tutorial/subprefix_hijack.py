@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING, Optional
 
-from bgpy.enums import Prefixes, Timestamps
+from bgpy.shared.enums import Prefixes, Timestamps
 from bgpy.simulation_framework.scenarios.roa_info import ROAInfo
 from bgpy.simulation_framework.scenarios.scenario import Scenario
 

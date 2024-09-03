@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING, Any
 from yamlable import YamlAble, yaml_info_decorate
 
 if TYPE_CHECKING:
-    from bgpy.enums import Relationships
+    from bgpy.shared.enums import Relationships
     from bgpy.simulation_engine import Announcement as Ann
     from bgpy.simulation_framework import Scenario
 

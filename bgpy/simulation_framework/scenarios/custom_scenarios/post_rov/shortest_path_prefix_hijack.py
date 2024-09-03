@@ -2,7 +2,7 @@ import warnings
 from collections import deque
 from typing import TYPE_CHECKING, Optional
 
-from bgpy.enums import Prefixes, Timestamps
+from bgpy.shared.enums import Prefixes, Timestamps
 from bgpy.simulation_engine import (
     ASPA,
     BGP,

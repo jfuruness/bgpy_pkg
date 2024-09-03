@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING
 
-from bgpy.enums import Relationships
+from bgpy.shared.enums import Relationships
 
 if TYPE_CHECKING:
     from bgpy.as_graphs import AS

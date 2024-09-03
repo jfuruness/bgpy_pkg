@@ -1,7 +1,7 @@
 from pathlib import Path
 
 from bgpy.as_graphs.base import AS
-from bgpy.enums import Outcomes, Plane, SpecialPercentAdoptions
+from bgpy.shared.enums import Outcomes, Plane, SpecialPercentAdoptions
 from bgpy.simulation_engine import BaseSimulationEngine
 from bgpy.simulation_framework import GraphDataAggregator, Scenario
 

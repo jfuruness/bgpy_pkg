@@ -5,7 +5,7 @@ from peer_rov import PeerROV
 from rov import ROV
 from subprefix_hijack import SubprefixHijack
 
-from bgpy.enums import SpecialPercentAdoptions
+from bgpy.shared.enums import SpecialPercentAdoptions
 from bgpy.simulation_framework import ScenarioConfig, Simulation
 
 

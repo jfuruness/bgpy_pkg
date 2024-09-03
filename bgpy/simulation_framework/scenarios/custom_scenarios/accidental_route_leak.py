@@ -2,7 +2,7 @@ import warnings
 from typing import TYPE_CHECKING, Optional
 
 from bgpy.as_graphs.base.as_graph.customer_cone_funcs import _get_cone_size_helper
-from bgpy.enums import ASGroups, Relationships, SpecialPercentAdoptions, Timestamps
+from bgpy.shared.enums import ASGroups, Relationships, SpecialPercentAdoptions, Timestamps
 
 
 from bgpy.simulation_framework.scenarios.scenario import Scenario
@@ -52,7 +52,7 @@ class AccidentalRouteLeak(VictimsPrefix):
                 "To change the ASGroup to something other than stubs, you can "
                 " set attacker_subcategory_attr=ASGroups.MULTIHOMED.value, "
                 " in the scenario config after importing like "
-                "from bgpy.enums import ASGroups"
+                "from bgpy.shared.enums import ASGroups"
             )
             warnings.warn(msg, RuntimeWarning, stacklevel=2)
 

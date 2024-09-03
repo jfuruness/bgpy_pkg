@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING
 
-from bgpy.exceptions import GaoRexfordException
+from bgpy.shared.exceptions import GaoRexfordException
 from bgpy.simulation_engine.announcement import Announcement as Ann
 
 if TYPE_CHECKING:

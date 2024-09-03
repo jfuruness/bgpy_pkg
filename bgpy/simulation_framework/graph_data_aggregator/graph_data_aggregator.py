@@ -7,7 +7,7 @@ from statistics import mean, stdev
 from typing import Any
 from warnings import warn
 
-from bgpy.enums import Outcomes, Plane, SpecialPercentAdoptions
+from bgpy.shared.enums import Outcomes, Plane, SpecialPercentAdoptions
 from bgpy.simulation_engine import BaseSimulationEngine
 from bgpy.simulation_framework.scenarios import Scenario
 from bgpy.simulation_framework.utils import get_all_graph_categories

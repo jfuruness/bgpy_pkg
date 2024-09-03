@@ -6,7 +6,7 @@ from yamlable import YamlAble, yaml_info
 from .ann_container import AnnContainer
 
 if TYPE_CHECKING:
-    from bgpy.enums import Relationships
+    from bgpy.shared.enums import Relationships
     from bgpy.simulation_engines.py_simulation_engine import Announcement as Ann
 
 

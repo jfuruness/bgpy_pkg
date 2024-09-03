@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING, Any, Optional
 
-from bgpy.enums import Relationships
+from bgpy.shared.enums import Relationships
 
 from .base_simulation_engine import BaseSimulationEngine
 

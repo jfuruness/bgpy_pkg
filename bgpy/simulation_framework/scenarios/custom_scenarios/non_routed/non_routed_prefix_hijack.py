@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING, Optional
 
 from roa_checker import ROA
 
-from bgpy.enums import Prefixes, Timestamps
+from bgpy.shared.enums import Prefixes, Timestamps
 from bgpy.simulation_framework.scenarios.scenario import Scenario
 
 if TYPE_CHECKING:

@@ -2,7 +2,7 @@ from frozendict import frozendict
 
 from bgpy.as_graphs import ASGraphInfo, PeerLink
 from bgpy.as_graphs import CustomerProviderLink as CPLink
-from bgpy.enums import ASNs
+from bgpy.shared.enums import ASNs
 from bgpy.simulation_engine import ASPA, BGP, ShortestPathPrefixASPAAttacker
 from bgpy.simulation_framework import ScenarioConfig, ShortestPathPrefixHijack
 from bgpy.tests.engine_tests.utils import EngineTestConfig
