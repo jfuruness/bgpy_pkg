@@ -1,3 +1,4 @@
+from datetime import date
 import gc
 import os
 import random
@@ -16,6 +17,10 @@ from tqdm import tqdm
 
 from bgpy.as_graphs.base import ASGraph, ASGraphConstructor
 from bgpy.as_graphs.caida_as_graph import CAIDAASGraphConstructor
+from bgpy.shared.constants import (
+    DIRS,
+    SINGLE_DAY_CACHE_DIR
+)
 from bgpy.shared.enums import SpecialPercentAdoptions
 from bgpy.simulation_engine import (
     BGP,
@@ -52,7 +57,7 @@ class Simulation:
             ]
         ),
         num_trials: int = 2,
-        output_dir: Path = Path("/tmp/sims"),
+        output_dir: Path = Path(DIRS.user_desktop_dir) / "bgp_sims" / str(date.today()),
         parse_cpus: int = max(cpu_count() - 1, 1),
         python_hash_seed: int | None = None,
         ASGraphConstructorCls: type[ASGraphConstructor] = CAIDAASGraphConstructor,
@@ -61,7 +66,7 @@ class Simulation:
                 "as_graph_collector_kwargs": frozendict(
                     {
                         # dl_time: datetime(),
-                        "cache_dir": Path("/tmp/as_graph_collector_cache"),
+                        "cache_dir": SINGLE_DAY_CACHE_DIR,
                     }
                 ),
                 "as_graph_kwargs": frozendict(

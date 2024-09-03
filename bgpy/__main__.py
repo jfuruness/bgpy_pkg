@@ -1,5 +1,6 @@
 from pathlib import Path
 
+from bgpy.shared.constants import DIRS
 from bgpy.shared.enums import SpecialPercentAdoptions
 from bgpy.simulation_engine import ROV
 from bgpy.simulation_framework import ScenarioConfig, Simulation, SubprefixHijack

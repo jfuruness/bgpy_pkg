@@ -4,12 +4,14 @@ from datetime import datetime
 from functools import cached_property
 from pathlib import Path
 
+from bgpy.shared.constants import SINGLE_DAY_CACHE_DIR
+
 
 class ASGraphCollector(ABC):
     def __init__(
         self,
         dl_time: datetime | None = None,
-        cache_dir: Path = Path("/tmp/as_graph_collector_cache"),
+        cache_dir: Path = SINGLE_DAY_CACHE_DIR,
     ) -> None:
         """Stores download time and cache_dir instance vars and creates dir"""
 
@@ -18,10 +20,6 @@ class ASGraphCollector(ABC):
         self.cache_dir: Path = cache_dir
         # Make cache dir if cache is being used
         self.cache_dir.mkdir(parents=True, exist_ok=True)
-
-        # Path to the cache file for that day
-        fmt = "caida_%Y.%m.%d.txt"
-        self.cache_path: Path = cache_dir / self.dl_time.strftime(fmt)
 
     def run(self) -> Path:
         """Runs run func and deletes cache if anything is amiss"""
