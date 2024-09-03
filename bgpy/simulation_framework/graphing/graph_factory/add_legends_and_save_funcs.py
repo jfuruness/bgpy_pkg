@@ -48,7 +48,7 @@ def _add_legend(
     handles, labels = ax.get_legend_handles_labels()
 
     # non aggregated
-    non_aggregated_labels = set([x.label for x in non_aggregated_data_dict.values()])
+    non_aggregated_labels = {x.label for x in non_aggregated_data_dict.values()}
     non_aggregated_labels_handles_dict = dict()
     aggregated_labels_handles_dict = dict()
     for handle, label in zip(handles, labels):

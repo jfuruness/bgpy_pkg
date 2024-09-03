@@ -98,7 +98,7 @@ def _get_as_rank(self) -> None:
     """
 
     # Highest customer cone size first
-    ases = list(sorted(self, key=lambda x: x.customer_cone_size, reverse=True))
+    ases = sorted(self, key=lambda x: x.customer_cone_size, reverse=True)
     last_as = ases[0]
     last_as.as_rank = 0
     for i, as_obj in enumerate(ases[1:]):

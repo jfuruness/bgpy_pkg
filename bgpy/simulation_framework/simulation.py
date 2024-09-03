@@ -203,7 +203,8 @@ class Simulation:
             warn(
                 f"Estimated RAM usage is {expected_total_gb_ram:.2f}GB "
                 f"but your machine has only {total_gb_ram:.2f}GB available, "
-                "maybe use less cores or don't store provider/customer cones?"
+                "maybe use less cores or don't store provider/customer cones?",
+                stacklevel=2
             )
 
     def run(

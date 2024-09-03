@@ -193,8 +193,8 @@ class EngineTester(EngineRunner):
         # Compare metrics CSV
         with self.graph_data_guess_path_csv.open() as guess_f:
             with self.graph_data_ground_truth_path_csv.open() as ground_truth_f:
-                guess_lines = set([tuple(x) for x in csv.reader(guess_f)])
-                gt_lines = set([tuple(x) for x in csv.reader(ground_truth_f)])
+                guess_lines = {tuple(x) for x in csv.reader(guess_f)}
+                gt_lines = {tuple(x) for x in csv.reader(ground_truth_f)}
                 assert gt_lines == guess_lines, self.graph_data_guess_path_csv
 
         # Compare metrics YAML

@@ -52,4 +52,4 @@ class DiagramAggregator:
     def image_paths(self) -> list[Path]:
         """Returns paths as strings for all images"""
 
-        return list(sorted(self.base_dir.glob("*/*png")))
+        return sorted(self.base_dir.glob("*/*png"))

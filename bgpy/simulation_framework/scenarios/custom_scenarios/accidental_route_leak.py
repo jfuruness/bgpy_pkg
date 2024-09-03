@@ -4,8 +4,9 @@ from typing import TYPE_CHECKING, Optional
 from bgpy.as_graphs.base.as_graph.customer_cone_funcs import _get_cone_size_helper
 from bgpy.enums import ASGroups, Relationships, SpecialPercentAdoptions, Timestamps
 
-from ..scenario import Scenario
-from ..scenario_config import ScenarioConfig
+
+from bgpy.simulation_framework.scenarios.scenario import Scenario
+from bgpy.simulation_framework.scenarios.scenario_config import ScenarioConfig
 from .victims_prefix import VictimsPrefix
 
 if TYPE_CHECKING:
@@ -53,7 +54,7 @@ class AccidentalRouteLeak(VictimsPrefix):
                 " in the scenario config after importing like "
                 "from bgpy.enums import ASGroups"
             )
-            warnings.warn(msg, RuntimeWarning)
+            warnings.warn(msg, RuntimeWarning, stacklevel=2)
 
     # Just returns customer cone
     _get_cone_size_helper = _get_cone_size_helper

@@ -3,8 +3,8 @@ from typing import TYPE_CHECKING
 
 from frozendict import frozendict
 
-from ..line_data import LineData
-from ..line_info import LineInfo
+from bgpy.simulation_framework.graphing.line_data import LineData
+from bgpy.simulation_framework.graphing.line_info import LineInfo
 
 if TYPE_CHECKING:
     from bgpy.simulation_framework import DataPointAggData, DataPointKey, GraphCategory

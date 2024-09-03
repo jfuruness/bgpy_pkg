@@ -12,7 +12,7 @@ from bgpy.enums import SpecialPercentAdoptions
 from bgpy.simulation_engine import Announcement as Ann
 from bgpy.simulation_engine import BaseSimulationEngine, Policy
 
-from ..scenario_config import ScenarioConfig
+from bgpy.simulation_framework.scenarios.scenario_config import ScenarioConfig
 from .roa_helper_funcs import (
     _add_roa_info_to_anns,
     _get_roa_checker,
@@ -437,7 +437,7 @@ class Scenario(ABC):
         # Sort prefixes with most specific prefix first
         # Note that this must be sorted for the traceback to get the
         # most specific prefix first
-        prefixes = list(sorted(prefixes, key=lambda x: x.num_addresses))  # type: ignore
+        prefixes = sorted(prefixes, key=lambda x: x.num_addresses)  # type: ignore
 
         prefix_subprefix_dict = {x: [] for x in prefixes}  # type: ignore
         for outer_prefix, subprefix_list in prefix_subprefix_dict.items():

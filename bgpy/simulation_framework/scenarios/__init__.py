@@ -1,3 +1,6 @@
+from .scenario_config import ScenarioConfig  # isort: skip
+from .scenario import Scenario  # isort: skip
+
 from .custom_scenarios import (
     AccidentalRouteLeak,
     FirstASNStrippingPrefixHijack,
@@ -11,8 +14,6 @@ from .custom_scenarios import (
     SuperprefixPrefixHijack,
     ValidPrefix,
 )
-from .scenario import Scenario
-from .scenario_config import ScenarioConfig
 
 __all__ = [
     "Scenario",

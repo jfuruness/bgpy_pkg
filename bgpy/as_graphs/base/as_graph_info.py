@@ -33,7 +33,7 @@ class ASGraphInfo:
         for link_set in self.link_sets:
             for link in link_set:
                 asns.extend(link.asns)
-        return list(sorted(set(asns)))
+        return sorted(set(asns))
 
     @property
     def link_sets(self) -> tuple[frozenset[Link], ...]:

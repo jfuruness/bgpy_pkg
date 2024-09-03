@@ -9,7 +9,7 @@ from bgpy.simulation_framework.graph_data_aggregator.graph_data_aggregator impor
     PICKLE_DATA_TYPE,
 )
 
-from ..line_info import LineInfo
+from bgpy.simulation_framework.graphing.line_info import LineInfo
 from .add_legends_and_save_funcs import (
     _add_legend,
     _add_legends_and_save,

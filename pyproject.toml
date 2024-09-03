@@ -210,8 +210,45 @@ ignore = [
     # magic numbers are just doing resp.status_code == 200, 200 is magic since it's
     # not a var
     "PLR2004",
+    # This rule prevents uppercase variables (since classes are uppercased)
+    # imo this makes sense 99% of the time, __except__ when dealing with variables
+    # that refer to an actual class type. For example, imo
+    # self.GraphFactoryCls = DefaultGraphFactory
+    # graph_factory = self.GraphFactoryCls()
+    # is way more readable than
+    # self.graph_factory_cls = DefaultGraphFactory
+    # graph_factory = self.graph_factory_cls()
+    # Imo leaving class references as uppercase lets the reader know, this var is
+    # referring to a class
+    "N803",
+    # N806 looks at capitalized vars. See N803 explanation
+    "N806",
+    # This turns super(MyClass, self).func() into super().func()
+    # The problem is that the former is actually needed when using
+    # multiple inheritance, resulting in a false positive for every time
+    # for me. Imo not worth having since it requires context and isn't always
+    # right.
+    "UP008",
+    # Catches deprecated imports
+    # However, it seems to think I shouldn't be importing Iterable from typing,
+    # which is wrong. If something is deprecated, it'll raise a DeprecationWarning
+    # Since this only had false positives for me, omitting it
+    "UP035",
+    # Ensures that you don't have pass in blank funcs that have a docstring
+    # imo blank funcs are more readable with a pass than without a pass
+    # because without a pass, maybe the developer just didn't finish the func
+    # and forgot to write it in. If there's a pass tho, it's an explicit statement
+    # that this func is meant to be blank
+    # Just my opinion though.
+    "PIE790",
 ]
 unfixable = []
+[tool.ruff.lint.per-file-ignores]
+# Don't use isort on these files (which sorts imports)
+# init files are often ordered in a certain way to avoid circular imports
+"**/__init__.py" = ["I"]
+# tests can use private vars
+"**/tests/**/*.py" = ["SLF001"]
 
 [tool.ruff.lint.isort]
 known-first-party = ["bgpy"]
@@ -220,3 +257,7 @@ known-first-party = ["bgpy"]
 # Allow default arguments like, e.g., `data: frozendict[str, str] = frozendict()
 # Otherwise this tool complains that it's a mutable return
 extend-immutable-calls = ["frozendict.frozendict"]
+
+[tool.ruff.lint.flake8-pytest-style]
+# Says that using pytest.mark.marker_name shouldn't have parens
+mark-parentheses = false

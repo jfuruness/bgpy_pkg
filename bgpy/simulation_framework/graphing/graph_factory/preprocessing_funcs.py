@@ -6,9 +6,9 @@ from typing import TYPE_CHECKING
 import matplotlib
 import matplotlib.pyplot as plt
 
-from ..line_data import LineData
-from ..line_info import LineInfo
-from ..line_properties_generator import LinePropertiesGenerator
+from bgpy.simulation_framework.graphing.line_data import LineData
+from bgpy.simulation_framework.graphing.line_info import LineInfo
+from bgpy.simulation_framework.graphing.line_properties_generator import LinePropertiesGenerator
 
 if TYPE_CHECKING:
     from bgpy.simulation_framework.graph_data_aggregator import (

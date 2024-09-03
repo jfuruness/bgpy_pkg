@@ -63,7 +63,7 @@ class BGPSec(ROV):
         prepends ASN if valid, otherwise clears
         """
         if ann.bgpsec_valid(self.as_.asn):
-            bgpsec_as_path = (self.as_.asn,) + ann.bgpsec_as_path
+            bgpsec_as_path = (self.as_.asn, *ann.bgpsec_as_path)
         else:
             bgpsec_as_path = ()
 

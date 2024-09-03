@@ -246,7 +246,8 @@ class GraphDataAggregator:
                 "This means on that graph, for that data point, zero ASes "
                 " fell into that category, regardless of outcome, "
                 "so nothing was tracked or plotted for that data point. "
-                "It's possible that this is fine, although it is extremely unusual"
+                "It's possible that this is fine, although it is extremely unusual",
+                stacklevel=2,
             )
             return False
 

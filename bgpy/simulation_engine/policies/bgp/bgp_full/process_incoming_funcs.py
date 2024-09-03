@@ -35,7 +35,7 @@ def process_incoming_anns(
             # withdrawals
             err = "Recieved two withdrawals from the same neighbor"
             assert len([x.as_path[0] for x in anns if x.withdraw]) == len(
-                set([x.as_path[0] for x in anns if x.withdraw])
+                {x.as_path[0] for x in anns if x.withdraw}
             ), err
 
             err = (
@@ -45,7 +45,7 @@ def process_incoming_anns(
             assert len(
                 [(x.as_path[0], x.next_hop_asn) for x in anns if not x.withdraw]
             ) == len(
-                set([(x.as_path[0], x.next_hop_asn) for x in anns if not x.withdraw])
+                {(x.as_path[0], x.next_hop_asn) for x in anns if not x.withdraw}
             ), err
 
             # Always add to ribs in if it's not a withdrawal

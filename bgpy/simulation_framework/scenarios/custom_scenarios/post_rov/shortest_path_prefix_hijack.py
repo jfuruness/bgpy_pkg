@@ -124,7 +124,8 @@ class ShortestPathPrefixHijack(VictimsPrefix):
         if shortest_valid_path is None:
             warnings.warn(
                 "Shortest path against pathend is none? "
-                "This should only happen at full adoption..."
+                "This should only happen at full adoption...",
+                stacklevel=2,
             )
             shortest_valid_path = ()
 
@@ -134,7 +135,7 @@ class ShortestPathPrefixHijack(VictimsPrefix):
             anns.append(
                 self.scenario_config.AnnCls(
                     prefix=Prefixes.PREFIX.value,
-                    as_path=(attacker_asn,) + shortest_valid_path,
+                    as_path=(attacker_asn, *shortest_valid_path),
                     timestamp=Timestamps.ATTACKER.value,
                     next_hop_asn=attacker_asn,
                     seed_asn=attacker_asn,
@@ -174,7 +175,7 @@ class ShortestPathPrefixHijack(VictimsPrefix):
             anns.append(
                 self.scenario_config.AnnCls(
                     prefix=Prefixes.PREFIX.value,
-                    as_path=(attacker_asn,) + current_shortest_valid_path,
+                    as_path=(attacker_asn, *current_shortest_valid_path),
                     timestamp=Timestamps.ATTACKER.value,
                     next_hop_asn=attacker_asn,
                     seed_asn=attacker_asn,
@@ -214,7 +215,7 @@ class ShortestPathPrefixHijack(VictimsPrefix):
                 visited[as_.asn] = as_path
                 for provider_as in engine.as_graph.as_dict[as_.asn].providers:
                     if provider_as.asn not in visited:
-                        queue.append((provider_as, (provider_as.asn,) + as_path))
+                        queue.append((provider_as, (provider_as.asn, *as_path)))
 
         # Then, go in order of provider relationships
         # This is a nice optimization, since the dictionary maintains order
@@ -223,9 +224,9 @@ class ShortestPathPrefixHijack(VictimsPrefix):
             visited_as = engine.as_graph.as_dict[visited_asn]
             for peer_as in visited_as.peers:
                 if not issubclass(self.get_policy_cls(peer_as), AdoptPolicyCls):
-                    return (peer_as.asn,) + as_path
+                    return (peer_as.asn, *as_path)
                 elif peer_as.asn not in visited:
-                    visited[peer_as.asn] = (peer_as.asn,) + as_path
+                    visited[peer_as.asn] = (peer_as.asn, *as_path)
 
         # At this point, if we still haven't found it, it's a customer
         # relationship (or doesn't exist).
@@ -284,7 +285,7 @@ class ShortestPathPrefixHijack(VictimsPrefix):
                             shortest_provider_path = provider_path
                 # relevant to root ASN
                 if shortest_provider_path:
-                    new_as_path = (as_obj.asn,) + shortest_provider_path
+                    new_as_path = (as_obj.asn, *shortest_provider_path)
                     old_as_path = visited.get(as_obj.asn)
                     if not old_as_path or len(old_as_path) > len(new_as_path):
                         visited[as_obj.asn] = new_as_path
@@ -304,7 +305,8 @@ class ShortestPathPrefixHijack(VictimsPrefix):
         else:
             warnings.warn(
                 "Shortest path against ASPA is none? "
-                "This should only happen at full adoption..."
+                "This should only happen at full adoption...",
+                stacklevel=2,
             )
             return ()
 

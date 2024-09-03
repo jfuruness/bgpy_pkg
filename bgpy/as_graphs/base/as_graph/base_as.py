@@ -127,7 +127,8 @@ class AS(YamlAble):
             "as_rank",
             "propagation_rank",
             # Don't forget the properties
-        ) + ("stubs", "stub", "multihomed", "transit")
+            *("stubs", "stub", "multihomed", "transit")
+        )
 
     def __str__(self):
         return "\n".join(str(x) for x in self.db_row.items())

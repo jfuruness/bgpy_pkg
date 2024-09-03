@@ -1,6 +1,0 @@
-# Extend pyproject.toml settings
-extend = "../../pyproject.toml"
-lint.extend-ignore = [
-    # Private member access is okay in tests
-    "SLF001",
-]

@@ -7,7 +7,7 @@ from yamlable import YamlAble, yaml_info, yaml_info_decorate
 import bgpy
 from bgpy.enums import ASGroups, Relationships
 
-from ..as_graph_info import ASGraphInfo
+from bgpy.as_graphs.base.as_graph_info import ASGraphInfo
 from .base_as import AS
 from .cone_funcs import (
     _get_and_store_customer_cone_and_set_size,
