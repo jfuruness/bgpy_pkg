@@ -5,9 +5,6 @@ from pathlib import Path
 from frozendict import frozendict
 from tqdm import tqdm
 
-from bgpy.simulation_framework.graph_data_aggregator.graph_data_aggregator import (
-    PICKLE_DATA_TYPE,
-)
 
 from bgpy.simulation_framework.graphing.line_info import LineInfo
 from .add_legends_and_save_funcs import (
@@ -42,6 +39,12 @@ from .preprocessing_funcs import (
     _get_ys,
     _preprocessing_steps,
 )
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from bgpy.simulation_framework.graph_data_aggregator.graph_data_aggregator import (
+        PICKLE_DATA_TYPE,
+    )
 
 
 class GraphFactory:

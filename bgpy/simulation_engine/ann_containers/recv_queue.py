@@ -1,6 +1,9 @@
-from bgpy.simulation_engine import Announcement as Ann
 
 from .ann_container import AnnContainer
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from bgpy.simulation_engine import Announcement as Ann
 
 
 class RecvQueue(AnnContainer[str, list["Ann"]]):

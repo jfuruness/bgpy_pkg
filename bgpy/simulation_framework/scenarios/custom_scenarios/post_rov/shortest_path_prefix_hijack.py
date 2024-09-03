@@ -2,7 +2,6 @@ import warnings
 from collections import deque
 from typing import TYPE_CHECKING, Optional
 
-from bgpy.as_graphs import AS
 from bgpy.enums import Prefixes, Timestamps
 from bgpy.simulation_engine import (
     ASPA,
@@ -36,6 +35,7 @@ from bgpy.simulation_framework.scenarios.custom_scenarios.victims_prefix import 
 from .forged_origin_prefix_hijack import ForgedOriginPrefixHijack
 
 if TYPE_CHECKING:
+    from bgpy.as_graphs import AS
     from bgpy.simulation_engine import Announcement as Ann
     from bgpy.simulation_engine import BaseSimulationEngine
 
