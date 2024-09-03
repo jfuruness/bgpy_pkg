@@ -1,5 +1,5 @@
 import warnings
-from typing import TYPE_CHECKING, Optional, Union
+from typing import TYPE_CHECKING, Optional
 
 from bgpy.as_graphs.base.as_graph.customer_cone_funcs import _get_cone_size_helper
 from bgpy.enums import ASGroups, Relationships, SpecialPercentAdoptions, Timestamps
@@ -99,11 +99,11 @@ class AccidentalRouteLeak(VictimsPrefix):
             announcements: list["Ann"] = list(self.announcements)  # type: ignore
             assert self.attacker_asns, "You must select at least 1 AS to leak"
             for attacker_asn in self.attacker_asns:
-                if not engine.as_graph.as_dict[attacker_asn].policy._local_rib:
+                if not engine.as_graph.as_dict[attacker_asn].policy.local_rib:
                     print("Attacker did not recieve announcement, can't leak. ")
                 for prefix, ann in engine.as_graph.as_dict[
                     attacker_asn
-                ].policy._local_rib.items():
+                ].policy.local_rib.items():
                     announcements.append(
                         ann.copy(
                             {

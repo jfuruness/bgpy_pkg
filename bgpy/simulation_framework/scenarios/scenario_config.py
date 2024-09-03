@@ -1,5 +1,5 @@
 from dataclasses import asdict, dataclass, field
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Any
 
 from frozendict import frozendict
 from roa_checker import ROA

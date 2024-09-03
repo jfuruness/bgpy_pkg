@@ -4,7 +4,7 @@ from collections import defaultdict
 from math import sqrt
 from pathlib import Path
 from statistics import mean, stdev
-from typing import Any, Optional, Union
+from typing import Any
 from warnings import warn
 
 from bgpy.enums import Outcomes, Plane, SpecialPercentAdoptions

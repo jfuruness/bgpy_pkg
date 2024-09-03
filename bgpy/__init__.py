@@ -3,6 +3,7 @@ from . import (  # isort: skip
     simulation_engine,
     as_graphs,
     enums,
+    exceptions,
     simulation_framework,
     tests,
     utils,

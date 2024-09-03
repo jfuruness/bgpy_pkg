@@ -4,7 +4,7 @@ from abc import ABC, abstractmethod
 from dataclasses import replace
 from functools import cached_property
 from ipaddress import IPv4Network, IPv6Network, ip_network
-from typing import TYPE_CHECKING, Any, Optional, Union
+from typing import TYPE_CHECKING, Any, Optional
 
 from roa_checker import ROA
 

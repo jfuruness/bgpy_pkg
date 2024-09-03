@@ -205,6 +205,11 @@ ignore = [
     # This catches when there are "too many" arguments, branches, returns, etc
     # imo this should be a case by case basis using context, not a blanket rule
     "PLR091",
+    # "Magic numbers" are sometimes okay. For me these were all false positives
+    # for example, checking that the response status code is 200, or in testing.
+    # magic numbers are just doing resp.status_code == 200, 200 is magic since it's
+    # not a var
+    "PLR2004",
 ]
 unfixable = []
 

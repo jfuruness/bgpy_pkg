@@ -1,4 +1,4 @@
-from typing import Any, Callable, Optional
+from typing import Any, Callable
 from weakref import proxy
 
 from frozendict import frozendict

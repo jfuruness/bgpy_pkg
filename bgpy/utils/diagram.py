@@ -1,6 +1,6 @@
 import ipaddress
 from pathlib import Path
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING
 
 from graphviz import Digraph
 
@@ -104,10 +104,12 @@ class Diagram:
         """
 
         for as_obj in engine.as_graph:
-            for ann in as_obj.policy._local_rib.values():
-                if len(ann.as_path) == 1 and ann.as_path[0] != ann.next_hop_asn:
-                    return True
-                elif len(ann.as_path) > 1 and ann.as_path[1] != ann.next_hop_asn:
+            for ann in as_obj.policy.local_rib.values():
+                if (
+                    (len(ann.as_path) == 1 and ann.as_path[0] != ann.next_hop_asn)
+                    or
+                    (len(ann.as_path) > 1 and ann.as_path[1] != ann.next_hop_asn)
+                ):
                     return True
         return False
 
@@ -152,10 +154,7 @@ class Diagram:
         scenario: Scenario,
         display_next_hop_asn: bool,
     ) -> str:
-        if display_next_hop_asn:
-            colspan = 5
-        else:
-            colspan = 4
+        colspan = 5 if display_next_hop_asn else 4
         asn_str = str(as_obj.asn)
         if as_obj.asn in scenario.victim_asns:
             asn_str = "&#128519;" + asn_str + "&#128519;"
@@ -170,7 +169,7 @@ class Diagram:
             <TR>
             <TD COLSPAN="{colspan}" BORDER="0">({as_obj.policy.name})</TD>
             </TR>"""
-        local_rib_anns = tuple(as_obj.policy._local_rib.values())
+        local_rib_anns = tuple(as_obj.policy.local_rib.values())
         local_rib_anns = tuple(
             sorted(
                 local_rib_anns,
@@ -196,7 +195,7 @@ class Diagram:
                 elif any(x == ann.origin for x in scenario.victim_asns):
                     ann_help = "&#128519;"
                 else:
-                    raise Exception(f"Not valid ann for rib? {ann}")
+                    raise NotImplementedError
 
                 html += f"""<TR>
                             <TD>{mask}</TD>
@@ -280,7 +279,7 @@ class Diagram:
                     g.node(str(as_obj.asn))
                 self.dot.subgraph(g)
         else:
-            for i, rank in enumerate(diagram_ranks):
+            for rank in diagram_ranks:
                 with self.dot.subgraph() as s:
                     s.attr(rank="same")  # set all nodes to the same rank
                     previous_asn = None
@@ -295,7 +294,7 @@ class Diagram:
     def _add_description(self, description: str, display_next_hop_asn: bool) -> None:
         if display_next_hop_asn:
             description += (
-                "\nLocal RIB rows displayed as: " "prefix, as path, origin, next_hop"
+                "\nLocal RIB rows displayed as: prefix, as path, origin, next_hop"
             )
         # https://stackoverflow.com/a/57461245/8903959
         self.dot.attr(label=description)

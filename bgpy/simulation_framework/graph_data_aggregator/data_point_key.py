@@ -1,5 +1,4 @@
 from dataclasses import dataclass
-from typing import Union
 
 from bgpy.enums import SpecialPercentAdoptions
 from bgpy.simulation_framework.scenarios import ScenarioConfig

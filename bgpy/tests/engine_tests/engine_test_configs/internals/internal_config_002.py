@@ -38,7 +38,7 @@ class Custom02ValidPrefix(ValidPrefix):
     def post_propagation_hook(self, engine=None, propagation_round=0, *args, **kwargs):  # type: ignore
         if propagation_round == 1:  # second round
             ann = deepcopy(
-                engine.as_graph.as_dict[2].policy._local_rib.get(Prefixes.PREFIX.value)
+                engine.as_graph.as_dict[2].policy.local_rib.get(Prefixes.PREFIX.value)
             )
             # Add a new announcement at AS 3, which will be better than the one
             # from 2 and cause a withdrawn route by 1 to 4
@@ -50,24 +50,24 @@ class Custom02ValidPrefix(ValidPrefix):
                 "as_path",
                 (3,),
             )
-            engine.as_graph.as_dict[3].policy._local_rib.add_ann(ann)
+            engine.as_graph.as_dict[3].policy.local_rib.add_ann(ann)
             Custom02ValidPrefix.victim_asns = frozenset({2, 3})
 
         if propagation_round == 2:  # third round
             ann = deepcopy(
-                engine.as_graph.as_dict[3].policy._local_rib.get(Prefixes.PREFIX.value)
+                engine.as_graph.as_dict[3].policy.local_rib.get(Prefixes.PREFIX.value)
             )
             object.__setattr__(ann, "withdraw", True)
             # ann.withdraw = True
             # Remove the original announcement from 3
             # The one from 2 is now the next-best
-            engine.as_graph.as_dict[3].policy._local_rib.pop(
+            engine.as_graph.as_dict[3].policy.local_rib.pop(
                 Prefixes.PREFIX.value, None
             )
-            engine.as_graph.as_dict[3].policy._ribs_out.remove_entry(
+            engine.as_graph.as_dict[3].policy.ribs_out.remove_entry(
                 1, Prefixes.PREFIX.value
             )
-            engine.as_graph.as_dict[3].policy._send_q.add_ann(1, ann)
+            engine.as_graph.as_dict[3].policy.send_q.add_ann(1, ann)
             Custom02ValidPrefix.victim_asns = frozenset({2})
 
 

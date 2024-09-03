@@ -1,4 +1,5 @@
 from typing import TYPE_CHECKING, Any, Optional
+from warnings import warn
 from weakref import CallableProxyType
 
 from bgpy.simulation_engine.ann_containers import LocalRIB, RecvQueue
@@ -42,8 +43,8 @@ class BGP(Policy):
 
     def __init__(
         self,
-        _local_rib: LocalRIB | None = None,
-        _recv_q: RecvQueue | None = None,
+        local_rib: LocalRIB | None = None,
+        recv_q: RecvQueue | None = None,
         as_: Optional["AS"] = None,
     ) -> None:
         """Add local rib and data structures here
@@ -54,10 +55,31 @@ class BGP(Policy):
         This is also useful for regenerating an AS from YAML
         """
 
-        self._local_rib = _local_rib if _local_rib else LocalRIB()
-        self._recv_q = _recv_q if _recv_q else RecvQueue()
+        self.local_rib = local_rib if local_rib else LocalRIB()
+        self.recv_q = recv_q if recv_q else RecvQueue()
         # This gets set within the AS class so it's fine
         self.as_: CallableProxyType["AS"] = as_  # type: ignore
+
+    @property
+    def _local_rib(self) -> LocalRIB:
+        warn(
+            "Please use .local_rib instead of ._local_rib. "
+            "This will be removed in a later version",
+            DeprecationWarning,
+            stack_level=2,
+        )
+        return self.local_rib
+
+    @property
+    def _recv_q(self) -> LocalRIB:
+        warn(
+            "Please use .recv_q instead of ._recv_q. "
+            "This will be removed in a later version",
+            DeprecationWarning,
+            stack_level=2,
+        )
+        return self.recv_q
+
 
     # Propagation functionality
     propagate_to_providers = propagate_to_providers
@@ -91,7 +113,7 @@ class BGP(Policy):
     def __to_yaml_dict__(self) -> dict[Any, Any]:
         """This optional method is called when you call yaml.dump()"""
 
-        return {"_local_rib": self._local_rib, "_recv_q": self._recv_q}
+        return {"local_rib": self.local_rib, "recv_q": self.recv_q}
 
     @classmethod
     def __from_yaml_dict__(cls, dct, yaml_tag) -> Policy:

@@ -46,7 +46,7 @@ class Custom01ValidPrefix(ValidPrefix):
     ) -> None:
         if propagation_round == 1:  # second round
             ann = deepcopy(
-                engine.as_graph.as_dict[2].policy._local_rib.get(Prefixes.PREFIX.value)
+                engine.as_graph.as_dict[2].policy.local_rib.get(Prefixes.PREFIX.value)
             )
             # Add a new announcement at AS 3, which will be better than the one
             # from 2 and cause a withdrawn route by 1 to 4
@@ -58,7 +58,7 @@ class Custom01ValidPrefix(ValidPrefix):
                 "as_path",
                 (3,),
             )
-            engine.as_graph.as_dict[3].policy._local_rib.add_ann(ann)
+            engine.as_graph.as_dict[3].policy.local_rib.add_ann(ann)
             Custom01ValidPrefix.victim_asns = frozenset({2, 3})
             self.victim_asns: frozenset[int] = frozenset({2, 3})
 

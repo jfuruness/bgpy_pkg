@@ -1,4 +1,4 @@
-from typing import Iterator, Optional
+from typing import Iterator
 
 from bgpy.simulation_engine import Announcement as Ann
 

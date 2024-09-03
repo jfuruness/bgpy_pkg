@@ -1,4 +1,5 @@
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING
+from warnings import warn
 
 from bgpy.simulation_engine.ann_containers import RIBsIn, RIBsOut, SendQueue
 from bgpy.simulation_engine.policies.bgp import BGP
@@ -23,15 +24,45 @@ class BGPFull(BGP):
     def __init__(
         self,
         *args,
-        _ribs_in: RIBsIn | None = None,
-        _ribs_out: RIBsOut | None = None,
-        _send_q: SendQueue | None = None,
+        ribs_in: RIBsIn | None = None,
+        ribs_out: RIBsOut | None = None,
+        send_q: SendQueue | None = None,
         **kwargs,
     ):
         super(BGPFull, self).__init__(*args, **kwargs)
-        self._ribs_in: RIBsIn = _ribs_in if _ribs_in else RIBsIn()
-        self._ribs_out: RIBsOut = _ribs_out if _ribs_out else RIBsOut()
-        self._send_q: SendQueue = _send_q if _send_q else SendQueue()
+        self.ribs_in: RIBsIn = ribs_in if ribs_in else RIBsIn()
+        self.ribs_out: RIBsOut = ribs_out if ribs_out else RIBsOut()
+        self.send_q: SendQueue = send_q if send_q else SendQueue()
+
+    @property
+    def _ribs_in(self) -> RIBsIn:
+        warn(
+            "Please use .ribs_in instead of ._ribs_in. "
+            "This will be removed in a later version",
+            DeprecationWarning,
+            stack_level=2,
+        )
+        return self.ribs_in
+
+    @property
+    def _ribs_out(self) -> RIBsOut:
+        warn(
+            "Please use .ribs_out instead of ._ribs_out. "
+            "This will be removed in a later version",
+            DeprecationWarning,
+            stack_level=2,
+        )
+        return self.ribs_out
+
+    @property
+    def _send_q(self) -> SendQueue:
+        warn(
+            "Please use .send_q instead of ._send_q. "
+            "This will be removed in a later version",
+            DeprecationWarning,
+            stack_level=2,
+        )
+        return self.send_q
 
     # Propagation functions
     _propagate = _propagate
@@ -69,9 +100,9 @@ class BGPFull(BGP):
         as_dict = super(BGPFull, self).__to_yaml_dict__()
         as_dict.update(
             {
-                "_ribs_in": self._ribs_in,
-                "_ribs_out": self._ribs_out,
-                "_send_q": self._send_q,
+                "ribs_in": self.ribs_in,
+                "ribs_out": self.ribs_out,
+                "send_q": self.send_q,
             }
         )
         return as_dict

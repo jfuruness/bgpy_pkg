@@ -7,7 +7,7 @@ from copy import deepcopy
 from multiprocessing import Pool, cpu_count
 from pathlib import Path
 from tempfile import TemporaryDirectory
-from typing import Iterator, Optional, Union
+from typing import Iterator
 from warnings import warn
 
 import psutil
@@ -157,7 +157,7 @@ class Simulation:
             if isinstance(scenario_config.AdoptPolicyCls, BGPFull) and not isinstance(
                 scenario_config.BasePolicyCls, BGPFull
             ):
-                raise Exception(
+                raise ValueError(
                     "You have an AdoptPolicyCls inheriting from BGPFull "
                     "but your BasePolicyCls is not. You may want to pass in "
                     "BasePolicyCls=BGPFull to your scenario_config"
@@ -234,7 +234,7 @@ class Simulation:
                 f"export PYTHONHASHSEED={self.python_hash_seed}"
             )
             if os.environ.get("PYTHONHASHSEED") != str(self.python_hash_seed):
-                raise Exception(msg)
+                raise RuntimeError(msg)
             random.seed(str(self.python_hash_seed) + seed_suffix)
 
     def _get_data(self):
@@ -510,12 +510,9 @@ class Simulation:
     ) -> None:
         """Generates some default graphs"""
 
-        if kwargs is None:
-            kwargs = dict()
-        else:
-            # This prevents problems if kwargs is reused more than once
-            # outside of this file, since we modify it
-            kwargs = deepcopy(kwargs)
+        # This prevents problems if kwargs is reused more than once
+        # outside of this file, since we modify it
+        kwargs = dict() if kwargs is None else deepcopy(kwargs)
         # Set defaults for kwargs
         kwargs["pickle_path"] = kwargs.pop("pickle_path", self.pickle_path)
         kwargs["graph_dir"] = kwargs.pop("graph_dir", self.output_dir / "graphs")

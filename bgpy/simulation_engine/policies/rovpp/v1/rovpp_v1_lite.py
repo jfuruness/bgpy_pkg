@@ -67,7 +67,7 @@ class ROVPPV1Lite(ROV):
 
         non_routed_blackholes = self._get_non_routed_blackholes_to_add(scenario)
         routed_blackholes = self._get_routed_blackholes_to_add(from_rel, scenario)
-        self._add_blackholes_to_local_rib(non_routed_blackholes + routed_blackholes)
+        self._add_blackholes_tolocal_rib(non_routed_blackholes + routed_blackholes)
 
     def _get_non_routed_blackholes_to_add(
         self, scenario: "Scenario"
@@ -100,7 +100,7 @@ class ROVPPV1Lite(ROV):
         blackholes_to_add = list()
         # Then add blackholes for anns in local RIB when you've
         # recieved an invalid subprefix from the same neighbor
-        for _, ann in self._local_rib.items():
+        for _, ann in self.local_rib.items():
             for sub_ann in self._invalid_subprefixes_from_same_neighbor(scenario, ann):
                 blackhole = self._copy_and_process(
                     sub_ann,
@@ -126,7 +126,7 @@ class ROVPPV1Lite(ROV):
             # For each subprefix ann that was recieved
             # NOTE: these wouldn't be in the local RIB since they're invalid
             # and dropped by default (but they are recieved so we can check there)
-            for sub_ann in self._recv_q.get_ann_list(subprefix):
+            for sub_ann in self.recv_q.get_ann_list(subprefix):
                 # Holes are only from same neighbor
                 if (
                     sub_ann.invalid_by_roa
@@ -135,14 +135,14 @@ class ROVPPV1Lite(ROV):
                 ):
                     yield sub_ann
 
-    def _add_blackholes_to_local_rib(self, blackholes: tuple["Ann", ...]) -> None:
+    def _add_blackholes_tolocal_rib(self, blackholes: tuple["Ann", ...]) -> None:
         """Adds all blackholes to the local RIB"""
 
         for blackhole in blackholes:
-            existing_ann = self._local_rib.get(blackhole.prefix)
+            existing_ann = self.local_rib.get(blackhole.prefix)
             # Don't overwrite valid existing announcements
             if existing_ann is None or existing_ann.invalid_by_roa:
-                self._local_rib.add_ann(blackhole)
+                self.local_rib.add_ann(blackhole)
 
     def _recount_holes(self, propagation_round: int) -> None:
         # It's possible that we had a previously valid prefix

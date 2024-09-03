@@ -1,5 +1,4 @@
 from pathlib import Path
-from typing import Optional
 
 from bgpy.as_graphs.base import AS
 from bgpy.enums import Outcomes, Plane, SpecialPercentAdoptions
@@ -17,11 +16,11 @@ class EngineRunner:
         self,
         base_dir: Path,
         conf: EngineRunConfig,
-        codec: SimulatorCodec = SimulatorCodec(),
+        codec: SimulatorCodec | None = None,
         dpi: int | None = None,
     ) -> None:
         self.conf: EngineRunConfig = conf
-        self.codec: SimulatorCodec = codec
+        self.codec: SimulatorCodec = codec if codec else SimulatorCodec()
         # Needed to aggregate all diagrams
         self.base_dir: Path = base_dir
 

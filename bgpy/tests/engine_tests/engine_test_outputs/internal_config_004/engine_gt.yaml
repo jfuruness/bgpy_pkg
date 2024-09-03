@@ -11,7 +11,7 @@ as_graph: !yamlable/CAIDAASGraph
       ixp: false
       peers: !!python/tuple []
       policy: !yamlable/ASPA
-        _local_rib: !simulator_codec/LocalRIB
+        local_rib: !simulator_codec/LocalRIB
           1.2.0.0/16: !yamlable/Announcement
             as_path: !!python/tuple
             - 1
@@ -32,7 +32,7 @@ as_graph: !yamlable/CAIDAASGraph
             seed_asn: null
             timestamp: 1
             withdraw: false
-        _recv_q: !simulator_codec/RecvQueue {}
+        recv_q: !simulator_codec/RecvQueue {}
       propagation_rank: 0
       provider_cone_asns: null
       provider_cone_size: null
@@ -49,7 +49,7 @@ as_graph: !yamlable/CAIDAASGraph
       ixp: false
       peers: !!python/tuple []
       policy: !yamlable/ASPA
-        _local_rib: !simulator_codec/LocalRIB
+        local_rib: !simulator_codec/LocalRIB
           1.2.0.0/16: !yamlable/Announcement
             as_path: !!python/tuple
             - 2
@@ -69,7 +69,7 @@ as_graph: !yamlable/CAIDAASGraph
             seed_asn: null
             timestamp: 1
             withdraw: false
-        _recv_q: !simulator_codec/RecvQueue {}
+        recv_q: !simulator_codec/RecvQueue {}
       propagation_rank: 1
       provider_cone_asns: null
       provider_cone_size: null
@@ -86,7 +86,7 @@ as_graph: !yamlable/CAIDAASGraph
       ixp: false
       peers: !!python/tuple []
       policy: !yamlable/ASPA
-        _local_rib: !simulator_codec/LocalRIB
+        local_rib: !simulator_codec/LocalRIB
           1.2.0.0/16: !yamlable/Announcement
             as_path: !!python/tuple
             - 3
@@ -105,7 +105,7 @@ as_graph: !yamlable/CAIDAASGraph
             seed_asn: null
             timestamp: 0
             withdraw: false
-        _recv_q: !simulator_codec/RecvQueue {}
+        recv_q: !simulator_codec/RecvQueue {}
       propagation_rank: 1
       provider_cone_asns: null
       provider_cone_size: null
@@ -123,7 +123,7 @@ as_graph: !yamlable/CAIDAASGraph
       peers: !!python/tuple
       - 666
       policy: !yamlable/ASPA
-        _local_rib: !simulator_codec/LocalRIB
+        local_rib: !simulator_codec/LocalRIB
           1.2.0.0/16: !yamlable/Announcement
             as_path: !!python/tuple
             - 4
@@ -143,7 +143,7 @@ as_graph: !yamlable/CAIDAASGraph
             seed_asn: null
             timestamp: 0
             withdraw: false
-        _recv_q: !simulator_codec/RecvQueue {}
+        recv_q: !simulator_codec/RecvQueue {}
       propagation_rank: 2
       provider_cone_asns: null
       provider_cone_size: null
@@ -160,7 +160,7 @@ as_graph: !yamlable/CAIDAASGraph
       peers: !!python/tuple
       - 4
       policy: !yamlable/BGP
-        _local_rib: !simulator_codec/LocalRIB
+        local_rib: !simulator_codec/LocalRIB
           1.2.0.0/16: !yamlable/Announcement
             as_path: !!python/tuple
             - 666
@@ -179,7 +179,7 @@ as_graph: !yamlable/CAIDAASGraph
             seed_asn: 666
             timestamp: 1
             withdraw: false
-        _recv_q: !simulator_codec/RecvQueue {}
+        recv_q: !simulator_codec/RecvQueue {}
       propagation_rank: 2
       provider_cone_asns: null
       provider_cone_size: null
@@ -194,7 +194,7 @@ as_graph: !yamlable/CAIDAASGraph
       ixp: false
       peers: !!python/tuple []
       policy: !yamlable/BGP
-        _local_rib: !simulator_codec/LocalRIB
+        local_rib: !simulator_codec/LocalRIB
           1.2.0.0/16: !yamlable/Announcement
             as_path: !!python/tuple
             - 777
@@ -212,7 +212,7 @@ as_graph: !yamlable/CAIDAASGraph
             seed_asn: 777
             timestamp: 0
             withdraw: false
-        _recv_q: !simulator_codec/RecvQueue {}
+        recv_q: !simulator_codec/RecvQueue {}
       propagation_rank: 0
       provider_cone_asns: null
       provider_cone_size: null

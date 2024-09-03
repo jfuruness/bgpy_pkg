@@ -1,5 +1,4 @@
 from ipaddress import IPv4Network, IPv6Network, ip_network
-from typing import Optional
 
 from roa_checker import ROAChecker, ROAValidity
 

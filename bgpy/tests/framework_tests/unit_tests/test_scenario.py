@@ -17,7 +17,7 @@ from bgpy.simulation_framework import (
 @pytest.mark.framework
 @pytest.mark.unit_tests
 class TestScenario:
-    @pytest.mark.parametrize("num_attackers", (1, 2))
+    @pytest.mark.parametrize("num_attackers", [1, 2])
     def test_init_valid(self, num_attackers):
         """Tests the initialization works when valid"""
 
@@ -38,23 +38,23 @@ class TestScenario:
     def test_init_invalid_attackers(self):
         """Tests the len(attacker_asns) == num_attackers"""
 
+        scenario_config = ScenarioConfig(
+            ScenarioCls=SubprefixHijack,
+            num_attackers=1,
+            override_attacker_asns=frozenset({1, 2}),
+        )
         with pytest.raises(AssertionError):
-            scenario_config = ScenarioConfig(
-                ScenarioCls=SubprefixHijack,
-                num_attackers=1,
-                override_attacker_asns=frozenset({1, 2}),
-            )
             SubprefixHijack(scenario_config=scenario_config)
 
     def test_init_invalid_victims(self):
         """Tests the len(victim_asns) == num_victims"""
 
+        scenario_config = ScenarioConfig(
+            ScenarioCls=SubprefixHijack,
+            num_victims=1,
+            override_victim_asns=frozenset({1, 2}),
+        )
         with pytest.raises(AssertionError):
-            scenario_config = ScenarioConfig(
-                ScenarioCls=SubprefixHijack,
-                num_victims=1,
-                override_victim_asns=frozenset({1, 2}),
-            )
             SubprefixHijack(scenario_config=scenario_config)
 
     def test_init_adopt_as_cls(self):
@@ -286,9 +286,9 @@ class TestScenario:
         victim = ASNs.VICTIM.value
         attacker = ASNs.ATTACKER.value
         anns = (
-            Announcement(prefix="1.2.0.0/16", as_path=tuple([victim]), seed_asn=victim),
+            Announcement(prefix="1.2.0.0/16", as_path=(victim,), seed_asn=victim),
             Announcement(
-                prefix="1.2.0.0/24", as_path=tuple([attacker]), seed_asn=attacker
+                prefix="1.2.0.0/24", as_path=(attacker,), seed_asn=attacker
             ),
         )
         roas = (ROA(prefix=ip_network("1.2.0.0/16"), origin=victim),)
@@ -306,7 +306,7 @@ class TestScenario:
         )
 
         # Check we still have the right anns
-        assert len(scenario.announcements) == 2
+        assert len(scenario.announcements) == len(anns)
         valid, malicious = scenario.announcements
 
         # First announcement should be validated by ROA

@@ -1,4 +1,4 @@
-from typing import Any, Optional
+from typing import Any
 
 from bgpy.as_graphs import AS
 from bgpy.enums import Plane

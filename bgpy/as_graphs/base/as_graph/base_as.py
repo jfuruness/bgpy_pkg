@@ -107,7 +107,7 @@ class AS(YamlAble):
             elif isinstance(x, frozenset):
                 return frozenset_asns(x)
             else:
-                raise Exception(f"improper format type: {type(x)} {x}")
+                raise ValueError(f"improper format type: {type(x)} {x}")
 
         return {attr: _format(getattr(self, attr)) for attr in self.db_row_keys}
 

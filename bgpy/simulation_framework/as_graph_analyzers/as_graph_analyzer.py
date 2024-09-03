@@ -63,7 +63,7 @@ class ASGraphAnalyzer(BaseASGraphAnalyzer):
         """
 
         for prefix in ordered_prefixes:
-            most_specific_ann = as_obj.policy._local_rib.get(prefix)
+            most_specific_ann = as_obj.policy.local_rib.get(prefix)
             if most_specific_ann:
                 # Mypy doesn't recognize that this is always an annoucnement
                 return most_specific_ann  # type: ignore
