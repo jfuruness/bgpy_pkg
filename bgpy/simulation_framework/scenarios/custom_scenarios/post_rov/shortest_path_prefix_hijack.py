@@ -84,9 +84,11 @@ class ShortestPathPrefixHijack(VictimsPrefix):
                 f"{self.scenario_config.AdoptPolicyCls}"
             )
 
-    _get_prefix_attacker_anns = PrefixHijack._get_prefix_attacker_anns
+    # Using mixins instead of weird subclassing, SLF001 is wrong here (private vars)
+    _get_prefix_attacker_anns = PrefixHijack._get_prefix_attacker_anns  # noqa: SLF001
     _get_forged_origin_attacker_anns = (
-        ForgedOriginPrefixHijack._get_forged_origin_attacker_anns
+        # Using mixins instead of weird subclassing, SLF001 is wrong here (private vars)
+        ForgedOriginPrefixHijack._get_forged_origin_attacker_anns  # noqa: SLF001
     )
 
     def _get_pathend_attack_anns(

@@ -31,7 +31,10 @@ class FirstASNStrippingPrefixHijack(ShortestPathPrefixHijack):
         """
 
         # First get the victims prefix
-        victim_anns = VictimsPrefix._get_announcements(self, engine=engine)
+        # Using mixins instead of weird subclassing, SLF001 is wrong here (private vars)
+        victim_anns = VictimsPrefix._get_announcements(  # noqa: SLF001
+            self, engine=engine
+        )
         attacker_anns = self._get_first_asn_stripped_attacker_anns(engine=engine)
         return victim_anns + attacker_anns
 

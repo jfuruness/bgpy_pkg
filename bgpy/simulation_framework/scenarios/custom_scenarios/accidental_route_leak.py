@@ -8,7 +8,6 @@ from bgpy.shared.enums import (
     SpecialPercentAdoptions,
     Timestamps,
 )
-from bgpy.simulation_framework.scenarios.scenario import Scenario
 from bgpy.simulation_framework.scenarios.scenario_config import ScenarioConfig
 
 from .victims_prefix import VictimsPrefix
@@ -143,8 +142,8 @@ class AccidentalRouteLeak(VictimsPrefix):
         """
 
         assert engine, "Need engine for attacker customer cones"
-        attacker_asns = Scenario._get_attacker_asns(
-            self, override_attacker_asns, attacker_asns, engine
+        attacker_asns = super()._get_attacker_asns(
+            override_attacker_asns, attacker_asns, engine
         )
         # Stores customer cones of attacker ASNs
         # used in untrackable func and when selecting victims
