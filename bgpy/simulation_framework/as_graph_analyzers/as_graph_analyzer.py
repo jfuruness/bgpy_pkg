@@ -26,9 +26,7 @@ class ASGraphAnalyzer(BaseASGraphAnalyzer):
         self.engine: BaseSimulationEngine = engine
         self.scenario: Scenario = scenario
         if not ordered_prefixes:
-            ordered_prefixes = tuple(
-                self.scenario.ordered_prefix_subprefix_dict.keys()
-            )
+            ordered_prefixes = tuple(self.scenario.ordered_prefix_subprefix_dict.keys())
         self._most_specific_ann_dict: dict[AS, Ann | None] = (
             self._get_most_specific_ann_dict(engine, ordered_prefixes)
         )

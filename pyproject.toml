@@ -256,6 +256,10 @@ ignore = [
     "SIM103",
     # Combines multiple with statements. Imo makes it less readable
     "SIM117",
+    # Concatenates multiple strings into one if they are on the same line
+    # It's a good rule, but conflicts with ruff format so had to remove
+    # (it gave an error message surprisingly)
+    "ISC001",
 ]
 unfixable = []
 [tool.ruff.lint.per-file-ignores]

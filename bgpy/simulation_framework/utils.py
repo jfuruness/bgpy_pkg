@@ -26,7 +26,7 @@ def get_all_graph_categories() -> Iterable[GraphCategory]:
 
 def get_country_asns(
     country_code: str,
-    requests_cache_path: Path = SINGLE_DAY_CACHE_DIR / "requests_cache.db"
+    requests_cache_path: Path = SINGLE_DAY_CACHE_DIR / "requests_cache.db",
 ) -> list[int]:
     """
     Returns all the ASNs associated with a specific region. A region is given by a

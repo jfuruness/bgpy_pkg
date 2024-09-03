@@ -61,9 +61,7 @@ class Custom02ValidPrefix(ValidPrefix):
             # ann.withdraw = True
             # Remove the original announcement from 3
             # The one from 2 is now the next-best
-            engine.as_graph.as_dict[3].policy.local_rib.pop(
-                Prefixes.PREFIX.value, None
-            )
+            engine.as_graph.as_dict[3].policy.local_rib.pop(Prefixes.PREFIX.value, None)
             engine.as_graph.as_dict[3].policy.ribs_out.remove_entry(
                 1, Prefixes.PREFIX.value
             )

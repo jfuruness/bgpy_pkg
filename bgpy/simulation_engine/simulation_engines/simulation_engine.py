@@ -64,7 +64,9 @@ class SimulationEngine(BaseSimulationEngine):
 
         # Ensure that the simulator is ready to run this round
         if self.ready_to_run_round != propagation_round:
-            raise RuntimeError(f"Engine not set up to run for {propagation_round} round")
+            raise RuntimeError(
+                f"Engine not set up to run for {propagation_round} round"
+            )
         assert scenario, "This can't be empty"
 
         # import time

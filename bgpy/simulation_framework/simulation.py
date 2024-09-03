@@ -45,12 +45,12 @@ class Simulation:
             0.8,
         ),
         scenario_configs: tuple[ScenarioConfig, ...] = (
-                ScenarioConfig(
-                    ScenarioCls=SubprefixHijack,
-                    AdoptPolicyCls=ROV,
-                    BasePolicyCls=BGP,
-                )
-            ,),
+            ScenarioConfig(
+                ScenarioCls=SubprefixHijack,
+                AdoptPolicyCls=ROV,
+                BasePolicyCls=BGP,
+            ),
+        ),
         num_trials: int = 2,
         output_dir: Path = Path(DIRS.user_desktop_dir) / "bgp_sims" / str(date.today()),
         parse_cpus: int = max(cpu_count() - 1, 1),
@@ -205,7 +205,7 @@ class Simulation:
                 f"Estimated RAM usage is {expected_total_gb_ram:.2f}GB "
                 f"but your machine has only {total_gb_ram:.2f}GB available, "
                 "maybe use less cores or don't store provider/customer cones?",
-                stacklevel=2
+                stacklevel=2,
             )
 
     def run(

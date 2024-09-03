@@ -95,9 +95,7 @@ class AS(YamlAble):
             return "{" + ",".join(str(asn) for asn in sorted(asns)) + "}"
 
         def _format(x: Any) -> str:
-            if (isinstance(x, (list, tuple))) and all(
-                isinstance(y, AS) for y in x
-            ):
+            if (isinstance(x, (list, tuple))) and all(isinstance(y, AS) for y in x):
                 assert not isinstance(x, list), "these should all be tuples"
                 return asns(x)  # type: ignore
             elif x is None:
@@ -127,7 +125,7 @@ class AS(YamlAble):
             "as_rank",
             "propagation_rank",
             # Don't forget the properties
-            *("stubs", "stub", "multihomed", "transit")
+            *("stubs", "stub", "multihomed", "transit"),
         )
 
     def __str__(self):

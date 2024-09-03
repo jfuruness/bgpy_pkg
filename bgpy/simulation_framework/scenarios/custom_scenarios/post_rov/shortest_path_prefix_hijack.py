@@ -280,12 +280,9 @@ class ShortestPathPrefixHijack(VictimsPrefix):
                 shortest_provider_path: tuple[int, ...] | None = None
                 for provider_asn in as_obj.provider_asns:
                     provider_path = visited.get(provider_asn)
-                    if (
-                        provider_path is not None
-                        and (
-                            shortest_provider_path is None
-                            or len(provider_path) < len(shortest_provider_path)
-                        )
+                    if provider_path is not None and (
+                        shortest_provider_path is None
+                        or len(provider_path) < len(shortest_provider_path)
                     ):
                         shortest_provider_path = provider_path
                 # relevant to root ASN

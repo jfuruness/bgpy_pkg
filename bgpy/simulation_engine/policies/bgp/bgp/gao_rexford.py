@@ -55,9 +55,7 @@ def _get_best_ann_by_local_pref(
         return None
 
 
-def _get_best_ann_by_as_path(
-    self: "BGP", current_ann: Ann, new_ann: Ann
-) -> Ann | None:
+def _get_best_ann_by_as_path(self: "BGP", current_ann: Ann, new_ann: Ann) -> Ann | None:
     """Returns best announcement by as path length, or None if tie
 
     Shorter AS Paths are better

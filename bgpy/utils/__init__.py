@@ -1,9 +1,4 @@
-from .engine_runner import (
-    Diagram,
-    EngineRunConfig,
-    EngineRunner,
-    SimulatorCodec
-)
+from .engine_runner import Diagram, EngineRunConfig, EngineRunner, SimulatorCodec
 
 
 __all__ = [

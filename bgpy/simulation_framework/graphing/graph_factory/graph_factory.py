@@ -66,7 +66,9 @@ class GraphFactory:
         self.pickle_path: Path = pickle_path
         with self.pickle_path.open("rb") as f:
             self.graph_data: PICKLE_DATA_TYPE = (
-                self._get_last_propagation_round_graph_data(pickle.load(f))  # noqa: S301
+                self._get_last_propagation_round_graph_data(
+                    pickle.load(f)
+                )  # noqa: S301
             )
         self.graph_dir: Path = graph_dir
         self.graph_dir.mkdir(parents=True, exist_ok=True)

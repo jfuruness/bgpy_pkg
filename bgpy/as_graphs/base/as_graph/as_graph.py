@@ -186,7 +186,9 @@ class ASGraph(YamlAble):
 
     def _set_as_groups(
         self,
-        additional_as_group_filters: frozendict[str, Callable[["ASGraph"], frozenset[AS]]] | None,
+        additional_as_group_filters: (
+            frozendict[str, Callable[["ASGraph"], frozenset[AS]]] | None
+        ),
     ) -> None:
         """Sets the AS Groups"""
 

@@ -81,7 +81,6 @@ class BGP(Policy):
         )
         return self.recv_q
 
-
     # Propagation functionality
     propagate_to_providers = propagate_to_providers
     propagate_to_customers = propagate_to_customers

@@ -338,7 +338,7 @@ class Scenario(ABC):
         warn(
             "Instead of ._untracked_asns, please use .untracked_asns",
             DeprecationWarning,
-            stacklevel=2
+            stacklevel=2,
         )
         return self.untracked_asns
 

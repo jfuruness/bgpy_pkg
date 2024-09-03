@@ -287,9 +287,7 @@ class TestScenario:
         attacker = ASNs.ATTACKER.value
         anns = (
             Announcement(prefix="1.2.0.0/16", as_path=(victim,), seed_asn=victim),
-            Announcement(
-                prefix="1.2.0.0/24", as_path=(attacker,), seed_asn=attacker
-            ),
+            Announcement(prefix="1.2.0.0/24", as_path=(attacker,), seed_asn=attacker),
         )
         roas = (ROA(prefix=ip_network("1.2.0.0/16"), origin=victim),)
 
