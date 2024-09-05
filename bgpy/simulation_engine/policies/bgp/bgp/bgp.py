@@ -1,5 +1,5 @@
 import sys
-from typing import TYPE_CHECKING, Any, Optional, Callable, Self, cast, MethodType
+from typing import TYPE_CHECKING, Any, Optional, Callable, Self, cast
 from warnings import warn
 
 from bgpy.simulation_engine.ann_containers import LocalRIB, RecvQueue

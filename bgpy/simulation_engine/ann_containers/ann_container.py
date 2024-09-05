@@ -20,7 +20,7 @@ class AnnContainer(UserDict[KeyType, ValueType], Generic[KeyType, ValueType]):
 
     subclasses: ClassVar[set[type["AnnContainer[Any, Any]"]]] = set()
 
-    def __init_subclass__(cls: type[AnnContainer[Any, Any]], *args, **kwargs):
+    def __init_subclass__(cls: type["AnnContainer[Any, Any]"], *args, **kwargs):
         """This method essentially creates a list of all subclasses
         This is allows us to easily assign yaml tags
         """

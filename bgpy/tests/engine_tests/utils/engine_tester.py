@@ -82,7 +82,7 @@ class EngineTester(EngineRunner):
     def _store_gt_data(
         self,
         engine: BaseSimulationEngine,
-        outcomes: dict[int, Outcomes],
+        outcomes: dict[int, int],
         graph_data_aggregator: GraphDataAggregator,
     ) -> None:
         """Stores GROUND TRUTH YAML for the engine, outcomes, and CSV for metrics.

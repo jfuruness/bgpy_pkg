@@ -12,7 +12,7 @@ class PathEnd(ROV):
 
     name: str = "Path-End"
 
-    def _valid_ann(self, ann: "Ann", recv_rel: Relationships) -> bool:
+    def _valid_ann(self, ann: "Ann", recv_rel: "Relationships") -> bool:
         """Returns announcement validity by checking pathend records"""
 
         origin_asn = ann.origin

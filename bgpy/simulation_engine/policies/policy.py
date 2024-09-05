@@ -14,7 +14,7 @@ class Policy(YamlAble, metaclass=ABCMeta):
     subclass_to_name_dict: ClassVar[dict[type["Policy"], str]] = dict()
     name_to_subclass_dict: ClassVar[dict[str, type["Policy"]]] = dict()
 
-    def __init_subclass__(cls, *args, **kwargs):
+    def __init_subclass__(cls: type["Policy"], *args, **kwargs) -> None:
         """This method essentially creates a list of all subclasses
 
         This allows us to know all AS types that have been created

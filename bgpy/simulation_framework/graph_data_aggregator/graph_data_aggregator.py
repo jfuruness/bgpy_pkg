@@ -45,7 +45,7 @@ class GraphDataAggregator:
     # Add Funcs #
     #############
 
-    def __add__(self, other):
+    def __add__(self, other: Any) -> "GraphDataAggregator":
         """Merges other GraphDataAggregator into this one and combines the data
 
         This gets called when we need to merge all the GraphDataAggregators
@@ -216,7 +216,7 @@ class GraphDataAggregator:
                     rows.append(row)
         return rows
 
-    def get_pickle_data(self):
+    def get_pickle_data(self) -> PICKLE_DATA_TYPE:
         agg_data: PICKLE_DATA_TYPE = {x: dict() for x in self.graph_categories}
         for graph_category, data_dict in self.data.items():
             for data_point_key, percent_list in data_dict.items():
