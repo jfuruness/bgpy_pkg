@@ -17,8 +17,7 @@ class ShortestPathPrefixASPAAttacker(BGP):
     customers the ShortestPathPrefix is a forged-origin hijack
     """
 
-    # mypy doesn't understand the multiple file superclass
-    def process_incoming_anns(  # type: ignore
+    def process_incoming_anns(
         self,
         *,
         from_rel: "Relationships",
@@ -41,7 +40,7 @@ class ShortestPathPrefixASPAAttacker(BGP):
             reset_q=reset_q,
         )
 
-    def _policy_propagate(  # type: ignore
+    def _policy_propagate(
         self: "BGP",
         neighbor: "AS",
         ann: "Ann",

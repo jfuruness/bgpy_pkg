@@ -8,7 +8,7 @@ if TYPE_CHECKING:
 
 
 def _get_best_ann_by_gao_rexford(
-    self: "BGP",
+    self,
     current_ann: Ann | None,
     new_ann: Ann,
 ) -> Ann:
@@ -43,7 +43,7 @@ def _get_best_ann_by_gao_rexford(
 
 
 def _get_best_ann_by_local_pref(
-    self: "BGP", current_ann: Ann, new_ann: Ann
+    self, current_ann: Ann, new_ann: Ann
 ) -> Ann | None:
     """Returns best announcement by local pref, or None if tie"""
 
@@ -55,7 +55,7 @@ def _get_best_ann_by_local_pref(
         return None
 
 
-def _get_best_ann_by_as_path(self: "BGP", current_ann: Ann, new_ann: Ann) -> Ann | None:
+def _get_best_ann_by_as_path(self, current_ann: Ann, new_ann: Ann) -> Ann | None:
     """Returns best announcement by as path length, or None if tie
 
     Shorter AS Paths are better
@@ -70,7 +70,7 @@ def _get_best_ann_by_as_path(self: "BGP", current_ann: Ann, new_ann: Ann) -> Ann
 
 
 def _get_best_ann_by_lowest_neighbor_asn_tiebreaker(
-    self: "BGP", current_ann: Ann, new_ann: Ann
+    self, current_ann: Ann, new_ann: Ann
 ) -> Ann:
     """Determines if the new ann > current ann by Gao Rexford for ties
 

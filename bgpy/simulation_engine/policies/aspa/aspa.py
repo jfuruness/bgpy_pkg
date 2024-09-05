@@ -24,7 +24,7 @@ class ASPA(ROV):
 
     name: str = "ASPA"
 
-    def _valid_ann(self, ann: "Ann", from_rel: Relationships) -> bool:  # type: ignore
+    def _valid_ann(self, ann: "Ann", from_rel: Relationships) -> bool:
         """Returns False if from peer/customer when aspa is set"""
 
         assert len(set(ann.as_path)) == len(ann.as_path), "We deal with prepending"

@@ -3,6 +3,7 @@ from typing import TYPE_CHECKING
 from bgpy.simulation_engine.policies.rov import ROV
 
 if TYPE_CHECKING:
+    from bgpy.enums import Relationships
     from bgpy.simulation_engine import Announcement as Ann
 
 
@@ -11,7 +12,7 @@ class PathEnd(ROV):
 
     name: str = "Path-End"
 
-    def _valid_ann(self, ann: "Ann", *args, **kwargs) -> bool:  # type: ignore
+    def _valid_ann(self, ann: "Ann", recv_rel: Relationships) -> bool:
         """Returns announcement validity by checking pathend records"""
 
         origin_asn = ann.origin

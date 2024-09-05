@@ -433,11 +433,7 @@ class Scenario(ABC):
     ################
 
     def _get_ordered_prefix_subprefix_dict(self):
-        """Saves a dict of prefix to subprefixes
-
-        mypy was having a lot of trouble with this section
-        thus the type ignores
-        """
+        """Saves a dict of prefix to subprefixes"""
 
         prefixes = set()
         for ann in self.announcements:
@@ -448,19 +444,19 @@ class Scenario(ABC):
         for roa in self.roas:
             prefixes.add(str(roa.prefix))
         # Do this here for speed
-        prefixes: list[IPv4Network | IPv6Network] = [  # type: ignore
+        prefixes: list[IPv4Network | IPv6Network] = [
             ip_network(x) for x in prefixes
         ]
         # Sort prefixes with most specific prefix first
         # Note that this must be sorted for the traceback to get the
         # most specific prefix first
-        prefixes = sorted(prefixes, key=lambda x: x.num_addresses)  # type: ignore
+        prefixes = sorted(prefixes, key=lambda x: x.num_addresses)
 
-        prefix_subprefix_dict = {x: [] for x in prefixes}  # type: ignore
+        prefix_subprefix_dict = {x: [] for x in prefixes}
         for outer_prefix, subprefix_list in prefix_subprefix_dict.items():
             for prefix in prefixes:
                 if (
-                    prefix.subnet_of(outer_prefix)  # type: ignore
+                    prefix.subnet_of(outer_prefix)
                     and prefix != outer_prefix
                 ):
                     subprefix_list.append(str(prefix))

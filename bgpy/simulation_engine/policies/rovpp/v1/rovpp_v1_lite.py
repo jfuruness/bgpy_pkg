@@ -17,8 +17,7 @@ class ROVPPV1Lite(ROV):
 
     name: str = "ROV++V1 Lite"
 
-    # mypy doesn't understand this subclass
-    def _policy_propagate(  # type: ignore
+    def _policy_propagate(
         self,
         neighbor: "AS",
         ann: "Ann",
@@ -30,8 +29,7 @@ class ROVPPV1Lite(ROV):
         # Policy handled this ann for propagation (and did nothing if blackhole)
         return ann.rovpp_blackhole
 
-    # mypy doesn't understand this subclass
-    def process_incoming_anns(  # type: ignore
+    def process_incoming_anns(
         self,
         *,
         from_rel: Relationships,

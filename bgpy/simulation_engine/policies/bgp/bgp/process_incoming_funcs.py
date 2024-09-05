@@ -10,7 +10,7 @@ if TYPE_CHECKING:
     from .bgp import BGP
 
 
-def seed_ann(self: "BGP", ann: "Ann") -> None:
+def seed_ann(self, ann: "Ann") -> None:
     """Seeds an announcement at this AS
 
     Useful hook function used in BGPSec
@@ -24,7 +24,7 @@ def seed_ann(self: "BGP", ann: "Ann") -> None:
     self.local_rib.add_ann(ann)
 
 
-def receive_ann(self: "BGP", ann: "Ann", accept_withdrawals: bool = False) -> None:
+def receive_ann(self, ann: "Ann", accept_withdrawals: bool = False) -> None:
     """Function for recieving announcements, adds to recv_q"""
 
     if getattr(ann, "withdraw", False) and not accept_withdrawals:
@@ -33,7 +33,7 @@ def receive_ann(self: "BGP", ann: "Ann", accept_withdrawals: bool = False) -> No
 
 
 def process_incoming_anns(
-    self: "BGP",
+    self,
     *,
     from_rel: "Relationships",
     propagation_round: int,
@@ -73,7 +73,7 @@ def process_incoming_anns(
 
 
 def _valid_ann(
-    self: "BGP",
+    self,
     ann: "Ann",
     recv_relationship: "Relationships",
 ) -> bool:
@@ -84,7 +84,7 @@ def _valid_ann(
 
 
 def _copy_and_process(
-    self: "BGP",
+    self,
     ann: "Ann",
     recv_relationship: "Relationships",
     overwrite_default_kwargs: dict[Any, Any] | None = None,
@@ -106,7 +106,7 @@ def _copy_and_process(
     return ann.copy(overwrite_default_kwargs=kwargs)
 
 
-def _reset_q(self: "BGP", reset_q: bool) -> None:
+def _reset_q(self, reset_q: bool) -> None:
     """Resets the recieve q"""
 
     if reset_q:

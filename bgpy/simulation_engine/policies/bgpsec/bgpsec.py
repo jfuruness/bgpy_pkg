@@ -24,7 +24,7 @@ class BGPSec(ROV):
 
     name = "BGPSec"
 
-    def seed_ann(self, ann: "Ann") -> None:  # type: ignore
+    def seed_ann(self, ann: "Ann") -> None:
         """Seeds announcement at this AS and initializes BGPSec path"""
 
         # This ann is valid, add the bgpsec as path
@@ -32,8 +32,8 @@ class BGPSec(ROV):
             ann = ann.copy({"bgpsec_as_path": ann.as_path})
         super().seed_ann(ann)
 
-    def _policy_propagate(  # type: ignore
-        self, neighbor: "AS", ann: "Ann", *args, **kwargs
+    def _policy_propagate(
+        self, neighbor: "AS", ann: "Ann", propagate_to: "Relatonships", send_rels: set["Relationships"],
     ) -> bool:
         """Sets BGPSec fields when propagating
 
@@ -52,7 +52,7 @@ class BGPSec(ROV):
         return True
 
     # Mypy doesn't understand the superclass
-    def _copy_and_process(  # type: ignore
+    def _copy_and_process(
         self,
         ann: "Ann",
         recv_relationship: "Relationships",
@@ -91,7 +91,7 @@ class BGPSec(ROV):
         else:
             return None
 
-    def _get_best_ann_by_gao_rexford(  # type: ignore
+    def _get_best_ann_by_gao_rexford(
         self,
         current_ann: Optional["Ann"],
         new_ann: "Ann",

@@ -51,7 +51,7 @@ class ASGraphAnalyzer(BaseASGraphAnalyzer):
             x: self._get_most_specific_ann(x, ordered_prefixes) for x in engine.as_graph
         }
 
-    def _get_most_specific_ann(  # type: ignore
+    def _get_most_specific_ann(
         self, as_obj: AS, ordered_prefixes: tuple[str, ...]
     ) -> Optional["Ann"]:
         """Returns the most specific announcement that exists in a rib
@@ -63,8 +63,7 @@ class ASGraphAnalyzer(BaseASGraphAnalyzer):
         for prefix in ordered_prefixes:
             most_specific_ann = as_obj.policy.local_rib.get(prefix)
             if most_specific_ann:
-                # Mypy doesn't recognize that this is always an annoucnement
-                return most_specific_ann  # type: ignore
+                return most_specific_ann
         return None
 
     def analyze(self) -> dict[int, dict[int, int]]:
@@ -103,8 +102,8 @@ class ASGraphAnalyzer(BaseASGraphAnalyzer):
                     # not the next ASN in the AS PATH
                     # This is more in line with real BGP and allows for more
                     # advanced types of hijacks such as origin spoofing hijacks
-                    most_specific_ann.next_hop_asn  # type: ignore
-                ]  # type: ignore
+                    most_specific_ann.next_hop_asn
+                ]
                 outcome_int = self._get_as_outcome_data_plane(next_as)
             assert outcome_int != Outcomes.UNDETERMINED.value, "Shouldn't be possible"
 
@@ -126,7 +125,7 @@ class ASGraphAnalyzer(BaseASGraphAnalyzer):
             return Outcomes.VICTIM_SUCCESS.value
         # End of traceback
         elif (
-            most_specific_ann is None  # type: ignore
+            most_specific_ann is None
             or len(most_specific_ann.as_path) == 1
             or most_specific_ann.recv_relationship.value == Relationships.ORIGIN.value
             # Adding this condition in V4 for proper next_hop behavior
@@ -134,7 +133,7 @@ class ASGraphAnalyzer(BaseASGraphAnalyzer):
         ):
             return Outcomes.DISCONNECTED.value
         else:
-            return Outcomes.UNDETERMINED.value  # type: ignore
+            return Outcomes.UNDETERMINED.value
 
     #######################
     # Control Plane Funcs #

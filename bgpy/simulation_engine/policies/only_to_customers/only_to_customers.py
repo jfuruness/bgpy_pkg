@@ -13,7 +13,7 @@ class OnlyToCustomers(BGP):
 
     name: str = "OnlyToCustomers"
 
-    def _valid_ann(self, ann: "Ann", from_rel: Rels) -> bool:  # type: ignore
+    def _valid_ann(self, ann: "Ann", from_rel: Rels) -> bool:
         """Returns False if from peer/customer when only_to_customers is set"""
 
         otc_valid = self._only_to_customers_valid(ann, from_rel)
@@ -35,7 +35,7 @@ class OnlyToCustomers(BGP):
         else:
             return True
 
-    def _policy_propagate(  # type: ignore
+    def _policy_propagate(
         self,
         neighbor: "AS",
         ann: "Ann",

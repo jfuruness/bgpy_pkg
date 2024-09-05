@@ -51,13 +51,12 @@ class EngineTester(EngineRunner):
         super().__init__(*args, **kwargs)
 
         # Don't store metrics if we don't use them
-        # TODO: do this in a way mypy won't explode at
         if not self.compare_graph_data:
 
             def noop(*args, **kwargs):
                 pass
 
-            self._store_metrics = noop  # type: ignore
+            self._store_metrics = noop
 
     def test_engine(self):
         """Tests an engine run
@@ -162,10 +161,10 @@ class EngineTester(EngineRunner):
         # Write ground truth graph
         self.conf.DiagramCls().generate_as_graph(
             engine_gt,
-            scenario,  # type: ignore
+            scenario,
             outcomes_gt,
-            f"({self.conf.name} Ground Truth)\n"  # type: ignore
-            f"{self.conf.desc}",  # type: ignore
+            f"({self.conf.name} Ground Truth)\n"
+            f"{self.conf.desc}",
             graph_data_aggregator,
             diagram_obj_ranks,
             static_order=static_order,

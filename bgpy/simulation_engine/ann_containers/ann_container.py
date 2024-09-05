@@ -26,7 +26,7 @@ class AnnContainer(UserDict[KeyType, ValueType], Generic[KeyType, ValueType]):
         """
 
         super().__init_subclass__(*args, **kwargs)
-        AnnContainer.subclasses.add(cls)  # type: ignore
+        AnnContainer.subclasses.add(cls)
 
     def __str__(self) -> str:
         """Returns contents of the container as str"""

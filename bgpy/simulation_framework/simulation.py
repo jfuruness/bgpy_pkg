@@ -289,7 +289,7 @@ class Simulation:
             total = sum(len(x) for x in chunks) * len(self.percent_adoptions)
             with tqdm(total=total, desc=desc) as pbar:
                 tasks = [p.apply_async(self._run_chunk, x) for x in enumerate(chunks)]
-                completed = []  # type: ignore
+                completed = []
                 while tasks:
                     completed, tasks = self._get_completed_and_tasks(completed, tasks)
                     self._update_tqdm_progress_bar(pbar)
@@ -347,7 +347,7 @@ class Simulation:
                     assert scenario_config.ScenarioCls, "ScenarioCls is None"
                     scenario = scenario_config.ScenarioCls(
                         scenario_config=scenario_config,
-                        percent_adoption=percent_adopt,  # type: ignore
+                        percent_adoption=percent_adopt,
                         engine=engine,
                         attacker_asns=trial_attacker_asns,
                         victim_asns=trial_victim_asns,
@@ -360,8 +360,8 @@ class Simulation:
                     for propagation_round in range(scenario_config.propagation_rounds):
                         self._single_engine_run(
                             engine=engine,
-                            percent_adopt=percent_adopt,  # type: ignore
-                            trial=trial,  # type: ignore
+                            percent_adopt=percent_adopt,
+                            trial=trial,
                             scenario=scenario,
                             propagation_round=propagation_round,
                             graph_data_aggregator=graph_data_aggregator,
@@ -403,13 +403,13 @@ class Simulation:
         """
 
         if self.parse_cpus == 1:
-            return tqdm(  # type: ignore
+            return tqdm(
                 enumerate(trials),
                 total=len(trials),
                 desc=f"Simulating {self.output_dir.name}",
             )
         else:
-            return enumerate(trials)  # type: ignore
+            return enumerate(trials)
 
     def _write_tqdm_progress(self, chunk_id: int, completed: int) -> None:
         """Writes total number of percent adoption trial pairs to file"""

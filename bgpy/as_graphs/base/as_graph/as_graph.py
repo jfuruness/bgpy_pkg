@@ -148,7 +148,7 @@ class ASGraph(YamlAble):
         self.ixp_asns = as_graph_info.ixp_asns
         # Probably there is a better way to do this, but for now we
         # store this as a dict then later make frozendict, thus the type ignore
-        self.as_dict = dict()  # type: ignore
+        self.as_dict: frozendict[int, "AS"] = dict()  # type: ignore
         # Just adds all ASes to the dict, and adds ixp/input_clique info
         self._gen_graph(
             as_graph_info,
@@ -161,7 +161,7 @@ class ASGraph(YamlAble):
         # Adds references to all relationships
         self._add_relationships(as_graph_info)
         # Used for iteration
-        self.ases: tuple[AS, ...] = tuple(self.as_dict.values())  # type: ignore
+        self.ases: tuple[AS, ...] = tuple(self.as_dict.values())
         # Remove duplicates from relationships and sort
         self._make_relationships_tuples()
         # Assign propagation rank to each AS
@@ -268,7 +268,7 @@ class ASGraph(YamlAble):
     # Yaml funcs #
     ##############
 
-    def __to_yaml_dict__(self) -> dict[str, Any]:  # type: ignore
+    def __to_yaml_dict__(self) -> dict[str, Any]:
         """Optional method called when yaml.dump is called"""
 
         return {
@@ -292,7 +292,7 @@ class ASGraph(YamlAble):
 
     # https://stackoverflow.com/a/7542261/8903959
     def __getitem__(self, index) -> AS:
-        return self.ases[index]  # type: ignore
+        return self.ases[index]
 
     def __len__(self) -> int:
         return len(self.as_dict)

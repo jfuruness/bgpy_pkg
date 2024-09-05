@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Callable, cast
 from warnings import warn
 
 from bgpy.simulation_engine.ann_containers import RIBsIn, RIBsOut, SendQueue
@@ -67,7 +67,7 @@ class BGPFull(BGP):
     # Propagation functions
     _propagate = _propagate
     _process_outgoing_ann = _process_outgoing_ann
-    _prev_sent = _prev_sent  # type: ignore
+    _prev_sent = _prev_sent
     _send_anns = _send_anns
 
     # Must add this func here since it refers to BGPFull
@@ -83,15 +83,12 @@ class BGPFull(BGP):
     # Process incoming funcs
     process_incoming_anns = process_incoming_anns
     _new_ann_better = _new_ann_better
-    _process_incoming_withdrawal = _process_incoming_withdrawal
-    _withdraw_ann_from_neighbors = _withdraw_ann_from_neighbors
-    _select_best_ribs_in = _select_best_ribs_in
+    _process_incoming_withdrawal = cast(Callable[[Self, "Ann", "Relationships"], bool], _process_incoming_withdrawal)
+    _withdraw_ann_from_neighbors = cast(Callable[[Self, "Ann"], Any], _withdraw_ann_from_neighbors)
+    _select_best_ribs_in = cast(Callable[[Self, str], "Ann" | None], _select_best_ribs_in)
 
-    # Must be here since it referes to BGPFull
-    # Could just use super but want to avoid the additional func calls
-    def receive_ann(  # type: ignore
-        self, ann: "Ann", accept_withdrawals: bool = True
-    ) -> None:
+    # NOTE: not sure why this is coded in such a weird fashion...
+    def receive_ann(self, ann: "Ann", accept_withdrawals: bool = True) -> None:
         BGP.receive_ann(self, ann, accept_withdrawals=True)
 
     def __to_yaml_dict__(self):

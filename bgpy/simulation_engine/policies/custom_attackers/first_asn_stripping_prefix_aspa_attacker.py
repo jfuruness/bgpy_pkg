@@ -18,8 +18,7 @@ class FirstASNStrippingPrefixASPAAttacker(BGP):
     first ASN from the path)
     """
 
-    # Mypy doesn't understand superclass since superclass is in a seperate file
-    def process_incoming_anns(  # type: ignore
+    def process_incoming_anns(
         self,
         *,
         from_rel: "Relationships",
@@ -42,7 +41,7 @@ class FirstASNStrippingPrefixASPAAttacker(BGP):
             reset_q=reset_q,
         )
 
-    def _policy_propagate(  # type: ignore
+    def _policy_propagate(
         self: "BGP",
         neighbor: "AS",
         ann: "Ann",

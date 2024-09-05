@@ -53,7 +53,7 @@ class Announcement(YamlAble):
         if self.seed_asn is None and len(self.as_path) == 1:
             object.__setattr__(self, "seed_asn", self.as_path[0])
         if self.next_hop_asn is None:
-            if len(self.as_path) == 1:  # type: ignore
+            if len(self.as_path) == 1:
                 object.__setattr__(self, "next_hop_asn", self.as_path[0])
             else:
                 raise ValueError("Must set next_hop_asn")
@@ -76,9 +76,9 @@ class Announcement(YamlAble):
         if overwrite_default_kwargs:
             # Mypy says it gets this wrong
             # https://github.com/microsoft/pyright/issues/1047#issue-705124399
-            return replace(self, **overwrite_default_kwargs)  # type: ignore
+            return replace(self, **overwrite_default_kwargs)
         else:
-            return replace(self)  # type: ignore
+            return replace(self)
 
     def bgpsec_valid(self, asn: int) -> bool:
         """Returns True if valid by BGPSec else False"""

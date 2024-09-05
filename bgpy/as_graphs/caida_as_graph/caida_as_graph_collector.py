@@ -75,9 +75,9 @@ class CAIDAASGraphCollector(ASGraphCollector):
             # Query URL
             with requests.get(url, stream=True, timeout=30) as r:
                 # Check for errors
-                r.raise_for_status()  # type: ignore
+                r.raise_for_status()
                 # Get soup
-                soup = Soup(r.text, "html.parser")  # type: ignore
+                soup = Soup(r.text, "html.parser")
                 # Extract hrefs from a tags
                 return [
                     x.get("href") for x in soup.select("a") if x.get("href") is not None
@@ -96,9 +96,9 @@ class CAIDAASGraphCollector(ASGraphCollector):
         # https://stackoverflow.com/a/39217788/8903959
         # Download the file
         with requests.get(url, stream=True, timeout=5) as r:
-            r.raise_for_status()  # type: ignore
+            r.raise_for_status()
             with bz2_path.open("wb") as f:
-                shutil.copyfileobj(r.raw, f)  # type: ignore
+                shutil.copyfileobj(r.raw, f)
 
     def _unzip_and_write_to_cache(self, bz2_path: Path) -> None:
         """Unzips bz2 file and writes to cache"""

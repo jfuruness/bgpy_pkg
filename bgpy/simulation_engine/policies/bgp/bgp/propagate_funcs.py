@@ -47,7 +47,7 @@ def propagate_to_peers(self) -> None:
 
 
 def _propagate(
-    self: "BGP",
+    self,
     propagate_to: Relationships,
     send_rels: set[Relationships],
 ) -> None:
@@ -86,7 +86,7 @@ def _propagate(
 
 
 def _policy_propagate(
-    self: "BGP",
+    self,
     neighbor: "AS",
     ann: "Ann",
     propagate_to: Relationships,
@@ -97,13 +97,13 @@ def _policy_propagate(
     return False
 
 
-def _prev_sent(self: "BGP", neighbor: "AS", ann: "Ann") -> bool:
+def _prev_sent(self, neighbor: "AS", ann: "Ann") -> bool:
     """Don't resend anything for BGPAS. For this class it doesn't matter"""
     return False
 
 
 def _process_outgoing_ann(
-    self: "BGP",
+    self,
     neighbor: "AS",
     ann: "Ann",
     propagate_to: Relationships,

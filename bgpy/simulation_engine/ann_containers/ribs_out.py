@@ -32,4 +32,4 @@ class RIBsOut(AnnContainer[int, dict[str, Ann]]):
     def neighbors(self) -> Iterator[int]:
         """Return all neighbors from the ribs out"""
 
-        return self.data.keys()  # type: ignore
+        return self.data.keys()

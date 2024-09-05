@@ -186,13 +186,13 @@ def _process_incoming_withdrawal(
     ann_info: AnnInfo | None = self.ribs_in.get_unprocessed_ann_recv_rel(
         neighbor, prefix
     )
-    current_annribs_in = ann_info.unprocessed_ann  # type: ignore
+    current_ann_ribs_in = ann_info.unprocessed_ann
 
     err = (
         f"Cannot withdraw ann that was never sent.\n\t "
-        f"Ribs in: {current_annribs_in}\n\t withdraw: {ann}"
+        f"Ribs in: {current_ann_ribs_in}\n\t withdraw: {ann}"
     )
-    assert ann.prefix_path_attributes_eq(current_annribs_in), err
+    assert ann.prefix_path_attributes_eq(current_ann_ribs_in), err
 
     # Remove ann from Ribs in
     self.ribs_in.remove_entry(neighbor, prefix)
@@ -218,7 +218,7 @@ def _process_incoming_withdrawal(
     return False
 
 
-def _withdraw_ann_from_neighbors(self: "BGPFull", withdraw_ann: "Ann"):
+def _withdraw_ann_from_neighbors(self: "BGPFull", withdraw_ann: "Ann") -> None:
     """Withdraw a route from all neighbors.
 
     This function will not remove an announcement from the local rib, that
@@ -275,8 +275,7 @@ def _select_best_ribs_in(self: "BGPFull", prefix: str) -> Optional["Ann"]:
 
     if best_unprocessed_ann is not None:
         assert best_recv_relationship is not None, "mypy type check"
-        # mypy having trouble dealing with this
-        return self._copy_and_process(  # type: ignore
+        return self._copy_and_process(
             best_unprocessed_ann, best_recv_relationship
         )
     else:

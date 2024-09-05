@@ -87,14 +87,14 @@ def _get_agg_data(self, max_attacker_data_dict):
     # Gets all lines that will be in the scatter plot
     # So basically each line beforehand, but some X values will
     # be removed if they aren't the strongest listed
-    scatter_plots: dict[str, dict[str, list[float]]] = {  # type: ignore
+    scatter_plots: dict[str, dict[str, list[float]]] = {
         label: {"xs": [], "ys": [], "yerrs": []} for label in self.labels_to_aggregate
     }
 
     # Get all strongest attacker lines. No data point markers, but the
     # line itself that will be plotted
     agg_xs = next(iter(max_attacker_data_dict.values())).xs
-    strongest_agg_dict: dict[str, dict[str, list[float]]] = {  # type: ignore
+    strongest_agg_dict: dict[str, dict[str, list[float]]] = {
         label: {"agg_xs": agg_xs, "agg_ys": [], "agg_yerrs": [0 for _ in agg_xs]}
         for label in self.strongest_attacker_dict
     }
@@ -113,7 +113,7 @@ def _get_agg_data(self, max_attacker_data_dict):
             new_yerr = None
             for line_info in line_infos_to_agg:
                 line_data = max_attacker_data_dict[line_info.label]
-                if max_val is None or line_data.ys[i] > max_val:  # type: ignore
+                if max_val is None or line_data.ys[i] > max_val:
                     best_label = line_info.label
                     max_val = line_data.ys[i]
                     new_yerr = line_data.yerrs[i]

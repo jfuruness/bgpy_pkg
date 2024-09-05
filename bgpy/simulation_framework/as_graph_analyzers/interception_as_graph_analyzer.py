@@ -37,8 +37,8 @@ class InterceptionASGraphAnalyzer(ASGraphAnalyzer):
                     # not the next ASN in the AS PATH
                     # This is more in line with real BGP and allows for more
                     # advanced types of hijacks such as origin spoofing hijacks
-                    most_specific_ann.next_hop_asn  # type: ignore
-                ]  # type: ignore
+                    most_specific_ann.next_hop_asn
+                ]
 
                 # If next hop is this AS, return disconnected since we didn't
                 # get back to the victim
@@ -70,8 +70,8 @@ class InterceptionASGraphAnalyzer(ASGraphAnalyzer):
                     # not the next ASN in the AS PATH
                     # This is more in line with real BGP and allows for more
                     # advanced types of hijacks such as origin spoofing hijacks
-                    most_specific_ann.next_hop_asn  # type: ignore
-                ]  # type: ignore
+                    most_specific_ann.next_hop_asn
+                ]
                 outcome_int = self._get_as_outcome_data_plane(next_as)
                 assert outcome_int != Outcomes.UNDETERMINED.value, "not possible"
                 self._data_plane_outcomes[as_obj.asn] = outcome_int
@@ -96,10 +96,10 @@ class InterceptionASGraphAnalyzer(ASGraphAnalyzer):
         elif as_obj.asn in self.scenario.victim_asns:
             return Outcomes.VICTIM_SUCCESS.value
         elif (
-            most_specific_ann is None  # type: ignore
+            most_specific_ann is None
             or len(most_specific_ann.as_path) == 1
             or most_specific_ann.next_hop_asn == as_obj.asn
         ):
             return Outcomes.DISCONNECTED.value
         else:
-            return Outcomes.UNDETERMINED.value  # type: ignore
+            return Outcomes.UNDETERMINED.value

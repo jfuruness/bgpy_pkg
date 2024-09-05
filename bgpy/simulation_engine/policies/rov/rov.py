@@ -3,6 +3,7 @@ from typing import TYPE_CHECKING
 from bgpy.simulation_engine.policies.bgp import BGP
 
 if TYPE_CHECKING:
+    from bgpy.enums import Relationships
     from bgpy.simulation_engine import Announcement as Ann
 
 
@@ -11,8 +12,7 @@ class ROV(BGP):
 
     name: str = "ROV"
 
-    # mypy doesn't understand that this func is valid
-    def _valid_ann(self, ann: "Ann", *args, **kwargs) -> bool:  # type: ignore
+    def _valid_ann(self, ann: "Ann", recv_rel: "Relationships") -> bool:
         """Returns announcement validity
 
         Returns false if invalid by roa,
@@ -25,5 +25,4 @@ class ROV(BGP):
             return False
         # Use standard BGP to determine if the announcement is valid
         else:
-            # Mypy doesn't map superclasses properly
-            return super(ROV, self)._valid_ann(ann, *args, **kwargs)  # type: ignore
+            return super(ROV, self)._valid_ann(ann=ann, recv_rel=recv_rel)

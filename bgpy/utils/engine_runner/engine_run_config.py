@@ -26,7 +26,7 @@ class EngineRunConfig:
     scenario_config: ScenarioConfig
     as_graph_info: ASGraphInfo
     ASGraphCls: type[ASGraph] = CAIDAASGraph
-    SimulationEngineCls: type[BaseSimulationEngine] = SimulationEngine  # type: ignore
+    SimulationEngineCls: type[BaseSimulationEngine] = SimulationEngine
     GraphDataAggregatorCls: type[GraphDataAggregator] = GraphDataAggregator
     ASGraphAnalyzerCls: type[BaseASGraphAnalyzer] = ASGraphAnalyzer
     DiagramCls: type[Diagram] = Diagram

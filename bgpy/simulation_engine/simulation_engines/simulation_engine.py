@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Any, Optional, cast
 
 from bgpy.shared.enums import Relationships
 
@@ -51,8 +51,8 @@ class SimulationEngine(BaseSimulationEngine):
         for ann in announcements:
             assert ann.seed_asn is not None
             # Get the AS object to seed at
-            # Must ignore type because it doesn't see assert above
-            obj_to_seed = self.as_graph.as_dict[ann.seed_asn]  # type: ignore
+            # Mypy doesn't seem to be getting this type, even with assert
+            obj_to_seed = self.as_graph.as_dict[cast(int, ann.seed_asn)]
             obj_to_seed.policy.seed_ann(ann)
 
     #####################

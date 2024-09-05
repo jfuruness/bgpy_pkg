@@ -8,7 +8,7 @@ if TYPE_CHECKING:
     from bgpy.simulation_engine import Announcement as Ann
 
 
-class ROVPPV1LiteFull(ROVPPV1Lite, ROVFull):  # type: ignore
+class ROVPPV1LiteFull(ROVPPV1Lite, ROVFull):
     """An Policy that deploys ROV++V1 Lite as defined in the ROV++ paper, and
     has withdrawals, ribs in and out
 

@@ -1,7 +1,7 @@
 import gc
 from statistics import mean
 
-import matplotlib.pyplot as plt  # type: ignore
+import matplotlib.pyplot as plt
 
 
 def _add_legends_and_save(

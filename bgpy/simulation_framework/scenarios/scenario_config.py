@@ -48,8 +48,7 @@ class ScenarioConfig:
     victim_subcategory_attr: str = ASGroups.STUBS_OR_MH.value
     # ASes that are hardcoded to specific values
     hardcoded_asn_cls_dict: frozendict[int, type[Policy]] = field(
-        # Mypy doesn't understand frozendict typing, just ignore it
-        default_factory=frozendict  # type: ignore
+        default_factory=frozendict
     )
     # Only necessary if coming from YAML or the test suite
     override_attacker_asns: frozenset[int] | None = None
@@ -77,7 +76,7 @@ class ScenarioConfig:
         """
 
         if self.propagation_rounds is None:
-            object.__setattr__(  # type: ignore
+            object.__setattr__(
                 self, "propagation_rounds", self.ScenarioCls.min_propagation_rounds
             )
 
@@ -92,7 +91,7 @@ class ScenarioConfig:
         if self.AdoptPolicyCls == MISSINGPolicy:
             object.__setattr__(self, "AdoptPolicyCls", self.BasePolicyCls)
         # Better error messages when setting this var
-        if not isinstance(self.hardcoded_asn_cls_dict, frozendict):  # type: ignore
+        if not isinstance(self.hardcoded_asn_cls_dict, frozendict):
             raise TypeError(
                 "hardcoded_asn_cls_dict of ScenarioConfig is not frozendict "
                 f"and is instead {type(self.hardcoded_asn_cls_dict)}. Please "

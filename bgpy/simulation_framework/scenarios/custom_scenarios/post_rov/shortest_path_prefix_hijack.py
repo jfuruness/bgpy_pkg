@@ -69,11 +69,9 @@ class ShortestPathPrefixHijack(VictimsPrefix):
         """Returns announcements for the shortest path attacker"""
 
         if self.scenario_config.AdoptPolicyCls in self.pre_rov_policy_classes:
-            # invalid self - mypy. It's right but doesn't matter
-            return self._get_prefix_attacker_anns(engine=engine)  # type: ignore
+            return self._get_prefix_attacker_anns(engine=engine)
         elif self.scenario_config.AdoptPolicyCls in self.rov_policy_classes:
-            # mypy failing here for no reason
-            return self._get_forged_origin_attacker_anns(engine=engine)  # type: ignore
+            return self._get_forged_origin_attacker_anns(engine=engine)
         elif self.scenario_config.AdoptPolicyCls in self.pathend_policy_classes:
             return self._get_pathend_attack_anns(engine=engine)
         elif self.scenario_config.AdoptPolicyCls in self.aspa_policy_classes:

@@ -17,8 +17,7 @@ class ROVPPV2Lite(ROVPPV1Lite):
 
     name: str = "ROV++V2 Lite"
 
-    # mypy doesn't understand this for some reason
-    def _policy_propagate(  # type: ignore
+    def _policy_propagate(
         self,
         neighbor: "AS",
         ann: "Ann",

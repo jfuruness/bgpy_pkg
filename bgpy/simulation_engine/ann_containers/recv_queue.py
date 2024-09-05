@@ -33,5 +33,4 @@ class RecvQueue(AnnContainer[str, list["Ann"]]):
     def get_ann_list(self, prefix: str) -> list["Ann"]:
         """Returns recevied ann list for a given prefix"""
 
-        # mypy can't handle this, just ignore
-        return self.data.get(prefix, list())  # type: ignore
+        return self.data.get(prefix, list())

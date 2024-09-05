@@ -49,7 +49,7 @@ class EngineRunner:
         scenario.setup_engine(engine)
 
         # Run engine
-        for round_ in range(self.conf.scenario_config.propagation_rounds):  # type: ignore
+        for round_ in range(self.conf.scenario_config.propagation_rounds):
             engine.run(propagation_round=round_, scenario=scenario)
             # By default, these are both no ops
             for func in (scenario.pre_aggregation_hook, scenario.post_propagation_hook):
@@ -159,9 +159,9 @@ class EngineRunner:
         # Write guess graph
         self.conf.DiagramCls().generate_as_graph(
             engine_guess,
-            scenario,  # type: ignore
+            scenario,
             outcomes_guess,
-            f"({self.conf.name})\n{self.conf.desc}",  # type: ignore
+            f"({self.conf.name})\n{self.conf.desc}",
             graph_data_aggregator,
             diagram_obj_ranks,
             static_order=static_order,

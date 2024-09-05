@@ -13,7 +13,7 @@ from .simulator_loader import SimulatorLoader
 # 2-way mappings between the types and the yaml tags
 types_to_yaml_tags = {X: X.yaml_suffix() for X in YamlAbleEnum.yamlable_enums()}
 types_to_yaml_tags.update(
-    {Cls: Cls.__name__ for Cls in AnnContainer.subclasses}  # type: ignore
+    {Cls: Cls.__name__ for Cls in AnnContainer.subclasses}
 )
 
 yaml_tags_to_types = {v: k for k, v in types_to_yaml_tags.items()}

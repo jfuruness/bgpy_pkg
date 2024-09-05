@@ -97,7 +97,7 @@ class AS(YamlAble):
         def _format(x: Any) -> str:
             if (isinstance(x, (list, tuple))) and all(isinstance(y, AS) for y in x):
                 assert not isinstance(x, list), "these should all be tuples"
-                return asns(x)  # type: ignore
+                return asns(x)
             elif x is None:
                 return ""
             elif any(isinstance(x, my_type) for my_type in (str, int, float)):

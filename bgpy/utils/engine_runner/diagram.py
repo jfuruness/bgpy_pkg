@@ -286,7 +286,7 @@ class Diagram:
                         s.node(asn)
                         if previous_asn is not None:
                             # Add invisible edge to maintain static order
-                            s.edge(previous_asn, asn, style="invis")  # type: ignore
+                            s.edge(previous_asn, asn, style="invis")
                         previous_asn = asn
 
     def _add_description(self, description: str, display_next_hop_asn: bool) -> None:
