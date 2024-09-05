@@ -62,8 +62,8 @@ class ASGraphAnalyzer(BaseASGraphAnalyzer):
 
         for prefix in ordered_prefixes:
             most_specific_ann = as_obj.policy.local_rib.get(prefix)
-            assert isinstance(most_specific_ann, Ann), "for mypy"
             if most_specific_ann:
+                assert isinstance(most_specific_ann, Ann), "for mypy"
                 return most_specific_ann
         return None
 

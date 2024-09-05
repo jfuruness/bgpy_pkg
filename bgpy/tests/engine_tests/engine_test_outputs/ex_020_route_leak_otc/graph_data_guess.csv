@@ -1,7 +1,0 @@
-scenario_cls,AdoptingPolicyCls,BasePolicyCls,in_adopting_asns,outcome_type,as_group,outcome,percent_adopt,propagation_round,value,yerr,scenario_config_label,scenario_label
-AccidentalRouteLeak,BGPFull,BGPFull,typing.Any,DATA,all_wout_ixps,ATTACKER_SUCCESS,0,1,0.0,0,,BGP Full
-AccidentalRouteLeak,BGPFull,BGPFull,False,DATA,all_wout_ixps,ATTACKER_SUCCESS,0,1,0.0,0,,BGP Full
-AccidentalRouteLeak,BGPFull,BGPFull,typing.Any,DATA,all_wout_ixps,VICTIM_SUCCESS,0,1,90.0,0,,BGP Full
-AccidentalRouteLeak,BGPFull,BGPFull,False,DATA,all_wout_ixps,VICTIM_SUCCESS,0,1,90.0,0,,BGP Full
-AccidentalRouteLeak,BGPFull,BGPFull,typing.Any,DATA,all_wout_ixps,DISCONNECTED,0,1,10.0,0,,BGP Full
-AccidentalRouteLeak,BGPFull,BGPFull,False,DATA,all_wout_ixps,DISCONNECTED,0,1,10.0,0,,BGP Full

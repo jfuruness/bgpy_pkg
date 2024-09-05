@@ -1,7 +1,0 @@
-scenario_cls,AdoptingPolicyCls,BasePolicyCls,in_adopting_asns,outcome_type,as_group,outcome,percent_adopt,propagation_round,value,yerr,scenario_config_label,scenario_label
-ForgedOriginPrefixHijack,BGP,BGP,typing.Any,DATA,all_wout_ixps,ATTACKER_SUCCESS,0,0,66.66666666666667,0,,BGP
-ForgedOriginPrefixHijack,BGP,BGP,False,DATA,all_wout_ixps,ATTACKER_SUCCESS,0,0,66.66666666666667,0,,BGP
-ForgedOriginPrefixHijack,BGP,BGP,typing.Any,DATA,all_wout_ixps,VICTIM_SUCCESS,0,0,33.333333333333336,0,,BGP
-ForgedOriginPrefixHijack,BGP,BGP,False,DATA,all_wout_ixps,VICTIM_SUCCESS,0,0,33.333333333333336,0,,BGP
-ForgedOriginPrefixHijack,BGP,BGP,typing.Any,DATA,all_wout_ixps,DISCONNECTED,0,0,0.0,0,,BGP
-ForgedOriginPrefixHijack,BGP,BGP,False,DATA,all_wout_ixps,DISCONNECTED,0,0,0.0,0,,BGP

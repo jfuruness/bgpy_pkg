@@ -1,7 +1,0 @@
-scenario_cls,AdoptingPolicyCls,BasePolicyCls,in_adopting_asns,outcome_type,as_group,outcome,percent_adopt,propagation_round,value,yerr,scenario_config_label,scenario_label
-FirstASNStrippingPrefixHijack,ROV,ROV,typing.Any,DATA,all_wout_ixps,ATTACKER_SUCCESS,0,0,40.0,0,,ROV
-FirstASNStrippingPrefixHijack,ROV,ROV,False,DATA,all_wout_ixps,ATTACKER_SUCCESS,0,0,40.0,0,,ROV
-FirstASNStrippingPrefixHijack,ROV,ROV,typing.Any,DATA,all_wout_ixps,VICTIM_SUCCESS,0,0,60.0,0,,ROV
-FirstASNStrippingPrefixHijack,ROV,ROV,False,DATA,all_wout_ixps,VICTIM_SUCCESS,0,0,60.0,0,,ROV
-FirstASNStrippingPrefixHijack,ROV,ROV,typing.Any,DATA,all_wout_ixps,DISCONNECTED,0,0,0.0,0,,ROV
-FirstASNStrippingPrefixHijack,ROV,ROV,False,DATA,all_wout_ixps,DISCONNECTED,0,0,0.0,0,,ROV

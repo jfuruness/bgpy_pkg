@@ -25,6 +25,6 @@ class ROV(BGP):
             return False
         # Use standard BGP to determine if the announcement is valid
         else:
-            rv = super(ROV, self)._valid_ann(ann=ann, recv_rel=recv_rel)
+            rv = super(ROV, self)._valid_ann(ann, recv_rel)
             assert isinstance(rv, bool), "for mypy"
             return rv
