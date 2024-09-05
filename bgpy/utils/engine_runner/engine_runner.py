@@ -28,7 +28,9 @@ class EngineRunner:
         self.storage_dir.mkdir(parents=True, exist_ok=True)
         self.dpi: int | None = dpi
 
-    def run_engine(self) -> tuple[BaseSimulationEngine, dict[int, int], GraphDataAggregator, Scenario]:
+    def run_engine(
+        self,
+    ) -> tuple[BaseSimulationEngine, dict[int, int], GraphDataAggregator, Scenario]:
         """Performs a single engine run
 
         Takes in a scenario (initialized with adopt ASN, atk and vic ASN,

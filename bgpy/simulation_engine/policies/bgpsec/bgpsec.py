@@ -33,7 +33,11 @@ class BGPSec(ROV):
         super().seed_ann(ann)
 
     def _policy_propagate(
-        self, neighbor: "AS", ann: "Ann", propagate_to: "Relationships", send_rels: set["Relationships"],
+        self,
+        neighbor: "AS",
+        ann: "Ann",
+        propagate_to: "Relationships",
+        send_rels: set["Relationships"],
     ) -> bool:
         """Sets BGPSec fields when propagating
 

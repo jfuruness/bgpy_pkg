@@ -55,7 +55,10 @@ def _get_roa_checker(self: "Scenario") -> ROAChecker:
 
 
 def _get_roa_origin(
-    self: "Scenario", roa_checker: ROAChecker, prefix: IPv4Network | IPv6Network, origin: int
+    self: "Scenario",
+    roa_checker: ROAChecker,
+    prefix: IPv4Network | IPv6Network,
+    origin: int,
 ) -> int | None:
     """Returns ROA origin"""
 

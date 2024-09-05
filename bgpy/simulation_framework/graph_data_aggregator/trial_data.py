@@ -66,14 +66,11 @@ class TrialData:
             else:
                 in_adopting_asns = as_obj.asn in scenario.adopting_asns
                 if (
-                    (
-                        self.graph_category.in_adopting_asns == InAdoptingASNs.TRUE
-                        and in_adopting_asns
-                    )
-                    or (
-                        self.graph_category.in_adopting_asns == InAdoptingASNs.FALSE
-                        and not in_adopting_asns
-                    )
+                    self.graph_category.in_adopting_asns == InAdoptingASNs.TRUE
+                    and in_adopting_asns
+                ) or (
+                    self.graph_category.in_adopting_asns == InAdoptingASNs.FALSE
+                    and not in_adopting_asns
                 ):
                     self._denominator += 1
                     return True

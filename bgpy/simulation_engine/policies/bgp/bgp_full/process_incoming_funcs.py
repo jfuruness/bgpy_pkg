@@ -57,7 +57,7 @@ def process_incoming_anns(
                 assert (
                     self.ribs_in.get_unprocessed_ann_recv_rel(ann.as_path[0], prefix)
                     is None
-                ), (str(self.as_.asn) + " " + str(ann) + err)
+                ), str(self.as_.asn) + " " + str(ann) + err
 
                 self.ribs_in.add_unprocessed_ann(ann, from_rel)
             # Process withdrawals even for invalid anns in the ribs_in
@@ -273,8 +273,6 @@ def _select_best_ribs_in(self: "BGPFull", prefix: str) -> Optional["Ann"]:
 
     if best_unprocessed_ann is not None:
         assert best_recv_relationship is not None, "mypy type check"
-        return self._copy_and_process(
-            best_unprocessed_ann, best_recv_relationship
-        )
+        return self._copy_and_process(best_unprocessed_ann, best_recv_relationship)
     else:
         return None

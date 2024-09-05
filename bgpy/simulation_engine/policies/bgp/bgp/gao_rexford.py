@@ -37,8 +37,7 @@ def _get_best_ann_by_gao_rexford(
                 return ann
             else:
                 return self._get_best_ann_by_lowest_neighbor_asn_tiebreaker(
-                    current_ann,
-                    new_ann
+                    current_ann, new_ann
                 )
         raise GaoRexfordError("No ann was chosen")
 

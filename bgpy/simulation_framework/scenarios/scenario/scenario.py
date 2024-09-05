@@ -444,9 +444,7 @@ class Scenario(ABC):
         for roa in self.roas:
             prefixes.add(str(roa.prefix))
         # Do this here for speed
-        prefixes: list[IPv4Network | IPv6Network] = [
-            ip_network(x) for x in prefixes
-        ]
+        prefixes: list[IPv4Network | IPv6Network] = [ip_network(x) for x in prefixes]
         # Sort prefixes with most specific prefix first
         # Note that this must be sorted for the traceback to get the
         # most specific prefix first
@@ -455,10 +453,7 @@ class Scenario(ABC):
         prefix_subprefix_dict = {x: [] for x in prefixes}
         for outer_prefix, subprefix_list in prefix_subprefix_dict.items():
             for prefix in prefixes:
-                if (
-                    prefix.subnet_of(outer_prefix)
-                    and prefix != outer_prefix
-                ):
+                if prefix.subnet_of(outer_prefix) and prefix != outer_prefix:
                     subprefix_list.append(str(prefix))
         # Get rid of ip_network
         return {str(k): v for k, v in prefix_subprefix_dict.items()}

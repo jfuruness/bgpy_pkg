@@ -163,8 +163,7 @@ class EngineTester(EngineRunner):
             engine_gt,
             scenario,
             outcomes_gt,
-            f"({self.conf.name} Ground Truth)\n"
-            f"{self.conf.desc}",
+            f"({self.conf.name} Ground Truth)\n" f"{self.conf.desc}",
             graph_data_aggregator,
             diagram_obj_ranks,
             static_order=static_order,

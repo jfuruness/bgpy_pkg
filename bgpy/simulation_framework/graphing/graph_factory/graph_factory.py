@@ -98,7 +98,9 @@ class GraphFactory:
             )
         )
 
-    def _get_last_propagation_round_graph_data(self, pickle_graph_data: "PICKLE_DATA_TYPE") -> "PICKLE_DATA_TYPE":
+    def _get_last_propagation_round_graph_data(
+        self, pickle_graph_data: "PICKLE_DATA_TYPE"
+    ) -> "PICKLE_DATA_TYPE":
         """Get only the latest propagation round for each scenario
 
         or raise an error

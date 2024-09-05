@@ -35,7 +35,6 @@ from .propagate_funcs import (
 )
 
 
-
 if TYPE_CHECKING:
     from weakref import CallableProxyType
     from bgpy.simulation_engine.announcement import Announcement as Ann
@@ -109,7 +108,6 @@ class BGP(Policy):
             stacklevel=2,
         )
         return self.recv_q
-
 
     ##############
     # Yaml funcs #

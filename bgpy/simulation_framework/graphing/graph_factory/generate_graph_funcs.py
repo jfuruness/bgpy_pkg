@@ -59,7 +59,9 @@ def _plot_non_aggregated_lines(self, ax, line_data_dict: dict[str, LineData]) ->
             self._plot_line_data(ax, line_data)
 
 
-def _plot_strongest_attacker_lines(self, ax, line_data_dict: dict[str, LineData]) -> tuple[dict[str, LineData], dict[str, LineData]]:
+def _plot_strongest_attacker_lines(
+    self, ax, line_data_dict: dict[str, LineData]
+) -> tuple[dict[str, LineData], dict[str, LineData]]:
     # Add all lines that are aggregated
     max_attacker_data_dict: dict[str, LineData] = dict()
     for label in self.labels_to_aggregate:
@@ -83,7 +85,9 @@ def _plot_strongest_attacker_lines(self, ax, line_data_dict: dict[str, LineData]
     return line_data_dict, max_attacker_data_dict
 
 
-def _get_agg_data(self, max_attacker_data_dict: dict[str, LineData]) -> tuple[dict[str, dict[str, list[float]]], dict[str, LineData]]:
+def _get_agg_data(
+    self, max_attacker_data_dict: dict[str, LineData]
+) -> tuple[dict[str, dict[str, list[float]]], dict[str, LineData]]:
     # Gets all lines that will be in the scatter plot
     # So basically each line beforehand, but some X values will
     # be removed if they aren't the strongest listed
@@ -132,7 +136,11 @@ def _get_agg_data(self, max_attacker_data_dict: dict[str, LineData]) -> tuple[di
     return strongest_agg_dict, scatter_line_data_dict
 
 
-def _get_scatter_line_data_dict(self, scatter_plots: dict[str, dict[str, list[float]]], max_attacker_dict: dict[str, LineData]) -> dict[str, LineData]:
+def _get_scatter_line_data_dict(
+    self,
+    scatter_plots: dict[str, dict[str, list[float]]],
+    max_attacker_dict: dict[str, LineData],
+) -> dict[str, LineData]:
     """Converts scatter plots into proper line data for plotting"""
 
     label_to_marker_dict = dict()
@@ -184,7 +192,9 @@ def _get_scatter_line_data_dict(self, scatter_plots: dict[str, dict[str, list[fl
     return scatter_line_data_dict
 
 
-def _get_agg_line_data(self, strongest_agg_dict: dict[str, dict[str, list[float]]]) -> tuple[LineData, ...]:
+def _get_agg_line_data(
+    self, strongest_agg_dict: dict[str, dict[str, list[float]]]
+) -> tuple[LineData, ...]:
     line_datas = list()
     for agg_label, agg_data_dict in strongest_agg_dict.items():
         line_datas.append(
@@ -223,7 +233,9 @@ def _plot_line_data(self, ax, line_data: LineData):
     )
 
 
-def _plot_scatter_plots(self, ax, scatter_plot_line_data_dict: dict[str, LineData]) -> None:
+def _plot_scatter_plots(
+    self, ax, scatter_plot_line_data_dict: dict[str, LineData]
+) -> None:
     """Plots scatter plots"""
 
     for line_data in scatter_plot_line_data_dict.values():
