@@ -1,4 +1,3 @@
-
 from bgpy.as_graphs import AS
 from bgpy.shared.enums import InAdoptingASNs, Plane
 from bgpy.simulation_engine import BaseSimulationEngine
