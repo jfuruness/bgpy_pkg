@@ -50,7 +50,7 @@ def _get_graph_name(self, graph_category: "GraphCategory") -> str:
     ).replace(" ", "")
 
 
-def _customize_graph(self, fig, ax, graph_category: "GraphCategory"):
+def _customize_graph(self, fig, ax, graph_category: "GraphCategory") -> None:
     """Customizes graph properties"""
 
     fig.set_dpi(300)

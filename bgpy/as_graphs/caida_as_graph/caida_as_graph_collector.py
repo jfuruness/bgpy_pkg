@@ -4,6 +4,7 @@ from datetime import datetime, timedelta
 from functools import cached_property
 from pathlib import Path
 from tempfile import TemporaryDirectory
+from typing import cast
 
 import requests
 from bs4 import BeautifulSoup as Soup
@@ -79,9 +80,10 @@ class CAIDAASGraphCollector(ASGraphCollector):
                 # Get soup
                 soup = Soup(r.text, "html.parser")
                 # Extract hrefs from a tags
-                return [
+                rv = [
                     x.get("href") for x in soup.select("a") if x.get("href") is not None
                 ]
+                return cast(list[str], rv)
         except requests.exceptions.ReadTimeout as e:
             print(f"Failed to get {url} due to {e}")
             raise

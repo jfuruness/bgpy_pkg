@@ -7,7 +7,7 @@ from .ann_container import AnnContainer
 
 if TYPE_CHECKING:
     from bgpy.shared.enums import Relationships
-    from bgpy.simulation_engines.py_simulation_engine import Announcement as Ann
+    from bgpy.simulation_engine import Announcement as Ann
 
 
 @yaml_info(yaml_tag="AnnInfo")

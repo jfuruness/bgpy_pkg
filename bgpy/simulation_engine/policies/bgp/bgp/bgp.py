@@ -39,7 +39,7 @@ from .propagate_funcs import (
 if TYPE_CHECKING:
     from weakref import CallableProxyType
     from bgpy.simulation_engine.announcement import Announcement as Ann
-    from bgpy.enums import Relationships
+    from bgpy.shared.enums import Relationships
     from bgpy.as_graphs import AS
 
 

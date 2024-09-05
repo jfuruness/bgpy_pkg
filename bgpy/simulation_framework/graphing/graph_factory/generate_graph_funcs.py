@@ -59,7 +59,7 @@ def _plot_non_aggregated_lines(self, ax, line_data_dict: dict[str, LineData]) ->
             self._plot_line_data(ax, line_data)
 
 
-def _plot_strongest_attacker_lines(self, ax, line_data_dict: dict[str, LineData]):
+def _plot_strongest_attacker_lines(self, ax, line_data_dict: dict[str, LineData]) -> tuple[dict[str, LineData], dict[str, LineData]]:
     # Add all lines that are aggregated
     max_attacker_data_dict: dict[str, LineData] = dict()
     for label in self.labels_to_aggregate:
@@ -83,7 +83,7 @@ def _plot_strongest_attacker_lines(self, ax, line_data_dict: dict[str, LineData]
     return line_data_dict, max_attacker_data_dict
 
 
-def _get_agg_data(self, max_attacker_data_dict):
+def _get_agg_data(self, max_attacker_data_dict: dict[str, LineData]) -> tuple[dict[str, dict[str, list[float]]], dict[str, LineData]]:
     # Gets all lines that will be in the scatter plot
     # So basically each line beforehand, but some X values will
     # be removed if they aren't the strongest listed
@@ -95,7 +95,7 @@ def _get_agg_data(self, max_attacker_data_dict):
     # line itself that will be plotted
     agg_xs = next(iter(max_attacker_data_dict.values())).xs
     strongest_agg_dict: dict[str, dict[str, list[float]]] = {
-        label: {"agg_xs": agg_xs, "agg_ys": [], "agg_yerrs": [0 for _ in agg_xs]}
+        label: {"agg_xs": list(agg_xs), "agg_ys": [], "agg_yerrs": [0 for _ in agg_xs]}
         for label in self.strongest_attacker_dict
     }
 
@@ -132,7 +132,7 @@ def _get_agg_data(self, max_attacker_data_dict):
     return strongest_agg_dict, scatter_line_data_dict
 
 
-def _get_scatter_line_data_dict(self, scatter_plots, max_attacker_dict):
+def _get_scatter_line_data_dict(self, scatter_plots: dict[str, dict[str, list[float]]], max_attacker_dict: dict[str, LineData]) -> dict[str, LineData]:
     """Converts scatter plots into proper line data for plotting"""
 
     label_to_marker_dict = dict()
@@ -157,32 +157,34 @@ def _get_scatter_line_data_dict(self, scatter_plots, max_attacker_dict):
                 ],
                 ls="solid",
                 color="grey",
-                extra_kwargs={
-                    **dict(
-                        lw=0,
-                        **old_line_data.line_info.extra_kwargs,
-                    ),
-                    # Marker face color
-                    # Since lines are colored, make color grey
-                    "mfc": "gray",  # old_line_data.line_info.color,
-                    # Marker edge color
-                    "mec": "gray",  # old_line_data.line_info.color,
-                    # Marker size
-                    "ms": 20,
-                    "markeredgewidth": 3,
-                    # Old line color
-                    "ecolor": "gray",  # old_line_data.line_info.color,
-                    "zorder": 3,
-                },
+                extra_kwargs=frozendict(
+                    {
+                        **dict(
+                            lw=0,
+                            **old_line_data.line_info.extra_kwargs,
+                        ),
+                        # Marker face color
+                        # Since lines are colored, make color grey
+                        "mfc": "gray",  # old_line_data.line_info.color,
+                        # Marker edge color
+                        "mec": "gray",  # old_line_data.line_info.color,
+                        # Marker size
+                        "ms": 20,
+                        "markeredgewidth": 3,
+                        # Old line color
+                        "ecolor": "gray",  # old_line_data.line_info.color,
+                        "zorder": 3,
+                    }
+                ),
             ),
-            xs=point_dict["xs"],
-            ys=point_dict["ys"],
-            yerrs=point_dict["yerrs"],
+            xs=tuple(point_dict["xs"]),
+            ys=tuple(point_dict["ys"]),
+            yerrs=tuple(point_dict["yerrs"]),
         )
     return scatter_line_data_dict
 
 
-def _get_agg_line_data(self, strongest_agg_dict) -> tuple[LineData, ...]:
+def _get_agg_line_data(self, strongest_agg_dict: dict[str, dict[str, list[float]]]) -> tuple[LineData, ...]:
     line_datas = list()
     for agg_label, agg_data_dict in strongest_agg_dict.items():
         line_datas.append(
@@ -198,9 +200,9 @@ def _get_agg_line_data(self, strongest_agg_dict) -> tuple[LineData, ...]:
                     # Ms stands for marker size
                     extra_kwargs=frozendict({"zorder": 0, "ms": 0, "elinewidth": 0}),
                 ),
-                xs=agg_data_dict["agg_xs"],
-                ys=agg_data_dict["agg_ys"],
-                yerrs=agg_data_dict["agg_yerrs"],
+                xs=tuple(agg_data_dict["agg_xs"]),
+                ys=tuple(agg_data_dict["agg_ys"]),
+                yerrs=tuple(agg_data_dict["agg_yerrs"]),
             )
         )
     return tuple(line_datas)
@@ -221,7 +223,7 @@ def _plot_line_data(self, ax, line_data: LineData):
     )
 
 
-def _plot_scatter_plots(self, ax, scatter_plot_line_data_dict):
+def _plot_scatter_plots(self, ax, scatter_plot_line_data_dict: dict[str, LineData]) -> None:
     """Plots scatter plots"""
 
     for line_data in scatter_plot_line_data_dict.values():

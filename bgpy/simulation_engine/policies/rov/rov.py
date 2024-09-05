@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING
 from bgpy.simulation_engine.policies.bgp import BGP
 
 if TYPE_CHECKING:
-    from bgpy.enums import Relationships
+    from bgpy.shared.enums import Relationships
     from bgpy.simulation_engine import Announcement as Ann
 
 
