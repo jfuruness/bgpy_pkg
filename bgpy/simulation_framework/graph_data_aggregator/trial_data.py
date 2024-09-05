@@ -1,7 +1,7 @@
 from typing import Any
 
 from bgpy.as_graphs import AS
-from bgpy.shared.enums import Plane
+from bgpy.shared.enums import Plane, InAdoptingASNs
 from bgpy.simulation_engine import BaseSimulationEngine
 from bgpy.simulation_framework.scenarios import Scenario
 
@@ -60,12 +60,21 @@ class TrialData:
         """Adds to the denominator if it is within the as group and adopting"""
 
         if as_obj.asn in engine.as_graph.asn_groups[self.graph_category.as_group.value]:
-            if self.graph_category.in_adopting_asns is Any:
+            if self.graph_category.in_adopting_asns == InAdoptingASNs.ANY:
                 self._denominator += 1
                 return True
             else:
                 in_adopting_asns = as_obj.asn in scenario.adopting_asns
-                if self.graph_category.in_adopting_asns is in_adopting_asns:
+                if (
+                    (
+                        self.graph_category.in_adopting_asns == InAdoptingASNs.TRUE
+                        and in_adopting_asns
+                    )
+                    or (
+                        self.graph_category.in_adopting_asns == InAdoptingASNs.FALSE
+                        and not in_adopting_asns
+                    )
+                ):
                     self._denominator += 1
                     return True
         return False

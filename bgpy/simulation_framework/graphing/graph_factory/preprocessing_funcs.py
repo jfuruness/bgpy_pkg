@@ -44,7 +44,7 @@ def _preprocessing_steps(
 def _get_graph_name(self, graph_category: "GraphCategory") -> str:
     return (
         f"{graph_category.as_group.value}"
-        f"/in_adopting_asns_is_{graph_category.in_adopting_asns}"
+        f"/in_adopting_asns_is_{graph_category.in_adopting_asns.value}"
         f"/{graph_category.plane.name}"
         f"/{graph_category.outcome.name}.png"
     ).replace(" ", "")

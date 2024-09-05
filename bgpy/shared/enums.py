@@ -1,12 +1,13 @@
 from enum import Enum, unique
+from typing import Any
 
-yamlable_enums = []
+yamlable_enums: list[type["YamlAbleEnum"]] = []
 
 
 # Yaml must have unique keys/values
 @unique
 class YamlAbleEnum(Enum):
-    def __init_subclass__(cls, *args, **kwargs):
+    def __init_subclass__(cls: type["YamlAbleEnum"], *args, **kwargs) -> None:
         """This method essentially creates a list of all subclasses
 
         This is used later in the yaml codec
@@ -16,11 +17,11 @@ class YamlAbleEnum(Enum):
         yamlable_enums.append(cls)
 
     @classmethod
-    def yaml_suffix(cls):
+    def yaml_suffix(cls: type["YamlAbleEnum"]) -> str:
         return cls.__name__
 
     @staticmethod
-    def yamlable_enums():
+    def yamlable_enums() -> list[type["YamlAbleEnum"]]:
         return yamlable_enums
 
 
@@ -119,3 +120,9 @@ class SpecialPercentAdoptions(YamlAbleEnum):
             return float(self) == float(other)
         else:
             return NotImplemented
+
+
+class InAdoptingASNs(YamlAbleEnum):
+    TRUE: str = "True"
+    FALSE: str = "False"
+    ANY: str = "Any"

@@ -193,7 +193,7 @@ class GraphDataAggregator:
                         "BasePolicyCls": (
                             data_point_key.scenario_config.BasePolicyCls.__name__
                         ),
-                        "in_adopting_asns": str(graph_category.in_adopting_asns),
+                        "in_adopting_asns": graph_category.in_adopting_asns.value,
                         "outcome_type": graph_category.plane.name,
                         "as_group": graph_category.as_group.value,
                         "outcome": graph_category.outcome.name,

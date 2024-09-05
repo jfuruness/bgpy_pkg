@@ -18,9 +18,9 @@ class AnnContainer(UserDict[KeyType, ValueType], Generic[KeyType, ValueType]):
     https://github.com/python/cpython/blob/main/Lib/collections/__init__.py#L1117
     """
 
-    subclasses: ClassVar[set["AnnContainer[Any, Any]"]] = set()
+    subclasses: ClassVar[set[type["AnnContainer[Any, Any]"]]] = set()
 
-    def __init_subclass__(cls, *args, **kwargs):
+    def __init_subclass__(cls: type[AnnContainer[Any, Any]], *args, **kwargs):
         """This method essentially creates a list of all subclasses
         This is allows us to easily assign yaml tags
         """

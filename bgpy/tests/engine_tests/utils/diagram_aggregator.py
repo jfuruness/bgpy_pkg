@@ -38,7 +38,7 @@ class DiagramAggregator:
             save_all=True,
             append_images=converted_images[1:],
         )
-        for img in converted_images:
+        for img in converted_images:  # type: ignore
             img.close()
 
     @property

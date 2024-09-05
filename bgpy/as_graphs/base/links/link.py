@@ -5,7 +5,7 @@ from typing import Any
 class Link(ABC):
     """Contains a relationship link in a BGP topology"""
 
-    def __init__(self):
+    def __init__(self, asn1: int, asn2: int) -> None:
         # Make sure we have asns
         # Make sure the asns is a tuple
         assert isinstance(self.asns, tuple)

@@ -5,7 +5,7 @@ from typing import Any, Iterable
 from requests_cache import CachedSession
 
 from bgpy.shared.constants import SINGLE_DAY_CACHE_DIR
-from bgpy.shared.enums import ASGroups, Outcomes, Plane
+from bgpy.shared.enums import ASGroups, Outcomes, Plane, InAdoptingASNs
 from bgpy.simulation_framework.graph_data_aggregator.graph_category import GraphCategory
 
 
@@ -15,7 +15,7 @@ def get_all_graph_categories() -> Iterable[GraphCategory]:
     for plane in [Plane.DATA]:
         for as_group in [ASGroups.ALL_WOUT_IXPS]:
             for outcome in [x for x in Outcomes if x != Outcomes.UNDETERMINED]:
-                for in_adopting_asns in (Any, True, False):
+                for in_adopting_asns_enum in list(InAdoptingASNs):
                     yield GraphCategory(
                         plane=plane,
                         as_group=as_group,
