@@ -83,12 +83,10 @@ test = [
 
 [tool.setuptools]
 include-package-data = true
+
 # https://stackoverflow.com/a/76214408/8903959
-package-data = {"bgpy": ["py.typed"]}
-
-
-#[tool.setuptools.package-data]
-#bgpy = ["py.typed"]
+[tool.setuptools.package-data]
+bgpy = ["py.typed"]
 
 # https://stackoverflow.com/a/76214408/8903959
 [tool.setuptools.packages.find]
