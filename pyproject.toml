@@ -90,7 +90,7 @@ bgpy = ["py.typed"]
 
 # https://stackoverflow.com/a/76214408/8903959
 [tool.setuptools.packages.find]
-where = ["bgpy"]
+where = ["."]
 # Chat gpt told me to add this...
 include = ["bgpy"]
 
@@ -116,7 +116,6 @@ filterwarnings = [
 ]
 
 [tool.mypy]
-mypy_path = "bgpy"
 strict = true
 # Some extra stuff we might want
 ignore_missing_imports = true
