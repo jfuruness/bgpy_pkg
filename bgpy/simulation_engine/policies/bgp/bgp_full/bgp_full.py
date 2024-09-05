@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Callable, cast
+from typing import TYPE_CHECKING, Callable, MethodType
 from warnings import warn
 
 from bgpy.simulation_engine.ann_containers import RIBsIn, RIBsOut, SendQueue
@@ -81,11 +81,12 @@ class BGPFull(BGP):
         super(BGPFull, self)._propagate(propagate_to, send_rels)
 
     # Process incoming funcs
-    process_incoming_anns = process_incoming_anns
-    _new_ann_better = _new_ann_better
-    _process_incoming_withdrawal = cast(Callable[[Self, "Ann", "Relationships"], bool], _process_incoming_withdrawal)
-    _withdraw_ann_from_neighbors = cast(Callable[[Self, "Ann"], Any], _withdraw_ann_from_neighbors)
-    _select_best_ribs_in = cast(Callable[[Self, str], "Ann" | None], _select_best_ribs_in)
+    if not TYPE_CHECKING:
+        process_incoming_anns = process_incoming_anns
+        _new_ann_better = _new_ann_better
+        _process_incoming_withdrawal = _process_incoming_withdrawal
+        _withdraw_ann_from_neighbors = _withdraw_ann_from_neighbors
+        _select_best_ribs_in = _select_best_ribs_in
 
     # NOTE: not sure why this is coded in such a weird fashion...
     def receive_ann(self, ann: "Ann", accept_withdrawals: bool = True) -> None:

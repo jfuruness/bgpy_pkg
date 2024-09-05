@@ -115,7 +115,6 @@ mypy_path = "bgpy"
 strict = true
 # Some extra stuff we might want
 ignore_missing_imports = true
-no_implicit_optional = true
 show_error_codes = true
 warn_unreachable = true
 # These next few are various gradations of forcing use of type annotations

@@ -22,8 +22,7 @@ class Policy(YamlAble, metaclass=ABCMeta):
 
         super().__init_subclass__(*args, **kwargs)
         assert hasattr(cls, "name"), "Policy must have a name"
-        # yamlable not up to date with mypy
-        yaml_info_decorate(cls, yaml_tag=cls.name)  # type: ignore
+        yaml_info_decorate(cls, yaml_tag=cls.name)
         cls.subclass_to_name_dict[cls] = cls.name
         cls.name_to_subclass_dict[cls.name] = cls
 

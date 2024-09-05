@@ -20,7 +20,7 @@ def get_all_graph_categories() -> Iterable[GraphCategory]:
                         plane=plane,
                         as_group=as_group,
                         outcome=outcome,
-                        in_adopting_asns=in_adopting_asns,
+                        in_adopting_asns=in_adopting_asns_enum,
                     )
 
 

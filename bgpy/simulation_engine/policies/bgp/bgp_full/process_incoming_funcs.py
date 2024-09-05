@@ -10,7 +10,7 @@ if TYPE_CHECKING:
 
 
 def process_incoming_anns(
-    self: "BGPFull",
+    self,
     *,
     from_rel: "Relationships",
     propagation_round: int,
@@ -118,7 +118,7 @@ def process_incoming_anns(
 
 
 def _new_ann_better(
-    self: "BGPFull",
+    self,
     # Current announcement to check against
     current_ann: Optional["Ann"],
     # Whether or not current ann has been processed local rib
@@ -147,14 +147,10 @@ def _new_ann_better(
     default_new_recv_rel: Relationship for if the ann is unprocessed
     """
 
-    # mypy says statement is unreachable, but this isn't true for subclasses
-    # In other repos
-    if current_ann is None:  # type: ignore
+    if current_ann is None:
         return True
     elif new_ann is None:
-        # mypy says statement is unreachable but this isn't true for subclasses
-        # In other repos
-        return False  # type: ignore
+        return False
 
     if not current_processed:
         current_ann = self._copy_and_process(current_ann, default_current_recv_rel)
@@ -165,7 +161,7 @@ def _new_ann_better(
 
 
 def _process_incoming_withdrawal(
-    self: "BGPFull",
+    self,
     ann: "Ann",
     recv_relationship: "Relationships",
 ) -> bool:
@@ -186,6 +182,8 @@ def _process_incoming_withdrawal(
     ann_info: AnnInfo | None = self.ribs_in.get_unprocessed_ann_recv_rel(
         neighbor, prefix
     )
+    # I don't remember why this could be None... this assert may be wrong
+    assert ann_info is not None, "for mypy"
     current_ann_ribs_in = ann_info.unprocessed_ann
 
     err = (
@@ -218,7 +216,7 @@ def _process_incoming_withdrawal(
     return False
 
 
-def _withdraw_ann_from_neighbors(self: "BGPFull", withdraw_ann: "Ann") -> None:
+def _withdraw_ann_from_neighbors(self, withdraw_ann: "Ann") -> None:
     """Withdraw a route from all neighbors.
 
     This function will not remove an announcement from the local rib, that
@@ -250,7 +248,7 @@ def _withdraw_ann_from_neighbors(self: "BGPFull", withdraw_ann: "Ann") -> None:
             send_info.ann = None
 
 
-def _select_best_ribs_in(self: "BGPFull", prefix: str) -> Optional["Ann"]:
+def _select_best_ribs_in(self, prefix: str) -> Optional["Ann"]:
     """Selects best ann from ribs in
 
     Remember, ribs in anns are NOT deep copied
@@ -265,10 +263,10 @@ def _select_best_ribs_in(self: "BGPFull", prefix: str) -> Optional["Ann"]:
         if self._new_ann_better(
             best_unprocessed_ann,
             False,
-            best_recv_relationship,  # type: ignore
+            best_recv_relationship,
             new_unprocessed_ann,
             False,
-            new_recv_relationship,  # type: ignore
+            new_recv_relationship,
         ):
             best_unprocessed_ann = new_unprocessed_ann
             best_recv_relationship = new_recv_relationship

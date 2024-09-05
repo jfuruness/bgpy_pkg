@@ -1,4 +1,5 @@
-from typing import TYPE_CHECKING, Any, Optional, Callable, Self, cast
+import sys
+from typing import TYPE_CHECKING, Any, Optional, Callable, Self, cast, MethodType
 from warnings import warn
 
 from bgpy.simulation_engine.ann_containers import LocalRIB, RecvQueue
@@ -33,6 +34,8 @@ from .propagate_funcs import (
     propagate_to_providers,
 )
 
+
+
 if TYPE_CHECKING:
     from weakref import CallableProxyType
     from bgpy.simulation_engine.announcement import Announcement as Ann
@@ -62,6 +65,31 @@ class BGP(Policy):
         # This gets set within the AS class so it's fine
         self.as_: CallableProxyType[AS] = as_  # type: ignore
 
+    # Propagation functionality
+    propagate_to_providers = propagate_to_providers
+    propagate_to_customers = propagate_to_customers
+    propagate_to_peers = propagate_to_peers
+    _propagate = _propagate
+    # _policy_propagate = _policy_propagate
+    _process_outgoing_ann = _process_outgoing_ann
+    _prev_sent = _prev_sent
+
+    # Process incoming announcements
+    seed_ann = seed_ann
+    receive_ann = receive_ann
+    process_incoming_anns = process_incoming_anns
+    _valid_ann = _valid_ann
+    _copy_and_process = _copy_and_process
+    _reset_q = _reset_q
+
+    # Gao rexford functions
+    _get_best_ann_by_gao_rexford = _get_best_ann_by_gao_rexford
+    _get_best_ann_by_local_pref = _get_best_ann_by_local_pref
+    _get_best_ann_by_as_path = _get_best_ann_by_as_path
+    _get_best_ann_by_lowest_neighbor_asn_tiebreaker = (
+        _get_best_ann_by_lowest_neighbor_asn_tiebreaker
+    )
+
     @property
     def _local_rib(self) -> LocalRIB:
         warn(
@@ -82,55 +110,6 @@ class BGP(Policy):
         )
         return self.recv_q
 
-    # NOTE: must use cast since mypy doesn't detect these properly:
-    # https://github.com/python/mypy/issues/17737
-
-    # Propagation functionality
-    propagate_to_providers = cast(Callable[[Self], None], propagate_to_providers)
-    propagate_to_customers = cast(Callable[[Self], None], propagate_to_customers)
-    propagate_to_peers = cast(Callable[[Self], None], propagate_to_peers)
-    _propagate = cast(
-        Callable[[Self, "Relationships", set["Relationships"]], None], _propagate
-    )
-    _policy_propagate = cast(
-        Callable[[Self, "AS", "Ann", "Relationships", set["Relationships"]], bool],
-        _policy_propagate,
-    )
-    _process_outgoing_ann = cast(
-        Callable[[Self, "AS", "Ann", "Relationships", set["Relationships"]], None],
-        _process_outgoing_ann,
-    )
-    _prev_sent = cast(Callable[[Self, "AS", "Ann"], bool], _prev_sent)
-
-    # Process incoming announcements
-    seed_ann = cast(Callable[[Self, "Ann"], None], seed_ann)
-    receive_ann = cast(Callable[[Self, "Ann", bool], None], receive_ann)
-    process_incoming_anns = cast(
-        Callable[[Self, "Relationships", int, "Scenario", bool], None],
-        process_incoming_anns,
-    )
-    _valid_ann = cast(Callable[[Self, "Ann", "Relationships"], bool], _valid_ann)
-    _copy_and_process = cast(
-        Callable[[Self, "Ann", "Relationships", Optional[dict[Any, Any]]], "Ann"],
-        _copy_and_process,
-    )
-    _reset_q = cast(Callable[[Self, bool], None], _reset_q)
-
-    # Gao rexford functions
-    _get_best_ann_by_gao_rexford = cast(
-        Callable[[Self, Optional["Ann"], "Ann"], Optional["Ann"]],
-        _get_best_ann_by_gao_rexford,
-    )
-    _get_best_ann_by_local_pref = cast(
-        Callable[[Self, "Ann", "Ann"], "Ann"], _get_best_ann_by_local_pref
-    )
-    _get_best_ann_by_as_path = cast(
-        Callable[[Self, "Ann", "Ann"], "Ann"], _get_best_ann_by_as_path
-    )
-    _get_best_ann_by_lowest_neighbor_asn_tiebreaker = cast(
-        Callable[[Self, "Ann", "Ann"], "Ann"],
-        _get_best_ann_by_lowest_neighbor_asn_tiebreaker,
-    )
 
     ##############
     # Yaml funcs #

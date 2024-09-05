@@ -113,7 +113,8 @@ def _get_agg_data(self, max_attacker_data_dict):
             new_yerr = None
             for line_info in line_infos_to_agg:
                 line_data = max_attacker_data_dict[line_info.label]
-                if max_val is None or line_data.ys[i] > max_val:
+                # mypy doens't understand that line_infos_to_agg > len 1
+                if max_val is None or line_data.ys[i] > max_val:  # type: ignore
                     best_label = line_info.label
                     max_val = line_data.ys[i]
                     new_yerr = line_data.yerrs[i]

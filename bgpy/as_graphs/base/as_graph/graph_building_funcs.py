@@ -36,19 +36,19 @@ def _gen_graph(
     # Add all links to the graph
     for asn in as_graph_info.asns:
         # AS dict is not yet frozen, type ignore
-        self.as_dict[asn] = self.as_dict.get(asn, _gen_as(asn))  # type: ignore
+        self.as_dict[asn] = self.as_dict.get(asn, _gen_as(asn))
 
     # Add all IXPs to the graph
     for asn in as_graph_info.ixp_asns:
         # AS dict is not yet frozen, type ignore
-        self.as_dict[asn] = self.as_dict.get(asn, _gen_as(asn))  # type: ignore
+        self.as_dict[asn] = self.as_dict.get(asn, _gen_as(asn))
         if asn in self.as_dict:
             self.as_dict[asn].ixp = True
 
     # Add all input cliques to the graph
     for asn in as_graph_info.input_clique_asns:
         # AS dict is not yet frozen, type ignore
-        self.as_dict[asn] = self.as_dict.get(asn, _gen_as(asn))  # type: ignore
+        self.as_dict[asn] = self.as_dict.get(asn, _gen_as(asn))
         self.as_dict[asn].input_clique = True
 
 

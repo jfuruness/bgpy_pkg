@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, cast
 
 from bgpy.shared.exceptions import GaoRexfordError
 from bgpy.simulation_engine.announcement import Announcement as Ann
@@ -28,16 +28,20 @@ def _get_best_ann_by_gao_rexford(
 
         # Having this dynamic like above is literally 7x slower, resulting
         # in bottlenecks. Gotta do it the ugly way unfortunately
-        ann = self._get_best_ann_by_local_pref(current_ann, new_ann)
+        ann = cast(Ann | None, self._get_best_ann_by_local_pref(current_ann, new_ann))
         if ann:
             return ann
         else:
-            ann = self._get_best_ann_by_as_path(current_ann, new_ann)
+            ann = cast(Ann | None, self._get_best_ann_by_as_path(current_ann, new_ann))
             if ann:
                 return ann
             else:
-                return self._get_best_ann_by_lowest_neighbor_asn_tiebreaker(
-                    current_ann, new_ann
+                return cast(
+                    Ann,
+                    self._get_best_ann_by_lowest_neighbor_asn_tiebreaker(
+                        current_ann,
+                        new_ann
+                    )
                 )
         raise GaoRexfordError("No ann was chosen")
 
