@@ -83,14 +83,18 @@ test = [
 
 [tool.setuptools]
 include-package-data = true
-
 # https://stackoverflow.com/a/76214408/8903959
-[tool.setuptools.package-data]
-"bgpy" = ["py.typed"]
+package-data = {"bgpy": ["py.typed"]}
+
+
+#[tool.setuptools.package-data]
+#bgpy = ["py.typed"]
 
 # https://stackoverflow.com/a/76214408/8903959
 [tool.setuptools.packages.find]
 where = ["bgpy"]
+# Chat gpt told me to add this...
+include = ["bgpy"]
 
 [tool.pytest.ini_options]
 python_files = ["test*.py"]
