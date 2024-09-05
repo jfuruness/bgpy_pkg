@@ -7,7 +7,7 @@ from bgpy.simulation_engine import Announcement as Ann, BaseSimulationEngine as 
 from bgpy.simulation_framework.scenarios.scenario_config import ScenarioConfig as ScenarioConfig
 from functools import cached_property as cached_property
 from ipaddress import IPv4Network, IPv6Network
-from roa_checker import ROA as ROA, RoaChecker as ROAChecker
+from roa_checker import ROA as ROA, ROAChecker as ROAChecker
 from typing import Any
 
 class Scenario(ABC, metaclass=abc.ABCMeta):

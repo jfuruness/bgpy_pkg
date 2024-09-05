@@ -1,4 +1,4 @@
-from typing import Iterator
+from typing import Iterable
 
 from bgpy.simulation_engine import Announcement as Ann
 
@@ -29,7 +29,7 @@ class RIBsOut(AnnContainer[int, dict[str, Ann]]):
 
         del self.data[neighbor_asn][prefix]
 
-    def neighbors(self) -> Iterator[int]:
+    def neighbors(self) -> Iterable[int]:
         """Return all neighbors from the ribs out"""
 
         return self.data.keys()

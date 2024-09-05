@@ -161,7 +161,7 @@ class ASGraph(YamlAble):
         # Adds references to all relationships
         self._add_relationships(as_graph_info)
         # Used for iteration
-        self.ases: tuple[AS, ...] = tuple(self.as_dict.values())
+        self.ases = tuple(self.as_dict.values())
         # Remove duplicates from relationships and sort
         self._make_relationships_tuples()
         # Assign propagation rank to each AS
@@ -291,7 +291,7 @@ class ASGraph(YamlAble):
     ##################
 
     # https://stackoverflow.com/a/7542261/8903959
-    def __getitem__(self, index) -> AS:
+    def __getitem__(self, index: int) -> AS:
         return self.ases[index]
 
     def __len__(self) -> int:

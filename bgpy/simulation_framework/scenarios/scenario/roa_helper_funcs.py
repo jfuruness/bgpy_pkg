@@ -1,4 +1,5 @@
 from ipaddress import IPv4Network, IPv6Network, ip_network
+from typing import TYPE_CHECKING
 
 from roa_checker import ROAChecker, ROAValidity
 
@@ -7,9 +8,12 @@ from bgpy.simulation_engine import BaseSimulationEngine
 
 """ROA helper funcs. I would move more but that would break mypy"""
 
+if TYPE_CHECKING:
+    from .scenario import Scenario
+
 
 def _add_roa_info_to_anns(
-    self,
+    self: "Scenario",
     *,
     announcements: tuple["Ann", ...] = (),
     engine: BaseSimulationEngine | None = None,
@@ -41,7 +45,7 @@ def _add_roa_info_to_anns(
         return announcements
 
 
-def _get_roa_checker(self) -> ROAChecker:
+def _get_roa_checker(self: "Scenario") -> ROAChecker:
     """Returns ROAChecker populated with self.roas"""
 
     roa_checker = ROAChecker()
@@ -51,7 +55,7 @@ def _get_roa_checker(self) -> ROAChecker:
 
 
 def _get_roa_origin(
-    self, roa_checker: ROAChecker, prefix: IPv4Network | IPv6Network, origin: int
+    self: "Scenario", roa_checker: ROAChecker, prefix: IPv4Network | IPv6Network, origin: int
 ) -> int | None:
     """Returns ROA origin"""
 
@@ -66,7 +70,7 @@ def _get_roa_origin(
 
 
 def _get_roa_valid_length(
-    self,
+    self: "Scenario",
     roa_checker: ROAChecker,
     prefix: IPv4Network | IPv6Network,
     origin: int,

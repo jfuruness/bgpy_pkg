@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, cast
+from typing import TYPE_CHECKING
 
 from bgpy.shared.exceptions import GaoRexfordError
 from bgpy.simulation_engine.announcement import Announcement as Ann
@@ -8,7 +8,7 @@ if TYPE_CHECKING:
 
 
 def _get_best_ann_by_gao_rexford(
-    self,
+    self: "BGP",
     current_ann: Ann | None,
     new_ann: Ann,
 ) -> Ann:
@@ -28,26 +28,23 @@ def _get_best_ann_by_gao_rexford(
 
         # Having this dynamic like above is literally 7x slower, resulting
         # in bottlenecks. Gotta do it the ugly way unfortunately
-        ann = cast(Ann | None, self._get_best_ann_by_local_pref(current_ann, new_ann))
+        ann = self._get_best_ann_by_local_pref(current_ann, new_ann)
         if ann:
             return ann
         else:
-            ann = cast(Ann | None, self._get_best_ann_by_as_path(current_ann, new_ann))
+            ann = self._get_best_ann_by_as_path(current_ann, new_ann)
             if ann:
                 return ann
             else:
-                return cast(
-                    Ann,
-                    self._get_best_ann_by_lowest_neighbor_asn_tiebreaker(
-                        current_ann,
-                        new_ann
-                    )
+                return self._get_best_ann_by_lowest_neighbor_asn_tiebreaker(
+                    current_ann,
+                    new_ann
                 )
         raise GaoRexfordError("No ann was chosen")
 
 
 def _get_best_ann_by_local_pref(
-    self, current_ann: Ann, new_ann: Ann
+    self: "BGP", current_ann: Ann, new_ann: Ann
 ) -> Ann | None:
     """Returns best announcement by local pref, or None if tie"""
 
@@ -59,7 +56,7 @@ def _get_best_ann_by_local_pref(
         return None
 
 
-def _get_best_ann_by_as_path(self, current_ann: Ann, new_ann: Ann) -> Ann | None:
+def _get_best_ann_by_as_path(self: "BGP", current_ann: Ann, new_ann: Ann) -> Ann | None:
     """Returns best announcement by as path length, or None if tie
 
     Shorter AS Paths are better
@@ -74,7 +71,7 @@ def _get_best_ann_by_as_path(self, current_ann: Ann, new_ann: Ann) -> Ann | None
 
 
 def _get_best_ann_by_lowest_neighbor_asn_tiebreaker(
-    self, current_ann: Ann, new_ann: Ann
+    self: "BGP", current_ann: Ann, new_ann: Ann
 ) -> Ann:
     """Determines if the new ann > current ann by Gao Rexford for ties
 

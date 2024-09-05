@@ -4,7 +4,6 @@ from bgpy.shared.enums import Relationships
 from bgpy.simulation_engine.policies.bgp.bgp import BGP
 
 if TYPE_CHECKING:
-    from bgpy.enums import Relationships
     from bgpy.simulation_engine import Announcement as Ann
 
 
@@ -27,4 +26,6 @@ class PeerROV(BGP):
             return False
         # Use standard BGP to determine if the announcement is valid
         else:
-            return super(PeerROV, self)._valid_ann(ann, recv_rel)
+            rv = super(PeerROV, self)._valid_ann(ann, recv_rel)
+            assert isinstance(rv, bool), "For mypy"
+            return rv

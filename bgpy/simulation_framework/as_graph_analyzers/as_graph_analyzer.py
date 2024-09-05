@@ -62,6 +62,7 @@ class ASGraphAnalyzer(BaseASGraphAnalyzer):
 
         for prefix in ordered_prefixes:
             most_specific_ann = as_obj.policy.local_rib.get(prefix)
+            assert isinstance(most_specific_ann, Ann), "for mypy"
             if most_specific_ann:
                 return most_specific_ann
         return None
@@ -94,6 +95,7 @@ class ASGraphAnalyzer(BaseASGraphAnalyzer):
             )
             # We haven't traced back all the way on the AS path
             if outcome_int == Outcomes.UNDETERMINED.value:
+                assert most_specific_ann, "If not disconnected, ann must exist"
                 # next as in the AS path to traceback to
                 # Ignore type because only way for this to be here
                 # Is if the most specific "Ann" was NOT None.

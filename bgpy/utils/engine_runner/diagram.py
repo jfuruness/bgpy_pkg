@@ -280,7 +280,7 @@ class Diagram:
             for rank in diagram_ranks:
                 with self.dot.subgraph() as s:
                     s.attr(rank="same")  # set all nodes to the same rank
-                    previous_asn = None
+                    previous_asn: str | None = None
                     for as_obj in rank:
                         asn = str(as_obj.asn)
                         s.node(asn)

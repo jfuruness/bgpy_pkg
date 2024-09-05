@@ -10,7 +10,7 @@ if TYPE_CHECKING:
 
 
 def process_incoming_anns(
-    self,
+    self: "BGPFull",
     *,
     from_rel: "Relationships",
     propagation_round: int,
@@ -118,7 +118,7 @@ def process_incoming_anns(
 
 
 def _new_ann_better(
-    self,
+    self: "BGPFull",
     # Current announcement to check against
     current_ann: Optional["Ann"],
     # Whether or not current ann has been processed local rib
@@ -161,7 +161,7 @@ def _new_ann_better(
 
 
 def _process_incoming_withdrawal(
-    self,
+    self: "BGPFull",
     ann: "Ann",
     recv_relationship: "Relationships",
 ) -> bool:
@@ -216,7 +216,7 @@ def _process_incoming_withdrawal(
     return False
 
 
-def _withdraw_ann_from_neighbors(self, withdraw_ann: "Ann") -> None:
+def _withdraw_ann_from_neighbors(self: "BGPFull", withdraw_ann: "Ann") -> None:
     """Withdraw a route from all neighbors.
 
     This function will not remove an announcement from the local rib, that
@@ -248,7 +248,7 @@ def _withdraw_ann_from_neighbors(self, withdraw_ann: "Ann") -> None:
             send_info.ann = None
 
 
-def _select_best_ribs_in(self, prefix: str) -> Optional["Ann"]:
+def _select_best_ribs_in(self: "BGPFull", prefix: str) -> Optional["Ann"]:
     """Selects best ann from ribs in
 
     Remember, ribs in anns are NOT deep copied
@@ -263,7 +263,7 @@ def _select_best_ribs_in(self, prefix: str) -> Optional["Ann"]:
         if self._new_ann_better(
             best_unprocessed_ann,
             False,
-            best_recv_relationship,
+            best_recv_relationship,  # type: ignore
             new_unprocessed_ann,
             False,
             new_recv_relationship,

@@ -29,6 +29,7 @@ class InterceptionASGraphAnalyzer(ASGraphAnalyzer):
             )
             # Continue tracing back. Only succeed if it goes back to the victim
             if outcome_int == Outcomes.ATTACKER_SUCCESS.value:
+                assert most_specific_ann, "If outcome==attacker, ann must exist"
                 # next as in the AS path to traceback to
                 # Ignore type because only way for this to be here
                 # Is if the most specific "Ann" was NOT None.
@@ -62,6 +63,7 @@ class InterceptionASGraphAnalyzer(ASGraphAnalyzer):
                         raise NotImplementedError("Should never reach here")
             # We haven't traced back all the way on the AS path
             elif outcome_int == Outcomes.UNDETERMINED.value:
+                assert most_specific_ann, "if outcome != disconnected, ann exists"
                 # next as in the AS path to traceback to
                 # Ignore type because only way for this to be here
                 # Is if the most specific "Ann" was NOT None.

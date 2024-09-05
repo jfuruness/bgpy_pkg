@@ -6,9 +6,10 @@ import time
 from copy import deepcopy
 from datetime import date
 from multiprocessing import Pool, cpu_count
+from multiprocessing.pool import ApplyResult
 from pathlib import Path
 from tempfile import TemporaryDirectory
-from typing import Iterator
+from typing import Iterable
 from warnings import warn
 
 import psutil
@@ -288,8 +289,10 @@ class Simulation:
             desc = f"Simulating {self.output_dir.name}"
             total = sum(len(x) for x in chunks) * len(self.percent_adoptions)
             with tqdm(total=total, desc=desc) as pbar:
-                tasks = [p.apply_async(self._run_chunk, x) for x in enumerate(chunks)]
-                completed = []
+                tasks: list[ApplyResult[GraphDataAggregator]] = [
+                    p.apply_async(self._run_chunk, x) for x in enumerate(chunks)
+                ]
+                completed: list[GraphDataAggregator] = []
                 while tasks:
                     completed, tasks = self._get_completed_and_tasks(completed, tasks)
                     self._update_tqdm_progress_bar(pbar)
@@ -306,7 +309,8 @@ class Simulation:
                 new_tasks.append(task)
         return completed, new_tasks
 
-    def _update_tqdm_progress_bar(self, pbar: tqdm) -> None:
+    # idk what the tqdm types are supposed to be here
+    def _update_tqdm_progress_bar(self, pbar: tqdm) -> None:  # type: ignore
         """Updates tqdm progress bar"""
 
         total_completed = 0
@@ -396,7 +400,7 @@ class Simulation:
         )
         return engine
 
-    def _get_run_chunk_iter(self, trials: list[int]) -> Iterator[tuple[int, int]]:
+    def _get_run_chunk_iter(self, trials: list[int]) -> Iterable[tuple[int, int]]:
         """Returns iterator for trials with or without progress bar
 
         If there's only 1 cpu, run the progress bar here, else we run it elsewhere

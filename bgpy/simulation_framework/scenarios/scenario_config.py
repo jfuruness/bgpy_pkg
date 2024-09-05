@@ -76,7 +76,8 @@ class ScenarioConfig:
         """
 
         if self.propagation_rounds is None:
-            object.__setattr__(
+            # initially set to None so it could be defaulted here
+            object.__setattr__(  # type: ignore
                 self, "propagation_rounds", self.ScenarioCls.min_propagation_rounds
             )
 
