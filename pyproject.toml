@@ -69,9 +69,9 @@ bgpy = "bgpy.__main__:main"
 test = [
     "black==24.8.0",
     "pre-commit==3.8.0",
-    "types-beautifulsoup4-4.12.0.20240511",
+    "types-beautifulsoup4==4.12.0.20240511",
     "types-requests==2.32.0.20240712",
-    "types-psutil-6.0.0.20240901",
+    "types-psutil==6.0.0.20240901",
     "types-PyYAML==6.0.12.20240808",
     "types-tqdm==4.66.0.20240417",
     "mypy==1.11.1",
@@ -89,8 +89,8 @@ include-package-data = true
 "bgpy" = ["py.typed"]
 
 # https://stackoverflow.com/a/76214408/8903959
-# [tool.setuptools.packages.find]
-# where = ["bgpy"]
+[tool.setuptools.packages.find]
+where = ["bgpy"]
 
 [tool.pytest.ini_options]
 python_files = ["test*.py"]
