@@ -1,5 +1,4 @@
-import sys
-from typing import TYPE_CHECKING, Any, Optional, Callable, Self, cast
+from typing import TYPE_CHECKING, Any, Optional
 from warnings import warn
 
 from bgpy.simulation_engine.ann_containers import LocalRIB, RecvQueue
@@ -34,11 +33,9 @@ from .propagate_funcs import (
     propagate_to_providers,
 )
 
-
 if TYPE_CHECKING:
     from weakref import CallableProxyType
-    from bgpy.simulation_engine.announcement import Announcement as Ann
-    from bgpy.shared.enums import Relationships
+
     from bgpy.as_graphs import AS
 
 
@@ -69,7 +66,7 @@ class BGP(Policy):
     propagate_to_customers = propagate_to_customers
     propagate_to_peers = propagate_to_peers
     _propagate = _propagate
-    # _policy_propagate = _policy_propagate
+    _policy_propagate = _policy_propagate
     _process_outgoing_ann = _process_outgoing_ann
     _prev_sent = _prev_sent
 

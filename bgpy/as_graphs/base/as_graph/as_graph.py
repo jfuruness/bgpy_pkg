@@ -148,7 +148,7 @@ class ASGraph(YamlAble):
         self.ixp_asns = as_graph_info.ixp_asns
         # Probably there is a better way to do this, but for now we
         # store this as a dict then later make frozendict, thus the type ignore
-        self.as_dict: frozendict[int, "AS"] = dict()  # type: ignore
+        self.as_dict: frozendict[int, AS] = dict()  # type: ignore
         # Just adds all ASes to the dict, and adds ixp/input_clique info
         self._gen_graph(
             as_graph_info,

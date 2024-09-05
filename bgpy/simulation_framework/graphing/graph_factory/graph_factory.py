@@ -65,7 +65,7 @@ class GraphFactory:
     ) -> None:
         self.pickle_path: Path = pickle_path
         with self.pickle_path.open("rb") as f:
-            self.graph_data: "PICKLE_DATA_TYPE" = (
+            self.graph_data: PICKLE_DATA_TYPE = (
                 self._get_last_propagation_round_graph_data(
                     pickle.load(f)  # noqa: S301
                 )
@@ -121,7 +121,7 @@ class GraphFactory:
                     data_point_key.propagation_round, scenario_labels_max_round[label]
                 )
 
-        filtered_graph_data: "PICKLE_DATA_TYPE" = {x: dict() for x in pickle_graph_data}
+        filtered_graph_data: PICKLE_DATA_TYPE = {x: dict() for x in pickle_graph_data}
         # Get only data from the latest propagation round for each scenario label
         for graph_category, data_dict in pickle_graph_data.items():
             for data_point_key, data in data_dict.items():

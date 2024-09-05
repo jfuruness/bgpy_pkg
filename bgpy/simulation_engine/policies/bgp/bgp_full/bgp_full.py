@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Callable
+from typing import TYPE_CHECKING
 from warnings import warn
 
 from bgpy.simulation_engine.ann_containers import RIBsIn, RIBsOut, SendQueue

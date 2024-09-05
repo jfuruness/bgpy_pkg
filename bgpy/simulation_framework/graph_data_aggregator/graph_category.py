@@ -1,7 +1,6 @@
 from dataclasses import dataclass
-from typing import Any
 
-from bgpy.shared.enums import ASGroups, Outcomes, Plane, InAdoptingASNs
+from bgpy.shared.enums import ASGroups, InAdoptingASNs, Outcomes, Plane
 
 
 @dataclass(frozen=True, slots=True)

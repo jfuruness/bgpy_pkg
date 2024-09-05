@@ -2,7 +2,6 @@ import csv
 import pickle
 from pathlib import Path
 
-from bgpy.shared.enums import Outcomes
 from bgpy.simulation_engine import BaseSimulationEngine
 from bgpy.simulation_framework import GraphDataAggregator, Scenario
 from bgpy.utils import EngineRunner

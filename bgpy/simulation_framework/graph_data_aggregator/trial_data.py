@@ -1,7 +1,6 @@
-from typing import Any
 
 from bgpy.as_graphs import AS
-from bgpy.shared.enums import Plane, InAdoptingASNs
+from bgpy.shared.enums import InAdoptingASNs, Plane
 from bgpy.simulation_engine import BaseSimulationEngine
 from bgpy.simulation_framework.scenarios import Scenario
 

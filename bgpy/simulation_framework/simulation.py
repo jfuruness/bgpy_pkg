@@ -6,10 +6,9 @@ import time
 from copy import deepcopy
 from datetime import date
 from multiprocessing import Pool, cpu_count
-from multiprocessing.pool import ApplyResult
 from pathlib import Path
 from tempfile import TemporaryDirectory
-from typing import Iterable
+from typing import TYPE_CHECKING, Iterable
 from warnings import warn
 
 import psutil
@@ -33,6 +32,9 @@ from .graph_data_aggregator import GraphCategory, GraphDataAggregator
 from .graphing import GraphFactory
 from .scenarios import Scenario, ScenarioConfig, SubprefixHijack
 from .utils import get_all_graph_categories
+
+if TYPE_CHECKING:
+    from multiprocessing.pool import ApplyResult
 
 
 class Simulation:

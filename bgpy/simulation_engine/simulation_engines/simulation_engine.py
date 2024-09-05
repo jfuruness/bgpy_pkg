@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Any, Optional, cast
+from typing import TYPE_CHECKING, Any, Optional
 
 from bgpy.shared.enums import Relationships
 

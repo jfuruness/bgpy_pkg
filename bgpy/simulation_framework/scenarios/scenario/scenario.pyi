@@ -1,20 +1,27 @@
 import abc
-from _typeshed import Incomplete
 from abc import ABC, abstractmethod
+from functools import cached_property as cached_property
+from ipaddress import IPv4Network, IPv6Network
+from typing import Any
+
+from _typeshed import Incomplete
+from roa_checker import ROA as ROA
+from roa_checker import ROAChecker as ROAChecker
+
 from bgpy.as_graphs import AS as AS
 from bgpy.shared.enums import SpecialPercentAdoptions as SpecialPercentAdoptions
 from bgpy.simulation_engine import (
     Announcement as Ann,
+)
+from bgpy.simulation_engine import (
     BaseSimulationEngine as BaseSimulationEngine,
+)
+from bgpy.simulation_engine import (
     Policy as Policy,
 )
 from bgpy.simulation_framework.scenarios.scenario_config import (
     ScenarioConfig as ScenarioConfig,
 )
-from functools import cached_property as cached_property
-from ipaddress import IPv4Network, IPv6Network
-from roa_checker import ROA as ROA, ROAChecker as ROAChecker
-from typing import Any
 
 class Scenario(ABC, metaclass=abc.ABCMeta):
     min_propagation_rounds: int
@@ -82,11 +89,11 @@ class Scenario(ABC, metaclass=abc.ABCMeta):
     @abstractmethod
     def _get_announcements(
         self, *, engine: BaseSimulationEngine | None = None
-    ) -> tuple["Ann", ...]: ...
+    ) -> tuple[Ann, ...]: ...
     def _get_roas(
         self,
         *,
-        announcements: tuple["Ann", ...] = (),
+        announcements: tuple[Ann, ...] = (),
         engine: BaseSimulationEngine | None = None,
     ) -> tuple[ROA, ...]: ...
     def pre_aggregation_hook(
@@ -106,9 +113,9 @@ class Scenario(ABC, metaclass=abc.ABCMeta):
     def _add_roa_info_to_anns(
         self,
         *,
-        announcements: tuple["Ann", ...] = (),
+        announcements: tuple[Ann, ...] = (),
         engine: BaseSimulationEngine | None = None,
-    ) -> tuple["Ann", ...]: ...
+    ) -> tuple[Ann, ...]: ...
     def _get_roa_checker(self) -> ROAChecker: ...
     def _get_roa_origin(
         self, roa_checker: ROAChecker, prefix: IPv4Network | IPv6Network, origin: int

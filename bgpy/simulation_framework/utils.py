@@ -1,11 +1,11 @@
 import re
 from pathlib import Path
-from typing import Any, Iterable
+from typing import Iterable
 
 from requests_cache import CachedSession
 
 from bgpy.shared.constants import SINGLE_DAY_CACHE_DIR
-from bgpy.shared.enums import ASGroups, Outcomes, Plane, InAdoptingASNs
+from bgpy.shared.enums import ASGroups, InAdoptingASNs, Outcomes, Plane
 from bgpy.simulation_framework.graph_data_aggregator.graph_category import GraphCategory
 
 

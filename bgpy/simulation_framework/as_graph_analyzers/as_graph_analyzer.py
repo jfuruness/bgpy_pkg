@@ -2,12 +2,12 @@ from typing import TYPE_CHECKING, Optional
 
 from bgpy.as_graphs import AS
 from bgpy.shared.enums import Outcomes, Plane, Relationships
+from bgpy.simulation_engine import Announcement as Ann
 from bgpy.simulation_engine import BaseSimulationEngine
 
 from .base_as_graph_analyzer import BaseASGraphAnalyzer
 
 if TYPE_CHECKING:
-    from bgpy.simulation_engine import Announcement as Ann
     from bgpy.simulation_framework.scenarios import Scenario
 
 

@@ -30,7 +30,7 @@ class FirstASNStrippingPrefixASPAAttacker(BGP):
 
         err = "This is only meant for subclasses of FirstASNStrippingPrefixHijack"
         # Must... avoid... circular... imports!!
-        ScenarioCls = bgpy.simulation_framework.scenarios.custom_scenarios.post_rov.first_asn_stripping_prefix_hijack.FirstASNStrippingPrefixHijack
+        ScenarioCls = bgpy.simulation_framework.scenarios.custom_scenarios.post_rov.first_asn_stripping_prefix_hijack.FirstASNStrippingPrefixHijack  # noqa:E501
         assert isinstance(scenario, ScenarioCls), err
         return super().process_incoming_anns(
             from_rel=from_rel,

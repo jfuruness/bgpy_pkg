@@ -1,5 +1,4 @@
 from enum import Enum, unique
-from typing import Any
 
 yamlable_enums: list[type["YamlAbleEnum"]] = []
 

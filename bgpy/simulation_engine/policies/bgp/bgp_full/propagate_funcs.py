@@ -6,6 +6,7 @@ if TYPE_CHECKING:
     from bgpy.as_graphs import AS
     from bgpy.shared.enums import Relationships
     from bgpy.simulation_engine.announcement import Announcement as Ann
+
     from .bgp_full import BGPFull
 
 

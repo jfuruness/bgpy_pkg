@@ -1,15 +1,19 @@
+from typing import Any
+
 from _typeshed import Incomplete
+
 from bgpy.as_graphs import AS as AS
 from bgpy.shared.enums import Relationships as Relationships
+from bgpy.shared.exceptions import GaoRexfordError as GaoRexfordError
 from bgpy.simulation_engine.ann_containers import (
     LocalRIB as LocalRIB,
+)
+from bgpy.simulation_engine.ann_containers import (
     RecvQueue as RecvQueue,
 )
-from bgpy.simulation_engine.policies.policy import Policy as Policy
-from bgpy.shared.exceptions import GaoRexfordError as GaoRexfordError
 from bgpy.simulation_engine.announcement import Announcement as Ann
+from bgpy.simulation_engine.policies.policy import Policy as Policy
 from bgpy.simulation_framework import Scenario as Scenario
-from typing import Any
 
 class BGP(Policy):
     name: str
