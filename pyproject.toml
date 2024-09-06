@@ -95,7 +95,7 @@ where = ["."]
 include = ["bgpy"]
 
 [tool.pytest.ini_options]
-addopts = "-rxXs"  # Shows reasons for skipping, xfailing, etc
+addopts = "-rxXs -v"  # Shows reasons for skipping, xfailing, etc
 markers = [
     "slow: All slow tests",
     "framework: All framework tests",
