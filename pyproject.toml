@@ -95,9 +95,6 @@ where = ["."]
 include = ["bgpy"]
 
 [tool.pytest.ini_options]
-python_files = ["test*.py"]
-python_classes = ["Test*"]
-python_functions = ["test*"]
 # addopts = "-m 'not slow'"  # -n 6
 markers = [
     "slow",  # All slow tests
