@@ -97,14 +97,14 @@ include = ["bgpy"]
 [tool.pytest.ini_options]
 # addopts = "-m 'not slow'"  # -n 6
 markers = [
-    "slow",  # All slow tests
-    "framework",  # All framework tests
-    "unit_tests",  # All unit tests
-    "engine",  # All engine tests
-    "caida_collector_base_funcs",  # other funcs in caida collector
-    "data_extraction_funcs",  # Related to reading data from file
-    "html_funcs",  # Funcs related to html
-    "read_file_funcs",  # Reading caida files
+    "slow: All slow tests",
+    "framework: All framework tests",
+    "unit_tests: All unit tests",
+    "engine: All engine tests",
+    "caida_collector_base_funcs: other funcs in caida collector",
+    "data_extraction_funcs: Related to reading data from file",
+    "html_funcs: Funcs related to html",
+    "read_file_funcs: Reading caida files",
 ]
 filterwarnings = [
     "ignore::DeprecationWarning:yamlable",
