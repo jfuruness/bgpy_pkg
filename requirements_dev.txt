@@ -1,7 +1,7 @@
 beautifulsoup4==4.12.3
 frozendict==2.4.4
 graphviz==0.20.3
-matplotlib==3.9.1.post1
+matplotlib==3.9.2
 pillow==10.4.0
 psutil==6.0.0
 pytest==8.3.2
@@ -13,15 +13,14 @@ tqdm==4.66.5
 yamlable==1.1.1
 
 
-black==24.8.0
 pre-commit==3.8.0
-types-beautifulsoup4==4.12.0.20240511,
-types-requests==2.32.0.20240712
+types-beautifulsoup4==4.12.0.20240907
+types-requests==2.32.0.20240907
 types-psutil==6.0.0.20240901
 types-PyYAML==6.0.12.20240808
 types-tqdm==4.66.0.20240417
-mypy==1.11.1
+mypy==1.11.2
 flake8==7.1.1
-tox==4.17.1
+tox==4.18.1
 pytest-xdist==3.6.1
-ruff==0.5.7
+ruff==0.6.4
