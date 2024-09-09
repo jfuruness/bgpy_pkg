@@ -377,9 +377,7 @@ class Simulation:
                     adopting_asns = scenario.adopting_asns
                 # Used to track progress with tqdm
                 total_completed = (
-                    (trial_index + 1) * len(self.percent_adoptions)
-                    + percent_adopt_index
-                    + 1
+                    trial_index * len(self.percent_adoptions) + percent_adopt_index + 1
                 )
                 self._write_tqdm_progress(chunk_id, total_completed)
 
