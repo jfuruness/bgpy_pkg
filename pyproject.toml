@@ -40,9 +40,16 @@ classifiers = [
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: Implementation :: CPython",
+    "Programming Language :: Python :: Implementation :: PyPy",
     "Environment :: Console",
     "License :: OSI Approved :: BSD License",
-    "Intended Audience :: Developers"
+    "Intended Audience :: Developers",
+    "Operating System :: POSIX :: Linux",
+    "Operating System :: Microsoft :: Windows",
+    "Operating System :: MacOS",
+    "Operating System :: MacOS :: MacOS X"
+    "Topic :: Security",
 ]
 dependencies = [
     "beautifulsoup4==4.12.3",
