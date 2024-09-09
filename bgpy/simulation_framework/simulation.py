@@ -17,7 +17,7 @@ from tqdm import tqdm
 
 from bgpy.as_graphs.base import ASGraph, ASGraphConstructor
 from bgpy.as_graphs.caida_as_graph import CAIDAASGraphConstructor
-from bgpy.shared.constants import DIRS, SINGLE_DAY_CACHE_DIR
+from bgpy.shared.constants import DIRS, SINGLE_DAY_CACHE_DIR, bgpy_logger
 from bgpy.shared.enums import SpecialPercentAdoptions
 from bgpy.simulation_engine import (
     BGP,
@@ -201,8 +201,8 @@ class Simulation:
         # Gets available RAM and converts to GB
         total_gb_ram = psutil.virtual_memory().available / (1024**3)
 
-        print(f"Expected RAM usage: {expected_total_gb_ram:.2f}")
-        print(f"Available RAM: {total_gb_ram:.2f}")
+        bgpy_logger.info(f"Expected RAM usage: {expected_total_gb_ram:.2f}")
+        bgpy_logger.info(f"Available RAM: {total_gb_ram:.2f}")
         if expected_total_gb_ram * 1.1 > total_gb_ram:
             warn(
                 f"Estimated RAM usage is {expected_total_gb_ram:.2f}GB "
@@ -526,7 +526,7 @@ class Simulation:
         kwargs["graph_dir"] = kwargs.pop("graph_dir", self.output_dir / "graphs")
         if GraphFactoryCls:
             GraphFactoryCls(**kwargs).generate_graphs()
-            print(f"\nWrote graphs to {kwargs['graph_dir']}")
+            bgpy_logger.info(f"\nWrote graphs to {kwargs['graph_dir']}")
 
     @property
     def graph_output_dir(self) -> Path:

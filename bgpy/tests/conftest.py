@@ -5,6 +5,7 @@ from pathlib import Path
 import pytest
 
 from bgpy.as_graphs import CAIDAASGraphCollector
+from bgpy.shared.constants import bgpy_logger
 from bgpy.tests.engine_tests import DiagramAggregator
 
 DIAGRAM_PATH = Path(__file__).parent / "engine_tests" / "engine_test_outputs"
@@ -44,7 +45,9 @@ def pytest_sessionfinish(session, exitstatus):
         # the PDF generation fails, but the tests pass, I think it's okay to pass
         # If there's a better workaround for this, I don't know it.
         except Exception as e:  # noqa: BLE001
-            print(f"Diagram aggregator failed, typically caused by a test failure {e}")
+            bgpy_logger.exception(
+                f"Diagram aggregator failed, typically caused by a test failure {e}"
+            )
 
 
 @pytest.fixture(scope="session")

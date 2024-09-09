@@ -5,6 +5,7 @@ from typing import Any
 import yaml
 from yamlable import YamlCodec
 
+from bgpy.shared.constants import bgpy_logger
 from bgpy.shared.enums import YamlAbleEnum
 from bgpy.simulation_engine.ann_containers.ann_container import AnnContainer
 
@@ -53,7 +54,7 @@ class SimulatorCodec(YamlCodec):
                 return typ(**dct)
         except Exception as e:
             # For some reason YamlAble library suppresses these errors...
-            print(e)
+            bgpy_logger.exception(str(e))
             raise
 
     @classmethod

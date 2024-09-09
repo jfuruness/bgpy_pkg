@@ -5,6 +5,8 @@ from typing import TYPE_CHECKING
 
 from frozendict import frozendict
 
+from bgpy.shared.constants import bgpy_logger
+
 if TYPE_CHECKING:
     from .as_graph import ASGraph
     from .as_graph_collector import ASGraphCollector
@@ -72,7 +74,7 @@ class ASGraphConstructor(ABC):
         """Writes AS Graph to TSV"""
 
         if tsv_path:
-            print(
+            bgpy_logger.info(
                 f"Writing as graph to {tsv_path} "
                 "if you want to save time and not do this, pass tsv_path=None "
                 "to the run function"

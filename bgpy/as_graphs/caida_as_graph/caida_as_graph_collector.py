@@ -10,6 +10,7 @@ import requests
 from bs4 import BeautifulSoup as Soup
 
 from bgpy.as_graphs.base import ASGraphCollector
+from bgpy.shared.constants import bgpy_logger
 from bgpy.shared.exceptions import NoCAIDAURLError
 
 
@@ -26,7 +27,7 @@ class CAIDAASGraphCollector(ASGraphCollector):
         """
 
         if not self.cache_path.exists():
-            print("No caida graph cached. Caching...")
+            bgpy_logger.info("No caida graph cached. Caching...")
             # Create a temporary dir to write to
             with TemporaryDirectory() as tmp_dir:
                 # Path to bz2 download
@@ -85,7 +86,7 @@ class CAIDAASGraphCollector(ASGraphCollector):
                 ]
                 return cast(list[str], rv)
         except requests.exceptions.ReadTimeout as e:
-            print(f"Failed to get {url} due to {e}")
+            bgpy_logger.exception(f"Failed to get {url} due to {e}")
             raise
 
     #########################

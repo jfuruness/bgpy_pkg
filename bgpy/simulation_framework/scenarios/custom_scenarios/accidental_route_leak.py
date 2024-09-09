@@ -2,6 +2,7 @@ import warnings
 from typing import TYPE_CHECKING, Optional
 
 from bgpy.as_graphs.base.as_graph.customer_cone_funcs import _get_cone_size_helper
+from bgpy.shared.constants import bgpy_logger
 from bgpy.shared.enums import (
     ASGroups,
     Relationships,
@@ -104,7 +105,9 @@ class AccidentalRouteLeak(VictimsPrefix):
             assert self.attacker_asns, "You must select at least 1 AS to leak"
             for attacker_asn in self.attacker_asns:
                 if not engine.as_graph.as_dict[attacker_asn].policy.local_rib:
-                    print("Attacker did not recieve announcement, can't leak. ")
+                    bgpy_logger.warning(
+                        "Attacker did not recieve announcement, can't leak."
+                    )
                 for _prefix, ann in engine.as_graph.as_dict[
                     attacker_asn
                 ].policy.local_rib.items():

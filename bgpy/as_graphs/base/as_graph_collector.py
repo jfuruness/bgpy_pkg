@@ -4,7 +4,7 @@ from datetime import datetime
 from functools import cached_property
 from pathlib import Path
 
-from bgpy.shared.constants import SINGLE_DAY_CACHE_DIR
+from bgpy.shared.constants import SINGLE_DAY_CACHE_DIR, bgpy_logger
 
 
 class ASGraphCollector(ABC):
@@ -27,7 +27,9 @@ class ASGraphCollector(ABC):
         try:
             return self._run()
         except Exception as e:
-            print(f"Error {e}, deleting cached as graph file at {self.cache_path}")
+            bgpy_logger.exception(
+                f"Error {e}, deleting cached as graph file at {self.cache_path}"
+            )
             # Make sure no matter what don't create a messed up cache
             shutil.rmtree(self.cache_path)
             raise
