@@ -76,10 +76,10 @@ bgpy = "bgpy.__main__:main"
 
 [project.optional-dependencies]
 test = [
+    "pytest==8.3.2",
     "pre-commit==3.8.0",
     "types-beautifulsoup4==4.12.0.20240907",
     "types-requests==2.32.0.20240907",
-    "types-requests==2.32.0.20240712",
     "types-psutil==6.0.0.20240901",
     "types-PyYAML==6.0.12.20240808",
     "types-tqdm==4.66.0.20240417",
@@ -100,7 +100,6 @@ bgpy = ["py.typed"]
 # https://stackoverflow.com/a/76214408/8903959
 [tool.setuptools.packages.find]
 where = ["."]
-# Chat gpt told me to add this...
 include = ["bgpy"]
 
 [tool.pytest.ini_options]
@@ -234,6 +233,9 @@ ignore = [
     "N803",
     # N806 looks at capitalized vars. See N803 explanation
     "N806",
+    # N802 looks for captilized functions, but if a func is a property that returns
+    # a class, imo it makes sense for it to be capitalized (see N802)
+    "N802",
     # This turns super(MyClass, self).func() into super().func()
     # The problem is that the former is actually needed when using
     # multiple inheritance, resulting in a false positive for every time
