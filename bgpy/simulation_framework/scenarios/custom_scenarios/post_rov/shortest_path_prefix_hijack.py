@@ -5,10 +5,22 @@ from typing import TYPE_CHECKING, Optional
 from bgpy.shared.enums import Prefixes, Timestamps
 from bgpy.simulation_engine import (
     ASPA,
+    ASPAwN,
+    ASPAwNFull,
     BGP,
     ROV,
     ASPAFull,
     BGPFull,
+    BGPiSecTransitive,
+    BGPiSecTransitiveOnlyToCustomers,
+    BGPiSecTransitiveProConeID,
+    BGPiSec,
+    ProviderConeID,
+    BGPiSecTransitiveFull,
+    BGPiSecTransitiveOnlyToCustomersFull,
+    BGPiSecTransitiveProConeIDFull,
+    BGPiSecFull,
+    ProviderConeIDFull,
     BGPSec,
     BGPSecFull,
     OnlyToCustomers,
@@ -78,6 +90,15 @@ class ShortestPathPrefixHijack(VictimsPrefix):
             return self._get_pathend_attack_anns(engine=engine)
         elif self.scenario_config.AdoptPolicyCls in self.aspa_policy_classes:
             return self._get_aspa_attack_anns(engine=engine)
+        elif self.scenario_config.AdoptPolicyCls in self.aspawn_policy_classes:
+            return self._get_aspa_attack_anns(
+                engine=engine, required_aspa_attacker_cls=False
+            )
+        elif self.scenario_config.AdoptPolicyCls in self.bgpisec_policy_classes:
+            # See post_propagation_hook - this is where the attack takes place
+            # This must happen this way since bgpisec requires an actual ann
+            # whereas ASPA just requires a "potential/plausible" ann
+            return ()
         else:
             raise NotImplementedError(
                 "Need to code shortest path attack against "
@@ -149,19 +170,16 @@ class ShortestPathPrefixHijack(VictimsPrefix):
         self,
         *,
         engine: Optional["BaseSimulationEngine"] = None,
+        require_aspa_attacker_cls: bool = True
     ) -> tuple["Ann", ...]:
         """Get shortest path undetected by ASPA"""
 
         if len(self.victim_asns) > 1:
             raise NotImplementedError
 
-        if self.scenario_config.AttackerBasePolicyCls != self.RequiredASPAAttackerCls:
-            raise ValueError(
-                "For a shortest path export all attack against ASPA, "
-                "scenario_config.AttackerAdoptPolicyCls must be set to "
-                "ASPAShortestPathPrefixAttacker, which you can import like "
-                "from bgpy.simulation_engine import ShortestPathPrefixASPAAttacker"
-            )
+        if require_aspa_attacker_cls:
+            self._validate_required_aspa_attacker_cls()
+
         assert engine, "mypy"
 
         shortest_valid_path = self._find_shortest_valley_free_non_adopting_path(
@@ -184,6 +202,17 @@ class ShortestPathPrefixHijack(VictimsPrefix):
                 )
             )
         return tuple(anns)
+
+    def _validate_required_aspa_attacker_cls(self) -> None:
+        """Validates that AttackerBasePolicyCls is set correctly against ASPA"""
+
+        if self.scenario_config.AttackerBasePolicyCls != self.RequiredASPAAttackerCls:
+            raise ValueError(
+                "For a shortest path export all attack against ASPA, "
+                "scenario_config.AttackerAdoptPolicyCls must be set to "
+                "ASPAShortestPathPrefixAttacker, which you can import like "
+                "from bgpy.simulation_engine import ShortestPathPrefixASPAAttacker"
+            )
 
     def _find_shortest_valley_free_non_adopting_path(
         self,
@@ -312,6 +341,111 @@ class ShortestPathPrefixHijack(VictimsPrefix):
             )
             return ()
 
+    def post_propagation_hook(
+        self,
+        engine: "BaseSimulationEngine",
+        percent_adopt: float | SpecialPercentAdoptions,
+        trial: int,
+        propagation_round: int,
+    ) -> None:
+        """Performs Shortest path prefix hijack against BGPiSec classes
+
+        For this attack, since bgp-isec transitive attributes are present,
+        an actual announcement in a local RIB of an AS must be chosen
+        (this assumes the attacker can see any local RIB through looking glass
+        servers or route collectors, etc). This is unlike the theoretical shortest
+        path like against ASPA (or in other words - when attacking ASPA you
+        want the shortest plausible path. When attacking bgpisec you need the
+        shortest path that exists).
+
+        To do this, we iterate through all ASes and choose an announcement that
+        has the shortest path in a local RIB where the last AS on the path is not
+        adopting. Then the attacker appends their ASN and we repropagate.
+        We could do this using algorithms and such depending on the class, but
+        that can be a future improvement. For now I'm going for accuracy.
+
+        A caveat for selecting the best shortest path - the attacker should always
+        prefer announcements which have no OTC attributes over announcements with
+        OTC attributes, since the attacker would then be detected less when
+        propagating to providers.
+
+        Additionally, much like an AccidentalRouteLeak, previously the attacker would
+        simply modify their local RIB and then propagate again. However - this
+        has some drawbacks. Then the attacker must deploy BGPFull
+        (that uses withdrawals) and the entire graph has to propagate again.
+        BGPFull (and subclasses of it) are MUCH slower than BGP due to all the extra
+        computations for withdrawals, RIBsIn, RIBsOut, etc. Additionally,
+        propagating a second round after the ASGraph is __already__ full
+        is wayyy more expensive than propagating when the AS graph is empty.
+
+        Instead, we now get the announcement that the attacker needs to leak
+        after the first round of propagating the valid prefix.
+        Then we clear the graph, seed those announcements, and propagate again
+        This way, we avoid needing BGPFull (since the graph has been cleared,
+        there is no need for withdrawals), and we avoid propagating a second
+        time after the graph is alrady full.
+
+        Since this simulator treats each propagation round as if it all happens
+        at once, this is possible.
+        """
+
+        if self.scenario_config.AdoptPolicyCls not in self.bgpisec_policy_classes:
+            return
+        elif propagation_round == 0:
+            # Force their to be two rounds of propagation
+            # Can't set this in the class var since you only want it to apply here
+            if self.scenario_config.propagation_rounds < 2:
+                raise ValueError("Please set ScenarioConfig.propagation_rounds to 2")
+
+            announcements: list["Ann"] = list(self.announcements)  # type: ignore
+
+            # Find the best ann for attacker to fake with
+            best_ann: "Ann" | None = None
+            for asn, as_obj in engine.as_graph.as_dict.items():
+                # Search for an AS that doesn't next_hop signature
+                if not isinstance(as_obj.policy, BGPiSecTransitive):
+                    for ann in as_obj.policy._local_rib.values():
+                        if best_ann is None:
+                            best_ann = ann
+                        # Prefer anns without OTC, always
+                        elif ann.only_to_customers and not best_ann.only_to_customers:
+                            continue
+                        # Lastly prefer shorter paths
+                        elif len(ann.as_path) < len(best_ann.as_path):
+                            best_ann = ann
+            if not best_ann:
+                # NOTE: may be possible due to the 1% being all disconnected ASes
+                # or when valid ann is in one of those disconnected ASes
+                # this happens if you run 1k trials
+                print(f"Couldn't find best_ann at {percent_adopt}% adoption")
+                # When this occurs, use victim's ann to at least do forged-origin
+                victim_as_obj = engine.as_graph.as_dict[next(iter(self.victim_asns))]
+                for ann in victim_as_obj.policy._local_rib.values():
+                    best_ann = ann
+
+            assert best_ann, "mypy"
+            # Add fake announcements
+            assert self.attacker_asns, "You must select at least 1 AS to leak"
+            for attacker_asn in self.attacker_asns:
+                announcements.append(
+                    best_ann.copy(
+                        {
+                            "as_path": (attacker_asn,) + best_ann.as_path,
+                            "recv_relationship": Relationships.ORIGIN,
+                            "seed_asn": attacker_asn,
+                            "timestamp": Timestamps.ATTACKER.value,
+                            "next_hop_asn": attacker_asn,
+                        }
+                    )
+                )
+
+            # Reset the engine for the next run
+            self.announcements = tuple(announcements)
+            self.setup_engine(engine)
+            engine.ready_to_run_round = 1
+        elif propagation_round > 1:
+            raise NotImplementedError
+
     ######################
     # Policy class lists #
     ######################
@@ -343,6 +477,8 @@ class ShortestPathPrefixHijack(VictimsPrefix):
                 ROVPPV2LiteFull,
                 ROVPPV2ImprovedLite,
                 ROVPPV2ImprovedLiteFull,
+                ProviderConeID,
+                ProviderConeIDFull,
             }
         )
 
@@ -360,6 +496,37 @@ class ShortestPathPrefixHijack(VictimsPrefix):
         """Policies susceptible to an ASPA Shortest Path attack
 
         i.e. shortest contiguous chain of ASPA providers ending in non adopter
+        with forged-origin hijack sent to customers
         """
 
         return frozenset({ASPA, ASPAFull})
+
+    @property
+    def aspawn_policy_classes(self) -> frozenset[type[Policy]]:
+        """Policies susceptible to an ASPAwN Shortest Path attack
+
+        i.e. shortest contiguous chain of ASPA providers ending in non adopter
+        """
+
+        return frozenset({ASPAwN, ASPAwNFull})
+
+    @property
+    def bgpisec_policy_classes(self) -> frozenset[type[Policy]]:
+        """Policies susceptible to an BGP-iSec Shortest Path attack
+
+        i.e. shortest contiguous chain of BGP-iSec ASes ending in non adopter
+        that uses actual announcements rather than plausible ones
+        """
+
+        return frozenset(
+            {
+                BGPiSecTransitive,
+                BGPiSecTransitiveOnlyToCustomers,
+                BGPiSecTransitiveProConeID,
+                BGPiSec,
+                BGPiSecTransitiveFull,
+                BGPiSecTransitiveOnlyToCustomersFull,
+                BGPiSecTransitiveProConeIDFull,
+                BGPiSecFull,
+            }
+        )

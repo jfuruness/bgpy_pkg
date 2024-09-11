@@ -1,5 +1,17 @@
-from .aspa import ASPA, ASPAFull
+from .aspa import ASPA, ASPAFull, ASPAwN, ASPAwNFull
 from .bgp import BGP, BGPFull
+from .bgpisec import (
+    BGPiSecTransitive,
+    BGPiSecTransitiveOnlyToCustomers,
+    BGPiSecTransitiveProConeID,
+    BGPiSec,
+    ProviderConeID,
+    BGPiSecTransitiveFull,
+    BGPiSecTransitiveOnlyToCustomersFull,
+    BGPiSecTransitiveProConeIDFull,
+    BGPiSecFull,
+    ProviderConeIDFull,
+)
 from .bgpsec import BGPSec, BGPSecFull
 from .custom_attackers import (
     FirstASNStrippingPrefixASPAAttacker,
@@ -26,6 +38,16 @@ __all__ = [
     "PeerROVFull",
     "ROV",
     "ROVFull",
+    "BGPiSecTransitive",
+    "BGPiSecTransitiveOnlyToCustomers",
+    "BGPiSecTransitiveProConeID",
+    "BGPiSec",
+    "ProviderConeID",
+    "BGPiSecTransitiveFull",
+    "BGPiSecTransitiveOnlyToCustomersFull",
+    "BGPiSecTransitiveProConeIDFull",
+    "BGPiSecFull",
+    "ProviderConeIDFull",
     "BGPSecFull",
     "BGPSec",
     "OnlyToCustomers",
@@ -40,6 +62,8 @@ __all__ = [
     "ROVPPV2ImprovedLiteFull",
     "ASPA",
     "ASPAFull",
+    "ASPAwN",
+    "ASPAwNFull",
     "ShortestPathPrefixASPAAttacker",
     "FirstASNStrippingPrefixASPAAttacker",
 ]
