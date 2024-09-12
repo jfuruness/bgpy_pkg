@@ -1,4 +1,4 @@
-from typing import Any, Optional, TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 from bgpy.simulation_engine.policies.bgp import BGP
 from bgpy.simulation_engine.policies.bgpsec import BGPSec
@@ -18,7 +18,8 @@ class BGPiSecTransitive(BGPSec):
     # and path preference has no benefit
     # as shown in the bgp-isec paper
     # this also follows their recommendation
-    _get_best_ann_by_gao_rexford = BGP._get_best_ann_by_gao_rexford
+    # Suppress this. Just using a mixin rather than some weird OO inheritance
+    _get_best_ann_by_gao_rexford = BGP._get_best_ann_by_gao_rexford  # noqa: SLF001
 
     def _policy_propagate(
         self,
@@ -39,13 +40,13 @@ class BGPiSecTransitive(BGPSec):
         self,
         ann: "Ann",
         recv_relationship: "Relationships",
-        overwrite_default_kwargs: Optional[dict[Any, Any]] = None,
+        overwrite_default_kwargs: dict[Any, Any] | None = None,
     ) -> "Ann":
         """Sets the bgpsec_as_path.
 
         prepends ASN if valid, otherwise clears
         """
-        bgpsec_as_path = (self.as_.asn,) + ann.bgpsec_as_path
+        bgpsec_as_path = (self.as_.asn, *ann.bgpsec_as_path)
 
         if overwrite_default_kwargs is None:
             overwrite_default_kwargs = {}

@@ -21,5 +21,8 @@ class BGPiSec(BGPiSecTransitiveOnlyToCustomers):
     def _valid_ann(self, ann: "Ann", from_rel: "Relationships") -> bool:
         """Determines bgp-isec transitive + OTC + ProviderConeValid + super"""
 
-        pro_cone_id_valid = ProviderConeID._provider_cone_valid(self, ann, from_rel)
+        # Ignore private member access, just using mixins instead of weird OO
+        pro_cone_id_valid = ProviderConeID._provider_cone_valid(  # noqa: SLF001
+            self, ann, from_rel
+        )
         return pro_cone_id_valid and super()._valid_ann(ann, from_rel)

@@ -4,7 +4,6 @@ from .ann_containers import LocalRIB, RecvQueue, RIBsIn, RIBsOut, SendQueue
 
 # Custom attacker policies
 from .policies import (
-    ASPA,
     BGP,
     ROV,
     ASPA,

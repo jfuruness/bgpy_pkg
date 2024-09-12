@@ -13,7 +13,7 @@ from .provider_cone_id_full import ProviderConeIDFull
 __all__ = [
     "BGPiSecTransitive",
     "BGPiSecTransitiveOnlyToCustomers",
-    "BGPiSecTransitiveProConeID",
+    "BGPiSecTransitiveProConID",
     "BGPiSec",
     "ProviderConeID",
     "BGPiSecTransitiveFull",

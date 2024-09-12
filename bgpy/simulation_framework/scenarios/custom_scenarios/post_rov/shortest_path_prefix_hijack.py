@@ -2,25 +2,29 @@ import warnings
 from collections import deque
 from typing import TYPE_CHECKING, Optional
 
-from bgpy.shared.enums import Prefixes, Timestamps
+from bgpy.shared.constants import bgpy_logger
+from bgpy.shared.enums import (
+    Prefixes,
+    Relationships,
+    SpecialPercentAdoptions,
+    Timestamps,
+)
 from bgpy.simulation_engine import (
     ASPA,
-    ASPAwN,
-    ASPAwNFull,
     BGP,
     ROV,
     ASPAFull,
+    ASPAwN,
+    ASPAwNFull,
     BGPFull,
-    BGPiSecTransitive,
-    BGPiSecTransitiveOnlyToCustomers,
-    BGPiSecTransitiveProConeID,
     BGPiSec,
-    ProviderConeID,
-    BGPiSecTransitiveFull,
-    BGPiSecTransitiveOnlyToCustomersFull,
-    BGPiSecTransitiveProConeIDFull,
     BGPiSecFull,
-    ProviderConeIDFull,
+    BGPiSecTransitive,
+    BGPiSecTransitiveFull,
+    BGPiSecTransitiveOnlyToCustomers,
+    BGPiSecTransitiveOnlyToCustomersFull,
+    BGPiSecTransitiveProConeID,
+    BGPiSecTransitiveProConeIDFull,
     BGPSec,
     BGPSecFull,
     OnlyToCustomers,
@@ -30,6 +34,8 @@ from bgpy.simulation_engine import (
     PeerROV,
     PeerROVFull,
     Policy,
+    ProviderConeID,
+    ProviderConeIDFull,
     ROVFull,
     ROVPPV1Lite,
     ROVPPV1LiteFull,
@@ -397,14 +403,14 @@ class ShortestPathPrefixHijack(VictimsPrefix):
             if self.scenario_config.propagation_rounds < 2:
                 raise ValueError("Please set ScenarioConfig.propagation_rounds to 2")
 
-            announcements: list["Ann"] = list(self.announcements)  # type: ignore
+            announcements: list[Ann] = list(self.announcements)  # type: ignore
 
             # Find the best ann for attacker to fake with
-            best_ann: "Ann" | None = None
-            for asn, as_obj in engine.as_graph.as_dict.items():
+            best_ann: Ann | None = None
+            for _asn, as_obj in engine.as_graph.as_dict.items():
                 # Search for an AS that doesn't next_hop signature
                 if not isinstance(as_obj.policy, BGPiSecTransitive):
-                    for ann in as_obj.policy._local_rib.values():
+                    for ann in as_obj.policy.local_rib.values():
                         if best_ann is None:
                             best_ann = ann
                         # Prefer anns without OTC, always
@@ -417,10 +423,10 @@ class ShortestPathPrefixHijack(VictimsPrefix):
                 # NOTE: may be possible due to the 1% being all disconnected ASes
                 # or when valid ann is in one of those disconnected ASes
                 # this happens if you run 1k trials
-                print(f"Couldn't find best_ann at {percent_adopt}% adoption")
+                bgpy_logger.info(f"Couldn't find best_ann at {percent_adopt}% adoption")
                 # When this occurs, use victim's ann to at least do forged-origin
                 victim_as_obj = engine.as_graph.as_dict[next(iter(self.victim_asns))]
-                for ann in victim_as_obj.policy._local_rib.values():
+                for ann in victim_as_obj.policy.local_rib.values():
                     best_ann = ann
 
             assert best_ann, "mypy"
@@ -430,7 +436,7 @@ class ShortestPathPrefixHijack(VictimsPrefix):
                 announcements.append(
                     best_ann.copy(
                         {
-                            "as_path": (attacker_asn,) + best_ann.as_path,
+                            "as_path": (attacker_asn, *best_ann.as_path),
                             "recv_relationship": Relationships.ORIGIN,
                             "seed_asn": attacker_asn,
                             "timestamp": Timestamps.ATTACKER.value,

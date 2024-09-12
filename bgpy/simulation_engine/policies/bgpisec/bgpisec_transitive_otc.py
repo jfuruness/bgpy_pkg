@@ -18,7 +18,10 @@ class BGPiSecTransitiveOnlyToCustomers(BGPiSecTransitive):
     def _valid_ann(self, ann: "Ann", from_rel: "Relationships") -> bool:
         """Determines bgp-isec transitive+OTC validity and super() validity"""
 
-        otc_valid = OnlyToCustomers._only_to_customers_valid(self, ann, from_rel)
+        # Suppress this, using mixins instead of weird OO inheritance
+        otc_valid = OnlyToCustomers._only_to_customers_valid(  # noqa: SLF001
+            self, ann, from_rel
+        )
         return otc_valid and super()._valid_ann(ann, from_rel)
 
     def _policy_propagate(
@@ -36,8 +39,9 @@ class BGPiSecTransitiveOnlyToCustomers(BGPiSecTransitive):
         }
 
         if (
-            propagate_to.value == Relationships.CUSTOMERS.value
-            or propagate_to.value == Relationships.PEERS.value
+            propagate_to.value in (
+                Relationships.CUSTOMERS.value, Relationships.PEERS.value
+            )
         ):
             # NOTE: bgpisec protects this attribute
             overwrite_default_kwargs["only_to_customers"] = self.as_.asn
