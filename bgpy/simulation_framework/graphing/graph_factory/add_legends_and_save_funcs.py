@@ -2,6 +2,7 @@ import gc
 from statistics import mean
 
 import matplotlib.pyplot as plt
+from matplotlib.container import ErrorbarContainer
 
 
 def _add_legends_and_save(
@@ -113,6 +114,18 @@ def _add_strongest_attacker_legend(
         label_to_use = label_to_legend_label_dict[label]
         if label_to_use not in used_labels:
             used_labels.append(label_to_use)
+
+            # Modify the handle to make its markers grey
+            if isinstance(handle, ErrorbarContainer):
+                # Create a custom line with grey marker for the legend
+                handle = plt.Line2D([], [],
+                                    color=handle.lines[0].get_color(),
+                                    marker=handle.lines[0].get_marker(),
+                                    linestyle='',
+                                    markerfacecolor='grey',
+                                    markeredgecolor='grey')
+            else:
+                raise NotImplementedError
             handles.append(handle)
 
     ax.legend(
