@@ -68,6 +68,8 @@ def _plot_strongest_attacker_lines(
         line_infos = line_data_dict.pop(label, None)
         assert line_infos, "Did you pass in the wrong strongest attacker dict?"
         max_attacker_data_dict[label] = line_infos
+    # At this point max_attacker_data_dict might be something like:
+    # {ASPA: (ASPAForgedOriginLineInfo, ASPAShortestPathLineInfo)
 
     if self.labels_to_aggregate:
         strongest_agg_dict, scatter_line_data_dict = self._get_agg_data(
@@ -172,15 +174,15 @@ def _get_scatter_line_data_dict(
                             **old_line_data.line_info.extra_kwargs,
                         ),
                         # Marker face color
-                        # Since lines are colored, make color grey
-                        "mfc": "gray",  # old_line_data.line_info.color,
+                        # Since lines are colored, make color grey (jk)
+                        "mfc": old_line_data.line_info.color,
                         # Marker edge color
-                        "mec": "gray",  # old_line_data.line_info.color,
+                        "mec": old_line_data.line_info.color,
                         # Marker size
-                        "ms": 20,
-                        "markeredgewidth": 3,
+                        # "ms": 20,
+                        # "markeredgewidth": 3,
                         # Old line color
-                        "ecolor": "gray",  # old_line_data.line_info.color,
+                        "ecolor": old_line_data.line_info.color,
                         "zorder": 3,
                     }
                 ),
