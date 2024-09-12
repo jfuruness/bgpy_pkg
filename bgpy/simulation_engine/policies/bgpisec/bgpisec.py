@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING
 
-from .bgpisec_transitive_otc import BGPiSecTransitiveOnlyToCustomers
+from .bgpisec_transitive_only_to_customers import BGPiSecTransitiveOnlyToCustomers
 from .provider_cone_id import ProviderConeID
 
 if TYPE_CHECKING:

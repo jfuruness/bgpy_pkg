@@ -1,9 +1,9 @@
 from bgpy.simulation_engine.policies.rov.rov_full import ROVFull
 
-from .bgpisec import BGPiSec
+from .bgpisec_transitive_pro_con_id import BGPiSecTransitiveProConID
 
 
-class BGPiSecFull(BGPiSec, ROVFull):
+class BGPiSecTransitiveProConIDFull(BGPiSecTransitiveProConID, ROVFull):
     """BGP-iSec with withdrawals, ribs in and out"""
 
-    name = "BGP-iSec Full"
+    name = "BGP-iSec Transitive + ProConID Full"

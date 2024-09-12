@@ -23,8 +23,8 @@ from bgpy.simulation_engine import (
     BGPiSecTransitiveFull,
     BGPiSecTransitiveOnlyToCustomers,
     BGPiSecTransitiveOnlyToCustomersFull,
-    BGPiSecTransitiveProConeID,
-    BGPiSecTransitiveProConeIDFull,
+    BGPiSecTransitiveProConID,
+    BGPiSecTransitiveProConIDFull,
     BGPSec,
     BGPSecFull,
     OnlyToCustomers,
@@ -98,7 +98,7 @@ class ShortestPathPrefixHijack(VictimsPrefix):
             return self._get_aspa_attack_anns(engine=engine)
         elif self.scenario_config.AdoptPolicyCls in self.aspawn_policy_classes:
             return self._get_aspa_attack_anns(
-                engine=engine, required_aspa_attacker_cls=False
+                engine=engine, require_aspa_attacker_cls=False
             )
         elif self.scenario_config.AdoptPolicyCls in self.bgpisec_policy_classes:
             # See post_propagation_hook - this is where the attack takes place
@@ -403,7 +403,7 @@ class ShortestPathPrefixHijack(VictimsPrefix):
             if self.scenario_config.propagation_rounds < 2:
                 raise ValueError("Please set ScenarioConfig.propagation_rounds to 2")
 
-            announcements: list[Ann] = list(self.announcements)  # type: ignore
+            announcements: list[Ann] = list(self.announcements)
 
             # Find the best ann for attacker to fake with
             best_ann: Ann | None = None
@@ -528,11 +528,11 @@ class ShortestPathPrefixHijack(VictimsPrefix):
             {
                 BGPiSecTransitive,
                 BGPiSecTransitiveOnlyToCustomers,
-                BGPiSecTransitiveProConeID,
+                BGPiSecTransitiveProConID,
                 BGPiSec,
                 BGPiSecTransitiveFull,
                 BGPiSecTransitiveOnlyToCustomersFull,
-                BGPiSecTransitiveProConeIDFull,
+                BGPiSecTransitiveProConIDFull,
                 BGPiSecFull,
             }
         )
