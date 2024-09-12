@@ -1,2 +1,2 @@
 # For backwards compatability
-from .shared.enums import *
+from .shared.enums import *  # noqa
