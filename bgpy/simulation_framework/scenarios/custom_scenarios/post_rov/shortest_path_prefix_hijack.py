@@ -176,7 +176,7 @@ class ShortestPathPrefixHijack(VictimsPrefix):
         self,
         *,
         engine: Optional["BaseSimulationEngine"] = None,
-        require_aspa_attacker_cls: bool = True
+        require_aspa_attacker_cls: bool = True,
     ) -> tuple["Ann", ...]:
         """Get shortest path undetected by ASPA"""
 

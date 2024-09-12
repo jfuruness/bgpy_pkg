@@ -38,10 +38,9 @@ class BGPiSecTransitiveOnlyToCustomers(BGPiSecTransitive):
             "bgpsec_as_path": ann.bgpsec_as_path,
         }
 
-        if (
-            propagate_to.value in (
-                Relationships.CUSTOMERS.value, Relationships.PEERS.value
-            )
+        if propagate_to.value in (
+            Relationships.CUSTOMERS.value,
+            Relationships.PEERS.value,
         ):
             # NOTE: bgpisec protects this attribute
             overwrite_default_kwargs["only_to_customers"] = self.as_.asn
