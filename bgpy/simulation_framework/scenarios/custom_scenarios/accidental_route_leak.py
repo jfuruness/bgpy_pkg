@@ -43,6 +43,11 @@ class AccidentalRouteLeak(VictimsPrefix):
             victim_asns=victim_asns,
             adopting_asns=adopting_asns,
         )
+        self.validate_attacker_subcategory()
+
+    def validate_attacker_subcategory(self) -> None:
+        """Validates that the attacker's subcategory/ASGroup can leak"""
+
         if (
             self.scenario_config.attacker_subcategory_attr in self.warning_as_groups
             and not self.scenario_config.override_attacker_asns
