@@ -1,7 +1,7 @@
 # Modifying the order of these causes lots of circular imports, so skip isort
 
 # For backwards compatability
-from .shared import enums
+from . import enums
 
 from . import (  # isort: skip
     shared,
@@ -11,6 +11,7 @@ from . import (  # isort: skip
     tests,
     utils,
 )
+
 
 __all__ = [
     "shared",

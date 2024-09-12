@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING
 
-from bgpy.enums import Relationships
+from bgpy.shared.enums import Relationships
 from bgpy.simulation_engine.policies.only_to_customers import OnlyToCustomers
 
 from .bgpisec_transitive import BGPiSecTransitive
