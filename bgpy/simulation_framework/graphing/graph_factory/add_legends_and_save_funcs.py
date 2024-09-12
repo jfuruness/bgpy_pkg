@@ -118,12 +118,17 @@ def _add_strongest_attacker_legend(
             # Modify the handle to make its markers grey
             if isinstance(handle, ErrorbarContainer):
                 # Create a custom line with grey marker for the legend
-                handle = plt.Line2D([], [],
-                                    color=handle.lines[0].get_color(),
-                                    marker=handle.lines[0].get_marker(),
-                                    linestyle='',
-                                    markerfacecolor='grey',
-                                    markeredgecolor='grey')
+                handles.append(
+                    plt.Line2D(
+                        [],
+                        [],
+                        color=handle.lines[0].get_color(),
+                        marker=handle.lines[0].get_marker(),
+                        linestyle="",
+                        markerfacecolor="grey",
+                        markeredgecolor="grey",
+                    )
+                )
             else:
                 raise NotImplementedError
             handles.append(handle)
