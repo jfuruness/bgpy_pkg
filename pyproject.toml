@@ -289,7 +289,9 @@ known-first-party = ["bgpy"]
 [tool.ruff.lint.flake8-bugbear]
 # Allow default arguments like, e.g., `data: frozendict[str, str] = frozendict()
 # Otherwise this tool complains that it's a mutable return
-extend-immutable-calls = ["frozendict.frozendict", "datetime.date.today"]
+extend-immutable-calls = [
+    "frozendict.frozendict", "datetime.date.today", "pathlib.Path.home",
+]
 
 [tool.ruff.lint.flake8-pytest-style]
 # Says that using pytest.mark.marker_name shouldn't have parens
