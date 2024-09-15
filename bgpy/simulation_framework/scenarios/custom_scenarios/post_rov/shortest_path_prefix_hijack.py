@@ -27,6 +27,10 @@ from bgpy.simulation_engine import (
     BGPiSecTransitiveProConIDFull,
     BGPSec,
     BGPSecFull,
+    EdgeFilter,
+    EdgeFilterFull,
+    EnforceFirstAS,
+    EnforceFirstASFull,
     OnlyToCustomers,
     OnlyToCustomersFull,
     PathEnd,
@@ -463,7 +467,16 @@ class ShortestPathPrefixHijack(VictimsPrefix):
         such as prefix hijack, subprefix hijack
         """
 
-        return frozenset({BGP, BGPFull, OnlyToCustomers, OnlyToCustomersFull})
+        return frozenset({
+            BGP,
+            BGPFull,
+            OnlyToCustomers,
+            OnlyToCustomersFull,
+            EdgeFilter,
+            EdgeFilterFull,
+            EnforceFirstAS,
+            EnforceFirstASFull,
+        })
 
     @property
     def rov_policy_classes(self) -> frozenset[type[Policy]]:
