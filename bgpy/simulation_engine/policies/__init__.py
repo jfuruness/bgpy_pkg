@@ -18,7 +18,12 @@ from .custom_attackers import (
     ShortestPathPrefixASPAAttacker,
 )
 from .edge_filter import EdgeFilter, EdgeFilterFull, ROVEdgeFilter, ROVEdgeFilterFull
-from .enforce_first_as import EnforceFirstAS, EnforceFirstASFull
+from .enforce_first_as import (
+    EnforceFirstAS,
+    EnforceFirstASFull,
+    ROVEnforceFirstAS,
+    ROVEnforceFirstASFull,
+)
 from .only_to_customers import OnlyToCustomers, OnlyToCustomersFull
 from .path_end import PathEnd, PathEndFull
 from .policy import Policy
@@ -58,6 +63,8 @@ __all__ = [
     "ROVEdgeFilterFull",
     "EnforceFirstAS",
     "EnforceFirstASFull",
+    "ROVEnforceFirstAS",
+    "ROVEnforceFirstASFull",
     "OnlyToCustomers",
     "OnlyToCustomersFull",
     "PathEnd",

@@ -13,7 +13,7 @@ class EnforceFirstAS(BGP):
     This is used in ASPA based on the ASPA RFC
     """
 
-    name: str = "EnforceFirstAS"
+    name: str = "Enforce-First-AS"
 
     def _valid_ann(self, ann: "Ann", from_rel: Relationships) -> bool:
         """Returns False if first ASN is not a neighbor, else True"""
