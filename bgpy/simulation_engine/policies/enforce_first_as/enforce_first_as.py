@@ -3,6 +3,7 @@ from typing import TYPE_CHECKING
 from bgpy.simulation_engine.policies.bgp import BGP
 
 if TYPE_CHECKING:
+    from bgpy.shared.enums import Relationships
     from bgpy.simulation_engine import Announcement as Ann
 
 
@@ -15,7 +16,7 @@ class EnforceFirstAS(BGP):
 
     name: str = "Enforce-First-AS"
 
-    def _valid_ann(self, ann: "Ann", from_rel: Relationships) -> bool:
+    def _valid_ann(self, ann: "Ann", from_rel: "Relationships") -> bool:
         """Returns False if first ASN is not a neighbor, else True"""
 
         # Note: This first if check has to be removed if you want to implement
@@ -25,7 +26,7 @@ class EnforceFirstAS(BGP):
         else:
             return False
 
-    def _enforce_first_as_valid(self, ann: "Ann", from_rel: Relationships) -> bool:
+    def _enforce_first_as_valid(self, ann: "Ann", from_rel: "Relationships") -> bool:
         """Ensures the first ASN in the AS-Path is a neighbor
 
         NOTE: normally this would check for an exact match, but since we don't

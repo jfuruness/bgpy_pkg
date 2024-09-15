@@ -1,9 +1,9 @@
 from typing import TYPE_CHECKING
 
-from bgpy.shared.enums import Relationships
 from bgpy.simulation_engine import BGP
 
 if TYPE_CHECKING:
+    from bgpy.shared.enums import Relationships
     from bgpy.simulation_engine import Announcement as Ann
 
 
@@ -12,7 +12,7 @@ class EdgeFilter(BGP):
 
     name: str = "EdgeFilter"
 
-    def _valid_ann(self, ann: "Ann", from_rel: Relationships) -> bool:
+    def _valid_ann(self, ann: "Ann", from_rel: "Relationships") -> bool:
         """Returns invalid if an edge AS is announcing paths containing other ASNs
 
         otherwise returns the superclasses _valid_ann (loop checking currently)
@@ -23,7 +23,7 @@ class EdgeFilter(BGP):
         else:
             return False
 
-    def _valid_edge_ann(self, ann: "Ann", from_rel: Relationships) -> bool:
+    def _valid_edge_ann(self, ann: "Ann", from_rel: "Relationships") -> bool:
         """Returns invalid if an edge AS is announcing a path containing other ASNs"""
 
         neighbor_as_obj = self.as_.as_graph.as_dict[ann.as_path[0]]
