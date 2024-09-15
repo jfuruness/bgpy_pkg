@@ -36,16 +36,32 @@ from .utils import get_all_graph_categories
 if TYPE_CHECKING:
     from multiprocessing.pool import ApplyResult
 
+parser = argparse.ArgumentParser(description="Runs BGPy simulations")
+parser.add_argument(
+    "--num_trials",
+    "--trials",
+    dest="trials",
+    type=int,
+    default=1,
+    help="Number of trials to run",
+)
+args = parser.parse_args()
+
 
 class Simulation:
     """Runs simulations for BGP attack/defend scenarios"""
 
     def __init__(
         self,
+        *,
+        sim_name: str | None,
         percent_adoptions: tuple[float | SpecialPercentAdoptions, ...] = (
+            SpecialPercentAdoptions.ONLY_ONE,
             0.1,
+            0.2,
             0.5,
             0.8,
+            0.99,
         ),
         scenario_configs: tuple[ScenarioConfig, ...] = (
             ScenarioConfig(
@@ -54,10 +70,10 @@ class Simulation:
                 BasePolicyCls=BGP,
             ),
         ),
-        num_trials: int = 2,
-        output_dir: Path = Path(DIRS.user_desktop_dir) / "bgp_sims" / str(date.today()),
+        num_trials: int = args.trials,
+        output_dir: Path | None = None,
         parse_cpus: int = max(cpu_count() - 1, 1),
-        python_hash_seed: int | None = None,
+        python_hash_seed: int | None = 0,
         ASGraphConstructorCls: type[ASGraphConstructor] = CAIDAASGraphConstructor,
         as_graph_constructor_kwargs=frozendict(
             {
@@ -98,14 +114,17 @@ class Simulation:
         mp_method: Multiprocessing method
         """
 
+        self.sim_name: str = sim_name if sim_name else self.default_sim_name
         self.percent_adoptions: tuple[float | SpecialPercentAdoptions, ...] = (
             percent_adoptions
         )
         self.num_trials: int = num_trials
-        self.output_dir: Path = output_dir
+        self.output_dir: Path = output_dir if output_dir else self.default_output_dir
         self.output_dir.mkdir(parents=True, exist_ok=True)
         self.parse_cpus: int = parse_cpus
-        self.scenario_configs: tuple[ScenarioConfig, ...] = scenario_configs
+        self.scenario_configs: tuple[ScenarioConfig, ...] = (
+            self._get_filtered_scenario_configs(scenario_configs)
+        )
 
         self.python_hash_seed: int | None = python_hash_seed
         self._seed_random()
@@ -118,7 +137,6 @@ class Simulation:
         # the program if desired (if RAM would run out) or validation errors before
         # multi-second as graph loading takes place
         self._validate_init()
-        self.ASGraphConstructorCls(**as_graph_constructor_kwargs).run()
 
         self.SimulationEngineCls: type[BaseSimulationEngine] = SimulationEngineCls
 
@@ -136,6 +154,21 @@ class Simulation:
             tmp_dir_str = tmp_dir
         self._tqdm_tracking_dir: Path = Path(tmp_dir_str)
         self._tqdm_tracking_dir.mkdir(parents=True)
+
+    @property
+    def default_sim_name(self) -> str:
+        return "bgpy_sims"
+
+    @property
+    def default_output_dir(self) -> Path:
+        return Path(DIRS.user_desktop_dir) / self.sim_name
+
+    def _get_filtered_scenario_configs(
+        self, scenario_configs: tuple[ScenarioConfig, ...]
+    ) -> tuple[ScenarioConfig, ...]:
+        """Hook func to filter out inapplicable ScenarioConfigs"""
+
+        return scenario_configs
 
     def _validate_init(self):
         """Validates inputs to __init__
@@ -218,6 +251,8 @@ class Simulation:
     ) -> None:
         """Runs the simulation and write the data"""
 
+        # Cache the CAIDA graph
+        self.ASGraphConstructorCls(**as_graph_constructor_kwargs).run()
         graph_data_aggregator = self._get_data()
         graph_data_aggregator.write_data(
             csv_path=self.csv_path, pickle_path=self.pickle_path

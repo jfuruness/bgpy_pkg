@@ -102,6 +102,16 @@ class ScenarioConfig:
         if not self.scenario_label:
             object.__setattr__(self, "scenario_label", self.AdoptPolicyCls.name)
 
+        # This is to assist with ShortestPathPrefixHijacks
+        if (
+            issubclass(self.AdoptPolicyCls, ASPA)
+            and not issubclass(self.AdoptPolicyCls, ASPAwN)
+        ):
+            self.AttackerBasePolicyCls = getattr(
+                self.ScenarioCls, "RequiredASPAAttacker", None
+            )
+
+
     ##############
     # Yaml Funcs #
     ##############
