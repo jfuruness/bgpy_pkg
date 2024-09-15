@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING
 
-from bgpy.simulation_engine import BGP
+from bgpy.simulation_engine.policies.bgp import BGP
 
 if TYPE_CHECKING:
     from bgpy.shared.enums import Relationships
