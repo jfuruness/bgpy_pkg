@@ -5,7 +5,7 @@ from frozendict import frozendict
 from roa_checker import ROA
 
 from bgpy.shared.enums import ASGroups
-from bgpy.simulation_engine import BGP, Policy
+from bgpy.simulation_engine import ASPA, BGP, ASPAwN, Policy
 from bgpy.simulation_engine import Announcement as Ann
 
 if TYPE_CHECKING:
@@ -103,14 +103,14 @@ class ScenarioConfig:
             object.__setattr__(self, "scenario_label", self.AdoptPolicyCls.name)
 
         # This is to assist with ShortestPathPrefixHijacks
-        if (
-            issubclass(self.AdoptPolicyCls, ASPA)
-            and not issubclass(self.AdoptPolicyCls, ASPAwN)
+        if issubclass(self.AdoptPolicyCls, ASPA) and not issubclass(
+            self.AdoptPolicyCls, ASPAwN
         ):
-            self.AttackerBasePolicyCls = getattr(
-                self.ScenarioCls, "RequiredASPAAttacker", None
+            # Mypy thinks this is unreachable
+            AttackerBasePolicyCls = getattr(  # type: ignore
+                self.ScenarioCls, "RequiredASPAAttackerCls", None
             )
-
+            object.__setattr__(self, "AttackerBasePolicyCls", AttackerBasePolicyCls)
 
     ##############
     # Yaml Funcs #

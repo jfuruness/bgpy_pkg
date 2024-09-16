@@ -1,10 +1,10 @@
+import argparse
 import gc
 import os
 import random
 import shutil
 import time
 from copy import deepcopy
-from datetime import date
 from multiprocessing import Pool, cpu_count
 from pathlib import Path
 from tempfile import TemporaryDirectory
@@ -45,7 +45,8 @@ parser.add_argument(
     default=1,
     help="Number of trials to run",
 )
-args = parser.parse_args()
+# parse known args to avoid crashing during pytest
+args, _unknown = parser.parse_known_args()
 
 
 class Simulation:
@@ -54,7 +55,7 @@ class Simulation:
     def __init__(
         self,
         *,
-        sim_name: str | None,
+        sim_name: str | None = None,
         percent_adoptions: tuple[float | SpecialPercentAdoptions, ...] = (
             SpecialPercentAdoptions.ONLY_ONE,
             0.1,
@@ -73,7 +74,7 @@ class Simulation:
         num_trials: int = args.trials,
         output_dir: Path | None = None,
         parse_cpus: int = max(cpu_count() - 1, 1),
-        python_hash_seed: int | None = 0,
+        python_hash_seed: int | None = None,
         ASGraphConstructorCls: type[ASGraphConstructor] = CAIDAASGraphConstructor,
         as_graph_constructor_kwargs=frozendict(
             {
@@ -252,7 +253,7 @@ class Simulation:
         """Runs the simulation and write the data"""
 
         # Cache the CAIDA graph
-        self.ASGraphConstructorCls(**as_graph_constructor_kwargs).run()
+        self.ASGraphConstructorCls(**self.as_graph_constructor_kwargs).run()
         graph_data_aggregator = self._get_data()
         graph_data_aggregator.write_data(
             csv_path=self.csv_path, pickle_path=self.pickle_path
