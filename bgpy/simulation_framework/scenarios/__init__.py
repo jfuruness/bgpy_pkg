@@ -13,7 +13,7 @@ from .custom_scenarios import (
     SubprefixHijack,
     SuperprefixPrefixHijack,
     ValidPrefix,
-    VictimsPrefixHijack,
+    VictimsPrefix,
 )
 
 __all__ = [
@@ -30,5 +30,5 @@ __all__ = [
     "ShortestPathPrefixHijack",
     "SuperprefixPrefixHijack",
     "ValidPrefix",
-    "VictimsPrefixHijack",
+    "VictimsPrefix",
 ]

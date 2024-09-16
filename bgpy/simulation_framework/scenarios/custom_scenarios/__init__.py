@@ -12,6 +12,7 @@ from .post_rov import (
 )
 from .pre_rov import PrefixHijack, SubprefixHijack
 from .valid_prefix import ValidPrefix
+from .victims_prefix import VictimsPrefix
 
 __all__ = [
     "AccidentalRouteLeak",
@@ -25,4 +26,5 @@ __all__ = [
     "ShortestPathPrefixHijack",
     "SuperprefixPrefixHijack",
     "ValidPrefix",
+    "VictimsPrefix",
 ]

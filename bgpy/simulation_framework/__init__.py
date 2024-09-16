@@ -24,7 +24,7 @@ from .scenarios import (
     SubprefixHijack,
     SuperprefixPrefixHijack,
     ValidPrefix,
-    VictimsPrefixHijack,
+    VictimsPrefix,
 )
 from .simulation import Simulation
 
@@ -55,5 +55,5 @@ __all__ = [
     "ShortestPathPrefixHijack",
     "SuperprefixPrefixHijack",
     "ValidPrefix",
-    "VictimsPrefixHijack",
+    "VictimsPrefix",
 ]
