@@ -24,6 +24,7 @@ def main():
             ScenarioConfig(
                 ScenarioCls=ValidPrefix,
                 AdoptPolicyCls=BGP,
+                AnnCls=SmallAnn,
             ),
         ),
         output_dir=Path.home() / "Desktop" / "benchmarks",
@@ -48,7 +49,6 @@ def main():
             ScenarioConfig(
                 ScenarioCls=ValidPrefix,
                 AdoptPolicyCls=BGP,
-                AnnCls=SmallAnn,
             ),
         ),
         output_dir=Path.home() / "Desktop" / "benchmarks",

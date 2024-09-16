@@ -1,13 +1,13 @@
 from bgpy.simulation_engine import BGP
 from bgpy.simulation_engine import Announcement as Ann
-
+from bgpy.shared.enums import Relationships
 
 class ROV(BGP):
     """An Policy that deploys ROV"""
 
     name: str = "TutorialROV"
 
-    def _valid_ann(self, ann: Ann, *args, **kwargs) -> bool:  # type: ignore
+    def _valid_ann(self, ann: Ann, recv_rel: Relationships) -> bool:
         """Returns announcement validity
 
         Returns false if invalid by roa,
@@ -20,4 +20,4 @@ class ROV(BGP):
             return False
         # Use standard BGP to determine if the announcement is valid
         else:
-            return super(ROV, self)._valid_ann(ann, *args, **kwargs)  # type: ignore
+            return super(ROV, self)._valid_ann(ann, recv_rel)

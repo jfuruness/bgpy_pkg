@@ -8,8 +8,7 @@ class PeerROV(BGP):
 
     name: str = "TutorialPeerROV"
 
-    # mypy doesn't understand that this func is valid
-    def _valid_ann(self, ann: Ann, *args, **kwargs) -> bool:  # type: ignore
+    def _valid_ann(self, ann: Ann, recv_rel: Relationships) -> bool:
         """Returns announcement validity
 
         Returns false if invalid by roa and coming from a peer,
@@ -23,5 +22,4 @@ class PeerROV(BGP):
             return False
         # Use standard BGP to determine if the announcement is valid
         else:
-            # Mypy doesn't map superclasses properly
-            return super(PeerROV, self)._valid_ann(ann, *args, **kwargs)  # type: ignore
+            return super(PeerROV, self)._valid_ann(ann, recv_rel)
