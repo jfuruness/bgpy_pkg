@@ -1,20 +1,20 @@
 from abc import ABCMeta, abstractmethod
-from typing import Any, TYPE_CHECKING
+from typing import TYPE_CHECKING, Any, ClassVar
 
 from yamlable import YamlAble, yaml_info_decorate
 
 if TYPE_CHECKING:
-    from bgpy.enums import Relationships
+    from bgpy.shared.enums import Relationships
     from bgpy.simulation_engine import Announcement as Ann
     from bgpy.simulation_framework import Scenario
 
 
 class Policy(YamlAble, metaclass=ABCMeta):
     name: str = "AbstractPolicy"
-    subclass_to_name_dict: dict[type["Policy"], str] = {}
-    name_to_subclass_dict: dict[str, type["Policy"]] = {}
+    subclass_to_name_dict: ClassVar[dict[type["Policy"], str]] = dict()
+    name_to_subclass_dict: ClassVar[dict[str, type["Policy"]]] = dict()
 
-    def __init_subclass__(cls, *args, **kwargs):
+    def __init_subclass__(cls: type["Policy"], *args, **kwargs) -> None:
         """This method essentially creates a list of all subclasses
 
         This allows us to know all AS types that have been created
@@ -22,8 +22,7 @@ class Policy(YamlAble, metaclass=ABCMeta):
 
         super().__init_subclass__(*args, **kwargs)
         assert hasattr(cls, "name"), "Policy must have a name"
-        # yamlable not up to date with mypy
-        yaml_info_decorate(cls, yaml_tag=cls.name)  # type: ignore
+        yaml_info_decorate(cls, yaml_tag=cls.name)
         cls.subclass_to_name_dict[cls] = cls.name
         cls.name_to_subclass_dict[cls.name] = cls
 

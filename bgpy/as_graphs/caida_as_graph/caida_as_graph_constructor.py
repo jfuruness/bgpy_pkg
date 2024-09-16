@@ -1,19 +1,18 @@
 from pathlib import Path
-from typing import Optional
 
 from frozendict import frozendict
 
 from bgpy.as_graphs.base import (
+    ASGraph,
     ASGraphCollector,
     ASGraphConstructor,
     ASGraphInfo,
-    ASGraph,
     PeerLink,
-    CustomerProviderLink as CPLink,
 )
+from bgpy.as_graphs.base import CustomerProviderLink as CPLink
 
-from .caida_as_graph_collector import CAIDAASGraphCollector
 from .caida_as_graph import CAIDAASGraph
+from .caida_as_graph_collector import CAIDAASGraphCollector
 
 
 class CAIDAASGraphConstructor(ASGraphConstructor):
@@ -24,7 +23,7 @@ class CAIDAASGraphConstructor(ASGraphConstructor):
         ASGraphCls: type[ASGraph] = CAIDAASGraph,
         as_graph_collector_kwargs=frozendict(),
         as_graph_kwargs=frozendict(),
-        tsv_path: Optional[Path] = None,
+        tsv_path: Path | None = None,
         stubs: bool = True,
     ) -> None:
         super().__init__(

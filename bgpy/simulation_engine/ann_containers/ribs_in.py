@@ -1,13 +1,13 @@
 import dataclasses
-from typing import Iterator, Optional, TYPE_CHECKING
+from typing import TYPE_CHECKING, Iterator, Optional
 
 from yamlable import YamlAble, yaml_info
 
 from .ann_container import AnnContainer
 
 if TYPE_CHECKING:
-    from bgpy.enums import Relationships
-    from bgpy.simulation_engines.py_simulation_engine import Announcement as Ann
+    from bgpy.shared.enums import Relationships
+    from bgpy.simulation_engine import Announcement as Ann
 
 
 @yaml_info(yaml_tag="AnnInfo")
@@ -33,7 +33,7 @@ class RIBsIn(AnnContainer[int, dict[str, AnnInfo]]):
 
     def get_unprocessed_ann_recv_rel(
         self, neighbor_asn: int, prefix: str
-    ) -> Optional[AnnInfo]:
+    ) -> AnnInfo | None:
         """Returns AnnInfo for a neighbor ASN and prefix
 
         We don't use defaultdict here because that's not yamlable
@@ -48,7 +48,8 @@ class RIBsIn(AnnContainer[int, dict[str, AnnInfo]]):
     ):
         """Adds an unprocessed ann to ribs in
 
-        We don't use default dict here because it's not yamlable"""
+        We don't use default dict here because it's not yamlable
+        """
 
         # Shorten the var name
         ann = unprocessed_ann

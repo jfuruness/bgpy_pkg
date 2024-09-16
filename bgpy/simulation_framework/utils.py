@@ -1,25 +1,32 @@
 import re
-from datetime import date
 from pathlib import Path
 from typing import Iterable
 
 from requests_cache import CachedSession
 
-from bgpy.enums import ASGroups, Plane, Outcomes
-from bgpy.simulation_framework.metric_tracker.metric_key import MetricKey
+from bgpy.shared.constants import SINGLE_DAY_CACHE_DIR
+from bgpy.shared.enums import ASGroups, InAdoptingASNs, Outcomes, Plane
+from bgpy.simulation_framework.graph_data_aggregator.graph_category import GraphCategory
 
 
-def get_all_metric_keys() -> Iterable[MetricKey]:
+def get_all_graph_categories() -> Iterable[GraphCategory]:
     """Returns all possible metric key combos"""
 
     for plane in [Plane.DATA]:
         for as_group in [ASGroups.ALL_WOUT_IXPS]:
             for outcome in [x for x in Outcomes if x != Outcomes.UNDETERMINED]:
-                yield MetricKey(plane=plane, as_group=as_group, outcome=outcome)
+                for in_adopting_asns_enum in list(InAdoptingASNs):
+                    yield GraphCategory(
+                        plane=plane,
+                        as_group=as_group,
+                        outcome=outcome,
+                        in_adopting_asns=in_adopting_asns_enum,
+                    )
 
 
 def get_country_asns(
-    country_code: str, requests_cache_path: Path = Path(f"/tmp/{date.today()}.db")
+    country_code: str,
+    requests_cache_path: Path = SINGLE_DAY_CACHE_DIR / "requests_cache.db",
 ) -> list[int]:
     """
     Returns all the ASNs associated with a specific region. A region is given by a

@@ -1,21 +1,24 @@
-from typing import Optional, Union, TYPE_CHECKING
 import warnings
+from typing import TYPE_CHECKING, Optional
 
-from bgpy.enums import ASGroups, Relationships, SpecialPercentAdoptions, Timestamps
 from bgpy.as_graphs.base.as_graph.customer_cone_funcs import _get_cone_size_helper
+from bgpy.shared.constants import bgpy_logger
+from bgpy.shared.enums import (
+    ASGroups,
+    Relationships,
+    SpecialPercentAdoptions,
+    Timestamps,
+)
+from bgpy.simulation_framework.scenarios.scenario_config import ScenarioConfig
 
-from .valid_prefix import ValidPrefix
-from ..scenario import Scenario
-from ..scenario_config import ScenarioConfig
-from ..preprocess_anns_funcs import PREPROCESS_ANNS_FUNC_TYPE, noop
-
+from .victims_prefix import VictimsPrefix
 
 if TYPE_CHECKING:
-    from bgpy.simulation_engine import BaseSimulationEngine
     from bgpy.simulation_engine import Announcement as Ann
+    from bgpy.simulation_engine import BaseSimulationEngine
 
 
-class AccidentalRouteLeak(ValidPrefix):
+class AccidentalRouteLeak(VictimsPrefix):
     """An accidental route leak of a valid prefix"""
 
     min_propagation_rounds: int = 2
@@ -26,19 +29,25 @@ class AccidentalRouteLeak(ValidPrefix):
         scenario_config: ScenarioConfig,
         percent_adoption: float | SpecialPercentAdoptions = 0,
         engine: Optional["BaseSimulationEngine"] = None,
-        prev_scenario: Optional["Scenario"] = None,
-        preprocess_anns_func: PREPROCESS_ANNS_FUNC_TYPE = noop,
+        attacker_asns: frozenset[int] | None = None,
+        victim_asns: frozenset[int] | None = None,
+        adopting_asns: frozenset[int] | None = None,
     ):
-
         assert engine, "Need engine for customer cones"
         self._attackers_customer_cones_asns: set[int] = set()
         super().__init__(
             scenario_config=scenario_config,
             percent_adoption=percent_adoption,
             engine=engine,
-            prev_scenario=prev_scenario,
-            preprocess_anns_func=preprocess_anns_func,
+            attacker_asns=attacker_asns,
+            victim_asns=victim_asns,
+            adopting_asns=adopting_asns,
         )
+        self.validate_attacker_subcategory()
+
+    def validate_attacker_subcategory(self) -> None:
+        """Validates that the attacker's subcategory/ASGroup can leak"""
+
         if (
             self.scenario_config.attacker_subcategory_attr in self.warning_as_groups
             and not self.scenario_config.override_attacker_asns
@@ -52,9 +61,9 @@ class AccidentalRouteLeak(ValidPrefix):
                 "To change the ASGroup to something other than stubs, you can "
                 " set attacker_subcategory_attr=ASGroups.MULTIHOMED.value, "
                 " in the scenario config after importing like "
-                "from bgpy.enums import ASGroups"
+                "from bgpy.shared.enums import ASGroups"
             )
-            warnings.warn(msg, RuntimeWarning)
+            warnings.warn(msg, RuntimeWarning, stacklevel=2)
 
     # Just returns customer cone
     _get_cone_size_helper = _get_cone_size_helper
@@ -97,20 +106,21 @@ class AccidentalRouteLeak(ValidPrefix):
         """
 
         if propagation_round == 0:
-            announcements: list["Ann"] = list(self.announcements)  # type: ignore
+            announcements: list[Ann] = list(self.announcements)
             assert self.attacker_asns, "You must select at least 1 AS to leak"
             for attacker_asn in self.attacker_asns:
-                if not engine.as_graph.as_dict[attacker_asn].policy._local_rib:
-                    print("Attacker did not recieve announcement, can't leak. ")
-                for prefix, ann in engine.as_graph.as_dict[
+                if not engine.as_graph.as_dict[attacker_asn].policy.local_rib:
+                    bgpy_logger.warning(
+                        "Attacker did not recieve announcement, can't leak."
+                    )
+                for _prefix, ann in engine.as_graph.as_dict[
                     attacker_asn
-                ].policy._local_rib.items():
+                ].policy.local_rib.items():
                     announcements.append(
                         ann.copy(
                             {
-                                "recv_relationship": Relationships.CUSTOMERS,
+                                "recv_relationship": Relationships.ORIGIN,
                                 "seed_asn": attacker_asn,
-                                "traceback_end": True,
                                 "timestamp": Timestamps.ATTACKER.value,
                             }
                         )
@@ -123,9 +133,9 @@ class AccidentalRouteLeak(ValidPrefix):
 
     def _get_attacker_asns(
         self,
-        override_attacker_asns: Optional[frozenset[int]],
+        override_attacker_asns: frozenset[int] | None,
+        attacker_asns: frozenset[int] | None,
         engine: Optional["BaseSimulationEngine"],
-        prev_scenario: Optional["Scenario"],
     ) -> frozenset[int]:
         """Gets attacker ASNs, overriding the valid prefix which has no attackers
 
@@ -140,8 +150,8 @@ class AccidentalRouteLeak(ValidPrefix):
         """
 
         assert engine, "Need engine for attacker customer cones"
-        attacker_asns = Scenario._get_attacker_asns(
-            self, override_attacker_asns, engine, prev_scenario
+        attacker_asns = super()._get_attacker_asns(
+            override_attacker_asns, attacker_asns, engine
         )
         # Stores customer cones of attacker ASNs
         # used in untrackable func and when selecting victims
@@ -157,8 +167,7 @@ class AccidentalRouteLeak(ValidPrefix):
     def _get_possible_victim_asns(
         self,
         engine: "BaseSimulationEngine",
-        percent_adoption: Union[float, SpecialPercentAdoptions],
-        prev_scenario: Optional["Scenario"],
+        percent_adoption: float | SpecialPercentAdoptions,
     ) -> frozenset[int]:
         """Returns possible victim ASNs, defaulted from config
 
@@ -166,9 +175,7 @@ class AccidentalRouteLeak(ValidPrefix):
         since if a victim is the customer of leaker, it's not really a leak
         """
 
-        possible_asns = super()._get_possible_victim_asns(
-            engine, percent_adoption, prev_scenario
-        )
+        possible_asns = super()._get_possible_victim_asns(engine, percent_adoption)
         # Remove attacker's customer conesfrom possible victims
         possible_asns = possible_asns.difference(self._attackers_customer_cones_asns)
         return possible_asns

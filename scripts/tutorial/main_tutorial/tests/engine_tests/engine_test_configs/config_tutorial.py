@@ -1,7 +1,8 @@
 from frozendict import frozendict
 
-from bgpy.as_graphs import ASGraphInfo, PeerLink, CustomerProviderLink as CPLink
-from bgpy.enums import ASNs
+from bgpy.as_graphs import ASGraphInfo, PeerLink
+from bgpy.as_graphs import CustomerProviderLink as CPLink
+from bgpy.shared.enums import ASNs
 from bgpy.simulation_engine import BGP
 from bgpy.simulation_framework import ScenarioConfig, SubprefixHijack
 from bgpy.tests import EngineTestConfig
@@ -35,7 +36,6 @@ config_tutorial = EngineTestConfig(
         BasePolicyCls=BGP,
         override_attacker_asns=frozenset({ASNs.ATTACKER.value}),
         override_victim_asns=frozenset({ASNs.VICTIM.value}),
-        override_non_default_asn_cls_dict=frozendict(),
     ),
     as_graph_info=as_graph_info,
 )

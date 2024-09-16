@@ -1,14 +1,15 @@
-from typing import Any, Optional, TYPE_CHECKING
+from typing import TYPE_CHECKING, Any, Optional
 
-from bgpy.simulation_engine.policies.bgp import BGP
+from bgpy.shared.exceptions import GaoRexfordError
+from bgpy.simulation_engine.policies.rov import ROV
 
 if TYPE_CHECKING:
     from bgpy.as_graphs import AS
-    from bgpy.enums import Relationships
+    from bgpy.shared.enums import Relationships
     from bgpy.simulation_engine.announcement import Announcement as Ann
 
 
-class BGPSec(BGP):
+class BGPSec(ROV):
     """Represents BGPSec
 
     Since there are no real world implementations,
@@ -16,11 +17,14 @@ class BGPSec(BGP):
     which is in line with the majority of users
     for the survey results in "A Survey of Interdomain Routing Policies"
     https://www.cs.bu.edu/~goldbe/papers/survey.pdf
+
+    Also - this adopts from ROV since it's extremely unlikely that an AS
+    would deploy BGPSec without first deploying ROV
     """
 
     name = "BGPSec"
 
-    def seed_ann(self, ann: "Ann") -> None:  # type: ignore
+    def seed_ann(self, ann: "Ann") -> None:
         """Seeds announcement at this AS and initializes BGPSec path"""
 
         # This ann is valid, add the bgpsec as path
@@ -28,8 +32,12 @@ class BGPSec(BGP):
             ann = ann.copy({"bgpsec_as_path": ann.as_path})
         super().seed_ann(ann)
 
-    def _policy_propagate(  # type: ignore
-        self, neighbor: "AS", ann: "Ann", *args, **kwargs
+    def _policy_propagate(
+        self,
+        neighbor: "AS",
+        ann: "Ann",
+        propagate_to: "Relationships",
+        send_rels: set["Relationships"],
     ) -> bool:
         """Sets BGPSec fields when propagating
 
@@ -44,22 +52,22 @@ class BGPSec(BGP):
             next_asn = None
             path = ()
         send_ann = ann.copy({"bgpsec_next_asn": next_asn, "bgpsec_as_path": path})
-        self._process_outgoing_ann(neighbor, send_ann, *args, **kwargs)
+        self._process_outgoing_ann(neighbor, send_ann, propagate_to, send_rels)
         return True
 
     # Mypy doesn't understand the superclass
-    def _copy_and_process(  # type: ignore
+    def _copy_and_process(
         self,
         ann: "Ann",
         recv_relationship: "Relationships",
-        overwrite_default_kwargs: Optional[dict[Any, Any]] = None,
+        overwrite_default_kwargs: dict[Any, Any] | None = None,
     ) -> "Ann":
         """Sets the bgpsec_as_path.
 
         prepends ASN if valid, otherwise clears
         """
         if ann.bgpsec_valid(self.as_.asn):
-            bgpsec_as_path = (self.as_.asn,) + ann.bgpsec_as_path
+            bgpsec_as_path = (self.as_.asn, *ann.bgpsec_as_path)
         else:
             bgpsec_as_path = ()
 
@@ -87,7 +95,7 @@ class BGPSec(BGP):
         else:
             return None
 
-    def _get_best_ann_by_gao_rexford(  # type: ignore
+    def _get_best_ann_by_gao_rexford(
         self,
         current_ann: Optional["Ann"],
         new_ann: "Ann",
@@ -123,4 +131,4 @@ class BGPSec(BGP):
                         return self._get_best_ann_by_lowest_neighbor_asn_tiebreaker(
                             current_ann, new_ann
                         )
-            raise Exception("No ann was chosen")
+            raise GaoRexfordError("No ann was chosen")

@@ -1,19 +1,13 @@
-from frozendict import frozendict
 from copy import deepcopy
 
+from frozendict import frozendict
+
+from bgpy.as_graphs import ASGraphInfo, PeerLink
+from bgpy.as_graphs import CustomerProviderLink as CPLink
+from bgpy.shared.enums import Prefixes, SpecialPercentAdoptions
+from bgpy.simulation_engine import BaseSimulationEngine, BGPFull
+from bgpy.simulation_framework import ScenarioConfig, ValidPrefix
 from bgpy.tests.engine_tests.utils import EngineTestConfig
-
-from bgpy.as_graphs import PeerLink, CustomerProviderLink as CPLink
-from bgpy.as_graphs import ASGraphInfo
-
-from bgpy.enums import SpecialPercentAdoptions
-from bgpy.simulation_engine import BGPFull, BaseSimulationEngine
-from bgpy.simulation_framework import (
-    ValidPrefix,
-    ScenarioConfig,
-)
-from bgpy.enums import Prefixes
-
 
 as_graph_info = ASGraphInfo(
     peer_links=frozenset([PeerLink(1, 3), PeerLink(1, 5)]),
@@ -40,7 +34,7 @@ class Custom00ValidPrefix(ValidPrefix):
     ) -> None:
         if propagation_round == 1:  # second round
             ann = deepcopy(
-                engine.as_graph.as_dict[2].policy._local_rib.get(Prefixes.PREFIX.value)
+                engine.as_graph.as_dict[2].policy.local_rib.get(Prefixes.PREFIX.value)
             )
             # Add a new announcement at AS 3, which will be better than the one
             # from 2 and cause a withdrawn route by 1 to 4
@@ -52,7 +46,7 @@ class Custom00ValidPrefix(ValidPrefix):
                 "as_path",
                 (3,),
             )
-            engine.as_graph.as_dict[3].policy._local_rib.add_ann(ann)
+            engine.as_graph.as_dict[3].policy.local_rib.add_ann(ann)
             Custom00ValidPrefix.victim_asns = frozenset({2, 3})
             self.victim_asns: frozenset[int] = frozenset({2, 3})
 
@@ -64,7 +58,7 @@ internal_config_000 = EngineTestConfig(
         ScenarioCls=Custom00ValidPrefix,
         BasePolicyCls=BGPFull,
         override_victim_asns=frozenset({2}),
-        override_non_default_asn_cls_dict=frozendict(),
+        hardcoded_asn_cls_dict=frozendict(),
     ),
     as_graph_info=as_graph_info,
 )

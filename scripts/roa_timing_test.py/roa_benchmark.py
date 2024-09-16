@@ -1,12 +1,11 @@
 from pathlib import Path
 from time import perf_counter
 
-from bgpy.enums import Prefixes, Timestamps
+from bgpy.shared.enums import Prefixes, Timestamps
 from bgpy.simulation_engine import BGP
-
 from bgpy.simulation_framework import (
-    Simulation,
     ScenarioConfig,
+    Simulation,
     SubprefixHijack,
 )
 from bgpy.simulation_framework.scenarios.roa_info import ROAInfo

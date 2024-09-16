@@ -1,8 +1,8 @@
-from typing import Iterator, Optional
-
-from .ann_container import AnnContainer
+from typing import Iterable
 
 from bgpy.simulation_engine import Announcement as Ann
+
+from .ann_container import AnnContainer
 
 
 class RIBsOut(AnnContainer[int, dict[str, Ann]]):
@@ -11,7 +11,7 @@ class RIBsOut(AnnContainer[int, dict[str, Ann]]):
     neighbor: {prefix: announcement}
     """
 
-    def get_ann(self, neighbor_asn: int, prefix: str) -> Optional[Ann]:
+    def get_ann(self, neighbor_asn: int, prefix: str) -> Ann | None:
         """Returns Ann for a given neighbor asn and prefix"""
 
         return self.data.get(neighbor_asn, dict()).get(prefix)
@@ -29,7 +29,7 @@ class RIBsOut(AnnContainer[int, dict[str, Ann]]):
 
         del self.data[neighbor_asn][prefix]
 
-    def neighbors(self) -> Iterator[int]:
+    def neighbors(self) -> Iterable[int]:
         """Return all neighbors from the ribs out"""
 
-        return self.data.keys()  # type: ignore
+        return self.data.keys()

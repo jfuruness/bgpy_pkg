@@ -1,10 +1,10 @@
-from typing import Optional, TYPE_CHECKING
+from ipaddress import ip_network
+from typing import TYPE_CHECKING, Optional
 
+from roa_checker import ROA
+
+from bgpy.shared.enums import Prefixes, Timestamps
 from bgpy.simulation_framework.scenarios.scenario import Scenario
-from bgpy.simulation_framework.scenarios.roa_info import ROAInfo
-from bgpy.enums import Prefixes
-from bgpy.enums import Timestamps
-
 
 if TYPE_CHECKING:
     from bgpy.simulation_engine import Announcement as Ann
@@ -46,18 +46,14 @@ class SubprefixHijack(Scenario):
             )
         return tuple(anns)
 
-    def _get_roa_infos(
+    def _get_roas(
         self,
         *,
         announcements: tuple["Ann", ...] = (),
         engine: Optional["BaseSimulationEngine"] = None,
-        prev_scenario: Optional["Scenario"] = None,
-    ) -> tuple[ROAInfo, ...]:
-        """Returns a tuple of ROAInfo's"""
+    ) -> tuple[ROA, ...]:
+        """Returns a tuple of ROAs"""
 
-        err: str = "Fix the roa_origins of the " "announcements for multiple victims"
-        assert len(self.victim_asns) == 1, err
-
-        roa_origin: int = next(iter(self.victim_asns))
-
-        return (ROAInfo(Prefixes.PREFIX.value, roa_origin),)
+        return tuple(
+            [ROA(ip_network(Prefixes.PREFIX.value), x) for x in self.victim_asns]
+        )

@@ -1,7 +1,7 @@
 from pathlib import Path
 
+from bgpy.shared.enums import SpecialPercentAdoptions
 from bgpy.simulation_engine import ROV
-from bgpy.enums import SpecialPercentAdoptions
 from bgpy.simulation_framework import (
     DependentSimulation,
     PrefixHijack,

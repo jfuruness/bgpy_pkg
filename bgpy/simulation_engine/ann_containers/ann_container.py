@@ -1,6 +1,6 @@
-from collections import UserDict
 import pprint
-from typing import Any, Generic, TypeVar
+from collections import UserDict
+from typing import Any, ClassVar, Generic, TypeVar
 
 KeyType = TypeVar("KeyType")
 ValueType = TypeVar("ValueType")
@@ -18,15 +18,15 @@ class AnnContainer(UserDict[KeyType, ValueType], Generic[KeyType, ValueType]):
     https://github.com/python/cpython/blob/main/Lib/collections/__init__.py#L1117
     """
 
-    subclasses: set["AnnContainer[Any, Any]"] = set()
+    subclasses: ClassVar[set[type["AnnContainer[Any, Any]"]]] = set()
 
-    def __init_subclass__(cls, *args, **kwargs):
+    def __init_subclass__(cls: type["AnnContainer[Any, Any]"], *args, **kwargs):
         """This method essentially creates a list of all subclasses
         This is allows us to easily assign yaml tags
         """
 
         super().__init_subclass__(*args, **kwargs)
-        AnnContainer.subclasses.add(cls)  # type: ignore
+        AnnContainer.subclasses.add(cls)
 
     def __str__(self) -> str:
         """Returns contents of the container as str"""

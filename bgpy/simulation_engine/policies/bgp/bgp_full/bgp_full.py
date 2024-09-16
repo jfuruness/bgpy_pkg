@@ -1,25 +1,20 @@
-from typing import Optional, TYPE_CHECKING
+from typing import TYPE_CHECKING
+from warnings import warn
 
-from .propagate_funcs import _propagate
-from .propagate_funcs import _process_outgoing_ann
-from .propagate_funcs import _prev_sent
-from .propagate_funcs import _send_anns
-
-from .process_incoming_funcs import process_incoming_anns
-from .process_incoming_funcs import _new_ann_better
-from .process_incoming_funcs import _process_incoming_withdrawal
-from .process_incoming_funcs import _withdraw_ann_from_neighbors
-from .process_incoming_funcs import _select_best_ribs_in
-
+from bgpy.simulation_engine.ann_containers import RIBsIn, RIBsOut, SendQueue
 from bgpy.simulation_engine.policies.bgp import BGP
 
-from bgpy.simulation_engine.ann_containers import RIBsIn
-from bgpy.simulation_engine.ann_containers import RIBsOut
-from bgpy.simulation_engine.ann_containers import SendQueue
-
+from .process_incoming_funcs import (
+    _new_ann_better,
+    _process_incoming_withdrawal,
+    _select_best_ribs_in,
+    _withdraw_ann_from_neighbors,
+    process_incoming_anns,
+)
+from .propagate_funcs import _prev_sent, _process_outgoing_ann, _propagate, _send_anns
 
 if TYPE_CHECKING:
-    from bgpy.enums import Relationships
+    from bgpy.shared.enums import Relationships
     from bgpy.simulation_engine.announcement import Announcement as Ann
 
 
@@ -29,20 +24,50 @@ class BGPFull(BGP):
     def __init__(
         self,
         *args,
-        _ribs_in: Optional[RIBsIn] = None,
-        _ribs_out: Optional[RIBsOut] = None,
-        _send_q: Optional[SendQueue] = None,
+        ribs_in: RIBsIn | None = None,
+        ribs_out: RIBsOut | None = None,
+        send_q: SendQueue | None = None,
         **kwargs,
     ):
         super(BGPFull, self).__init__(*args, **kwargs)
-        self._ribs_in: RIBsIn = _ribs_in if _ribs_in else RIBsIn()
-        self._ribs_out: RIBsOut = _ribs_out if _ribs_out else RIBsOut()
-        self._send_q: SendQueue = _send_q if _send_q else SendQueue()
+        self.ribs_in: RIBsIn = ribs_in if ribs_in else RIBsIn()
+        self.ribs_out: RIBsOut = ribs_out if ribs_out else RIBsOut()
+        self.send_q: SendQueue = send_q if send_q else SendQueue()
+
+    @property
+    def _ribs_in(self) -> RIBsIn:
+        warn(
+            "Please use .ribs_in instead of ._ribs_in. "
+            "This will be removed in a later version",
+            category=DeprecationWarning,
+            stacklevel=2,
+        )
+        return self.ribs_in
+
+    @property
+    def _ribs_out(self) -> RIBsOut:
+        warn(
+            "Please use .ribs_out instead of ._ribs_out. "
+            "This will be removed in a later version",
+            category=DeprecationWarning,
+            stacklevel=2,
+        )
+        return self.ribs_out
+
+    @property
+    def _send_q(self) -> SendQueue:
+        warn(
+            "Please use .send_q instead of ._send_q. "
+            "This will be removed in a later version",
+            category=DeprecationWarning,
+            stacklevel=2,
+        )
+        return self.send_q
 
     # Propagation functions
     _propagate = _propagate
     _process_outgoing_ann = _process_outgoing_ann
-    _prev_sent = _prev_sent  # type: ignore
+    _prev_sent = _prev_sent
     _send_anns = _send_anns
 
     # Must add this func here since it refers to BGPFull
@@ -56,17 +81,15 @@ class BGPFull(BGP):
         super(BGPFull, self)._propagate(propagate_to, send_rels)
 
     # Process incoming funcs
-    process_incoming_anns = process_incoming_anns
-    _new_ann_better = _new_ann_better
-    _process_incoming_withdrawal = _process_incoming_withdrawal
-    _withdraw_ann_from_neighbors = _withdraw_ann_from_neighbors
-    _select_best_ribs_in = _select_best_ribs_in
+    if not TYPE_CHECKING:
+        process_incoming_anns = process_incoming_anns
+        _new_ann_better = _new_ann_better
+        _process_incoming_withdrawal = _process_incoming_withdrawal
+        _withdraw_ann_from_neighbors = _withdraw_ann_from_neighbors
+        _select_best_ribs_in = _select_best_ribs_in
 
-    # Must be here since it referes to BGPFull
-    # Could just use super but want to avoid the additional func calls
-    def receive_ann(  # type: ignore
-        self, ann: "Ann", accept_withdrawals: bool = True
-    ) -> None:
+    # NOTE: not sure why this is coded in such a weird fashion...
+    def receive_ann(self, ann: "Ann", accept_withdrawals: bool = True) -> None:
         BGP.receive_ann(self, ann, accept_withdrawals=True)
 
     def __to_yaml_dict__(self):
@@ -75,9 +98,9 @@ class BGPFull(BGP):
         as_dict = super(BGPFull, self).__to_yaml_dict__()
         as_dict.update(
             {
-                "_ribs_in": self._ribs_in,
-                "_ribs_out": self._ribs_out,
-                "_send_q": self._send_q,
+                "ribs_in": self.ribs_in,
+                "ribs_out": self.ribs_out,
+                "send_q": self.send_q,
             }
         )
         return as_dict

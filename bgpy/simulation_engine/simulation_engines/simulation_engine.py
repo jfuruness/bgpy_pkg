@@ -1,9 +1,6 @@
-from typing import Any, Optional, TYPE_CHECKING
+from typing import TYPE_CHECKING, Any, Optional
 
-from frozendict import frozendict
-
-from bgpy.enums import Relationships
-from bgpy.simulation_engine import Policy
+from bgpy.shared.enums import Relationships
 
 from .base_simulation_engine import BaseSimulationEngine
 
@@ -20,38 +17,14 @@ class SimulationEngine(BaseSimulationEngine):
     # Setup funcs #
     ###############
 
-    def setup(
-        self,
-        announcements: tuple["Ann", ...] = (),
-        BasePolicyCls: type[Policy] = Policy,
-        non_default_asn_cls_dict: frozendict[int, type[Policy]] = (
-            frozendict()  # type: ignore
-        ),
-        prev_scenario: Optional["Scenario"] = None,
-        attacker_asns: frozenset[int] = frozenset(),
-        AttackerBasePolicyCls: Optional[type[Policy]] = None,
-    ) -> frozenset[type[Policy]]:
+    def setup(self, scenario: "Scenario") -> None:
         """Sets AS classes and seeds announcements"""
 
-        policies_used: frozenset[type[Policy]] = self._set_as_classes(
-            BasePolicyCls,
-            non_default_asn_cls_dict,
-            prev_scenario,
-            attacker_asns,
-            AttackerBasePolicyCls,
-        )
-        self._seed_announcements(announcements, prev_scenario)
+        self._set_as_classes(scenario)
+        self._seed_announcements(scenario.announcements)
         self.ready_to_run_round = 0
-        return policies_used
 
-    def _set_as_classes(
-        self,
-        BasePolicyCls: type[Policy],
-        non_default_asn_cls_dict: frozendict[int, type[Policy]],
-        prev_scenario: Optional["Scenario"] = None,
-        attacker_asns: frozenset[int] = frozenset(),
-        AttackerBasePolicyCls: Optional[type[Policy]] = None,
-    ) -> frozenset[type[Policy]]:
+    def _set_as_classes(self, scenario: "Scenario") -> None:
         """Resets Engine ASes and changes their AS class
 
         We do this here because we already seed from the scenario
@@ -60,38 +33,15 @@ class SimulationEngine(BaseSimulationEngine):
         and have each do half and half
         """
 
-        policy_classes_used = set()
         # Done here to save as much time  as possible
         for as_obj in self.as_graph:
             # Delete the old policy and remove references so that RAM can be reclaimed
             del as_obj.policy.as_
             # set the AS class to be the proper type of AS
-            Cls = non_default_asn_cls_dict.get(as_obj.asn, BasePolicyCls)
-            if AttackerBasePolicyCls and as_obj.asn in attacker_asns:
-                Cls = AttackerBasePolicyCls
+            Cls = scenario.get_policy_cls(as_obj)
             as_obj.policy = Cls(as_=as_obj)
-            policy_classes_used.add(Cls)
 
-        # NOTE: even though the code below is more efficient than the code
-        # above, for some reason it just breaks without erroring
-        # likely a bug in pypy's weak references
-        # for some reason the attacker is just never seeded the announcements
-        # AttackerBasePolicyCls takes precendence for attacker_asns
-        # if AttackerBasePolicyCls is not None:
-        #    policy_classes_used.add(AttackerBasePolicyCls)
-        #    for asn in attacker_asns:
-        #        # Delete the old policy and remove references for RAM
-        #        del as_obj.policy.as_
-        #        # set the AS class to be the proper type of AS
-        #        as_obj.policy = AttackerBasePolicyCls(as_=as_obj)
-
-        return frozenset(policy_classes_used)
-
-    def _seed_announcements(
-        self,
-        announcements: tuple["Ann", ...] = (),
-        prev_scenario: Optional["Scenario"] = None,
-    ) -> None:
+    def _seed_announcements(self, announcements: tuple["Ann", ...] = ()) -> None:
         """Seeds announcement at the proper AS
 
         Since this is the simulator engine, we should
@@ -101,8 +51,7 @@ class SimulationEngine(BaseSimulationEngine):
         for ann in announcements:
             assert ann.seed_asn is not None
             # Get the AS object to seed at
-            # Must ignore type because it doesn't see assert above
-            obj_to_seed = self.as_graph.as_dict[ann.seed_asn]  # type: ignore
+            obj_to_seed = self.as_graph.as_dict[ann.seed_asn]
             obj_to_seed.policy.seed_ann(ann)
 
     #####################
@@ -114,14 +63,13 @@ class SimulationEngine(BaseSimulationEngine):
 
         # Ensure that the simulator is ready to run this round
         if self.ready_to_run_round != propagation_round:
-            raise Exception(f"Engine not set up to run for {propagation_round} round")
+            raise RuntimeError(
+                f"Engine not set up to run for {propagation_round} round"
+            )
         assert scenario, "This can't be empty"
 
-        # import time
-        # start = time.perf_counter()
         # Propogate anns
         self._propagate(propagation_round, scenario)
-        # print(f"prop time {time.perf_counter() - start}")
         # Increment the ready to run round
         self.ready_to_run_round += 1
 

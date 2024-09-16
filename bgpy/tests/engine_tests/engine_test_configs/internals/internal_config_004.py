@@ -1,15 +1,11 @@
 from frozendict import frozendict
 
-from bgpy.as_graphs import ASGraphInfo, PeerLink, CustomerProviderLink as CPLink
-from bgpy.enums import ASNs
-from bgpy.simulation_engine import BGP, ASPA
-from bgpy.simulation_framework import (
-    PrefixHijack,
-    ScenarioConfig,
-    preprocess_anns_funcs,
-)
+from bgpy.as_graphs import ASGraphInfo, PeerLink
+from bgpy.as_graphs import CustomerProviderLink as CPLink
+from bgpy.shared.enums import ASNs
+from bgpy.simulation_engine import ASPA, BGP
+from bgpy.simulation_framework import ForgedOriginPrefixHijack, ScenarioConfig
 from bgpy.tests.engine_tests.utils import EngineTestConfig
-
 
 r"""Graph to test ASPA RFC section 12
 
@@ -48,12 +44,11 @@ internal_config_004 = EngineTestConfig(
         " prevent it from popping up again"
     ),
     scenario_config=ScenarioConfig(
-        ScenarioCls=PrefixHijack,
-        preprocess_anns_func=preprocess_anns_funcs.forged_origin_export_all_hijack,
+        ScenarioCls=ForgedOriginPrefixHijack,
         BasePolicyCls=BGP,
         override_victim_asns=frozenset({ASNs.VICTIM.value}),
         override_attacker_asns=frozenset({ASNs.ATTACKER.value}),
-        override_non_default_asn_cls_dict=frozendict(
+        hardcoded_asn_cls_dict=frozendict(
             {
                 1: ASPA,
                 2: ASPA,

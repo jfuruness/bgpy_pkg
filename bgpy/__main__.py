@@ -1,12 +1,8 @@
 from pathlib import Path
 
+from bgpy.shared.enums import SpecialPercentAdoptions
 from bgpy.simulation_engine import ROV
-from bgpy.enums import SpecialPercentAdoptions
-from bgpy.simulation_framework import (
-    Simulation,
-    SubprefixHijack,
-    ScenarioConfig,
-)
+from bgpy.simulation_framework import ScenarioConfig, Simulation, SubprefixHijack
 
 
 def main():
@@ -28,8 +24,8 @@ def main():
             ScenarioConfig(ScenarioCls=SubprefixHijack, AdoptPolicyCls=ROV),
         ),
         output_dir=Path("~/Desktop/main_ex").expanduser(),
-        num_trials=1,
-        parse_cpus=1,
+        num_trials=10,
+        parse_cpus=10,
     )
     sim.run()
 

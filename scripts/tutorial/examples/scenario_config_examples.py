@@ -16,21 +16,13 @@ from pathlib import Path
 from frozendict import frozendict
 
 from bgpy.as_graphs import CAIDAASGraphConstructor
-from bgpy.enums import ASGroups
+from bgpy.shared.enums import ASGroups, SpecialPercentAdoptions
 from bgpy.simulation_engine import ROV
-from bgpy.enums import SpecialPercentAdoptions
 from bgpy.simulation_framework import (
+    ScenarioConfig,
     Simulation,
     SubprefixHijack,
-    ScenarioConfig,
 )
-
-
-# When using the hardcoded_asn_cls_dict, it's important to use a class
-# that is different from the Policy classes in the simulation, or else they'll
-# all get aggregated together in the metrics
-class Tier1ROV(ROV):
-    name = "tier-1 ROV"
 
 
 def main():
@@ -38,7 +30,7 @@ def main():
     bgp_dag = CAIDAASGraphConstructor(tsv_path=None).run()
     # NOTE: if you wanted to get the ASes instead of ASNs, use as_groups
     input_clique_asns = bgp_dag.asn_groups[ASGroups.INPUT_CLIQUE.value]
-    hardcoded_asn_cls_dict = frozendict({asn: Tier1ROV for asn in input_clique_asns})
+    hardcoded_asn_cls_dict = frozendict({asn: ROV for asn in input_clique_asns})
 
     # Simulation for the paper
     sim = Simulation(

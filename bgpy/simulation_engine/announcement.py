@@ -1,9 +1,9 @@
-from dataclasses import dataclass, asdict, replace
+from dataclasses import asdict, dataclass, replace
 from typing import Any, Optional
 
 from yamlable import YamlAble, yaml_info
 
-from bgpy.enums import Relationships
+from bgpy.shared.enums import Relationships
 
 
 @yaml_info(yaml_tag="Announcement")
@@ -15,7 +15,7 @@ class Announcement(YamlAble):
     as_path: tuple[int, ...]
     # Equivalent to the next hop in a normal BGP announcement
     next_hop_asn: int = None  # type: ignore
-    seed_asn: Optional[int] = None
+    seed_asn: int | None = None
     recv_relationship: Relationships = Relationships.ORIGIN
 
     #############################
@@ -34,31 +34,26 @@ class Announcement(YamlAble):
     timestamp: int = 0
     # Used for classes derived from BGPFull
     withdraw: bool = False
-    # Deprecated attr. This existed before next_hop_asn
-    # next_hop_asn should be set instead of this now
-    # Currently functionality is unchanged but it just
-    # shouldn't be used.
-    traceback_end: bool = False
     # ROV, ROV++ optional attributes
-    roa_valid_length: Optional[bool] = None
-    roa_origin: Optional[int] = None
+    roa_valid_length: bool | None = None
+    roa_origin: int | None = None
     # BGPsec optional attributes
     # BGPsec next ASN that should receive the control plane announcement
     # NOTE: this is the opposite direction of next_hop, for the data plane
-    bgpsec_next_asn: Optional[int] = None
+    bgpsec_next_asn: int | None = None
     bgpsec_as_path: tuple[int, ...] = ()
     # RFC 9234 OTC attribute (Used in OnlyToCustomers Policy)
-    only_to_customers: Optional[int] = None
+    only_to_customers: int | None = None
     # ROV++ attribute
     rovpp_blackhole: bool = False
 
     def __post_init__(self):
         """Defaults seed_asn and next_hop_asn"""
 
-        if self.seed_asn is None:
-            if len(self.as_path) == 1:
-                object.__setattr__(self, "seed_asn", self.as_path[0])
+        if self.seed_asn is None and len(self.as_path) == 1:
+            object.__setattr__(self, "seed_asn", self.as_path[0])
         if self.next_hop_asn is None:
+            # next hop defaults to None, messing up the type
             if len(self.as_path) == 1:  # type: ignore
                 object.__setattr__(self, "next_hop_asn", self.as_path[0])
             else:
@@ -75,18 +70,16 @@ class Announcement(YamlAble):
             raise NotImplementedError
 
     def copy(
-        self, overwrite_default_kwargs: Optional[dict[Any, Any]] = None
+        self, overwrite_default_kwargs: dict[Any, Any] | None = None
     ) -> "Announcement":
         """Creates a new ann with proper sim attrs"""
 
-        # Replace seed asn and traceback end every time by default
-        kwargs = {"seed_asn": None, "traceback_end": False}
         if overwrite_default_kwargs:
-            kwargs.update(overwrite_default_kwargs)
-
-        # Mypy says it gets this wrong
-        # https://github.com/microsoft/pyright/issues/1047#issue-705124399
-        return replace(self, **kwargs)  # type: ignore
+            # Mypy says it gets this wrong
+            # https://github.com/microsoft/pyright/issues/1047#issue-705124399
+            return replace(self, **overwrite_default_kwargs)
+        else:
+            return replace(self)
 
     def bgpsec_valid(self, asn: int) -> bool:
         """Returns True if valid by BGPSec else False"""

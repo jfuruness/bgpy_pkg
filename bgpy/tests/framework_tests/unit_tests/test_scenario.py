@@ -1,23 +1,23 @@
 import random
+from ipaddress import ip_network
 
-from frozendict import frozendict
 import pytest
+from roa_checker import ROA
 
-from bgpy.enums import ASNs, Prefixes
+from bgpy.shared.enums import ASNs, Prefixes
+from bgpy.simulation_engine import BGP, Announcement, BGPFull
 from bgpy.simulation_framework import (
+    NonRoutedPrefixHijack,
     ScenarioConfig,
-    ROAInfo,
     SubprefixHijack,
     ValidPrefix,
-    NonRoutedPrefixHijack,
 )
-from bgpy.simulation_engine import Announcement, BGP, BGPFull, ROV
 
 
 @pytest.mark.framework
 @pytest.mark.unit_tests
 class TestScenario:
-    @pytest.mark.parametrize("num_attackers", (1, 2))
+    @pytest.mark.parametrize("num_attackers", [1, 2])
     def test_init_valid(self, num_attackers):
         """Tests the initialization works when valid"""
 
@@ -26,34 +26,35 @@ class TestScenario:
             ScenarioCls=SubprefixHijack,
             AnnCls=Announcement,
             BasePolicyCls=BGP,
+            AdoptPolicyCls=BGPFull,
             num_attackers=num_attackers,
             num_victims=num_victims,
             override_attacker_asns=frozenset(range(num_attackers)),
             override_victim_asns=frozenset(range(num_victims)),
-            override_non_default_asn_cls_dict=frozendict({1: BGPFull}),
+            override_adopting_asns=frozenset({1}),
         )
         SubprefixHijack(scenario_config=scenario_config)
 
     def test_init_invalid_attackers(self):
         """Tests the len(attacker_asns) == num_attackers"""
 
+        scenario_config = ScenarioConfig(
+            ScenarioCls=SubprefixHijack,
+            num_attackers=1,
+            override_attacker_asns=frozenset({1, 2}),
+        )
         with pytest.raises(AssertionError):
-            scenario_config = ScenarioConfig(
-                ScenarioCls=SubprefixHijack,
-                num_attackers=1,
-                override_attacker_asns=frozenset({1, 2}),
-            )
             SubprefixHijack(scenario_config=scenario_config)
 
     def test_init_invalid_victims(self):
         """Tests the len(victim_asns) == num_victims"""
 
+        scenario_config = ScenarioConfig(
+            ScenarioCls=SubprefixHijack,
+            num_victims=1,
+            override_victim_asns=frozenset({1, 2}),
+        )
         with pytest.raises(AssertionError):
-            scenario_config = ScenarioConfig(
-                ScenarioCls=SubprefixHijack,
-                num_victims=1,
-                override_victim_asns=frozenset({1, 2}),
-            )
             SubprefixHijack(scenario_config=scenario_config)
 
     def test_init_adopt_as_cls(self):
@@ -85,7 +86,8 @@ class TestScenario:
         scenario = SubprefixHijack(
             scenario_config=ScenarioConfig(ScenarioCls=SubprefixHijack),
             engine=engine,
-            prev_scenario=prev_scenario,
+            attacker_asns=prev_scenario.attacker_asns,
+            victim_asns=prev_scenario.victim_asns,
         )
         assert prev_scenario.attacker_asns == scenario.attacker_asns
         assert prev_scenario.victim_asns == scenario.victim_asns
@@ -154,7 +156,7 @@ class TestScenario:
         )
         scenario = SubprefixHijack(scenario_config=scenario_config, engine=engine)
         attacker_asns = scenario._get_attacker_asns(
-            override_attacker_asns=None, engine=engine, prev_scenario=None
+            override_attacker_asns=None, prev_attacker_asns=None, engine=engine
         )
         # Check for #1
         assert attacker_asns
@@ -162,7 +164,7 @@ class TestScenario:
         assert len(attacker_asns) == num_attackers
         # Check for number 3
         attacker_asns_2 = scenario._get_attacker_asns(
-            override_attacker_asns=None, engine=engine, prev_scenario=None
+            override_attacker_asns=None, prev_attacker_asns=None, engine=engine
         )
         assert attacker_asns != attacker_asns_2
 
@@ -185,7 +187,7 @@ class TestScenario:
         )
         scenario = NonRoutedPrefixHijack(scenario_config=scenario_config, engine=engine)
         victim_asns = scenario._get_victim_asns(
-            override_victim_asns=None, engine=engine, prev_scenario=None
+            override_victim_asns=None, prev_victim_asns=None, engine=engine
         )
         # Check for #1
         assert victim_asns
@@ -193,7 +195,7 @@ class TestScenario:
         assert len(victim_asns) == num_victims
         # Check for number 3
         victim_asns_2 = scenario._get_victim_asns(
-            override_victim_asns=None, engine=engine, prev_scenario=None
+            override_victim_asns=None, prev_victim_asns=None, engine=engine
         )
 
         assert victim_asns != victim_asns_2
@@ -210,9 +212,7 @@ class TestScenario:
         scenario = SubprefixHijack(
             scenario_config=ScenarioConfig(ScenarioCls=SubprefixHijack), engine=engine
         )
-        assert scenario._get_possible_attacker_asns(
-            engine=engine, percent_adoption=0.5, prev_scenario=None
-        )
+        assert scenario._get_possible_attacker_asns(engine=engine, percent_adoption=0.5)
 
     def test_get_possible_victim_asns(self, engine):
         """Tests that a set is returned with at least a few ases"""
@@ -220,9 +220,7 @@ class TestScenario:
         scenario = SubprefixHijack(
             scenario_config=ScenarioConfig(ScenarioCls=SubprefixHijack), engine=engine
         )
-        assert scenario._get_possible_victim_asns(
-            engine=engine, percent_adoption=0.5, prev_scenario=None
-        )
+        assert scenario._get_possible_victim_asns(engine=engine, percent_adoption=0.5)
 
     def test_get_announcements(self, engine):
         """Tests the get_announcements of a subclass of scenario
@@ -255,7 +253,7 @@ class TestScenario:
             override_attacker_asns=override_attackers,
         )
         scenario = SubprefixHijack(scenario_config=config, engine=engine)
-        attackers = scenario._get_attacker_asns(override_attackers, engine, None)
+        attackers = scenario._get_attacker_asns(override_attackers, None, engine)
 
         assert attackers == frozenset()
 
@@ -274,7 +272,7 @@ class TestScenario:
             override_victim_asns=override_victims,
         )
         scenario = ValidPrefix(scenario_config=config, engine=engine)
-        victims = scenario._get_victim_asns(override_victims, engine, None)
+        victims = scenario._get_victim_asns(override_victims, None, engine)
 
         assert victims == frozenset()
 
@@ -288,19 +286,17 @@ class TestScenario:
         victim = ASNs.VICTIM.value
         attacker = ASNs.ATTACKER.value
         anns = (
-            Announcement(prefix="1.2.0.0/16", as_path=tuple([victim]), seed_asn=victim),
-            Announcement(
-                prefix="1.2.0.0/24", as_path=tuple([attacker]), seed_asn=attacker
-            ),
+            Announcement(prefix="1.2.0.0/16", as_path=(victim,), seed_asn=victim),
+            Announcement(prefix="1.2.0.0/24", as_path=(attacker,), seed_asn=attacker),
         )
-        roas = (ROAInfo(prefix="1.2.0.0/16", origin=victim),)
+        roas = (ROA(prefix=ip_network("1.2.0.0/16"), origin=victim),)
 
         config = ScenarioConfig(
             ScenarioCls=ValidPrefix,
             override_victim_asns=frozenset({victim}),
             override_attacker_asns=frozenset({attacker}),
             override_announcements=anns,
-            override_roa_infos=roas,
+            override_roas=roas,
         )
         scenario = ValidPrefix(scenario_config=config, engine=engine)
         scenario.announcements = scenario._add_roa_info_to_anns(
@@ -308,7 +304,7 @@ class TestScenario:
         )
 
         # Check we still have the right anns
-        assert len(scenario.announcements) == 2
+        assert len(scenario.announcements) == len(anns)
         valid, malicious = scenario.announcements
 
         # First announcement should be validated by ROA
@@ -325,28 +321,6 @@ class TestScenario:
     #######################
     # Adopting ASNs funcs #
     #######################
-
-    def test_get_non_default_asn_cls_dict_no_prev_scenario_no_adopt(self, engine):
-        """Tests that the non default as cls dict is set properly
-
-        No prev_scenario and no adopt AS Cls - should be the result of the
-        get_adopting_asns_dict
-        """
-
-        scenario_config = ScenarioConfig(
-            ScenarioCls=SubprefixHijack,
-            AdoptPolicyCls=ROV,
-            BasePolicyCls=BGP,
-        )
-        scenario = SubprefixHijack(
-            scenario_config=scenario_config, percent_adoption=0.5, engine=engine
-        )
-        non_default_asn_cls_dict = scenario._get_non_default_asn_cls_dict(
-            override_non_default_asn_cls_dict=None, engine=engine, prev_scenario=None
-        )
-
-        assert ROV in list(non_default_asn_cls_dict.values())
-        assert BGP not in list(non_default_asn_cls_dict.values())
 
     def test_default_adopters(self, engine):
         """Ensures that the default adopters returns the victims"""

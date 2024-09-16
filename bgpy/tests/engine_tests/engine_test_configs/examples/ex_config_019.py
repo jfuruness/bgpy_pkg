@@ -1,15 +1,11 @@
 from frozendict import frozendict
-from bgpy.enums import ASNs
-from .as_graph_info_000 import as_graph_info_000
+
+from bgpy.shared.enums import ASNs
+from bgpy.simulation_engine import BGP, OnlyToCustomers
+from bgpy.simulation_framework import AccidentalRouteLeak, ScenarioConfig
 from bgpy.tests.engine_tests.utils import EngineTestConfig
 
-from bgpy.simulation_engine import BGP, OnlyToCustomers
-from bgpy.simulation_framework import (
-    ScenarioConfig,
-    AccidentalRouteLeak,
-    preprocess_anns_funcs,
-)
-
+from .as_graph_info_000 import as_graph_info_000
 
 desc = (
     "accidental route leak against OnlyToCustomersSimple\n"
@@ -23,11 +19,10 @@ ex_config_019 = EngineTestConfig(
     desc=desc,
     scenario_config=ScenarioConfig(
         ScenarioCls=AccidentalRouteLeak,
-        preprocess_anns_func=preprocess_anns_funcs.noop,
         BasePolicyCls=BGP,
         override_attacker_asns=frozenset({ASNs.ATTACKER.value}),
         override_victim_asns=frozenset({ASNs.VICTIM.value}),
-        override_non_default_asn_cls_dict=frozendict(
+        hardcoded_asn_cls_dict=frozendict(
             {
                 1: OnlyToCustomers,
                 2: OnlyToCustomers,

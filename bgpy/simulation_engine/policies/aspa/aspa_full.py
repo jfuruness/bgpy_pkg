@@ -1,6 +1,6 @@
-from .aspa import ASPA
-
 from bgpy.simulation_engine.policies.rov.rov_full import ROVFull
+
+from .aspa import ASPA
 
 
 class ASPAFull(ASPA, ROVFull):

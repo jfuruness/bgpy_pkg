@@ -1,5 +1,6 @@
-from typing import Optional, TYPE_CHECKING
+from typing import TYPE_CHECKING
 
+from bgpy.shared.exceptions import GaoRexfordError
 from bgpy.simulation_engine.announcement import Announcement as Ann
 
 if TYPE_CHECKING:
@@ -8,7 +9,7 @@ if TYPE_CHECKING:
 
 def _get_best_ann_by_gao_rexford(
     self: "BGP",
-    current_ann: Optional[Ann],
+    current_ann: Ann | None,
     new_ann: Ann,
 ) -> Ann:
     """Determines if the new ann > current ann by Gao Rexford"""
@@ -38,12 +39,12 @@ def _get_best_ann_by_gao_rexford(
                 return self._get_best_ann_by_lowest_neighbor_asn_tiebreaker(
                     current_ann, new_ann
                 )
-        raise Exception("No ann was chosen")
+        raise GaoRexfordError("No ann was chosen")
 
 
 def _get_best_ann_by_local_pref(
     self: "BGP", current_ann: Ann, new_ann: Ann
-) -> Optional[Ann]:
+) -> Ann | None:
     """Returns best announcement by local pref, or None if tie"""
 
     if current_ann.recv_relationship.value > new_ann.recv_relationship.value:
@@ -54,9 +55,7 @@ def _get_best_ann_by_local_pref(
         return None
 
 
-def _get_best_ann_by_as_path(
-    self: "BGP", current_ann: Ann, new_ann: Ann
-) -> Optional[Ann]:
+def _get_best_ann_by_as_path(self: "BGP", current_ann: Ann, new_ann: Ann) -> Ann | None:
     """Returns best announcement by as path length, or None if tie
 
     Shorter AS Paths are better

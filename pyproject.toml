@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "bgpy_pkg"
-version = "8.1.1"
+version = "9.0.0"
 requires-python = ">=3.10"
 description = "Simulates BGP and ROV in an extensible manner"
 readme = "README.md"
@@ -37,23 +37,34 @@ keywords = [
     "Furuness"
 ]
 classifiers = [
-    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: Implementation :: CPython",
+    "Programming Language :: Python :: Implementation :: PyPy",
     "Environment :: Console",
     "License :: OSI Approved :: BSD License",
-    "Intended Audience :: Developers"
+    "Intended Audience :: Developers",
+    "Operating System :: POSIX :: Linux",
+    "Operating System :: Microsoft :: Windows",
+    "Operating System :: MacOS",
+    "Operating System :: MacOS :: MacOS X",
+    "Topic :: Security",
 ]
 dependencies = [
     "beautifulsoup4==4.12.3",
-    "requests==2.31.0",
-    "requests-cache==1.2.0",
-    "roa-checker==1.1.4",
-    "frozendict==2.4.0",
-    "graphviz==0.20.1",
-    "pillow==10.2.0",
-    "matplotlib==3.8.3",
-    "pytest==8.0.1",
-    "PyYAML~=6.0",
-    "tqdm==4.66.2",
+    "frozendict==2.4.4",
+    "graphviz==0.20.3",
+    "matplotlib==3.9.2",
+    "pillow==10.4.0",
+    "platformdirs==4.2.2",
+    "psutil==6.0.0",
+    "pytest==8.3.2",
+    "PyYAML==6.0.2",
+    "requests==2.32.3",
+    "requests-cache==1.2.1",
+    "roa-checker==3.0.3",
+    "tqdm==4.66.5",
     "yamlable==1.1.1",
 ]
 
@@ -66,15 +77,18 @@ bgpy = "bgpy.__main__:main"
 
 [project.optional-dependencies]
 test = [
-    "black==24.2.0",
-    "pre-commit==3.6.2",
-    "types-requests==2.31.0.20240218",
-    "types-PyYAML==6.0.12.12",
-    "mypy==1.8.0",
-    "flake8==7.0.0",
-    "tox==4.13.0",
-    "pytest-xdist==3.5.0",
-    "ruff==0.2.2",
+    "pytest==8.3.2",
+    "pre-commit==3.8.0",
+    "types-beautifulsoup4==4.12.0.20240907",
+    "types-requests==2.32.0.20240907",
+    "types-psutil==6.0.0.20240901",
+    "types-PyYAML==6.0.12.20240808",
+    "types-tqdm==4.66.0.20240417",
+    "mypy==1.11.2",
+    "flake8==7.1.1",
+    "tox==4.18.1",
+    "pytest-xdist==3.6.1",
+    "ruff==0.6.4",
 ]
 
 [tool.setuptools]
@@ -82,26 +96,24 @@ include-package-data = true
 
 # https://stackoverflow.com/a/76214408/8903959
 [tool.setuptools.package-data]
-"bgpy" = ["py.typed"]
+bgpy = ["py.typed"]
 
 # https://stackoverflow.com/a/76214408/8903959
-# [tool.setuptools.packages.find]
-# where = ["bgpy"]
+[tool.setuptools.packages.find]
+where = ["."]
+exclude = ["scripts"]
 
 [tool.pytest.ini_options]
-python_files = ["test*.py"]
-python_classes = ["Test*"]
-python_functions = ["test*"]
-# addopts = "-m 'not slow'"  # -n 6
+addopts = "-rxXs -v"  # Shows reasons for skipping, xfailing, etc
 markers = [
-    "slow",  # All slow tests
-    "framework",  # All framework tests
-    "unit_tests",  # All unit tests
-    "engine",  # All engine tests
-    "caida_collector_base_funcs",  # other funcs in caida collector
-    "data_extraction_funcs",  # Related to reading data from file
-    "html_funcs",  # Funcs related to html
-    "read_file_funcs",  # Reading caida files
+    "slow: All slow tests",
+    "framework: All framework tests",
+    "unit_tests: All unit tests",
+    "engine: All engine tests",
+    "caida_collector_base_funcs: other funcs in caida collector",
+    "data_extraction_funcs: Related to reading data from file",
+    "html_funcs: Funcs related to html",
+    "read_file_funcs: Reading caida files",
 ]
 filterwarnings = [
     "ignore::DeprecationWarning:yamlable",
@@ -110,18 +122,18 @@ filterwarnings = [
 ]
 
 [tool.mypy]
-mypy_path = "bgpy"
-check_untyped_defs = true
-disallow_any_generics = true
+strict = true
+# Some extra stuff we might want
 ignore_missing_imports = true
-no_implicit_optional = true
 show_error_codes = true
-strict_equality = true
-warn_redundant_casts = true
-warn_return_any = true
 warn_unreachable = true
-warn_unused_configs = true
-no_implicit_reexport = true
+# These next few are various gradations of forcing use of type annotations
+disallow_untyped_calls = false
+disallow_incomplete_defs = false
+disallow_untyped_defs = false
+
+[mypy-graphviz]
+ignore_missing_imports = true
 
 [tool.flake8]
 max-line-length = 88
@@ -143,3 +155,147 @@ exclude_lines = [
     # Code that isn't meant to be run
     "if __name__ == .__main__.:"
 ]
+
+# https://docs.astral.sh/ruff/configuration/
+[tool.ruff.lint]
+select = [
+    # Defaults
+    "F",  # PyFlakes (linter)
+    "E",  # PyCodestyle errors (linter)
+    "W",  # Pycodestyle warnings (linter)
+    "N",  # pep8-naming (ensures pep8 naming conventions are followed)
+    "I",  # isort (sorts imports)
+    "D209",  # pydocstyle, requires multi line docstrings to end on a separate line
+    "D301",  # use raw string if there are backslashes in docstring
+    "D419",  # pydocstyle's empty-docstring
+    "UP",  # pyupgrade  (upgrades python to the latest syntax)
+    "ASYNC",  # flake8-async  (linter that checks async code)
+    "S",  # flake8-bandit (checks for security vulns)
+    "BLE",  # flake8-blind-except (checks for try except without specific Exceptions)
+    "B",  # flake8-bugbear (linter)
+    "A",  # flake8-builtins (ensures you aren't overwriting python builtins)
+    "C4",  # flake8-comprehensions (linters for list dict etc comprehensions)
+    "T10",  # Flake8-debugger (ensures no debug statements for PBD)
+    "EXE",  # flake8-executable (ensures proper executable python script format)
+    "ISC",  # flake8-implicit-str-concat (ensures strings are concatenated properly)
+    "ICN",  # flake8-import-conventions (ensures things like import numpy as np)
+    "LOG",  # flake8-logging (ensures proper logging)
+    "G",  # flake8-logging-format (more logging linting)
+    "PIE",  # flake8-pie (misc lints)
+    "T20",  # flake8-print (catches prints instead of logging)
+    "PT",  # flake8-pytest-style (linter for pytest)
+    "Q003",  # flake8-qutoes (avoidable escaped quotes)
+    "Q004",  # flake8-quotes (unessecary escaped quote)
+    "RSE",  # flake8-raise (no unessecary parens when raising an exception)
+    "SLF",  # flake8-self (ensures no private member access)
+    "SLOT",  # flake8-slots (ensures slots in tuple and str subclasses)
+    "SIM",  # flake8-simplify (helps simplify your code)
+    "TID",  # flake8-tidy imports
+    "TCH",  # flake8-type-checking (ensures proper imports are under TYPE_CHECKING)
+    # NOTE: If you don't know what pathlib is, don't use this
+    "PTH",  # flake8-use-pathlib (enforces use of pathlib)
+    "PL",  # pylint (linter)
+    "TRY",  # tryceratops (linter around exception handling)
+    "FURB",  # refurb, linter for refactoring
+    "RUF",  # RUFF-specific rules
+]
+
+ignore = [
+    # This checks for opening of files using Pathlib
+    # but imo it's fine to open a file and write  to it using builtins
+    "PTH123",
+    "TRY003",  # doesn't allow strings in exceptions
+    "TRY300",  # doesn't allow for returns within exceptions
+    "TRY301",  # doesn't allow for raising within exceptions
+    # S101 checks that you have no asserts at runtime
+    # but imo such asserts can be good so long as you don't depend on them
+    "S101",
+    # Doesn't allow for dict(), wants literals ({})
+    # imo dict and list are more readable, and the speed diff is negligable
+    "C408",
+    # This catches when there are "too many" arguments, branches, returns, etc
+    # imo this should be a case by case basis using context, not a blanket rule
+    "PLR091",
+    # "Magic numbers" are sometimes okay. For me these were all false positives
+    # for example, checking that the response status code is 200, or in testing.
+    # magic numbers are just doing resp.status_code == 200, 200 is magic since it's
+    # not a var
+    "PLR2004",
+    # This rule prevents uppercase variables (since classes are uppercased)
+    # imo this makes sense 99% of the time, __except__ when dealing with variables
+    # that refer to an actual class type. For example, imo
+    # self.GraphFactoryCls = DefaultGraphFactory
+    # graph_factory = self.GraphFactoryCls()
+    # is way more readable than
+    # self.graph_factory_cls = DefaultGraphFactory
+    # graph_factory = self.graph_factory_cls()
+    # Imo leaving class references as uppercase lets the reader know, this var is
+    # referring to a class
+    "N803",
+    # N806 looks at capitalized vars. See N803 explanation
+    "N806",
+    # N802 looks for captilized functions, but if a func is a property that returns
+    # a class, imo it makes sense for it to be capitalized (see N802)
+    "N802",
+    # This turns super(MyClass, self).func() into super().func()
+    # The problem is that the former is actually needed when using
+    # multiple inheritance, resulting in a false positive for every time
+    # for me. Imo not worth having since it requires context and isn't always
+    # right.
+    "UP008",
+    # Catches deprecated imports
+    # However, it seems to think I shouldn't be importing Iterable from typing,
+    # which is wrong. If something is deprecated, it'll raise a DeprecationWarning
+    # Since this only had false positives for me, omitting it
+    "UP035",
+    # Wants to turn isinstance(a, (x, y)) into isinstance(a, x | y)
+    # imo the first version is totally fine and most code will be formatted that way
+    # And the pep doesn't even advocate for switching lol
+    "UP038",
+    # Ensures that you don't have pass in blank funcs that have a docstring
+    # imo blank funcs are more readable with a pass than without a pass
+    # because without a pass, maybe the developer just didn't finish the func
+    # and forgot to write it in. If there's a pass tho, it's an explicit statement
+    # that this func is meant to be blank
+    # Just my opinion though.
+    "PIE790",
+    # Ensures that you don't have empty methods in an abstract class without
+    # an abstract decorator. However - this just raises false positives on hook
+    # methods
+    "B027",
+    # Use `contextlib.suppress(ValueError)` instead of `try`-`except`-`pass`"
+    # imo - most programmers don't know this, and would prefer to read it the other way
+    "SIM105",
+    # Combines if statements in such a way that makes them unreadable imo
+    "SIM103",
+    # Combines multiple if statements into one if they return the same thing
+    # imo makes this less readable in a lot of cases
+    "SIM114",
+    # Combines multiple with statements. Imo makes it less readable
+    "SIM117",
+    # Concatenates multiple strings into one if they are on the same line
+    # It's a good rule, but conflicts with ruff format so had to remove
+    # (it gave an error message surprisingly)
+    "ISC001",
+]
+unfixable = []
+[tool.ruff.lint.per-file-ignores]
+# Don't use isort on these files (which sorts imports)
+# init files are often ordered in a certain way to avoid circular imports
+"**/__init__.py" = ["I"]
+# tests can use private vars
+"**/tests/**/*.py" = ["SLF001"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["bgpy"]
+
+[tool.ruff.lint.flake8-bugbear]
+# Allow default arguments like, e.g., `data: frozendict[str, str] = frozendict()
+# Otherwise this tool complains that it's a mutable return
+extend-immutable-calls = [
+    "frozendict.frozendict", "datetime.date.today", "pathlib.Path.home",
+]
+
+[tool.ruff.lint.flake8-pytest-style]
+# Says that using pytest.mark.marker_name shouldn't have parens
+mark-parentheses = false

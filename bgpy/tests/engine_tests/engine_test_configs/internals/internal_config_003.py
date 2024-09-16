@@ -1,17 +1,10 @@
 from frozendict import frozendict
-from bgpy.tests.engine_tests.utils import EngineTestConfig
 
-
+from bgpy.as_graphs import ASGraphInfo, PeerLink
+from bgpy.shared.enums import ASNs
 from bgpy.simulation_engine import BGP, OnlyToCustomers
-from bgpy.simulation_framework import (
-    AccidentalRouteLeak,
-    ScenarioConfig,
-)
-from bgpy.enums import ASNs
-
-from bgpy.as_graphs import PeerLink
-from bgpy.as_graphs import ASGraphInfo
-
+from bgpy.simulation_framework import AccidentalRouteLeak, ScenarioConfig
+from bgpy.tests.engine_tests.utils import EngineTestConfig
 
 r"""Graph to test OTC from a peer
 
@@ -37,7 +30,7 @@ internal_config_003 = EngineTestConfig(
         BasePolicyCls=BGP,
         override_victim_asns=frozenset({ASNs.VICTIM.value}),
         override_attacker_asns=frozenset({ASNs.ATTACKER.value}),
-        override_non_default_asn_cls_dict=frozendict(
+        hardcoded_asn_cls_dict=frozendict(
             {
                 1: OnlyToCustomers,
                 ASNs.VICTIM.value: OnlyToCustomers,

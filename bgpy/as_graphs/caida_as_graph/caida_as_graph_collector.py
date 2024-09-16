@@ -1,14 +1,17 @@
 import bz2
+import shutil
 from datetime import datetime, timedelta
 from functools import cached_property
 from pathlib import Path
-import shutil
 from tempfile import TemporaryDirectory
+from typing import cast
 
-from bs4 import BeautifulSoup as Soup
 import requests
+from bs4 import BeautifulSoup as Soup
 
 from bgpy.as_graphs.base import ASGraphCollector
+from bgpy.shared.constants import bgpy_logger
+from bgpy.shared.exceptions import NoCAIDAURLError
 
 
 class CAIDAASGraphCollector(ASGraphCollector):
@@ -24,7 +27,7 @@ class CAIDAASGraphCollector(ASGraphCollector):
         """
 
         if not self.cache_path.exists():
-            print("No caida graph cached. Caching...")
+            bgpy_logger.info("No caida graph cached. Caching...")
             # Create a temporary dir to write to
             with TemporaryDirectory() as tmp_dir:
                 # Path to bz2 download
@@ -65,7 +68,7 @@ class CAIDAASGraphCollector(ASGraphCollector):
         if len(urls) > 0:
             return str(urls[0])
         else:  # pragma: no cover
-            raise Exception("No Urls")
+            raise NoCAIDAURLError("No Urls")
 
     def _get_hrefs(self, url: str) -> list[str]:
         """Returns hrefs from a tags at a given url"""
@@ -74,15 +77,16 @@ class CAIDAASGraphCollector(ASGraphCollector):
             # Query URL
             with requests.get(url, stream=True, timeout=30) as r:
                 # Check for errors
-                r.raise_for_status()  # type: ignore
+                r.raise_for_status()
                 # Get soup
-                soup = Soup(r.text, "html.parser")  # type: ignore
+                soup = Soup(r.text, "html.parser")
                 # Extract hrefs from a tags
-                return [
+                rv = [
                     x.get("href") for x in soup.select("a") if x.get("href") is not None
                 ]
+                return cast(list[str], rv)
         except requests.exceptions.ReadTimeout as e:
-            print(f"Failed to get {url} due to {e}")
+            bgpy_logger.exception(f"Failed to get {url} due to {e}")
             raise
 
     #########################
@@ -95,9 +99,9 @@ class CAIDAASGraphCollector(ASGraphCollector):
         # https://stackoverflow.com/a/39217788/8903959
         # Download the file
         with requests.get(url, stream=True, timeout=5) as r:
-            r.raise_for_status()  # type: ignore
+            r.raise_for_status()
             with bz2_path.open("wb") as f:
-                shutil.copyfileobj(r.raw, f)  # type: ignore
+                shutil.copyfileobj(r.raw, f)
 
     def _unzip_and_write_to_cache(self, bz2_path: Path) -> None:
         """Unzips bz2 file and writes to cache"""

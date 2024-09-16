@@ -35,16 +35,19 @@ def _gen_graph(
 
     # Add all links to the graph
     for asn in as_graph_info.asns:
+        # AS dict is not yet frozen, type ignore
         self.as_dict[asn] = self.as_dict.get(asn, _gen_as(asn))
 
     # Add all IXPs to the graph
     for asn in as_graph_info.ixp_asns:
+        # AS dict is not yet frozen, type ignore
         self.as_dict[asn] = self.as_dict.get(asn, _gen_as(asn))
         if asn in self.as_dict:
             self.as_dict[asn].ixp = True
 
     # Add all input cliques to the graph
     for asn in as_graph_info.input_clique_asns:
+        # AS dict is not yet frozen, type ignore
         self.as_dict[asn] = self.as_dict.get(asn, _gen_as(asn))
         self.as_dict[asn].input_clique = True
 
@@ -84,7 +87,7 @@ def _make_relationships_tuples(self):
     setup_rel_attrs = ("peers_setup_set", "providers_setup_set", "customers_setup_set")
 
     for as_obj in self:
-        for rel_attr, setup_rel_attr in zip(rel_attrs, setup_rel_attrs):
+        for rel_attr, setup_rel_attr in zip(rel_attrs, setup_rel_attrs, strict=False):
             # Conver the setup attribute to tuple
             # Must be sorted or else yaml dumps differently
             sorted_ases = sorted(getattr(as_obj, setup_rel_attr), key=lambda x: x.asn)

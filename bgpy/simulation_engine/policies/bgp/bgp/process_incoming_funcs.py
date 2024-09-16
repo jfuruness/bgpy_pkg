@@ -1,11 +1,12 @@
-from typing import Any, Optional, TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 from bgpy.simulation_engine.ann_containers import RecvQueue
 
 if TYPE_CHECKING:
-    from bgpy.enums import Relationships
-    from bgpy.simulation_framework import Scenario
+    from bgpy.shared.enums import Relationships
     from bgpy.simulation_engine.announcement import Announcement as Ann
+    from bgpy.simulation_framework import Scenario
+
     from .bgp import BGP
 
 
@@ -17,10 +18,10 @@ def seed_ann(self: "BGP", ann: "Ann") -> None:
     """
 
     # Ensure we aren't replacing anything
-    err = "Seeding conflict"
-    assert self._local_rib.get(ann.prefix) is None, err
+    err = f"Seeding conflict {ann} {self.local_rib.get(ann.prefix)}"
+    assert self.local_rib.get(ann.prefix) is None, err
     # Seed by placing in the local rib
-    self._local_rib.add_ann(ann)
+    self.local_rib.add_ann(ann)
 
 
 def receive_ann(self: "BGP", ann: "Ann", accept_withdrawals: bool = False) -> None:
@@ -28,7 +29,7 @@ def receive_ann(self: "BGP", ann: "Ann", accept_withdrawals: bool = False) -> No
 
     if getattr(ann, "withdraw", False) and not accept_withdrawals:
         raise NotImplementedError(f"Policy can't handle withdrawals {self.name}")
-    self._recv_q.add_ann(ann)
+    self.recv_q.add_ann(ann)
 
 
 def process_incoming_anns(
@@ -42,9 +43,9 @@ def process_incoming_anns(
     """Process all announcements that were incoming from a specific rel"""
 
     # For each prefix, get all anns recieved
-    for prefix, ann_list in self._recv_q.items():
+    for prefix, ann_list in self.recv_q.items():
         # Get announcement currently in local rib
-        current_ann: Optional["Ann"] = self._local_rib.get(prefix)
+        current_ann: Ann | None = self.local_rib.get(prefix)
         og_ann = current_ann
 
         # Seeded Ann will never be overriden, so continue
@@ -64,8 +65,9 @@ def process_incoming_anns(
         # This is a new best ann. Process it and add it to the local rib
         if og_ann != current_ann:
             assert current_ann, "mypy type check"
+            assert current_ann.seed_asn in (None, self.as_.asn), "Seed ASN is wrong"
             # Save to local rib
-            self._local_rib.add_ann(current_ann)
+            self.local_rib.add_ann(current_ann)
 
     self._reset_q(reset_q)
 
@@ -85,7 +87,7 @@ def _copy_and_process(
     self: "BGP",
     ann: "Ann",
     recv_relationship: "Relationships",
-    overwrite_default_kwargs: Optional[dict[Any, Any]] = None,
+    overwrite_default_kwargs: dict[Any, Any] | None = None,
 ) -> "Ann":
     """Deep copies ann and modifies attrs
 
@@ -93,8 +95,9 @@ def _copy_and_process(
     """
 
     kwargs: dict[str, Any] = {
-        "as_path": (self.as_.asn,) + ann.as_path,
+        "as_path": (self.as_.asn, *ann.as_path),
         "recv_relationship": recv_relationship,
+        "seed_asn": None,
     }
 
     if overwrite_default_kwargs:
@@ -107,4 +110,4 @@ def _reset_q(self: "BGP", reset_q: bool) -> None:
     """Resets the recieve q"""
 
     if reset_q:
-        self._recv_q = RecvQueue()
+        self.recv_q = RecvQueue()

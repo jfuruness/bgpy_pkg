@@ -1,16 +1,12 @@
 from abc import ABC, abstractmethod
 from pathlib import Path
-from typing import Any, Optional, TYPE_CHECKING
+from typing import TYPE_CHECKING, Any, Optional
 
-from frozendict import frozendict
 from yamlable import YamlAble, yaml_info, yaml_info_decorate
-
-from ..policies import Policy
 
 # https://stackoverflow.com/a/57005931/8903959
 if TYPE_CHECKING:
     from bgpy.as_graphs import ASGraph
-    from bgpy.simulation_engine.announcement import Announcement as Ann
     from bgpy.simulation_framework import Scenario
 
 
@@ -37,14 +33,14 @@ class BaseSimulationEngine(YamlAble, ABC):
         self,
         as_graph: "ASGraph",
         # Useful for C++ Engine
-        cached_as_graph_tsv_path: Optional[Path] = None,
+        cached_as_graph_tsv_path: Path | None = None,
         ready_to_run_round: int = -1,
     ) -> None:
         """Saves read_to_run_rund attr and inits superclass"""
 
         self.as_graph = as_graph
         # Useful for C++ version
-        self.cached_as_graph_tsv_path: Optional[Path] = cached_as_graph_tsv_path
+        self.cached_as_graph_tsv_path: Path | None = cached_as_graph_tsv_path
         # This indicates whether or not the simulator has been set up for a run
         # We use a number instead of a bool so that we can indicate for
         # each round whether it is ready to run or not
@@ -65,17 +61,7 @@ class BaseSimulationEngine(YamlAble, ABC):
     ###############
 
     @abstractmethod
-    def setup(
-        self,
-        announcements: tuple["Ann", ...] = (),
-        BasePolicyCls: type[Policy] = Policy,
-        non_default_asn_cls_dict: frozendict[int, type[Policy]] = (
-            frozendict()  # type: ignore
-        ),
-        prev_scenario: Optional["Scenario"] = None,
-        attacker_asns: frozenset[int] = frozenset(),
-        AttackerBasePolicyCls: Optional[type[Policy]] = None,
-    ) -> frozenset[type[Policy]]:
+    def setup(self, scenario: "Scenario") -> None:
         """Sets AS classes and seeds announcements"""
 
         raise NotImplementedError

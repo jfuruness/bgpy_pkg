@@ -1,10 +1,8 @@
 .ruff_cache/
 
 # Test generates these automatically
-*.metric_guess.csv
-*.metric_guess.pickle
-*.metrics_guess.csv
-*.metrics_guess.pickle
+*guess.csv
+*guess.pickle
 *.gv
 *.pdf
 *.gv.png

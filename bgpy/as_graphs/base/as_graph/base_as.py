@@ -1,11 +1,12 @@
 from functools import cached_property
-from typing import Any, Optional, TYPE_CHECKING
-from weakref import proxy, CallableProxyType
+from typing import TYPE_CHECKING, Any, Optional
+from weakref import CallableProxyType, proxy
 
-from yamlable import yaml_info, YamlAble
+from yamlable import YamlAble, yaml_info
 
 if TYPE_CHECKING:
     from bgpy.simulation_engine import Policy
+
     from .as_graph import ASGraph
 
 
@@ -25,9 +26,12 @@ class AS(YamlAble):
         peers: tuple["AS", ...] = tuple(),
         providers: tuple["AS", ...] = tuple(),
         customers: tuple["AS", ...] = tuple(),
-        customer_cone_size: Optional[int] = None,
-        as_rank: Optional[int] = None,
-        propagation_rank: Optional[int] = None,
+        customer_cone_asns: frozenset[int] | None = None,
+        customer_cone_size: int | None = None,
+        provider_cone_asns: frozenset[int] | None = None,
+        provider_cone_size: int | None = None,
+        as_rank: int | None = None,
+        propagation_rank: int | None = None,
         policy: Optional["Policy"] = None,
         as_graph: Optional["ASGraph"] = None,
     ) -> None:
@@ -38,17 +42,20 @@ class AS(YamlAble):
         self.provider_asns: frozenset[int] = provider_asns
         self.customer_asns: frozenset[int] = customer_asns
 
-        self.peers: tuple["AS", ...] = peers
-        self.providers: tuple["AS", ...] = providers
-        self.customers: tuple["AS", ...] = customers
+        self.peers: tuple[AS, ...] = peers
+        self.providers: tuple[AS, ...] = providers
+        self.customers: tuple[AS, ...] = customers
 
         # Read Caida's paper to understand these
         self.input_clique: bool = input_clique
         self.ixp: bool = ixp
-        self.customer_cone_size: Optional[int] = customer_cone_size
-        self.as_rank: Optional[int] = as_rank
+        self.customer_cone_asns: frozenset[int] | None = customer_cone_asns
+        self.customer_cone_size: int | None = customer_cone_size
+        self.provider_cone_asns: frozenset[int] | None = provider_cone_asns
+        self.provider_cone_size: int | None = provider_cone_size
+        self.as_rank: int | None = as_rank
         # Propagation rank. Rank leaves to clique
-        self.propagation_rank: Optional[int] = propagation_rank
+        self.propagation_rank: int | None = propagation_rank
 
         # Hash in advance and only once since this gets called a lot
         self.hashed_asn = hash(self.asn)
@@ -59,7 +66,7 @@ class AS(YamlAble):
 
         # # This is useful for some policies to have knowledge of the graph
         if as_graph is not None:
-            self.as_graph: CallableProxyType["ASGraph"] = proxy(as_graph)
+            self.as_graph: CallableProxyType[ASGraph] = proxy(as_graph)
         else:
             # Ignoring this because it gets set properly immediatly
             self.as_graph = None  # type: ignore
@@ -84,18 +91,21 @@ class AS(YamlAble):
         def asns(as_objs: tuple["AS", ...]) -> str:
             return "{" + ",".join(str(x.asn) for x in sorted(as_objs)) + "}"
 
+        def frozenset_asns(asns: frozenset[int]) -> str:
+            return "{" + ",".join(str(asn) for asn in sorted(asns)) + "}"
+
         def _format(x: Any) -> str:
-            if (isinstance(x, list) or isinstance(x, tuple)) and all(
-                [isinstance(y, AS) for y in x]
-            ):
+            if (isinstance(x, (list, tuple))) and all(isinstance(y, AS) for y in x):
                 assert not isinstance(x, list), "these should all be tuples"
-                return asns(x)  # type: ignore
+                return asns(x)
             elif x is None:
                 return ""
             elif any(isinstance(x, my_type) for my_type in (str, int, float)):
                 return str(x)
+            elif isinstance(x, frozenset):
+                return frozenset_asns(x)
             else:
-                raise Exception(f"improper format type: {type(x)} {x}")
+                raise ValueError(f"improper format type: {type(x)} {x}")
 
         return {attr: _format(getattr(self, attr)) for attr in self.db_row_keys}
 
@@ -108,11 +118,15 @@ class AS(YamlAble):
             "providers",
             "input_clique",
             "ixp",
+            "customer_cone_asns",
             "customer_cone_size",
+            "provider_cone_asns",
+            "provider_cone_size",
             "as_rank",
             "propagation_rank",
             # Don't forget the properties
-        ) + ("stubs", "stub", "multihomed", "transit")
+            *("stubs", "stub", "multihomed", "transit"),
+        )
 
     def __str__(self):
         return "\n".join(str(x) for x in self.db_row.items())
@@ -150,6 +164,12 @@ class AS(YamlAble):
 
         return self.customers + self.peers + self.providers
 
+    @cached_property
+    def neighbor_asns(self) -> frozenset[int]:
+        """Returns neighboring ASNs (useful for ASPAwN)"""
+
+        return frozenset([x.asn for x in self.neighbors])
+
     ##############
     # Yaml funcs #
     ##############
@@ -164,7 +184,10 @@ class AS(YamlAble):
             "providers": tuple([x.asn for x in self.providers]),
             "input_clique": self.input_clique,
             "ixp": self.ixp,
+            "customer_cone_asns": self.customer_cone_asns,
             "customer_cone_size": self.customer_cone_size,
+            "provider_cone_asns": self.provider_cone_asns,
+            "provider_cone_size": self.provider_cone_size,
             "as_rank": self.as_rank,
             "propagation_rank": self.propagation_rank,
             "policy": self.policy,
@@ -177,6 +200,10 @@ class AS(YamlAble):
         dct["customer_asns"] = frozenset(dct["customers"])
         dct["peer_asns"] = frozenset(dct["peers"])
         dct["provider_asns"] = frozenset(dct["providers"])
+        if dct["customer_cone_asns"] is not None:
+            dct["customer_cone_asns"] = frozenset(dct["customer_cone_asns"])
+        if dct["provider_cone_asns"] is not None:
+            dct["provider_cone_asns"] = frozenset(dct["provider_cone_asns"])
         return cls(**dct)
 
 

@@ -1,4 +1,4 @@
-from .as_graph import ASGraph, AS
+from .as_graph import AS, ASGraph
 from .as_graph_collector import ASGraphCollector
 from .as_graph_constructor import ASGraphConstructor
 from .as_graph_info import ASGraphInfo

@@ -4,6 +4,7 @@ as_graph: !yamlable/CAIDAASGraph
     1: !yamlable/AS
       as_rank: 3
       asn: 1
+      customer_cone_asns: null
       customer_cone_size: 1
       customers: !!python/tuple
       - 666
@@ -11,7 +12,7 @@ as_graph: !yamlable/CAIDAASGraph
       ixp: false
       peers: !!python/tuple []
       policy: !yamlable/ASPA%20Full
-        _local_rib: !simulator_codec/LocalRIB
+        local_rib: !simulator_codec/LocalRIB
           1.2.0.0/16: !yamlable/Announcement
             as_path: !!python/tuple
             - 1
@@ -28,12 +29,12 @@ as_graph: !yamlable/CAIDAASGraph
               value: 1
             roa_origin: 777
             roa_valid_length: true
+            rovpp_blackhole: false
             seed_asn: null
             timestamp: 0
-            traceback_end: false
             withdraw: false
-        _recv_q: !simulator_codec/RecvQueue {}
-        _ribs_in: !simulator_codec/RIBsIn
+        recv_q: !simulator_codec/RecvQueue {}
+        ribs_in: !simulator_codec/RIBsIn
           8:
             1.2.0.0/16: !yamlable/AnnInfo
               recv_relationship: !simulator_codec/Relationships
@@ -54,9 +55,9 @@ as_graph: !yamlable/CAIDAASGraph
                   value: 3
                 roa_origin: 777
                 roa_valid_length: true
+                rovpp_blackhole: false
                 seed_asn: null
                 timestamp: 0
-                traceback_end: false
                 withdraw: false
           666:
             1.2.0.0/16: !yamlable/AnnInfo
@@ -74,15 +75,15 @@ as_graph: !yamlable/CAIDAASGraph
                 only_to_customers: null
                 prefix: 1.2.0.0/16
                 recv_relationship: !simulator_codec/Relationships
-                  name: CUSTOMERS
-                  value: 3
+                  name: ORIGIN
+                  value: 4
                 roa_origin: 777
                 roa_valid_length: true
-                seed_asn: null
+                rovpp_blackhole: false
+                seed_asn: 666
                 timestamp: 1
-                traceback_end: false
                 withdraw: false
-        _ribs_out: !simulator_codec/RIBsOut
+        ribs_out: !simulator_codec/RIBsOut
           666:
             1.2.0.0/16: !yamlable/Announcement
               as_path: !!python/tuple
@@ -100,18 +101,21 @@ as_graph: !yamlable/CAIDAASGraph
                 value: 1
               roa_origin: 777
               roa_valid_length: true
+              rovpp_blackhole: false
               seed_asn: null
               timestamp: 0
-              traceback_end: false
               withdraw: false
-        _send_q: !simulator_codec/SendQueue {}
+        send_q: !simulator_codec/SendQueue {}
       propagation_rank: 1
+      provider_cone_asns: null
+      provider_cone_size: null
       providers: !!python/tuple
       - 5
       - 8
     2: !yamlable/AS
       as_rank: 1
       asn: 2
+      customer_cone_asns: null
       customer_cone_size: 2
       customers: !!python/tuple
       - 666
@@ -120,7 +124,7 @@ as_graph: !yamlable/CAIDAASGraph
       ixp: false
       peers: !!python/tuple []
       policy: !yamlable/ASPA%20Full
-        _local_rib: !simulator_codec/LocalRIB
+        local_rib: !simulator_codec/LocalRIB
           1.2.0.0/16: !yamlable/Announcement
             as_path: !!python/tuple
             - 2
@@ -135,12 +139,12 @@ as_graph: !yamlable/CAIDAASGraph
               value: 3
             roa_origin: 777
             roa_valid_length: true
+            rovpp_blackhole: false
             seed_asn: null
             timestamp: 0
-            traceback_end: false
             withdraw: false
-        _recv_q: !simulator_codec/RecvQueue {}
-        _ribs_in: !simulator_codec/RIBsIn
+        recv_q: !simulator_codec/RecvQueue {}
+        ribs_in: !simulator_codec/RIBsIn
           8:
             1.2.0.0/16: !yamlable/AnnInfo
               recv_relationship: !simulator_codec/Relationships
@@ -161,9 +165,9 @@ as_graph: !yamlable/CAIDAASGraph
                   value: 3
                 roa_origin: 777
                 roa_valid_length: true
+                rovpp_blackhole: false
                 seed_asn: null
                 timestamp: 0
-                traceback_end: false
                 withdraw: false
           666:
             1.2.0.0/16: !yamlable/AnnInfo
@@ -181,13 +185,13 @@ as_graph: !yamlable/CAIDAASGraph
                 only_to_customers: null
                 prefix: 1.2.0.0/16
                 recv_relationship: !simulator_codec/Relationships
-                  name: CUSTOMERS
-                  value: 3
+                  name: ORIGIN
+                  value: 4
                 roa_origin: 777
                 roa_valid_length: true
-                seed_asn: null
+                rovpp_blackhole: false
+                seed_asn: 666
                 timestamp: 1
-                traceback_end: false
                 withdraw: false
           777:
             1.2.0.0/16: !yamlable/AnnInfo
@@ -207,11 +211,11 @@ as_graph: !yamlable/CAIDAASGraph
                   value: 4
                 roa_origin: 777
                 roa_valid_length: true
+                rovpp_blackhole: false
                 seed_asn: 777
                 timestamp: 0
-                traceback_end: false
                 withdraw: false
-        _ribs_out: !simulator_codec/RIBsOut
+        ribs_out: !simulator_codec/RIBsOut
           8:
             1.2.0.0/16: !yamlable/Announcement
               as_path: !!python/tuple
@@ -227,9 +231,9 @@ as_graph: !yamlable/CAIDAASGraph
                 value: 3
               roa_origin: 777
               roa_valid_length: true
+              rovpp_blackhole: false
               seed_asn: null
               timestamp: 0
-              traceback_end: false
               withdraw: false
           666:
             1.2.0.0/16: !yamlable/Announcement
@@ -246,9 +250,9 @@ as_graph: !yamlable/CAIDAASGraph
                 value: 3
               roa_origin: 777
               roa_valid_length: true
+              rovpp_blackhole: false
               seed_asn: null
               timestamp: 0
-              traceback_end: false
               withdraw: false
           777:
             1.2.0.0/16: !yamlable/Announcement
@@ -265,17 +269,20 @@ as_graph: !yamlable/CAIDAASGraph
                 value: 3
               roa_origin: 777
               roa_valid_length: true
+              rovpp_blackhole: false
               seed_asn: null
               timestamp: 0
-              traceback_end: false
               withdraw: false
-        _send_q: !simulator_codec/SendQueue {}
+        send_q: !simulator_codec/SendQueue {}
       propagation_rank: 1
+      provider_cone_asns: null
+      provider_cone_size: null
       providers: !!python/tuple
       - 8
     3: !yamlable/AS
       as_rank: 6
       asn: 3
+      customer_cone_asns: null
       customer_cone_size: 0
       customers: !!python/tuple []
       input_clique: false
@@ -283,7 +290,7 @@ as_graph: !yamlable/CAIDAASGraph
       peers: !!python/tuple
       - 9
       policy: !yamlable/BGP%20Full
-        _local_rib: !simulator_codec/LocalRIB
+        local_rib: !simulator_codec/LocalRIB
           1.2.0.0/16: !yamlable/Announcement
             as_path: !!python/tuple
             - 3
@@ -300,12 +307,12 @@ as_graph: !yamlable/CAIDAASGraph
               value: 2
             roa_origin: 777
             roa_valid_length: true
+            rovpp_blackhole: false
             seed_asn: null
             timestamp: 0
-            traceback_end: false
             withdraw: false
-        _recv_q: !simulator_codec/RecvQueue {}
-        _ribs_in: !simulator_codec/RIBsIn
+        recv_q: !simulator_codec/RecvQueue {}
+        ribs_in: !simulator_codec/RIBsIn
           9:
             1.2.0.0/16: !yamlable/AnnInfo
               recv_relationship: !simulator_codec/Relationships
@@ -326,17 +333,20 @@ as_graph: !yamlable/CAIDAASGraph
                   value: 3
                 roa_origin: 777
                 roa_valid_length: true
+                rovpp_blackhole: false
                 seed_asn: null
                 timestamp: 0
-                traceback_end: false
                 withdraw: false
-        _ribs_out: !simulator_codec/RIBsOut {}
-        _send_q: !simulator_codec/SendQueue {}
+        ribs_out: !simulator_codec/RIBsOut {}
+        send_q: !simulator_codec/SendQueue {}
       propagation_rank: 0
+      provider_cone_asns: null
+      provider_cone_size: null
       providers: !!python/tuple []
     4: !yamlable/AS
       as_rank: 3
       asn: 4
+      customer_cone_asns: null
       customer_cone_size: 1
       customers: !!python/tuple
       - 777
@@ -344,7 +354,7 @@ as_graph: !yamlable/CAIDAASGraph
       ixp: false
       peers: !!python/tuple []
       policy: !yamlable/BGP%20Full
-        _local_rib: !simulator_codec/LocalRIB
+        local_rib: !simulator_codec/LocalRIB
           1.2.0.0/16: !yamlable/Announcement
             as_path: !!python/tuple
             - 4
@@ -359,12 +369,12 @@ as_graph: !yamlable/CAIDAASGraph
               value: 3
             roa_origin: 777
             roa_valid_length: true
+            rovpp_blackhole: false
             seed_asn: null
             timestamp: 0
-            traceback_end: false
             withdraw: false
-        _recv_q: !simulator_codec/RecvQueue {}
-        _ribs_in: !simulator_codec/RIBsIn
+        recv_q: !simulator_codec/RecvQueue {}
+        ribs_in: !simulator_codec/RIBsIn
           9:
             1.2.0.0/16: !yamlable/AnnInfo
               recv_relationship: !simulator_codec/Relationships
@@ -385,9 +395,9 @@ as_graph: !yamlable/CAIDAASGraph
                   value: 3
                 roa_origin: 777
                 roa_valid_length: true
+                rovpp_blackhole: false
                 seed_asn: null
                 timestamp: 0
-                traceback_end: false
                 withdraw: false
           777:
             1.2.0.0/16: !yamlable/AnnInfo
@@ -407,11 +417,11 @@ as_graph: !yamlable/CAIDAASGraph
                   value: 4
                 roa_origin: 777
                 roa_valid_length: true
+                rovpp_blackhole: false
                 seed_asn: 777
                 timestamp: 0
-                traceback_end: false
                 withdraw: false
-        _ribs_out: !simulator_codec/RIBsOut
+        ribs_out: !simulator_codec/RIBsOut
           9:
             1.2.0.0/16: !yamlable/Announcement
               as_path: !!python/tuple
@@ -427,9 +437,9 @@ as_graph: !yamlable/CAIDAASGraph
                 value: 3
               roa_origin: 777
               roa_valid_length: true
+              rovpp_blackhole: false
               seed_asn: null
               timestamp: 0
-              traceback_end: false
               withdraw: false
           777:
             1.2.0.0/16: !yamlable/Announcement
@@ -446,17 +456,20 @@ as_graph: !yamlable/CAIDAASGraph
                 value: 3
               roa_origin: 777
               roa_valid_length: true
+              rovpp_blackhole: false
               seed_asn: null
               timestamp: 0
-              traceback_end: false
               withdraw: false
-        _send_q: !simulator_codec/SendQueue {}
+        send_q: !simulator_codec/SendQueue {}
       propagation_rank: 1
+      provider_cone_asns: null
+      provider_cone_size: null
       providers: !!python/tuple
       - 9
     5: !yamlable/AS
       as_rank: 6
       asn: 5
+      customer_cone_asns: null
       customer_cone_size: 0
       customers: !!python/tuple
       - 1
@@ -464,16 +477,19 @@ as_graph: !yamlable/CAIDAASGraph
       ixp: false
       peers: !!python/tuple []
       policy: !yamlable/BGP%20Full
-        _local_rib: !simulator_codec/LocalRIB {}
-        _recv_q: !simulator_codec/RecvQueue {}
-        _ribs_in: !simulator_codec/RIBsIn {}
-        _ribs_out: !simulator_codec/RIBsOut {}
-        _send_q: !simulator_codec/SendQueue {}
+        local_rib: !simulator_codec/LocalRIB {}
+        recv_q: !simulator_codec/RecvQueue {}
+        ribs_in: !simulator_codec/RIBsIn {}
+        ribs_out: !simulator_codec/RIBsOut {}
+        send_q: !simulator_codec/SendQueue {}
       propagation_rank: 2
+      provider_cone_asns: null
+      provider_cone_size: null
       providers: !!python/tuple []
     8: !yamlable/AS
       as_rank: 0
       asn: 8
+      customer_cone_asns: null
       customer_cone_size: 4
       customers: !!python/tuple
       - 1
@@ -483,7 +499,7 @@ as_graph: !yamlable/CAIDAASGraph
       peers: !!python/tuple
       - 9
       policy: !yamlable/BGP%20Full
-        _local_rib: !simulator_codec/LocalRIB
+        local_rib: !simulator_codec/LocalRIB
           1.2.0.0/16: !yamlable/Announcement
             as_path: !!python/tuple
             - 8
@@ -499,12 +515,12 @@ as_graph: !yamlable/CAIDAASGraph
               value: 3
             roa_origin: 777
             roa_valid_length: true
+            rovpp_blackhole: false
             seed_asn: null
             timestamp: 0
-            traceback_end: false
             withdraw: false
-        _recv_q: !simulator_codec/RecvQueue {}
-        _ribs_in: !simulator_codec/RIBsIn
+        recv_q: !simulator_codec/RecvQueue {}
+        ribs_in: !simulator_codec/RIBsIn
           2:
             1.2.0.0/16: !yamlable/AnnInfo
               recv_relationship: !simulator_codec/Relationships
@@ -524,9 +540,9 @@ as_graph: !yamlable/CAIDAASGraph
                   value: 3
                 roa_origin: 777
                 roa_valid_length: true
+                rovpp_blackhole: false
                 seed_asn: null
                 timestamp: 0
-                traceback_end: false
                 withdraw: false
           9:
             1.2.0.0/16: !yamlable/AnnInfo
@@ -548,9 +564,9 @@ as_graph: !yamlable/CAIDAASGraph
                   value: 3
                 roa_origin: 777
                 roa_valid_length: true
+                rovpp_blackhole: false
                 seed_asn: null
                 timestamp: 0
-                traceback_end: false
                 withdraw: false
           11:
             1.2.0.0/16: !yamlable/AnnInfo
@@ -572,11 +588,11 @@ as_graph: !yamlable/CAIDAASGraph
                   value: 3
                 roa_origin: 777
                 roa_valid_length: true
+                rovpp_blackhole: false
                 seed_asn: null
                 timestamp: 0
-                traceback_end: false
                 withdraw: false
-        _ribs_out: !simulator_codec/RIBsOut
+        ribs_out: !simulator_codec/RIBsOut
           1:
             1.2.0.0/16: !yamlable/Announcement
               as_path: !!python/tuple
@@ -593,9 +609,9 @@ as_graph: !yamlable/CAIDAASGraph
                 value: 3
               roa_origin: 777
               roa_valid_length: true
+              rovpp_blackhole: false
               seed_asn: null
               timestamp: 0
-              traceback_end: false
               withdraw: false
           2:
             1.2.0.0/16: !yamlable/Announcement
@@ -613,9 +629,9 @@ as_graph: !yamlable/CAIDAASGraph
                 value: 3
               roa_origin: 777
               roa_valid_length: true
+              rovpp_blackhole: false
               seed_asn: null
               timestamp: 0
-              traceback_end: false
               withdraw: false
           9:
             1.2.0.0/16: !yamlable/Announcement
@@ -633,9 +649,9 @@ as_graph: !yamlable/CAIDAASGraph
                 value: 3
               roa_origin: 777
               roa_valid_length: true
+              rovpp_blackhole: false
               seed_asn: null
               timestamp: 0
-              traceback_end: false
               withdraw: false
           11:
             1.2.0.0/16: !yamlable/Announcement
@@ -653,17 +669,20 @@ as_graph: !yamlable/CAIDAASGraph
                 value: 3
               roa_origin: 777
               roa_valid_length: true
+              rovpp_blackhole: false
               seed_asn: null
               timestamp: 0
-              traceback_end: false
               withdraw: false
-        _send_q: !simulator_codec/SendQueue {}
+        send_q: !simulator_codec/SendQueue {}
       propagation_rank: 2
+      provider_cone_asns: null
+      provider_cone_size: null
       providers: !!python/tuple
       - 11
     9: !yamlable/AS
       as_rank: 1
       asn: 9
+      customer_cone_asns: null
       customer_cone_size: 2
       customers: !!python/tuple
       - 4
@@ -674,7 +693,7 @@ as_graph: !yamlable/CAIDAASGraph
       - 8
       - 10
       policy: !yamlable/BGP%20Full
-        _local_rib: !simulator_codec/LocalRIB
+        local_rib: !simulator_codec/LocalRIB
           1.2.0.0/16: !yamlable/Announcement
             as_path: !!python/tuple
             - 9
@@ -690,12 +709,12 @@ as_graph: !yamlable/CAIDAASGraph
               value: 3
             roa_origin: 777
             roa_valid_length: true
+            rovpp_blackhole: false
             seed_asn: null
             timestamp: 0
-            traceback_end: false
             withdraw: false
-        _recv_q: !simulator_codec/RecvQueue {}
-        _ribs_in: !simulator_codec/RIBsIn
+        recv_q: !simulator_codec/RecvQueue {}
+        ribs_in: !simulator_codec/RIBsIn
           4:
             1.2.0.0/16: !yamlable/AnnInfo
               recv_relationship: !simulator_codec/Relationships
@@ -715,9 +734,9 @@ as_graph: !yamlable/CAIDAASGraph
                   value: 3
                 roa_origin: 777
                 roa_valid_length: true
+                rovpp_blackhole: false
                 seed_asn: null
                 timestamp: 0
-                traceback_end: false
                 withdraw: false
           8:
             1.2.0.0/16: !yamlable/AnnInfo
@@ -739,9 +758,9 @@ as_graph: !yamlable/CAIDAASGraph
                   value: 3
                 roa_origin: 777
                 roa_valid_length: true
+                rovpp_blackhole: false
                 seed_asn: null
                 timestamp: 0
-                traceback_end: false
                 withdraw: false
           10:
             1.2.0.0/16: !yamlable/AnnInfo
@@ -762,9 +781,9 @@ as_graph: !yamlable/CAIDAASGraph
                   value: 3
                 roa_origin: 777
                 roa_valid_length: true
+                rovpp_blackhole: false
                 seed_asn: null
                 timestamp: 0
-                traceback_end: false
                 withdraw: false
           11:
             1.2.0.0/16: !yamlable/AnnInfo
@@ -786,11 +805,11 @@ as_graph: !yamlable/CAIDAASGraph
                   value: 3
                 roa_origin: 777
                 roa_valid_length: true
+                rovpp_blackhole: false
                 seed_asn: null
                 timestamp: 0
-                traceback_end: false
                 withdraw: false
-        _ribs_out: !simulator_codec/RIBsOut
+        ribs_out: !simulator_codec/RIBsOut
           3:
             1.2.0.0/16: !yamlable/Announcement
               as_path: !!python/tuple
@@ -807,9 +826,9 @@ as_graph: !yamlable/CAIDAASGraph
                 value: 3
               roa_origin: 777
               roa_valid_length: true
+              rovpp_blackhole: false
               seed_asn: null
               timestamp: 0
-              traceback_end: false
               withdraw: false
           4:
             1.2.0.0/16: !yamlable/Announcement
@@ -827,9 +846,9 @@ as_graph: !yamlable/CAIDAASGraph
                 value: 3
               roa_origin: 777
               roa_valid_length: true
+              rovpp_blackhole: false
               seed_asn: null
               timestamp: 0
-              traceback_end: false
               withdraw: false
           8:
             1.2.0.0/16: !yamlable/Announcement
@@ -847,9 +866,9 @@ as_graph: !yamlable/CAIDAASGraph
                 value: 3
               roa_origin: 777
               roa_valid_length: true
+              rovpp_blackhole: false
               seed_asn: null
               timestamp: 0
-              traceback_end: false
               withdraw: false
           10:
             1.2.0.0/16: !yamlable/Announcement
@@ -867,9 +886,9 @@ as_graph: !yamlable/CAIDAASGraph
                 value: 3
               roa_origin: 777
               roa_valid_length: true
+              rovpp_blackhole: false
               seed_asn: null
               timestamp: 0
-              traceback_end: false
               withdraw: false
           11:
             1.2.0.0/16: !yamlable/Announcement
@@ -887,17 +906,20 @@ as_graph: !yamlable/CAIDAASGraph
                 value: 3
               roa_origin: 777
               roa_valid_length: true
+              rovpp_blackhole: false
               seed_asn: null
               timestamp: 0
-              traceback_end: false
               withdraw: false
-        _send_q: !simulator_codec/SendQueue {}
+        send_q: !simulator_codec/SendQueue {}
       propagation_rank: 2
+      provider_cone_asns: null
+      provider_cone_size: null
       providers: !!python/tuple
       - 11
     10: !yamlable/AS
       as_rank: 3
       asn: 10
+      customer_cone_asns: null
       customer_cone_size: 1
       customers: !!python/tuple
       - 777
@@ -906,7 +928,7 @@ as_graph: !yamlable/CAIDAASGraph
       peers: !!python/tuple
       - 9
       policy: !yamlable/BGP%20Full
-        _local_rib: !simulator_codec/LocalRIB
+        local_rib: !simulator_codec/LocalRIB
           1.2.0.0/16: !yamlable/Announcement
             as_path: !!python/tuple
             - 10
@@ -921,12 +943,12 @@ as_graph: !yamlable/CAIDAASGraph
               value: 3
             roa_origin: 777
             roa_valid_length: true
+            rovpp_blackhole: false
             seed_asn: null
             timestamp: 0
-            traceback_end: false
             withdraw: false
-        _recv_q: !simulator_codec/RecvQueue {}
-        _ribs_in: !simulator_codec/RIBsIn
+        recv_q: !simulator_codec/RecvQueue {}
+        ribs_in: !simulator_codec/RIBsIn
           9:
             1.2.0.0/16: !yamlable/AnnInfo
               recv_relationship: !simulator_codec/Relationships
@@ -947,9 +969,9 @@ as_graph: !yamlable/CAIDAASGraph
                   value: 3
                 roa_origin: 777
                 roa_valid_length: true
+                rovpp_blackhole: false
                 seed_asn: null
                 timestamp: 0
-                traceback_end: false
                 withdraw: false
           11:
             1.2.0.0/16: !yamlable/AnnInfo
@@ -971,9 +993,9 @@ as_graph: !yamlable/CAIDAASGraph
                   value: 3
                 roa_origin: 777
                 roa_valid_length: true
+                rovpp_blackhole: false
                 seed_asn: null
                 timestamp: 0
-                traceback_end: false
                 withdraw: false
           12:
             1.2.0.0/16: !yamlable/AnnInfo
@@ -995,9 +1017,9 @@ as_graph: !yamlable/CAIDAASGraph
                   value: 3
                 roa_origin: 777
                 roa_valid_length: true
+                rovpp_blackhole: false
                 seed_asn: null
                 timestamp: 0
-                traceback_end: false
                 withdraw: false
           777:
             1.2.0.0/16: !yamlable/AnnInfo
@@ -1017,11 +1039,11 @@ as_graph: !yamlable/CAIDAASGraph
                   value: 4
                 roa_origin: 777
                 roa_valid_length: true
+                rovpp_blackhole: false
                 seed_asn: 777
                 timestamp: 0
-                traceback_end: false
                 withdraw: false
-        _ribs_out: !simulator_codec/RIBsOut
+        ribs_out: !simulator_codec/RIBsOut
           9:
             1.2.0.0/16: !yamlable/Announcement
               as_path: !!python/tuple
@@ -1037,9 +1059,9 @@ as_graph: !yamlable/CAIDAASGraph
                 value: 3
               roa_origin: 777
               roa_valid_length: true
+              rovpp_blackhole: false
               seed_asn: null
               timestamp: 0
-              traceback_end: false
               withdraw: false
           11:
             1.2.0.0/16: !yamlable/Announcement
@@ -1056,9 +1078,9 @@ as_graph: !yamlable/CAIDAASGraph
                 value: 3
               roa_origin: 777
               roa_valid_length: true
+              rovpp_blackhole: false
               seed_asn: null
               timestamp: 0
-              traceback_end: false
               withdraw: false
           12:
             1.2.0.0/16: !yamlable/Announcement
@@ -1075,9 +1097,9 @@ as_graph: !yamlable/CAIDAASGraph
                 value: 3
               roa_origin: 777
               roa_valid_length: true
+              rovpp_blackhole: false
               seed_asn: null
               timestamp: 0
-              traceback_end: false
               withdraw: false
           777:
             1.2.0.0/16: !yamlable/Announcement
@@ -1094,18 +1116,21 @@ as_graph: !yamlable/CAIDAASGraph
                 value: 3
               roa_origin: 777
               roa_valid_length: true
+              rovpp_blackhole: false
               seed_asn: null
               timestamp: 0
-              traceback_end: false
               withdraw: false
-        _send_q: !simulator_codec/SendQueue {}
+        send_q: !simulator_codec/SendQueue {}
       propagation_rank: 1
+      provider_cone_asns: null
+      provider_cone_size: null
       providers: !!python/tuple
       - 11
       - 12
     11: !yamlable/AS
       as_rank: 0
       asn: 11
+      customer_cone_asns: null
       customer_cone_size: 8
       customers: !!python/tuple
       - 8
@@ -1115,7 +1140,7 @@ as_graph: !yamlable/CAIDAASGraph
       ixp: false
       peers: !!python/tuple []
       policy: !yamlable/BGP%20Full
-        _local_rib: !simulator_codec/LocalRIB
+        local_rib: !simulator_codec/LocalRIB
           1.2.0.0/16: !yamlable/Announcement
             as_path: !!python/tuple
             - 11
@@ -1131,12 +1156,12 @@ as_graph: !yamlable/CAIDAASGraph
               value: 3
             roa_origin: 777
             roa_valid_length: true
+            rovpp_blackhole: false
             seed_asn: null
             timestamp: 0
-            traceback_end: false
             withdraw: false
-        _recv_q: !simulator_codec/RecvQueue {}
-        _ribs_in: !simulator_codec/RIBsIn
+        recv_q: !simulator_codec/RecvQueue {}
+        ribs_in: !simulator_codec/RIBsIn
           8:
             1.2.0.0/16: !yamlable/AnnInfo
               recv_relationship: !simulator_codec/Relationships
@@ -1157,9 +1182,9 @@ as_graph: !yamlable/CAIDAASGraph
                   value: 3
                 roa_origin: 777
                 roa_valid_length: true
+                rovpp_blackhole: false
                 seed_asn: null
                 timestamp: 0
-                traceback_end: false
                 withdraw: false
           9:
             1.2.0.0/16: !yamlable/AnnInfo
@@ -1181,9 +1206,9 @@ as_graph: !yamlable/CAIDAASGraph
                   value: 3
                 roa_origin: 777
                 roa_valid_length: true
+                rovpp_blackhole: false
                 seed_asn: null
                 timestamp: 0
-                traceback_end: false
                 withdraw: false
           10:
             1.2.0.0/16: !yamlable/AnnInfo
@@ -1204,11 +1229,11 @@ as_graph: !yamlable/CAIDAASGraph
                   value: 3
                 roa_origin: 777
                 roa_valid_length: true
+                rovpp_blackhole: false
                 seed_asn: null
                 timestamp: 0
-                traceback_end: false
                 withdraw: false
-        _ribs_out: !simulator_codec/RIBsOut
+        ribs_out: !simulator_codec/RIBsOut
           8:
             1.2.0.0/16: !yamlable/Announcement
               as_path: !!python/tuple
@@ -1225,9 +1250,9 @@ as_graph: !yamlable/CAIDAASGraph
                 value: 3
               roa_origin: 777
               roa_valid_length: true
+              rovpp_blackhole: false
               seed_asn: null
               timestamp: 0
-              traceback_end: false
               withdraw: false
           9:
             1.2.0.0/16: !yamlable/Announcement
@@ -1245,9 +1270,9 @@ as_graph: !yamlable/CAIDAASGraph
                 value: 3
               roa_origin: 777
               roa_valid_length: true
+              rovpp_blackhole: false
               seed_asn: null
               timestamp: 0
-              traceback_end: false
               withdraw: false
           10:
             1.2.0.0/16: !yamlable/Announcement
@@ -1265,16 +1290,19 @@ as_graph: !yamlable/CAIDAASGraph
                 value: 3
               roa_origin: 777
               roa_valid_length: true
+              rovpp_blackhole: false
               seed_asn: null
               timestamp: 0
-              traceback_end: false
               withdraw: false
-        _send_q: !simulator_codec/SendQueue {}
+        send_q: !simulator_codec/SendQueue {}
       propagation_rank: 3
+      provider_cone_asns: null
+      provider_cone_size: null
       providers: !!python/tuple []
     12: !yamlable/AS
       as_rank: 6
       asn: 12
+      customer_cone_asns: null
       customer_cone_size: 0
       customers: !!python/tuple
       - 10
@@ -1282,7 +1310,7 @@ as_graph: !yamlable/CAIDAASGraph
       ixp: false
       peers: !!python/tuple []
       policy: !yamlable/BGP%20Full
-        _local_rib: !simulator_codec/LocalRIB
+        local_rib: !simulator_codec/LocalRIB
           1.2.0.0/16: !yamlable/Announcement
             as_path: !!python/tuple
             - 12
@@ -1298,12 +1326,12 @@ as_graph: !yamlable/CAIDAASGraph
               value: 3
             roa_origin: 777
             roa_valid_length: true
+            rovpp_blackhole: false
             seed_asn: null
             timestamp: 0
-            traceback_end: false
             withdraw: false
-        _recv_q: !simulator_codec/RecvQueue {}
-        _ribs_in: !simulator_codec/RIBsIn
+        recv_q: !simulator_codec/RecvQueue {}
+        ribs_in: !simulator_codec/RIBsIn
           10:
             1.2.0.0/16: !yamlable/AnnInfo
               recv_relationship: !simulator_codec/Relationships
@@ -1323,11 +1351,11 @@ as_graph: !yamlable/CAIDAASGraph
                   value: 3
                 roa_origin: 777
                 roa_valid_length: true
+                rovpp_blackhole: false
                 seed_asn: null
                 timestamp: 0
-                traceback_end: false
                 withdraw: false
-        _ribs_out: !simulator_codec/RIBsOut
+        ribs_out: !simulator_codec/RIBsOut
           10:
             1.2.0.0/16: !yamlable/Announcement
               as_path: !!python/tuple
@@ -1344,23 +1372,26 @@ as_graph: !yamlable/CAIDAASGraph
                 value: 3
               roa_origin: 777
               roa_valid_length: true
+              rovpp_blackhole: false
               seed_asn: null
               timestamp: 0
-              traceback_end: false
               withdraw: false
-        _send_q: !simulator_codec/SendQueue {}
+        send_q: !simulator_codec/SendQueue {}
       propagation_rank: 2
+      provider_cone_asns: null
+      provider_cone_size: null
       providers: !!python/tuple []
     666: !yamlable/AS
       as_rank: 6
       asn: 666
+      customer_cone_asns: null
       customer_cone_size: 0
       customers: !!python/tuple []
       input_clique: false
       ixp: false
       peers: !!python/tuple []
       policy: !yamlable/BGP%20Full
-        _local_rib: !simulator_codec/LocalRIB
+        local_rib: !simulator_codec/LocalRIB
           1.2.0.0/16: !yamlable/Announcement
             as_path: !!python/tuple
             - 666
@@ -1372,17 +1403,17 @@ as_graph: !yamlable/CAIDAASGraph
             only_to_customers: null
             prefix: 1.2.0.0/16
             recv_relationship: !simulator_codec/Relationships
-              name: CUSTOMERS
-              value: 3
+              name: ORIGIN
+              value: 4
             roa_origin: 777
             roa_valid_length: true
+            rovpp_blackhole: false
             seed_asn: 666
             timestamp: 1
-            traceback_end: true
             withdraw: false
-        _recv_q: !simulator_codec/RecvQueue {}
-        _ribs_in: !simulator_codec/RIBsIn {}
-        _ribs_out: !simulator_codec/RIBsOut
+        recv_q: !simulator_codec/RecvQueue {}
+        ribs_in: !simulator_codec/RIBsIn {}
+        ribs_out: !simulator_codec/RIBsOut
           1:
             1.2.0.0/16: !yamlable/Announcement
               as_path: !!python/tuple
@@ -1395,13 +1426,13 @@ as_graph: !yamlable/CAIDAASGraph
               only_to_customers: null
               prefix: 1.2.0.0/16
               recv_relationship: !simulator_codec/Relationships
-                name: CUSTOMERS
-                value: 3
+                name: ORIGIN
+                value: 4
               roa_origin: 777
               roa_valid_length: true
-              seed_asn: null
+              rovpp_blackhole: false
+              seed_asn: 666
               timestamp: 1
-              traceback_end: false
               withdraw: false
           2:
             1.2.0.0/16: !yamlable/Announcement
@@ -1415,29 +1446,32 @@ as_graph: !yamlable/CAIDAASGraph
               only_to_customers: null
               prefix: 1.2.0.0/16
               recv_relationship: !simulator_codec/Relationships
-                name: CUSTOMERS
-                value: 3
+                name: ORIGIN
+                value: 4
               roa_origin: 777
               roa_valid_length: true
-              seed_asn: null
+              rovpp_blackhole: false
+              seed_asn: 666
               timestamp: 1
-              traceback_end: false
               withdraw: false
-        _send_q: !simulator_codec/SendQueue {}
+        send_q: !simulator_codec/SendQueue {}
       propagation_rank: 0
+      provider_cone_asns: null
+      provider_cone_size: null
       providers: !!python/tuple
       - 1
       - 2
     777: !yamlable/AS
       as_rank: 6
       asn: 777
+      customer_cone_asns: null
       customer_cone_size: 0
       customers: !!python/tuple []
       input_clique: false
       ixp: false
       peers: !!python/tuple []
       policy: !yamlable/BGP%20Full
-        _local_rib: !simulator_codec/LocalRIB
+        local_rib: !simulator_codec/LocalRIB
           1.2.0.0/16: !yamlable/Announcement
             as_path: !!python/tuple
             - 777
@@ -1451,13 +1485,13 @@ as_graph: !yamlable/CAIDAASGraph
               value: 4
             roa_origin: 777
             roa_valid_length: true
+            rovpp_blackhole: false
             seed_asn: 777
             timestamp: 0
-            traceback_end: false
             withdraw: false
-        _recv_q: !simulator_codec/RecvQueue {}
-        _ribs_in: !simulator_codec/RIBsIn {}
-        _ribs_out: !simulator_codec/RIBsOut
+        recv_q: !simulator_codec/RecvQueue {}
+        ribs_in: !simulator_codec/RIBsIn {}
+        ribs_out: !simulator_codec/RIBsOut
           2:
             1.2.0.0/16: !yamlable/Announcement
               as_path: !!python/tuple
@@ -1472,9 +1506,9 @@ as_graph: !yamlable/CAIDAASGraph
                 value: 4
               roa_origin: 777
               roa_valid_length: true
+              rovpp_blackhole: false
               seed_asn: 777
               timestamp: 0
-              traceback_end: false
               withdraw: false
           4:
             1.2.0.0/16: !yamlable/Announcement
@@ -1490,9 +1524,9 @@ as_graph: !yamlable/CAIDAASGraph
                 value: 4
               roa_origin: 777
               roa_valid_length: true
+              rovpp_blackhole: false
               seed_asn: 777
               timestamp: 0
-              traceback_end: false
               withdraw: false
           10:
             1.2.0.0/16: !yamlable/Announcement
@@ -1508,12 +1542,14 @@ as_graph: !yamlable/CAIDAASGraph
                 value: 4
               roa_origin: 777
               roa_valid_length: true
+              rovpp_blackhole: false
               seed_asn: 777
               timestamp: 0
-              traceback_end: false
               withdraw: false
-        _send_q: !simulator_codec/SendQueue {}
+        send_q: !simulator_codec/SendQueue {}
       propagation_rank: 0
+      provider_cone_asns: null
+      provider_cone_size: null
       providers: !!python/tuple
       - 2
       - 4

@@ -1,6 +1,6 @@
-from typing import Iterator, TYPE_CHECKING
+from typing import TYPE_CHECKING, Iterator
 
-from bgpy.enums import Relationships, Timestamps
+from bgpy.shared.enums import Relationships, Timestamps
 from bgpy.simulation_engine.policies.rov import ROV
 
 if TYPE_CHECKING:
@@ -17,8 +17,7 @@ class ROVPPV1Lite(ROV):
 
     name: str = "ROV++V1 Lite"
 
-    # mypy doesn't understand this subclass
-    def _policy_propagate(  # type: ignore
+    def _policy_propagate(
         self,
         neighbor: "AS",
         ann: "Ann",
@@ -30,8 +29,7 @@ class ROVPPV1Lite(ROV):
         # Policy handled this ann for propagation (and did nothing if blackhole)
         return ann.rovpp_blackhole
 
-    # mypy doesn't understand this subclass
-    def process_incoming_anns(  # type: ignore
+    def process_incoming_anns(
         self,
         *,
         from_rel: Relationships,
@@ -41,7 +39,7 @@ class ROVPPV1Lite(ROV):
     ) -> None:
         """Processes all incoming announcements from a specific rel"""
 
-        super(ROVPPV1Lite, self).process_incoming_anns(
+        super().process_incoming_anns(
             from_rel=from_rel,
             propagation_round=propagation_round,
             scenario=scenario,
@@ -67,7 +65,7 @@ class ROVPPV1Lite(ROV):
 
         non_routed_blackholes = self._get_non_routed_blackholes_to_add(scenario)
         routed_blackholes = self._get_routed_blackholes_to_add(from_rel, scenario)
-        self._add_blackholes_to_local_rib(non_routed_blackholes + routed_blackholes)
+        self._add_blackholes_tolocal_rib(non_routed_blackholes + routed_blackholes)
 
     def _get_non_routed_blackholes_to_add(
         self, scenario: "Scenario"
@@ -75,19 +73,18 @@ class ROVPPV1Lite(ROV):
         """Get all the bholes for non routed prefixes to prevent superprefix attacks"""
 
         non_routed_blackholes_to_add = list()
-        for roa_info in scenario.roa_infos:
+        for roa in scenario.roas:
             # ROA is non routed
-            if roa_info.non_routed:
+            if not roa.is_non_routed:
                 blackhole_ann = scenario.scenario_config.AnnCls(
-                    prefix=roa_info.prefix,
+                    prefix=str(roa.prefix),
                     next_hop_asn=self.as_.asn,
                     as_path=(self.as_.asn,),
                     timestamp=Timestamps.VICTIM.value,
                     seed_asn=None,
                     roa_valid_length=True,
-                    roa_origin=roa_info.origin,
+                    roa_origin=roa.origin,
                     recv_relationship=Relationships.ORIGIN,
-                    traceback_end=True,
                     rovpp_blackhole=True,
                 )
                 non_routed_blackholes_to_add.append(blackhole_ann)
@@ -101,13 +98,13 @@ class ROVPPV1Lite(ROV):
         blackholes_to_add = list()
         # Then add blackholes for anns in local RIB when you've
         # recieved an invalid subprefix from the same neighbor
-        for _, ann in self._local_rib.items():
+        for _, ann in self.local_rib.items():
             for sub_ann in self._invalid_subprefixes_from_same_neighbor(scenario, ann):
                 blackhole = self._copy_and_process(
                     sub_ann,
                     from_rel,
                     overwrite_default_kwargs={
-                        "traceback_end": True,
+                        "next_hop_asn": self.as_.asn,
                         "rovpp_blackhole": True,
                     },
                 )
@@ -121,13 +118,13 @@ class ROVPPV1Lite(ROV):
 
         # If we are the origin, then there are zero invalid anns from the same neighbor
         if ann.recv_relationship == Relationships.ORIGIN:
-            return ()
+            return ()  # type: ignore
         # For each subprefix in this scenario of the prefix within the local RIB
         for subprefix in scenario.ordered_prefix_subprefix_dict[ann.prefix]:
             # For each subprefix ann that was recieved
             # NOTE: these wouldn't be in the local RIB since they're invalid
             # and dropped by default (but they are recieved so we can check there)
-            for sub_ann in self._recv_q.get_ann_list(subprefix):
+            for sub_ann in self.recv_q.get_ann_list(subprefix):
                 # Holes are only from same neighbor
                 if (
                     sub_ann.invalid_by_roa
@@ -136,14 +133,14 @@ class ROVPPV1Lite(ROV):
                 ):
                     yield sub_ann
 
-    def _add_blackholes_to_local_rib(self, blackholes: tuple["Ann", ...]) -> None:
+    def _add_blackholes_tolocal_rib(self, blackholes: tuple["Ann", ...]) -> None:
         """Adds all blackholes to the local RIB"""
 
         for blackhole in blackholes:
-            existing_ann = self._local_rib.get(blackhole.prefix)
+            existing_ann = self.local_rib.get(blackhole.prefix)
             # Don't overwrite valid existing announcements
             if existing_ann is None or existing_ann.invalid_by_roa:
-                self._local_rib.add_ann(blackhole)
+                self.local_rib.add_ann(blackhole)
 
     def _recount_holes(self, propagation_round: int) -> None:
         # It's possible that we had a previously valid prefix

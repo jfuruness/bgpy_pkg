@@ -1,13 +1,16 @@
-from abc import ABC, abstractmethod
 import csv
-from frozendict import frozendict
+from abc import ABC, abstractmethod
 from pathlib import Path
-from typing import Optional, TYPE_CHECKING
+from typing import TYPE_CHECKING
+
+from frozendict import frozendict
+
+from bgpy.shared.constants import bgpy_logger
 
 if TYPE_CHECKING:
+    from .as_graph import ASGraph
     from .as_graph_collector import ASGraphCollector
     from .as_graph_info import ASGraphInfo
-    from .as_graph import ASGraph
 
 
 class ASGraphConstructor(ABC):
@@ -17,17 +20,17 @@ class ASGraphConstructor(ABC):
         ASGraphCls: type["ASGraph"],
         as_graph_collector_kwargs=frozendict(),
         as_graph_kwargs=frozendict(),
-        tsv_path: Optional[Path] = None,
+        tsv_path: Path | None = None,
         stubs: bool = True,
     ) -> None:
         """Stores download time and cache_dir instance vars and creates dir"""
 
-        self.as_graph_collector: "ASGraphCollector" = ASGraphCollectorCls(
+        self.as_graph_collector: ASGraphCollector = ASGraphCollectorCls(
             **as_graph_collector_kwargs
         )
-        self.ASGraphCls: type["ASGraph"] = ASGraphCls
+        self.ASGraphCls: type[ASGraph] = ASGraphCls
         self.as_graph_kwargs = as_graph_kwargs
-        self.tsv_path: Optional[Path] = tsv_path
+        self.tsv_path: Path | None = tsv_path
         self.stubs: bool = stubs
 
     def run(self) -> "ASGraph":
@@ -67,11 +70,11 @@ class ASGraphConstructor(ABC):
                 provider.customers = customers
 
     @staticmethod
-    def write_tsv(as_graph: "ASGraph", tsv_path: Optional[Path] = None) -> None:
+    def write_tsv(as_graph: "ASGraph", tsv_path: Path | None = None) -> None:
         """Writes AS Graph to TSV"""
 
         if tsv_path:
-            print(
+            bgpy_logger.info(
                 f"Writing as graph to {tsv_path} "
                 "if you want to save time and not do this, pass tsv_path=None "
                 "to the run function"

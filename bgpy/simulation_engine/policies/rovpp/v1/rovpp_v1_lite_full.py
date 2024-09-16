@@ -1,6 +1,5 @@
 from typing import TYPE_CHECKING
 
-
 from bgpy.simulation_engine.policies.rov import ROVFull
 
 from .rovpp_v1_lite import ROVPPV1Lite
@@ -9,7 +8,7 @@ if TYPE_CHECKING:
     from bgpy.simulation_engine import Announcement as Ann
 
 
-class ROVPPV1LiteFull(ROVPPV1Lite, ROVFull):  # type: ignore
+class ROVPPV1LiteFull(ROVPPV1Lite, ROVFull):
     """An Policy that deploys ROV++V1 Lite as defined in the ROV++ paper, and
     has withdrawals, ribs in and out
 
@@ -18,14 +17,14 @@ class ROVPPV1LiteFull(ROVPPV1Lite, ROVFull):  # type: ignore
 
     name: str = "ROV++V1 Lite Full"
 
-    def _add_blackholes_to_local_rib(self, blackholes: tuple["Ann", ...]) -> None:
+    def _add_blackholes_tolocal_rib(self, blackholes: tuple["Ann", ...]) -> None:
         """Adds all blackholes to the local RIB"""
 
         for blackhole in blackholes:
-            existing_ann = self._local_rib.get(blackhole.prefix)
+            existing_ann = self.local_rib.get(blackhole.prefix)
             # Don't overwrite valid existing announcements
             if existing_ann is None:
-                self._local_rib.add_ann(blackhole)
+                self.local_rib.add_ann(blackhole)
             elif existing_ann.invalid_by_roa:
                 # If you need this feature, please email jfuruness@gmail.com
                 # Although I think this case would be very rare that no one will
@@ -34,4 +33,4 @@ class ROVPPV1LiteFull(ROVPPV1Lite, ROVFull):  # type: ignore
                     "Need to handle withdrawals for this"
                     " if you need this feature, please email jfuruness@gmail.com"
                 )
-                self._local_rib.add_ann(blackhole)  # type: ignore
+                self.local_rib.add_ann(blackhole)  # type: ignore

@@ -38,7 +38,7 @@ class DiagramAggregator:
             save_all=True,
             append_images=converted_images[1:],
         )
-        for img in converted_images:
+        for img in converted_images:  # type: ignore
             img.close()
 
     @property
@@ -51,4 +51,4 @@ class DiagramAggregator:
     def image_paths(self) -> list[Path]:
         """Returns paths as strings for all images"""
 
-        return list(sorted(self.base_dir.glob("*/*png")))
+        return sorted(self.base_dir.glob("*/*png"))

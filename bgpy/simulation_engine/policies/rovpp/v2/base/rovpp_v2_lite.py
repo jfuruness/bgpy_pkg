@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING
 
-from bgpy.enums import Relationships
+from bgpy.shared.enums import Relationships
 from bgpy.simulation_engine.policies.rovpp.v1.rovpp_v1_lite import ROVPPV1Lite
 
 if TYPE_CHECKING:
@@ -17,8 +17,7 @@ class ROVPPV2Lite(ROVPPV1Lite):
 
     name: str = "ROV++V2 Lite"
 
-    # mypy doesn't understand this for some reason
-    def _policy_propagate(  # type: ignore
+    def _policy_propagate(
         self,
         neighbor: "AS",
         ann: "Ann",
@@ -43,7 +42,8 @@ class ROVPPV2Lite(ROVPPV1Lite):
         self, ann: "Ann", propagate_to: Relationships
     ) -> bool:
         """You can send blackhole to customers if from peer/provider
-        and either subprefix or non routed"""
+        and either subprefix or non routed
+        """
         return (
             # From peer/provider
             ann.recv_relationship

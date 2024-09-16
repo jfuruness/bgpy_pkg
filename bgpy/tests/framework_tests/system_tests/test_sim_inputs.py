@@ -2,11 +2,8 @@ from pathlib import Path
 
 import pytest
 
-from bgpy.simulation_engine import BGP
-from bgpy.simulation_engine import ROV
-from bgpy.simulation_framework import SubprefixHijack
-from bgpy.simulation_framework import ScenarioConfig
-from bgpy.simulation_framework import Simulation
+from bgpy.simulation_engine import BGP, ROV
+from bgpy.simulation_framework import ScenarioConfig, Simulation, SubprefixHijack
 
 
 @pytest.mark.slow
