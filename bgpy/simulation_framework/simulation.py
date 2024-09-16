@@ -120,8 +120,6 @@ class Simulation:
             percent_adoptions
         )
         self.num_trials: int = num_trials
-        self.output_dir: Path = output_dir if output_dir else self.default_output_dir
-        self.output_dir.mkdir(parents=True, exist_ok=True)
         self.parse_cpus: int = parse_cpus
         self.scenario_configs: tuple[ScenarioConfig, ...] = (
             self._get_filtered_scenario_configs(scenario_configs)
@@ -129,6 +127,9 @@ class Simulation:
 
         self.python_hash_seed: int | None = python_hash_seed
         self._seed_random()
+
+        self.output_dir: Path = output_dir if output_dir else self.default_output_dir
+        self.output_dir.mkdir(parents=True, exist_ok=True)
 
         # Done here so that the caida files are cached
         # So that multiprocessing doesn't interfere with one another
