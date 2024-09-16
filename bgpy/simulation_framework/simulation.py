@@ -163,7 +163,7 @@ class Simulation:
 
     @property
     def default_output_dir(self) -> Path:
-        return Path(DIRS.user_desktop_dir) / self.sim_name
+        return Path(DIRS.user_desktop_dir) / "sims" / self.sim_name
 
     def _get_filtered_scenario_configs(
         self, scenario_configs: tuple[ScenarioConfig, ...]
