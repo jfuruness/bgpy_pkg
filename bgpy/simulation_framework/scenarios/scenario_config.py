@@ -79,11 +79,13 @@ class ScenarioConfig:
             # BGP-iSec needs this. NOTE: mypy thinks this is unreachable
             if (  # type: ignore
                 issubclass(self.AdoptPolicyCls, BGPiSecTransitive)
-                # Janky, but need to avoid circular imports TODO
-                and self.ScenarioCls.__name__
-                in ("ShortestPathPrefixHijack", "FirstASNStrippingHijack")
             ):
-                prop_rounds = 2
+                from bgpy.simulation_framework import ShortestPathPrefixHijack
+
+                if issubclass(self.ScenarioCls, ShortestPathPrefixHijack):
+                    prop_rounds = 2
+                else:
+                    prop_rounds = 1
             else:
                 prop_rounds = self.ScenarioCls.min_propagation_rounds
 
