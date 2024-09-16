@@ -5,7 +5,7 @@ from frozendict import frozendict
 from roa_checker import ROA
 
 from bgpy.shared.enums import ASGroups
-from bgpy.simulation_engine import ASPA, BGP, ASPAwN, Policy
+from bgpy.simulation_engine import ASPA, BGP, ASPAwN, BGPiSecTransitive, Policy
 from bgpy.simulation_engine import Announcement as Ann
 
 if TYPE_CHECKING:
@@ -76,10 +76,19 @@ class ScenarioConfig:
         """
 
         if self.propagation_rounds is None:
+            # BGP-iSec needs this. NOTE: mypy thinks this is unreachable
+            if (  # type: ignore
+                issubclass(self.AdoptPolicyCls, BGPiSecTransitive)
+                # Janky, but need to avoid circular imports TODO
+                and self.ScenarioCls.__name__
+                in ("ShortestPathPrefixHijack", "FirstASNStrippingHijack")
+            ):
+                prop_rounds = 2
+            else:
+                prop_rounds = self.ScenarioCls.min_propagation_rounds
+
             # initially set to None so it could be defaulted here
-            object.__setattr__(  # type: ignore
-                self, "propagation_rounds", self.ScenarioCls.min_propagation_rounds
-            )
+            object.__setattr__(self, "propagation_rounds", prop_rounds)
 
         if self.ScenarioCls.min_propagation_rounds > self.propagation_rounds:
             raise ValueError(
