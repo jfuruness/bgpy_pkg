@@ -85,7 +85,7 @@ class ScenarioConfig:
                 if issubclass(self.ScenarioCls, ShortestPathPrefixHijack):
                     prop_rounds = 2
                 else:
-                    prop_rounds = 1
+                    prop_rounds = self.ScenarioCls.min_propagation_rounds
             else:
                 prop_rounds = self.ScenarioCls.min_propagation_rounds
 
