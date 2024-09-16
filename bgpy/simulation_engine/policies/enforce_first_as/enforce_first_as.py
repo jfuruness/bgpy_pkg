@@ -36,6 +36,7 @@ class EnforceFirstAS(BGP):
 
         return (
             ann.next_hop_asn == ann.as_path[0]
-            # A bit janky but we'll leave it for now
-            and ann.next_hop_asn in getattr(self, f"{from_rel.name.lower()}_asns")
+            # Super janky, TODO
+            and ann.next_hop_asn
+            in getattr(self.as_, f"{from_rel.name.lower()[:-1]}_asns")
         )

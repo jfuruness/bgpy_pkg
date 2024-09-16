@@ -115,7 +115,6 @@ class Simulation:
         mp_method: Multiprocessing method
         """
 
-        self.sim_name: str = sim_name if sim_name else self.default_sim_name
         self.percent_adoptions: tuple[float | SpecialPercentAdoptions, ...] = (
             percent_adoptions
         )
@@ -128,6 +127,7 @@ class Simulation:
         self.python_hash_seed: int | None = python_hash_seed
         self._seed_random()
 
+        self.sim_name: str = sim_name if sim_name else self.default_sim_name
         self.output_dir: Path = output_dir if output_dir else self.default_output_dir
         self.output_dir.mkdir(parents=True, exist_ok=True)
 
