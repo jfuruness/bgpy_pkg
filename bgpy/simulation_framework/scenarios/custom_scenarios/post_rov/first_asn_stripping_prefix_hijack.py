@@ -43,7 +43,7 @@ class FirstASNStrippingPrefixHijack(ShortestPathPrefixHijack):
         *,
         engine: Optional["BaseSimulationEngine"] = None,
     ) -> tuple["Ann", ...]:
-        attacker_anns = self._get_shortest_path_attacker_anns()
+        attacker_anns = self._get_shortest_path_attacker_anns(engine=engine)
         stripped_anns: list[Ann] = list()
         for ann in attacker_anns:
             # Remove the attacker's ASN
