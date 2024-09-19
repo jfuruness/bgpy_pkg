@@ -11,6 +11,23 @@ class CustomerProviderLink(Link):
         self.__provider_asn: int = int(provider_asn)
         super().__init__(customer_asn, provider_asn)
 
+    def __hash__(self) -> int:
+        """Hashes used in sets
+
+        NOTE: python disables hash if __eq__ is defined so you MUST explicitly redef
+        """
+
+        return hash(self.asns)
+
+    def __eq__(self, other) -> bool:
+        if isinstance(other, CustomerProviderLink):
+            return (
+                self.customer_asn == other.customer_asn
+                and self.provider_asn == other.provider_asn
+            )
+        else:
+            return NotImplemented
+
     @property
     def customer_asn(self) -> int:
         """Returns customer asn. Done this way for immutability/hashing"""

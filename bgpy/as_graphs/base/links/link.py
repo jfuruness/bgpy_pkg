@@ -17,11 +17,9 @@ class Link(ABC):
 
         return hash(self.asns)
 
-    def __eq__(self, other: Any):
-        if isinstance(other, Link):
-            return self.asns == other.asns
-        else:
-            return NotImplemented
+    @abstractmethod
+    def __eq__(self, other) -> bool:
+        raise NotImplementedError
 
     def __lt__(self, other: Any):
         if isinstance(other, Link):
