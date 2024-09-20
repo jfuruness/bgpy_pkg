@@ -106,6 +106,12 @@ class ASGraph(YamlAble):
         # Set the AS and ASN group groups
         self._set_as_groups(additional_as_group_filters)
 
+    def __eq__(self, other) -> bool:
+        if isinstance(other, ASGraph):
+            return self.__to_yaml_dict__() == other.__to_yaml_dict__()
+        else:
+            return NotImplemented
+
     ##############
     # Init funcs #
     ##############
