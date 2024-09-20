@@ -14,8 +14,8 @@ class EngineRunner:
 
     def __init__(
         self,
-        base_dir: Path,
         conf: EngineRunConfig,
+        base_dir: Path = Path.home() / "Desktop" / "engine_runs",
         codec: SimulatorCodec | None = None,
         dpi: int | None = None,
     ) -> None:
