@@ -113,6 +113,10 @@ class ScenarioConfig:
         if not self.scenario_label:
             object.__setattr__(self, "scenario_label", self.AdoptPolicyCls.name)
 
+        self._set_AttackerBasePolicyCls()
+
+    def _set_AttackerBasePolicyCls(self):
+
         # This is to assist with ShortestPathPrefixHijacks
         if issubclass(self.AdoptPolicyCls, ASPA) and not issubclass(
             self.AdoptPolicyCls, ASPAwN
