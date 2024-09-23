@@ -43,11 +43,7 @@ class EngineRunner:
 
         # Get's an engine that has been set up
         # MUST BE DONE IN THIS ORDER so that scenario init get's passed the engine
-        engine = self._get_engine()
-        scenario = self.conf.scenario_config.ScenarioCls(
-            scenario_config=self.conf.scenario_config,
-            engine=engine,
-        )
+        engine, scenario = self._get_engine_and_scenario()
         scenario.setup_engine(engine)
 
         # Run engine
@@ -86,15 +82,30 @@ class EngineRunner:
 
         return engine, outcomes_yaml, graph_data_aggregator, scenario
 
+    def _get_engine_and_scenario(self) -> tuple[BaseSimulationEngine, Scenario]:
+        """Useful for website"""
+
+        engine = self._get_engine()
+        scenario = self._get_scenario(engine=engine)
+        return engine, scenario
+
     def _get_engine(self) -> BaseSimulationEngine:
         """Creates and engine and sets it up for runs"""
 
         as_graph = self.conf.ASGraphCls(
             as_graph_info=self.conf.as_graph_info,
             BasePolicyCls=self.conf.scenario_config.BasePolicyCls,
+            store_provider_cone_size=self.conf.requires_provider_cones,
+            store_provider_cone_asns=self.conf.requires_provider_cones,
         )
 
         return self.conf.SimulationEngineCls(as_graph)
+
+    def _get_scenario(self, engine: BaseSimulationEngine) -> Scenario:
+        return self.conf.scenario_config.ScenarioCls(
+            scenario_config=self.conf.scenario_config,
+            engine=engine,
+        )
 
     def _get_graph_data(
         self,
