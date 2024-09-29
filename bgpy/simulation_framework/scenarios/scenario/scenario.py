@@ -1,6 +1,5 @@
 import math
 import random
-from abc import ABC, abstractmethod
 from dataclasses import replace
 from functools import cached_property
 from ipaddress import IPv4Network, IPv6Network, ip_network
@@ -25,7 +24,7 @@ if TYPE_CHECKING:
     from bgpy.as_graphs import AS
 
 
-class Scenario(ABC):
+class Scenario:
     """Contains information regarding a scenario/attack
 
     This represents a single trial and a single engine run
@@ -373,15 +372,17 @@ class Scenario(ABC):
     # Subclass Funcs #
     ##################
 
-    @abstractmethod
     def _get_announcements(
         self,
         *,
         engine: Optional["BaseSimulationEngine"] = None,
     ) -> tuple["Ann", ...]:
-        """Returns announcements"""
+        """Returns announcements
 
-        raise NotImplementedError
+        Empty by default for testing, typically subclassed
+        """
+
+        return ()
 
     def _get_roas(
         self,
