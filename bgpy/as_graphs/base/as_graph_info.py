@@ -29,7 +29,7 @@ class ASGraphInfo:
 
     def __eq__(self, other) -> bool:
         if isinstance(other, ASGraphInfo):
-            return self.asn == other.asns
+            return self.asns == other.asns
         else:
             return NotImplemented
 
