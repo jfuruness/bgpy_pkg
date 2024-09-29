@@ -116,7 +116,6 @@ class ScenarioConfig:
         self._set_AttackerBasePolicyCls()
 
     def _set_AttackerBasePolicyCls(self):
-
         # This is to assist with ShortestPathPrefixHijacks
         if issubclass(self.AdoptPolicyCls, ASPA) and not issubclass(
             self.AdoptPolicyCls, ASPAwN

@@ -11,6 +11,7 @@ class ASGraphInfo:
     # Links
     customer_provider_links: frozenset[CPLink] = field(default_factory=frozenset)
     peer_links: frozenset[PeerLink] = field(default_factory=frozenset)
+    unlinked_asns: frozenset[int] = field(default_factory=frozenset)
     # Metadata
     ixp_asns: frozenset[int] = field(default_factory=frozenset)
     input_clique_asns: frozenset[int] = field(default_factory=frozenset)
@@ -28,7 +29,7 @@ class ASGraphInfo:
 
     def __eq__(self, other) -> bool:
         if isinstance(other, ASGraphInfo):
-            return self.links == other.links
+            return self.asn == other.asns
         else:
             return NotImplemented
 
@@ -37,6 +38,7 @@ class ASGraphInfo:
         asns: list[int] = []
         for link in self.links:
             asns.extend(link.asns)
+        asns.extend(list(self.unlinked_asns))
         return sorted(set(asns))
 
     @property
