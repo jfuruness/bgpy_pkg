@@ -42,9 +42,7 @@ class EngineRunner:
         """
 
         # Get's an engine that has been set up
-        # MUST BE DONE IN THIS ORDER so that scenario init get's passed the engine
         engine, scenario = self._get_engine_and_scenario()
-        scenario.setup_engine(engine)
 
         # Run engine
         for round_ in range(self.conf.scenario_config.propagation_rounds):
@@ -85,8 +83,10 @@ class EngineRunner:
     def _get_engine_and_scenario(self) -> tuple[BaseSimulationEngine, Scenario]:
         """Useful for website"""
 
+        # MUST BE DONE IN THIS ORDER so that scenario init get's passed the engine
         engine = self._get_engine()
         scenario = self._get_scenario(engine=engine)
+        scenario.setup_engine(engine)
         return engine, scenario
 
     def _get_engine(self) -> BaseSimulationEngine:
