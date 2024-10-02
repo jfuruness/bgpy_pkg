@@ -58,23 +58,19 @@ class Diagram:
         html = f"""<
               <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4">
               <TR>
-                  <TD COLSPAN="2" BORDER="0">(For most specific prefix only)</TD>
-                  <TD COLSPAN="1" BORDER="0"></TD>
+          <TD COLSPAN="2" BORDER="0">(For most specific prefix only)</TD>
               </TR>
               <TR>
-                  <TD BGCOLOR="#FF6060:white">&#128520; ATTACKER SUCCESS &#128520;</TD>
-                  <TD>{attacker_success_count}</TD>
-                  <TD COLSPAN="1" BORDER="0"></TD>
+          <TD BGCOLOR="#ff6060:white">&#128520; ATTACKER SUCCESS &#128520;</TD>
+                <TD>{attacker_success_count}</TD>
               </TR>
               <TR>
-                  <TD BGCOLOR="#90EE90:white">&#128519; VICTIM SUCCESS &#128519;</TD>
-                  <TD>{victim_success_count}</TD>
-                  <TD COLSPAN="1" BORDER="0"></TD>
+         <TD BGCOLOR="#90ee90:white">&#128519; VICTIM SUCCESS &#128519;</TD>
+                <TD>{victim_success_count}</TD>
               </TR>
               <TR>
-                  <TD BGCOLOR="grey:white">&#10041; DISCONNECTED &#10041;</TD>
-                  <TD>{disconnect_count}</TD>
-                  <TD COLSPAN="1" BORDER="0"></TD>
+                <TD BGCOLOR="grey:white">&#10041; DISCONNECTED &#10041;</TD>
+                <TD>{disconnect_count}</TD>
               </TR>
         """
 
@@ -83,7 +79,6 @@ class Diagram:
         html += """
               <TR>
                 <TD COLSPAN="2" BORDER="0">ROAs (prefix, origin, max_len)</TD>
-                <TD COLSPAN="1" BORDER="0"></TD>
               </TR>
               """
         for roa in scenario.roas:
@@ -198,10 +193,7 @@ class Diagram:
                 elif any(x == ann.origin for x in scenario.victim_asns):
                     ann_help = "&#128519;"
                 else:
-                    # Possible if a user triggers this from the website
-                    # with announcements and overriding attack victims but
-                    # has an old ann that doesn't correspond to anything
-                    continue
+                    raise NotImplementedError
 
                 html += f"""<TR>
                             <TD>{mask}</TD>
