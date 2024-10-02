@@ -193,7 +193,9 @@ class Diagram:
                 elif any(x == ann.origin for x in scenario.victim_asns):
                     ann_help = "&#128519;"
                 else:
-                    raise NotImplementedError
+                    # There can be announcements not in the attacker or victim
+                    # If passed in through override_announcements
+                    ann_help = ann.origin
 
                 html += f"""<TR>
                             <TD>{mask}</TD>
