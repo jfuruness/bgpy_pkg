@@ -152,7 +152,7 @@ class Diagram:
         scenario: Scenario,
         display_next_hop_asn: bool,
     ) -> str:
-        colspan = 5 if display_next_hop_asn else 4
+        colspan = 4 if display_next_hop_asn else 3
         asn_str = str(as_obj.asn)
         if as_obj.asn in scenario.victim_asns:
             asn_str = "&#128519;" + asn_str + "&#128519;"
