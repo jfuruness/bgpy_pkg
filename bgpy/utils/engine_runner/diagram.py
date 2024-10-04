@@ -274,10 +274,11 @@ class Diagram:
         if static_order is False:
             for i, rank in enumerate(diagram_ranks):
                 g = Digraph(f"Propagation_rank_{i}")
-                g.attr(rank="same")
+                g.attr(rank="same" if i < len(diagram_ranks) - 1 else "max")
                 for as_obj in rank:
                     g.node(str(as_obj.asn))
                 self.dot.subgraph(g)
+            self.dot.attr(rankdir="BT")
         else:
             for rank in diagram_ranks:
                 with self.dot.subgraph() as s:
