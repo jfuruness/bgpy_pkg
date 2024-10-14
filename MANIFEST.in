@@ -3,3 +3,5 @@ include LICENSE.txt
 global-include **.typed
 global-include **.pyi
 include tox.ini
+# Need since scripts has dunder init
+exclude scripts/**
