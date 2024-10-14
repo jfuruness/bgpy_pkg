@@ -152,7 +152,7 @@ class Diagram:
         scenario: Scenario,
         display_next_hop_asn: bool,
     ) -> str:
-        colspan = 4 if display_next_hop_asn else 3
+        colspan = 5 if display_next_hop_asn else 4
         asn_str = str(as_obj.asn)
         if as_obj.asn in scenario.victim_asns:
             asn_str = "&#128519;" + asn_str + "&#128519;"
@@ -188,14 +188,12 @@ class Diagram:
                     ann_help = "&#10041;"
                 elif getattr(ann, "preventive", False):
                     ann_help = "&#128737;"
-                elif any(x == ann.origin for x in scenario.attacker_asns):
+                elif any(x in ann.as_path for x in scenario.attacker_asns):
                     ann_help = "&#128520;"
                 elif any(x == ann.origin for x in scenario.victim_asns):
                     ann_help = "&#128519;"
                 else:
-                    # There can be announcements not in the attacker or victim
-                    # If passed in through override_announcements
-                    ann_help = ann.origin
+                    raise NotImplementedError
 
                 html += f"""<TR>
                             <TD>{mask}</TD>
@@ -278,8 +276,6 @@ class Diagram:
                 for as_obj in rank:
                     g.node(str(as_obj.asn))
                 self.dot.subgraph(g)
-            # Makes ranks go top to bottom, else prop ranks are unordered
-            self.dot.attr(rankdir="TB")
         else:
             for rank in diagram_ranks:
                 with self.dot.subgraph() as s:
