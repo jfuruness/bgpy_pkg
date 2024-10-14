@@ -25,6 +25,7 @@ class EngineRunConfig:
     desc: str
     scenario_config: ScenarioConfig
     as_graph_info: ASGraphInfo
+    requires_provider_cones: bool = False
     ASGraphCls: type[ASGraph] = CAIDAASGraph
     # Only concrete classes are allowed, but not going to bother with a protocol here
     SimulationEngineCls: type[BaseSimulationEngine] = SimulationEngine  # type: ignore

@@ -14,6 +14,20 @@ class PeerLink(Link):
         )
         super(PeerLink, self).__init__(peer1_asn, peer2_asn)
 
+    def __hash__(self) -> int:
+        """Hashes used in sets
+
+        NOTE: python disables hash if __eq__ is defined so you MUST explicitly redef
+        """
+
+        return hash(self.asns)
+
+    def __eq__(self, other) -> bool:
+        if isinstance(other, PeerLink):
+            return self.peer_asns == other.peer_asns
+        else:
+            return NotImplemented
+
     @property
     def peer_asns(self) -> tuple[int, int]:
         """Returns peer asns. Done this way for immutability/hashing"""

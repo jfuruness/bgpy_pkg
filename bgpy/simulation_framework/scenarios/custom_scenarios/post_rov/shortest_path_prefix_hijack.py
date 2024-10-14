@@ -11,11 +11,11 @@ from bgpy.shared.enums import (
 )
 from bgpy.simulation_engine import (
     ASPA,
+    ASRA,
     BGP,
     ROV,
     ASPAFull,
-    ASPAwN,
-    ASPAwNFull,
+    ASRAFull,
     BGPFull,
     BGPiSec,
     BGPiSecFull,
@@ -104,7 +104,7 @@ class ShortestPathPrefixHijack(VictimsPrefix):
             return self._get_pathend_attack_anns(engine=engine)
         elif self.scenario_config.AdoptPolicyCls in self.aspa_policy_classes:
             return self._get_aspa_attack_anns(engine=engine)
-        elif self.scenario_config.AdoptPolicyCls in self.aspawn_policy_classes:
+        elif self.scenario_config.AdoptPolicyCls in self.asra_policy_classes:
             return self._get_aspa_attack_anns(
                 engine=engine, require_aspa_attacker_cls=False
             )
@@ -531,13 +531,13 @@ class ShortestPathPrefixHijack(VictimsPrefix):
         return frozenset({ASPA, ASPAFull})
 
     @property
-    def aspawn_policy_classes(self) -> frozenset[type[Policy]]:
-        """Policies susceptible to an ASPAwN Shortest Path attack
+    def asra_policy_classes(self) -> frozenset[type[Policy]]:
+        """Policies susceptible to an ASRA Shortest Path attack
 
         i.e. shortest contiguous chain of ASPA providers ending in non adopter
         """
 
-        return frozenset({ASPAwN, ASPAwNFull})
+        return frozenset({ASRA, ASRAFull})
 
     @property
     def bgpisec_policy_classes(self) -> frozenset[type[Policy]]:

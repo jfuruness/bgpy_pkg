@@ -1,4 +1,4 @@
-from .aspa import ASPA, ASPAFull, ASPAwN, ASPAwNFull
+from .aspa import ASPA, ASPAFull, ASRA, ASRAFull
 from .bgp import BGP, BGPFull
 from .bgpisec import (
     BGPiSecTransitive,
@@ -77,8 +77,8 @@ __all__ = [
     "ROVPPV2ImprovedLiteFull",
     "ASPA",
     "ASPAFull",
-    "ASPAwN",
-    "ASPAwNFull",
+    "ASRA",
+    "ASRAFull",
     "ShortestPathPrefixASPAAttacker",
     "FirstASNStrippingPrefixASPAAttacker",
 ]

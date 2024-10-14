@@ -166,7 +166,7 @@ class AS(YamlAble):
 
     @cached_property
     def neighbor_asns(self) -> frozenset[int]:
-        """Returns neighboring ASNs (useful for ASPAwN)"""
+        """Returns neighboring ASNs (useful for ASRA)"""
 
         return frozenset([x.asn for x in self.neighbors])
 
@@ -194,7 +194,7 @@ class AS(YamlAble):
         }
 
     @classmethod
-    def __from_yaml_dict__(cls, dct: dict[Any, Any], yaml_tag: str):
+    def __from_yaml_dict__(cls, dct: dict[Any, Any], yaml_tag: str = ""):
         """This optional method is called when you call yaml.load()"""
 
         dct["customer_asns"] = frozenset(dct["customers"])

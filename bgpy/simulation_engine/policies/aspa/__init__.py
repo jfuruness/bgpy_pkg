@@ -1,11 +1,11 @@
 from .aspa import ASPA
 from .aspa_full import ASPAFull
-from .aspawn import ASPAwN
-from .aspawn_full import ASPAwNFull
+from .asra import ASRA
+from .asra_full import ASRAFull
 
 __all__ = [
     "ASPAFull",
     "ASPA",
-    "ASPAwN",
-    "ASPAwNFull",
+    "ASRA",
+    "ASRAFull",
 ]

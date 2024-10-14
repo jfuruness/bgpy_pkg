@@ -8,7 +8,7 @@ if TYPE_CHECKING:
 
 
 class ASPA(ROV):
-    """A Policy that deploys ASPA
+    """A Policy that deploys ASPA and ASPA Records
 
     We adopt from ROV since deploying ASPA makes no sense without ROV
 
