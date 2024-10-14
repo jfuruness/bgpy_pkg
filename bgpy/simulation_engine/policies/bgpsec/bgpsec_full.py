@@ -6,4 +6,4 @@ from .bgpsec import BGPSec
 class BGPSecFull(BGPSec, BGPFull):
     """Represents BGPSec with withdrawals, ribsin, ribs out"""
 
-    name: str = "BGPSec Full"
+    name: str = "BGPsec Full"

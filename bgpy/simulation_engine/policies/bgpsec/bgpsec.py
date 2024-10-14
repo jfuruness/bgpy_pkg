@@ -22,7 +22,7 @@ class BGPSec(ROV):
     would deploy BGPSec without first deploying ROV
     """
 
-    name = "BGPSec"
+    name = "BGPsec"
 
     def seed_ann(self, ann: "Ann") -> None:
         """Seeds announcement at this AS and initializes BGPSec path"""
