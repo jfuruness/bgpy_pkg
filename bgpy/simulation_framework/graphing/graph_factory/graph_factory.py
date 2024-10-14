@@ -62,7 +62,9 @@ class GraphFactory:
         y_limit: int = 100,
         line_info_dict: frozendict[str, LineInfo] = frozendict(),
         strongest_attacker_dict: frozendict[str, tuple[LineInfo, ...]] = frozendict(),
+        labels_to_remove: frozenset[str] = frozenset(),
     ) -> None:
+        self.labels_to_remove: frozenset[str] = labels_to_remove
         self.pickle_path: Path = pickle_path
         with self.pickle_path.open("rb") as f:
             self.graph_data: PICKLE_DATA_TYPE = (
@@ -70,6 +72,8 @@ class GraphFactory:
                     pickle.load(f)  # noqa: S301
                 )
             )
+
+        self.graph_data = self._remove_labels()
         self.graph_dir: Path = graph_dir
         self.graph_dir.mkdir(parents=True, exist_ok=True)
 
@@ -140,6 +144,19 @@ class GraphFactory:
                     ), err
 
         return filtered_graph_data
+
+    def _remove_labels(self) -> "PICKLE_DATA_TYPE":
+        """Removes labels from labels_to_remove"""
+
+        new_data: PICKLE_DATA_TYPE = dict()
+        for graph_category, data_dict in self.graph_data.items():
+            for data_point_key, data in data_dict.items():
+                label = data_point_key.scenario_config.scenario_label
+                if label not in self.labels_to_remove:
+                    if graph_category not in new_data:
+                        new_data[graph_category] = dict()
+                    new_data[graph_category][data_point_key] = data
+        return new_data
 
     def generate_graphs(self) -> None:
         """Generates default graphs"""
