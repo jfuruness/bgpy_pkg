@@ -166,7 +166,7 @@ class AS(YamlAble):
 
     @cached_property
     def neighbor_asns(self) -> frozenset[int]:
-        """Returns neighboring ASNs (useful for ASPAwN)"""
+        """Returns neighboring ASNs (useful for ASRA)"""
 
         return frozenset([x.asn for x in self.neighbors])
 
