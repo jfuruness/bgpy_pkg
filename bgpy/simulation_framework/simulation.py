@@ -5,7 +5,6 @@ import random
 import shutil
 import time
 from copy import deepcopy
-from functools import cached_property
 from multiprocessing import Pool, cpu_count
 from pathlib import Path
 from tempfile import TemporaryDirectory
@@ -379,6 +378,10 @@ class Simulation:
             graph_categories=self.graph_categories
         )
 
+        reuse_attacker_asns = self._get_reuse_attacker_asns()
+        reuse_victim_asns = self._get_reuse_victim_asns()
+        reuse_adopting_asns = self._get_reuse_adopting_asns()
+
         for trial_index, trial in self._get_run_chunk_iter(trials):
             # Use the same attacker victim pairs across all percent adoptions
             trial_attacker_asns = None
@@ -410,11 +413,11 @@ class Simulation:
                             propagation_round=propagation_round,
                             graph_data_aggregator=graph_data_aggregator,
                         )
-                    if self.reuse_attacker_asns:
+                    if reuse_attacker_asns:
                         trial_attacker_asns = scenario.attacker_asns
-                    if self.reuse_victim_asns:
+                    if reuse_victim_asns:
                         trial_victim_asns = scenario.victim_asns
-                    if self.reuse_adopting_asns:
+                    if reuse_adopting_asns:
                         adopting_asns = scenario.adopting_asns
                 # Used to track progress with tqdm
                 total_completed = (
@@ -426,24 +429,21 @@ class Simulation:
 
         return graph_data_aggregator
 
-    @cached_property
-    def reuse_attacker_asns(self) -> bool:
+    def _get_reuse_attacker_asns(self) -> bool:
         num_attackers_set = {x.num_attackers for x in self.scenario_configs}
         attacker_subcategories_set = {
             x.attacker_subcategory_attr for x in self.scenario_configs
         }
         return len(num_attackers_set) == 1 and len(attacker_subcategories_set) == 1
 
-    @cached_property
-    def reuse_victim_asns(self) -> bool:
+    def _get_reuse_victim_asns(self) -> bool:
         num_victims_set = {x.num_victims for x in self.scenario_configs}
         victim_subcategories_set = {
             x.victim_subcategory_attr for x in self.scenario_configs
         }
         return len(num_victims_set) == 1 and len(victim_subcategories_set) == 1
 
-    @cached_property
-    def reuse_adopting_asns(self) -> bool:
+    def _get_reuse_adopting_asns(self) -> bool:
         adoption_categories_set = {
             x.adoption_subcategory_attrs for x in self.scenario_configs
         }
