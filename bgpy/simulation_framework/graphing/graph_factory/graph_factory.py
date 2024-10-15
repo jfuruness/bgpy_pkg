@@ -63,7 +63,9 @@ class GraphFactory:
         line_info_dict: frozendict[str, LineInfo] = frozendict(),
         strongest_attacker_dict: frozendict[str, tuple[LineInfo, ...]] = frozendict(),
         labels_to_remove: frozenset[str] = frozenset(),
+        add_legend: bool = True,
     ) -> None:
+        self.add_legend = add_legend
         self.labels_to_remove: frozenset[str] = labels_to_remove
         self.pickle_path: Path = pickle_path
         with self.pickle_path.open("rb") as f:

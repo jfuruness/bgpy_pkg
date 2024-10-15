@@ -14,23 +14,24 @@ def _add_legends_and_save(
     max_attacker_dict,
     graph_name,
 ):
-    first_legend, aggregated_labels_handles_dict = self._add_legend(
-        fig,
-        ax,
-        graph_category,
-        non_aggregated_data_dict,
-        max_attacker_dict,
-    )
+    if self.add_legend:
+        first_legend, aggregated_labels_handles_dict = self._add_legend(
+            fig,
+            ax,
+            graph_category,
+            non_aggregated_data_dict,
+            max_attacker_dict,
+        )
 
-    self._add_strongest_attacker_legend(
-        fig,
-        ax,
-        graph_category,
-        non_aggregated_data_dict,
-        max_attacker_dict,
-        first_legend,
-        aggregated_labels_handles_dict,
-    )
+        self._add_strongest_attacker_legend(
+            fig,
+            ax,
+            graph_category,
+            non_aggregated_data_dict,
+            max_attacker_dict,
+            first_legend,
+            aggregated_labels_handles_dict,
+        )
 
     self._save_and_close_graph(fig, ax, graph_name)
 
