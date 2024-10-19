@@ -309,12 +309,12 @@ class TestScenario:
 
         # First announcement should be validated by ROA
         assert bgp.roa_checker.get_relevant_roas(valid.prefix).origin == victim
-        assert bgp.ann_is_valid_by_roa(ann)
+        assert bgp.ann_is_valid_by_roa(valid)
 
         # Second announcement, from a different origin and more specific prefix, should
         # be invalidated
         assert bgp.roa_checker.get_relevant_roas(malicious.prefix).origin == victim
-        assert bgp.ann_is_invalid_by_roa(ann)
+        assert bgp.ann_is_invalid_by_roa(malicious)
 
     #######################
     # Adopting ASNs funcs #

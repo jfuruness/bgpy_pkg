@@ -72,7 +72,9 @@ class Scenario:
         )
 
         if self.scenario_config.override_announcements:
-            self.announcements: tuple[Ann, ...] = self.scenario_config.override_announcements
+            self.announcements: tuple[Ann, ...] = (
+                self.scenario_config.override_announcements
+            )
         else:
             anns = self._get_announcements(engine=engine)
 

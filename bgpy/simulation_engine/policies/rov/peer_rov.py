@@ -22,7 +22,10 @@ class PeerROV(BGP):
 
         # Invalid by ROA is not valid by ROV
         # Since this type of real world ROV only does peer filtering, only peers here
-        if self.ann_is_invalid_by_roa(ann) and ann.recv_relationship == Relationships.PEERS:
+        if (
+            self.ann_is_invalid_by_roa(ann)
+            and ann.recv_relationship == Relationships.PEERS
+        ):
             return False
         # Use standard BGP to determine if the announcement is valid
         else:

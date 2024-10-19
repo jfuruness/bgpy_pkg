@@ -98,7 +98,9 @@ class Policy(YamlAble, metaclass=ABCMeta):
     #############
 
     def get_roa_outcome(self, ann: "Ann") -> ROAOutcome:
-        return self.roa_checker.get_roa_outcome_w_prefix_str_cached(ann.prefix, ann.origin)
+        return self.roa_checker.get_roa_outcome_w_prefix_str_cached(
+            ann.prefix, ann.origin
+        )
 
     def ann_is_invalid_by_roa(self, ann: "Ann") -> bool:
         """Returns True if Ann is invalid by ROA
