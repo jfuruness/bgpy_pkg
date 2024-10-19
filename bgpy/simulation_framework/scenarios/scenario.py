@@ -13,7 +13,6 @@ from bgpy.simulation_engine import Announcement as Ann
 from bgpy.simulation_engine import BaseSimulationEngine, Policy
 from bgpy.simulation_framework.scenarios.scenario_config import ScenarioConfig
 
-
 if TYPE_CHECKING:
     from bgpy.as_graphs import AS
 

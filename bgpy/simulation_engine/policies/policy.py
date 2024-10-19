@@ -1,10 +1,8 @@
 from abc import ABCMeta, abstractmethod
 from typing import TYPE_CHECKING, Any, ClassVar
 
+from roa_checker import ROAChecker, ROAOutcome, ROARouted, ROAValidity
 from yamlable import YamlAble, yaml_info_decorate
-
-from roa_checker import ROAChecker, ROARouted, ROAOutcome
-
 
 if TYPE_CHECKING:
     from bgpy.shared.enums import Relationships
