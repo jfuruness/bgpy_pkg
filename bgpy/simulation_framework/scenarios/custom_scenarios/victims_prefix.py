@@ -38,8 +38,6 @@ class VictimsPrefix(Scenario):
                     as_path=(victim_asn,),
                     timestamp=Timestamps.VICTIM.value,
                     seed_asn=victim_asn,
-                    roa_valid_length=True,
-                    roa_origin=victim_asn,
                     recv_relationship=Relationships.ORIGIN,
                 )
             )

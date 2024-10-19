@@ -13,13 +13,6 @@ from bgpy.simulation_engine import Announcement as Ann
 from bgpy.simulation_engine import BaseSimulationEngine, Policy
 from bgpy.simulation_framework.scenarios.scenario_config import ScenarioConfig
 
-from .roa_helper_funcs import (
-    _add_roa_info_to_anns,
-    _get_roa_checker,
-    _get_roa_origin,
-    _get_roa_valid_length,
-)
-
 if TYPE_CHECKING:
     from bgpy.as_graphs import AS
 
@@ -78,19 +71,28 @@ class Scenario:
         )
 
         if self.scenario_config.override_announcements:
-            anns = self.scenario_config.override_announcements
-            self.roas: tuple[ROA, ...] = self.scenario_config.override_roas
-            anns = self._add_roa_info_to_anns(announcements=anns, engine=engine)
-            self.announcements: tuple[Ann, ...] = anns
+            self.announcements: tuple[Ann, ...] = (
+                self.scenario_config.override_announcements
+            )
         else:
-            anns = self._get_announcements(engine=engine)
-            self.roas = self._get_roas(announcements=anns, engine=engine)
-            anns = self._add_roa_info_to_anns(announcements=anns, engine=engine)
-            self.announcements = anns
+            self.announcements = self._get_announcements(engine=engine)
+
+        if self.scenario_config.override_roas:
+            self.roas: tuple[ROA, ...] = self.scenario_config.override_roas
+        else:
+            self.roas = self._get_roas(announcements=self.announcements, engine=engine)
+        self._reset_and_add_roas_to_roa_checker()
 
         self.ordered_prefix_subprefix_dict: dict[str, list[str]] = (
             self._get_ordered_prefix_subprefix_dict()
         )
+
+    def _reset_and_add_roas_to_roa_checker(self) -> None:
+        """Clears & adds ROAs to roa_checker which serves as RPKI+Routinator combo"""
+
+        Policy.roa_checker.clear()
+        for roa in self.roas:
+            Policy.roa_checker.insert(roa.prefix, roa)
 
     #################
     # Get attackers #
@@ -420,15 +422,6 @@ class Scenario:
 
         pass
 
-    ####################
-    # ROA Helper funcs #
-    ####################
-
-    _add_roa_info_to_anns = _add_roa_info_to_anns
-    _get_roa_checker = _get_roa_checker
-    _get_roa_origin = _get_roa_origin
-    _get_roa_valid_length = _get_roa_valid_length
-
     ################
     # Helper Funcs #
     ################
@@ -436,25 +429,27 @@ class Scenario:
     def _get_ordered_prefix_subprefix_dict(self):
         """Saves a dict of prefix to subprefixes"""
 
-        prefixes = set()
+        prefixes_set = set()
         for ann in self.announcements:
-            prefixes.add(ann.prefix)
+            prefixes_set.add(ann.prefix)
         # Add ROA prefixes here, so that if we blackhole a non routed
         # prefix of a superprefix hijack this won't break
         # (since the prefix would only exist in the ROA)
         for roa in self.roas:
-            prefixes.add(str(roa.prefix))
+            prefixes_set.add(str(roa.prefix))
         # Do this here for speed
-        prefixes: list[IPv4Network | IPv6Network] = [ip_network(x) for x in prefixes]
+        prefixes: list[IPv4Network | IPv6Network] = [
+            ip_network(x) for x in prefixes_set
+        ]
         # Sort prefixes with most specific prefix first
         # Note that this must be sorted for the traceback to get the
         # most specific prefix first
         prefixes = sorted(prefixes, key=lambda x: x.num_addresses)
 
-        prefix_subprefix_dict = {x: [] for x in prefixes}
+        prefix_subprefix_dict = {x: [] for x in prefixes}  # type: ignore
         for outer_prefix, subprefix_list in prefix_subprefix_dict.items():
             for prefix in prefixes:
-                if prefix.subnet_of(outer_prefix) and prefix != outer_prefix:
+                if prefix.subnet_of(outer_prefix) and prefix != outer_prefix:  # type: ignore
                     subprefix_list.append(str(prefix))
         # Get rid of ip_network
         return {str(k): v for k, v in prefix_subprefix_dict.items()}

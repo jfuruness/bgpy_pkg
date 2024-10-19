@@ -348,7 +348,6 @@ class Simulation:
                 new_tasks.append(task)
         return completed, new_tasks
 
-    # idk what the tqdm types are supposed to be here
     def _update_tqdm_progress_bar(self, pbar: tqdm) -> None:  # type: ignore
         """Updates tqdm progress bar"""
 
@@ -413,6 +412,7 @@ class Simulation:
                             propagation_round=propagation_round,
                             graph_data_aggregator=graph_data_aggregator,
                         )
+
                     if reuse_attacker_asns:
                         trial_attacker_asns = scenario.attacker_asns
                     if reuse_victim_asns:

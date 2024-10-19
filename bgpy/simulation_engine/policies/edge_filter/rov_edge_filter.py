@@ -15,4 +15,8 @@ class ROVEdgeFilter(EdgeFilter):
     def _valid_ann(self, ann: "Ann", from_rel: "Relationships") -> bool:
         """ROV+EdgeFilter"""
 
-        return False if ann.invalid_by_roa else super()._valid_ann(ann, from_rel)
+        return (
+            False
+            if self.ann_is_invalid_by_roa(ann)
+            else super()._valid_ann(ann, from_rel)
+        )

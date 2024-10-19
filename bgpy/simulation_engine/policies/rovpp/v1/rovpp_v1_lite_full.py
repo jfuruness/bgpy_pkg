@@ -25,7 +25,7 @@ class ROVPPV1LiteFull(ROVPPV1Lite, ROVFull):
             # Don't overwrite valid existing announcements
             if existing_ann is None:
                 self.local_rib.add_ann(blackhole)
-            elif existing_ann.invalid_by_roa:
+            elif self.ann_is_invalid_by_roa(existing_ann):
                 # If you need this feature, please email jfuruness@gmail.com
                 # Although I think this case would be very rare that no one will
                 # ever come across it so I won't bother with implementing it right now
