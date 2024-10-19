@@ -27,8 +27,6 @@ as_graph: !yamlable/CAIDAASGraph
             recv_relationship: !simulator_codec/Relationships
               name: CUSTOMERS
               value: 3
-            roa_origin: 777
-            roa_valid_length: true
             rovpp_blackhole: false
             seed_asn: null
             timestamp: 1
@@ -65,8 +63,6 @@ as_graph: !yamlable/CAIDAASGraph
             recv_relationship: !simulator_codec/Relationships
               name: CUSTOMERS
               value: 3
-            roa_origin: 777
-            roa_valid_length: true
             rovpp_blackhole: false
             seed_asn: null
             timestamp: 0
@@ -103,8 +99,6 @@ as_graph: !yamlable/CAIDAASGraph
             recv_relationship: !simulator_codec/Relationships
               name: PEERS
               value: 2
-            roa_origin: 777
-            roa_valid_length: true
             rovpp_blackhole: false
             seed_asn: null
             timestamp: 0
@@ -138,8 +132,6 @@ as_graph: !yamlable/CAIDAASGraph
             recv_relationship: !simulator_codec/Relationships
               name: CUSTOMERS
               value: 3
-            roa_origin: 777
-            roa_valid_length: true
             rovpp_blackhole: false
             seed_asn: null
             timestamp: 0
@@ -177,8 +169,6 @@ as_graph: !yamlable/CAIDAASGraph
             recv_relationship: !simulator_codec/Relationships
               name: CUSTOMERS
               value: 3
-            roa_origin: 777
-            roa_valid_length: true
             rovpp_blackhole: false
             seed_asn: null
             timestamp: 1
@@ -215,8 +205,6 @@ as_graph: !yamlable/CAIDAASGraph
             recv_relationship: !simulator_codec/Relationships
               name: CUSTOMERS
               value: 3
-            roa_origin: 777
-            roa_valid_length: true
             rovpp_blackhole: false
             seed_asn: null
             timestamp: 0
@@ -255,8 +243,6 @@ as_graph: !yamlable/CAIDAASGraph
             recv_relationship: !simulator_codec/Relationships
               name: CUSTOMERS
               value: 3
-            roa_origin: 777
-            roa_valid_length: true
             rovpp_blackhole: false
             seed_asn: null
             timestamp: 0
@@ -292,8 +278,6 @@ as_graph: !yamlable/CAIDAASGraph
             recv_relationship: !simulator_codec/Relationships
               name: CUSTOMERS
               value: 3
-            roa_origin: 777
-            roa_valid_length: true
             rovpp_blackhole: false
             seed_asn: null
             timestamp: 0
@@ -332,8 +316,6 @@ as_graph: !yamlable/CAIDAASGraph
             recv_relationship: !simulator_codec/Relationships
               name: CUSTOMERS
               value: 3
-            roa_origin: 777
-            roa_valid_length: true
             rovpp_blackhole: false
             seed_asn: null
             timestamp: 0
@@ -368,8 +350,6 @@ as_graph: !yamlable/CAIDAASGraph
             recv_relationship: !simulator_codec/Relationships
               name: CUSTOMERS
               value: 3
-            roa_origin: 777
-            roa_valid_length: true
             rovpp_blackhole: false
             seed_asn: null
             timestamp: 0
@@ -403,8 +383,6 @@ as_graph: !yamlable/CAIDAASGraph
             recv_relationship: !simulator_codec/Relationships
               name: ORIGIN
               value: 4
-            roa_origin: 777
-            roa_valid_length: true
             rovpp_blackhole: false
             seed_asn: 666
             timestamp: 1
@@ -438,8 +416,6 @@ as_graph: !yamlable/CAIDAASGraph
             recv_relationship: !simulator_codec/Relationships
               name: ORIGIN
               value: 4
-            roa_origin: 777
-            roa_valid_length: true
             rovpp_blackhole: false
             seed_asn: 777
             timestamp: 0

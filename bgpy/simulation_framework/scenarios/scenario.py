@@ -75,12 +75,12 @@ class Scenario:
                 self.scenario_config.override_announcements
             )
         else:
-            anns = self._get_announcements(engine=engine)
+            self.announcements = self._get_announcements(engine=engine)
 
         if self.scenario_config.override_roas:
             self.roas: tuple[ROA, ...] = self.scenario_config.override_roas
         else:
-            self.roas = self._get_roas(announcements=anns, engine=engine)
+            self.roas = self._get_roas(announcements=self.announcements, engine=engine)
         self._reset_and_add_roas_to_roa_checker()
 
         self.ordered_prefix_subprefix_dict: dict[str, list[str]] = (

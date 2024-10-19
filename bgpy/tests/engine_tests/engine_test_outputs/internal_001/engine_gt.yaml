@@ -26,8 +26,6 @@ as_graph: !yamlable/CAIDAASGraph
             recv_relationship: !simulator_codec/Relationships
               name: PEERS
               value: 2
-            roa_origin: 2
-            roa_valid_length: true
             rovpp_blackhole: false
             seed_asn: null
             timestamp: 0
@@ -50,8 +48,6 @@ as_graph: !yamlable/CAIDAASGraph
                 recv_relationship: !simulator_codec/Relationships
                   name: ORIGIN
                   value: 4
-                roa_origin: 2
-                roa_valid_length: true
                 rovpp_blackhole: false
                 seed_asn: 2
                 timestamp: 0
@@ -72,8 +68,6 @@ as_graph: !yamlable/CAIDAASGraph
                 recv_relationship: !simulator_codec/Relationships
                   name: ORIGIN
                   value: 4
-                roa_origin: 2
-                roa_valid_length: true
                 rovpp_blackhole: false
                 seed_asn: 3
                 timestamp: 0
@@ -92,8 +86,6 @@ as_graph: !yamlable/CAIDAASGraph
               recv_relationship: !simulator_codec/Relationships
                 name: PEERS
                 value: 2
-              roa_origin: 2
-              roa_valid_length: true
               rovpp_blackhole: false
               seed_asn: null
               timestamp: 0
@@ -127,8 +119,6 @@ as_graph: !yamlable/CAIDAASGraph
             recv_relationship: !simulator_codec/Relationships
               name: ORIGIN
               value: 4
-            roa_origin: 2
-            roa_valid_length: true
             rovpp_blackhole: false
             seed_asn: 2
             timestamp: 0
@@ -148,8 +138,6 @@ as_graph: !yamlable/CAIDAASGraph
               recv_relationship: !simulator_codec/Relationships
                 name: ORIGIN
                 value: 4
-              roa_origin: 2
-              roa_valid_length: true
               rovpp_blackhole: false
               seed_asn: 2
               timestamp: 0
@@ -182,8 +170,6 @@ as_graph: !yamlable/CAIDAASGraph
             recv_relationship: !simulator_codec/Relationships
               name: ORIGIN
               value: 4
-            roa_origin: 2
-            roa_valid_length: true
             rovpp_blackhole: false
             seed_asn: 3
             timestamp: 0
@@ -203,8 +189,6 @@ as_graph: !yamlable/CAIDAASGraph
               recv_relationship: !simulator_codec/Relationships
                 name: ORIGIN
                 value: 4
-              roa_origin: 2
-              roa_valid_length: true
               rovpp_blackhole: false
               seed_asn: 3
               timestamp: 0
@@ -239,8 +223,6 @@ as_graph: !yamlable/CAIDAASGraph
             recv_relationship: !simulator_codec/Relationships
               name: PROVIDERS
               value: 1
-            roa_origin: 2
-            roa_valid_length: true
             rovpp_blackhole: false
             seed_asn: null
             timestamp: 0
@@ -264,8 +246,6 @@ as_graph: !yamlable/CAIDAASGraph
                 recv_relationship: !simulator_codec/Relationships
                   name: PEERS
                   value: 2
-                roa_origin: 2
-                roa_valid_length: true
                 rovpp_blackhole: false
                 seed_asn: null
                 timestamp: 0
@@ -285,8 +265,6 @@ as_graph: !yamlable/CAIDAASGraph
               recv_relationship: !simulator_codec/Relationships
                 name: PROVIDERS
                 value: 1
-              roa_origin: 2
-              roa_valid_length: true
               rovpp_blackhole: false
               seed_asn: null
               timestamp: 0
@@ -322,8 +300,6 @@ as_graph: !yamlable/CAIDAASGraph
             recv_relationship: !simulator_codec/Relationships
               name: PROVIDERS
               value: 1
-            roa_origin: 2
-            roa_valid_length: true
             rovpp_blackhole: false
             seed_asn: null
             timestamp: 0
@@ -348,8 +324,6 @@ as_graph: !yamlable/CAIDAASGraph
                 recv_relationship: !simulator_codec/Relationships
                   name: PROVIDERS
                   value: 1
-                roa_origin: 2
-                roa_valid_length: true
                 rovpp_blackhole: false
                 seed_asn: null
                 timestamp: 0

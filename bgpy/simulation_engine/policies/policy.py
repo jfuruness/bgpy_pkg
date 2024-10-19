@@ -107,7 +107,9 @@ class Policy(YamlAble, metaclass=ABCMeta):
         False means ann is either valid or unknown
         """
 
-        roa_outcome = self.roa_checker.get_roa_outcome_w_prefix_str_cached(ann.prefix)
+        roa_outcome = self.roa_checker.get_roa_outcome_w_prefix_str_cached(
+            ann.prefix, ann.origin
+        )
         return ROAValidity.is_invalid(roa_outcome.validity)
 
     def ann_is_valid_by_roa(self, ann: "Ann") -> bool:
@@ -116,13 +118,17 @@ class Policy(YamlAble, metaclass=ABCMeta):
         False means ann is either invalid or unknown
         """
 
-        roa_outcome = self.roa_checker.get_roa_outcome_w_prefix_str_cached(ann.prefix)
+        roa_outcome = self.roa_checker.get_roa_outcome_w_prefix_str_cached(
+            ann.prefix, ann.origin
+        )
         return ROAValidity.is_valid(roa_outcome.validity)
 
     def ann_is_unknown_by_roa(self, ann: "Ann") -> bool:
         """Returns True if ann is not covered by roa"""
 
-        roa_outcome = self.roa_checker.get_roa_outcome_w_prefix_str_cached(ann.prefix)
+        roa_outcome = self.roa_checker.get_roa_outcome_w_prefix_str_cached(
+            ann.prefix, ann.origin
+        )
         return ROAValidity.is_unknown(roa_outcome.validity)
 
     def ann_is_covered_by_roa(self, ann: "Ann") -> bool:
