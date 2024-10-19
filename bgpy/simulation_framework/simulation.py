@@ -348,8 +348,7 @@ class Simulation:
                 new_tasks.append(task)
         return completed, new_tasks
 
-    # idk what the tqdm types are supposed to be here
-    def _update_tqdm_progress_bar(self, pbar: tqdm) -> None:  # type: ignore
+    def _update_tqdm_progress_bar(self, pbar: tqdm) -> None:
         """Updates tqdm progress bar"""
 
         total_completed = 0
@@ -472,7 +471,7 @@ class Simulation:
         """
 
         if self.parse_cpus == 1:
-            return tqdm(
+            return tqdm(  # type: ignore
                 enumerate(trials),
                 total=len(trials),
                 desc=f"Simulating {self.output_dir.name}",

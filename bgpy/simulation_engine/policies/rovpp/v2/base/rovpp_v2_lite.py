@@ -55,7 +55,7 @@ class ROVPPV2Lite(ROVPPV1Lite):
             # subprefix or non routed (don't send blackholes for prefixes)
             # To tell if it's a subprefix hijack we check if it's invalid by length
             and (
-                self.get_roa_outcome(ann)
+                self.get_roa_outcome(ann).validity
                 not in (
                     ROAValidity.INVALID_LENGTH,
                     ROAValidity.INVALID_LENGTH_AND_ORIGIN,

@@ -299,21 +299,28 @@ class TestScenario:
             override_roas=roas,
         )
         scenario = ValidPrefix(scenario_config=config, engine=engine)
-        scenario.announcements = scenario._add_roa_info_to_anns(
-            announcements=scenario.scenario_config.override_announcements
-        )
         bgp = BGP()
         # Check we still have the right anns
         assert len(scenario.announcements) == len(anns)
         valid, malicious = scenario.announcements
 
         # First announcement should be validated by ROA
-        assert bgp.roa_checker.get_relevant_roas(valid.prefix).origin == victim
+        assert (
+            next(
+                iter(bgp.roa_checker.get_relevant_roas(ip_network(valid.prefix)))
+            ).origin
+            == victim
+        )
         assert bgp.ann_is_valid_by_roa(valid)
 
         # Second announcement, from a different origin and more specific prefix, should
         # be invalidated
-        assert bgp.roa_checker.get_relevant_roas(malicious.prefix).origin == victim
+        assert (
+            next(
+                iter(bgp.roa_checker.get_relevant_roas(ip_network(malicious.prefix)))
+            ).origin
+            == victim
+        )
         assert bgp.ann_is_invalid_by_roa(malicious)
 
     #######################

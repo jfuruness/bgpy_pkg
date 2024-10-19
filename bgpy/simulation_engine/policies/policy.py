@@ -1,4 +1,5 @@
 from abc import ABCMeta, abstractmethod
+from ipaddress import ip_network
 from typing import TYPE_CHECKING, Any, ClassVar
 
 from roa_checker import ROAChecker, ROAOutcome, ROARouted, ROAValidity
@@ -15,7 +16,7 @@ class Policy(YamlAble, metaclass=ABCMeta):
     subclass_to_name_dict: ClassVar[dict[type["Policy"], str]] = dict()
     name_to_subclass_dict: ClassVar[dict[str, type["Policy"]]] = dict()
     # Simulates RPKI and something like routinator that is globally available
-    roa_checker: type[ROAChecker] = ROAChecker()
+    roa_checker: ROAChecker = ROAChecker()
 
     def __init_subclass__(cls: type["Policy"], *args, **kwargs) -> None:
         """This method essentially creates a list of all subclasses
@@ -107,7 +108,7 @@ class Policy(YamlAble, metaclass=ABCMeta):
         """
 
         roa_outcome = self.roa_checker.get_roa_outcome_w_prefix_str_cached(ann.prefix)
-        return ROAValidity.is_invalid(roa_outcome)
+        return ROAValidity.is_invalid(roa_outcome.validity)
 
     def ann_is_valid_by_roa(self, ann: "Ann") -> bool:
         """Returns True if Ann is valid by ROA
@@ -116,13 +117,13 @@ class Policy(YamlAble, metaclass=ABCMeta):
         """
 
         roa_outcome = self.roa_checker.get_roa_outcome_w_prefix_str_cached(ann.prefix)
-        return ROAValidity.is_valid(roa_outcome)
+        return ROAValidity.is_valid(roa_outcome.validity)
 
     def ann_is_unknown_by_roa(self, ann: "Ann") -> bool:
         """Returns True if ann is not covered by roa"""
 
         roa_outcome = self.roa_checker.get_roa_outcome_w_prefix_str_cached(ann.prefix)
-        return ROAValidity.is_unknown(roa_outcome)
+        return ROAValidity.is_unknown(roa_outcome.validity)
 
     def ann_is_covered_by_roa(self, ann: "Ann") -> bool:
         """Returns if an announcement has a roa"""
@@ -139,7 +140,7 @@ class Policy(YamlAble, metaclass=ABCMeta):
         """
 
         if self.ann_is_invalid_by_roa(ann):
-            relevant_roas = self.roa_checker.get_relevant_roas(ann.prefix)
+            relevant_roas = self.roa_checker.get_relevant_roas(ip_network(ann.prefix))
             return any(
                 roa.routed_status == ROARouted.NON_ROUTED for roa in relevant_roas
             )

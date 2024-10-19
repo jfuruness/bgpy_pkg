@@ -438,9 +438,7 @@ class Scenario:
         for roa in self.roas:
             prefixes_set.add(str(roa.prefix))
         # Do this here for speed
-        prefixes: list[IPv4Network | IPv6Network] = [
-            ip_network(x) for x in prefixes_set
-        ]
+        prefixes: list[IPv4Network | IPv6Network] = [ip_network(x) for x in prefixes_set]
         # Sort prefixes with most specific prefix first
         # Note that this must be sorted for the traceback to get the
         # most specific prefix first
