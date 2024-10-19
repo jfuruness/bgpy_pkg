@@ -82,8 +82,6 @@ class ROVPPV1Lite(ROV):
                     as_path=(self.as_.asn,),
                     timestamp=Timestamps.VICTIM.value,
                     seed_asn=None,
-                    roa_valid_length=True,
-                    roa_origin=roa.origin,
                     recv_relationship=Relationships.ORIGIN,
                     rovpp_blackhole=True,
                 )
@@ -127,7 +125,7 @@ class ROVPPV1Lite(ROV):
             for sub_ann in self.recv_q.get_ann_list(subprefix):
                 # Holes are only from same neighbor
                 if (
-                    sub_ann.invalid_by_roa
+                    self.ann_is_invalid_by_roa(sub_ann)
                     # Check the first one in the path since it's already processed
                     and sub_ann.as_path[0] == ann.as_path[1]
                 ):
@@ -139,7 +137,7 @@ class ROVPPV1Lite(ROV):
         for blackhole in blackholes:
             existing_ann = self.local_rib.get(blackhole.prefix)
             # Don't overwrite valid existing announcements
-            if existing_ann is None or existing_ann.invalid_by_roa:
+            if existing_ann is None or self.ann_is_invalid_by_roa(existing_ann):
                 self.local_rib.add_ann(blackhole)
 
     def _recount_holes(self, propagation_round: int) -> None:

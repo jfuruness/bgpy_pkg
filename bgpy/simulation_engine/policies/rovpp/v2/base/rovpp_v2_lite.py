@@ -1,5 +1,7 @@
 from typing import TYPE_CHECKING
 
+from roa_checker import ROAValidity
+
 from bgpy.shared.enums import Relationships
 from bgpy.simulation_engine.policies.rovpp.v1.rovpp_v1_lite import ROVPPV1Lite
 
@@ -51,5 +53,12 @@ class ROVPPV2Lite(ROVPPV1Lite):
             # Sending to customers
             and propagate_to == Relationships.CUSTOMERS
             # subprefix or non routed (don't send blackholes for prefixes)
-            and (not ann.roa_valid_length or not ann.roa_routed)
+            # To tell if it's a subprefix hijack we check if it's invalid by length
+            and (
+                not self.get_roa_outcome(ann) in (
+                    ROAValidity.INVALID_LENGTH,
+                    ROAValidity.INVALID_LENGTH_AND_ORIGIN
+                )
+                or not self.ann_is_roa_non_routed(ann)
+            )
         )

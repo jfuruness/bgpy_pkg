@@ -13,12 +13,6 @@ from bgpy.simulation_engine import Announcement as Ann
 from bgpy.simulation_engine import BaseSimulationEngine, Policy
 from bgpy.simulation_framework.scenarios.scenario_config import ScenarioConfig
 
-from .roa_helper_funcs import (
-    _add_roa_info_to_anns,
-    _get_roa_checker,
-    _get_roa_origin,
-    _get_roa_valid_length,
-)
 
 if TYPE_CHECKING:
     from bgpy.as_graphs import AS
@@ -78,19 +72,26 @@ class Scenario:
         )
 
         if self.scenario_config.override_announcements:
-            anns = self.scenario_config.override_announcements
-            self.roas: tuple[ROA, ...] = self.scenario_config.override_roas
-            anns = self._add_roa_info_to_anns(announcements=anns, engine=engine)
-            self.announcements: tuple[Ann, ...] = anns
+            self.announcements: tuple[Ann, ...] = self.scenario_config.override_announcements
         else:
             anns = self._get_announcements(engine=engine)
+
+        if self.scenario_config.override_roas:
+            self.roas: tuple[ROA, ...] = self.scenario_config.override_roas
+        else:
             self.roas = self._get_roas(announcements=anns, engine=engine)
-            anns = self._add_roa_info_to_anns(announcements=anns, engine=engine)
-            self.announcements = anns
+        self._reset_and_add_roas_to_roa_checker()
 
         self.ordered_prefix_subprefix_dict: dict[str, list[str]] = (
             self._get_ordered_prefix_subprefix_dict()
         )
+
+    def _reset_and_add_roas_to_roa_checker(self) -> None:
+        """Clears & adds ROAs to roa_checker which serves as RPKI+Routinator combo"""
+
+        Policy.roa_checker.clear()
+        for roa in self.roas:
+            Policy.roa_checker.insert(roa.prefix, roa)
 
     #################
     # Get attackers #
@@ -419,15 +420,6 @@ class Scenario:
         """Useful hook for post propagation"""
 
         pass
-
-    ####################
-    # ROA Helper funcs #
-    ####################
-
-    _add_roa_info_to_anns = _add_roa_info_to_anns
-    _get_roa_checker = _get_roa_checker
-    _get_roa_origin = _get_roa_origin
-    _get_roa_valid_length = _get_roa_valid_length
 
     ################
     # Helper Funcs #

@@ -21,7 +21,7 @@ class ROV(BGP):
         """
 
         # Invalid by ROA is not valid by ROV
-        if ann.invalid_by_roa:
+        if self.ann_is_invalid_by_roa(ann):
             return False
         # Use standard BGP to determine if the announcement is valid
         else:

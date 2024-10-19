@@ -34,9 +34,6 @@ class Announcement(YamlAble):
     timestamp: int = 0
     # Used for classes derived from BGPFull
     withdraw: bool = False
-    # ROV, ROV++ optional attributes
-    roa_valid_length: bool | None = None
-    roa_origin: int | None = None
     # BGPsec optional attributes
     # BGPsec next ASN that should receive the control plane announcement
     # NOTE: this is the opposite direction of next_hop, for the data plane
@@ -86,55 +83,14 @@ class Announcement(YamlAble):
 
         return self.bgpsec_next_asn == asn and self.bgpsec_as_path == self.as_path
 
-    @property
-    def invalid_by_roa(self) -> bool:
-        """Returns True if Ann is invalid by ROA
-
-        False means ann is either valid or unknown
-        """
-
-        # Not covered by ROA, unknown
-        if self.roa_origin is None:
-            return False
-        else:
-            return self.origin != self.roa_origin or not self.roa_valid_length
-
-    @property
-    def valid_by_roa(self) -> bool:
-        """Returns True if Ann is valid by ROA
-
-        False means ann is either invalid or unknown
-        """
-
-        # Need the bool here for mypy, ugh
-        return bool(self.origin == self.roa_origin and self.roa_valid_length)
-
-    @property
-    def unknown_by_roa(self) -> bool:
-        """Returns True if ann is not covered by roa"""
-
-        return not self.invalid_by_roa and not self.valid_by_roa
-
-    @property
-    def covered_by_roa(self) -> bool:
-        """Returns if an announcement has a roa"""
-
-        return not self.unknown_by_roa
-
-    @property
-    def roa_routed(self) -> bool:
-        """Returns bool for if announcement is routed according to ROA"""
-
-        return self.roa_origin != 0
+    def __str__(self) -> str:
+        return f"{self.prefix} {self.as_path} {self.recv_relationship}"
 
     @property
     def origin(self) -> int:
         """Returns the origin of the announcement"""
 
         return self.as_path[-1]
-
-    def __str__(self) -> str:
-        return f"{self.prefix} {self.as_path} {self.recv_relationship}"
 
     ##############
     # Yaml funcs #

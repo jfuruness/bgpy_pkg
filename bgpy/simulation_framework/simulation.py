@@ -413,6 +413,7 @@ class Simulation:
                             propagation_round=propagation_round,
                             graph_data_aggregator=graph_data_aggregator,
                         )
+
                     if reuse_attacker_asns:
                         trial_attacker_asns = scenario.attacker_asns
                     if reuse_victim_asns:

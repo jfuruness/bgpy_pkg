@@ -302,21 +302,19 @@ class TestScenario:
         scenario.announcements = scenario._add_roa_info_to_anns(
             announcements=scenario.scenario_config.override_announcements
         )
-
+        bgp = BGP()
         # Check we still have the right anns
         assert len(scenario.announcements) == len(anns)
         valid, malicious = scenario.announcements
 
         # First announcement should be validated by ROA
-        assert valid.roa_origin == victim
-        assert valid.roa_valid_length
-        assert valid.valid_by_roa
+        assert bgp.roa_checker.get_relevant_roas(valid.prefix).origin == victim
+        assert bgp.ann_is_valid_by_roa(ann)
 
         # Second announcement, from a different origin and more specific prefix, should
         # be invalidated
-        assert malicious.roa_origin == victim
-        assert not malicious.roa_valid_length
-        assert malicious.invalid_by_roa
+        assert bgp.roa_checker.get_relevant_roas(malicious.prefix).origin == victim
+        assert bgp.ann_is_invalid_by_roa(ann)
 
     #######################
     # Adopting ASNs funcs #
