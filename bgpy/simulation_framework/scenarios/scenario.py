@@ -368,7 +368,9 @@ class Scenario:
         elif asn in self.adopting_asns:
             return self.scenario_config.AdoptPolicyCls
         else:
-            return self.scenario_config.BasePolicyCls
+            return self.scenario_config.hardcoded_base_asn_cls_dict.get(
+                asn, self.scenario_config.BasePolicyCls
+            )
 
     ##################
     # Subclass Funcs #

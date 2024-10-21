@@ -47,7 +47,14 @@ class ScenarioConfig:
     # Victims can be chosen from this attribute of the engine
     victim_subcategory_attr: str = ASGroups.STUBS_OR_MH.value
     # ASes that are hardcoded to specific values
+    # NOTE: This should really be hardcoded_policy_asn_cls_dict,
+    # but this is a legacy name so not going to break backwards compatability
     hardcoded_asn_cls_dict: frozendict[int, type[Policy]] = field(
+        default_factory=frozendict
+    )
+    # This is as a fallback if the AS is not adopting, select from this dict,
+    # else use BasePolicyCls
+    hardcoded_base_asn_cls_dict: frozendict[int, type[Policy]] = field(
         default_factory=frozendict
     )
     # Only necessary if coming from YAML or the test suite
@@ -149,6 +156,25 @@ class ScenarioConfig:
             asn: Policy.name_to_subclass_dict[name] for asn, name in yaml_dict.items()
         }
 
+    @property
+    def _yamlable_hardcoded_base_asn_cls_dict(self) -> dict[int, str]:
+        """Converts non default as cls dict to a yamlable dict of asn: name"""
+
+        return {
+            asn: Policy.subclass_to_name_dict[PolicyCls]
+            for asn, PolicyCls in self.hardcoded_base_asn_cls_dict.items()
+        }
+
+    @staticmethod
+    def _get_hardcoded_base_asn_cls_dict_from_yaml(
+        yaml_dict,
+    ) -> dict[int, type[Policy]]:
+        """Converts yamlified non_default_as_cls_dict back to normal asn: class"""
+
+        return {
+            asn: Policy.name_to_subclass_dict[name] for asn, name in yaml_dict.items()
+        }
+
     def __to_yaml_dict__(self) -> dict[Any, Any]:
         """This optional method is called when you call yaml.dump()"""
 
@@ -156,6 +182,8 @@ class ScenarioConfig:
         for k, v in asdict(self).items():
             if k == "hardcoded_asn_cls_dict":
                 yaml_dict[k] = self._yamlable_hardcoded_asn_cls_dict
+            elif k == "hardcoded_base_asn_cls_dict":
+                yaml_dict[k] = self._yamlable_hardcoded_base_asn_cls_dict
             else:
                 yaml_dict[k] = v
         return yaml_dict
@@ -167,4 +195,10 @@ class ScenarioConfig:
         dct["hardcoded_asn_cls_dict"] = cls._get_hardcoded_asn_cls_dict_from_yaml(
             dct["hardcoded_asn_cls_dict"]
         )
+        dct["hardcoded_base_asn_cls_dict"] = (
+            cls._get_hardcoded_base_asn_cls_dict_from_yaml(
+                dct["hardcoded_base_asn_cls_dict"]
+            )
+        )
+
         return cls(**dct)
