@@ -75,7 +75,7 @@ class ROVPPV1Lite(ROV):
         non_routed_blackholes_to_add = list()
         for roa in scenario.roas:
             # ROA is non routed
-            if not roa.is_non_routed:
+            if roa.is_non_routed:
                 blackhole_ann = scenario.scenario_config.AnnCls(
                     prefix=str(roa.prefix),
                     next_hop_asn=self.as_.asn,
