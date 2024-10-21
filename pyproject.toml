@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "bgpy_pkg"
-version = "11.1.1"
+version = "11.2.0"
 requires-python = ">=3.10"
 description = "Simulates BGP and ROV in an extensible manner"
 readme = "README.md"
@@ -63,7 +63,8 @@ dependencies = [
     "PyYAML==6.0.2",
     "requests==2.32.3",
     "requests-cache==1.2.1",
-    "roa-checker!=3.0",
+    "roa-checker~=3.0",
+    "rov-collector~=1.0",
     "tqdm==4.66.5",
     "yamlable==1.1.1",
 ]
