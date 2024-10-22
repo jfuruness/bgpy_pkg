@@ -43,7 +43,7 @@ class ProviderConeID(ROV):
                     "Provider cones must be set for this policy to work, see params "
                     "to simulation.py in the simulation_framework of bgpy"
                 )
-            for asn in ann.as_path[:-1]:
+            for asn in ann.as_path:
                 # not in provider cone of the origin, and is adopting
                 if asn not in provider_cone_asns and isinstance(
                     as_dict[asn].policy, Cls
