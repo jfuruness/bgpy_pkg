@@ -43,12 +43,15 @@ class ProviderConeID(ROV):
                     "Provider cones must be set for this policy to work, see params "
                     "to simulation.py in the simulation_framework of bgpy"
                 )
-            for asn in ann.as_path:
+            # We don't look at the last ASN in the path, since that's the origin
+            # The ASes ASN is also not yet in the announcement, so we add it here
+            for asn in (self.as_.asn, *ann.as_path[:-1]):
                 # not in provider cone of the origin, and is adopting
                 if asn not in provider_cone_asns and isinstance(
                     as_dict[asn].policy, Cls
                 ):
                     return False
+
             return True
         else:
             return True
