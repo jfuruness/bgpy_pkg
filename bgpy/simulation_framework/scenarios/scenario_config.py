@@ -61,8 +61,8 @@ class ScenarioConfig:
     override_attacker_asns: frozenset[int] | None = None
     override_victim_asns: frozenset[int] | None = None
     override_adopting_asns: frozenset[int] | None = None
-    override_announcements: tuple["Ann", ...] = ()
-    override_roas: tuple[ROA, ...] = ()
+    override_announcements: tuple["Ann", ...] | None = None
+    override_roas: tuple[ROA, ...] | None = None
     # If you'd like to add an extra CSV label you do so here
     # This only adds basically your own notes, isn't used for
     # anything in particular

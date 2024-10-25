@@ -70,14 +70,14 @@ class Scenario:
             engine,
         )
 
-        if self.scenario_config.override_announcements:
+        if self.scenario_config.override_announcements is not None:
             self.announcements: tuple[Ann, ...] = (
                 self.scenario_config.override_announcements
             )
         else:
             self.announcements = self._get_announcements(engine=engine)
 
-        if self.scenario_config.override_roas:
+        if self.scenario_config.override_roas is not None:
             self.roas: tuple[ROA, ...] = self.scenario_config.override_roas
         else:
             self.roas = self._get_roas(announcements=self.announcements, engine=engine)
