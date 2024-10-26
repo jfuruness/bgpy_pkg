@@ -26,6 +26,7 @@ from .enforce_first_as import (
 )
 from .only_to_customers import OnlyToCustomers, OnlyToCustomersFull
 from .path_end import PathEnd, PathEndFull
+from .peerlock import PeerlockLite, PeerlockLiteFull
 from .policy import Policy
 from .rov import ROV, PeerROV, PeerROVFull, ROVFull
 from .rovpp import (
@@ -40,6 +41,8 @@ from .rovpp import (
 __all__ = [
     "BGP",
     "BGPFull",
+    "PeerlockLite",
+    "PeerlockLiteFull",
     "Policy",
     "PeerROV",
     "PeerROVFull",

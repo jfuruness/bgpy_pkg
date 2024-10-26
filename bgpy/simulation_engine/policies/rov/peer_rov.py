@@ -29,6 +29,4 @@ class PeerROV(BGP):
             return False
         # Use standard BGP to determine if the announcement is valid
         else:
-            rv = super(PeerROV, self)._valid_ann(ann, recv_rel)
-            assert isinstance(rv, bool), "For mypy"
-            return rv
+            return super()._valid_ann(ann, recv_rel)

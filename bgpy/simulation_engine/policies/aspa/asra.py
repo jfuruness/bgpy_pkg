@@ -45,6 +45,4 @@ class ASRA(ASPA):
                         neighbor_asn = as_path[neighbor_index]
                         if neighbor_asn not in asra_as_obj.neighbor_asns:
                             return False
-        rv = super()._valid_ann(ann, from_rel)
-        assert isinstance(rv, bool), "mypy"
-        return rv
+        return super()._valid_ann(ann, from_rel)
