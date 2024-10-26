@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "bgpy_pkg"
-version = "11.3.0"
+version = "11.3.1"
 requires-python = ">=3.10"
 description = "Simulates BGP, ROV, ASPA, etc in an extensible manner"
 readme = "README.md"
@@ -46,7 +46,7 @@ classifiers = [
     "License :: OSI Approved :: BSD License",
     "Intended Audience :: Developers",
     "Operating System :: POSIX :: Linux",
-    "Operating System :: Microsoft :: Windows",
+    # "Operating System :: Microsoft :: Windows",
     "Operating System :: MacOS",
     "Operating System :: MacOS :: MacOS X",
     "Topic :: Security",
