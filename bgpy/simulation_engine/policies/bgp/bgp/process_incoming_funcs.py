@@ -80,7 +80,8 @@ def _valid_ann(
     """Determine if an announcement is valid or should be dropped"""
 
     # BGP Loop Prevention Check
-    return self.as_.asn not in ann.as_path
+    # Newly added October 31 2024 - no AS 0 either
+    return self.as_.asn not in ann.as_path and 0 not in ann.as_path
 
 
 def _copy_and_process(
