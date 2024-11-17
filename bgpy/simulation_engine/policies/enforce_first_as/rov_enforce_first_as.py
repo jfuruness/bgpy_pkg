@@ -20,5 +20,7 @@ class ROVEnforceFirstAS(EnforceFirstAS):
         """Returns False if first ASN is not a neighbor (or invalid ROV), else True"""
 
         return (
-            False if self.ann_invalid_by_roa(ann) else super()._valid_ann(ann, from_rel)
+            False
+            if self.ann_is_invalid_by_roa(ann)
+            else super()._valid_ann(ann, from_rel)
         )
