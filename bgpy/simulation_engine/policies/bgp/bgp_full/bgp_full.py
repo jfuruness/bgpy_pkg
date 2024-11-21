@@ -1,6 +1,8 @@
+from dataclasses import replace
 from typing import TYPE_CHECKING
 from warnings import warn
 
+from bgpy.shared.exceptions import AnnouncementNotFoundError
 from bgpy.simulation_engine.ann_containers import RIBsIn, RIBsOut, SendQueue
 from bgpy.simulation_engine.policies.bgp import BGP
 
@@ -91,6 +93,28 @@ class BGPFull(BGP):
     # NOTE: not sure why this is coded in such a weird fashion...
     def receive_ann(self, ann: "Ann", accept_withdrawals: bool = True) -> None:
         BGP.receive_ann(self, ann, accept_withdrawals=True)
+
+    def prep_withdrawal_for_next_propagation(self, prefix: str) -> None:
+        """Removes a prefix from the local RIB and withdraws it next propagation"""
+
+        if prefix not in self.local_rib:
+            raise AnnouncementNotFoundError(
+                f"{prefix} not found in local RIB, can't withdraw"
+            )
+
+        # Create withdraw ann and remove the og from local rib
+        withdraw_ann = replace(self.local_rib.get(prefix), withdraw=True)
+        self.local_rib.pop(prefix, None)
+
+        # Check ribs_out to see where the withdrawn ann was sent
+        for send_neighbor in self.ribs_out.neighbors():
+            # If the two announcements are equal
+            if withdraw_ann.prefix_path_attributes_eq(
+                self.ribs_out.get_ann(send_neighbor, prefix)
+            ):
+                # Delete ann from ribs out
+                self.ribs_out.remove_entry(send_neighbor, prefix)
+                self.send_q.add_ann(send_neighbor, withdraw_ann)
 
     def __to_yaml_dict__(self):
         """This optional method is called when you call yaml.dump()"""

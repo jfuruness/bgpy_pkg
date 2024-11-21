@@ -8,3 +8,12 @@ class NoCAIDAURLError(RuntimeError):
     """Exception that covers the case when CAIDA returns nothing"""
 
     pass
+
+
+class AnnouncementNotFoundError(RuntimeError):
+    """Exception that covers when an Announcement isn't findable
+
+    ex: in local RIB, in RIBsIn, etc
+    """
+
+    pass

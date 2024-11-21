@@ -26,9 +26,6 @@ def process_incoming_anns(
         current_ann: Ann | None = local_rib_ann
         current_processed: bool = True
 
-        # Announcement will never be overriden, so continue
-        if getattr(current_ann, "seed_asn", None):
-            continue
         # For each announcement that is incoming
         for ann in anns:
             # withdrawals
@@ -83,6 +80,10 @@ def process_incoming_anns(
 
             # If it's valid, process it
             elif self._valid_ann(ann, from_rel):
+                # Announcement will never be overriden, so continue
+                if getattr(current_ann, "seed_asn", None):
+                    continue
+
                 new_ann_is_better = self._new_ann_better(
                     current_ann, current_processed, from_rel, ann, False, from_rel
                 )
@@ -163,27 +164,21 @@ def _new_ann_better(
 def _process_incoming_withdrawal(
     self: "BGPFull",
     ann: "Ann",
-    recv_relationship: "Relationships",
+    from_rel: "Relationships",
 ) -> bool:
     prefix: str = ann.prefix
     neighbor: int = ann.as_path[0]
     # Return if the current ann was seeded (for an attack)
     local_rib_ann = self.local_rib.get(prefix)
 
-    err: str = "Trying to withdraw seeded ann {local_rib_ann.seed_asn}"
-    assert not (
-        (local_rib_ann is not None)
-        and (
-            (ann.prefix_path_attributes_eq(local_rib_ann))
-            and (local_rib_ann.seed_asn is not None)
-        )
-    ), err
-
     ann_info: AnnInfo | None = self.ribs_in.get_unprocessed_ann_recv_rel(
         neighbor, prefix
     )
-    # I don't remember why this could be None... this assert may be wrong
-    assert ann_info is not None, "for mypy"
+    # ann should exist in ribs in if we are trying to withdraw it, it shouldn't be None
+    assert ann_info is not None, (
+        "Trying to withdraw ann that was never stored in RIBsIn "
+        f"{self.as_.asn=} {self.ribs_in=} {ann=} {from_rel=}"
+    )
     current_ann_ribs_in = ann_info.unprocessed_ann
 
     err = (
@@ -197,9 +192,12 @@ def _process_incoming_withdrawal(
 
     # Remove ann from local rib
     withdraw_ann: Ann = self._copy_and_process(
-        ann, recv_relationship, overwrite_default_kwargs={"withdraw": True}
+        ann, from_rel, overwrite_default_kwargs={"withdraw": True}
     )
-    if withdraw_ann.prefix_path_attributes_eq(self.local_rib.get(prefix)):
+    if (
+        withdraw_ann.prefix_path_attributes_eq(local_rib_ann)
+        and local_rib_ann.seed_asn is None
+    ):
         self.local_rib.pop(prefix, None)
         # Also remove from neighbors
         self._withdraw_ann_from_neighbors(withdraw_ann)

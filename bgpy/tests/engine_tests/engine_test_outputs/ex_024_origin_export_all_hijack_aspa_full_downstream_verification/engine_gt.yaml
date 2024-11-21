@@ -336,7 +336,51 @@ as_graph: !yamlable/CAIDAASGraph
             timestamp: 1
             withdraw: false
         recv_q: !simulator_codec/RecvQueue {}
-        ribs_in: !simulator_codec/RIBsIn {}
+        ribs_in: !simulator_codec/RIBsIn
+          1:
+            1.2.0.0/16: !yamlable/AnnInfo
+              recv_relationship: !simulator_codec/Relationships
+                name: PROVIDERS
+                value: 1
+              unprocessed_ann: !yamlable/Announcement
+                as_path: !!python/tuple
+                - 1
+                - 666
+                - 777
+                bgpsec_as_path: !!python/tuple []
+                bgpsec_next_asn: null
+                next_hop_asn: 1
+                only_to_customers: null
+                prefix: 1.2.0.0/16
+                recv_relationship: !simulator_codec/Relationships
+                  name: CUSTOMERS
+                  value: 3
+                rovpp_blackhole: false
+                seed_asn: null
+                timestamp: 1
+                withdraw: false
+          2:
+            1.2.0.0/16: !yamlable/AnnInfo
+              recv_relationship: !simulator_codec/Relationships
+                name: PROVIDERS
+                value: 1
+              unprocessed_ann: !yamlable/Announcement
+                as_path: !!python/tuple
+                - 2
+                - 666
+                - 777
+                bgpsec_as_path: !!python/tuple []
+                bgpsec_next_asn: null
+                next_hop_asn: 2
+                only_to_customers: null
+                prefix: 1.2.0.0/16
+                recv_relationship: !simulator_codec/Relationships
+                  name: CUSTOMERS
+                  value: 3
+                rovpp_blackhole: false
+                seed_asn: null
+                timestamp: 1
+                withdraw: false
         ribs_out: !simulator_codec/RIBsOut
           1:
             1.2.0.0/16: !yamlable/Announcement
@@ -406,7 +450,28 @@ as_graph: !yamlable/CAIDAASGraph
             timestamp: 0
             withdraw: false
         recv_q: !simulator_codec/RecvQueue {}
-        ribs_in: !simulator_codec/RIBsIn {}
+        ribs_in: !simulator_codec/RIBsIn
+          3:
+            1.2.0.0/16: !yamlable/AnnInfo
+              recv_relationship: !simulator_codec/Relationships
+                name: PROVIDERS
+                value: 1
+              unprocessed_ann: !yamlable/Announcement
+                as_path: !!python/tuple
+                - 3
+                - 777
+                bgpsec_as_path: !!python/tuple []
+                bgpsec_next_asn: null
+                next_hop_asn: 3
+                only_to_customers: null
+                prefix: 1.2.0.0/16
+                recv_relationship: !simulator_codec/Relationships
+                  name: CUSTOMERS
+                  value: 3
+                rovpp_blackhole: false
+                seed_asn: null
+                timestamp: 0
+                withdraw: false
         ribs_out: !simulator_codec/RIBsOut
           3:
             1.2.0.0/16: !yamlable/Announcement
