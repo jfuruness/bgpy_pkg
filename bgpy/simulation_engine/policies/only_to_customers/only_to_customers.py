@@ -23,14 +23,10 @@ class OnlyToCustomers(BGP):
         """Returns validity for OTC attributes"""
 
         if (
-            (
-                ann.only_to_customers
-                and from_rel.value == Rels.PEERS.value
-                and ann.next_hop_asn != ann.only_to_customers
-            )
-            or ann.only_to_customers
-            and from_rel.value == Rels.CUSTOMERS.value
-        ):
+            ann.only_to_customers
+            and from_rel.value == Rels.PEERS.value
+            and ann.next_hop_asn != ann.only_to_customers
+        ) or (ann.only_to_customers and from_rel.value == Rels.CUSTOMERS.value):
             return False
         else:
             return True

@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "bgpy_pkg"
-version = "12.0.0"
+version = "12.0.1"
 requires-python = ">=3.10"
 description = "Simulates BGP, ROV, ASPA, etc in an extensible manner"
 readme = "README.md"
@@ -53,19 +53,18 @@ classifiers = [
 ]
 dependencies = [
     "beautifulsoup4==4.12.3",
-    "frozendict==2.4.4",
+    "frozendict==2.4.6",
     "graphviz==0.20.3",
     "matplotlib==3.9.2",
-    "pillow==10.4.0",
-    "platformdirs==4.2.2",
-    "psutil==6.0.0",
-    "pytest==8.3.2",
+    "platformdirs==4.3.6",
+    "psutil==6.1.0",
+    "pytest==8.3.3",
     "PyYAML==6.0.2",
     "requests==2.32.3",
     "requests-cache==1.2.1",
     "roa-checker~=3.0",
     "rov-collector~=1.0",
-    "tqdm==4.66.5",
+    "tqdm==4.67.0",
     "yamlable==1.1.1",
 ]
 
@@ -78,18 +77,18 @@ bgpy = "bgpy.__main__:main"
 
 [project.optional-dependencies]
 test = [
-    "pytest==8.3.2",
-    "pre-commit==3.8.0",
-    "types-beautifulsoup4==4.12.0.20240907",
-    "types-requests==2.32.0.20240907",
-    "types-psutil==6.0.0.20240901",
-    "types-PyYAML==6.0.12.20240808",
-    "types-tqdm==4.66.0.20240417",
-    "mypy==1.11.2",
+    "pytest==8.3.3",
+    "pre-commit==4.0.1",
+    "types-beautifulsoup4==4.12.0.20241020",
+    "types-requests==2.32.0.20241016",
+    "types-psutil==6.1.0.20241102",
+    "types-PyYAML==6.0.12.20240917",
+    "types-tqdm==4.67.0.20241119",
+    "mypy==1.13.0",
     "flake8==7.1.1",
-    "tox==4.18.1",
+    "tox==4.23.2",
     "pytest-xdist==3.6.1",
-    "ruff==0.6.4",
+    "ruff==0.8.0",
 ]
 
 [tool.setuptools]
@@ -159,49 +158,51 @@ exclude_lines = [
 
 # https://docs.astral.sh/ruff/configuration/
 [tool.ruff.lint]
-select = [
-    # Defaults
-    "F",  # PyFlakes (linter)
-    "E",  # PyCodestyle errors (linter)
-    "W",  # Pycodestyle warnings (linter)
-    "N",  # pep8-naming (ensures pep8 naming conventions are followed)
-    "I",  # isort (sorts imports)
-    "D209",  # pydocstyle, requires multi line docstrings to end on a separate line
-    "D301",  # use raw string if there are backslashes in docstring
-    "D419",  # pydocstyle's empty-docstring
-    "UP",  # pyupgrade  (upgrades python to the latest syntax)
-    "ASYNC",  # flake8-async  (linter that checks async code)
-    "S",  # flake8-bandit (checks for security vulns)
-    "BLE",  # flake8-blind-except (checks for try except without specific Exceptions)
-    "B",  # flake8-bugbear (linter)
-    "A",  # flake8-builtins (ensures you aren't overwriting python builtins)
-    "C4",  # flake8-comprehensions (linters for list dict etc comprehensions)
-    "T10",  # Flake8-debugger (ensures no debug statements for PBD)
-    "EXE",  # flake8-executable (ensures proper executable python script format)
-    "ISC",  # flake8-implicit-str-concat (ensures strings are concatenated properly)
-    "ICN",  # flake8-import-conventions (ensures things like import numpy as np)
-    "LOG",  # flake8-logging (ensures proper logging)
-    "G",  # flake8-logging-format (more logging linting)
-    "PIE",  # flake8-pie (misc lints)
-    "T20",  # flake8-print (catches prints instead of logging)
-    "PT",  # flake8-pytest-style (linter for pytest)
-    "Q003",  # flake8-qutoes (avoidable escaped quotes)
-    "Q004",  # flake8-quotes (unessecary escaped quote)
-    "RSE",  # flake8-raise (no unessecary parens when raising an exception)
-    "SLF",  # flake8-self (ensures no private member access)
-    "SLOT",  # flake8-slots (ensures slots in tuple and str subclasses)
-    "SIM",  # flake8-simplify (helps simplify your code)
-    "TID",  # flake8-tidy imports
-    "TCH",  # flake8-type-checking (ensures proper imports are under TYPE_CHECKING)
-    # NOTE: If you don't know what pathlib is, don't use this
-    "PTH",  # flake8-use-pathlib (enforces use of pathlib)
-    "PL",  # pylint (linter)
-    "TRY",  # tryceratops (linter around exception handling)
-    "FURB",  # refurb, linter for refactoring
-    "RUF",  # RUFF-specific rules
-]
-
+select = ["ALL"]
 ignore = [
+    ###############################
+    # Not applicable to this repo #
+    ###############################
+    "CPY",  # Catches missing copyright notices
+    "DTZ",  # Forces all datetime calls to contain tzinfo, not necessary for me
+    # "PTH",  # Uncomment this if you don't use pathlib
+    "PD",  # Haven't vetted this since there is no pandas in this repo
+    "NPY",  # Haven't vetted this since there is no numpy in this repo
+    "FAST",  # Haven't vetted this since there is no FastAPI in this repo
+    "AIR",  # Haven't vetted this since there is no AIR in this repo
+
+    ########################################################
+    # Overarching rules that are not applicable in general #
+    ########################################################
+    "C90",  # Mccabe (code complexity checker, not useful imo)
+    # Pydocstyle, I'm fairly lenient for comment style personally
+    # I don't want to make it any harder to comment code
+    # Currently, only D209 and D301 are used
+    "D100", "D101", "D102", "D103", "D104", "D105", "D106", "D107",
+    "D200", "D201", "D202", "D203", "D204", "D205", "D206", "D207",
+    "D208", "D210", "D211", "D212", "D213", "D214", "D215",
+    "D300", "D400", "D401", "D402", "D403", "D404", "D405",
+    "D406", "D407", "D408", "D409", "D410", "D411", "D412",
+    "D413", "D414", "D415", "D416", "D417", "D418", "D419",
+    "YTT",  # flake8 rules for upgrading to 2020, imo outdated
+    "ANN",  # I don't want to restrict comment style
+    "FBT",  # Catches "boolean trap", I don't believe in this myself
+    "COM",  # Forces trailing commas, imo this makes devs type more
+    "EM",  # Forces error message formats, idc
+    "PYI",  # Feels unessecary
+    "Q000", "Q001", "Q002",  # Using 003 and 004, these ones don't matter to me
+    "RET",  # Forces specific types of returns, imo not useful
+    "ARG",  # Catches unused args, however, sometimes they are used in subclasses
+    "TD",  # Forces you to write specific TODOs
+    "FIX",  # Forces you to write specific FIX comments
+    "ERA",  # Forces removal of commented out code, however, in rare cases it's worth keeping
+    "PGH",  # Wnats specific rules when ignoring type issues, noqa etc. idc
+    "PERF",  # Imo not useful
+    "DOC",  # Forces specific type of docstring formatting
+
+    ###################################################
+    # Rule subsets that are not applicable in general #
+    ###################################################
     # This checks for opening of files using Pathlib
     # but imo it's fine to open a file and write  to it using builtins
     "PTH123",
@@ -278,7 +279,12 @@ ignore = [
     # It's a good rule, but conflicts with ruff format so had to remove
     # (it gave an error message surprisingly)
     "ISC001",
+    # Wants to apply sorting to __all__
+    # For me sometimes __init__ is out of order due to import loops,
+    # and my __all__ tends to follow my __init__ order, so I've disabled this
+    "RUF022",
 ]
+
 unfixable = []
 [tool.ruff.lint.per-file-ignores]
 # Don't use isort on these files (which sorts imports)

@@ -1,0 +1,42 @@
+select = [
+    # Defaults
+    "F",  # PyFlakes (linter)
+    "E",  # PyCodestyle errors (linter)
+    "W",  # Pycodestyle warnings (linter)
+    "N",  # pep8-naming (ensures pep8 naming conventions are followed)
+    "I",  # isort (sorts imports)
+    "D209",  # pydocstyle, requires multi line docstrings to end on a separate line
+    "D301",  # use raw string if there are backslashes in docstring
+    "D419",  # pydocstyle's empty-docstring
+    "UP",  # pyupgrade  (upgrades python to the latest syntax)
+    "ASYNC",  # flake8-async  (linter that checks async code)
+    "S",  # flake8-bandit (checks for security vulns)
+    "BLE",  # flake8-blind-except (checks for try except without specific Exceptions)
+    "B",  # flake8-bugbear (linter)
+    "A",  # flake8-builtins (ensures you aren't overwriting python builtins)
+    "C4",  # flake8-comprehensions (linters for list dict etc comprehensions)
+    "T10",  # Flake8-debugger (ensures no debug statements for PBD)
+    "EXE",  # flake8-executable (ensures proper executable python script format)
+    "ISC",  # flake8-implicit-str-concat (ensures strings are concatenated properly)
+    "ICN",  # flake8-import-conventions (ensures things like import numpy as np)
+    "LOG",  # flake8-logging (ensures proper logging)
+    "G",  # flake8-logging-format (more logging linting)
+    "PIE",  # flake8-pie (misc lints)
+    "T20",  # flake8-print (catches prints instead of logging)
+    "PT",  # flake8-pytest-style (linter for pytest)
+    "Q003",  # flake8-qutoes (avoidable escaped quotes)
+    "Q004",  # flake8-quotes (unessecary escaped quote)
+    "RSE",  # flake8-raise (no unessecary parens when raising an exception)
+    "SLF",  # flake8-self (ensures no private member access)
+    "SLOT",  # flake8-slots (ensures slots in tuple and str subclasses)
+    "SIM",  # flake8-simplify (helps simplify your code)
+    "TID",  # flake8-tidy imports
+    "TC",  # flake8-type-checking (ensures proper imports are under TYPE_CHECKING)
+    # NOTE: If you don't know what pathlib is, don't use this
+    "PTH",  # flake8-use-pathlib (enforces use of pathlib)
+    "PL",  # pylint (linter)
+    "TRY",  # tryceratops (linter around exception handling)
+    "FURB",  # refurb, linter for refactoring
+    "RUF",  # RUFF-specific rules
+]
+
