@@ -49,6 +49,9 @@ def _send_anns(self: "BGPFull", propagate_to: "Relationships"):
     neighbors: list[AS] = getattr(self.as_, propagate_to.name.lower())
 
     for neighbor, _prefix, ann in self.send_q.info(neighbors):
+        # Don't propagate to a neighbor that appears in the path to avoid loops
+        if neighbor.asn in ann.as_path:
+            continue
         neighbor.policy.receive_ann(ann)
         # Update Ribs out if it's not a withdraw
         if not ann.withdraw:
