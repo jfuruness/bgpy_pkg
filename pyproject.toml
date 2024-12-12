@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "bgpy_pkg"
-version = "12.0.3"
+version = "12.0.4"
 requires-python = ">=3.10"
 description = "Simulates BGP, ROV, ASPA, etc in an extensible manner"
 readme = "README.md"
@@ -284,6 +284,11 @@ ignore = [
     # For me sometimes __init__ is out of order due to import loops,
     # and my __all__ tends to follow my __init__ order, so I've disabled this
     "RUF022",
+    # flake8-logging-format (G)
+    # Removing these since they don't like you adding f strings etc to logging
+    # since f strings are done automatically, whereas passing extra= doesn't format
+    # unless the log level is low enough. Such a pain, idc
+    "G001", "G002", "G003", "G004",
 ]
 
 unfixable = []
