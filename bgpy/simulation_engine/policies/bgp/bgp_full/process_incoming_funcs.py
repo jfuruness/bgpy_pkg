@@ -258,13 +258,22 @@ def _select_best_ribs_in(self: "BGPFull", prefix: str) -> Optional["Ann"]:
     for ann_info in self.ribs_in.get_ann_infos(prefix):
         new_unprocessed_ann = ann_info.unprocessed_ann
         new_recv_relationship = ann_info.recv_relationship
-        if self._new_ann_better(
-            best_unprocessed_ann,
-            False,
-            best_recv_relationship,  # type: ignore
-            new_unprocessed_ann,
-            False,
-            new_recv_relationship,
+        # new_unprocessed_ann must exist (I think a defaultdict may be being used
+        # which isn't great, so when we access prefix, if non exists, it returns
+        # AnnInfo with None entries)
+        # ribsin ann must be valid (since invalid anns get stored in ribs in
+        # and ribsin ann must also be better than the old one
+        if (
+            new_unprocessed_ann
+            and self._valid_ann(new_unprocessed_ann, new_recv_relationship)
+            and self._new_ann_better(
+                best_unprocessed_ann,
+                False,
+                best_recv_relationship,  # type: ignore
+                new_unprocessed_ann,
+                False,
+                new_recv_relationship,
+            )
         ):
             best_unprocessed_ann = new_unprocessed_ann
             best_recv_relationship = new_recv_relationship

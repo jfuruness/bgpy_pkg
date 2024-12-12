@@ -47,14 +47,28 @@ class Announcement(YamlAble):
     def __post_init__(self):
         """Defaults seed_asn and next_hop_asn"""
 
-        if self.seed_asn is None and len(self.as_path) == 1:
+        # Since this gets called with replace where seed_asn None is valid,
+        # can't do any other checks. Even this should prob be moved out due to
+        # unessecary overhead
+        if len(self.as_path) == 1 and self.seed_asn is None:
             object.__setattr__(self, "seed_asn", self.as_path[0])
+
         if self.next_hop_asn is None:
             # next hop defaults to None, messing up the type
             if len(self.as_path) == 1:  # type: ignore
                 object.__setattr__(self, "next_hop_asn", self.as_path[0])
+            elif len(self.as_path) > 1:
+                raise ValueError(
+                    "Announcement was initialized with an AS path longer than 1 "
+                    f"({self.as_path}) but the next_hop_asn is ambiguous. "
+                    " next_hop_asn is where the traffic should route to next."
+                    "Please add "
+                    "the next_hop_asn to the initialization parameters "
+                    f"for the announcement of prefix {self.prefix}"
+                )
             else:
-                raise ValueError("Must set next_hop_asn")
+                # Path is either zero or some other case we didn't account for
+                raise NotImplementedError
 
     def prefix_path_attributes_eq(self, ann: Optional["Announcement"]) -> bool:
         """Checks prefix and as path equivalency"""
