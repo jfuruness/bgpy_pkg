@@ -114,7 +114,9 @@ class InterceptionASGraphAnalyzer(ASGraphAnalyzer):
             or most_specific_ann.next_hop_asn == as_obj.asn
         ):
             return Outcomes.DISCONNECTED.value
-        elif visited_asns and as_obj.asn in visited_asns:
+        elif (visited_asns and as_obj.asn in visited_asns) or (
+            visited_asns and len(visited_asns) > 64
+        ):
             return Outcomes.DATA_PLANE_LOOP.value
         else:
             return Outcomes.UNDETERMINED.value
