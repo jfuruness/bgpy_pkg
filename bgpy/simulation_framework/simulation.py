@@ -287,12 +287,20 @@ class Simulation:
         if self.parse_cpus == 1:
             # Results are a list of lists of metric trackers that we then sum
             return sum(
-                self._get_single_process_results(), start=self.GraphDataAggregatorCls()
+                self._get_single_process_results(),
+                start=self.GraphDataAggregatorCls(
+                    graph_categories=self.graph_categories
+                ),
             )
         # Multiprocess
         else:
             # Results are a list of lists of metric trackers that we then sum
-            return sum(self._get_mp_results(), start=self.GraphDataAggregatorCls())
+            return sum(
+                self._get_mp_results(),
+                start=self.GraphDataAggregatorCls(
+                    graph_categories=self.graph_categories
+                ),
+            )
 
     ###########################
     # Multiprocessing Methods #
