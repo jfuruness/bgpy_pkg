@@ -119,7 +119,8 @@ class Simulation:
             percent_adoptions
         )
         self.num_trials: int = num_trials
-        self.parse_cpus: int = parse_cpus
+        # Since we parallelize by trials, no need to have more CPUs than trials
+        self.parse_cpus: int = min(parse_cpus, num_trials)
         self.scenario_configs: tuple[ScenarioConfig, ...] = (
             self._get_filtered_scenario_configs(scenario_configs)
         )
