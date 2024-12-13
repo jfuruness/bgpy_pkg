@@ -29,6 +29,7 @@ class Outcomes(YamlAbleEnum):
     VICTIM_SUCCESS: int = 1
     DISCONNECTED: int = 2
     UNDETERMINED: int = 3
+    DATA_PLANE_LOOP: int = 4
 
 
 class Relationships(YamlAbleEnum):

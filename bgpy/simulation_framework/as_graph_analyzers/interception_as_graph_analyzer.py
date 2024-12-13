@@ -17,7 +17,9 @@ class InterceptionASGraphAnalyzer(ASGraphAnalyzer):
     the original connection alive
     """
 
-    def _get_as_outcome_data_plane(self, as_obj: AS) -> int:
+    def _get_as_outcome_data_plane(
+        self, as_obj: AS, visited_asns: set[int] | None = None
+    ) -> int:
         """Recursively returns the as outcome"""
 
         if as_obj.asn in self._data_plane_outcomes:
@@ -25,8 +27,11 @@ class InterceptionASGraphAnalyzer(ASGraphAnalyzer):
         else:
             most_specific_ann = self._most_specific_ann_dict[as_obj]
             outcome_int = self._determine_as_outcome_data_plane(
-                as_obj, most_specific_ann
+                as_obj, most_specific_ann, visited_asns
             )
+            visited_asns = visited_asns if visited_asns is not None else set()
+            visited_asns.add(as_obj.asn)
+
             # Continue tracing back. Only succeed if it goes back to the victim
             if outcome_int == Outcomes.ATTACKER_SUCCESS.value:
                 assert most_specific_ann, "If outcome==attacker, ann must exist"
@@ -47,7 +52,10 @@ class InterceptionASGraphAnalyzer(ASGraphAnalyzer):
                     self._data_plane_outcomes[as_obj.asn] = Outcomes.DISCONNECTED.value
                     return Outcomes.DISCONNECTED.value
                 else:
-                    next_as_outcome_int = self._get_as_outcome_data_plane(next_as)
+                    next_as_outcome_int = self._get_as_outcome_data_plane(
+                        next_as,
+                        visited_asns,
+                    )
                     # Next AS tunnels back to victim, return attacker success
                     if next_as_outcome_int in (
                         Outcomes.ATTACKER_SUCCESS.value,
@@ -74,7 +82,7 @@ class InterceptionASGraphAnalyzer(ASGraphAnalyzer):
                     # advanced types of hijacks such as origin spoofing hijacks
                     most_specific_ann.next_hop_asn
                 ]
-                outcome_int = self._get_as_outcome_data_plane(next_as)
+                outcome_int = self._get_as_outcome_data_plane(next_as, visited_asns)
                 assert outcome_int != Outcomes.UNDETERMINED.value, "not possible"
                 self._data_plane_outcomes[as_obj.asn] = outcome_int
                 return outcome_int
@@ -85,7 +93,10 @@ class InterceptionASGraphAnalyzer(ASGraphAnalyzer):
                 raise NotImplementedError("Shouldn't be possible")
 
     def _determine_as_outcome_data_plane(
-        self, as_obj: AS, most_specific_ann: Optional["Ann"]
+        self,
+        as_obj: AS,
+        most_specific_ann: Optional["Ann"],
+        visited_asns: set[int] | None = None,
     ) -> int:
         """Determines the outcome at an AS
 
@@ -103,5 +114,7 @@ class InterceptionASGraphAnalyzer(ASGraphAnalyzer):
             or most_specific_ann.next_hop_asn == as_obj.asn
         ):
             return Outcomes.DISCONNECTED.value
+        elif visited_asns and as_obj.asn in visited_asns:
+            return Outcomes.DATA_PLANE_LOOP.value
         else:
             return Outcomes.UNDETERMINED.value

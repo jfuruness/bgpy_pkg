@@ -83,7 +83,9 @@ class ASGraphAnalyzer(BaseASGraphAnalyzer):
     # Data plane funcs #
     ####################
 
-    def _get_as_outcome_data_plane(self, as_obj: AS) -> int:
+    def _get_as_outcome_data_plane(
+        self, as_obj: AS, visited_asns: set[int] | None = None
+    ) -> int:
         """Recursively returns the as outcome"""
 
         if as_obj.asn in self._data_plane_outcomes:
@@ -91,7 +93,7 @@ class ASGraphAnalyzer(BaseASGraphAnalyzer):
         else:
             most_specific_ann = self._most_specific_ann_dict[as_obj]
             outcome_int = self._determine_as_outcome_data_plane(
-                as_obj, most_specific_ann
+                as_obj, most_specific_ann, visited_asns
             )
             # We haven't traced back all the way on the AS path
             if outcome_int == Outcomes.UNDETERMINED.value:
@@ -106,14 +108,19 @@ class ASGraphAnalyzer(BaseASGraphAnalyzer):
                     # advanced types of hijacks such as origin spoofing hijacks
                     most_specific_ann.next_hop_asn
                 ]
-                outcome_int = self._get_as_outcome_data_plane(next_as)
+                visited_asns = visited_asns if visited_asns is not None else set()
+                visited_asns.add(as_obj.asn)
+                outcome_int = self._get_as_outcome_data_plane(next_as, visited_asns)
             assert outcome_int != Outcomes.UNDETERMINED.value, "Shouldn't be possible"
 
             self._data_plane_outcomes[as_obj.asn] = outcome_int
             return outcome_int
 
     def _determine_as_outcome_data_plane(
-        self, as_obj: AS, most_specific_ann: Optional["Ann"]
+        self,
+        as_obj: AS,
+        most_specific_ann: Optional["Ann"],
+        visited_asns: set[int] | None = None,
     ) -> int:
         """Determines the outcome at an AS
 
@@ -134,6 +141,8 @@ class ASGraphAnalyzer(BaseASGraphAnalyzer):
             or most_specific_ann.next_hop_asn == as_obj.asn
         ):
             return Outcomes.DISCONNECTED.value
+        elif visited_asns and as_obj.asn in visited_asns:
+            return Outcomes.DATA_PLANE_LOOP.value
         else:
             return Outcomes.UNDETERMINED.value
 
