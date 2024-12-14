@@ -61,7 +61,7 @@ class GraphDataAggregator:
                 for graph_category, data_dict in obj.data.items():
                     for data_point_key, percents in data_dict.items():
                         new_data[graph_category][data_point_key].extend(percents)
-            return self.__class__(data=new_data)
+            return self.__class__(data=new_data, graph_categories=self.graph_categories)
         else:
             return NotImplemented
 
