@@ -23,6 +23,20 @@ if TYPE_CHECKING:
 class BGPFull(BGP):
     name = "BGP Full"
 
+    # Can't do this for backwards compatability reasons
+    # error_on_invalid_routes: bool = False
+    @property
+    def error_on_invalid_routes(self) -> bool:
+        """If True, anytime something invalid, error out, otherwise ignore
+
+        This is for things like if you get two withdrawals for the same ann.
+        This is an option because in some projects an attacker maliciously
+        suppresses withdrawals so we don't want to error when this happens
+        since it is intentional and not an oversight
+        """
+
+        return True
+
     def __init__(
         self,
         *args,

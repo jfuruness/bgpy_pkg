@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "bgpy_pkg"
-version = "12.1.1"
+version = "12.2.0"
 requires-python = ">=3.10"
 description = "Simulates BGP, ROV, ASPA, etc in an extensible manner"
 readme = "README.md"
@@ -289,6 +289,11 @@ ignore = [
     # since f strings are done automatically, whereas passing extra= doesn't format
     # unless the log level is low enough. Such a pain, idc
     "G001", "G002", "G003", "G004",
+    # This forces you to split assertions that contain more than one check
+    # (assert A & B) -> assert A; assert B
+    # But sometimes you need both checks on the same line
+    # And even when you don't I feel like this doesn't matter much
+    "PT018",
 ]
 
 unfixable = []
