@@ -146,14 +146,6 @@ class BGP:
 
         # Make sure there are no loops before propagating
         return True
-        # BGP Loop Prevention Check
-        # Newly added October 31 2024 - no AS 0 either
-        self_asn = self.as_.asn
-        for asn in ann.as_path:
-            if asn == self_asn or asn == 0:
-                return False
-        return True
-
 
     def _copy_and_process(
         self: "BGP",
@@ -173,17 +165,6 @@ class BGP:
             seed_asn=None,
             recv_relationship=recv_relationship,
         )
-        kwargs: dict[str, Any] = {
-            "as_path": (self.as_.asn, *ann.as_path),
-            "recv_relationship": recv_relationship,
-            "seed_asn": None,
-        }
-
-        if overwrite_default_kwargs:
-            kwargs.update(overwrite_default_kwargs)
-        # Don't use a dict comp here for speed
-        return ann.copy(overwrite_default_kwargs=kwargs)
-
 
     #############
     # ROA Funcs #

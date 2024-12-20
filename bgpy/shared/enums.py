@@ -79,10 +79,10 @@ class Prefixes(YamlAbleEnum):
     prefix always belongs to the victim
     """
 
-    SUPERPREFIX: str = "1.0.0.0/8"
+    SUPERPREFIX: str = 1#"1.0.0.0/8"
     # Prefix always belongs to victim
-    PREFIX: str = "1.2.0.0/16"
-    SUBPREFIX: str = "1.2.3.0/24"
+    PREFIX: str = 2#"1.2.0.0/16"
+    SUBPREFIX: str = 3#"1.2.3.0/24"
 
 
 class ASNs(YamlAbleEnum):
