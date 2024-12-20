@@ -4,6 +4,9 @@ import pstats
 import time
 from pathlib import Path
 
+from frozendict import frozendict
+
+from bgpy.shared.constants import DIRS, SINGLE_DAY_CACHE_DIR, bgpy_logger
 from bgpy.shared.enums import SpecialPercentAdoptions
 from bgpy.simulation_engine import ROV
 from bgpy.simulation_framework import (
@@ -34,6 +37,30 @@ def main():
         output_dir=Path("~/Desktop/speed_test").expanduser(),
         num_trials=10,
         parse_cpus=1,
+        python_hash_seed=0,
+        as_graph_constructor_kwargs=frozendict(
+            {
+                "as_graph_collector_kwargs": frozendict(
+                    {
+                        # dl_time: datetime(),
+                        "cache_dir": SINGLE_DAY_CACHE_DIR,
+                    }
+                ),
+                "as_graph_kwargs": frozendict(
+                    {
+                        # When no ASNs are stored, .9gb/core
+                        # When one set of cones is stored, 1.6gb/core
+                        # When both sets of cones are stored, 2.3gb/core
+                        "store_customer_cone_size": False,
+                        "store_customer_cone_asns": False,
+                        "store_provider_cone_size": False,
+                        "store_provider_cone_asns": False,
+                    }
+                ),
+                "tsv_path": None,  # Path.home() / "Desktop" / "caida.tsv",
+            }
+        ),
+
     )
     sim.run(GraphFactoryCls=None)
 
@@ -42,6 +69,7 @@ if __name__ == "__main__":
     start = time.perf_counter()
     profiler = cProfile.Profile()
     profiler.enable()
+    print("Must expand the list of eligable AS classes")
     main()
     print(f"{time.perf_counter() - start:.2f}s")
     # v9 Normal 61.6s

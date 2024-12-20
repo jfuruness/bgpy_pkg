@@ -11,6 +11,7 @@ class ROV(BGP):
     """An Policy that deploys ROV"""
 
     name: str = "ROV"
+    __slots__ = ("local_rib", "recv_q", "as_")
 
     def _valid_ann(self, ann: "Ann", recv_rel: "Relationships") -> bool:
         """Returns announcement validity

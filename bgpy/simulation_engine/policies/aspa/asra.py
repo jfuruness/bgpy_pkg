@@ -4,7 +4,7 @@ from .aspa import ASPA
 
 if TYPE_CHECKING:
     from bgpy.enums import Relationships
-    from bgpy.simulation_engine.announcement import Announcement as Ann
+    from bgpy.simulation_engine.announcements import Announcement as Ann
 
 
 class ASRA(ASPA):

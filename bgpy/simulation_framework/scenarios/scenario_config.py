@@ -5,8 +5,8 @@ from frozendict import frozendict
 from roa_checker import ROA
 
 from bgpy.shared.enums import ASGroups
-from bgpy.simulation_engine import ASPA, ASRA, BGP, BGPiSecTransitive, Policy
-from bgpy.simulation_engine import Announcement as Ann
+from bgpy.simulation_engine import ROV, BGP, BGPFull, Policy
+from bgpy.simulation_engine import Announcement as Ann, BGPAnn
 
 if TYPE_CHECKING:
     from .scenario import Scenario
@@ -83,18 +83,7 @@ class ScenarioConfig:
         """
 
         if self.propagation_rounds is None:
-            # BGP-iSec needs this. NOTE: mypy thinks this is unreachable
-            if (  # type: ignore
-                issubclass(self.AdoptPolicyCls, BGPiSecTransitive)
-            ):
-                from bgpy.simulation_framework import ShortestPathPrefixHijack
-
-                if issubclass(self.ScenarioCls, ShortestPathPrefixHijack):
-                    prop_rounds = 2
-                else:
-                    prop_rounds = self.ScenarioCls.min_propagation_rounds
-            else:
-                prop_rounds = self.ScenarioCls.min_propagation_rounds
+            prop_rounds = self.ScenarioCls.min_propagation_rounds
 
             # initially set to None so it could be defaulted here
             object.__setattr__(self, "propagation_rounds", prop_rounds)
@@ -121,17 +110,28 @@ class ScenarioConfig:
             object.__setattr__(self, "scenario_label", self.AdoptPolicyCls.name)
 
         self._set_AttackerBasePolicyCls()
+        self._optimize_announcement_class()
+
+    def _optimize_announcement_class(self):
+        """Swaps out announcement for a smaller one base on the classes used
+
+        This significantly improves performance and memory usage
+        """
+
+        BGPANN_CLASSES = {BGP, BGPFull, ROV, None}
+        if (
+            self.BasePolicyCls in BGPANN_CLASSES
+            and self.AdoptPolicyCls in BGPANN_CLASSES
+            and self.AttackerBasePolicyCls in BGPANN_CLASSES
+            and all(x in BGPANN_CLASSES for x in self.hardcoded_asn_cls_dict.values())
+            and all(x in BGPANN_CLASSES for x in self.hardcoded_base_asn_cls_dict.values())
+            and self.override_announcements is None
+        ):
+            object.__setattr__(self, "AnnCls", BGPAnn)
+            print("Optimized AnnouncementCls to BGPAnn")
 
     def _set_AttackerBasePolicyCls(self):
-        # This is to assist with ShortestPathPrefixHijacks
-        if issubclass(self.AdoptPolicyCls, ASPA) and not issubclass(
-            self.AdoptPolicyCls, ASRA
-        ):
-            # Mypy thinks this is unreachable
-            AttackerBasePolicyCls = getattr(  # type: ignore
-                self.ScenarioCls, "RequiredASPAAttackerCls", None
-            )
-            object.__setattr__(self, "AttackerBasePolicyCls", AttackerBasePolicyCls)
+        pass
 
     ##############
     # Yaml Funcs #

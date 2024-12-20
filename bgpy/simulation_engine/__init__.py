@@ -1,59 +1,20 @@
 # Skip isort formatting due to circular imports if Announcement isn't first
-from .announcement import Announcement  # isort: skip
+from .announcements import Announcement, BGPAnn  # isort: skip
 from .ann_containers import LocalRIB, RecvQueue, RIBsIn, RIBsOut, SendQueue
 
 # Custom attacker policies
 from .policies import (
     BGP,
     ROV,
-    ASPA,
-    ASPAFull,
-    ASRA,
-    ASRAFull,
-    BGPFull,
-    BGPiSecTransitive,
-    BGPiSecTransitiveOnlyToCustomers,
-    BGPiSecTransitiveProConID,
-    BGPiSec,
-    ProviderConeID,
-    BGPiSecTransitiveFull,
-    BGPiSecTransitiveOnlyToCustomersFull,
-    BGPiSecTransitiveProConIDFull,
-    BGPiSecFull,
-    ProviderConeIDFull,
-    BGPSec,
-    BGPSecFull,
-    EdgeFilter,
-    EdgeFilterFull,
-    ROVEdgeFilter,
-    ROVEdgeFilterFull,
-    EnforceFirstAS,
-    EnforceFirstASFull,
-    ROVEnforceFirstAS,
-    ROVEnforceFirstASFull,
-    FirstASNStrippingPrefixASPAAttacker,
-    OnlyToCustomers,
-    OnlyToCustomersFull,
-    PathEnd,
-    PathEndFull,
-    PeerROV,
-    PeerROVFull,
-    PeerlockLite,
-    PeerlockLiteFull,
     Policy,
     ROVFull,
-    ROVPPV1Lite,
-    ROVPPV1LiteFull,
-    ROVPPV2ImprovedLite,
-    ROVPPV2ImprovedLiteFull,
-    ROVPPV2Lite,
-    ROVPPV2LiteFull,
-    ShortestPathPrefixASPAAttacker,
+    BGPFull,
 )
 from .simulation_engines import BaseSimulationEngine, SimulationEngine
 
 __all__ = [
     "Announcement",
+    "BGPAnn",
     "LocalRIB",
     "RIBsIn",
     "RIBsOut",

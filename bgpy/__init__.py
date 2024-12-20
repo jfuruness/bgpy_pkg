@@ -8,7 +8,6 @@ from . import (  # isort: skip
     simulation_engine,
     as_graphs,
     simulation_framework,
-    tests,
     utils,
 )
 

@@ -3,15 +3,8 @@ from .scenario import Scenario  # isort: skip
 
 from .custom_scenarios import (
     AccidentalRouteLeak,
-    FirstASNStrippingPrefixHijack,
-    ForgedOriginPrefixHijack,
-    NonRoutedPrefixHijack,
-    NonRoutedSuperprefixHijack,
-    NonRoutedSuperprefixPrefixHijack,
     PrefixHijack,
-    ShortestPathPrefixHijack,
     SubprefixHijack,
-    SuperprefixPrefixHijack,
     ValidPrefix,
     VictimsPrefix,
 )

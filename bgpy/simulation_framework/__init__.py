@@ -12,17 +12,10 @@ from .graph_data_aggregator import (
 from .graphing import GraphFactory, LineData, LineInfo, LinePropertiesGenerator
 from .scenarios import (
     AccidentalRouteLeak,
-    FirstASNStrippingPrefixHijack,
-    ForgedOriginPrefixHijack,
-    NonRoutedPrefixHijack,
-    NonRoutedSuperprefixHijack,
-    NonRoutedSuperprefixPrefixHijack,
     PrefixHijack,
     Scenario,
     ScenarioConfig,
-    ShortestPathPrefixHijack,
     SubprefixHijack,
-    SuperprefixPrefixHijack,
     ValidPrefix,
     VictimsPrefix,
 )

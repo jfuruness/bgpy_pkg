@@ -17,7 +17,7 @@ from .propagate_funcs import _prev_sent, _process_outgoing_ann, _propagate, _sen
 
 if TYPE_CHECKING:
     from bgpy.shared.enums import Relationships
-    from bgpy.simulation_engine.announcement import Announcement as Ann
+    from bgpy.simulation_engine.announcements import Announcement as Ann
 
 
 class BGPFull(BGP):
@@ -117,7 +117,7 @@ class BGPFull(BGP):
             )
 
         # Create withdraw ann and remove the og from local rib
-        withdraw_ann = replace(self.local_rib.get(prefix), withdraw=True)
+        withdraw_ann = self.local_rib.get(prefix).copy({"withdraw": True})
         self.local_rib.pop(prefix, None)
 
         # Check ribs_out to see where the withdrawn ann was sent

@@ -1,4 +1,3 @@
-from functools import cached_property
 from typing import TYPE_CHECKING, Any, Optional
 from weakref import CallableProxyType, proxy
 
@@ -10,10 +9,31 @@ if TYPE_CHECKING:
     from .as_graph import ASGraph
 
 
-@yaml_info(yaml_tag="AS")
-class AS(YamlAble):
+class AS:
     """Autonomous System class. Contains attributes of an AS"""
-
+    __slots__ = (
+        "peers_setup_set",
+        "customers_setup_set",
+        "providers_setup_set",
+        "asn",
+        "input_clique",
+        "ixp",
+        "peer_asns",
+        "provider_asns",
+        "customer_asns",
+        "peers",
+        "providers",
+        "customers",
+        "customer_cone_asns",
+        "customer_cone_size",
+        "provider_cone_asns",
+        "provider_cone_size",
+        "as_rank",
+        "propagation_rank",
+        "policy",
+        "as_graph",
+        "hashed_asn",
+    )
     def __init__(
         self,
         *,
@@ -109,7 +129,7 @@ class AS(YamlAble):
 
         return {attr: _format(getattr(self, attr)) for attr in self.db_row_keys}
 
-    @cached_property
+    @property
     def db_row_keys(self) -> tuple[str, ...]:
         return (
             "asn",
@@ -131,19 +151,19 @@ class AS(YamlAble):
     def __str__(self):
         return "\n".join(str(x) for x in self.db_row.items())
 
-    @cached_property
+    @property
     def stub(self) -> bool:
         """Returns True if AS is a stub by RFC1772"""
 
         return len(self.neighbors) == 1
 
-    @cached_property
+    @property
     def multihomed(self) -> bool:
         """Returns True if AS is multihomed by RFC1772"""
 
         return len(self.customers) == 0 and len(self.peers) + len(self.providers) > 1
 
-    @cached_property
+    @property
     def transit(self) -> bool:
         """Returns True if AS is a transit AS by RFC1772"""
 
@@ -152,19 +172,19 @@ class AS(YamlAble):
             and len(self.customers) + len(self.peers) + len(self.providers) > 1
         )
 
-    @cached_property
+    @property
     def stubs(self) -> tuple["AS", ...]:
         """Returns a list of any stubs connected to that AS"""
 
         return tuple([x for x in self.customers if x.stub])
 
-    @cached_property
+    @property
     def neighbors(self) -> tuple["AS", ...]:
         """Returns customers + peers + providers"""
 
         return self.customers + self.peers + self.providers
 
-    @cached_property
+    @property
     def neighbor_asns(self) -> frozenset[int]:
         """Returns neighboring ASNs (useful for ASRA)"""
 
