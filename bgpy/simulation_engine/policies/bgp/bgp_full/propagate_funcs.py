@@ -10,23 +10,6 @@ if TYPE_CHECKING:
     from .bgp_full import BGPFull
 
 
-def _propagate(
-    self: "BGPFull",
-    propagate_to: "Relationships",
-    send_rels: set["Relationships"],
-):
-    """Propogates announcements to other ASes
-
-    send_rels is the relationships that are acceptable to send
-    """
-    # _policy_propagate and _add_ann_to_q have been overriden
-    # So that instead of propagating, announcements end up in the send_q
-    # Send q contains both announcements and withdrawals
-    self._populate_send_q(propagate_to, send_rels)
-    # Send announcements/withdrawals and add to ribs out
-    self._send_anns(propagate_to)
-
-
 def _prev_sent(self: "BGPFull", neighbor: "AS", ann: "Ann") -> bool:
     """Don't send what we've already sent"""
     return ann == self.ribs_out.get_ann(neighbor.asn, ann.prefix)
@@ -39,19 +22,6 @@ def _process_outgoing_ann(
     propagate_to,
     send_rels: set["Relationships"],
 ):
-    self.send_q.add_ann(neighbor.asn, ann)
-
-
-def _send_anns(self: "BGPFull", propagate_to: "Relationships"):
-    """Sends announcements and populates ribs out"""
-
-    neighbors: list[AS] = getattr(self.as_, propagate_to.name.lower())
-
-    for neighbor, _prefix, ann in self.send_q.info(neighbors):
-        neighbor.policy.receive_ann(ann)
-        # Update Ribs out if it's not a withdraw
-        if not ann.withdraw:
-            self.ribs_out.add_ann(neighbor.asn, ann)
-    for neighbor in neighbors:
-        # Resets neighbor, removing all their SendInfo
-        self.send_q.pop(neighbor.asn, None)
+    if not ann.withdraw:
+        self.ribs_out.add_ann(neighbor.asn, ann)
+    super()._process_outgoing_ann(neighbor, ann, propagate_to, send_rels)

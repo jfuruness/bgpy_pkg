@@ -1,6 +1,6 @@
 # Skip isort formatting due to circular imports if Announcement isn't first
 from .announcement import Announcement  # isort: skip
-from .ann_containers import LocalRIB, RecvQueue, RIBsIn, RIBsOut, SendQueue
+from .ann_containers import LocalRIB, RecvQueue, RIBsIn, RIBsOut
 
 # Custom attacker policies
 from .policies import (
@@ -57,7 +57,6 @@ __all__ = [
     "LocalRIB",
     "RIBsIn",
     "RIBsOut",
-    "SendQueue",
     "RecvQueue",
     "BGP",
     "BGPFull",

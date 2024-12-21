@@ -56,7 +56,6 @@ class BGPFull(BGP):
         super(BGPFull, self).__init__(*args, **kwargs)
         self.ribs_in: RIBsIn = ribs_in if ribs_in else RIBsIn()
         self.ribs_out: RIBsOut = ribs_out if ribs_out else RIBsOut()
-        self.send_q: SendQueue = send_q if send_q else SendQueue()
 
     @property
     def _ribs_in(self) -> RIBsIn:
@@ -78,31 +77,11 @@ class BGPFull(BGP):
         )
         return self.ribs_out
 
-    @property
-    def _send_q(self) -> SendQueue:
-        warn(
-            "Please use .send_q instead of ._send_q. "
-            "This will be removed in a later version",
-            category=DeprecationWarning,
-            stacklevel=2,
-        )
-        return self.send_q
-
     # Propagation functions
     _propagate = _propagate
     _process_outgoing_ann = _process_outgoing_ann
     _prev_sent = _prev_sent
     _send_anns = _send_anns
-
-    # Must add this func here since it refers to BGPFull
-    # Could use super but want to avoid additional func calls
-    def _populate_send_q(
-        self,
-        propagate_to: "Relationships",
-        send_rels: set["Relationships"],
-    ) -> None:
-        # Process outging ann is oerriden so this just adds to send q
-        super(BGPFull, self)._propagate(propagate_to, send_rels)
 
     # Process incoming funcs
     process_incoming_anns = process_incoming_anns
@@ -119,7 +98,6 @@ class BGPFull(BGP):
     withdrawal_in_ribs_in = withdrawal_in_ribs_in
     best_ann_isnt_the_withdrawn_ann = best_ann_isnt_the_withdrawn_ann
 
-
     # NOTE: not sure why this is coded in such a weird fashion...
     def receive_ann(self, ann: "Ann", accept_withdrawals: bool = True) -> None:
         BGP.receive_ann(self, ann, accept_withdrawals=True)
@@ -127,24 +105,21 @@ class BGPFull(BGP):
     def prep_withdrawal_for_next_propagation(self, prefix: str) -> None:
         """Removes a prefix from the local RIB and withdraws it next propagation"""
 
-        if prefix not in self.local_rib:
-            raise AnnouncementNotFoundError(
-                f"{prefix} not found in local RIB, can't withdraw"
-            )
+        warn(
+            "Now that I've refactored the withdrawals "
+            "prep_withdrawal_for_next_propagation no longer "
+            "makes sense and is deprecated since it doesn't deal with RIBsIn "
+            "even though the name deceptively implies that it does. Please use: "
+            " withdraw_ann = self.local_rib.pop(prefix).copy({'withdraw': True}); "
+            "self.withdraw_ann_from_neighbors(withdraw_ann); "
+            "This will be removed in a later version",
+            category=DeprecationWarning,
+            stacklevel=2,
+        )
 
         # Create withdraw ann and remove the og from local rib
-        withdraw_ann = replace(self.local_rib.get(prefix), withdraw=True)
-        self.local_rib.pop(prefix, None)
-
-        # Check ribs_out to see where the withdrawn ann was sent
-        for send_neighbor in self.ribs_out.neighbors():
-            # If the two announcements are equal
-            if withdraw_ann.prefix_path_attributes_eq(
-                self.ribs_out.get_ann(send_neighbor, prefix)
-            ):
-                # Delete ann from ribs out
-                self.ribs_out.remove_entry(send_neighbor, prefix)
-                self.send_q.add_ann(send_neighbor, withdraw_ann)
+        withdraw_ann = self.local_rib.pop(prefix).copy({"withdraw": True})
+        self.withdraw_ann_from_neighbors(withdraw_ann)
 
     def __to_yaml_dict__(self):
         """This optional method is called when you call yaml.dump()"""
@@ -154,7 +129,6 @@ class BGPFull(BGP):
             {
                 "ribs_in": self.ribs_in,
                 "ribs_out": self.ribs_out,
-                "send_q": self.send_q,
             }
         )
         return as_dict

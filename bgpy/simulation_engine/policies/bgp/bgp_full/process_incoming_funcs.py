@@ -20,166 +20,66 @@ def process_incoming_anns(
 ):
     """Process all announcements that were incoming from a specific rel"""
 
-    for prefix, anns in self.recv_q.items():
+    for prefix, ann_list in self.recv_q.items():
         # Get announcement currently in local rib
-        local_rib_ann: Ann | None = self.local_rib.get(prefix)
-        current_ann: Ann | None = local_rib_ann
-        current_processed: bool = True
+        current_ann: Ann | None = self.local_rib.get(prefix)
+        og_ann = current_ann
 
         # For each announcement that is incoming
-        for ann in anns:
-            assert self.assert_only_one_withdrawal_per_prefix_per_neighbor(anns)
-            assert self.only_one_ann_per_prefix_per_neighbor(anns)
+        for new_ann in ann_list:
+            # Validation funcs
+            assert self.assert_only_one_withdrawal_per_prefix_per_neighbor(ann_list)
+            assert self.only_one_ann_per_prefix_per_neighbor(ann_list)
 
-            # Always add to ribs in if it's not a withdrawal
-            if not ann.withdraw:
-                assert self.no_implicit_withdrawals(ann, prefix)
-                self.ribs_in.add_unprocessed_ann(ann, from_rel)
+            # If withdrawal remove from RIBsIn, otherwise add to RIBsIn
+            self._process_new_ann_in_ribs_in(new_ann, prefix, from_rel)
+
             # Process withdrawals even for invalid anns in the ribs_in
-            if ann.withdraw:
-                if self._process_incoming_withdrawal(ann, from_rel):
-                    # the above will return true if the local rib is changed
-                    updated_loc_rib_ann: Ann | None = self.local_rib.get(prefix)
-                    if current_processed:
-                        current_ann = updated_loc_rib_ann
-                    else:
-                        new_ann_is_better: bool = self._new_ann_better(
-                            current_ann,
-                            current_processed,
-                            from_rel,
-                            updated_loc_rib_ann,
-                            True,
-                            updated_loc_rib_ann.recv_relationship,
-                        )
-                        if new_ann_is_better:
-                            current_ann = updated_loc_rib_ann
-                            current_processed = True
-
-            # If it's valid, process it
-            elif self._valid_ann(ann, from_rel):
-                # Announcement will never be overriden, so continue
-                if getattr(current_ann, "seed_asn", None):
-                    continue
-
-                new_ann_is_better = self._new_ann_better(
-                    current_ann, current_processed, from_rel, ann, False, from_rel
+            if new_ann.withdraw:
+                current_ann = self._withdraw_from_local_rib_and_get_new_best_ann(
+                    og_ann, new_ann, current_ann
                 )
+            else:
+                current_ann = self._get_new_best_ann(current_ann, new_ann, from_rel)
 
-                # If the new priority is higher
-                if new_ann_is_better:
-                    current_ann = ann
-                    current_processed = False
-
-        if local_rib_ann is not None and local_rib_ann is not current_ann:
-            # Best ann has already been processed
-
-            withdraw_ann: Ann = local_rib_ann.copy(
-                {"withdraw": True, "seed_asn": None}
-            )
-
-            self._withdraw_ann_from_neighbors(withdraw_ann)
-            if not current_processed:
-                assert not_withdrawing_new_ann(withdraw_ann, current_ann, from_rel)
-
-        # We have a new best!
-        if current_processed is False:
-            current_ann = self._copy_and_process(current_ann, from_rel)
-            # Save to local rib
+        if og_ann != current_ann:
             self.local_rib.add_ann(current_ann)
+            self._withdraw_ann_from_neighbors(og_ann.copy({"withdraw": True})
 
     self._reset_q(reset_q)
 
 
-def _new_ann_better(
-    self: "BGPFull",
-    # Current announcement to check against
-    current_ann: Optional["Ann"],
-    # Whether or not current ann has been processed local rib
-    # or if it resides in the ribs in
-    current_processed: bool,
-    # Default recv relationship if current ann is unprocessed
-    default_current_recv_rel: "Relationships",
-    # New announcement
-    new_ann: Optional["Ann"],
-    # If new announcement is in local rib, this is True
-    new_processed: bool,
-    # Default recv rel if new ann is unprocessed
-    default_new_recv_rel: "Relationships",
+def _process_new_ann_in_ribs_in(
+    self, unprocessed_ann: "Ann", prefix: str, from_rel: Relationships
 ) -> bool:
-    """Determines if the new ann > current ann by Gao Rexford
+    """Adds ann to ribs in if the ann is not a withdrawal"""
 
-    current_ann: Announcement we are checking against
-    current_processed: True if announcement was processed (in local rib)
-        This means that the announcement has the current as preprended
-            to the AS path, and the proper recv_relationship set
-    default_current_recv_rel:: Relationship for if the ann is unprocessed
-    new_ann: New announcement
-    new_processed: True if announcement was processed (in local rib)
-        This means that the announcement has the current AS prepended
-            to the AS path, and the proper recv_relationship set
-    default_new_recv_rel: Relationship for if the ann is unprocessed
-    """
-
-    if current_ann is None:
-        return True
-    elif new_ann is None:
-        return False
-
-    if not current_processed:
-        current_ann = self._copy_and_process(current_ann, default_current_recv_rel)
-    if not new_processed:
-        new_ann = self._copy_and_process(new_ann, default_new_recv_rel)
-
-    return bool(self._get_best_ann_by_gao_rexford(current_ann, new_ann) == new_ann)
-
-
-def _process_incoming_withdrawal(
-    self: "BGPFull",
-    ann: "Ann",
-    from_rel: "Relationships",
-) -> bool:
-    prefix: str = ann.prefix
-    neighbor: int = ann.as_path[0]
-    # Return if the current ann was seeded (for an attack)
-    local_rib_ann = self.local_rib.get(prefix)
-
-    ann_info: AnnInfo | None = self.ribs_in.get_unprocessed_ann_recv_rel(
-        neighbor, prefix
-    )
-    assert self.withdrawal_in_ribs_in(ann_info, ann, from_rel)
-
-    try:
-        current_ann_ribs_in = ann_info.unprocessed_ann
+    # Remove ann using withdrawal from RIBsIn
+    if ann.withdraw:
+        neighbor = unprocessed_ann.as_path[0]
         # Remove ann from Ribs in
-        self.ribs_in.remove_entry(neighbor, prefix)
-    # This happens when you get a withdrawal for an announcement you never had
-    # Raise if you are erroring out on this, otherwise do nothing
-    # (since it's already gone)
-    except AttributeError:
-        if self.error_on_invalid_routes:
-            raise
+        self.ribs_in.remove_entry(neighbor, prefix, self.error_on_invalid_routes)
+    # Add ann to RIBsIn
+    else:
+        assert self.no_implicit_withdrawals(unprocessed_ann, prefix)
+        self.ribs_in.add_unprocessed_ann(unprocessed_ann, from_rel)
 
-    # Remove ann from local rib
-    withdraw_ann: Ann = self._copy_and_process(
-        ann, from_rel, overwrite_default_kwargs={"withdraw": True}
-    )
-    if (
-        withdraw_ann.prefix_path_attributes_eq(local_rib_ann)
-        and local_rib_ann.seed_asn is None
-    ):
-        self.local_rib.pop(prefix, None)
-        # Also remove from neighbors
-        self._withdraw_ann_from_neighbors(withdraw_ann)
 
-        best_ann: Ann | None = self._select_best_ribs_in(prefix)
-
-        # Put new ann in local rib
-        if best_ann is not None:
-            self.local_rib.add_ann(best_ann)
-
-        assert self.best_ann_isnt_the_withdrawn_ann(withdraw_ann, ann)
-        return True
-    return False
+def _withdraw_from_local_rib_and_get_new_best_ann(
+    og_ann: Ann, new_ann: Ann, current_ann: Ann
+) -> Ann
+    if og_ann and new_ann.prefix == og_ann.prefix and new_ann.as_path == og_ann.as_path and og_ann.recv_relationship != Relationships.ORIGIN:
+        # Withdrawal exists in the local RIB, so remove it and reset current ann
+        self.local_rib.pop(new_ann.prefix)
+        # Current_ann was the ann we just withdrew, so set it to None
+        if current_ann == og_ann:
+            current_ann = None
+        # Get the new best ann thus far
+        return self._get_best_ann_by_gao_rexford(
+            current_ann,
+            self._get_and_process_best_ribs_in_ann(prefix)
+        )
+    return current_ann
 
 
 def _withdraw_ann_from_neighbors(self: "BGPFull", withdraw_ann: "Ann") -> None:
@@ -193,61 +93,18 @@ def _withdraw_ann_from_neighbors(self: "BGPFull", withdraw_ann: "Ann") -> None:
     assert withdraw_ann.withdraw is True
     # Check ribs_out to see where the withdrawn ann was sent
     for send_neighbor in self.ribs_out.neighbors():
-        # If the two announcements are equal
-        if withdraw_ann.prefix_path_attributes_eq(
-            self.ribs_out.get_ann(send_neighbor, withdraw_ann.prefix)
-        ):
-            # Delete ann from ribs out
-            self.ribs_out.remove_entry(send_neighbor, withdraw_ann.prefix)
-            self.send_q.add_ann(send_neighbor, withdraw_ann)
-
-    # We may not have sent the ann yet, it may just be in the send queue
-    # and not ribs out
-    # We want to cancel out any anns in the send_queue that match the wdraw
-    for neighbor_obj in self.as_.neighbors:
-        send_info: SendInfo | None = self.send_q.get_send_info(
-            neighbor_obj, withdraw_ann.prefix
-        )
-        if send_info is None or send_info.ann is None:
-            continue
-        elif send_info.ann.prefix_path_attributes_eq(withdraw_ann):
-            send_info.ann = None
+        # Delete ann from ribs out
+        self.ribs_out.remove_entry(send_neighbor, withdraw_ann.prefix)
+        self.send_q.add_ann(send_neighbor, withdraw_ann)
 
 
 def _select_best_ribs_in(self: "BGPFull", prefix: str) -> Optional["Ann"]:
-    """Selects best ann from ribs in
-
-    Remember, ribs in anns are NOT deep copied
-    """
+    """Selects best ann from ribs in (remember, RIBsIn is unprocessed"""
 
     # Get the best announcement
-    best_unprocessed_ann: Ann | None = None
-    best_recv_relationship: Relationships | None = None
+    best_ann: Ann | None = None
     for ann_info in self.ribs_in.get_ann_infos(prefix):
-        new_unprocessed_ann = ann_info.unprocessed_ann
-        new_recv_relationship = ann_info.recv_relationship
-        # new_unprocessed_ann must exist (I think a defaultdict may be being used
-        # which isn't great, so when we access prefix, if non exists, it returns
-        # AnnInfo with None entries)
-        # ribsin ann must be valid (since invalid anns get stored in ribs in
-        # and ribsin ann must also be better than the old one
-        if (
-            new_unprocessed_ann
-            and self._valid_ann(new_unprocessed_ann, new_recv_relationship)
-            and self._new_ann_better(
-                best_unprocessed_ann,
-                False,
-                best_recv_relationship,  # type: ignore
-                new_unprocessed_ann,
-                False,
-                new_recv_relationship,
-            )
-        ):
-            best_unprocessed_ann = new_unprocessed_ann
-            best_recv_relationship = new_recv_relationship
-
-    if best_unprocessed_ann is not None:
-        assert best_recv_relationship is not None, "mypy type check"
-        return self._copy_and_process(best_unprocessed_ann, best_recv_relationship)
-    else:
-        return None
+        best_ann = self._get_new_best_ann(
+            current_ann, ann_info.unprocessed_ann, ann_info.recv_relationship
+        )
+    return best_ann

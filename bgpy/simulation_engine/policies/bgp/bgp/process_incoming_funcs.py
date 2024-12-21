@@ -27,8 +27,8 @@ def seed_ann(self: "BGP", ann: "Ann") -> None:
 def receive_ann(self: "BGP", ann: "Ann", accept_withdrawals: bool = False) -> None:
     """Function for recieving announcements, adds to recv_q"""
 
-    if getattr(ann, "withdraw", False) and not accept_withdrawals:
-        raise NotImplementedError(f"Policy can't handle withdrawals {self.name}")
+    err = f"Policy can't handle withdrawals {self.name}"
+    assert not getattr(ann, "withdraw", False) or accept_withdrawals, err
     self.recv_q.add_ann(ann)
 
 
@@ -48,19 +48,9 @@ def process_incoming_anns(
         current_ann: Ann | None = self.local_rib.get(prefix)
         og_ann = current_ann
 
-        # Seeded Ann will never be overriden, so continue
-        if getattr(current_ann, "seed_asn", None) is not None:
-            continue
         # For each announcement that was incoming
         for new_ann in ann_list:
-            # Make sure there are no loops
-            # In ROV subclass also check roa validity
-            if self._valid_ann(new_ann, from_rel):
-                new_ann_processed = self._copy_and_process(new_ann, from_rel)
-
-                current_ann = self._get_best_ann_by_gao_rexford(
-                    current_ann, new_ann_processed
-                )
+            current_ann = self._get_new_best_ann(current_ann, new_ann, from_rel
 
         # This is a new best ann. Process it and add it to the local rib
         if og_ann != current_ann:
@@ -71,6 +61,23 @@ def process_incoming_anns(
 
     self._reset_q(reset_q)
 
+
+def _get_new_best_ann(self, current_ann: Ann | None, new_ann: Ann, from_rel: Relationships):
+    """Returns new best ann
+
+    This is between the current_ann and new_ann, so we don't need to check current_ann
+    for validity
+
+    This is useful because the same function is used for BGPFull
+    """
+
+    # Make sure there are no loops
+    # In ROV subclass also check roa validity
+    if self._valid_ann(new_ann, from_rel):
+        new_ann_processed = self._copy_and_process(new_ann, from_rel)
+        return self._get_best_ann_by_gao_rexford(current_ann, new_ann_processed)
+    else:
+        return current_ann
 
 def _valid_ann(
     self: "BGP",

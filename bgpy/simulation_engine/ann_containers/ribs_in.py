@@ -73,7 +73,15 @@ class RIBsIn(AnnContainer[int, dict[str, AnnInfo]]):
         for prefix_ann_info in self.data.values():
             yield prefix_ann_info.get(prefix, default_ann_info)
 
-    def remove_entry(self, neighbor_asn: int, prefix: str):
-        """Removes AnnInfo from RibsIn"""
+    def remove_entry(self, neighbor_asn: int, prefix: str, err_on_invalid: bool = True):
+        """Removes AnnInfo from RibsIn
 
-        del self.data[neighbor_asn][prefix]
+        err_on_invalid is useful for projects where withdrawals can be attacks,
+        in which case in real life most ASes would just ignore them
+        """
+
+        try:
+            del self.data[neighbor_asn][prefix]
+        except AttributeError:
+            if err_on_invalid:
+                raise
