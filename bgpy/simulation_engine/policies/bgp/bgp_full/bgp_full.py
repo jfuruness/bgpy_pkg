@@ -14,6 +14,14 @@ from .process_incoming_funcs import (
     process_incoming_anns,
 )
 from .propagate_funcs import _prev_sent, _process_outgoing_ann, _propagate, _send_anns
+from .validation_funcs import (
+    only_one_withdrawal_per_prefix_per_neighbor,
+    only_one_ann_per_prefix_per_neighbor,
+    no_implicit_withdrawals,
+    not_withdrawing_new_ann,
+    withdrawal_in_ribs_in,
+    best_ann_isnt_the_withdrawn_ann,
+)
 
 if TYPE_CHECKING:
     from bgpy.shared.enums import Relationships
@@ -97,12 +105,20 @@ class BGPFull(BGP):
         super(BGPFull, self)._propagate(propagate_to, send_rels)
 
     # Process incoming funcs
-    if not TYPE_CHECKING:
-        process_incoming_anns = process_incoming_anns
-        _new_ann_better = _new_ann_better
-        _process_incoming_withdrawal = _process_incoming_withdrawal
-        _withdraw_ann_from_neighbors = _withdraw_ann_from_neighbors
-        _select_best_ribs_in = _select_best_ribs_in
+    process_incoming_anns = process_incoming_anns
+    _new_ann_better = _new_ann_better
+    _process_incoming_withdrawal = _process_incoming_withdrawal
+    _withdraw_ann_from_neighbors = _withdraw_ann_from_neighbors
+    _select_best_ribs_in = _select_best_ribs_in
+
+    # Validation funcs
+    only_one_withdrawal_per_prefix_per_neighbor = only_one_withdrawal_per_prefix_per_neighbor
+    only_one_ann_per_prefix_per_neighbor = only_one_ann_per_prefix_per_neighbor
+    no_implicit_withdrawals = no_implicit_withdrawals
+    not_withdrawing_new_ann = not_withdrawing_new_ann
+    withdrawal_in_ribs_in = withdrawal_in_ribs_in
+    best_ann_isnt_the_withdrawn_ann = best_ann_isnt_the_withdrawn_ann
+
 
     # NOTE: not sure why this is coded in such a weird fashion...
     def receive_ann(self, ann: "Ann", accept_withdrawals: bool = True) -> None:

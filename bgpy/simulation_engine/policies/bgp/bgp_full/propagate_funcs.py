@@ -29,8 +29,7 @@ def _propagate(
 
 def _prev_sent(self: "BGPFull", neighbor: "AS", ann: "Ann") -> bool:
     """Don't send what we've already sent"""
-    ribs_out_ann: Ann | None = self.ribs_out.get_ann(neighbor.asn, ann.prefix)
-    return ann.prefix_path_attributes_eq(ribs_out_ann)
+    return ann == self.ribs_out.get_ann(neighbor.asn, ann.prefix)
 
 
 def _process_outgoing_ann(

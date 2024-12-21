@@ -1,5 +1,6 @@
 from dataclasses import asdict, dataclass, replace
 from typing import Any, Optional
+from warnings import warn
 
 from yamlable import YamlAble, yaml_info
 
@@ -73,6 +74,13 @@ class Announcement(YamlAble):
     def prefix_path_attributes_eq(self, ann: Optional["Announcement"]) -> bool:
         """Checks prefix and as path equivalency"""
 
+        warn(
+            "Please use (ann.prefix, ann.as_path) == (self.prefix, self.as_path) "
+            "instead of ._ribs_out. "
+            "This will be removed in a later version",
+            category=DeprecationWarning,
+            stacklevel=2,
+        )
         if ann is None:
             return False
         elif isinstance(ann, Announcement):
