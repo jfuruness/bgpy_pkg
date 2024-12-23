@@ -99,8 +99,7 @@ class BGPFull(BGP):
                 current_ann = None
             # Get the new best ann thus far
             return self._get_best_ann_by_gao_rexford(
-                current_ann,
-                self._get_and_process_best_ribs_in_ann(current_ann.prefix)
+                current_ann, self._get_and_process_best_ribs_in_ann(current_ann.prefix)
             )
         return current_ann
 
