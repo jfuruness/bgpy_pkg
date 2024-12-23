@@ -48,7 +48,7 @@ def process_incoming_anns(
 
         # For each announcement that was incoming
         for new_ann in ann_list:
-            current_ann = self._get_new_best_ann(current_ann, new_ann, from_rel
+            current_ann = self._get_new_best_ann(current_ann, new_ann, from_rel)
 
         # This is a new best ann. Process it and add it to the local rib
         if og_ann != current_ann:
@@ -60,7 +60,9 @@ def process_incoming_anns(
     self._reset_q(reset_q)
 
 
-def _get_new_best_ann(self, current_ann: Ann | None, new_ann: Ann, from_rel: Relationships):
+def _get_new_best_ann(
+    self, current_ann: Ann | None, new_ann: Ann, from_rel: Relationships
+) -> Ann | None:
     """Returns new best ann
 
     This is between the current_ann and new_ann, so we don't need to check current_ann
@@ -76,6 +78,7 @@ def _get_new_best_ann(self, current_ann: Ann | None, new_ann: Ann, from_rel: Rel
         return self._get_best_ann_by_gao_rexford(current_ann, new_ann_processed)
     else:
         return current_ann
+
 
 def _valid_ann(
     self: "BGP",

@@ -154,7 +154,8 @@ class ScenarioConfig:
         if self.AttackerBasePolicyCls:
             policies_used.add(self.AttackerBasePolicyCls)
         for asn_to_policy_dict in (
-            self.hardcoded_asn_cls_dict, self.hardcoded_base_asn_cls_dict
+            self.hardcoded_asn_cls_dict,
+            self.hardcoded_base_asn_cls_dict,
         ):
             policies_used.update(asn_to_policy_dict.values())
         return frozenset(policies_used)
