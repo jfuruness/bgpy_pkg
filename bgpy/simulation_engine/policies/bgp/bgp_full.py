@@ -1,12 +1,12 @@
 from typing import TYPE_CHECKING
 from warnings import warn
 
+from bgpy.shared.enums import Relationships
 from bgpy.simulation_engine.ann_containers import RIBsIn, RIBsOut
 from bgpy.simulation_engine.policies.bgp import BGP
 
 if TYPE_CHECKING:
     from bgpy.as_graphs import AS
-    from bgpy.shared.enums import Relationships
     from bgpy.simulation_engine.announcement import Announcement as Ann
     from bgpy.simulation_framework import Scenario
 
@@ -84,8 +84,8 @@ class BGPFull(BGP):
             self.ribs_in.add_unprocessed_ann(unprocessed_ann, from_rel)
 
     def _withdraw_from_local_rib_and_get_new_best_ann(
-        self, og_ann: Ann, new_ann: Ann, current_ann: Ann
-    ) -> Ann:
+        self, og_ann: "Ann", new_ann: "Ann", current_ann: "Ann"
+    ) -> "Ann":
         if (
             og_ann
             and new_ann.prefix == og_ann.prefix

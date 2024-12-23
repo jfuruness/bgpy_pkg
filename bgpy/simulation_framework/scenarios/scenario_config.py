@@ -6,7 +6,7 @@ from frozendict import frozendict
 from roa_checker import ROA
 
 from bgpy.shared.enums import ASGroups
-from bgpy.simulation_engine import ASPA, ASRA, BGP, BGPiSecTransitive, Policy
+from bgpy.simulation_engine import ASPA, ASRA, BGP, BGPFull, BGPiSecTransitive, Policy
 from bgpy.simulation_engine import Announcement as Ann
 
 if TYPE_CHECKING:
@@ -140,7 +140,7 @@ class ScenarioConfig:
 
         policies_used = self._get_policies_used()
         total_bgpfull_subclasses = len([issubclass(x, BGPFull) for x in policies_used])
-        if total_bgpfull_subclasses != policies_used and total_bgpfull_classes > 0:
+        if total_bgpfull_subclasses != policies_used and total_bgpfull_subclasses > 0:
             warn(
                 "You're mixing policies that use withdrawals with classes that may not",
                 category=DeprecationWarning,
