@@ -24,11 +24,9 @@ def seed_ann(self: "BGP", ann: "Ann") -> None:
     self.local_rib.add_ann(ann)
 
 
-def receive_ann(self: "BGP", ann: "Ann", accept_withdrawals: bool = False) -> None:
+def receive_ann(self: "BGP", ann: "Ann") -> None:
     """Function for recieving announcements, adds to recv_q"""
 
-    err = f"Policy can't handle withdrawals {self.name}"
-    assert not getattr(ann, "withdraw", False) or accept_withdrawals, err
     self.recv_q.add_ann(ann)
 
 
