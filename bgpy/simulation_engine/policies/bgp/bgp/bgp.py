@@ -14,6 +14,7 @@ from .gao_rexford import (
 
 # Process incoming announcements
 from .process_incoming_funcs import (
+    _get_new_best_ann,
     _copy_and_process,
     _reset_q,
     _valid_ann,
@@ -74,6 +75,7 @@ class BGP(Policy):
     seed_ann = seed_ann
     receive_ann = receive_ann
     process_incoming_anns = process_incoming_anns
+    _get_new_best_ann = _get_new_best_ann
     _valid_ann = _valid_ann
     _copy_and_process = _copy_and_process
     _reset_q = _reset_q

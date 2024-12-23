@@ -48,6 +48,9 @@ class BGP(Policy):
         scenario: Scenario,
         reset_q: bool = True,
     ) -> None: ...
+    def _get_new_best_ann(
+        self, current_ann: Ann | None, new_ann: Ann, from_rel: Relationships
+    ) -> Ann | None: ...
     def _valid_ann(self, ann: Ann, recv_relationship: Relationships) -> bool: ...
     def _copy_and_process(
         self,

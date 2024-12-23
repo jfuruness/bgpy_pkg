@@ -61,7 +61,7 @@ def process_incoming_anns(
 
 
 def _get_new_best_ann(
-    self, current_ann: "Ann | None", new_ann: "Ann", from_rel: "Relationships"
+    self: "BGP", current_ann: "Ann | None", new_ann: "Ann", from_rel: "Relationships"
 ) -> "Ann | None":
     """Returns new best ann
 

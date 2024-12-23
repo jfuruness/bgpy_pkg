@@ -1,5 +1,5 @@
 import dataclasses
-from typing import TYPE_CHECKING, Iterator, Optional
+from typing import TYPE_CHECKING, Iterator
 
 from yamlable import YamlAble, yaml_info
 
@@ -21,8 +21,8 @@ class AnnInfo(YamlAble):
     from the last AS and has not yet been updated)
     """
 
-    unprocessed_ann: Optional["Ann"]
-    recv_relationship: Optional["Relationships"]
+    unprocessed_ann: "Ann"
+    recv_relationship: "Relationships"
 
 
 class RIBsIn(AnnContainer[int, dict[str, AnnInfo]]):
@@ -67,11 +67,10 @@ class RIBsIn(AnnContainer[int, dict[str, AnnInfo]]):
     def get_ann_infos(self, prefix: str) -> Iterator[AnnInfo]:
         """Returns AnnInfos for a given prefix"""
 
-        default_ann_info: AnnInfo = AnnInfo(
-            unprocessed_ann=None, recv_relationship=None
-        )
         for prefix_ann_info in self.data.values():
-            yield prefix_ann_info.get(prefix, default_ann_info)
+            ann_info = prefix_ann_info.get(prefix)
+            if ann_info:
+                yield ann_info
 
     def remove_entry(self, neighbor_asn: int, prefix: str, err_on_invalid: bool = True):
         """Removes AnnInfo from RibsIn

@@ -63,14 +63,16 @@ class BGPFull(BGP):
                     current_ann = self._get_new_best_ann(current_ann, new_ann, from_rel)
 
             if og_ann != current_ann:
-                self.local_rib.add_ann(current_ann)
-                self._withdraw_ann_from_neighbors(og_ann.copy({"withdraw": True}))
+                if current_ann:
+                    self.local_rib.add_ann(current_ann)
+                if og_ann:
+                    self._withdraw_ann_from_neighbors(og_ann.copy({"withdraw": True}))
 
         self._reset_q(reset_q)
 
     def _process_new_ann_in_ribs_in(
         self, unprocessed_ann: "Ann", prefix: str, from_rel: Relationships
-    ) -> bool:
+    ) -> None:
         """Adds ann to ribs in if the ann is not a withdrawal"""
 
         # Remove ann using withdrawal from RIBsIn
@@ -84,8 +86,8 @@ class BGPFull(BGP):
             self.ribs_in.add_unprocessed_ann(unprocessed_ann, from_rel)
 
     def _withdraw_from_local_rib_and_get_new_best_ann(
-        self, og_ann: "Ann", new_ann: "Ann", current_ann: "Ann"
-    ) -> "Ann":
+        self, og_ann: "Ann | None", new_ann: "Ann", current_ann: "Ann | None"
+    ) -> "Ann | None":
         if (
             og_ann
             and new_ann.prefix == og_ann.prefix
@@ -99,7 +101,7 @@ class BGPFull(BGP):
                 current_ann = None
             # Get the new best ann thus far
             return self._get_best_ann_by_gao_rexford(
-                current_ann, self._get_and_process_best_ribs_in_ann(current_ann.prefix)
+                current_ann, self._get_and_process_best_ribs_in_ann(new_ann.prefix)
             )
         return current_ann
 
