@@ -14,8 +14,8 @@ from .gao_rexford import (
 
 # Process incoming announcements
 from .process_incoming_funcs import (
-    _get_new_best_ann,
     _copy_and_process,
+    _get_new_best_ann,
     _reset_q,
     _valid_ann,
     process_incoming_anns,
