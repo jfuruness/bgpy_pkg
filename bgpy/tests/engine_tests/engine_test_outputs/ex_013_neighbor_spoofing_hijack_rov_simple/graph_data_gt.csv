@@ -5,3 +5,5 @@ FirstASNStrippingPrefixHijack,ROV,ROV,False,DATA,all_wout_ixps,VICTIM_SUCCESS,0,
 FirstASNStrippingPrefixHijack,ROV,ROV,Any,DATA,all_wout_ixps,VICTIM_SUCCESS,0,0,60.0,0,,ROV
 FirstASNStrippingPrefixHijack,ROV,ROV,False,DATA,all_wout_ixps,DISCONNECTED,0,0,0.0,0,,ROV
 FirstASNStrippingPrefixHijack,ROV,ROV,Any,DATA,all_wout_ixps,DISCONNECTED,0,0,0.0,0,,ROV
+FirstASNStrippingPrefixHijack,ROV,ROV,False,DATA,all_wout_ixps,DATA_PLANE_LOOP,0,0,0.0,0,,ROV
+FirstASNStrippingPrefixHijack,ROV,ROV,Any,DATA,all_wout_ixps,DATA_PLANE_LOOP,0,0,0.0,0,,ROV

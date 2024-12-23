@@ -48,7 +48,7 @@ class BGPFull(BGP):
             # For each announcement that is incoming
             for new_ann in ann_list:
                 # Validation funcs
-                assert self.assert_only_one_withdrawal_per_prefix_per_neighbor(ann_list)
+                assert self.only_one_withdrawal_per_prefix_per_neighbor(ann_list)
                 assert self.only_one_ann_per_prefix_per_neighbor(ann_list)
 
                 # If withdrawal remove from RIBsIn, otherwise add to RIBsIn
@@ -56,7 +56,7 @@ class BGPFull(BGP):
 
                 # Process withdrawals even for invalid anns in the ribs_in
                 if new_ann.withdraw:
-                    current_ann = self._withdraw_from_local_rib_and_get_new_best_ann(
+                    current_ann = self._remove_from_local_rib_and_get_new_best_ann(
                         og_ann, new_ann, current_ann
                     )
                 else:
@@ -66,7 +66,14 @@ class BGPFull(BGP):
                 if current_ann:
                     self.local_rib.add_ann(current_ann)
                 if og_ann:
-                    self._withdraw_ann_from_neighbors(og_ann.copy({"withdraw": True}))
+                    self.withdraw_ann_from_neighbors(
+                        og_ann.copy(
+                            {
+                                "next_hop_asn": self.as_.asn,
+                                "withdraw": True,
+                            }
+                        )
+                    )
 
         self._reset_q(reset_q)
 
@@ -85,13 +92,14 @@ class BGPFull(BGP):
             assert self.no_implicit_withdrawals(unprocessed_ann, prefix)
             self.ribs_in.add_unprocessed_ann(unprocessed_ann, from_rel)
 
-    def _withdraw_from_local_rib_and_get_new_best_ann(
+    def _remove_from_local_rib_and_get_new_best_ann(
         self, og_ann: "Ann | None", new_ann: "Ann", current_ann: "Ann | None"
     ) -> "Ann | None":
         if (
             og_ann
             and new_ann.prefix == og_ann.prefix
-            and new_ann.as_path == og_ann.as_path
+            # new_ann is unproccessed
+            and new_ann.as_path == og_ann.as_path[1:]
             and og_ann.recv_relationship != Relationships.ORIGIN
         ):
             # Withdrawal exists in the local RIB, so remove it and reset current ann
@@ -100,12 +108,18 @@ class BGPFull(BGP):
             if current_ann == og_ann:
                 current_ann = None
             # Get the new best ann thus far
-            return self._get_best_ann_by_gao_rexford(
-                current_ann, self._get_and_process_best_ribs_in_ann(new_ann.prefix)
+            processed_best_ribs_in_ann = self._get_and_process_best_ribs_in_ann(
+                new_ann.prefix
             )
+            if processed_best_ribs_in_ann:
+                return self._get_best_ann_by_gao_rexford(
+                    current_ann, processed_best_ribs_in_ann,
+                )
+            else:
+                return current_ann
         return current_ann
 
-    def _withdraw_ann_from_neighbors(self: "BGPFull", withdraw_ann: "Ann") -> None:
+    def withdraw_ann_from_neighbors(self: "BGPFull", withdraw_ann: "Ann") -> None:
         """Withdraw a route from all neighbors.
 
         This function will not remove an announcement from the local rib, that
@@ -114,18 +128,40 @@ class BGPFull(BGP):
         Note that withdraw_ann is a deep copied ann
         """
         assert withdraw_ann.withdraw is True
+        assert withdraw_ann.next_hop_asn == self.as_.asn
         # Check ribs_out to see where the withdrawn ann was sent
-        for send_neighbor in self.ribs_out.neighbors():
+        for send_neighbor_asn in self.ribs_out.neighbors():
             # Delete ann from ribs out
-            self.ribs_out.remove_entry(send_neighbor, withdraw_ann.prefix)
-            self.send_q.add_ann(send_neighbor, withdraw_ann)
+            removed = self.ribs_out.remove_entry(send_neighbor_asn, withdraw_ann.prefix)
+            # If the announcement was sent to that neighbor
+            if removed:
+                send_rels = set(Relationships)
+                if send_neighbor_asn in self.as_.customer_asns:
+                    propagate_to = Relationships.CUSTOMERS
+                elif send_neighbor_asn in self.as_.provider_asns:
+                    propagate_to = Relationships.PROVIDERS
+                elif send_neighbor_asn in self.as_.peer_asns:
+                    propagate_to = Relationships.PEERS
+                else:
+                    raise NotImplementedError("Case not accounted for")
+                send_neighbor = self.as_.as_graph.as_dict[send_neighbor_asn]
+                # Policy took care of it's own propagation for this ann
+                if self._policy_propagate(
+                    send_neighbor, withdraw_ann, propagate_to, send_rels
+                ):
+                    continue
+                else:
+                    self._process_outgoing_ann(
+                        send_neighbor, withdraw_ann, propagate_to, send_rels
+                    )
 
-    def _select_best_ribs_in(self: "BGPFull", prefix: str) -> "Ann | None":
+    def _get_and_process_best_ribs_in_ann(self: "BGPFull", prefix: str) -> "Ann | None":
         """Selects best ann from ribs in (remember, RIBsIn is unprocessed"""
 
         # Get the best announcement
         best_ann: Ann | None = None
         for ann_info in self.ribs_in.get_ann_infos(prefix):
+            # This also processes the announcement
             best_ann = self._get_new_best_ann(
                 best_ann, ann_info.unprocessed_ann, ann_info.recv_relationship
             )

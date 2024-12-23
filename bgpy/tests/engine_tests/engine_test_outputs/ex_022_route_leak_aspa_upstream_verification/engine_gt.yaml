@@ -97,7 +97,6 @@ as_graph: !yamlable/CAIDAASGraph
               seed_asn: null
               timestamp: 0
               withdraw: false
-        send_q: !simulator_codec/SendQueue {}
       propagation_rank: 1
       provider_cone_asns: null
       provider_cone_size: null
@@ -251,7 +250,6 @@ as_graph: !yamlable/CAIDAASGraph
               seed_asn: null
               timestamp: 0
               withdraw: false
-        send_q: !simulator_codec/SendQueue {}
       propagation_rank: 1
       provider_cone_asns: null
       provider_cone_size: null
@@ -312,7 +310,6 @@ as_graph: !yamlable/CAIDAASGraph
                 timestamp: 0
                 withdraw: false
         ribs_out: !simulator_codec/RIBsOut {}
-        send_q: !simulator_codec/SendQueue {}
       propagation_rank: 0
       provider_cone_asns: null
       provider_cone_size: null
@@ -424,7 +421,6 @@ as_graph: !yamlable/CAIDAASGraph
               seed_asn: null
               timestamp: 0
               withdraw: false
-        send_q: !simulator_codec/SendQueue {}
       propagation_rank: 1
       provider_cone_asns: null
       provider_cone_size: null
@@ -445,7 +441,6 @@ as_graph: !yamlable/CAIDAASGraph
         recv_q: !simulator_codec/RecvQueue {}
         ribs_in: !simulator_codec/RIBsIn {}
         ribs_out: !simulator_codec/RIBsOut {}
-        send_q: !simulator_codec/SendQueue {}
       propagation_rank: 2
       provider_cone_asns: null
       provider_cone_size: null
@@ -621,7 +616,6 @@ as_graph: !yamlable/CAIDAASGraph
               seed_asn: null
               timestamp: 0
               withdraw: false
-        send_q: !simulator_codec/SendQueue {}
       propagation_rank: 2
       provider_cone_asns: null
       provider_cone_size: null
@@ -838,7 +832,6 @@ as_graph: !yamlable/CAIDAASGraph
               seed_asn: null
               timestamp: 0
               withdraw: false
-        send_q: !simulator_codec/SendQueue {}
       propagation_rank: 2
       provider_cone_asns: null
       provider_cone_size: null
@@ -1030,7 +1023,6 @@ as_graph: !yamlable/CAIDAASGraph
               seed_asn: null
               timestamp: 0
               withdraw: false
-        send_q: !simulator_codec/SendQueue {}
       propagation_rank: 1
       provider_cone_asns: null
       provider_cone_size: null
@@ -1190,7 +1182,6 @@ as_graph: !yamlable/CAIDAASGraph
               seed_asn: null
               timestamp: 0
               withdraw: false
-        send_q: !simulator_codec/SendQueue {}
       propagation_rank: 3
       provider_cone_asns: null
       provider_cone_size: null
@@ -1266,7 +1257,6 @@ as_graph: !yamlable/CAIDAASGraph
               seed_asn: null
               timestamp: 0
               withdraw: false
-        send_q: !simulator_codec/SendQueue {}
       propagation_rank: 2
       provider_cone_asns: null
       provider_cone_size: null
@@ -1382,7 +1372,6 @@ as_graph: !yamlable/CAIDAASGraph
               seed_asn: 666
               timestamp: 1
               withdraw: false
-        send_q: !simulator_codec/SendQueue {}
       propagation_rank: 0
       provider_cone_asns: null
       provider_cone_size: null
@@ -1529,7 +1518,6 @@ as_graph: !yamlable/CAIDAASGraph
               seed_asn: 777
               timestamp: 0
               withdraw: false
-        send_q: !simulator_codec/SendQueue {}
       propagation_rank: 0
       provider_cone_asns: null
       provider_cone_size: null

@@ -5,3 +5,5 @@ Custom00ValidPrefix,BGPFull,BGPFull,False,DATA,all_wout_ixps,VICTIM_SUCCESS,0,2,
 Custom00ValidPrefix,BGPFull,BGPFull,Any,DATA,all_wout_ixps,VICTIM_SUCCESS,0,2,75.0,0,,BGP Full
 Custom00ValidPrefix,BGPFull,BGPFull,False,DATA,all_wout_ixps,DISCONNECTED,0,2,25.0,0,,BGP Full
 Custom00ValidPrefix,BGPFull,BGPFull,Any,DATA,all_wout_ixps,DISCONNECTED,0,2,25.0,0,,BGP Full
+Custom00ValidPrefix,BGPFull,BGPFull,False,DATA,all_wout_ixps,DATA_PLANE_LOOP,0,2,0.0,0,,BGP Full
+Custom00ValidPrefix,BGPFull,BGPFull,Any,DATA,all_wout_ixps,DATA_PLANE_LOOP,0,2,0.0,0,,BGP Full

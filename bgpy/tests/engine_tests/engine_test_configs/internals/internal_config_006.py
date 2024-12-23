@@ -78,9 +78,10 @@ class InvalidAnnPostWithdrawalScenario(Scenario):
         if propagation_round == 0:
             for victim_asn in self.victim_asns:
                 as_obj = engine.as_graph.as_dict[victim_asn]
-                as_obj.policy.prep_withdrawal_for_next_propagation(
-                    Prefixes.PREFIX.value
+                withdraw_ann = as_obj.policy.local_rib.pop(Prefixes.PREFIX.value).copy(
+                    {'withdraw': True}
                 )
+                as_obj.policy.withdraw_ann_from_neighbors(withdraw_ann)
 
 
 internal_config_006 = EngineTestConfig(

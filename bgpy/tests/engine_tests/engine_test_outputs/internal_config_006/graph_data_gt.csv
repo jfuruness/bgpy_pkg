@@ -5,3 +5,5 @@ InvalidAnnPostWithdrawalScenario,BGPFull,BGPFull,False,DATA,all_wout_ixps,VICTIM
 InvalidAnnPostWithdrawalScenario,BGPFull,BGPFull,Any,DATA,all_wout_ixps,VICTIM_SUCCESS,0,1,0.0,0,,BGP Full
 InvalidAnnPostWithdrawalScenario,BGPFull,BGPFull,False,DATA,all_wout_ixps,DISCONNECTED,0,1,100.0,0,,BGP Full
 InvalidAnnPostWithdrawalScenario,BGPFull,BGPFull,Any,DATA,all_wout_ixps,DISCONNECTED,0,1,100.0,0,,BGP Full
+InvalidAnnPostWithdrawalScenario,BGPFull,BGPFull,False,DATA,all_wout_ixps,DATA_PLANE_LOOP,0,1,0.0,0,,BGP Full
+InvalidAnnPostWithdrawalScenario,BGPFull,BGPFull,Any,DATA,all_wout_ixps,DATA_PLANE_LOOP,0,1,0.0,0,,BGP Full
