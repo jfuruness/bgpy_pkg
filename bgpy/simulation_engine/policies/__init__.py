@@ -1,5 +1,5 @@
 from .aspa import ASPA, ASPAFull, ASRA, ASRAFull
-from .bgp import BGP, BGPFull
+from .bgp import BGP, BGPFull, BGPFullIgnoreInvalid, BGPFullSuppressWithdrawals
 from .bgpisec import (
     BGPiSecTransitive,
     BGPiSecTransitiveOnlyToCustomers,
@@ -41,6 +41,8 @@ from .rovpp import (
 __all__ = [
     "BGP",
     "BGPFull",
+    "BGPFullIgnoreInvalid",
+    "BGPFullSuppressWithdrawals",
     "PeerlockLite",
     "PeerlockLiteFull",
     "Policy",
