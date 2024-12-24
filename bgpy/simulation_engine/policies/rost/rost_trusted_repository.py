@@ -2,8 +2,8 @@ from dataclasses import dataclass, field
 
 from bgpy.simulation_engine.announcement import Announcement as Ann
 
-
 TRIE = dict[int, "RoSTTrustedRepoNode"]
+
 
 @dataclass
 class RoSTTrustedRepoNode:
