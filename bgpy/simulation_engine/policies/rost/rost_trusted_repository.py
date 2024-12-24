@@ -50,7 +50,7 @@ class RoSTTrustedRepository:
             current_node.end_of_as_path_prefixes.add(ann.prefix)
         else:
             # No longer a withdraw
-            current_node.end_of_as_path_prefixes.remove(ann.prefix)
+            current_node.end_of_as_path_prefixes.discard(ann.prefix)
             # NOTE: we would also remove stubs from the trie here to be more efficient
             # But that doesn't really matter for this
 
