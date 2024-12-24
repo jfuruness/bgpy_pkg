@@ -17,6 +17,8 @@ from bgpy.simulation_engine import (
     ASPAFull,
     ASRAFull,
     BGPFull,
+    BGPFullIgnoreInvalid,
+    BGPFullSuppressWithdrawals,
     BGPiSec,
     BGPiSecFull,
     BGPiSecTransitive,
@@ -475,6 +477,8 @@ class ShortestPathPrefixHijack(VictimsPrefix):
             {
                 BGP,
                 BGPFull,
+                BGPFullIgnoreInvalid,
+                BGPFullSuppressWithdrawals,
                 OnlyToCustomers,
                 OnlyToCustomersFull,
                 EdgeFilter,

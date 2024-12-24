@@ -5,3 +5,5 @@ ForgedOriginPrefixHijack,BGPFull,BGPFull,False,DATA,all_wout_ixps,VICTIM_SUCCESS
 ForgedOriginPrefixHijack,BGPFull,BGPFull,Any,DATA,all_wout_ixps,VICTIM_SUCCESS,0,0,33.333333333333336,0,,BGP Full
 ForgedOriginPrefixHijack,BGPFull,BGPFull,False,DATA,all_wout_ixps,DISCONNECTED,0,0,0.0,0,,BGP Full
 ForgedOriginPrefixHijack,BGPFull,BGPFull,Any,DATA,all_wout_ixps,DISCONNECTED,0,0,0.0,0,,BGP Full
+ForgedOriginPrefixHijack,BGPFull,BGPFull,False,DATA,all_wout_ixps,DATA_PLANE_LOOP,0,0,0.0,0,,BGP Full
+ForgedOriginPrefixHijack,BGPFull,BGPFull,Any,DATA,all_wout_ixps,DATA_PLANE_LOOP,0,0,0.0,0,,BGP Full

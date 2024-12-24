@@ -1,5 +1,5 @@
 from .aspa import ASPA, ASPAFull, ASRA, ASRAFull
-from .bgp import BGP, BGPFull
+from .bgp import BGP, BGPFull, BGPFullIgnoreInvalid, BGPFullSuppressWithdrawals
 from .bgpisec import (
     BGPiSecTransitive,
     BGPiSecTransitiveOnlyToCustomers,
@@ -28,6 +28,7 @@ from .only_to_customers import OnlyToCustomers, OnlyToCustomersFull
 from .path_end import PathEnd, PathEndFull
 from .peerlock import PeerlockLite, PeerlockLiteFull
 from .policy import Policy
+from .rost import RoSTFull
 from .rov import ROV, PeerROV, PeerROVFull, ROVFull
 from .rovpp import (
     ROVPPV1Lite,
@@ -41,6 +42,8 @@ from .rovpp import (
 __all__ = [
     "BGP",
     "BGPFull",
+    "BGPFullIgnoreInvalid",
+    "BGPFullSuppressWithdrawals",
     "PeerlockLite",
     "PeerlockLiteFull",
     "Policy",
@@ -66,6 +69,7 @@ __all__ = [
     "ROVEdgeFilterFull",
     "EnforceFirstAS",
     "EnforceFirstASFull",
+    "RoSTFull",
     "ROVEnforceFirstAS",
     "ROVEnforceFirstASFull",
     "OnlyToCustomers",

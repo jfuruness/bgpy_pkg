@@ -1,5 +1,6 @@
 from dataclasses import asdict, dataclass, replace
 from typing import Any, Optional
+from warnings import warn
 
 from yamlable import YamlAble, yaml_info
 
@@ -70,16 +71,6 @@ class Announcement(YamlAble):
                 # Path is either zero or some other case we didn't account for
                 raise NotImplementedError
 
-    def prefix_path_attributes_eq(self, ann: Optional["Announcement"]) -> bool:
-        """Checks prefix and as path equivalency"""
-
-        if ann is None:
-            return False
-        elif isinstance(ann, Announcement):
-            return (ann.prefix, ann.as_path) == (self.prefix, self.as_path)
-        else:
-            raise NotImplementedError
-
     def copy(
         self, overwrite_default_kwargs: dict[Any, Any] | None = None
     ) -> "Announcement":
@@ -91,11 +82,6 @@ class Announcement(YamlAble):
             return replace(self, **overwrite_default_kwargs)
         else:
             return replace(self)
-
-    def bgpsec_valid(self, asn: int) -> bool:
-        """Returns True if valid by BGPSec else False"""
-
-        return self.bgpsec_next_asn == asn and self.bgpsec_as_path == self.as_path
 
     def __str__(self) -> str:
         return f"{self.prefix} {self.as_path} {self.recv_relationship}"
@@ -122,3 +108,35 @@ class Announcement(YamlAble):
         """This optional method is called when you call yaml.load()"""
 
         return cls(**dct)
+
+    ####################
+    # Deprecated funcs #
+    ####################
+
+    def prefix_path_attributes_eq(self, ann: Optional["Announcement"]) -> bool:
+        """Checks prefix and as path equivalency"""
+
+        warn(
+            "Please use (ann.prefix, ann.as_path) == (self.prefix, self.as_path) "
+            "instead of ._ribs_out. "
+            "This will be removed in a later version",
+            category=DeprecationWarning,
+            stacklevel=2,
+        )
+        if ann is None:
+            return False
+        elif isinstance(ann, Announcement):
+            return (ann.prefix, ann.as_path) == (self.prefix, self.as_path)
+        else:
+            raise NotImplementedError
+
+    def bgpsec_valid(self, asn: int) -> bool:
+        """Returns True if valid by BGPSec else False"""
+
+        warn(
+            "Please call bgpsec_valid from the BGPSec class, not the Announcement. "
+            "This will be removed in a later version",
+            category=DeprecationWarning,
+            stacklevel=2,
+        )
+        return self.bgpsec_next_asn == asn and self.bgpsec_as_path == self.as_path

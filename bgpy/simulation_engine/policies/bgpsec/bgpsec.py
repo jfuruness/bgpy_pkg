@@ -32,6 +32,11 @@ class BGPSec(ROV):
             ann = ann.copy({"bgpsec_as_path": ann.as_path})
         super().seed_ann(ann)
 
+    @staticmethod
+    def bgpsec_valid(ann: "Ann", asn: int) -> bool:
+        """Returns whether or not an announcement is valid by BGPSec"""
+        return ann.bgpsec_next_asn == asn and ann.bgpsec_as_path == ann.as_path
+
     def _policy_propagate(
         self,
         neighbor: "AS",
@@ -66,7 +71,7 @@ class BGPSec(ROV):
 
         prepends ASN if valid, otherwise clears
         """
-        if ann.bgpsec_valid(self.as_.asn):
+        if self.bgpsec_valid(ann, self.as_.asn):
             bgpsec_as_path = (self.as_.asn, *ann.bgpsec_as_path)
         else:
             bgpsec_as_path = ()
@@ -85,8 +90,8 @@ class BGPSec(ROV):
     def _get_best_ann_by_bgpsec(
         self, current_ann: "Ann", new_ann: "Ann"
     ) -> Optional["Ann"]:
-        current_valid = current_ann.bgpsec_valid(self.as_.asn)
-        new_valid = new_ann.bgpsec_valid(self.as_.asn)
+        current_valid = self.bgpsec_valid(current_ann, self.as_.asn)
+        new_valid = self.bgpsec_valid(new_ann, self.as_.asn)
 
         if current_valid and not new_valid:
             return current_ann

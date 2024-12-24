@@ -24,10 +24,14 @@ class RIBsOut(AnnContainer[int, dict[str, Ann]]):
         else:
             self.data[neighbor_asn] = {ann.prefix: ann}
 
-    def remove_entry(self, neighbor_asn: int, prefix: str) -> None:
+    def remove_entry(self, neighbor_asn: int, prefix: str) -> bool:
         """Removes ann from ribs out"""
 
-        del self.data[neighbor_asn][prefix]
+        try:
+            del self.data[neighbor_asn][prefix]
+            return True
+        except KeyError:
+            return False
 
     def neighbors(self) -> Iterable[int]:
         """Return all neighbors from the ribs out"""

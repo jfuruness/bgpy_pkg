@@ -5,3 +5,5 @@ SuperprefixPrefixHijack,BGP,BGP,False,DATA,all_wout_ixps,VICTIM_SUCCESS,0,0,60.0
 SuperprefixPrefixHijack,BGP,BGP,Any,DATA,all_wout_ixps,VICTIM_SUCCESS,0,0,60.0,0,,BGP
 SuperprefixPrefixHijack,BGP,BGP,False,DATA,all_wout_ixps,DISCONNECTED,0,0,0.0,0,,BGP
 SuperprefixPrefixHijack,BGP,BGP,Any,DATA,all_wout_ixps,DISCONNECTED,0,0,0.0,0,,BGP
+SuperprefixPrefixHijack,BGP,BGP,False,DATA,all_wout_ixps,DATA_PLANE_LOOP,0,0,0.0,0,,BGP
+SuperprefixPrefixHijack,BGP,BGP,Any,DATA,all_wout_ixps,DATA_PLANE_LOOP,0,0,0.0,0,,BGP

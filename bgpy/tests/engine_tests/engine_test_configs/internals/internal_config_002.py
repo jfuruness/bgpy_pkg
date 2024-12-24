@@ -1,82 +1,87 @@
-from copy import deepcopy
+from functools import cached_property
+from typing import TYPE_CHECKING
 
 from frozendict import frozendict
 
-from bgpy.as_graphs import ASGraphInfo, PeerLink
+from bgpy.as_graphs import ASGraphInfo
 from bgpy.as_graphs import CustomerProviderLink as CPLink
-from bgpy.shared.enums import Prefixes
-from bgpy.simulation_engine import BGPFull
+from bgpy.shared.enums import ASNs, Prefixes, SpecialPercentAdoptions
+from bgpy.simulation_engine import (
+    BGPFullIgnoreInvalid,
+    BGPFullSuppressWithdrawals,
+    RoSTFull,
+)
 from bgpy.simulation_framework import ScenarioConfig, ValidPrefix
 from bgpy.tests.engine_tests.utils import EngineTestConfig
 
-r"""Graph to test relationship preference
-
-      2
-     /
-5 - 1 - 3
-     \
-      4
-"""
+if TYPE_CHECKING:
+    from bgpy.simulation_engine import BaseSimulationEngine
 
 as_graph_info = ASGraphInfo(
-    peer_links=frozenset([PeerLink(1, 3), PeerLink(1, 5)]),
+    peer_links=frozenset(),
     customer_provider_links=frozenset(
         [
-            CPLink(provider_asn=2, customer_asn=1),
-            CPLink(provider_asn=1, customer_asn=4),
+            CPLink(provider_asn=1, customer_asn=2),
+            CPLink(provider_asn=2, customer_asn=3),
+            CPLink(provider_asn=3, customer_asn=ASNs.ATTACKER.value),
+            CPLink(provider_asn=ASNs.ATTACKER.value, customer_asn=4),
+            CPLink(provider_asn=4, customer_asn=ASNs.VICTIM.value),
         ]
     ),
 )
 
 
-class Custom02ValidPrefix(ValidPrefix):
-    """Add a better announcement in round 2 to cause withdrawal"""
+class WithdrawalValidPrefixScenario(ValidPrefix):
+    """Valid ann from victim that later is withdrawa, routing loop from attacker
 
-    min_propagation_rounds: int = 4
+    This is to test that the attacker's ann (with loop) will not get chosen in r2
+    """
 
-    # Going to just suppress mypy err here since I don't want to rewrite Cameron's func
-    def post_propagation_hook(self, engine=None, propagation_round=0, *args, **kwargs):  # type: ignore
-        if propagation_round == 1:  # second round
-            ann = deepcopy(
-                engine.as_graph.as_dict[2].policy.local_rib.get(Prefixes.PREFIX.value)
-            )
-            # Add a new announcement at AS 3, which will be better than the one
-            # from 2 and cause a withdrawn route by 1 to 4
-            # ann.seed_asn = 3
-            # ann.as_path = (3,)
-            object.__setattr__(ann, "seed_asn", 3)
-            object.__setattr__(
-                ann,
-                "as_path",
-                (3,),
-            )
-            engine.as_graph.as_dict[3].policy.local_rib.add_ann(ann)
-            Custom02ValidPrefix.victim_asns = frozenset({2, 3})
+    min_propagation_rounds: int = 2
 
-        if propagation_round == 2:  # third round
-            ann = deepcopy(
-                engine.as_graph.as_dict[3].policy.local_rib.get(Prefixes.PREFIX.value)
-            )
-            object.__setattr__(ann, "withdraw", True)
-            # ann.withdraw = True
-            # Remove the original announcement from 3
-            # The one from 2 is now the next-best
-            engine.as_graph.as_dict[3].policy.local_rib.pop(Prefixes.PREFIX.value, None)
-            engine.as_graph.as_dict[3].policy.ribs_out.remove_entry(
-                1, Prefixes.PREFIX.value
-            )
-            engine.as_graph.as_dict[3].policy.send_q.add_ann(1, ann)
-            Custom02ValidPrefix.victim_asns = frozenset({2})
+    def post_propagation_hook(
+        self,
+        engine: "BaseSimulationEngine",
+        percent_adopt: float | SpecialPercentAdoptions,
+        trial: int,
+        propagation_round: int,
+    ) -> None:
+        """Useful hook for post propagation"""
+
+        if propagation_round == 0:
+            for victim_asn in self.victim_asns:
+                as_obj = engine.as_graph.as_dict[victim_asn]
+                withdraw_ann = as_obj.policy.local_rib.pop(Prefixes.PREFIX.value).copy(
+                    {"withdraw": True}
+                )
+                as_obj.policy.withdraw_ann_from_neighbors(withdraw_ann)
+
+    @cached_property
+    def _default_adopters(self) -> frozenset[int]:
+        """We don't want the victim to adopt here"""
+
+        return frozenset()
 
 
 internal_config_002 = EngineTestConfig(
-    name="internal_002",
-    desc="Test withdrawal mechanism choosing next best announcement",
+    name="internal_config_002",
+    desc=("Tests RoSTFull"),
     scenario_config=ScenarioConfig(
-        ScenarioCls=Custom02ValidPrefix,
-        BasePolicyCls=BGPFull,
-        override_victim_asns=frozenset({2}),
-        hardcoded_asn_cls_dict=frozendict(),
+        ScenarioCls=WithdrawalValidPrefixScenario,
+        BasePolicyCls=BGPFullIgnoreInvalid,
+        override_victim_asns=frozenset({ASNs.VICTIM.value}),
+        override_attacker_asns=frozenset({ASNs.ATTACKER.value}),
+        propagation_rounds=2,
+        hardcoded_asn_cls_dict=frozendict(
+            {
+                1: BGPFullIgnoreInvalid,
+                2: RoSTFull,
+                3: BGPFullIgnoreInvalid,
+                ASNs.ATTACKER.value: BGPFullSuppressWithdrawals,
+                4: RoSTFull,
+                ASNs.VICTIM.value: BGPFullIgnoreInvalid,
+            }
+        ),
     ),
     as_graph_info=as_graph_info,
 )

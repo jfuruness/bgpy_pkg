@@ -1,11 +1,12 @@
 from dataclasses import asdict, dataclass, field
 from typing import TYPE_CHECKING, Any
+from warnings import warn
 
 from frozendict import frozendict
 from roa_checker import ROA
 
 from bgpy.shared.enums import ASGroups
-from bgpy.simulation_engine import ASPA, ASRA, BGP, BGPiSecTransitive, Policy
+from bgpy.simulation_engine import ASPA, ASRA, BGP, BGPFull, BGPiSecTransitive, Policy
 from bgpy.simulation_engine import Announcement as Ann
 
 if TYPE_CHECKING:
@@ -121,6 +122,7 @@ class ScenarioConfig:
             object.__setattr__(self, "scenario_label", self.AdoptPolicyCls.name)
 
         self._set_AttackerBasePolicyCls()
+        self._validate_no_withdrawal_mixing()
 
     def _set_AttackerBasePolicyCls(self):
         # This is to assist with ShortestPathPrefixHijacks
@@ -132,6 +134,34 @@ class ScenarioConfig:
                 self.ScenarioCls, "RequiredASPAAttackerCls", None
             )
             object.__setattr__(self, "AttackerBasePolicyCls", AttackerBasePolicyCls)
+
+    def _validate_no_withdrawal_mixing(self) -> None:
+        """Validates that, when using withdrawals, all classes can handle withdrawals"""
+
+        policies_used = self._get_policies_used()
+        total_bgpfull_subclasses = len([issubclass(x, BGPFull) for x in policies_used])
+        if (
+            total_bgpfull_subclasses != len(policies_used)
+            and total_bgpfull_subclasses > 0
+        ):
+            warn(
+                "You're mixing policies that use withdrawals with classes that may not",
+                category=DeprecationWarning,
+                stacklevel=2,
+            )
+
+    def _get_policies_used(self) -> frozenset[type[Policy]]:
+        """Gets all Policy classes used in this scenario config for validation"""
+
+        policies_used = {self.BasePolicyCls, self.AdoptPolicyCls}
+        if self.AttackerBasePolicyCls:
+            policies_used.add(self.AttackerBasePolicyCls)
+        for asn_to_policy_dict in (
+            self.hardcoded_asn_cls_dict,
+            self.hardcoded_base_asn_cls_dict,
+        ):
+            policies_used.update(asn_to_policy_dict.values())
+        return frozenset(policies_used)
 
     ##############
     # Yaml Funcs #

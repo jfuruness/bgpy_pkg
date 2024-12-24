@@ -5,3 +5,5 @@ AccidentalRouteLeak,BGP,BGP,False,DATA,all_wout_ixps,VICTIM_SUCCESS,0,1,80.0,0,,
 AccidentalRouteLeak,BGP,BGP,Any,DATA,all_wout_ixps,VICTIM_SUCCESS,0,1,80.0,0,,BGP
 AccidentalRouteLeak,BGP,BGP,False,DATA,all_wout_ixps,DISCONNECTED,0,1,0.0,0,,BGP
 AccidentalRouteLeak,BGP,BGP,Any,DATA,all_wout_ixps,DISCONNECTED,0,1,0.0,0,,BGP
+AccidentalRouteLeak,BGP,BGP,False,DATA,all_wout_ixps,DATA_PLANE_LOOP,0,1,0.0,0,,BGP
+AccidentalRouteLeak,BGP,BGP,Any,DATA,all_wout_ixps,DATA_PLANE_LOOP,0,1,0.0,0,,BGP

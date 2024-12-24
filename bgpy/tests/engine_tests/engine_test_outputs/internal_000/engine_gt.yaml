@@ -5,105 +5,82 @@ as_graph: !yamlable/CAIDAASGraph
       as_rank: 0
       asn: 1
       customer_cone_asns: null
-      customer_cone_size: 1
+      customer_cone_size: 2
       customers: !!python/tuple
-      - 4
+      - 2
       input_clique: false
       ixp: false
-      peers: !!python/tuple
-      - 3
-      - 5
+      peers: !!python/tuple []
       policy: !yamlable/BGP%20Full
         local_rib: !simulator_codec/LocalRIB
           1.2.0.0/16: !yamlable/Announcement
             as_path: !!python/tuple
             - 1
-            - 3
+            - 666
             bgpsec_as_path: !!python/tuple []
             bgpsec_next_asn: null
-            next_hop_asn: 3
+            next_hop_asn: 666
             only_to_customers: null
             prefix: 1.2.0.0/16
             recv_relationship: !simulator_codec/Relationships
-              name: PEERS
-              value: 2
+              name: PROVIDERS
+              value: 1
             rovpp_blackhole: false
             seed_asn: null
-            timestamp: 0
+            timestamp: 1
             withdraw: false
         recv_q: !simulator_codec/RecvQueue {}
         ribs_in: !simulator_codec/RIBsIn
-          2:
+          666:
             1.2.0.0/16: !yamlable/AnnInfo
               recv_relationship: !simulator_codec/Relationships
                 name: PROVIDERS
                 value: 1
               unprocessed_ann: !yamlable/Announcement
                 as_path: !!python/tuple
-                - 2
+                - 666
                 bgpsec_as_path: !!python/tuple []
                 bgpsec_next_asn: null
-                next_hop_asn: 2
+                next_hop_asn: 666
                 only_to_customers: null
                 prefix: 1.2.0.0/16
                 recv_relationship: !simulator_codec/Relationships
                   name: ORIGIN
                   value: 4
                 rovpp_blackhole: false
-                seed_asn: 2
-                timestamp: 0
-                withdraw: false
-          3:
-            1.2.0.0/16: !yamlable/AnnInfo
-              recv_relationship: !simulator_codec/Relationships
-                name: PEERS
-                value: 2
-              unprocessed_ann: !yamlable/Announcement
-                as_path: !!python/tuple
-                - 3
-                bgpsec_as_path: !!python/tuple []
-                bgpsec_next_asn: null
-                next_hop_asn: 3
-                only_to_customers: null
-                prefix: 1.2.0.0/16
-                recv_relationship: !simulator_codec/Relationships
-                  name: ORIGIN
-                  value: 4
-                rovpp_blackhole: false
-                seed_asn: 3
-                timestamp: 0
+                seed_asn: 666
+                timestamp: 1
                 withdraw: false
         ribs_out: !simulator_codec/RIBsOut
-          4:
+          2:
             1.2.0.0/16: !yamlable/Announcement
               as_path: !!python/tuple
               - 1
-              - 3
+              - 666
               bgpsec_as_path: !!python/tuple []
               bgpsec_next_asn: null
               next_hop_asn: 1
               only_to_customers: null
               prefix: 1.2.0.0/16
               recv_relationship: !simulator_codec/Relationships
-                name: PEERS
-                value: 2
+                name: PROVIDERS
+                value: 1
               rovpp_blackhole: false
               seed_asn: null
-              timestamp: 0
+              timestamp: 1
               withdraw: false
-        send_q: !simulator_codec/SendQueue {}
-      propagation_rank: 1
+      propagation_rank: 2
       provider_cone_asns: null
       provider_cone_size: null
       providers: !!python/tuple
-      - 2
+      - 666
     2: !yamlable/AS
       as_rank: 0
       asn: 2
       customer_cone_asns: null
-      customer_cone_size: 0
+      customer_cone_size: 1
       customers: !!python/tuple
-      - 1
+      - 3
       input_clique: false
       ixp: false
       peers: !!python/tuple []
@@ -112,109 +89,8 @@ as_graph: !yamlable/CAIDAASGraph
           1.2.0.0/16: !yamlable/Announcement
             as_path: !!python/tuple
             - 2
-            bgpsec_as_path: !!python/tuple []
-            bgpsec_next_asn: null
-            next_hop_asn: 2
-            only_to_customers: null
-            prefix: 1.2.0.0/16
-            recv_relationship: !simulator_codec/Relationships
-              name: ORIGIN
-              value: 4
-            rovpp_blackhole: false
-            seed_asn: 2
-            timestamp: 0
-            withdraw: false
-        recv_q: !simulator_codec/RecvQueue {}
-        ribs_in: !simulator_codec/RIBsIn {}
-        ribs_out: !simulator_codec/RIBsOut
-          1:
-            1.2.0.0/16: !yamlable/Announcement
-              as_path: !!python/tuple
-              - 2
-              bgpsec_as_path: !!python/tuple []
-              bgpsec_next_asn: null
-              next_hop_asn: 2
-              only_to_customers: null
-              prefix: 1.2.0.0/16
-              recv_relationship: !simulator_codec/Relationships
-                name: ORIGIN
-                value: 4
-              rovpp_blackhole: false
-              seed_asn: 2
-              timestamp: 0
-              withdraw: false
-        send_q: !simulator_codec/SendQueue {}
-      propagation_rank: 2
-      provider_cone_asns: null
-      provider_cone_size: null
-      providers: !!python/tuple []
-    3: !yamlable/AS
-      as_rank: 0
-      asn: 3
-      customer_cone_asns: null
-      customer_cone_size: 0
-      customers: !!python/tuple []
-      input_clique: false
-      ixp: false
-      peers: !!python/tuple
-      - 1
-      policy: !yamlable/BGP%20Full
-        local_rib: !simulator_codec/LocalRIB
-          1.2.0.0/16: !yamlable/Announcement
-            as_path: !!python/tuple
-            - 3
-            bgpsec_as_path: !!python/tuple []
-            bgpsec_next_asn: null
-            next_hop_asn: 2
-            only_to_customers: null
-            prefix: 1.2.0.0/16
-            recv_relationship: !simulator_codec/Relationships
-              name: ORIGIN
-              value: 4
-            rovpp_blackhole: false
-            seed_asn: 3
-            timestamp: 0
-            withdraw: false
-        recv_q: !simulator_codec/RecvQueue {}
-        ribs_in: !simulator_codec/RIBsIn {}
-        ribs_out: !simulator_codec/RIBsOut
-          1:
-            1.2.0.0/16: !yamlable/Announcement
-              as_path: !!python/tuple
-              - 3
-              bgpsec_as_path: !!python/tuple []
-              bgpsec_next_asn: null
-              next_hop_asn: 3
-              only_to_customers: null
-              prefix: 1.2.0.0/16
-              recv_relationship: !simulator_codec/Relationships
-                name: ORIGIN
-                value: 4
-              rovpp_blackhole: false
-              seed_asn: 3
-              timestamp: 0
-              withdraw: false
-        send_q: !simulator_codec/SendQueue {}
-      propagation_rank: 0
-      provider_cone_asns: null
-      provider_cone_size: null
-      providers: !!python/tuple []
-    4: !yamlable/AS
-      as_rank: 0
-      asn: 4
-      customer_cone_asns: null
-      customer_cone_size: 0
-      customers: !!python/tuple []
-      input_clique: false
-      ixp: false
-      peers: !!python/tuple []
-      policy: !yamlable/BGP%20Full
-        local_rib: !simulator_codec/LocalRIB
-          1.2.0.0/16: !yamlable/Announcement
-            as_path: !!python/tuple
-            - 4
             - 1
-            - 3
+            - 666
             bgpsec_as_path: !!python/tuple []
             bgpsec_next_asn: null
             next_hop_asn: 1
@@ -225,7 +101,7 @@ as_graph: !yamlable/CAIDAASGraph
               value: 1
             rovpp_blackhole: false
             seed_asn: null
-            timestamp: 0
+            timestamp: 1
             withdraw: false
         recv_q: !simulator_codec/RecvQueue {}
         ribs_in: !simulator_codec/RIBsIn
@@ -237,46 +113,174 @@ as_graph: !yamlable/CAIDAASGraph
               unprocessed_ann: !yamlable/Announcement
                 as_path: !!python/tuple
                 - 1
-                - 3
+                - 666
                 bgpsec_as_path: !!python/tuple []
                 bgpsec_next_asn: null
                 next_hop_asn: 1
                 only_to_customers: null
                 prefix: 1.2.0.0/16
                 recv_relationship: !simulator_codec/Relationships
-                  name: PEERS
-                  value: 2
+                  name: PROVIDERS
+                  value: 1
                 rovpp_blackhole: false
                 seed_asn: null
-                timestamp: 0
+                timestamp: 1
                 withdraw: false
-        ribs_out: !simulator_codec/RIBsOut {}
-        send_q: !simulator_codec/SendQueue {}
-      propagation_rank: 0
+          777: {}
+        ribs_out: !simulator_codec/RIBsOut
+          3:
+            1.2.0.0/16: !yamlable/Announcement
+              as_path: !!python/tuple
+              - 2
+              - 1
+              - 666
+              bgpsec_as_path: !!python/tuple []
+              bgpsec_next_asn: null
+              next_hop_asn: 2
+              only_to_customers: null
+              prefix: 1.2.0.0/16
+              recv_relationship: !simulator_codec/Relationships
+                name: PROVIDERS
+                value: 1
+              rovpp_blackhole: false
+              seed_asn: null
+              timestamp: 1
+              withdraw: false
+      propagation_rank: 1
       provider_cone_asns: null
       provider_cone_size: null
       providers: !!python/tuple
       - 1
-    5: !yamlable/AS
-      as_rank: 0
-      asn: 5
+      - 777
+    3: !yamlable/AS
+      as_rank: 1
+      asn: 3
       customer_cone_asns: null
       customer_cone_size: 0
       customers: !!python/tuple []
       input_clique: false
       ixp: false
-      peers: !!python/tuple
+      peers: !!python/tuple []
+      policy: !yamlable/BGP%20Full
+        local_rib: !simulator_codec/LocalRIB
+          1.2.0.0/16: !yamlable/Announcement
+            as_path: !!python/tuple
+            - 3
+            - 2
+            - 1
+            - 666
+            bgpsec_as_path: !!python/tuple []
+            bgpsec_next_asn: null
+            next_hop_asn: 2
+            only_to_customers: null
+            prefix: 1.2.0.0/16
+            recv_relationship: !simulator_codec/Relationships
+              name: PROVIDERS
+              value: 1
+            rovpp_blackhole: false
+            seed_asn: null
+            timestamp: 1
+            withdraw: false
+        recv_q: !simulator_codec/RecvQueue {}
+        ribs_in: !simulator_codec/RIBsIn
+          2:
+            1.2.0.0/16: !yamlable/AnnInfo
+              recv_relationship: !simulator_codec/Relationships
+                name: PROVIDERS
+                value: 1
+              unprocessed_ann: !yamlable/Announcement
+                as_path: !!python/tuple
+                - 2
+                - 1
+                - 666
+                bgpsec_as_path: !!python/tuple []
+                bgpsec_next_asn: null
+                next_hop_asn: 2
+                only_to_customers: null
+                prefix: 1.2.0.0/16
+                recv_relationship: !simulator_codec/Relationships
+                  name: PROVIDERS
+                  value: 1
+                rovpp_blackhole: false
+                seed_asn: null
+                timestamp: 1
+                withdraw: false
+        ribs_out: !simulator_codec/RIBsOut {}
+      propagation_rank: 0
+      provider_cone_asns: null
+      provider_cone_size: null
+      providers: !!python/tuple
+      - 2
+    666: !yamlable/AS
+      as_rank: 1
+      asn: 666
+      customer_cone_asns: null
+      customer_cone_size: 0
+      customers: !!python/tuple
       - 1
+      input_clique: false
+      ixp: false
+      peers: !!python/tuple []
+      policy: !yamlable/BGP%20Full
+        local_rib: !simulator_codec/LocalRIB
+          1.2.0.0/16: !yamlable/Announcement
+            as_path: !!python/tuple
+            - 666
+            bgpsec_as_path: !!python/tuple []
+            bgpsec_next_asn: null
+            next_hop_asn: 666
+            only_to_customers: null
+            prefix: 1.2.0.0/16
+            recv_relationship: !simulator_codec/Relationships
+              name: ORIGIN
+              value: 4
+            rovpp_blackhole: false
+            seed_asn: 666
+            timestamp: 1
+            withdraw: false
+        recv_q: !simulator_codec/RecvQueue {}
+        ribs_in: !simulator_codec/RIBsIn {}
+        ribs_out: !simulator_codec/RIBsOut
+          1:
+            1.2.0.0/16: !yamlable/Announcement
+              as_path: !!python/tuple
+              - 666
+              bgpsec_as_path: !!python/tuple []
+              bgpsec_next_asn: null
+              next_hop_asn: 666
+              only_to_customers: null
+              prefix: 1.2.0.0/16
+              recv_relationship: !simulator_codec/Relationships
+                name: ORIGIN
+                value: 4
+              rovpp_blackhole: false
+              seed_asn: 666
+              timestamp: 1
+              withdraw: false
+      propagation_rank: 3
+      provider_cone_asns: null
+      provider_cone_size: null
+      providers: !!python/tuple []
+    777: !yamlable/AS
+      as_rank: 1
+      asn: 777
+      customer_cone_asns: null
+      customer_cone_size: 0
+      customers: !!python/tuple
+      - 2
+      input_clique: false
+      ixp: false
+      peers: !!python/tuple []
       policy: !yamlable/BGP%20Full
         local_rib: !simulator_codec/LocalRIB {}
         recv_q: !simulator_codec/RecvQueue {}
         ribs_in: !simulator_codec/RIBsIn {}
-        ribs_out: !simulator_codec/RIBsOut {}
-        send_q: !simulator_codec/SendQueue {}
-      propagation_rank: 0
+        ribs_out: !simulator_codec/RIBsOut
+          2: {}
+      propagation_rank: 2
       provider_cone_asns: null
       provider_cone_size: null
       providers: !!python/tuple []
   ixp_asns: []
 cached_as_graph_tsv_path: null
-ready_to_run_round: 3
+ready_to_run_round: 2

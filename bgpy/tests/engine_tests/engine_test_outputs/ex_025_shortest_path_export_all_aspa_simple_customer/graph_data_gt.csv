@@ -5,3 +5,5 @@ ShortestPathPrefixHijack,ASPA,BGP,False,DATA,all_wout_ixps,VICTIM_SUCCESS,0,0,80
 ShortestPathPrefixHijack,ASPA,BGP,Any,DATA,all_wout_ixps,VICTIM_SUCCESS,0,0,80.0,0,,ASPA
 ShortestPathPrefixHijack,ASPA,BGP,False,DATA,all_wout_ixps,DISCONNECTED,0,0,0.0,0,,ASPA
 ShortestPathPrefixHijack,ASPA,BGP,Any,DATA,all_wout_ixps,DISCONNECTED,0,0,0.0,0,,ASPA
+ShortestPathPrefixHijack,ASPA,BGP,False,DATA,all_wout_ixps,DATA_PLANE_LOOP,0,0,0.0,0,,ASPA
+ShortestPathPrefixHijack,ASPA,BGP,Any,DATA,all_wout_ixps,DATA_PLANE_LOOP,0,0,0.0,0,,ASPA

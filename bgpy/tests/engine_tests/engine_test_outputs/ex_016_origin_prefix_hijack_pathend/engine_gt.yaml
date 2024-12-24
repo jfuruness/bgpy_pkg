@@ -153,7 +153,6 @@ as_graph: !yamlable/CAIDAASGraph
               seed_asn: null
               timestamp: 1
               withdraw: false
-        send_q: !simulator_codec/SendQueue {}
       propagation_rank: 1
       provider_cone_asns: null
       provider_cone_size: null

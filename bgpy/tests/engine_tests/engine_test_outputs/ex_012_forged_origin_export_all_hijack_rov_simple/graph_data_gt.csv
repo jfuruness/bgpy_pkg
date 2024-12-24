@@ -5,3 +5,5 @@ ForgedOriginPrefixHijack,ROV,ROV,False,DATA,all_wout_ixps,VICTIM_SUCCESS,0,0,80.
 ForgedOriginPrefixHijack,ROV,ROV,Any,DATA,all_wout_ixps,VICTIM_SUCCESS,0,0,80.0,0,,ROV
 ForgedOriginPrefixHijack,ROV,ROV,False,DATA,all_wout_ixps,DISCONNECTED,0,0,0.0,0,,ROV
 ForgedOriginPrefixHijack,ROV,ROV,Any,DATA,all_wout_ixps,DISCONNECTED,0,0,0.0,0,,ROV
+ForgedOriginPrefixHijack,ROV,ROV,False,DATA,all_wout_ixps,DATA_PLANE_LOOP,0,0,0.0,0,,ROV
+ForgedOriginPrefixHijack,ROV,ROV,Any,DATA,all_wout_ixps,DATA_PLANE_LOOP,0,0,0.0,0,,ROV

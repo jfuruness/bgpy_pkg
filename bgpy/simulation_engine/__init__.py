@@ -1,6 +1,6 @@
 # Skip isort formatting due to circular imports if Announcement isn't first
 from .announcement import Announcement  # isort: skip
-from .ann_containers import LocalRIB, RecvQueue, RIBsIn, RIBsOut, SendQueue
+from .ann_containers import LocalRIB, RecvQueue, RIBsIn, RIBsOut
 
 # Custom attacker policies
 from .policies import (
@@ -11,6 +11,8 @@ from .policies import (
     ASRA,
     ASRAFull,
     BGPFull,
+    BGPFullIgnoreInvalid,
+    BGPFullSuppressWithdrawals,
     BGPiSecTransitive,
     BGPiSecTransitiveOnlyToCustomers,
     BGPiSecTransitiveProConID,
@@ -25,6 +27,7 @@ from .policies import (
     BGPSecFull,
     EdgeFilter,
     EdgeFilterFull,
+    RoSTFull,
     ROVEdgeFilter,
     ROVEdgeFilterFull,
     EnforceFirstAS,
@@ -57,10 +60,11 @@ __all__ = [
     "LocalRIB",
     "RIBsIn",
     "RIBsOut",
-    "SendQueue",
     "RecvQueue",
     "BGP",
     "BGPFull",
+    "BGPFullIgnoreInvalid",
+    "BGPFullSuppressWithdrawals",
     "PeerROV",
     "PeerROVFull",
     "ROV",
@@ -86,6 +90,7 @@ __all__ = [
     "ROVEdgeFilterFull",
     "EnforceFirstAS",
     "EnforceFirstASFull",
+    "RoSTFull",
     "ROVEnforceFirstAS",
     "ROVEnforceFirstASFull",
     "OnlyToCustomersFull",
