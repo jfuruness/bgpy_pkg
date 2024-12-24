@@ -42,8 +42,8 @@ class BGPFull(BGP):
 
         for prefix, ann_list in self.recv_q.items():
             # Get announcement currently in local rib
-            current_ann: Ann | None = self.local_rib.get(prefix)
-            og_ann = current_ann
+            local_rib_ann: Ann | None = self.local_rib.get(prefix)
+            og_ann = local_rib_ann
 
             # For each announcement that is incoming
             for new_ann in ann_list:
@@ -56,15 +56,17 @@ class BGPFull(BGP):
 
                 # Process withdrawals even for invalid anns in the ribs_in
                 if new_ann.withdraw:
-                    current_ann = self._remove_from_local_rib_and_get_new_best_ann(
-                        og_ann, new_ann, current_ann
+                    local_rib_ann = self._remove_from_local_rib_and_get_new_best_ann(
+                        new_ann, local_rib_ann
                     )
                 else:
-                    current_ann = self._get_new_best_ann(current_ann, new_ann, from_rel)
+                    local_rib_ann = self._get_new_best_ann(
+                        local_rib_ann, new_ann, from_rel
+                    )
 
-            if og_ann != current_ann:
-                if current_ann:
-                    self.local_rib.add_ann(current_ann)
+            if og_ann != local_rib_ann:
+                if local_rib_ann:
+                    self.local_rib.add_ann(local_rib_ann)
                 if og_ann:
                     self.withdraw_ann_from_neighbors(
                         og_ann.copy(
@@ -93,32 +95,30 @@ class BGPFull(BGP):
             self.ribs_in.add_unprocessed_ann(unprocessed_ann, from_rel)
 
     def _remove_from_local_rib_and_get_new_best_ann(
-        self, og_ann: "Ann | None", new_ann: "Ann", current_ann: "Ann | None"
+        self, new_ann: "Ann", local_rib_ann: "Ann | None"
     ) -> "Ann | None":
+        # This is for removing the original local RIB ann
         if (
-            og_ann
-            and new_ann.prefix == og_ann.prefix
+            local_rib_ann
+            and new_ann.prefix == local_rib_ann.prefix
             # new_ann is unproccessed
-            and new_ann.as_path == og_ann.as_path[1:]
-            and og_ann.recv_relationship != Relationships.ORIGIN
+            and new_ann.as_path == local_rib_ann.as_path[1:]
+            and local_rib_ann.recv_relationship != Relationships.ORIGIN
         ):
             # Withdrawal exists in the local RIB, so remove it and reset current ann
-            self.local_rib.pop(new_ann.prefix)
-            # Current_ann was the ann we just withdrew, so set it to None
-            if current_ann == og_ann:
-                current_ann = None
+            self.local_rib.pop(new_ann.prefix, None)
+            local_rib_ann = None
             # Get the new best ann thus far
             processed_best_ribs_in_ann = self._get_and_process_best_ribs_in_ann(
                 new_ann.prefix
             )
             if processed_best_ribs_in_ann:
-                return self._get_best_ann_by_gao_rexford(
-                    current_ann,
+                local_rib_ann = self._get_best_ann_by_gao_rexford(
+                    local_rib_ann,
                     processed_best_ribs_in_ann,
                 )
-            else:
-                return current_ann
-        return current_ann
+
+        return local_rib_ann
 
     def withdraw_ann_from_neighbors(self: "BGPFull", withdraw_ann: "Ann") -> None:
         """Withdraw a route from all neighbors.
@@ -185,6 +185,7 @@ class BGPFull(BGP):
     ):
         if not ann.withdraw:
             self.ribs_out.add_ann(neighbor.asn, ann)
+
         super()._process_outgoing_ann(neighbor, ann, propagate_to, send_rels)
 
     ##############
