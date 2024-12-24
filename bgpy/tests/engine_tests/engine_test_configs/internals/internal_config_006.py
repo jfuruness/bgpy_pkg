@@ -79,7 +79,7 @@ class InvalidAnnPostWithdrawalScenario(Scenario):
             for victim_asn in self.victim_asns:
                 as_obj = engine.as_graph.as_dict[victim_asn]
                 withdraw_ann = as_obj.policy.local_rib.pop(Prefixes.PREFIX.value).copy(
-                    {'withdraw': True}
+                    {"withdraw": True}
                 )
                 as_obj.policy.withdraw_ann_from_neighbors(withdraw_ann)
 

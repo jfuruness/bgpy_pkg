@@ -113,7 +113,8 @@ class BGPFull(BGP):
             )
             if processed_best_ribs_in_ann:
                 return self._get_best_ann_by_gao_rexford(
-                    current_ann, processed_best_ribs_in_ann,
+                    current_ann,
+                    processed_best_ribs_in_ann,
                 )
             else:
                 return current_ann

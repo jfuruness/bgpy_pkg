@@ -1,5 +1,3 @@
-
-
 from bgpy.simulation_engine.announcement import Announcement as Ann
 from bgpy.simulation_engine.policies.bgp import BGPFullIgnoreInvalid
 
