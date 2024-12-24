@@ -36,19 +36,20 @@ class RoSTFull(BGPFullIgnoreInvalid):
                 self.rost_trusted_repository.add_ann(ann)
 
     def add_suppressed_withdrawals_back_to_recv_q(self) -> None:
-        for ann_info in self.ribs_in.get_ann_infos():
-            ribs_in_ann = ann_info.unprocessed_ann
+        for inner_dict in self.ribs_in.values():
+            for ann_info in inner_dict.values():
+                ribs_in_ann = ann_info.unprocessed_ann
 
-            # Determine if the RIBsIn ann is already being withdrawn
-            withdrawal_in_recv_q = False
-            for ann in self.recv_q.get(ribs_in_ann.prefix, []):
-                if ribs_in_ann.as_path == ann.as_path:
-                    withdrawal_in_recv_q = True
+                # Determine if the RIBsIn ann is already being withdrawn
+                withdrawal_in_recv_q = False
+                for ann in self.recv_q.get(ribs_in_ann.prefix, []):
+                    if ribs_in_ann.as_path == ann.as_path:
+                        withdrawal_in_recv_q = True
 
-            # if ribs_in_ann withdrawal not in the recv_q,
-            # and ribs_in_ann in the trusted repo, create a withdrawal
-            if (
-                not withdrawal_in_recv_q
-                and self.rost_trusted_repository.seen_withdrawal(ribs_in_ann)
-            ):
-                self.recv_q.add_ann(ribs_in_ann.copy({"withdraw": True}))
+                # if ribs_in_ann withdrawal not in the recv_q,
+                # and ribs_in_ann in the trusted repo, create a withdrawal
+                if (
+                    not withdrawal_in_recv_q
+                    and self.rost_trusted_repository.seen_withdrawal(ribs_in_ann)
+                ):
+                    self.recv_q.add_ann(ribs_in_ann.copy({"withdraw": True}))
