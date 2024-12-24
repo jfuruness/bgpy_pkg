@@ -217,12 +217,10 @@ class BGPFull(BGP):
 
     def only_one_withdrawal_per_prefix_per_neighbor(self, anns: list["Ann"]) -> bool:
         """Ensures that neighbor didn't send two withdrawals for same prefix"""
-        assert (
-            not (
-                len([x.as_path[0] for x in anns if x.withdraw])
-                != len({x.as_path[0] for x in anns if x.withdraw})
-                and self.error_on_invalid_routes
-            )
+        assert not (
+            len([x.as_path[0] for x in anns if x.withdraw])
+            != len({x.as_path[0] for x in anns if x.withdraw})
+            and self.error_on_invalid_routes
         ), f"More than one withdrawal per prefix from the same neighbor {anns}"
         return True
 
@@ -233,12 +231,10 @@ class BGPFull(BGP):
             f"{self.as_.asn} Recieved two NON withdrawals "
             f"from the same neighbor {anns}"
         )
-        assert (
-            not (
-                len([(x.as_path[0], x.next_hop_asn) for x in anns if not x.withdraw])
-                != len({(x.as_path[0], x.next_hop_asn) for x in anns if not x.withdraw})
-                and self.error_on_invalid_routes
-            )
+        assert not (
+            len([(x.as_path[0], x.next_hop_asn) for x in anns if not x.withdraw])
+            != len({(x.as_path[0], x.next_hop_asn) for x in anns if not x.withdraw})
+            and self.error_on_invalid_routes
         ), err
         return True
 

@@ -7,7 +7,9 @@ from bgpy.as_graphs import ASGraphInfo
 from bgpy.as_graphs import CustomerProviderLink as CPLink
 from bgpy.shared.enums import ASNs, Prefixes, SpecialPercentAdoptions
 from bgpy.simulation_engine import (
-    BGPFullIgnoreInvalid, BGPFullSuppressWithdrawals, RoSTFull
+    BGPFullIgnoreInvalid,
+    BGPFullSuppressWithdrawals,
+    RoSTFull,
 )
 from bgpy.simulation_framework import ScenarioConfig, ValidPrefix
 from bgpy.tests.engine_tests.utils import EngineTestConfig
@@ -79,7 +81,7 @@ internal_config_002 = EngineTestConfig(
                 4: RoSTFull,
                 ASNs.VICTIM.value: BGPFullIgnoreInvalid,
             }
-        )
+        ),
     ),
     as_graph_info=as_graph_info,
 )
