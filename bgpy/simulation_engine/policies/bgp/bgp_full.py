@@ -218,10 +218,12 @@ class BGPFull(BGP):
     def only_one_withdrawal_per_prefix_per_neighbor(self, anns: list["Ann"]) -> bool:
         """Ensures that neighbor didn't send two withdrawals for same prefix"""
         assert (
-            len([x.as_path[0] for x in anns if x.withdraw])
-            == len({x.as_path[0] for x in anns if x.withdraw})
-            and self.error_on_invalid_routes
-        ), "More than one withdrawal per prefix from the same neighbor"
+            not (
+                len([x.as_path[0] for x in anns if x.withdraw])
+                != len({x.as_path[0] for x in anns if x.withdraw})
+                and self.error_on_invalid_routes
+            )
+        ), f"More than one withdrawal per prefix from the same neighbor {anns}"
         return True
 
     def only_one_ann_per_prefix_per_neighbor(self, anns: list["Ann"]) -> bool:
@@ -232,9 +234,11 @@ class BGPFull(BGP):
             f"from the same neighbor {anns}"
         )
         assert (
-            len([(x.as_path[0], x.next_hop_asn) for x in anns if not x.withdraw])
-            == len({(x.as_path[0], x.next_hop_asn) for x in anns if not x.withdraw})
-            and self.error_on_invalid_routes
+            not (
+                len([(x.as_path[0], x.next_hop_asn) for x in anns if not x.withdraw])
+                != len({(x.as_path[0], x.next_hop_asn) for x in anns if not x.withdraw})
+                and self.error_on_invalid_routes
+            )
         ), err
         return True
 
@@ -245,10 +249,12 @@ class BGPFull(BGP):
         overwritten by withdrawals
         """
 
-        err = "Ann {ann} overwrote local RIB. You must withdraw first, then add new ann"
-        assert (
-            self.ribs_in.get_unprocessed_ann_recv_rel(ann.as_path[0], prefix) is None
-        ) and self.error_on_invalid_routes, str(self.as_.asn) + " " + str(ann) + err
+        ribs_in_ann = self.ribs_in.get_unprocessed_ann_recv_rel(ann.as_path[0], prefix)
+        err = (
+            f"Ann {ann} overwrote RIBsIn ann {ribs_in_ann} at AS {self.as_.asn}. "
+            "You must withdraw first, then add new ann"
+        )
+        assert ribs_in_ann is None or not self.error_on_invalid_routes, err
         return True
 
     ####################

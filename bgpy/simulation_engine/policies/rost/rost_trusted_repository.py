@@ -31,7 +31,7 @@ class RoSTTrustedRepository:
     def add_ann(self, ann: Ann) -> None:
         current_node = self._withdrawal_as_path_root
         visited = set()
-        for asn in ann.as_path:
+        for asn in ann.as_path[::-1]:
             if asn in visited:
                 raise NotImplementedError("We don't handle path poisoning yet")
             else:
@@ -56,7 +56,7 @@ class RoSTTrustedRepository:
 
     def seen_withdrawal(self, ribs_in_ann: Ann) -> bool:
         current_node = self._withdrawal_as_path_root
-        for asn in ribs_in_ann.as_path:
+        for asn in ribs_in_ann.as_path[::-1]:
             current_node = current_node.as_path_branches.get(asn)  # type: ignore
             if current_node is None:
                 return False  # type: ignore

@@ -81,6 +81,6 @@ class RIBsIn(AnnContainer[int, dict[str, AnnInfo]]):
 
         try:
             del self.data[neighbor_asn][prefix]
-        except AttributeError:
+        except KeyError:
             if err_on_invalid:
                 raise
