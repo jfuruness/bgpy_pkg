@@ -1,13 +1,16 @@
-from copy import deepcopy
+from typing import TYPE_CHECKING
 
 from frozendict import frozendict
 
-from bgpy.as_graphs import ASGraphInfo, PeerLink
+from bgpy.as_graphs import ASGraphInfo
 from bgpy.as_graphs import CustomerProviderLink as CPLink
 from bgpy.shared.enums import ASNs, Prefixes, SpecialPercentAdoptions, Timestamps
 from bgpy.simulation_engine import BaseSimulationEngine, BGPFull
-from bgpy.simulation_framework import ScenarioConfig, Scenario
+from bgpy.simulation_framework import Scenario, ScenarioConfig
 from bgpy.tests.engine_tests.utils import EngineTestConfig
+
+if TYPE_CHECKING:
+    from bgpy.simulation_engine import Announcement as Ann
 
 as_graph_info = ASGraphInfo(
     peer_links=frozenset(),

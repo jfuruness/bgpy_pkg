@@ -31,7 +31,7 @@ class RoSTFull(BGPFullIgnoreInvalid):
     def add_recv_q_to_rost_trusted_repository(self) -> None:
         """Adds all incoming withdrawals to recv_q"""
 
-        for prefix, list_of_anns in self.recv_q.items():
+        for list_of_anns in self.recv_q.values():
             for ann in list_of_anns:
                 self.rost_trusted_repository.add_ann(ann)
 

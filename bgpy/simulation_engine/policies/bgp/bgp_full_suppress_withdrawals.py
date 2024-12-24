@@ -1,4 +1,11 @@
+from typing import TYPE_CHECKING
+
 from .bgp_full_ignore_invalid import BGPFullIgnoreInvalid
+
+if TYPE_CHECKING:
+    from bgpy.as_graphs import AS
+    from bgpy.shared.enums import Relationships
+    from bgpy.simulation_engine import Announcement as Ann
 
 
 class BGPFullSuppressWithdrawals(BGPFullIgnoreInvalid):
@@ -7,11 +14,11 @@ class BGPFullSuppressWithdrawals(BGPFullIgnoreInvalid):
     name = "BGP Full Suppress Withdrawals"
 
     def _policy_propagate(
-        self: "BGP",
+        self,
         neighbor: "AS",
         ann: "Ann",
-        propagate_to: Relationships,
-        send_rels: set[Relationships],
+        propagate_to: "Relationships",
+        send_rels: set["Relationships"],
     ) -> bool:
         """Custom policy propagation that can be overriden
 
