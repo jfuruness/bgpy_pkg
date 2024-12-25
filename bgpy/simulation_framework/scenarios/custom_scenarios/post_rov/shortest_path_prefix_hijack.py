@@ -426,9 +426,12 @@ class ShortestPathPrefixHijack(VictimsPrefix):
                         # Prefer anns without OTC, always
                         elif ann.only_to_customers and not best_ann.only_to_customers:
                             continue
+                        elif not ann.only_to_customers and best_ann.only_to_customers:
+                            best_ann = ann
                         # Lastly prefer shorter paths
                         elif len(ann.as_path) < len(best_ann.as_path):
                             best_ann = ann
+
             if not best_ann:
                 # NOTE: may be possible due to the 1% being all disconnected ASes
                 # or when valid ann is in one of those disconnected ASes
