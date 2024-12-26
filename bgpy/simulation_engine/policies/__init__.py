@@ -1,4 +1,4 @@
-from .aspa import ASPA, ASPAFull, ASRA, ASRAFull
+from .aspa import ASPA, ASPAFull, ASRA, ASRAFull, ASPAwN, ASPAwNFull
 from .bgp import BGP, BGPFull, BGPFullIgnoreInvalid, BGPFullSuppressWithdrawals
 from .bgpisec import (
     BGPiSecTransitive,
@@ -86,6 +86,8 @@ __all__ = [
     "ASPAFull",
     "ASRA",
     "ASRAFull",
+    "ASPAwN",
+    "ASPAwNFull",
     "ShortestPathPrefixASPAAttacker",
     "FirstASNStrippingPrefixASPAAttacker",
 ]

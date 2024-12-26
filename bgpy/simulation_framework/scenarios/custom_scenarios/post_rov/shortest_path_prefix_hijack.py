@@ -15,6 +15,8 @@ from bgpy.simulation_engine import (
     BGP,
     ROV,
     ASPAFull,
+    ASPAwN,
+    ASPAwNFull,
     ASRAFull,
     BGPFull,
     BGPFullIgnoreInvalid,
@@ -544,7 +546,7 @@ class ShortestPathPrefixHijack(VictimsPrefix):
         i.e. shortest contiguous chain of ASPA providers ending in non adopter
         """
 
-        return frozenset({ASRA, ASRAFull})
+        return frozenset({ASRA, ASRAFull, ASPAwN, ASPAwNFull})
 
     @property
     def bgpisec_policy_classes(self) -> frozenset[type[Policy]]:

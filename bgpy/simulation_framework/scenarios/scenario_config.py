@@ -6,7 +6,15 @@ from frozendict import frozendict
 from roa_checker import ROA
 
 from bgpy.shared.enums import ASGroups
-from bgpy.simulation_engine import ASPA, ASRA, BGP, BGPFull, BGPiSecTransitive, Policy
+from bgpy.simulation_engine import (
+    ASPA,
+    ASRA,
+    BGP,
+    ASPAwN,
+    BGPFull,
+    BGPiSecTransitive,
+    Policy,
+)
 from bgpy.simulation_engine import Announcement as Ann
 
 if TYPE_CHECKING:
@@ -126,8 +134,9 @@ class ScenarioConfig:
 
     def _set_AttackerBasePolicyCls(self):
         # This is to assist with ShortestPathPrefixHijacks
-        if issubclass(self.AdoptPolicyCls, ASPA) and not issubclass(
-            self.AdoptPolicyCls, ASRA
+        if issubclass(self.AdoptPolicyCls, ASPA) and not (
+            issubclass(self.AdoptPolicyCls, ASRA)
+            or issubclass(self.AdoptPolicyCls, ASPAwN)  # type: ignore
         ):
             # Mypy thinks this is unreachable
             AttackerBasePolicyCls = getattr(  # type: ignore
