@@ -25,7 +25,8 @@ class RoSTFull(BGPFullIgnoreInvalid):
         """Adds withdrawals and anns you recieved to RoST trusted Repo"""
 
         self.add_recv_q_to_rost_trusted_repository()
-        self.add_suppressed_withdrawals_back_to_recv_q()
+        self.remove_anns_from_recv_q_that_should_be_withdrawn()
+        self.add_suppressed_withdrawals_back_to_recv_q(*args, **kwargs)
         super().process_incoming_anns(*args, **kwargs)
 
     def add_recv_q_to_rost_trusted_repository(self) -> None:
@@ -35,7 +36,20 @@ class RoSTFull(BGPFullIgnoreInvalid):
             for ann in list_of_anns:
                 self.rost_trusted_repository.add_ann(ann)
 
-    def add_suppressed_withdrawals_back_to_recv_q(self) -> None:
+    def remove_anns_from_recv_q_that_should_be_withdrawn(self):
+        for prefix, ann_list in self.recv_q.copy().items():
+            new_ann_list = list()
+            for ann in ann_list:
+                # So long as it's not a new ann that has a suppressed withdrawal
+                # add to recv_q
+                if not (
+                    ann.withdraw is False
+                    and self.rost_trusted_repository.seen_withdrawal(ann)
+                ):
+                    new_ann_list.append(ann)
+            self.recv_q[prefix] = new_ann_list
+
+    def add_suppressed_withdrawals_back_to_recv_q(self, *args, **kwargs) -> None:
         for inner_dict in self.ribs_in.values():
             for ann_info in inner_dict.values():
                 ribs_in_ann = ann_info.unprocessed_ann

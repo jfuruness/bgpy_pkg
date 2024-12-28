@@ -173,7 +173,15 @@ class BGPFull(BGP):
     ###################
 
     def _prev_sent(self: "BGPFull", neighbor: "AS", ann: "Ann") -> bool:
-        """Don't send what we've already sent"""
+        """Don't send what we've already sent
+
+        NOTE: I think this may not be functioning properly, this seems
+        to always return False even when it shouldn't...
+
+        But at least that won't affect results, just bad performance for
+        a very niche case
+        """
+
         return ann == self.ribs_out.get_ann(neighbor.asn, ann.prefix)
 
     def _process_outgoing_ann(
