@@ -38,7 +38,7 @@ class ASRA(ASPA):
         # If from_rel == PROVIDER, do ASRA-B "fake link" checks
         # i.e., check from min_up_ramp up to the end of the path
 
-        path = ann.as_path
+        path = ann.as_path[::-1]
         n = len(path)
 
         # Compute min_up_ramp in a simple way:
@@ -70,7 +70,7 @@ class ASRA(ASPA):
 
         If we never fail, we return len(path).
         """
-        path = ann.as_path
+        path = ann.as_path[::-1]
         for i in range(len(path) - 1):
             asn1 = path[i]
             asn2 = path[i + 1]
