@@ -74,11 +74,12 @@ class ASRA(ASPA):
         for i in range(len(path) - 1):
             asn1 = path[i]
             asn2 = path[i + 1]
-            asn1_obj = self.as_.as_graph.as_dict[asn1]
+            asn1_obj = self.as_.as_graph.as_dict.get(asn1)
 
+            # 1/5/2024 JF: Added check for if as1_obj doesn't exist
             # If asn1 does not adopt ASPA, we treat that
             # as 'No Attestation', so min_up_ramp ends here.
-            if not isinstance(asn1_obj.policy, ASPA):
+            if not asn1_obj or not isinstance(asn1_obj.policy, ASPA):
                 return i
 
             # If asn2 is not in asn1's provider list => 'Not Provider+',
@@ -103,17 +104,21 @@ class ASRA(ASPA):
         (i.e. policy is ASRA or child class), and asn2 is not in
         asn1.neighbor_asns."
         """
-        asn1_obj = self.as_.as_graph.as_dict[asn1]
+        asn1_obj = self.as_.as_graph.as_dict.get(asn1)
 
         # Must meet BOTH conditions to declare fake link:
         # 1) asn1 adopts ASPA and does NOT list asn2 as a provider
-        has_aspa_but_not_provider = isinstance(asn1_obj.policy, ASPA) and (
-            asn2 not in asn1_obj.provider_asns
+        has_aspa_but_not_provider = (
+            asn1_obj
+            and isinstance(asn1_obj.policy, ASPA)
+            and asn2 not in asn1_obj.provider_asns
         )
 
         # 2) asn1 also adopts ASRA and does NOT list asn2 as neighbor
-        has_asra_but_not_neighbor = isinstance(asn1_obj.policy, ASRA) and (
-            asn2 not in asn1_obj.neighbor_asns
+        has_asra_but_not_neighbor = (
+            asn1_obj
+            and isinstance(asn1_obj.policy, ASRA)
+            and asn2 not in asn1_obj.neighbor_asns
         )
 
         # If both are True => fake link

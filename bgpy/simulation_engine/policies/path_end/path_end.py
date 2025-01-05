@@ -16,9 +16,13 @@ class PathEnd(ROV):
         """Returns announcement validity by checking pathend records"""
 
         origin_asn = ann.origin
-        origin_as_obj = self.as_.as_graph.as_dict[origin_asn]
+        origin_as_obj = self.as_.as_graph.as_dict.get(origin_asn)
         # If the origin is deploying pathend and the path is longer than 1
-        if isinstance(origin_as_obj.policy, PathEnd) and len(ann.as_path) > 1:
+        if (
+            origin_as_obj
+            and isinstance(origin_as_obj.policy, PathEnd)
+            and len(ann.as_path) > 1
+        ):
             # If the provider is real, do the loop check
             # Mypy thinks this is unreachable for some reason, even tho tests pass
             for neighbor in origin_as_obj.neighbors:

@@ -134,11 +134,14 @@ class ASPA(ROV):
 
         False indicates Not Provider+
         True indicates No Attestation or Provider+
+
+        Updated so that if either AS doesn't exist, this function returns properly
         """
 
-        cur_as_obj = self.as_.as_graph.as_dict[asn1]
-        if isinstance(cur_as_obj.policy, ASPA):
-            next_as_obj = self.as_.as_graph.as_dict[asn2]
-            if next_as_obj.asn not in cur_as_obj.provider_asns:
+        cur_as_obj = self.as_.as_graph.as_dict.get(asn1)
+        if cur_as_obj and isinstance(cur_as_obj.policy, ASPA):
+            next_as_obj = self.as_.as_graph.as_dict.get(asn2)
+            next_asn = next_as_obj.asn if next_as_obj else next_as_obj
+            if next_asn not in cur_as_obj.provider_asns:
                 return False
         return True

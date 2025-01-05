@@ -37,9 +37,9 @@ class ASPAwN(ASPA):
         as_dict = self.as_.as_graph.as_dict
         for i, asn in enumerate(as_path):
             # Get the AS object for the current AS in the AS Path
-            asra_as_obj = as_dict[asn]
+            asra_as_obj = as_dict.get(asn)
             # If the AS is an ASRA AS
-            if isinstance(asra_as_obj.policy, ASPAwN):
+            if asra_as_obj and isinstance(asra_as_obj.policy, ASPAwN):
                 # Check that both of it's neighbors are in the valid next hops
                 for neighbor_index in (i - 1, i + 1):
                     # Can't use try except IndexError here, since -1 is a valid index
