@@ -27,8 +27,6 @@ class ASPA(ROV):
     def _valid_ann(self, ann: "Ann", from_rel: Relationships) -> bool:
         """Returns False if from peer/customer when aspa is set"""
 
-        assert len(set(ann.as_path)) == len(ann.as_path), "We deal with prepending"
-
         # Note: This first if check has to be removed if you want to implement
         # route server to RS-Client behaviour
         if not self._next_hop_valid(ann):
