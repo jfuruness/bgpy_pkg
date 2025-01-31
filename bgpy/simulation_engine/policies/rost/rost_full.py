@@ -5,7 +5,13 @@ from .rost_trusted_repository import RoSTTrustedRepository
 
 
 class RoSTFull(BGPFullIgnoreInvalid):
-    """Drops all withdrawals"""
+    """Implements RoST
+
+    The spec here needs to be brought in line with what's in the paper,
+    however, the security properties are the same. I wouldn't rely
+    on behavior that's going on under the hood though since it will
+    likely change in the future when I updated this
+    """
 
     name = "RoST Full"
 
@@ -24,17 +30,18 @@ class RoSTFull(BGPFullIgnoreInvalid):
     def process_incoming_anns(self, *args, **kwargs):
         """Adds withdrawals and anns you recieved to RoST trusted Repo"""
 
-        self.add_recv_q_to_rost_trusted_repository()
+        self.add_recv_q_to_rost_trusted_repository(*args, **kwargs)
         self.remove_anns_from_recv_q_that_should_be_withdrawn()
         self.add_suppressed_withdrawals_back_to_recv_q(*args, **kwargs)
         super().process_incoming_anns(*args, **kwargs)
 
-    def add_recv_q_to_rost_trusted_repository(self) -> None:
+    def add_recv_q_to_rost_trusted_repository(self, *args, **kwargs) -> None:
         """Adds all incoming withdrawals to recv_q"""
 
         for list_of_anns in self.recv_q.values():
             for ann in list_of_anns:
-                self.rost_trusted_repository.add_ann(ann)
+                processed_ann = self._copy_and_process(ann, kwargs["from_rel"])
+                self.rost_trusted_repository.add_ann(processed_ann)
 
     def remove_anns_from_recv_q_that_should_be_withdrawn(self):
         for prefix, ann_list in self.recv_q.copy().items():
@@ -44,7 +51,7 @@ class RoSTFull(BGPFullIgnoreInvalid):
                 # add to recv_q
                 if not (
                     ann.withdraw is False
-                    and self.rost_trusted_repository.seen_withdrawal(ann)
+                    and self.rost_trusted_repository.seen_withdrawal(ann, self.as_.asn)
                 ):
                     new_ann_list.append(ann)
             self.recv_q[prefix] = new_ann_list
@@ -64,6 +71,8 @@ class RoSTFull(BGPFullIgnoreInvalid):
                 # and ribs_in_ann in the trusted repo, create a withdrawal
                 if (
                     not withdrawal_in_recv_q
-                    and self.rost_trusted_repository.seen_withdrawal(ribs_in_ann)
+                    and self.rost_trusted_repository.seen_withdrawal(
+                        ribs_in_ann, self.as_.asn
+                    )
                 ):
                     self.recv_q.add_ann(ribs_in_ann.copy({"withdraw": True}))

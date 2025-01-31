@@ -1,0 +1,9 @@
+scenario_cls,AdoptingPolicyCls,BasePolicyCls,in_adopting_asns,outcome_type,as_group,outcome,percent_adopt,propagation_round,value,yerr,scenario_config_label,scenario_label
+WithdrawalValidPrefixScenario,BGPFullIgnoreInvalid,BGPFullIgnoreInvalid,False,DATA,all_wout_ixps,ATTACKER_SUCCESS,0,1,0.0,0,,BGP Full Ignore Invalid
+WithdrawalValidPrefixScenario,BGPFullIgnoreInvalid,BGPFullIgnoreInvalid,Any,DATA,all_wout_ixps,ATTACKER_SUCCESS,0,1,0.0,0,,BGP Full Ignore Invalid
+WithdrawalValidPrefixScenario,BGPFullIgnoreInvalid,BGPFullIgnoreInvalid,False,DATA,all_wout_ixps,VICTIM_SUCCESS,0,1,14.285714285714286,0,,BGP Full Ignore Invalid
+WithdrawalValidPrefixScenario,BGPFullIgnoreInvalid,BGPFullIgnoreInvalid,Any,DATA,all_wout_ixps,VICTIM_SUCCESS,0,1,14.285714285714286,0,,BGP Full Ignore Invalid
+WithdrawalValidPrefixScenario,BGPFullIgnoreInvalid,BGPFullIgnoreInvalid,False,DATA,all_wout_ixps,DISCONNECTED,0,1,85.71428571428571,0,,BGP Full Ignore Invalid
+WithdrawalValidPrefixScenario,BGPFullIgnoreInvalid,BGPFullIgnoreInvalid,Any,DATA,all_wout_ixps,DISCONNECTED,0,1,85.71428571428571,0,,BGP Full Ignore Invalid
+WithdrawalValidPrefixScenario,BGPFullIgnoreInvalid,BGPFullIgnoreInvalid,False,DATA,all_wout_ixps,DATA_PLANE_LOOP,0,1,0.0,0,,BGP Full Ignore Invalid
+WithdrawalValidPrefixScenario,BGPFullIgnoreInvalid,BGPFullIgnoreInvalid,Any,DATA,all_wout_ixps,DATA_PLANE_LOOP,0,1,0.0,0,,BGP Full Ignore Invalid
