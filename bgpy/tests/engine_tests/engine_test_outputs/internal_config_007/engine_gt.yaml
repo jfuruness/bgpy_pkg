@@ -29,6 +29,9 @@ as_graph: !yamlable/CAIDAASGraph
             recv_relationship: !simulator_codec/Relationships
               name: CUSTOMERS
               value: 3
+            rost_ids: !!python/tuple
+            - 1
+            - 3
             rovpp_blackhole: false
             seed_asn: null
             timestamp: 0
@@ -55,6 +58,8 @@ as_graph: !yamlable/CAIDAASGraph
                 recv_relationship: !simulator_codec/Relationships
                   name: CUSTOMERS
                   value: 3
+                rost_ids: !!python/tuple
+                - 3
                 rovpp_blackhole: false
                 seed_asn: null
                 timestamp: 0
@@ -77,6 +82,9 @@ as_graph: !yamlable/CAIDAASGraph
               recv_relationship: !simulator_codec/Relationships
                 name: CUSTOMERS
                 value: 3
+              rost_ids: !!python/tuple
+              - 1
+              - 3
               rovpp_blackhole: false
               seed_asn: null
               timestamp: 0
@@ -112,6 +120,8 @@ as_graph: !yamlable/CAIDAASGraph
             recv_relationship: !simulator_codec/Relationships
               name: CUSTOMERS
               value: 3
+            rost_ids: !!python/tuple
+            - 3
             rovpp_blackhole: false
             seed_asn: null
             timestamp: 0
@@ -139,6 +149,9 @@ as_graph: !yamlable/CAIDAASGraph
                 recv_relationship: !simulator_codec/Relationships
                   name: CUSTOMERS
                   value: 3
+                rost_ids: !!python/tuple
+                - 1
+                - 3
                 rovpp_blackhole: false
                 seed_asn: null
                 timestamp: 0
@@ -162,6 +175,8 @@ as_graph: !yamlable/CAIDAASGraph
                 recv_relationship: !simulator_codec/Relationships
                   name: CUSTOMERS
                   value: 3
+                rost_ids: !!python/tuple
+                - 3
                 rovpp_blackhole: false
                 seed_asn: null
                 timestamp: 0
@@ -183,6 +198,8 @@ as_graph: !yamlable/CAIDAASGraph
               recv_relationship: !simulator_codec/Relationships
                 name: CUSTOMERS
                 value: 3
+              rost_ids: !!python/tuple
+              - 3
               rovpp_blackhole: false
               seed_asn: null
               timestamp: 0
@@ -203,6 +220,8 @@ as_graph: !yamlable/CAIDAASGraph
               recv_relationship: !simulator_codec/Relationships
                 name: CUSTOMERS
                 value: 3
+              rost_ids: !!python/tuple
+              - 3
               rovpp_blackhole: false
               seed_asn: null
               timestamp: 0
@@ -239,6 +258,8 @@ as_graph: !yamlable/CAIDAASGraph
             recv_relationship: !simulator_codec/Relationships
               name: CUSTOMERS
               value: 3
+            rost_ids: !!python/tuple
+            - 3
             rovpp_blackhole: false
             seed_asn: null
             timestamp: 0
@@ -265,6 +286,8 @@ as_graph: !yamlable/CAIDAASGraph
                 recv_relationship: !simulator_codec/Relationships
                   name: CUSTOMERS
                   value: 3
+                rost_ids: !!python/tuple
+                - 3
                 rovpp_blackhole: false
                 seed_asn: null
                 timestamp: 0
@@ -287,6 +310,7 @@ as_graph: !yamlable/CAIDAASGraph
                 recv_relationship: !simulator_codec/Relationships
                   name: CUSTOMERS
                   value: 3
+                rost_ids: !!python/tuple []
                 rovpp_blackhole: false
                 seed_asn: null
                 timestamp: 0
@@ -307,6 +331,8 @@ as_graph: !yamlable/CAIDAASGraph
               recv_relationship: !simulator_codec/Relationships
                 name: CUSTOMERS
                 value: 3
+              rost_ids: !!python/tuple
+              - 3
               rovpp_blackhole: false
               seed_asn: null
               timestamp: 0
@@ -326,6 +352,8 @@ as_graph: !yamlable/CAIDAASGraph
               recv_relationship: !simulator_codec/Relationships
                 name: CUSTOMERS
                 value: 3
+              rost_ids: !!python/tuple
+              - 3
               rovpp_blackhole: false
               seed_asn: null
               timestamp: 0
@@ -345,6 +373,8 @@ as_graph: !yamlable/CAIDAASGraph
               recv_relationship: !simulator_codec/Relationships
                 name: CUSTOMERS
                 value: 3
+              rost_ids: !!python/tuple
+              - 3
               rovpp_blackhole: false
               seed_asn: null
               timestamp: 0
@@ -387,6 +417,7 @@ as_graph: !yamlable/CAIDAASGraph
                 recv_relationship: !simulator_codec/Relationships
                   name: CUSTOMERS
                   value: 3
+                rost_ids: !!python/tuple []
                 rovpp_blackhole: false
                 seed_asn: null
                 timestamp: 0
@@ -428,6 +459,8 @@ as_graph: !yamlable/CAIDAASGraph
             recv_relationship: !simulator_codec/Relationships
               name: PEERS
               value: 2
+            rost_ids: !!python/tuple
+            - 8
             rovpp_blackhole: false
             seed_asn: null
             timestamp: 0
@@ -453,6 +486,8 @@ as_graph: !yamlable/CAIDAASGraph
                 recv_relationship: !simulator_codec/Relationships
                   name: CUSTOMERS
                   value: 3
+                rost_ids: !!python/tuple
+                - 3
                 rovpp_blackhole: false
                 seed_asn: null
                 timestamp: 0
@@ -476,6 +511,7 @@ as_graph: !yamlable/CAIDAASGraph
                 recv_relationship: !simulator_codec/Relationships
                   name: CUSTOMERS
                   value: 3
+                rost_ids: !!python/tuple []
                 rovpp_blackhole: false
                 seed_asn: null
                 timestamp: 0
@@ -520,6 +556,8 @@ as_graph: !yamlable/CAIDAASGraph
                 recv_relationship: !simulator_codec/Relationships
                   name: CUSTOMERS
                   value: 3
+                rost_ids: !!python/tuple
+                - 3
                 rovpp_blackhole: false
                 seed_asn: null
                 timestamp: 0

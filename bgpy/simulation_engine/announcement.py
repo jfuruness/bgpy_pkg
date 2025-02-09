@@ -44,6 +44,9 @@ class Announcement(YamlAble):
     only_to_customers: int | None = None
     # ROV++ attribute
     rovpp_blackhole: bool = False
+    # RoST IDs. For our sim purposes, we just use the ASN as the ID
+    # Since there are no "batches"
+    rost_ids: tuple[int, ...] = ()
 
     def __post_init__(self):
         """Defaults seed_asn and next_hop_asn"""

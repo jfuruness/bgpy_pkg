@@ -72,6 +72,8 @@ as_graph: !yamlable/CAIDAASGraph
             recv_relationship: !simulator_codec/Relationships
               name: CUSTOMERS
               value: 3
+            rost_ids: !!python/tuple
+            - 4
             rovpp_blackhole: false
             seed_asn: null
             timestamp: 0
@@ -97,6 +99,8 @@ as_graph: !yamlable/CAIDAASGraph
                 recv_relationship: !simulator_codec/Relationships
                   name: CUSTOMERS
                   value: 3
+                rost_ids: !!python/tuple
+                - 4
                 rovpp_blackhole: false
                 seed_asn: null
                 timestamp: 0
@@ -117,6 +121,8 @@ as_graph: !yamlable/CAIDAASGraph
               recv_relationship: !simulator_codec/Relationships
                 name: CUSTOMERS
                 value: 3
+              rost_ids: !!python/tuple
+              - 4
               rovpp_blackhole: false
               seed_asn: null
               timestamp: 0
@@ -136,6 +142,8 @@ as_graph: !yamlable/CAIDAASGraph
               recv_relationship: !simulator_codec/Relationships
                 name: CUSTOMERS
                 value: 3
+              rost_ids: !!python/tuple
+              - 4
               rovpp_blackhole: false
               seed_asn: null
               timestamp: 0
@@ -202,6 +210,8 @@ as_graph: !yamlable/CAIDAASGraph
                 recv_relationship: !simulator_codec/Relationships
                   name: CUSTOMERS
                   value: 3
+                rost_ids: !!python/tuple
+                - 4
                 rovpp_blackhole: false
                 seed_asn: null
                 timestamp: 0
