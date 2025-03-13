@@ -95,7 +95,7 @@ class WithdrawalToPopulatedRIBsInThenBetterAnnScenario(Scenario):
 
 
 internal_config_001 = EngineTestConfig(
-    name="internal_001",
+    name="internal_config_001",
     desc="Tests that a better ann triggers a withdrawal",
     scenario_config=ScenarioConfig(
         ScenarioCls=WithdrawalToPopulatedRIBsInThenBetterAnnScenario,
