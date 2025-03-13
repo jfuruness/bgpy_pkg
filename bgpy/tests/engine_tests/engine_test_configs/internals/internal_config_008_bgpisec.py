@@ -14,7 +14,7 @@ from bgpy.tests.engine_tests.utils.engine_test_config import EngineTestConfig
 internal_config_008_bgpisec = EngineTestConfig(
     name="internal_config_008_bgpisec",
     desc="""
-    Taken from the paper, testing BGP-iSec partial path verification, where BGPsec would fail because of non adopting AS (AS 800) would downgrade from that AS onward back to BGP thus allowing the attacker forged announcement to be accepted.
+    Taken from the BGP-iSec paper, testing BGP-iSec partial path verification, where BGPsec would fail because of non adopting AS (AS 800) would downgrade from that AS onward back to BGP thus allowing the attacker forged announcement to be accepted.
     If this scenario is using BGPSec - which from the point of view of AS 9 is just BGP because of downgrade from AS 2 - AS 9 would have picked the attacker AS (because smaller ASN number compare to legitimate AS 800 announcement).
     """,
     scenario_config=ScenarioConfig(

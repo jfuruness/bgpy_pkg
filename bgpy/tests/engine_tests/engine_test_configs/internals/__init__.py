@@ -18,6 +18,8 @@ internal_configs = [
     internal_config_006,
     internal_config_007,
     internal_config_008_bgpisec,
+    internal_config_009_bgpisec,
+    internal_config_010_bgpisec,
 ]
 
 __all__ = ["internal_configs"]
