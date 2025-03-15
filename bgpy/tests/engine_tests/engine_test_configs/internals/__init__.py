@@ -6,6 +6,10 @@ from .internal_config_004 import internal_config_004
 from .internal_config_005 import internal_config_005
 from .internal_config_006 import internal_config_006
 from .internal_config_007 import internal_config_007
+from .internal_config_008_aspa import internal_config_008_aspa
+from .internal_config_009_aspa import internal_config_009_aspa
+from .internal_config_010_aspa import internal_config_010_aspa
+
 
 internal_configs = [
     internal_config_000,
@@ -16,6 +20,9 @@ internal_configs = [
     internal_config_005,
     internal_config_006,
     internal_config_007,
+    internal_config_008_aspa,
+    internal_config_009_aspa,
+    internal_config_010_aspa
 ]
 
 __all__ = ["internal_configs"]
