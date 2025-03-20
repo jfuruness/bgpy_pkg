@@ -1,42 +1,57 @@
-from typing import TYPE_CHECKING, Any
+from warnings import warn
 
 from bgpy.simulation_engine.announcement import Announcement as Ann
 from bgpy.simulation_engine.policies.bgp import BGPFullIgnoreInvalid
 
-from .rost_trusted_repository import RoSTTrustedRepository
-
-if TYPE_CHECKING:
-    from bgpy.shared.enums import Relationships
+from .as_path_rost_trusted_repository import ASPathRoSTTrustedRepository
 
 
-class RoSTFull(BGPFullIgnoreInvalid):
-    """Implements RoST. See paper for desription of spec"""
+class ASPathRoSTFull(BGPFullIgnoreInvalid):
+    """
+    NOTE: This is an old version that is no longer supported
+
+    Implements RoST
+
+    The spec here needs to be brought in line with what's in the paper,
+    however, the security properties are the same. I wouldn't rely
+    on behavior that's going on under the hood though since it will
+    likely change in the future when I updated this
+    """
 
     name = "RoST Full"
 
-    rost_trusted_repository = RoSTTrustedRepository()
+    rost_trusted_repository = ASPathRoSTTrustedRepository()
 
     def __init__(self, *args, **kwargs) -> None:
         self.rost_trusted_repository.clear()
         super().__init__(*args, **kwargs)
+        warn(
+            "This policy is not officially supported",
+            DeprecationWarning,
+            stacklevel=2,
+        )
 
     def withdraw_ann_from_neighbors(self, withdraw_ann: Ann) -> None:
         """Adds withdrawals you create to RoST Trusted Repo"""
 
-        self.rost_trusted_repository.add_ann(withdraw_ann, self.as_.asn, active=False)
+        self.rost_trusted_repository.add_ann(withdraw_ann)
         super().withdraw_ann_from_neighbors(withdraw_ann)
 
     def process_incoming_anns(self, *args, **kwargs):
         """Adds withdrawals and anns you recieved to RoST trusted Repo"""
 
+        self.add_recv_q_to_rost_trusted_repository(*args, **kwargs)
         self.remove_anns_from_recv_q_that_should_be_withdrawn()
         self.add_suppressed_withdrawals_back_to_recv_q(*args, **kwargs)
         super().process_incoming_anns(*args, **kwargs)
-        self.set_local_rib_anns_to_active()
 
-    def set_local_rib_anns_to_active(self) -> None:
-        for ann in self.local_rib.values():
-            self.rost_trusted_repository.add_ann(ann, self.as_.asn, active=True)
+    def add_recv_q_to_rost_trusted_repository(self, *args, **kwargs) -> None:
+        """Adds all incoming withdrawals to recv_q"""
+
+        for list_of_anns in self.recv_q.values():
+            for ann in list_of_anns:
+                processed_ann = self._copy_and_process(ann, kwargs["from_rel"])
+                self.rost_trusted_repository.add_ann(processed_ann)
 
     def remove_anns_from_recv_q_that_should_be_withdrawn(self):
         for prefix, ann_list in self.recv_q.copy().items():
@@ -46,7 +61,7 @@ class RoSTFull(BGPFullIgnoreInvalid):
                 # add to recv_q
                 if not (
                     ann.withdraw is False
-                    and self.rost_trusted_repository.seen_withdrawal(ann)
+                    and self.rost_trusted_repository.seen_withdrawal(ann, self.as_.asn)
                 ):
                     new_ann_list.append(ann)
             self.recv_q[prefix] = new_ann_list
@@ -66,33 +81,8 @@ class RoSTFull(BGPFullIgnoreInvalid):
                 # and ribs_in_ann in the trusted repo, create a withdrawal
                 if (
                     not withdrawal_in_recv_q
-                    and self.rost_trusted_repository.seen_withdrawal(ribs_in_ann)
+                    and self.rost_trusted_repository.seen_withdrawal(
+                        ribs_in_ann, self.as_.asn
+                    )
                 ):
                     self.recv_q.add_ann(ribs_in_ann.copy({"withdraw": True}))
-
-    def _copy_and_process(
-        self,
-        ann: "Ann",
-        recv_relationship: "Relationships",
-        overwrite_default_kwargs: dict[Any, Any] | None = None,
-    ) -> "Ann":
-        """Deep copies ann and modifies attrs
-
-        Prepends AS to AS Path and sets recv_relationship
-        """
-
-        if not overwrite_default_kwargs:
-            overwrite_default_kwargs = dict()
-        overwrite_default_kwargs.update(
-            {
-                "as_path": (self.as_.asn, *ann.as_path),
-                "recv_relationship": recv_relationship,
-                "seed_asn": None,
-                "rost_ids": (self.as_.asn, *ann.rost_ids),
-            }
-        )
-        return super()._copy_and_process(
-            ann=ann,
-            recv_relationship=recv_relationship,
-            overwrite_default_kwargs=overwrite_default_kwargs,
-        )

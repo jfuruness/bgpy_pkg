@@ -28,7 +28,7 @@ from .only_to_customers import OnlyToCustomers, OnlyToCustomersFull
 from .path_end import PathEnd, PathEndFull
 from .peerlock import PeerlockLite, PeerlockLiteFull
 from .policy import Policy
-from .rost import RoSTFull
+from .rost import ASPathRoSTFull, RoSTFull
 from .rov import ROV, PeerROV, PeerROVFull, ROVFull
 from .rovpp import (
     ROVPPV1Lite,
@@ -69,6 +69,7 @@ __all__ = [
     "ROVEdgeFilterFull",
     "EnforceFirstAS",
     "EnforceFirstASFull",
+    "ASPathRoSTFull",
     "RoSTFull",
     "ROVEnforceFirstAS",
     "ROVEnforceFirstASFull",
