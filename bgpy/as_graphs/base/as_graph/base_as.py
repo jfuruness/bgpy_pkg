@@ -184,7 +184,11 @@ class AS(YamlAble):
             "providers": tuple([x.asn for x in self.providers]),
             "input_clique": self.input_clique,
             "ixp": self.ixp,
-            "customer_cone_asns": self.customer_cone_asns,
+            "customer_cone_asns": (
+                tuple(self.customer_cone_asns)
+                if self.customer_cone_asns is not None
+                else None
+            ),
             "customer_cone_size": self.customer_cone_size,
             "provider_cone_asns": (
                 tuple(self.provider_cone_asns)
