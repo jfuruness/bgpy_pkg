@@ -4,6 +4,9 @@ from frozendict import frozendict
 from bgpy.as_graphs import CustomerProviderLink as CPLink
 from bgpy.as_graphs.base.as_graph_info import ASGraphInfo
 from bgpy.simulation_engine.policies.bgp.bgp.bgp import BGP
+from bgpy.simulation_engine.policies.bgpisec.bgpisec_transitive_only_to_customers import (
+    BGPiSecTransitiveOnlyToCustomers,
+)
 from bgpy.simulation_engine.policies.bgpisec.bgpisec_transitive_pro_con_id import (
     BGPiSecTransitiveProConID,
 )
@@ -27,6 +30,7 @@ internal_config_011_bgpisec = EngineTestConfig(
     """,
     scenario_config=ScenarioConfig(
         ScenarioCls=AccidentalRouteLeak,
+        # BasePolicyCls=BGPiSecTransitiveOnlyToCustomers,
         BasePolicyCls=BGPiSecTransitiveProConID,
         override_victim_asns=frozenset({ASNs.VICTIM.value}),
         override_attacker_asns=frozenset({ASNs.ATTACKER.value}),
