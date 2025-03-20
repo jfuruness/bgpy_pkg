@@ -43,15 +43,9 @@ internal_config_014_aspa = EngineTestConfig(
                 CPLink(provider_asn=8, customer_asn=2),
                 CPLink(provider_asn=9, customer_asn=4),
                 CPLink(provider_asn=10, customer_asn=ASNs.VICTIM.value),
-                CPLink(
-                    provider_asn=1000, customer_asn=8
-                ),  # Replaced ASNs.REFLECTOR with 1000
-                CPLink(
-                    provider_asn=1000, customer_asn=9
-                ),  # Replaced ASNs.REFLECTOR with 1000
-                CPLink(
-                    provider_asn=1000, customer_asn=10
-                ),  # Replaced ASNs.REFLECTOR with 1000
+                CPLink(provider_asn=13, customer_asn=8),
+                CPLink(provider_asn=13, customer_asn=9),
+                CPLink(provider_asn=13, customer_asn=10),
                 CPLink(provider_asn=12, customer_asn=10),
             ]
         ),
@@ -59,7 +53,7 @@ internal_config_014_aspa = EngineTestConfig(
             (ASNs.ATTACKER.value, ASNs.VICTIM.value),
             (1, 2, 3, 4),
             (5, 8, 9, 10),
-            (1000, 12),  # Replaced ASNs.REFLECTOR with 1000
+            (13, 12),
         ),
     ),
 )
