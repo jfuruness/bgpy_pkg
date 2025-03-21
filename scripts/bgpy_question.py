@@ -137,6 +137,9 @@ local_rib_1 = as_obj_1.policy.local_rib
 print("AS 1 local RIB")
 pprint(local_rib_1)
 
+as_path = local_rib_1["1.2.0.0/16"].as_path
+print(f"AS path of prefix 1.2.0.0/16: {as_path}")
+
 # To get where each AS traces back to on the data plane:
 as_graph_analyzer = ASGraphAnalyzer(simulation_engine, scenario)
 outcomes = as_graph_analyzer.analyze()
