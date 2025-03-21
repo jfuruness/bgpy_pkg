@@ -19,6 +19,7 @@ class EngineRunner:
         base_dir: Path = Path.home() / "Desktop" / "engine_runs",
         codec: SimulatorCodec | None = None,
         dpi: int | None = None,
+        output_format: OutputFormat = OutputFormat.YAML,
     ) -> None:
         self.conf: EngineRunConfig = conf
         self.codec: SimulatorCodec = codec if codec else SimulatorCodec()
@@ -28,9 +29,10 @@ class EngineRunner:
         self.storage_dir: Path = self.base_dir / self.conf.name
         self.storage_dir.mkdir(parents=True, exist_ok=True)
         self.dpi: int | None = dpi
+        self.output_format: OutputFormat = output_format
 
     def run_engine(
-        self, output_format=OutputFormat.YAML
+        self,
     ) -> tuple[BaseSimulationEngine, dict[int, int], GraphDataAggregator, Scenario]:
         """Performs a single engine run
 
@@ -76,7 +78,9 @@ class EngineRunner:
         )
         # Store engine and traceback YAML
         self._store_data(
-            engine, outcomes_yaml, graph_data_aggregator, output_format=output_format
+            engine,
+            outcomes_yaml,
+            graph_data_aggregator,
         )
         # Create diagrams before the test can fail
         self._generate_diagrams(scenario, graph_data_aggregator)
@@ -137,7 +141,6 @@ class EngineRunner:
         engine: BaseSimulationEngine,
         outcomes: dict[int, int],
         graph_data_aggregator: GraphDataAggregator,
-        output_format: OutputFormat = OutputFormat.YAML,
     ):
         """Stores YAML for the engine, outcomes, and CSV for metrics.
 
@@ -146,11 +149,11 @@ class EngineRunner:
 
         # Save engine
         self.codec.dump(
-            engine, path=self.engine_guess_path, output_format=output_format
+            engine, path=self.engine_guess_path, output_format=self.output_format
         )
         # Save outcomes
         self.codec.dump(
-            outcomes, path=self.outcomes_guess_path, output_format=output_format
+            outcomes, path=self.outcomes_guess_path, output_format=self.output_format
         )
         self._store_graph_data(graph_data_aggregator)
 
@@ -229,27 +232,35 @@ class EngineRunner:
     #########
     # Paths #
     #########
+    def _get_file_type(self) -> str:
+        file_type = "yaml"
+        match self.output_format:
+            case OutputFormat.YAML:
+                pass
+            case OutputFormat.JSON:
+                file_type = "json"
+        return file_type
 
     @property
     def engine_guess_path(self) -> Path:
-        """Returns the path to the engine's guess YAML"""
+        """Returns the path to the engine's guess file"""
 
-        return self.storage_dir / "engine_guess.yaml"
+        return self.storage_dir / f"engine_guess.{self._get_file_type()}"
 
     @property
     def outcomes_guess_path(self) -> Path:
-        """Returns the path to the outcomes guess YAML"""
+        """Returns the path to the outcomes guess file"""
 
-        return self.storage_dir / "outcomes_guess.yaml"
+        return self.storage_dir / f"outcomes_guess.{self._get_file_type()}"
 
     @property
     def graph_data_guess_path_csv(self) -> Path:
-        """Returns the path to the metrics guess YAML"""
+        """Returns the path to the metrics guess file"""
 
         return self.storage_dir / "graph_data_guess.csv"
 
     @property
     def graph_data_guess_path_pickle(self) -> Path:
-        """Returns the path to the metrics guess YAML"""
+        """Returns the path to the metrics guess file"""
 
         return self.storage_dir / "graph_data_guess.pickle"

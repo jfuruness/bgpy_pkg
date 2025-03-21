@@ -1,6 +1,7 @@
 # YAML STUFF
 from collections.abc import Iterable
 from enum import Enum
+import importlib
 from typing import Any
 
 import yaml
@@ -75,27 +76,34 @@ class SimulatorCodec(YamlCodec):
             return types_to_yaml_tags[type(obj)], vars(obj)
 
     def dump(self, obj, path=None, output_format=OutputFormat.YAML):
-        def custom_serializer(o):
-            # First, check if the object has a to_json method.
-            if hasattr(o, "__to_yaml_dict__"):
-                obj_dict = o.__to_yaml_dict__()
-                obj_dict.update({"class": o.__class__.__name__})
-                obj_dict.update({"module": o.__module__})
-                return obj_dict
-            # Next, check if the object is an Enum (or specifically a YamlAbleEnum).
-            elif isinstance(o, Enum):
-                # Return the value of the enum; adjust as needed to preserve YAML compatibility.
-                return o.value
+        match output_format:
+            case OutputFormat.YAML:
+                # https://stackoverflow.com/a/30682604/8903959
+                # Ignores references for more readable output
+                yaml.Dumper.ignore_aliases = lambda *args: True  # type: ignore
+                if path is None:
+                    yaml.dump(obj)
+                else:
+                    with path.open(mode="w") as f:
+                        yaml.dump(obj, f)
+            case OutputFormat.JSON:
 
-        # https://stackoverflow.com/a/30682604/8903959
-        # Ignores references for more readable output
-        test = json.dumps(obj, default=custom_serializer)
-        yaml.Dumper.ignore_aliases = lambda *args: True  # type: ignore
-        if path is None:
-            yaml.dump(obj)
-        else:
-            with path.open(mode="w") as f:
-                yaml.dump(obj, f)
+                def json_serializer(o):
+                    if hasattr(o, "__to_yaml_dict__"):
+                        obj_dict = {
+                            "class": o.__class__.__name__,
+                            "module": o.__module__,
+                        }
+                        obj_dict.update(o.__to_yaml_dict__())
+                        return obj_dict
+                    elif isinstance(o, Enum):
+                        return o.value
+
+                if path is None:
+                    json.dumps(obj, default=json_serializer)
+                else:
+                    with path.open(mode="w") as f:
+                        json.dump(obj, f, default=json_serializer)
 
     def load(self, path, output_format=OutputFormat.YAML):
         with path.open(mode="r") as f:
@@ -105,7 +113,17 @@ class SimulatorCodec(YamlCodec):
                     return yaml.load(f, Loader=SimulatorLoader)  # noqa: S506
                 case OutputFormat.JSON:
                     # return json.load(f, object_hook=)
-                    pass
+                    def json_deserializer(obj_dict: dict) -> Any:
+                        if "class" in obj_dict and "module" in obj_dict:
+                            module = importlib.import_module(obj_dict.pop("module"))
+                            class_instance = getattr(module, obj_dict.pop("class"))
+                            if hasattr(class_instance, "__from_yaml_dict__"):
+                                return class_instance.__from_yaml_dict__(obj_dict)
+                            else:
+                                class_instance(**obj_dict)
+                            return obj_dict
+
+                    return json.load(f, object_hook=json_deserializer)
 
 
 SimulatorCodec.register_with_pyyaml()

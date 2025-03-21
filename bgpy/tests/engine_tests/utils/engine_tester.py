@@ -58,7 +58,7 @@ class EngineTester(EngineRunner):
 
             self._store_metrics = noop
 
-    def test_engine(self, output_format=OutputFormat.YAML):
+    def test_engine(self):
         """Tests an engine run
 
         Takes in a scenario (initialized with adopt ASN, atk and vic ASN,
@@ -71,13 +71,9 @@ class EngineTester(EngineRunner):
             to the ground truth
         """
 
-        engine, outcomes_yaml, graph_data_aggregator, scenario = self.run_engine(
-            output_format=output_format
-        )
+        engine, outcomes_yaml, graph_data_aggregator, scenario = self.run_engine()
         # Store engine and traceback YAML
-        self._store_gt_data(
-            engine, outcomes_yaml, graph_data_aggregator, output_format=output_format
-        )
+        self._store_gt_data(engine, outcomes_yaml, graph_data_aggregator)
         # Create diagrams before the test can fail
         self._generate_gt_diagrams(scenario, graph_data_aggregator)
         # Compare the YAML's together
@@ -227,24 +223,24 @@ class EngineTester(EngineRunner):
 
     @property
     def engine_ground_truth_path(self) -> Path:
-        """Returns the path to the engine's ground truth YAML"""
+        """Returns the path to the engine's ground truth file"""
 
-        return self.storage_dir / "engine_gt.yaml"
+        return self.storage_dir / f"engine_gt.{self._get_file_type()}"
 
     @property
     def outcomes_ground_truth_path(self) -> Path:
-        """Returns the path to the outcomes ground truth YAML"""
+        """Returns the path to the outcomes ground truth file"""
 
-        return self.storage_dir / "outcomes_gt.yaml"
+        return self.storage_dir / f"outcomes_gt.{self._get_file_type()}"
 
     @property
     def graph_data_ground_truth_path_csv(self) -> Path:
-        """Returns the path to the metrics ground truth YAML"""
+        """Returns the path to the metrics ground truth file"""
 
         return self.storage_dir / "graph_data_gt.csv"
 
     @property
     def graph_data_ground_truth_path_pickle(self) -> Path:
-        """Returns the path to the metrics ground truth YAML"""
+        """Returns the path to the metrics ground truth file"""
 
         return self.storage_dir / "graph_data_gt.pickle"
