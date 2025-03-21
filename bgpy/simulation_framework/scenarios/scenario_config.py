@@ -93,9 +93,7 @@ class ScenarioConfig:
 
         if self.propagation_rounds is None:
             # BGP-iSec needs this. NOTE: mypy thinks this is unreachable
-            if (  # type: ignore
-                issubclass(self.AdoptPolicyCls, BGPiSecTransitive)
-            ):
+            if issubclass(self.AdoptPolicyCls, BGPiSecTransitive):  # type: ignore
                 from bgpy.simulation_framework import ShortestPathPrefixHijack
 
                 if issubclass(self.ScenarioCls, ShortestPathPrefixHijack):
@@ -228,7 +226,7 @@ class ScenarioConfig:
         return yaml_dict
 
     @classmethod
-    def __from_yaml_dict__(cls, dct, yaml_tag):
+    def __from_yaml_dict__(cls, dct, yaml_tag=""):
         """This optional method is called when you call yaml.load()"""
 
         dct["hardcoded_asn_cls_dict"] = cls._get_hardcoded_asn_cls_dict_from_yaml(

@@ -173,9 +173,9 @@ class EngineRunner:
         """Generates diagrams"""
 
         # Load engines
-        engine_guess = self.codec.load(self.engine_guess_path)
+        engine_guess = self.codec.load(self.engine_guess_path, output_format=self.output_format)
         # Load outcomes
-        outcomes_guess = self.codec.load(self.outcomes_guess_path)
+        outcomes_guess = self.codec.load(self.outcomes_guess_path, output_format=self.output_format)
 
         static_order = bool(self.conf.as_graph_info.diagram_ranks)
         diagram_obj_ranks = self._get_diagram_obj_ranks(engine_guess)

@@ -477,7 +477,7 @@ class Scenario:
         }
 
     @classmethod
-    def __from_yaml_dict__(cls, dct, yaml_tag):
+    def __from_yaml_dict__(cls, dct, yaml_tag = ""):
         """This optional method is called when you call yaml.load()"""
 
         return cls(

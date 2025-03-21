@@ -44,7 +44,7 @@ class AnnContainer(UserDict[KeyType, ValueType], Generic[KeyType, ValueType]):
         return self.data
 
     @classmethod
-    def __from_yaml_dict__(cls, dct, yaml_tag) -> "AnnContainer[KeyType, ValueType]":
+    def __from_yaml_dict__(cls, dct, yaml_tag="") -> "AnnContainer[KeyType, ValueType]":
         """This optional method is called when you call yaml.load()"""
 
         return cls(dct)

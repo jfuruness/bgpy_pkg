@@ -153,7 +153,7 @@ class SimulationEngine(BaseSimulationEngine):
 
     @classmethod
     def __from_yaml_dict__(
-        cls: type["SimulationEngine"], dct: dict[str, Any], yaml_tag: Any
+        cls: type["SimulationEngine"], dct: dict[str, Any], yaml_tag: Any = ""
     ) -> "SimulationEngine":
         """This optional method is called when you call yaml.load()"""
 

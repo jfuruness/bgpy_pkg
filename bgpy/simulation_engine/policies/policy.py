@@ -162,5 +162,5 @@ class Policy(YamlAble, metaclass=ABCMeta):
 
     @classmethod
     @abstractmethod
-    def __from_yaml_dict__(cls, dct, yaml_tag) -> "Policy":
+    def __from_yaml_dict__(cls, dct, yaml_tag="") -> "Policy":
         raise NotImplementedError

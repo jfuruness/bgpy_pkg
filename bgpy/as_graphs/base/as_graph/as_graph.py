@@ -283,7 +283,7 @@ class ASGraph(YamlAble):
         }
 
     @classmethod
-    def __from_yaml_dict__(cls, dct, yaml_tag) -> Any:
+    def __from_yaml_dict__(cls, dct, yaml_tag="") -> Any:
         """Optional method called when yaml.load is called"""
 
         return cls(

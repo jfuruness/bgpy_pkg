@@ -106,7 +106,7 @@ class Announcement(YamlAble):
 
     @classmethod
     def __from_yaml_dict__(
-        cls: type["Announcement"], dct: dict[str, Any], yaml_tag: Any
+        cls: type["Announcement"], dct: dict[str, Any], yaml_tag: Any = ""
     ) -> "Announcement":
         """This optional method is called when you call yaml.load()"""
 

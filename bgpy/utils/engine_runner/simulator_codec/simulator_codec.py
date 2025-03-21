@@ -97,7 +97,11 @@ class SimulatorCodec(YamlCodec):
                         obj_dict.update(o.__to_yaml_dict__())
                         return obj_dict
                     elif isinstance(o, Enum):
-                        return o.value
+                        return {
+                            "class": o.__class__.__name__,
+                            "module": o.__module__,
+                            "EnumValue": o.value,
+                        }
 
                 if path is None:
                     json.dumps(obj, default=json_serializer)
@@ -117,11 +121,13 @@ class SimulatorCodec(YamlCodec):
                         if "class" in obj_dict and "module" in obj_dict:
                             module = importlib.import_module(obj_dict.pop("module"))
                             class_instance = getattr(module, obj_dict.pop("class"))
+                            if "EnumValue" in obj_dict:
+                                return class_instance(obj_dict.get("EnumValue"))
                             if hasattr(class_instance, "__from_yaml_dict__"):
                                 return class_instance.__from_yaml_dict__(obj_dict)
                             else:
-                                class_instance(**obj_dict)
-                            return obj_dict
+                                return class_instance(**obj_dict)
+                        return obj_dict
 
                     return json.load(f, object_hook=json_deserializer)
 
