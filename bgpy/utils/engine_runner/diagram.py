@@ -219,6 +219,10 @@ class Diagram:
             "gradientangle": "270",
         }
 
+        # This code is here because the traceback can be serialized/pickled into JSON format where the keys are the ASNs. In JSON the key has to always be of type strings so this code chekcs if the first key is of type string, if yes it will convert all key to int type
+        if isinstance(next(iter((traceback))), str):
+            traceback = {int(key): value for key, value in traceback.items()}
+
         # If the as obj is the attacker
         if as_obj.asn in scenario.attacker_asns:
             kwargs.update({"fillcolor": "#ff6060", "shape": "doublecircle"})

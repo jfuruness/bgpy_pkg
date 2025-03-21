@@ -125,6 +125,11 @@ class ASGraph(YamlAble):
 
         self.ixp_asns: frozenset[int] = yaml_ixp_asns
         self.as_dict: frozendict[int, AS] = yaml_as_dict
+
+        # This code is here because the AS graph can be serialized/pickled into JSON format where the keys are the ASNs. In JSON the key has to always be of type strings so this code chekcs if the first key is of type string, if yes it will convert all key to int type
+        if isinstance(next(iter((self.as_dict))), str):
+            self.as_dict = {int(key): value for key, value in self.as_dict.items()}
+
         # Convert ASNs to refs
         for as_obj in self.as_dict.values():
             as_obj.as_graph = proxy(self)
