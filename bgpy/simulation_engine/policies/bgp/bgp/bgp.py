@@ -118,7 +118,7 @@ class BGP(Policy):
         return {"local_rib": self.local_rib, "recv_q": self.recv_q}
 
     @classmethod
-    def __from_yaml_dict__(cls, dct, yaml_tag="") -> Policy:
+    def __from_yaml_dict__(cls, dct, yaml_tag) -> Policy:
         """This optional method is called when you call yaml.load()"""
 
         return cls(**dct)

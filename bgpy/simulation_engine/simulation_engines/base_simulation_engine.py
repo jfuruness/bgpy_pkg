@@ -91,7 +91,7 @@ class BaseSimulationEngine(YamlAble, ABC):
     @classmethod
     @abstractmethod
     def __from_yaml_dict__(
-        cls: type["BaseSimulationEngine"], dct: dict[str, Any], yaml_tag: Any = ""
+        cls: type["BaseSimulationEngine"], dct: dict[str, Any], yaml_tag: Any
     ) -> "BaseSimulationEngine":
         """This optional method is called when you call yaml.load()"""
 
