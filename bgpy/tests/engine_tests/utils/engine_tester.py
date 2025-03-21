@@ -77,14 +77,13 @@ class EngineTester(EngineRunner):
         # Create diagrams before the test can fail
         self._generate_gt_diagrams(scenario, graph_data_aggregator)
         # Compare the YAML's together
-        self._compare_data()
+        self._compare_data(self.output_format)
 
     def _store_gt_data(
         self,
         engine: BaseSimulationEngine,
         outcomes: dict[int, int],
         graph_data_aggregator: GraphDataAggregator,
-        output_format: OutputFormat = OutputFormat.YAML,
     ) -> None:
         """Stores GROUND TRUTH YAML for the engine, outcomes, and CSV for metrics.
 
@@ -94,14 +93,14 @@ class EngineTester(EngineRunner):
         # Save engine as ground truth if ground truth doesn't exist
         if not self.engine_ground_truth_path.exists() or self.overwrite:
             self.codec.dump(
-                engine, path=self.engine_ground_truth_path, output_format=output_format
+                engine, path=self.engine_ground_truth_path, output_format=self.output_format
             )
         # Save outcomes as ground truth if ground truth doesn't exist
         if not self.outcomes_ground_truth_path.exists() or self.overwrite:
             self.codec.dump(
                 outcomes,
                 path=self.outcomes_ground_truth_path,
-                output_format=output_format,
+                output_format=self.output_format,
             )
 
         self._store_gt_metrics(graph_data_aggregator)
@@ -158,9 +157,9 @@ class EngineTester(EngineRunner):
         """Generates diagrams for ground truth"""
 
         # Load engines
-        engine_gt = self.codec.load(self.engine_ground_truth_path)
+        engine_gt = self.codec.load(self.engine_ground_truth_path, output_format=self.output_format)
         # Load outcomes
-        outcomes_gt = self.codec.load(self.outcomes_ground_truth_path)
+        outcomes_gt = self.codec.load(self.outcomes_ground_truth_path, output_format=self.output_format)
 
         static_order = bool(self.conf.as_graph_info.diagram_ranks)
         diagram_obj_ranks = self._get_diagram_obj_ranks(engine_gt)
@@ -179,16 +178,24 @@ class EngineTester(EngineRunner):
             dpi=self.dpi,
         )
 
-    def _compare_data(self) -> None:
+    def _compare_data(self, output_format: OutputFormat) -> None:
         """Compares YAML for ground truth vs guess for engine and outcomes"""
 
         # Compare Engine
-        engine_guess = self.codec.load(self.engine_guess_path)
-        engine_gt = self.codec.load(self.engine_ground_truth_path)
+        engine_guess = self.codec.load(
+            self.engine_guess_path, output_format=self.output_format
+        )
+        engine_gt = self.codec.load(
+            self.engine_ground_truth_path, output_format=self.output_format
+        )
         assert engine_guess == engine_gt, f"{self.conf.name} failed engine check"
         # Compare outcomes
-        outcomes_guess = self.codec.load(self.outcomes_guess_path)
-        outcomes_gt = self.codec.load(self.outcomes_ground_truth_path)
+        outcomes_guess = self.codec.load(
+            self.outcomes_guess_path, output_format=self.output_format
+        )
+        outcomes_gt = self.codec.load(
+            self.outcomes_ground_truth_path, output_format=self.output_format
+        )
         assert outcomes_guess == outcomes_gt, f"{self.conf.name} failed outcomes check"
 
         if self.compare_graph_data:

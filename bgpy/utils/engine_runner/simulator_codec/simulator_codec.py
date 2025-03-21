@@ -75,7 +75,7 @@ class SimulatorCodec(YamlCodec):
             # Encode the given object and also return the tag it should have
             return types_to_yaml_tags[type(obj)], vars(obj)
 
-    def dump(self, obj, path=None, output_format=OutputFormat.YAML):
+    def dump(self, obj, output_format: OutputFormat,path=None):
         match output_format:
             case OutputFormat.YAML:
                 # https://stackoverflow.com/a/30682604/8903959
@@ -109,7 +109,7 @@ class SimulatorCodec(YamlCodec):
                     with path.open(mode="w") as f:
                         json.dump(obj, f, default=json_serializer)
 
-    def load(self, path, output_format=OutputFormat.YAML):
+    def load(self, path, output_format: OutputFormat):
         with path.open(mode="r") as f:
             match output_format:
                 case OutputFormat.YAML:
@@ -124,7 +124,7 @@ class SimulatorCodec(YamlCodec):
                             if "EnumValue" in obj_dict:
                                 return class_instance(obj_dict.get("EnumValue"))
                             if hasattr(class_instance, "__from_yaml_dict__"):
-                                return class_instance.__from_yaml_dict__(obj_dict)
+                                return class_instance.__from_yaml_dict__(obj_dict, yaml_tag="")
                             else:
                                 return class_instance(**obj_dict)
                         return obj_dict
