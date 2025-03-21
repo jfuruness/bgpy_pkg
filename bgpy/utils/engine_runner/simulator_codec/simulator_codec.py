@@ -1,13 +1,17 @@
 # YAML STUFF
 from collections.abc import Iterable
+from enum import Enum
 from typing import Any
 
 import yaml
 from yamlable import YamlCodec
 
+import json
+
 from bgpy.shared.constants import bgpy_logger
 from bgpy.shared.enums import YamlAbleEnum
 from bgpy.simulation_engine.ann_containers.ann_container import AnnContainer
+from bgpy.utils.engine_runner.simulator_codec.output_format import OutputFormat
 
 from .simulator_loader import SimulatorLoader
 
@@ -70,9 +74,22 @@ class SimulatorCodec(YamlCodec):
             # Encode the given object and also return the tag it should have
             return types_to_yaml_tags[type(obj)], vars(obj)
 
-    def dump(self, obj, path=None):
+    def dump(self, obj, path=None, output_format=OutputFormat.YAML):
+        def custom_serializer(o):
+            # First, check if the object has a to_json method.
+            if hasattr(o, "__to_yaml_dict__"):
+                obj_dict = o.__to_yaml_dict__()
+                obj_dict.update({"class": o.__class__.__name__})
+                obj_dict.update({"module": o.__module__})
+                return obj_dict
+            # Next, check if the object is an Enum (or specifically a YamlAbleEnum).
+            elif isinstance(o, Enum):
+                # Return the value of the enum; adjust as needed to preserve YAML compatibility.
+                return o.value
+
         # https://stackoverflow.com/a/30682604/8903959
         # Ignores references for more readable output
+        test = json.dumps(obj, default=custom_serializer)
         yaml.Dumper.ignore_aliases = lambda *args: True  # type: ignore
         if path is None:
             yaml.dump(obj)
@@ -80,10 +97,15 @@ class SimulatorCodec(YamlCodec):
             with path.open(mode="w") as f:
                 yaml.dump(obj, f)
 
-    def load(self, path):
+    def load(self, path, output_format=OutputFormat.YAML):
         with path.open(mode="r") as f:
-            # This isn't insecure, ignore S506
-            return yaml.load(f, Loader=SimulatorLoader)  # noqa: S506
+            match output_format:
+                case OutputFormat.YAML:
+                    # This isn't insecure, ignore S506
+                    return yaml.load(f, Loader=SimulatorLoader)  # noqa: S506
+                case OutputFormat.JSON:
+                    # return json.load(f, object_hook=)
+                    pass
 
 
 SimulatorCodec.register_with_pyyaml()

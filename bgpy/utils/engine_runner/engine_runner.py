@@ -4,6 +4,7 @@ from bgpy.as_graphs.base import AS
 from bgpy.shared.enums import Outcomes, Plane, SpecialPercentAdoptions
 from bgpy.simulation_engine import BaseSimulationEngine
 from bgpy.simulation_framework import GraphDataAggregator, Scenario
+from bgpy.utils.engine_runner.simulator_codec.output_format import OutputFormat
 
 from .engine_run_config import EngineRunConfig
 from .simulator_codec import SimulatorCodec
@@ -29,7 +30,7 @@ class EngineRunner:
         self.dpi: int | None = dpi
 
     def run_engine(
-        self,
+        self, output_format=OutputFormat.YAML
     ) -> tuple[BaseSimulationEngine, dict[int, int], GraphDataAggregator, Scenario]:
         """Performs a single engine run
 
@@ -74,7 +75,9 @@ class EngineRunner:
             outcomes=outcomes,
         )
         # Store engine and traceback YAML
-        self._store_data(engine, outcomes_yaml, graph_data_aggregator)
+        self._store_data(
+            engine, outcomes_yaml, graph_data_aggregator, output_format=output_format
+        )
         # Create diagrams before the test can fail
         self._generate_diagrams(scenario, graph_data_aggregator)
 
@@ -134,6 +137,7 @@ class EngineRunner:
         engine: BaseSimulationEngine,
         outcomes: dict[int, int],
         graph_data_aggregator: GraphDataAggregator,
+        output_format: OutputFormat = OutputFormat.YAML,
     ):
         """Stores YAML for the engine, outcomes, and CSV for metrics.
 
@@ -141,9 +145,13 @@ class EngineRunner:
         """
 
         # Save engine
-        self.codec.dump(engine, path=self.engine_guess_path)
+        self.codec.dump(
+            engine, path=self.engine_guess_path, output_format=output_format
+        )
         # Save outcomes
-        self.codec.dump(outcomes, path=self.outcomes_guess_path)
+        self.codec.dump(
+            outcomes, path=self.outcomes_guess_path, output_format=output_format
+        )
         self._store_graph_data(graph_data_aggregator)
 
     def _store_graph_data(self, graph_data_aggregator: GraphDataAggregator) -> None:

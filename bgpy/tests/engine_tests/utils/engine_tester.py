@@ -5,6 +5,7 @@ from pathlib import Path
 from bgpy.simulation_engine import BaseSimulationEngine
 from bgpy.simulation_framework import GraphDataAggregator, Scenario
 from bgpy.utils import EngineRunner
+from bgpy.utils.engine_runner.simulator_codec.output_format import OutputFormat
 
 
 class EngineTester(EngineRunner):
@@ -57,7 +58,7 @@ class EngineTester(EngineRunner):
 
             self._store_metrics = noop
 
-    def test_engine(self):
+    def test_engine(self, output_format=OutputFormat.YAML):
         """Tests an engine run
 
         Takes in a scenario (initialized with adopt ASN, atk and vic ASN,
@@ -70,9 +71,13 @@ class EngineTester(EngineRunner):
             to the ground truth
         """
 
-        engine, outcomes_yaml, graph_data_aggregator, scenario = self.run_engine()
+        engine, outcomes_yaml, graph_data_aggregator, scenario = self.run_engine(
+            output_format=output_format
+        )
         # Store engine and traceback YAML
-        self._store_gt_data(engine, outcomes_yaml, graph_data_aggregator)
+        self._store_gt_data(
+            engine, outcomes_yaml, graph_data_aggregator, output_format=output_format
+        )
         # Create diagrams before the test can fail
         self._generate_gt_diagrams(scenario, graph_data_aggregator)
         # Compare the YAML's together
@@ -83,6 +88,7 @@ class EngineTester(EngineRunner):
         engine: BaseSimulationEngine,
         outcomes: dict[int, int],
         graph_data_aggregator: GraphDataAggregator,
+        output_format: OutputFormat = OutputFormat.YAML,
     ) -> None:
         """Stores GROUND TRUTH YAML for the engine, outcomes, and CSV for metrics.
 
@@ -91,10 +97,16 @@ class EngineTester(EngineRunner):
 
         # Save engine as ground truth if ground truth doesn't exist
         if not self.engine_ground_truth_path.exists() or self.overwrite:
-            self.codec.dump(engine, path=self.engine_ground_truth_path)
+            self.codec.dump(
+                engine, path=self.engine_ground_truth_path, output_format=output_format
+            )
         # Save outcomes as ground truth if ground truth doesn't exist
         if not self.outcomes_ground_truth_path.exists() or self.overwrite:
-            self.codec.dump(outcomes, path=self.outcomes_ground_truth_path)
+            self.codec.dump(
+                outcomes,
+                path=self.outcomes_ground_truth_path,
+                output_format=output_format,
+            )
 
         self._store_gt_metrics(graph_data_aggregator)
 
