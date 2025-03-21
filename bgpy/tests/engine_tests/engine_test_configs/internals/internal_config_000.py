@@ -82,7 +82,7 @@ class WithdrawalToPopulatedRIBsInScenario(Scenario):
 
 
 internal_config_000 = EngineTestConfig(
-    name="internal_000",
+    name="internal_config_000",
     desc="Tests best RIBsIn ann post withdrawal, and withdrawal forwarding",
     scenario_config=ScenarioConfig(
         ScenarioCls=WithdrawalToPopulatedRIBsInScenario,

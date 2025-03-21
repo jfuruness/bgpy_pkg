@@ -1,5 +1,9 @@
 from typing import TYPE_CHECKING
 
+from bgpy.simulation_engine.policies.bgpisec.bgpisec_transitive_pro_con_id import (
+    BGPiSecTransitiveProConID,
+)
+
 from .bgpisec_transitive_only_to_customers import BGPiSecTransitiveOnlyToCustomers
 from .provider_cone_id import ProviderConeID
 
@@ -8,7 +12,7 @@ if TYPE_CHECKING:
     from bgpy.simulation_engine.announcement import Announcement as Ann
 
 
-class BGPiSec(BGPiSecTransitiveOnlyToCustomers):
+class BGPiSec(BGPiSecTransitiveOnlyToCustomers, BGPiSecTransitiveProConID):
     """Represents BGPiSec (Transitive attributes, ProConeID, protected OTC)
 
     NOTE: OTC isn't "protected" in a code sense, but don't let your attacks
