@@ -116,7 +116,7 @@ class SimulatorCodec(YamlCodec):
                     # This isn't insecure, ignore S506
                     return yaml.load(f, Loader=SimulatorLoader)  # noqa: S506
                 case OutputFormat.JSON:
-                    # return json.load(f, object_hook=)
+
                     def json_deserializer(obj_dict: dict) -> Any:
                         if "class" in obj_dict and "module" in obj_dict:
                             module = importlib.import_module(obj_dict.pop("module"))

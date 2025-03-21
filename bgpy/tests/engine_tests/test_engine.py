@@ -23,11 +23,7 @@ class TestEngine:
         """
 
         EngineTester(
-            base_dir=self.base_dir,
-            conf=conf,
-            overwrite=overwrite,
-            dpi=dpi,
-            output_format=OutputFormat.JSON,
+            base_dir=self.base_dir, conf=conf, overwrite=overwrite, dpi=dpi
         ).test_engine()
 
     @property
