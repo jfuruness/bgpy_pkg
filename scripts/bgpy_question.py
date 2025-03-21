@@ -1,14 +1,14 @@
 from ipaddress import ip_network
 from pprint import pprint
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING
 
 from frozendict import frozendict
 from roa_checker import ROA
 
-from bgpy.as_graphs import AS, CAIDAASGraphConstructor
-from bgpy.shared.enums import Prefixes, Relationships, Timestamps, Outcomes, Plane
+from bgpy.as_graphs import CAIDAASGraphConstructor
+from bgpy.shared.enums import Outcomes, Plane, Prefixes, Relationships, Timestamps
+from bgpy.simulation_engine import ROV, SimulationEngine
 from bgpy.simulation_framework import ASGraphAnalyzer, Scenario, ScenarioConfig
-from bgpy.simulation_engine import SimulationEngine, ROV
 
 if TYPE_CHECKING:
     from bgpy.simulation_engine import Announcement as Ann
@@ -17,12 +17,14 @@ if TYPE_CHECKING:
 # Creating the BGP Dag/AS topology
 # Storing customer and/or provider cones takes up way more memory
 caida_as_graph = CAIDAASGraphConstructor(
-    as_graph_kwargs=frozendict({
-        "store_customer_cone_size": True,
-        "store_customer_cone_asns": False,
-        "store_provider_cone_size": False,
-        "store_provider_cone_asns": False,
-    })
+    as_graph_kwargs=frozendict(
+        {
+            "store_customer_cone_size": True,
+            "store_customer_cone_asns": False,
+            "store_provider_cone_size": False,
+            "store_provider_cone_asns": False,
+        }
+    )
 ).run()
 # Engine that runs the propagation
 simulation_engine = SimulationEngine(caida_as_graph)
@@ -36,6 +38,7 @@ as_obj = as_graph.as_dict[6]
 customer_as_objects = as_obj.customers
 # Get all the customer ASNs of the AS
 customer_asns = as_obj.customer_asns
+
 
 class CustomScenario(Scenario):
     def _get_announcements(
@@ -82,9 +85,11 @@ class CustomScenario(Scenario):
                     origin=x,
                     # By default, max length is equal to prefix length
                     # max_length="16"
-                ) for x in self.victim_asns
+                )
+                for x in self.victim_asns
             ]
         )
+
 
 # Create the ScenarioConfig
 attackers = frozenset({6, 8})
@@ -117,7 +122,7 @@ scenario = scenario_config.ScenarioCls(
     # you can set this to 0 and hardocde them in the
     # scenario_config.hardcoded_asn_cls_dict
     percent_adoption=0,  # ex: .5 for 50% random adoption
-    engine=simulation_engine
+    engine=simulation_engine,
 )
 
 # Set up the engine. Set adopting ASes and seed announcements
