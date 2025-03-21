@@ -5,7 +5,6 @@ from pathlib import Path
 from bgpy.simulation_engine import BaseSimulationEngine
 from bgpy.simulation_framework import GraphDataAggregator, Scenario
 from bgpy.utils import EngineRunner
-from bgpy.utils.engine_runner.simulator_codec.output_format import OutputFormat
 
 
 class EngineTester(EngineRunner):

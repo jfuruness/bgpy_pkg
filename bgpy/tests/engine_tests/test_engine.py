@@ -2,8 +2,6 @@ from pathlib import Path
 
 import pytest
 
-from bgpy.utils.engine_runner.simulator_codec.output_format import OutputFormat
-
 from .engine_test_configs import engine_test_configs
 from .utils import EngineTestConfig, EngineTester
 
