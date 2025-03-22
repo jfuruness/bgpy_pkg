@@ -1,0 +1,241 @@
+!yamlable/SimulationEngine
+as_graph: !yamlable/CAIDAASGraph
+  as_dict:
+    2: !yamlable/AS
+      as_rank: 1
+      asn: 2
+      customer_cone_asns: null
+      customer_cone_size: 1
+      customers: !!python/tuple
+      - 777
+      input_clique: false
+      ixp: false
+      peers: !!python/tuple []
+      policy: !yamlable/BGP
+        local_rib: !simulator_codec/LocalRIB
+          1.2.0.0/16: !yamlable/Announcement
+            as_path: !!python/tuple
+            - 2
+            - 777
+            bgpsec_as_path: !!python/tuple
+            - 777
+            bgpsec_next_asn: 2
+            next_hop_asn: 777
+            only_to_customers: null
+            prefix: 1.2.0.0/16
+            recv_relationship: !simulator_codec/Relationships
+              name: CUSTOMERS
+              value: 3
+            rost_ids: !!python/tuple []
+            rovpp_blackhole: false
+            seed_asn: null
+            timestamp: 0
+            withdraw: false
+        recv_q: !simulator_codec/RecvQueue {}
+      propagation_rank: 1
+      provider_cone_asns: !!python/tuple
+      - 4
+      provider_cone_size: 1
+      providers: !!python/tuple
+      - 4
+    3: !yamlable/AS
+      as_rank: 0
+      asn: 3
+      customer_cone_asns: null
+      customer_cone_size: 2
+      customers: !!python/tuple
+      - 5
+      - 666
+      input_clique: false
+      ixp: false
+      peers: !!python/tuple []
+      policy: !yamlable/BGP-iSec%20Transitive%20+%20ProConID
+        local_rib: !simulator_codec/LocalRIB
+          1.2.0.0/16: !yamlable/Announcement
+            as_path: !!python/tuple
+            - 3
+            - 4
+            - 2
+            - 777
+            bgpsec_as_path: !!python/tuple
+            - 3
+            - 4
+            - 777
+            bgpsec_next_asn: 3
+            next_hop_asn: 4
+            only_to_customers: null
+            prefix: 1.2.0.0/16
+            recv_relationship: !simulator_codec/Relationships
+              name: PROVIDERS
+              value: 1
+            rost_ids: !!python/tuple []
+            rovpp_blackhole: false
+            seed_asn: null
+            timestamp: 0
+            withdraw: false
+        recv_q: !simulator_codec/RecvQueue {}
+      propagation_rank: 1
+      provider_cone_asns: !!python/tuple
+      - 4
+      provider_cone_size: 1
+      providers: !!python/tuple
+      - 4
+    4: !yamlable/AS
+      as_rank: 0
+      asn: 4
+      customer_cone_asns: null
+      customer_cone_size: 5
+      customers: !!python/tuple
+      - 2
+      - 3
+      - 666
+      input_clique: false
+      ixp: false
+      peers: !!python/tuple []
+      policy: !yamlable/BGP-iSec%20Transitive%20+%20ProConID
+        local_rib: !simulator_codec/LocalRIB
+          1.2.0.0/16: !yamlable/Announcement
+            as_path: !!python/tuple
+            - 4
+            - 2
+            - 777
+            bgpsec_as_path: !!python/tuple
+            - 4
+            - 777
+            bgpsec_next_asn: 2
+            next_hop_asn: 2
+            only_to_customers: null
+            prefix: 1.2.0.0/16
+            recv_relationship: !simulator_codec/Relationships
+              name: CUSTOMERS
+              value: 3
+            rost_ids: !!python/tuple []
+            rovpp_blackhole: false
+            seed_asn: null
+            timestamp: 0
+            withdraw: false
+        recv_q: !simulator_codec/RecvQueue {}
+      propagation_rank: 2
+      provider_cone_asns: !!python/tuple []
+      provider_cone_size: 0
+      providers: !!python/tuple []
+    5: !yamlable/AS
+      as_rank: 2
+      asn: 5
+      customer_cone_asns: null
+      customer_cone_size: 0
+      customers: !!python/tuple []
+      input_clique: false
+      ixp: false
+      peers: !!python/tuple []
+      policy: !yamlable/BGP
+        local_rib: !simulator_codec/LocalRIB
+          1.2.0.0/16: !yamlable/Announcement
+            as_path: !!python/tuple
+            - 5
+            - 3
+            - 4
+            - 2
+            - 777
+            bgpsec_as_path: !!python/tuple
+            - 3
+            - 4
+            - 777
+            bgpsec_next_asn: 5
+            next_hop_asn: 3
+            only_to_customers: null
+            prefix: 1.2.0.0/16
+            recv_relationship: !simulator_codec/Relationships
+              name: PROVIDERS
+              value: 1
+            rost_ids: !!python/tuple []
+            rovpp_blackhole: false
+            seed_asn: null
+            timestamp: 0
+            withdraw: false
+        recv_q: !simulator_codec/RecvQueue {}
+      propagation_rank: 0
+      provider_cone_asns: !!python/tuple
+      - 3
+      - 4
+      provider_cone_size: 2
+      providers: !!python/tuple
+      - 3
+    666: !yamlable/AS
+      as_rank: 2
+      asn: 666
+      customer_cone_asns: null
+      customer_cone_size: 0
+      customers: !!python/tuple []
+      input_clique: false
+      ixp: false
+      peers: !!python/tuple []
+      policy: !yamlable/BGP-iSec%20Transitive%20+%20ProConID
+        local_rib: !simulator_codec/LocalRIB
+          1.2.0.0/16: !yamlable/Announcement
+            as_path: !!python/tuple
+            - 666
+            - 2
+            - 777
+            bgpsec_as_path: !!python/tuple
+            - 777
+            bgpsec_next_asn: 2
+            next_hop_asn: 666
+            only_to_customers: null
+            prefix: 1.2.0.0/16
+            recv_relationship: !simulator_codec/Relationships
+              name: ORIGIN
+              value: 4
+            rost_ids: !!python/tuple []
+            rovpp_blackhole: false
+            seed_asn: 666
+            timestamp: 1
+            withdraw: false
+        recv_q: !simulator_codec/RecvQueue {}
+      propagation_rank: 0
+      provider_cone_asns: !!python/tuple
+      - 3
+      - 4
+      provider_cone_size: 2
+      providers: !!python/tuple
+      - 3
+      - 4
+    777: !yamlable/AS
+      as_rank: 2
+      asn: 777
+      customer_cone_asns: null
+      customer_cone_size: 0
+      customers: !!python/tuple []
+      input_clique: false
+      ixp: false
+      peers: !!python/tuple []
+      policy: !yamlable/BGP-iSec%20Transitive%20+%20ProConID
+        local_rib: !simulator_codec/LocalRIB
+          1.2.0.0/16: !yamlable/Announcement
+            as_path: !!python/tuple
+            - 777
+            bgpsec_as_path: !!python/tuple
+            - 777
+            bgpsec_next_asn: null
+            next_hop_asn: 777
+            only_to_customers: null
+            prefix: 1.2.0.0/16
+            recv_relationship: !simulator_codec/Relationships
+              name: ORIGIN
+              value: 4
+            rost_ids: !!python/tuple []
+            rovpp_blackhole: false
+            seed_asn: 777
+            timestamp: 0
+            withdraw: false
+        recv_q: !simulator_codec/RecvQueue {}
+      propagation_rank: 0
+      provider_cone_asns: !!python/tuple
+      - 2
+      - 4
+      provider_cone_size: 2
+      providers: !!python/tuple
+      - 2
+  ixp_asns: []
+cached_as_graph_tsv_path: null
+ready_to_run_round: 2

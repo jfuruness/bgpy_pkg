@@ -1,27 +1,34 @@
 from frozendict import frozendict
+
 from bgpy.as_graphs import CustomerProviderLink as CPLink
 from bgpy.as_graphs.base.as_graph_info import ASGraphInfo
-from bgpy.simulation_engine.policies.bgp.bgp.bgp import BGP
-from bgpy.simulation_engine.policies.bgpisec.bgpisec_transitive_pro_con_id import (
+from bgpy.shared.enums import (
+    ASNs,
+)
+from bgpy.simulation_engine import (
     BGPiSecTransitiveProConID,
 )
-from bgpy.simulation_framework.scenarios.custom_scenarios.post_rov.shortest_path_prefix_hijack import (
+from bgpy.simulation_engine.policies.bgp.bgp.bgp import BGP
+from bgpy.simulation_framework import (
     ShortestPathPrefixHijack,
 )
 from bgpy.simulation_framework.scenarios.scenario_config import ScenarioConfig
 from bgpy.tests.engine_tests.utils.engine_test_config import EngineTestConfig
 
-from bgpy.shared.enums import (
-    ASNs,
-)
-
 internal_config_011_bgpisec = EngineTestConfig(
     name="internal_config_011_bgpisec",
     desc="""
-    Taken from the paper, the attacker (AS 666) is trying to target AS 5 as a victim by leaking the announcement it received from AS 4, but AS 3 detected this leak and dropped the message.
+    Taken from the paper, the attacker (AS 666) is targeting AS 5 by leaking
+    the announcement it received from AS 4. However, AS 3 detects this leak
+    and drops the message.
 
-    AS 3 consider the announcement comming from AS 666 to its customer interface to be invalid because it applies rule (ii) of ProConID-valid checking and sees that AS 3 is not listed in the ProConID-list of AS 777.
-    Because the path that AS 666 announced cotains AS 1, if this is a valley-free announcement AS 3 would have been in the ProConID-list of AS 777 because AS 3 is a ProConID adopting provider of AS 777.
+    AS 3 considers the announcement coming from AS 666 to its customer
+    interface to be invalid. It applies rule (ii) of ProConID-valid checking
+    and sees that AS 3 is not listed in the ProConID-list of AS 777.
+
+    Because the path AS 666 announced contains AS 1, if this were a
+    valley-free announcement, AS 3 would have been in the ProConID-list of
+    AS 777, since AS 3 is a ProConID-adopting provider of AS 777.
     """,
     scenario_config=ScenarioConfig(
         ScenarioCls=ShortestPathPrefixHijack,
