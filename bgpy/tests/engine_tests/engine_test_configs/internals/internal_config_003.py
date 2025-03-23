@@ -23,7 +23,7 @@ as_graph_info = ASGraphInfo(
 
 
 internal_config_003 = EngineTestConfig(
-    name="internal_003",
+    name="internal_config_003",
     desc="Accidental route leak to a peer with OTC Simple",
     scenario_config=ScenarioConfig(
         ScenarioCls=AccidentalRouteLeak,

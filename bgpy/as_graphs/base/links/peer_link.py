@@ -10,7 +10,7 @@ class PeerLink(Link):
         """Saves the link info"""
 
         self.__peer_asns: tuple[int, int] = cast(
-            tuple[int, int], tuple(sorted([int(peer1_asn), int(peer2_asn)]))
+            "tuple[int, int]", tuple(sorted([int(peer1_asn), int(peer2_asn)]))
         )
         super(PeerLink, self).__init__(peer1_asn, peer2_asn)
 

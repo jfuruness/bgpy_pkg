@@ -42,6 +42,7 @@ class TestScenario:
             ScenarioCls=SubprefixHijack,
             num_attackers=1,
             override_attacker_asns=frozenset({1, 2}),
+            override_victim_asns=frozenset({3}),
         )
         with pytest.raises(AssertionError):
             SubprefixHijack(scenario_config=scenario_config)
@@ -53,6 +54,7 @@ class TestScenario:
             ScenarioCls=SubprefixHijack,
             num_victims=1,
             override_victim_asns=frozenset({1, 2}),
+            override_attacker_asns=frozenset({3}),
         )
         with pytest.raises(AssertionError):
             SubprefixHijack(scenario_config=scenario_config)

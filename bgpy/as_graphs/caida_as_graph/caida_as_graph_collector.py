@@ -84,7 +84,7 @@ class CAIDAASGraphCollector(ASGraphCollector):
                 rv = [
                     x.get("href") for x in soup.select("a") if x.get("href") is not None
                 ]
-                return cast(list[str], rv)
+                return cast("list[str]", rv)
         except requests.exceptions.ReadTimeout as e:
             bgpy_logger.exception(f"Failed to get {url} due to {e}")
             raise

@@ -25,6 +25,7 @@ as_graph: !yamlable/CAIDAASGraph
             recv_relationship: !simulator_codec/Relationships
               name: PROVIDERS
               value: 1
+            rost_ids: !!python/tuple []
             rovpp_blackhole: false
             seed_asn: null
             timestamp: 1
@@ -47,6 +48,7 @@ as_graph: !yamlable/CAIDAASGraph
                 recv_relationship: !simulator_codec/Relationships
                   name: ORIGIN
                   value: 4
+                rost_ids: !!python/tuple []
                 rovpp_blackhole: false
                 seed_asn: 666
                 timestamp: 1
@@ -65,6 +67,7 @@ as_graph: !yamlable/CAIDAASGraph
               recv_relationship: !simulator_codec/Relationships
                 name: PROVIDERS
                 value: 1
+              rost_ids: !!python/tuple []
               rovpp_blackhole: false
               seed_asn: null
               timestamp: 1
@@ -98,6 +101,7 @@ as_graph: !yamlable/CAIDAASGraph
             recv_relationship: !simulator_codec/Relationships
               name: PROVIDERS
               value: 1
+            rost_ids: !!python/tuple []
             rovpp_blackhole: false
             seed_asn: null
             timestamp: 0
@@ -121,6 +125,7 @@ as_graph: !yamlable/CAIDAASGraph
                 recv_relationship: !simulator_codec/Relationships
                   name: PROVIDERS
                   value: 1
+                rost_ids: !!python/tuple []
                 rovpp_blackhole: false
                 seed_asn: null
                 timestamp: 1
@@ -141,6 +146,7 @@ as_graph: !yamlable/CAIDAASGraph
                 recv_relationship: !simulator_codec/Relationships
                   name: ORIGIN
                   value: 4
+                rost_ids: !!python/tuple []
                 rovpp_blackhole: false
                 seed_asn: 777
                 timestamp: 0
@@ -159,6 +165,7 @@ as_graph: !yamlable/CAIDAASGraph
               recv_relationship: !simulator_codec/Relationships
                 name: PROVIDERS
                 value: 1
+              rost_ids: !!python/tuple []
               rovpp_blackhole: false
               seed_asn: null
               timestamp: 0
@@ -193,6 +200,7 @@ as_graph: !yamlable/CAIDAASGraph
             recv_relationship: !simulator_codec/Relationships
               name: PROVIDERS
               value: 1
+            rost_ids: !!python/tuple []
             rovpp_blackhole: false
             seed_asn: null
             timestamp: 0
@@ -216,6 +224,7 @@ as_graph: !yamlable/CAIDAASGraph
                 recv_relationship: !simulator_codec/Relationships
                   name: PROVIDERS
                   value: 1
+                rost_ids: !!python/tuple []
                 rovpp_blackhole: false
                 seed_asn: null
                 timestamp: 0
@@ -249,6 +258,7 @@ as_graph: !yamlable/CAIDAASGraph
             recv_relationship: !simulator_codec/Relationships
               name: ORIGIN
               value: 4
+            rost_ids: !!python/tuple []
             rovpp_blackhole: false
             seed_asn: 666
             timestamp: 1
@@ -268,6 +278,7 @@ as_graph: !yamlable/CAIDAASGraph
               recv_relationship: !simulator_codec/Relationships
                 name: ORIGIN
                 value: 4
+              rost_ids: !!python/tuple []
               rovpp_blackhole: false
               seed_asn: 666
               timestamp: 1
@@ -299,6 +310,7 @@ as_graph: !yamlable/CAIDAASGraph
             recv_relationship: !simulator_codec/Relationships
               name: ORIGIN
               value: 4
+            rost_ids: !!python/tuple []
             rovpp_blackhole: false
             seed_asn: 777
             timestamp: 0
@@ -318,6 +330,7 @@ as_graph: !yamlable/CAIDAASGraph
               recv_relationship: !simulator_codec/Relationships
                 name: ORIGIN
                 value: 4
+              rost_ids: !!python/tuple []
               rovpp_blackhole: false
               seed_asn: 777
               timestamp: 0

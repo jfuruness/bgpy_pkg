@@ -254,14 +254,15 @@ class Scenario:
         elif adopting_asns:
             return adopting_asns
         else:
-            assert engine, "either yaml or engine must be set"
+            err = "Either yaml or engine must be set, or percent adopt must be 0"
+            assert engine or self.percent_adoption == 0, err
             adopting_asns = self._get_randomized_adopting_asns(engine)
 
         return adopting_asns
 
     def _get_randomized_adopting_asns(
         self,
-        engine: BaseSimulationEngine,
+        engine: BaseSimulationEngine | None,
     ) -> frozenset[int]:
         """Returns the set of adopting ASNs
 
@@ -270,6 +271,9 @@ class Scenario:
         default_adopters
         """
 
+        if self.percent_adoption == 0:
+            return frozenset()
+        assert engine
         adopting_asns: list[int] = list()
         # Randomly adopt in all three subcategories
         for subcategory in self.scenario_config.adoption_subcategory_attrs:
