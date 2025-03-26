@@ -39,6 +39,7 @@ customer_as_objects = as_obj.customers
 # Get all the customer ASNs of the AS
 customer_asns = as_obj.customer_asns
 
+PREFIXES = ("1.2.0.0/16", "1.2.3.0/24")
 
 class CustomScenario(Scenario):
     def _get_announcements(
@@ -47,49 +48,50 @@ class CustomScenario(Scenario):
         engine: "BaseSimulationEngine | None" = None,
     ) -> tuple["Ann", ...]:
         anns = list()
-        for victim_asn in self.victim_asns:
-            anns.append(
-                self.scenario_config.AnnCls(
-                    # Prefix can be any valid prefix. By default it's 1.2.0.0/16
-                    prefix=Prefixes.PREFIX.value,
-                    # Where to forward the traffic on the data plane
-                    # When there is no path manipulation, set to the origin
-                    next_hop_asn=victim_asn,
-                    # When there's no path manipulation, set to the origin
-                    as_path=(victim_asn,),
-                    # Timestamps aren't used for anything yet but this is the default
-                    timestamp=Timestamps.VICTIM.value,
-                    # This is where you want the announcement to be seeded
-                    # Normally this is the origin, but in cases where there
-                    # is path manipulation and the origin is different, it can
-                    # be set to something else
-                    seed_asn=victim_asn,
-                    # Indicates the announcement starts from the origin
-                    recv_relationship=Relationships.ORIGIN,
+        for prefix in PREFIXES:
+            for victim_asn in self.victim_asns:
+                anns.append(
+                    self.scenario_config.AnnCls(
+                        # Prefix can be any valid prefix. By default it's 1.2.0.0/16
+                        prefix=prefix,
+                        # Where to forward the traffic on the data plane
+                        # When there is no path manipulation, set to the origin
+                        next_hop_asn=victim_asn,
+                        # When there's no path manipulation, set to the origin
+                        as_path=(victim_asn,),
+                        # Timestamps aren't used for anything yet but this is the default
+                        timestamp=Timestamps.VICTIM.value,
+                        # This is where you want the announcement to be seeded
+                        # Normally this is the origin, but in cases where there
+                        # is path manipulation and the origin is different, it can
+                        # be set to something else
+                        seed_asn=victim_asn,
+                        # Indicates the announcement starts from the origin
+                        recv_relationship=Relationships.ORIGIN,
+                    )
                 )
-            )
 
-        for attacker_asn in self.attacker_asns:
-            anns.append(
-                self.scenario_config.AnnCls(
-                    # Prefix can be any valid prefix. By default it's 1.2.0.0/16
-                    prefix=Prefixes.PREFIX.value,
-                    # Where to forward the traffic on the data plane
-                    # When there is no path manipulation, set to the origin
-                    next_hop_asn=attacker_asn,
-                    # When there's no path manipulation, set to the origin
-                    as_path=(attacker_asn,),
-                    # Timestamps aren't used for anything yet but this is the default
-                    timestamp=Timestamps.ATTACKER.value,
-                    # This is where you want the announcement to be seeded
-                    # Normally this is the origin, but in cases where there
-                    # is path manipulation and the origin is different, it can
-                    # be set to something else
-                    seed_asn=attacker_asn,
-                    # Indicates the announcement starts from the origin
-                    recv_relationship=Relationships.ORIGIN,
+            for attacker_asn in self.attacker_asns:
+                anns.append(
+                    self.scenario_config.AnnCls(
+                        # Prefix can be any valid prefix. By default it's 1.2.0.0/16
+                        prefix=prefix,
+                        # Where to forward the traffic on the data plane
+                        # When there is no path manipulation, set to the origin
+                        next_hop_asn=attacker_asn,
+                        # When there's no path manipulation, set to the origin
+                        as_path=(attacker_asn,),
+                        # Timestamps aren't used for anything yet but this is the default
+                        timestamp=Timestamps.ATTACKER.value,
+                        # This is where you want the announcement to be seeded
+                        # Normally this is the origin, but in cases where there
+                        # is path manipulation and the origin is different, it can
+                        # be set to something else
+                        seed_asn=attacker_asn,
+                        # Indicates the announcement starts from the origin
+                        recv_relationship=Relationships.ORIGIN,
+                    )
                 )
-            )
 
         return tuple(anns)
 
@@ -101,17 +103,18 @@ class CustomScenario(Scenario):
     ) -> tuple[ROA, ...]:
         """Returns a tuple of ROAs"""
 
-        return tuple(
-            [
-                ROA(
-                    prefix=ip_network(Prefixes.PREFIX.value),
-                    origin=x,
-                    # By default, max length is equal to prefix length
-                    # max_length="16"
+        roas = list()
+        for prefix in PREFIXES:
+            for victim in self.victim_asns:
+                roas.append(
+                    ROA(
+                        prefix=ip_network(prefix),
+                        origin=victim
+                        # By default, max length is equal to prefix length
+                        # max_length="16"
+                    )
                 )
-                for x in self.victim_asns
-            ]
-        )
+        return tuple(roas)
 
 
 # Create the ScenarioConfig
@@ -168,6 +171,7 @@ as_graph_analyzer = ASGraphAnalyzer(simulation_engine, scenario)
 outcomes = as_graph_analyzer.analyze()
 data_plane_outcomes = outcomes[Plane.DATA.value]
 # See what the outcome was for AS 1 for the most specific prefix
+# In this case, that will be for 1.2.3.0/24
 as_12_outcome = data_plane_outcomes[12]
 # Convert as_1_outcome integer to a readable name using the enum
 as_12_outcome_name = Outcomes(as_12_outcome).name

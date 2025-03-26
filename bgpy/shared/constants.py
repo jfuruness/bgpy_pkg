@@ -12,3 +12,12 @@ SINGLE_DAY_CACHE_DIR.mkdir(exist_ok=True, parents=True)
 
 bgpy_logger = logging.getLogger("bgpy")
 bgpy_logger.setLevel(logging.INFO)
+# Create and attach a console handler (e.g., stdout)
+console_handler = logging.StreamHandler()
+console_handler.setLevel(logging.DEBUG)
+
+# Optional: Set a formatter for readable output
+formatter = logging.Formatter('%(name)s - %(levelname)s - %(message)s')
+console_handler.setFormatter(formatter)
+
+bgpy_logger.addHandler(console_handler)
