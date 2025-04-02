@@ -87,6 +87,8 @@ class Scenario:
             self._get_ordered_prefix_subprefix_dict()
         )
 
+        self.traceroute_ip_address = self._get_traceroute_ip_address()
+
     def _reset_and_add_roas_to_roa_checker(self) -> None:
         """Clears & adds ROAs to roa_checker which serves as RPKI+Routinator combo"""
 
@@ -459,6 +461,18 @@ class Scenario:
                     subprefix_list.append(str(prefix))
         # Get rid of ip_network
         return {str(k): v for k, v in prefix_subprefix_dict.items()}
+
+    def _get_traceroute_ip_address(self) -> str:
+        """Returns IP addr to use as a traceroute"""
+
+        if self.scenario_config.override_traceroute_ip_address:
+            return self.scenario_config.override_traceroute_ip_address
+        return self.default_traceroute_ip_address
+
+    @property
+    def default_traceroute_ip_address(self) -> str:
+        """Default IP address that the simulations analyze for metrics"""
+        return list(self.scenario.ordered_prefix_subprefix_dict.keys())[0]
 
     ##############
     # Yaml Funcs #

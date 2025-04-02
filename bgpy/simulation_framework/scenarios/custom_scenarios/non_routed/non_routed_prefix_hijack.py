@@ -45,3 +45,9 @@ class NonRoutedPrefixHijack(Scenario):
         """Returns a tuple of ROAs"""
 
         return (ROA(ip_network(Prefixes.PREFIX.value), 0),)
+
+    @property
+    def default_traceroute_ip_address(self) -> str:
+        """Default IP address that the simulations analyze for metrics"""
+
+        return Prefixes.TRACEROUTE_PREFIX.value

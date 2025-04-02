@@ -66,6 +66,9 @@ class ScenarioConfig:
     hardcoded_base_asn_cls_dict: frozendict[int, type[Policy]] = field(
         default_factory=frozendict
     )
+    # Traceroute IP Address. Scenario fills it out with most specific prefix
+    # by default
+    override_traceroute_ip_address: str = ""
     # Only necessary if coming from YAML or the test suite
     override_attacker_asns: frozenset[int] | None = None
     override_victim_asns: frozenset[int] | None = None

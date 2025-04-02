@@ -27,7 +27,7 @@ from bgpy.simulation_engine import (
     SimulationEngine,
 )
 
-from .as_graph_analyzers import ASGraphAnalyzer, BaseASGraphAnalyzer
+from .as_graph_analyzers import TracerouteAnalyzer, BaseASGraphAnalyzer
 from .graph_data_aggregator import GraphCategory, GraphDataAggregator
 from .graphing import GraphFactory
 from .scenarios import Scenario, ScenarioConfig, SubprefixHijack
@@ -99,7 +99,7 @@ class Simulation:
             }
         ),
         SimulationEngineCls: type[BaseSimulationEngine] = SimulationEngine,
-        ASGraphAnalyzerCls: type[BaseASGraphAnalyzer] = ASGraphAnalyzer,
+        ASGraphAnalyzerCls: type[BaseASGraphAnalyzer] = TracerouteAnalyzer,
         GraphDataAggregatorCls: type[GraphDataAggregator] = GraphDataAggregator,
         # Data plane tracking for traceback and GraphDataAggregatorCls
         data_plane_tracking: bool = True,
@@ -554,6 +554,7 @@ class Simulation:
             scenario=scenario,
             data_plane_tracking=self.data_plane_tracking,
             control_plane_tracking=self.control_plane_tracking,
+            ip_address=scenario.traceroute_ip_address,
         ).analyze()
 
         graph_data_aggregator.aggregate_and_store_trial_data(

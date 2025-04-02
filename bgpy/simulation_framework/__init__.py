@@ -2,6 +2,7 @@ from .as_graph_analyzers import (
     ASGraphAnalyzer,
     BaseASGraphAnalyzer,
     InterceptionASGraphAnalyzer,
+    TracerouteAnalyzer,
 )
 from .graph_data_aggregator import (
     DataPointAggData,
@@ -32,6 +33,7 @@ __all__ = [
     "ASGraphAnalyzer",
     "BaseASGraphAnalyzer",
     "InterceptionASGraphAnalyzer",
+    "TracerouteAnalyzer",
     "GraphFactory",
     "LineData",
     "LineInfo",

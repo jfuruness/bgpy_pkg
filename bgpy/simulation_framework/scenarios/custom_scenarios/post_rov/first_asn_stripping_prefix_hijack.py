@@ -54,3 +54,9 @@ class FirstASNStrippingPrefixHijack(ShortestPathPrefixHijack):
                 stripped_ann = ann
             stripped_anns.append(stripped_ann)
         return tuple(stripped_anns)
+
+    @property
+    def default_traceroute_ip_address(self) -> str:
+        """Default IP address that the simulations analyze for metrics"""
+
+        return Prefixes.TRACEROUTE_PREFIX.value

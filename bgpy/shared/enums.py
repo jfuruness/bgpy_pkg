@@ -83,6 +83,7 @@ class Prefixes(YamlAbleEnum):
     # Prefix always belongs to victim
     PREFIX: str = "1.2.0.0/16"
     SUBPREFIX: str = "1.2.3.0/24"
+    TRACEROUTE_PREFIX: str = "1.2.3.4/32"
 
 
 class ASNs(YamlAbleEnum):

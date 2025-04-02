@@ -54,3 +54,9 @@ class VictimsPrefix(Scenario):
         return tuple(
             [ROA(ip_network(Prefixes.PREFIX.value), x) for x in self.victim_asns]
         )
+
+    @property
+    def default_traceroute_ip_address(self) -> str:
+        """Default IP address that the simulations analyze for metrics"""
+
+        return Prefixes.TRACEROUTE_PREFIX.value
