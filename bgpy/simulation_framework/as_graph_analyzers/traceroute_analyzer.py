@@ -1,8 +1,9 @@
-from functools import cache
-from typing import TYPE_CHECKING, Optional
+from functools import lru_cache
+from ipaddress import ip_network
+from typing import TYPE_CHECKING
 
 from bgpy.as_graphs import AS
-from bgpy.shared.enums import Outcomes, Plane, Relationships
+from bgpy.shared.enums import Outcomes, Plane
 from bgpy.simulation_engine import Announcement as Ann
 from bgpy.simulation_engine import BaseSimulationEngine
 
@@ -46,9 +47,7 @@ class TracerouteAnalyzer(ASGraphAnalyzer):
         self.data_plane_tracking: bool = data_plane_tracking
         self.control_plane_tracking: bool = control_plane_tracking
 
-    def _get_most_specific_ann(
-        self, as_obj: AS
-    ) -> "Ann | None":
+    def _get_most_specific_ann(self, as_obj: AS) -> "Ann | None":
         """Returns the most specific announcement that exists in a rib
 
         as_obj is the as
@@ -60,15 +59,18 @@ class TracerouteAnalyzer(ASGraphAnalyzer):
             # If prefix is more specific and overlaps with the ip address
             if self._new_prefix_is_more_specific_and_overlapping(
                 old_prefix_str=most_specific_ann.prefix,
-                new_prefix_str=ann.prefix,
-                traceroute_ip_address_str=self.traceroute_ip_address
+                new_prefix_str=prefix,
+                traceroute_ip_address_str=self.traceroute_ip_address,
             ):
                 most_specific_ann = ann
         return most_specific_ann
 
-    @cache
+    @lru_cache(max_size=1000)
     def _new_prefix_is_more_specific_and_overlapping(
-        self, old_prefix_str: str, new_prefix_str: str, traceroute_ip_address_str: str
+        self,
+        old_prefix_str: str | None,
+        new_prefix_str: str,
+        traceroute_ip_address_str: str,
     ) -> bool:
         """Checks if new prefix is more specific than old, and overlaps with ip_addr"""
 
@@ -78,7 +80,7 @@ class TracerouteAnalyzer(ASGraphAnalyzer):
         # New prefix covers the IP address
         if traceroute_ip_address.subnet_of(new_prefix):
             # If there is no prefix then the new prefix is best
-            if old_prefix is None:
+            if old_prefix_str is None:
                 return True
             # Check if new is more specific than old
             else:

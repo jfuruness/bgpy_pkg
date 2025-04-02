@@ -27,7 +27,7 @@ from bgpy.simulation_engine import (
     SimulationEngine,
 )
 
-from .as_graph_analyzers import TracerouteAnalyzer, BaseASGraphAnalyzer
+from .as_graph_analyzers import BaseASGraphAnalyzer, TracerouteAnalyzer
 from .graph_data_aggregator import GraphCategory, GraphDataAggregator
 from .graphing import GraphFactory
 from .scenarios import Scenario, ScenarioConfig, SubprefixHijack

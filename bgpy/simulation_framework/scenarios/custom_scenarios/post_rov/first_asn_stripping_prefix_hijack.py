@@ -1,5 +1,6 @@
 from typing import TYPE_CHECKING, Optional
 
+from bgpy.shared.enums import Prefixes
 from bgpy.simulation_engine.policies.custom_attackers.first_asn_stripping_prefix_aspa_attacker import (  # noqa: E501
     FirstASNStrippingPrefixASPAAttacker,
 )
