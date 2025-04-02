@@ -31,6 +31,7 @@ class TracerouteAnalyzer(ASGraphAnalyzer):
         data_plane_tracking: bool = True,
         control_plane_tracking: bool = False,
         traceroute_ip_address: str = "",
+        **kwargs,
     ) -> None:
         self.engine: BaseSimulationEngine = engine
         self.scenario: Scenario = scenario
@@ -47,7 +48,7 @@ class TracerouteAnalyzer(ASGraphAnalyzer):
         self.data_plane_tracking: bool = data_plane_tracking
         self.control_plane_tracking: bool = control_plane_tracking
 
-    def _get_most_specific_ann(self, as_obj: AS) -> "Ann | None":
+    def _get_most_specific_ann(self, as_obj: AS, *args) -> "Ann | None":
         """Returns the most specific announcement that exists in a rib
 
         as_obj is the as
@@ -56,16 +57,19 @@ class TracerouteAnalyzer(ASGraphAnalyzer):
 
         most_specific_ann = None
         for prefix, ann in as_obj.policy.local_rib.items():
+            old_prefix_str = (
+                most_specific_ann.prefix if most_specific_ann else None  # type: ignore
+            )
             # If prefix is more specific and overlaps with the ip address
             if self._new_prefix_is_more_specific_and_overlapping(
-                old_prefix_str=most_specific_ann.prefix,
+                old_prefix_str=old_prefix_str,
                 new_prefix_str=prefix,
                 traceroute_ip_address_str=self.traceroute_ip_address,
             ):
                 most_specific_ann = ann
         return most_specific_ann
 
-    @lru_cache(max_size=1000)
+    @lru_cache(maxsize=128)
     def _new_prefix_is_more_specific_and_overlapping(
         self,
         old_prefix_str: str | None,

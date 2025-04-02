@@ -22,6 +22,7 @@ class ASGraphAnalyzer(BaseASGraphAnalyzer):
         control_plane_tracking: bool = False,
         # Most to least specific
         ordered_prefixes: tuple[str, ...] = (),
+        **kwargs,
     ) -> None:
         self.engine: BaseSimulationEngine = engine
         self.scenario: Scenario = scenario

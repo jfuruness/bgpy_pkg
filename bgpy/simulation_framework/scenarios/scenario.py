@@ -472,7 +472,7 @@ class Scenario:
     @property
     def default_traceroute_ip_address(self) -> str:
         """Default IP address that the simulations analyze for metrics"""
-        return list(self.scenario.ordered_prefix_subprefix_dict.keys())[0]
+        return list(self.ordered_prefix_subprefix_dict.keys())[0]
 
     ##############
     # Yaml Funcs #

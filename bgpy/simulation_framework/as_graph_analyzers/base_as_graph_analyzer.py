@@ -16,6 +16,7 @@ class BaseASGraphAnalyzer(ABC):
         scenario: "Scenario",
         data_plane_tracking: bool = True,
         control_plane_tracking: bool = False,
+        **kwargs,
     ) -> None:
         raise NotImplementedError
 
