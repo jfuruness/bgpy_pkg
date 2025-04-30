@@ -15,12 +15,13 @@ internal_config_014_aspa = EngineTestConfig(
     ),
     scenario_config=ScenarioConfig(
         ScenarioCls=AccidentalRouteLeak,
-        BasePolicyCls=ASPA,
         override_victim_asns=frozenset({1}),  # AS1 is the protected origin
         override_attacker_asns=frozenset({2}),  # AS2 improperly leaks P2
         hardcoded_asn_cls_dict=frozendict(
             {
-                2: BGP,
+                2: BGP,         # Attacker should remain on plain BGP
+                8: ASPA,        # Add just enough ASPA ASes to block propagation
+                9: ASPA,        # Peer path
             }
         ),
     ),
