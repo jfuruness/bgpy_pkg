@@ -3,7 +3,7 @@ from frozendict import frozendict
 from bgpy.as_graphs import ASGraphInfo, PeerLink
 from bgpy.as_graphs import CustomerProviderLink as CPLink
 from bgpy.shared.enums import ASNs
-from bgpy.simulation_engine import ASPA, BGP
+from bgpy.simulation_engine import ASPA
 from bgpy.simulation_framework import AccidentalRouteLeak, ScenarioConfig
 from bgpy.tests.engine_tests.utils import EngineTestConfig
 
@@ -19,7 +19,6 @@ internal_config_013_aspa = EngineTestConfig(
         override_attacker_asns=frozenset({2}),
         hardcoded_asn_cls_dict=frozendict(
             {
-                2: BGP,
                 8: ASPA,
                 9: ASPA,
             }
@@ -45,7 +44,7 @@ internal_config_013_aspa = EngineTestConfig(
             CPLink(provider_asn=13, customer_asn=9),
             CPLink(provider_asn=13, customer_asn=10),
             CPLink(provider_asn=12, customer_asn=10),
-            CPLink(provider_asn=8, customer_asn=777),  # ← AS8 is provider of AS777
+            CPLink(provider_asn=8, customer_asn=777),
         ]),
         diagram_ranks=(
             (ASNs.ATTACKER.value, ASNs.VICTIM.value),

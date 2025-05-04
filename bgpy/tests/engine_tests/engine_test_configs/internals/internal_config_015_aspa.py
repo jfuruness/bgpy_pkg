@@ -2,8 +2,7 @@ from frozendict import frozendict
 
 from bgpy.as_graphs import ASGraphInfo, PeerLink
 from bgpy.as_graphs import CustomerProviderLink as CPLink
-from bgpy.shared.enums import ASNs
-from bgpy.simulation_engine import ASPA, BGP
+from bgpy.simulation_engine import ASPA
 from bgpy.simulation_framework import AccidentalRouteLeak, ScenarioConfig
 from bgpy.tests.engine_tests.utils import EngineTestConfig
 
@@ -26,13 +25,13 @@ internal_config_015_aspa = EngineTestConfig(
         
     ),
     scenario_config=ScenarioConfig(
-        ScenarioCls=AccidentalRouteLeak,  # Still use this to simulate announcements
+        ScenarioCls=AccidentalRouteLeak, 
         override_victim_asns=frozenset({2}),
         override_attacker_asns=frozenset({1}),
         hardcoded_asn_cls_dict=frozendict({
-            2: ASPA,     # Victim has ASPA
+            2: ASPA,
             3: ASPA,
-            9: ASPA,     # Blocking ASPA logic here
+            9: ASPA,
         }),
     ),
     as_graph_info=ASGraphInfo(
@@ -41,14 +40,7 @@ internal_config_015_aspa = EngineTestConfig(
             CPLink(provider_asn=2, customer_asn=1),
             CPLink(provider_asn=1, customer_asn=3),
             CPLink(provider_asn=3, customer_asn=8),
-            CPLink(provider_asn=9, customer_asn=8),  # Route goes through 8 → 9
+            CPLink(provider_asn=9, customer_asn=8),
         ]),
-        diagram_ranks=(
-            (2,),
-            (1,),
-            (3,),
-            (8,),
-            (9,),
-        ),
     ),
 )

@@ -3,7 +3,7 @@ from frozendict import frozendict
 from bgpy.as_graphs import ASGraphInfo, PeerLink
 from bgpy.as_graphs import CustomerProviderLink as CPLink
 from bgpy.shared.enums import ASNs
-from bgpy.simulation_engine import ASPA, BGP
+from bgpy.simulation_engine import ASPA
 from bgpy.simulation_framework import AccidentalRouteLeak, ScenarioConfig
 from bgpy.tests.engine_tests.utils import EngineTestConfig
 
@@ -15,13 +15,12 @@ internal_config_014_aspa = EngineTestConfig(
     ),
     scenario_config=ScenarioConfig(
         ScenarioCls=AccidentalRouteLeak,
-        override_victim_asns=frozenset({1}),  # AS1 is the protected origin
-        override_attacker_asns=frozenset({2}),  # AS2 improperly leaks P2
+        override_victim_asns=frozenset({1}),
+        override_attacker_asns=frozenset({2}),
         hardcoded_asn_cls_dict=frozendict(
             {
-                2: BGP,         # Attacker should remain on plain BGP
-                8: ASPA,        # Add just enough ASPA ASes to block propagation
-                9: ASPA,        # Peer path
+                8: ASPA, 
+                9: ASPA,        
             }
         ),
     ),
