@@ -10,6 +10,10 @@ from .internal_config_008_bgpisec import internal_config_008_bgpisec
 from .internal_config_009_bgpisec import internal_config_009_bgpisec
 from .internal_config_010_bgpisec import internal_config_010_bgpisec
 from .internal_config_011_bgpisec import internal_config_011_bgpisec
+from .internal_config_012_aspa import internal_config_012_aspa
+from .internal_config_013_aspa import internal_config_013_aspa
+from .internal_config_014_aspa import internal_config_014_aspa
+from .internal_config_015_aspa import internal_config_015_aspa
 
 internal_configs = [
     internal_config_000,
@@ -24,6 +28,10 @@ internal_configs = [
     internal_config_009_bgpisec,
     internal_config_010_bgpisec,
     internal_config_011_bgpisec,
+    internal_config_012_aspa,
+    internal_config_013_aspa,
+    internal_config_014_aspa,
+    internal_config_015_aspa,
 ]
 
 __all__ = ["internal_configs"]
