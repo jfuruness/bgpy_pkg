@@ -438,10 +438,10 @@ class Scenario:
         # prefix of a superprefix hijack this won't break
         # (since the prefix would only exist in the ROA)
         for roa in self.roas:
-            prefixes_set.add(str(roa.prefix))
+            prefixes_set.add(roa.prefix)
         # Do this here for speed
         prefixes: list[IPv4Network | IPv6Network] = [
-            ip_network(x) for x in prefixes_set
+            x for x in prefixes_set
         ]
         # Sort prefixes with most specific prefix first
         # Note that this must be sorted for the traceback to get the
@@ -452,9 +452,9 @@ class Scenario:
         for outer_prefix, subprefix_list in prefix_subprefix_dict.items():
             for prefix in prefixes:
                 if prefix.subnet_of(outer_prefix) and prefix != outer_prefix:  # type: ignore
-                    subprefix_list.append(str(prefix))
+                    subprefix_list.append(prefix)
         # Get rid of ip_network
-        return {str(k): v for k, v in prefix_subprefix_dict.items()}
+        return {k: v for k, v in prefix_subprefix_dict.items()}
 
     ##############
     # Yaml Funcs #

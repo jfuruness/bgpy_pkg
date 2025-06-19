@@ -44,4 +44,4 @@ class NonRoutedPrefixHijack(Scenario):
     ) -> tuple[ROA, ...]:
         """Returns a tuple of ROAs"""
 
-        return (ROA(ip_network(Prefixes.PREFIX.value), 0),)
+        return (ROA(Prefixes.PREFIX.value, 0),)

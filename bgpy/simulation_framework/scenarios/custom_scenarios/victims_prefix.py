@@ -52,5 +52,5 @@ class VictimsPrefix(Scenario):
         """Returns a tuple of ROAs"""
 
         return tuple(
-            [ROA(ip_network(Prefixes.PREFIX.value), x) for x in self.victim_asns]
+            [ROA(Prefixes.PREFIX.value, x) for x in self.victim_asns]
         )

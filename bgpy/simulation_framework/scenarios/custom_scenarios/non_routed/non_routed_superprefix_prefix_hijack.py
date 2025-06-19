@@ -61,4 +61,4 @@ class NonRoutedSuperprefixPrefixHijack(Scenario):
         backwards compatability
         """
 
-        return (ROA(ip_network(Prefixes.PREFIX.value), 0),)
+        return (ROA(Prefixes.PREFIX.value, 0),)

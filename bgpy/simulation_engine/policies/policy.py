@@ -146,7 +146,7 @@ class Policy(YamlAble, metaclass=ABCMeta):
         """
 
         if self.ann_is_invalid_by_roa(ann):
-            relevant_roas = self.roa_checker.get_relevant_roas(ip_network(ann.prefix))
+            relevant_roas = self.roa_checker.get_relevant_roas(ann.prefix)
             return any(
                 roa.routed_status == ROARouted.NON_ROUTED for roa in relevant_roas
             )
