@@ -227,7 +227,7 @@ class Simulation:
         if store_customer_cone_asns and store_provider_cone_asns:
             total_gb_ram_per_core = 2.3
         # How much RAM for storing either provider or customer cone
-        elif store_customer_cone_asns and store_provider_cone_asns:
+        elif store_customer_cone_asns or store_provider_cone_asns:
             total_gb_ram_per_core = 1.6
         # By default sims take ~1gb/core
         else:
