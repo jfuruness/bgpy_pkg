@@ -294,6 +294,8 @@ ignore = [
     # But sometimes you need both checks on the same line
     # And even when you don't I feel like this doesn't matter much
     "PT018",
+    # This seems to want every single object to have a hash lol
+    "PLW1641",
 ]
 
 unfixable = []

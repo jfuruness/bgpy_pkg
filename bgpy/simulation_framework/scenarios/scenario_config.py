@@ -96,7 +96,7 @@ class ScenarioConfig:
             if (  # type: ignore
                 issubclass(self.AdoptPolicyCls, BGPiSecTransitive)
             ):
-                from bgpy.simulation_framework import ShortestPathPrefixHijack
+                from bgpy.simulation_framework import ShortestPathPrefixHijack # noqa
 
                 if issubclass(self.ScenarioCls, ShortestPathPrefixHijack):
                     prop_rounds = 2
