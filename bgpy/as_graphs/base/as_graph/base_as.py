@@ -30,6 +30,8 @@ class AS(YamlAble):
         customer_cone_size: int | None = None,
         provider_cone_asns: frozenset[int] | None = None,
         provider_cone_size: int | None = None,
+        max_provider_depth: int | None = None,
+        max_customer_depth: int | None = None,
         as_rank: int | None = None,
         propagation_rank: int | None = None,
         policy: Optional["Policy"] = None,
@@ -53,6 +55,9 @@ class AS(YamlAble):
         self.customer_cone_size: int | None = customer_cone_size
         self.provider_cone_asns: frozenset[int] | None = provider_cone_asns
         self.provider_cone_size: int | None = provider_cone_size
+        self.max_provider_depth = max_provider_depth
+        self.max_customer_depth = max_customer_depth
+
         self.as_rank: int | None = as_rank
         # Propagation rank. Rank leaves to clique
         self.propagation_rank: int | None = propagation_rank
@@ -122,6 +127,8 @@ class AS(YamlAble):
             "customer_cone_size",
             "provider_cone_asns",
             "provider_cone_size",
+            "max_provider_depth",
+            "max_customer_depth",
             "as_rank",
             "propagation_rank",
             # Don't forget the properties
@@ -188,6 +195,8 @@ class AS(YamlAble):
             "customer_cone_size": self.customer_cone_size,
             "provider_cone_asns": self.provider_cone_asns,
             "provider_cone_size": self.provider_cone_size,
+            "max_provider_depth": self.max_provider_depth,
+            "max_customer_depth": self.max_customer_depth,
             "as_rank": self.as_rank,
             "propagation_rank": self.propagation_rank,
             "policy": self.policy,

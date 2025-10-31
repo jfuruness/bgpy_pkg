@@ -33,6 +33,11 @@ from .propagation_rank_funcs import (
     _get_propagation_ranks,
 )
 
+from .depth_funcs import (
+    _get_and_store_depths,
+    _get_max_depth_helper,
+)
+
 
 @yaml_info(yaml_tag="ASGraph")
 class ASGraph(YamlAble):
@@ -61,6 +66,8 @@ class ASGraph(YamlAble):
     )
     _get_cone_helper = _get_cone_helper
     _get_as_rank = _get_as_rank
+    _get_and_store_depths = _get_and_store_depths
+    _get_max_depth_helper = _get_max_depth_helper
 
     def __init_subclass__(cls, *args, **kwargs):
         """This method essentially creates a list of all subclasses
@@ -189,6 +196,7 @@ class ASGraph(YamlAble):
                 rel_attr=Relationships.PROVIDERS.name.lower(),
                 store_cone_asns=store_provider_cone_asns,
             )
+        self._get_and_store_depths()
 
     def _set_as_groups(
         self,
