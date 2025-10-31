@@ -44,12 +44,12 @@ class ASRAD(ASRA):
     def DOWN_SLACK(self) -> int:
         return 0
 
-class ASRAD1:
+class ASRAD1(ASRAD):
     name="ASRAD1"
     UP_SLACK = 1
     DOWN_SLACK = 1
 
-class ASRAD2:
+class ASRAD2(ASRAD):
     name="ASRAD2"
     UP_SLACK = 2
     DOWN_SLACK = 2
