@@ -1,4 +1,4 @@
-from .aspa import ASPA, ASPAFull, ASRA, ASRAFull, ASPAwN, ASPAwNFull, ASRAD, ASRAD1, ASRAD2,
+from .aspa import ASPA, ASPAFull, ASRA, ASRAFull, ASPAwN, ASPAwNFull, ASRAD, ASRAD1, ASRAD2
 from .bgp import BGP, BGPFull, BGPFullIgnoreInvalid, BGPFullSuppressWithdrawals
 from .bgpisec import (
     BGPiSecTransitive,

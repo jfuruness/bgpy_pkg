@@ -28,11 +28,11 @@ class ASRAD(ASRA):
 
         # 4) compare
         # up: normal
-        if max_up_ramp > max_provider_depth + self._UP_SLACK:
+        if max_up_ramp > max_provider_depth + self.UP_SLACK:
             return False
 
         # down: use adjusted ramp
-        if adj_down_ramp > max_customer_depth + self._DOWN_SLACK:
+        if adj_down_ramp > max_customer_depth + self.DOWN_SLACK:
             return False
 
         return True
@@ -45,9 +45,11 @@ class ASRAD(ASRA):
         return 0
 
 class ASRAD1:
+    name="ASRAD1"
     UP_SLACK = 1
     DOWN_SLACK = 1
 
 class ASRAD2:
+    name="ASRAD2"
     UP_SLACK = 2
     DOWN_SLACK = 2
