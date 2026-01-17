@@ -111,7 +111,7 @@ class CAIDAASGraphConstructor(ASGraphConstructor):
     ) -> None:
         """Extracts provider customers: <provider-as>|<customer-as>|-1"""
 
-        provider_asn, customer_asn, _, source = line.split("|")
+        provider_asn, customer_asn, _, _source = line.split("|")
         if all(int(x) not in invalid_asns for x in (provider_asn, customer_asn)):
             cp_links.add(
                 CPLink(customer_asn=int(customer_asn), provider_asn=int(provider_asn))
@@ -122,6 +122,6 @@ class CAIDAASGraphConstructor(ASGraphConstructor):
     ) -> None:
         """Extracts peers: <peer-as>|<peer-as>|0|<source>"""
 
-        peer1_asn, peer2_asn, _, source = line.split("|")
+        peer1_asn, peer2_asn, _, _source = line.split("|")
         if all(int(x) not in invalid_asns for x in (peer1_asn, peer2_asn)):
             peer_links.add(PeerLink(int(peer1_asn), int(peer2_asn)))

@@ -24,9 +24,9 @@ def _gen_graph(
             policy=BasePolicyCls(),
             as_graph=self,
         )
-        assert as_.policy.as_ == proxy(
-            as_
-        ), f"{BaseASCls} not setting policy.as_ correctly"
+        assert as_.policy.as_ == proxy(as_), (
+            f"{BaseASCls} not setting policy.as_ correctly"
+        )
         # Monkey patching these in here whilst generating the AS graph
         as_.peers_setup_set = set()
         as_.customers_setup_set = set()

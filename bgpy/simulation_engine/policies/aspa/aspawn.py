@@ -30,7 +30,7 @@ class ASPAwN(ASPA):
 
     name = "ASPAwN"
 
-    def _valid_ann(self, ann: "Ann", from_rel: "Relationships") -> bool:  # type: ignore
+    def _valid_ann(self, ann: "Ann", from_rel: "Relationships") -> bool:
         """Combines ASPA valid and checking neighbors at every AS"""
 
         as_path = ann.as_path

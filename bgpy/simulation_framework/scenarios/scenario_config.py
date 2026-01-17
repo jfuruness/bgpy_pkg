@@ -96,7 +96,7 @@ class ScenarioConfig:
             if (  # type: ignore
                 issubclass(self.AdoptPolicyCls, BGPiSecTransitive)
             ):
-                from bgpy.simulation_framework import ShortestPathPrefixHijack # noqa
+                from bgpy.simulation_framework import ShortestPathPrefixHijack  # noqa
 
                 if issubclass(self.ScenarioCls, ShortestPathPrefixHijack):
                     prop_rounds = 2
@@ -136,10 +136,9 @@ class ScenarioConfig:
         # This is to assist with ShortestPathPrefixHijacks
         if issubclass(self.AdoptPolicyCls, ASPA) and not (
             issubclass(self.AdoptPolicyCls, ASRA)
-            or issubclass(self.AdoptPolicyCls, ASPAwN)  # type: ignore
+            or issubclass(self.AdoptPolicyCls, ASPAwN)
         ):
-            # Mypy thinks this is unreachable
-            AttackerBasePolicyCls = getattr(  # type: ignore
+            AttackerBasePolicyCls = getattr(
                 self.ScenarioCls, "RequiredASPAAttackerCls", None
             )
             object.__setattr__(self, "AttackerBasePolicyCls", AttackerBasePolicyCls)

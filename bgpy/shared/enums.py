@@ -25,30 +25,30 @@ class YamlAbleEnum(Enum):
 
 
 class Outcomes(YamlAbleEnum):
-    ATTACKER_SUCCESS: int = 0
-    VICTIM_SUCCESS: int = 1
-    DISCONNECTED: int = 2
-    UNDETERMINED: int = 3
-    DATA_PLANE_LOOP: int = 4
+    ATTACKER_SUCCESS = 0
+    VICTIM_SUCCESS = 1
+    DISCONNECTED = 2
+    UNDETERMINED = 3
+    DATA_PLANE_LOOP = 4
 
 
 class Relationships(YamlAbleEnum):
     # Must start at one for the priority
-    PROVIDERS: int = 1
-    PEERS: int = 2
+    PROVIDERS = 1
+    PEERS = 2
     # Customers have highest priority
     # Economic incentives first!
-    CUSTOMERS: int = 3
+    CUSTOMERS = 3
     # Origin must always remain
-    ORIGIN: int = 4
+    ORIGIN = 4
     # Unknown for external programs like extrapoaltor
-    UNKNOWN: int = 5
+    UNKNOWN = 5
 
 
 class Plane(YamlAbleEnum):
     # Changing to integers so that this is compatible with c++
-    DATA: int = 0  # "data_plane"
-    CTRL: int = 1  # "control_plane"
+    DATA = 0  # "data_plane"
+    CTRL = 1  # "control_plane"
 
 
 class ROAValidity(YamlAbleEnum):
@@ -60,17 +60,17 @@ class ROAValidity(YamlAbleEnum):
     and invalid by max length for another roa
     """
 
-    VALID: int = 0
-    UNKNOWN: int = 1
-    INVALID: int = 2
+    VALID = 0
+    UNKNOWN = 1
+    INVALID = 2
 
 
 class Timestamps(YamlAbleEnum):
     """Different timestamps to use"""
 
     # Victim is always first
-    VICTIM: int = 0
-    ATTACKER: int = 1
+    VICTIM = 0
+    ATTACKER = 1
 
 
 class Prefixes(YamlAbleEnum):
@@ -79,38 +79,38 @@ class Prefixes(YamlAbleEnum):
     prefix always belongs to the victim
     """
 
-    SUPERPREFIX: str = "1.0.0.0/8"
+    SUPERPREFIX = "1.0.0.0/8"
     # Prefix always belongs to victim
-    PREFIX: str = "1.2.0.0/16"
-    SUBPREFIX: str = "1.2.3.0/24"
+    PREFIX = "1.2.0.0/16"
+    SUBPREFIX = "1.2.3.0/24"
 
 
 class ASNs(YamlAbleEnum):
     """Default ASNs for various ASNs"""
 
-    ATTACKER: int = 666
-    VICTIM: int = 777
+    ATTACKER = 666
+    VICTIM = 777
 
 
 class ASGroups(YamlAbleEnum):
     """AS types"""
 
-    IXPS: str = "ixp"
+    IXPS = "ixp"
     # NOTE: only the IXP group has IXPs
-    STUBS: str = "stub"
-    MULTIHOMED: str = "multihomed"
-    STUBS_OR_MH: str = "stub_or_multihomed"
-    INPUT_CLIQUE: str = "input_clique"
+    STUBS = "stub"
+    MULTIHOMED = "multihomed"
+    STUBS_OR_MH = "stub_or_multihomed"
+    INPUT_CLIQUE = "input_clique"
     # Not stubs, multihomed, or input clique
-    ETC: str = "etc"
+    ETC = "etc"
     # not stubs or multihomed
-    TRANSIT: str = "transit"
-    ALL_WOUT_IXPS: str = "all_wout_ixps"
+    TRANSIT = "transit"
+    ALL_WOUT_IXPS = "all_wout_ixps"
 
 
 class SpecialPercentAdoptions(YamlAbleEnum):
-    ALL_BUT_ONE: float = 1
-    ONLY_ONE: float = 0
+    ALL_BUT_ONE = 1
+    ONLY_ONE = 0
 
     def __float__(self) -> float:
         return float(self.value)
@@ -123,6 +123,6 @@ class SpecialPercentAdoptions(YamlAbleEnum):
 
 
 class InAdoptingASNs(YamlAbleEnum):
-    TRUE: str = "True"
-    FALSE: str = "False"
-    ANY: str = "Any"
+    TRUE = "True"
+    FALSE = "False"
+    ANY = "Any"

@@ -349,7 +349,7 @@ class ShortestPathPrefixHijack(VictimsPrefix):
             sorted_non_adopting_customer_paths = sorted(
                 non_adopting_customer_paths.items(), key=lambda x: len(x[1])
             )
-            best_asn, best_as_path = sorted_non_adopting_customer_paths[0]
+            _best_asn, best_as_path = sorted_non_adopting_customer_paths[0]
             return best_as_path
         else:
             warnings.warn(
