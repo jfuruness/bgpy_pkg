@@ -1,4 +1,6 @@
 from ipaddress import ip_network
+from pathlib import Path
+from pprint import pprint
 
 from frozendict import frozendict
 from roa_checker import ROA
@@ -8,13 +10,14 @@ from bgpy.simulation_framework import Scenario, ScenarioConfig
 
 from bgpy.simulation_engine import Announcement as Ann
 from bgpy.simulation_engine import BaseSimulationEngine
-from bgpy.simulation_engine import BGP
+from bgpy.simulation_engine import BGP, ROV
 
 from bgpy.as_graphs import ASGraphInfo
 from bgpy.as_graphs.base.links import CustomerProviderLink as CPLink
 from bgpy.as_graphs.base.links import PeerLink
 from bgpy.shared.enums import ASNs
-from bgpy.utils import EngineRunConfig
+from bgpy.utils import EngineRunConfig, EngineRunner
+
 
 class CustomScenario(Scenario):
     """Similar to a PrefixHijack"""
@@ -24,7 +27,6 @@ class CustomScenario(Scenario):
         *,
         engine: BaseSimulationEngine | None = None,
     ) -> tuple["Ann", ...]:
-
         anns = list()
         for victim_asn in self.victim_asns:
             anns.append(
@@ -62,8 +64,10 @@ class CustomScenario(Scenario):
             [ROA(ip_network(Prefixes.PREFIX.value), x) for x in self.victim_asns]
         )
 
+
 def main():
-    TARGET_AS = 1
+    TARGET_ASN = 10
+    # Arbitrary AS Graph
     as_graph = ASGraphInfo(
         peer_links=frozenset(
             {
@@ -79,7 +83,6 @@ def main():
                 CPLink(provider_asn=2, customer_asn=ASNs.VICTIM.value),
                 CPLink(provider_asn=4, customer_asn=ASNs.VICTIM.value),
                 CPLink(provider_asn=5, customer_asn=1),
-                # CPLink(provider_asn=5, customer_asn=2),
                 CPLink(provider_asn=8, customer_asn=1),
                 CPLink(provider_asn=8, customer_asn=2),
                 CPLink(provider_asn=9, customer_asn=4),
@@ -92,31 +95,44 @@ def main():
         ),
     )
 
+    # Configuration for a single run
     conf = EngineRunConfig(
         name="Example run",
         desc="Prefix Hijack Example",
         scenario_config=ScenarioConfig(
             ScenarioCls=CustomScenario,
             BasePolicyCls=BGP,
-            override_attacker_asns=frozenset({ASNs.ATTACKER.value,})
-            override_victim_asns=frozenset({ASNs.VICTIM.value,})
-            hardcoded_asn_cls_dict=frozendict({
-                1: ROV,
-            })
+            override_attacker_asns=frozenset(
+                {
+                    ASNs.ATTACKER.value,
+                }
+            ),
+            override_victim_asns=frozenset(
+                {
+                    ASNs.VICTIM.value,
+                }
+            ),
+            hardcoded_asn_cls_dict=frozendict(
+                {
+                    1: ROV,
+                }
+            ),
         ),
-        as_graph_info=as_graph
+        as_graph_info=as_graph,
     )
-    runner = EngineRunner(
-        conf=conf,
-        base_dir=Path.home() / "Desktop" / "example_run"
-    )
-    (
-        engine,
-        outcomes_yaml,
-        graph_data_aggregator,
-        scenario
-    ) = runner.run_engine()
-    pprint(engine.as_dict[1].local_rib)
+    # Running a single run
+    runner = EngineRunner(conf=conf, base_dir=Path.home() / "Desktop" / "example_run")
+    # Getting the engine (with AS Graph), outcomes, graph data, and scenario
+    (engine, outcomes_yaml, graph_data_aggregator, scenario) = runner.run_engine()
+
+    # Printing all ASes, then target AS only
+    print("Printing each AS")
+    for asn, as_obj in engine.as_graph.as_dict.items():
+        print(f"ASN: {asn}")
+        pprint(as_obj.policy.local_rib)
+    print(f"Target ASN: {TARGET_ASN}")
+    pprint(engine.as_graph.as_dict[TARGET_ASN].policy.local_rib)
+
 
 if __name__ == "__main__":
     main()
