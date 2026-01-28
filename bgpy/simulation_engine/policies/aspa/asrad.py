@@ -35,24 +35,24 @@ class ASRAD(ASRA):
         # For any AS along the path that is adopting
         # If the total AS Path length is greater than the max height reject
         # Otherwise if all are valid, return valid
-        if from_rel == Relationships.CUSTOMER:
+        if from_rel == Relationships.CUSTOMERS:
             for i, asn in enumerate(rpath):
-                as_obj = as_graph[asn]
+                as_obj = as_graph.as_dict[asn]
                 if (
                     isinstance(as_obj.policy, ASRAD)
-                    and len(rpath) - i - self.UP_SLACK > as_obj.max_height
+                    and len(rpath) - i - self.UP_SLACK > as_obj.max_provider_depth
                 ):
                     return False
             return True
 
         # Case 2: Recieved from a peer
         # Same as the customer, plus one to account for peering
-        elif from_rel == Relationships.PEER:
+        elif from_rel == Relationships.PEERS:
             for i, asn in enumerate(rpath):
-                as_obj = as_graph[asn]
+                as_obj = as_graph.as_dict[asn]
                 if (
                     isinstance(as_obj.policy, ASRAD)
-                    and len(rpath) - i - self.UP_SLACK - 1 > as_obj.max_height
+                    and len(rpath) - i - self.UP_SLACK - 1 > as_obj.max_provider_depth
                 ):
                     return False
             return True
@@ -70,7 +70,7 @@ class ASRAD(ASRA):
         #
         #   Additionally:
         #   You should be able to repeat the above with the depth/downpath
-        elif from_rel == Relationships.PROVIDER:
+        elif from_rel == Relationships.PROVIDERS:
             return True
         else:
             raise NotImplementedError("Relationship not accounted for")
