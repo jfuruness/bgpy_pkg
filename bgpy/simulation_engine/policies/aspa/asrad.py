@@ -35,7 +35,7 @@ class ASRAD(ASRA):
         # For any AS along the path that is adopting
         # If the total AS Path length is greater than the max height reject
         # Otherwise if all are valid, return valid
-        if from_real == Relationships.CUSTOMER:
+        if from_rel == Relationships.CUSTOMER:
             for i, asn in enumerate(rpath):
                 as_obj = as_graph[asn]
                 if (
