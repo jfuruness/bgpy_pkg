@@ -1,4 +1,3 @@
-
 from typing import TYPE_CHECKING
 
 from bgpy.shared.enums import Relationships
@@ -23,54 +22,61 @@ class ASRAD(ASRA):
         # 1) run ASPA + ASRA first
         if not super()._valid_ann(ann, from_rel):
             return False
+        elif not self.asrad_valid(ann, from_rel):
+            return False
+        else:
+            return True
 
+    def asrad_valid(self, ann: "Ann", from_rel: Relationships) -> bool:
         as_graph = self.as_.as_graph
-        path = ann.as_path[::-1]
-        n = len(path)
+        rpath = ann.as_path[::-1]
 
-        # 2) per-AS depth check, but ONLY for ASRAD adopters
-        for i, asn in enumerate(path):
-            as_obj = as_graph.as_dict.get(asn)
-            if not as_obj:
-                continue
-
-            # only enforce if this AS adopts ASRAD (or subclass)
-            if not isinstance(as_obj.policy, ASRAD):
-                continue
-
-            max_provider_depth = getattr(
-                as_obj,
-                "max_provider_depth",
-                getattr(as_obj, "max_provider_height", None),
-            )
-            max_customer_depth = getattr(as_obj, "max_customer_depth", None)
-
-            # upward (toward receiver)
-            up_len = 0
-            for j in range(i, n - 1):
-                if not self._provider_check(path[j], path[j + 1]):
-                    break
-                up_len += 1
-
-            # downward (toward origin)
-            down_len = 0
-            for j in range(i, 0, -1):
-                if not self._provider_check(path[j], path[j - 1]):
-                    break
-                down_len += 1
-
-            # peer inflation: assume at most 1 → subtract 1
-            adj_down_len = max(down_len - 1, 0)
-
-            if max_provider_depth is not None:
-                if up_len > max_provider_depth + self.UP_SLACK:
+        # Case 1: Recieved from a customer
+        # For any AS along the path that is adopting
+        # If the total AS Path length is greater than the max height reject
+        # Otherwise if all are valid, return valid
+        if from_real == Relationships.CUSTOMER:
+            for i, asn in enumerate(rpath):
+                as_obj = as_graph[asn]
+                if (
+                    isinstance(as_obj.policy, ASRAD)
+                    and len(rpath) - i - self.UP_SLACK > as_obj.max_height
+                ):
                     return False
+            return True
 
-            if max_customer_depth is not None:
-                if adj_down_len > max_customer_depth + self.DOWN_SLACK:
+        # Case 2: Recieved from a peer
+        # Same as the customer, plus one to account for peering
+        elif from_rel == Relationships.PEER:
+            for i, asn in enumerate(rpath):
+                as_obj = as_graph[asn]
+                if (
+                    isinstance(as_obj.policy, ASRAD)
+                    and len(rpath) - i - self.UP_SLACK - 1 > as_obj.max_height
+                ):
                     return False
+            return True
 
-        return True
+        # Case 3: Received from a provider
+        # You need to check for your AS, and every other combo of AS:
+        #   when both ASes are adopting...
+        #       your max height + their max height + 1 for peer + up slack
+        #       should be greater than the length of the path between those
+        #       two ASes
+        #
+        #   Additionally:
+        #   You should be able to make the above stricter given a range
+        #   for the peak information... how?
+        #
+        #   Additionally:
+        #   You should be able to repeat the above with the depth/downpath
+        elif from_rel == Relationships.PROVIDER:
+            return True
+        else:
+            raise NotImplementedError("Relationship not accounted for")
+
+        # Case 4:
+        # Somehow utilizing customer and peer separation information?
 
 
 class ASRAD1(ASRAD):
