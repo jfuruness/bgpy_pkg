@@ -202,3 +202,12 @@ class AccidentalRouteLeak(VictimsPrefix):
         """
 
         return super()._untracked_asns | self._attackers_customer_cones_asns
+
+    @property
+    def untracked_asns(self) -> frozenset[int]:
+        """Returns ASNs that shouldn't be tracked by the metric tracker
+
+        By default just the default adopters and non adopters
+        """
+
+        return super().untracked_asns
