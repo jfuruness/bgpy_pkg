@@ -57,8 +57,8 @@ class BGP(Policy):
         This is also useful for regenerating an AS from YAML
         """
 
-        self.local_rib = local_rib if local_rib else LocalRIB()
-        self.recv_q = recv_q if recv_q else RecvQueue()
+        self.local_rib = local_rib or LocalRIB()
+        self.recv_q = recv_q or RecvQueue()
         # This gets set within the AS class so it's fine
         self.as_: CallableProxyType[AS] = as_  # type: ignore
 

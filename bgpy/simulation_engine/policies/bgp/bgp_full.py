@@ -22,8 +22,8 @@ class BGPFull(BGP):
         **kwargs,
     ):
         super(BGPFull, self).__init__(*args, **kwargs)
-        self.ribs_in: RIBsIn = ribs_in if ribs_in else RIBsIn()
-        self.ribs_out: RIBsOut = ribs_out if ribs_out else RIBsOut()
+        self.ribs_in: RIBsIn = ribs_in or RIBsIn()
+        self.ribs_out: RIBsOut = ribs_out or RIBsOut()
 
     #########################
     # Process incoming anns #

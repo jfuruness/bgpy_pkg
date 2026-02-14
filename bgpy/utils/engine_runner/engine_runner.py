@@ -20,7 +20,7 @@ class EngineRunner:
         dpi: int | None = None,
     ) -> None:
         self.conf: EngineRunConfig = conf
-        self.codec: SimulatorCodec = codec if codec else SimulatorCodec()
+        self.codec: SimulatorCodec = codec or SimulatorCodec()
         # Needed to aggregate all diagrams
         self.base_dir: Path = base_dir
 

@@ -15,7 +15,7 @@ class ASGraphCollector(ABC):
     ) -> None:
         """Stores download time and cache_dir instance vars and creates dir"""
 
-        self.dl_time: datetime = dl_time if dl_time else self.default_dl_time
+        self.dl_time: datetime = dl_time or self.default_dl_time
 
         self.cache_dir: Path = cache_dir
         # Make cache dir if cache is being used

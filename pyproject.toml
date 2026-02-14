@@ -13,7 +13,7 @@ authors = [
     {name = "Cameron Morris", email = "cameron.morris@uconn.edu"},
     {name = "Reynaldo Morillo", email = "reynaldo.morillo@uconn.edu"},
     {name = "Arvind Kasiliya", email = "arvind.kasiliya@uconn.edu"},
-    {name = "Joel Braun", email = "joelbraun@protonmail.com"}
+    {name = "Joel Braun", email = "joelbraun@protonmail.com"},
     {name = "Dan Foster", email = "danfosterdev@gmail.com"},
 ]
 maintainers = [
@@ -293,6 +293,10 @@ ignore = [
     "PT018",
     # This seems to want every single object to have a hash lol
     "PLW1641",
+    # Doesn't like certain strings being split more than once,
+    # wants vague rsplit and other weird syntax. Imo splitting twice
+    # is more readable
+    "PLC0207",
 ]
 
 unfixable = []
