@@ -32,7 +32,7 @@ class ASRAUS(ASRA):
                     (
                         isinstance(as_obj.policy, ASRAUS)
                         and (as_obj.stub or as_obj.multihomed)
-                        and not asn == ann.origin_asn
+                        and not asn == ann.origin
                     )
                     # Peerlock lite
                     or (
@@ -51,7 +51,7 @@ class ASRAUS(ASRA):
                     (
                         isinstance(as_obj.policy, ASRAUS)
                         and (as_obj.stub or as_obj.multihomed)
-                        and not asn == ann.origin_asn
+                        and not asn == ann.origin
                     )
                     # Peerlock lite
                     or (
@@ -71,7 +71,7 @@ class ASRAUS(ASRA):
                     (
                         isinstance(as_obj.policy, ASRAUS)
                         and (as_obj.stub or as_obj.multihomed)
-                        and not asn == ann.origin_asn
+                        and not asn == ann.origin
                     )
                 ):
                     return False
