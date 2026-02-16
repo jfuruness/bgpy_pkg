@@ -5,6 +5,7 @@ from .asra_full import ASRAFull
 from .aspawn import ASPAwN
 from .aspawn_full import ASPAwNFull
 from .asrad import ASRAD, ASRAD1, ASRAD2
+from .asra_ultra_simple import ASRAUS
 
 __all__ = [
     "ASPAFull",
@@ -16,4 +17,5 @@ __all__ = [
     "ASRAD",
     "ASRAD1",
     "ASRAD2",
+    "ASRAUS",
 ]

@@ -4,6 +4,7 @@ from .ann_containers import LocalRIB, RecvQueue, RIBsIn, RIBsOut
 
 # Custom attacker policies
 from .policies import (
+    ASRAUS,
     ASRAD,
     ASRAD1,
     ASRAD2,
@@ -61,6 +62,7 @@ from .policies import (
 from .simulation_engines import BaseSimulationEngine, SimulationEngine
 
 __all__ = [
+    "ASRAUS",
     "Announcement",
     "LocalRIB",
     "RIBsIn",
