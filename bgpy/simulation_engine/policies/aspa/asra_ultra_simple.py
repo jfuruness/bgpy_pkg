@@ -2,6 +2,7 @@ from typing import TYPE_CHECKING
 
 from bgpy.shared.enums import Relationships
 from .asra import ASRA
+from .aspa import ASPA
 
 if TYPE_CHECKING:
     from bgpy.simulation_engine import Announcement as Ann
@@ -43,7 +44,7 @@ class ASRAUS(ASRA):
                     return False
             return True
         # Same as customers, except tier-1 is allowed to be directly next to AS
-        elif from_rel == Relationship.PEERS:
+        elif from_rel == Relationships.PEERS:
             for i, asn in enumerate(ann.as_path):
                 as_obj = as_graph.as_dict[asn]
                 if (
