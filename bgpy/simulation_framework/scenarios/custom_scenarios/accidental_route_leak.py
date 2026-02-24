@@ -192,6 +192,18 @@ class AccidentalRouteLeak(VictimsPrefix):
             ]
         )
 
+
+    @property
+    def untracked_asns(self) -> frozenset[int]:
+        """Returns ASNs that shouldn't be tracked by the metric tracker
+
+        By default just the default adopters and non adopters
+        however for the route leak, we don't want to track the customers of the
+        leaker, since you can not "leak" to your own customers
+        """
+        return super().untracked_asns | self._attackers_customer_cones_asns
+    
+    
     @property
     def _untracked_asns(self) -> frozenset[int]:
         """Returns ASNs that shouldn't be tracked by the metric tracker
@@ -201,13 +213,13 @@ class AccidentalRouteLeak(VictimsPrefix):
         leaker, since you can not "leak" to your own customers
         """
 
-        return super()._untracked_asns | self._attackers_customer_cones_asns
+        warnings.warn(
+            "_untracked_asns is deprecated, please use untracked_asns instead",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return self.untracked_asns
 
-    @property
-    def untracked_asns(self) -> frozenset[int]:
-        """Returns ASNs that shouldn't be tracked by the metric tracker
+    
 
-        By default just the default adopters and non adopters
-        """
-
-        return super().untracked_asns
+        
