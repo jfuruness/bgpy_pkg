@@ -1,3 +1,35 @@
+
+<div align="right">
+  <details>
+    <summary >🌐 Language</summary>
+    <div>
+      <div align="center">
+        <a href="https://openaitx.github.io/view.html?user=jfuruness&project=bgpy_pkg&lang=en">English</a>
+        | <a href="https://openaitx.github.io/view.html?user=jfuruness&project=bgpy_pkg&lang=zh-CN">简体中文</a>
+        | <a href="https://openaitx.github.io/view.html?user=jfuruness&project=bgpy_pkg&lang=zh-TW">繁體中文</a>
+        | <a href="https://openaitx.github.io/view.html?user=jfuruness&project=bgpy_pkg&lang=ja">日本語</a>
+        | <a href="https://openaitx.github.io/view.html?user=jfuruness&project=bgpy_pkg&lang=ko">한국어</a>
+        | <a href="https://openaitx.github.io/view.html?user=jfuruness&project=bgpy_pkg&lang=hi">हिन्दी</a>
+        | <a href="https://openaitx.github.io/view.html?user=jfuruness&project=bgpy_pkg&lang=th">ไทย</a>
+        | <a href="https://openaitx.github.io/view.html?user=jfuruness&project=bgpy_pkg&lang=fr">Français</a>
+        | <a href="https://openaitx.github.io/view.html?user=jfuruness&project=bgpy_pkg&lang=de">Deutsch</a>
+        | <a href="https://openaitx.github.io/view.html?user=jfuruness&project=bgpy_pkg&lang=es">Español</a>
+        | <a href="https://openaitx.github.io/view.html?user=jfuruness&project=bgpy_pkg&lang=it">Italiano</a>
+        | <a href="https://openaitx.github.io/view.html?user=jfuruness&project=bgpy_pkg&lang=ru">Русский</a>
+        | <a href="https://openaitx.github.io/view.html?user=jfuruness&project=bgpy_pkg&lang=pt">Português</a>
+        | <a href="https://openaitx.github.io/view.html?user=jfuruness&project=bgpy_pkg&lang=nl">Nederlands</a>
+        | <a href="https://openaitx.github.io/view.html?user=jfuruness&project=bgpy_pkg&lang=pl">Polski</a>
+        | <a href="https://openaitx.github.io/view.html?user=jfuruness&project=bgpy_pkg&lang=ar">العربية</a>
+        | <a href="https://openaitx.github.io/view.html?user=jfuruness&project=bgpy_pkg&lang=fa">فارسی</a>
+        | <a href="https://openaitx.github.io/view.html?user=jfuruness&project=bgpy_pkg&lang=tr">Türkçe</a>
+        | <a href="https://openaitx.github.io/view.html?user=jfuruness&project=bgpy_pkg&lang=vi">Tiếng Việt</a>
+        | <a href="https://openaitx.github.io/view.html?user=jfuruness&project=bgpy_pkg&lang=id">Bahasa Indonesia</a>
+        | <a href="https://openaitx.github.io/view.html?user=jfuruness&project=bgpy_pkg&lang=as">অসমীয়া</
+      </div>
+    </div>
+  </details>
+</div>
+
 ![PyPI Downloads](https://static.pepy.tech/badge/bgpy-pkg)
 [![PyPI version](https://badge.fury.io/py/bgpy_pkg.svg)](https://badge.fury.io/py/bgpy_pkg)
 ![PyPy](https://img.shields.io/badge/PyPy-7.3.17-blue)
