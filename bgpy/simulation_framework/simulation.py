@@ -128,8 +128,8 @@ class Simulation:
         self.python_hash_seed: int | None = python_hash_seed
         self._seed_random()
 
-        self.sim_name: str = sim_name if sim_name else self.default_sim_name
-        self.output_dir: Path = output_dir if output_dir else self.default_output_dir
+        self.sim_name: str = sim_name or self.default_sim_name
+        self.output_dir: Path = output_dir or self.default_output_dir
         self.output_dir.mkdir(parents=True, exist_ok=True)
 
         # Done here so that the caida files are cached
