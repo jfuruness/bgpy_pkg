@@ -4,26 +4,64 @@ from ipaddress import ip_network
 import pytest
 from roa_checker import ROA
 
-from bgpy.shared.enums import ASNs, Prefixes
+from bgpy.shared.enums import ASNs, Prefixes, Timestamps
 from bgpy.simulation_engine import BGP, Announcement, BGPFull
 from bgpy.simulation_framework import (
     NonRoutedPrefixHijack,
     ScenarioConfig,
     SubprefixHijack,
+    #All this below is Edited, this should cover all scenarios + test cases
+    PrefixHijack,
+    NonRoutedPrefixHijack,
+    NonRoutedSuperprefixHijack,
+    NonRoutedSuperprefixPrefixHijack,
+    ForgedOriginPrefixHijack,
+    ShortestPathPrefixHijack,
+    FirstASNStrippingPrefixHijack,
     ValidPrefix,
 )
+
+"""Changes made are that some of the tests that test specific things are left alone, general tests gets converted to test many scenarios at once"""
+
+"""All Scenarios list"""
+HIJACK_SCENARIOS = [SubprefixHijack, 
+                    PrefixHijack, NonRoutedPrefixHijack, 
+                    NonRoutedSuperprefixHijack, 
+                    NonRoutedSuperprefixPrefixHijack, 
+                    ForgedOriginPrefixHijack, 
+                    ShortestPathPrefixHijack, 
+                    FirstASNStrippingPrefixHijack]
+
+
+"""Need these for announcement prefix tests since some scenarios differ """
+ROUTED_HIJACK_SCENARIOS = [
+        SubprefixHijack,
+        PrefixHijack,
+        ForgedOriginPrefixHijack,
+        ShortestPathPrefixHijack,
+        FirstASNStrippingPrefixHijack,
+    ]
+
+NON_ROUTED_SCENARIOS = [
+    NonRoutedPrefixHijack,
+    NonRoutedSuperprefixHijack,
+    NonRoutedSuperprefixPrefixHijack,
+    ]
+
 
 
 @pytest.mark.framework
 @pytest.mark.unit_tests
 class TestScenario:
+
     @pytest.mark.parametrize("num_attackers", [1, 2])
-    def test_init_valid(self, num_attackers):
+    @pytest.mark.parametrize("Scenarios", HIJACK_SCENARIOS)
+    def test_init_valid(self, num_attackers, Scenarios):
         """Tests the initialization works when valid"""
 
         num_victims = 1
         scenario_config = ScenarioConfig(
-            ScenarioCls=SubprefixHijack,
+            ScenarioCls=Scenarios,
             AnnCls=Announcement,
             BasePolicyCls=BGP,
             AdoptPolicyCls=BGPFull,
@@ -33,29 +71,32 @@ class TestScenario:
             override_victim_asns=frozenset(range(num_victims)),
             override_adopting_asns=frozenset({1}),
         )
-        SubprefixHijack(scenario_config=scenario_config)
+        
+        Scenarios(scenario_config=scenario_config)
 
-    def test_init_invalid_attackers(self):
+    @pytest.mark.parametrize("Scenarios", HIJACK_SCENARIOS)
+    def test_init_invalid_attackers(self, Scenarios):
         """Tests the len(attacker_asns) == num_attackers"""
 
         scenario_config = ScenarioConfig(
-            ScenarioCls=SubprefixHijack,
+            ScenarioCls=Scenarios,
             num_attackers=1,
             override_attacker_asns=frozenset({1, 2}),
         )
         with pytest.raises(AssertionError):
-            SubprefixHijack(scenario_config=scenario_config)
+            Scenarios(scenario_config=scenario_config)
 
-    def test_init_invalid_victims(self):
+    @pytest.mark.parametrize("Scenarios", HIJACK_SCENARIOS)
+    def test_init_invalid_victims(self, Scenarios):
         """Tests the len(victim_asns) == num_victims"""
 
         scenario_config = ScenarioConfig(
-            ScenarioCls=SubprefixHijack,
+            ScenarioCls=Scenarios,
             num_victims=1,
             override_victim_asns=frozenset({1, 2}),
         )
         with pytest.raises(AssertionError):
-            SubprefixHijack(scenario_config=scenario_config)
+            Scenarios(scenario_config=scenario_config)
 
     def test_init_adopt_as_cls(self):
         """Tests the AdoptPolicyCls is never None, and is the pseudo BaseAS"""
@@ -382,3 +423,160 @@ class TestScenario:
             Prefixes.SUBPREFIX.value: [],
         }
         assert scenario.ordered_prefix_subprefix_dict == gt
+
+
+#NEW TESTS
+
+
+    """1 Victim and 1 attacker for route """
+    @pytest.mark.parametrize("Scenarios", ROUTED_HIJACK_SCENARIOS)
+    def test_announcements_count(self, Scenarios, engine):
+        scenario = Scenarios(
+            scenario_config=ScenarioConfig(
+                ScenarioCls=Scenarios,
+                override_attacker_asns=frozenset({1}),
+                override_victim_asns=frozenset({2}),                
+              ),
+              engine = engine,
+        )
+        assert len(scenario.announcements) == 2
+
+
+    """1 Victim and 1 attacker for non-route """
+    @pytest.mark.parametrize("Scenarios", NON_ROUTED_SCENARIOS)
+    def test_announcements_count_non_routed(self, Scenarios, engine):
+        scenario = Scenarios(
+            scenario_config=ScenarioConfig(
+                ScenarioCls=Scenarios,
+                override_attacker_asns=frozenset({1}),
+                override_victim_asns=frozenset({2}),                
+              ),
+              engine = engine,
+        )
+        attacker_anns = [x for x in scenario.announcements if x.seed_asn in scenario.attacker_asns]
+        assert len(attacker_anns) >= 1
+
+
+    #Need this to check multiple attacks for non-routed
+    NON_ROUTED_ANN_COUNT = {
+        NonRoutedPrefixHijack: lambda n: n,          # 1 attacker announcement
+        NonRoutedSuperprefixHijack: lambda n: n,      # 1 attacker announcement
+        NonRoutedSuperprefixPrefixHijack: lambda n: n * 2,  # 2 attacker announcement
+    }
+
+    @pytest.mark.parametrize("num_attackers", [1, 2, 3])
+    @pytest.mark.parametrize("Scenarios", NON_ROUTED_SCENARIOS)
+    def test_announcements_count_multiple_attacks(self, Scenarios, num_attackers, engine):
+        """Tests announcement count with attackers"""
+        scenario = Scenarios(
+            scenario_config=ScenarioConfig(
+                ScenarioCls=Scenarios,
+                num_attackers=num_attackers,
+                override_attacker_asns=frozenset(range(num_attackers)),
+                override_victim_asns=frozenset({100}),               
+              ),
+              engine = engine,
+        )
+        expected = self.NON_ROUTED_ANN_COUNT[Scenarios](num_attackers)
+        assert len(scenario.announcements) == expected
+
+
+    #Prefix board for routed? This is to compare and check prefix value
+    ATTACKER_PREFIX_MAP = {
+        SubprefixHijack: Prefixes.SUBPREFIX.value,
+        PrefixHijack: Prefixes.PREFIX.value,
+        ForgedOriginPrefixHijack: Prefixes.PREFIX.value,
+        ShortestPathPrefixHijack: Prefixes.PREFIX.value,
+        FirstASNStrippingPrefixHijack: Prefixes.PREFIX.value,
+        NonRoutedSuperprefixHijack: Prefixes.SUPERPREFIX.value,
+        NonRoutedSuperprefixPrefixHijack: Prefixes.SUPERPREFIX.value
+    }
+
+    @pytest.mark.parametrize("Scenarios", [s for s in HIJACK_SCENARIOS if s not in (NonRoutedPrefixHijack, NonRoutedSuperprefixPrefixHijack)])
+    def test_attacker_anns_use_correct_prefix(self, Scenarios, engine):
+        """Use prefix"""
+        scenario = Scenarios(
+            scenario_config=ScenarioConfig(
+                ScenarioCls=Scenarios,
+                override_attacker_asns=frozenset({1}),
+                override_victim_asns=frozenset({2}),           
+              ),
+              engine = engine,
+        )
+        attacker_anns = [
+            x for x in scenario.announcements if x.seed_asn in scenario.attacker_asns
+        ]
+        assert len(attacker_anns) > 0
+        for ann in attacker_anns:
+            assert ann.prefix == self.ATTACKER_PREFIX_MAP[Scenarios]
+
+    #This needs to be it's own thing since it doesn't uses attacker announcement
+    def test_attacker_anns_use_correct_prefix_super(self, engine):
+        """Use prefix"""
+        scenario = NonRoutedSuperprefixPrefixHijack(
+            scenario_config=ScenarioConfig(
+                ScenarioCls=NonRoutedSuperprefixPrefixHijack,
+                override_attacker_asns=frozenset({1}),
+                override_victim_asns=frozenset({2}),           
+              ),
+              engine = engine,
+        )
+        attacker_anns = [
+            x for x in scenario.announcements if x.seed_asn in scenario.attacker_asns
+        ]
+        prefixes_used = {ann.prefix for ann in attacker_anns}
+        assert Prefixes.PREFIX.value in prefixes_used
+        assert Prefixes.SUPERPREFIX.value in prefixes_used
+
+    #Checks timestamp
+    @pytest.mark.parametrize("Scenarios", HIJACK_SCENARIOS)
+    def test_attacker_anns_timestamp(self, Scenarios, engine):
+        """Attacker announcement timestamp test"""
+        scenario = Scenarios(
+            scenario_config=ScenarioConfig(
+                ScenarioCls=Scenarios,
+                override_attacker_asns=frozenset({1}),
+                override_victim_asns=frozenset({2}),           
+              ),
+              engine = engine,
+        )
+        attacker_anns = [
+            x for x in scenario.announcements if x.seed_asn in scenario.attacker_asns
+        ]
+        for ann in attacker_anns:
+            assert ann.timestamp == Timestamps.ATTACKER.value
+
+    @pytest.mark.parametrize("Scenarios", ROUTED_HIJACK_SCENARIOS)
+    def test_both_attacker_and_victim_seeded(self, Scenarios, engine):
+        """Testing announcements for both ATK/VIC asn"""
+        scenario = Scenarios(
+            scenario_config=ScenarioConfig(
+                ScenarioCls=Scenarios,
+                override_attacker_asns=frozenset({1}),
+                override_victim_asns=frozenset({2}),           
+              ),
+              engine = engine,
+        )
+        seeded_asns = frozenset(x.seed_asn for x in scenario.announcements)
+        for attacker_asn in scenario.attacker_asns:
+            assert attacker_asn in seeded_asns
+        for victim_asn in scenario.victim_asns:
+            assert victim_asn in seeded_asns
+
+    @pytest.mark.parametrize("Scenarios", NON_ROUTED_SCENARIOS)
+    def test_both_attacker_and_victim_seeded(self, Scenarios, engine):
+        """Only attackers no victims"""
+        scenario = Scenarios(
+            scenario_config=ScenarioConfig(
+                ScenarioCls=Scenarios,
+                override_attacker_asns=frozenset({1}),
+                override_victim_asns=frozenset({2}),           
+              ),
+              engine = engine,
+        )
+        seeded_asns = frozenset(x.seed_asn for x in scenario.announcements)
+        for attacker_asn in scenario.attacker_asns:
+            assert attacker_asn in seeded_asns
+        for victim_asn in scenario.victim_asns:
+            assert victim_asn not in seeded_asns
+
