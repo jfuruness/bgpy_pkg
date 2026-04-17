@@ -218,7 +218,7 @@ class AccidentalRouteLeak(VictimsPrefix):
             DeprecationWarning,
             stacklevel=2,
         )
-        return self.untracked_asns
+        return super().untracked_asns | self._attackers_customer_cones_asns
 
     
 
