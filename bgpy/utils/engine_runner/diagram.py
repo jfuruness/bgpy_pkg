@@ -69,7 +69,7 @@ class Diagram:
         peer edge simply crosses rows; it is never allowed to break Rule 1.
         """
         as_graph = engine.as_graph
-        as_dict: dict[int, "AS"] = {a.asn: a for a in as_graph}
+        as_dict: dict[int, AS] = {a.asn: a for a in as_graph}
 
         # --- Step 1: longest-path-from-root via Kahn's topological sort -------
         # Each node's row = length of the longest provider-customer chain from
@@ -80,7 +80,7 @@ class Diagram:
         in_degree: dict[int, int] = {a.asn: len(a.providers) for a in as_graph}
 
         # Seed the queue with root nodes (no providers) — these are row 0.
-        queue: deque["AS"] = deque(a for a in as_graph if not a.providers)
+        queue: deque[AS] = deque(a for a in as_graph if not a.providers)
 
         while queue:
             node = queue.popleft()
@@ -124,7 +124,7 @@ class Diagram:
 
         # --- Assemble into tuple-of-tuples ------------------------------------
         max_row = max(rows.values(), default=0)
-        buckets: list[list["AS"]] = [[] for _ in range(max_row + 1)]
+        buckets: list[list[AS]] = [[] for _ in range(max_row + 1)]
         for as_obj in as_graph:
             buckets[rows[as_obj.asn]].append(as_obj)
         return tuple(tuple(sorted(group)) for group in buckets)
@@ -147,10 +147,7 @@ class Diagram:
             if rows[provider.asn] >= new_row:
                 return False
         # Every customer must remain strictly below this node.
-        for customer in as_obj.customers:
-            if rows[customer.asn] <= new_row:
-                return False
-        return True
+        return all(rows[customer.asn] > new_row for customer in as_obj.customers)
 
     def _peer_move_safe(
         self,
@@ -173,10 +170,7 @@ class Diagram:
             return False
         # Refuse to vacate the current row if another peer is already there.
         current_row = rows[asn]
-        for peer in as_dict[asn].peers:
-            if rows[peer.asn] == current_row:
-                return False
-        return True
+        return all(rows[peer.asn] != current_row for peer in as_dict[asn].peers)
 
     def _add_legend(self, traceback: dict[int, int], scenario: Scenario) -> None:
         """Adds legend to the graph with outcome counts"""
