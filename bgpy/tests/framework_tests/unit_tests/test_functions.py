@@ -1,100 +1,161 @@
 import pytest
-from bgpy.as_graphs.base.as_graph.base_as import AS
-from bgpy.as_graphs.base.as_graph.customer_cone_funcs import (
-    _get_customer_cone_size,
-    _get_cone_size_helper
-)
 
-class DummyPolicy:
-    name = "DummyPolicy"
+from bgpy.as_graphs import ASGraph, ASGraphInfo
+from bgpy.as_graphs.base.links import CustomerProviderLink as CPLink
 
-def make_as(asn: int, rank: int = 0):
-    """Make AS, you need this to test the functions for customer cones"""
-    as_obj = AS(asn=asn, policy=DummyPolicy())
-    as_obj.customer_asns = frozenset()
-    as_obj.customers = tuple()
-    as_obj.customer_cone_size = None
-    as_obj.propagation_rank = rank
-    
-    """Stub means an edge with no customers"""
-    @property
-    def stub(self):
-        return len(self.customers) == 0
-    
-    """Returns nothing for this test"""
-    @property
-    def multihomed(self):
-        return False
 
-    type(as_obj).stub = stub
-    type(as_obj).multihomed = multihomed
-    return as_obj
+def build_graph(*cp_links: CPLink, unlinked_asns: frozenset[int] = frozenset()) -> ASGraph:
+    """Builds a graph that we can use to test the specific cone sizes"""
+    info = ASGraphInfo(
+        customer_provider_links=frozenset(cp_links),
+        unlinked_asns=unlinked_asns,
+    )
+    return ASGraph(info, store_customer_cone_size=True)
 
-def link_customer_provider(parent, child):
-    parent.customer_asns |= {child.asn}
-    parent.customers = tuple(list(parent.customers) + [child])
 
-class MockGraph:
-    """This is a 'mock' graph required by the _get_customer_cone_size function and what it expects"""
-    def __init__(self, as_dict):
-        self.as_dict = as_dict
+class TestGetCustomerConeSize:
 
-    def __iter__(self):
-        return iter(self.as_dict.values())
+    def test_stub_as_cone_size_is_zero(self):
+        """Test that cone_size is zero"""
+        graph = build_graph(CPLink(provider_asn=1, customer_asn=2))
+        assert graph.as_dict[2].stub is True
+        assert graph.as_dict[2].customer_cone_size == 0
 
-    def _get_customer_cone_size(self):
-        return _get_customer_cone_size(self)
+    def test_multihomed_as_cone_size_is_zero(self):
+        """Test that multihomed cone_size is zero"""
+        graph = build_graph(
+            CPLink(provider_asn=1, customer_asn=3),
+            CPLink(provider_asn=2, customer_asn=3),
+        )
+        assert graph.as_dict[3].multihomed is True
+        assert graph.as_dict[3].customer_cone_size == 0
 
-    def _get_cone_size_helper(self, as_obj, cone_dict):
-        return _get_cone_size_helper(self, as_obj, cone_dict)
+    def test_unlinked_as_cone_size_is_zero(self):
+        """Tests that unlinked ASN have a cone_size of zero"""
+        graph = build_graph(unlinked_asns=frozenset([99]))
+        assert graph.as_dict[99].customer_cone_size == 0
 
-class TestGetCustomerConeSizeLogic:
+    # Testing topology
+    # Important: An AS with a neighbor of 1 is still considered a stub, so their cone size is zero
+    # essentially, you need move a node above and below for the customer_cone_size to not be zero
+    # customer_cone_size gets only the nodes below the current AS 
 
-    def test_stub_as(self):
-        """This test basically ensures there is nothing"""
-        as1 = make_as(1, rank=0)
-        graph = MockGraph({1: as1})
+    def test_transit_with_one_stub_customer(self):
+        """
+        Topology: AS1 -> AS2 -> AS3
+
+        AS1 -> customer_cone_size = 0
+        AS2 -> customer_cone_size = 1
+        AS3 -> customer_cone_size = 0
+        """
+        graph = build_graph(
+            CPLink(provider_asn=1, customer_asn=2),
+            CPLink(provider_asn=2, customer_asn=3),
+        )
+        assert graph.as_dict[1].stub is True
+        assert graph.as_dict[1].customer_cone_size == 0
+        assert graph.as_dict[2].customer_cone_size == 1
+        assert graph.as_dict[3].stub is True
+        assert graph.as_dict[3].customer_cone_size == 0
+
+    def test_provider_with_two_stub_customers(self):
+        """
+        Topology: AS1 -> AS2, AS1 -> AS3
+
+        AS 1 has AS2, AS3 so customer_cone size is 2
+        """
+        graph = build_graph(
+            CPLink(provider_asn=1, customer_asn=2),
+            CPLink(provider_asn=1, customer_asn=3),
+        )
+        assert graph.as_dict[1].customer_cone_size == 2
+
+    def test_four_level_chain(self):
+        """
+        Topology: AS1 -> AS2 -> AS3 -> AS4
+
+        AS1 -> customer_cone_size = 0
+        AS2 -> customer_cone_size = 2
+        AS3 -> customer_cone_size = 1
+        AS4 -> customer_cone_size = 0
+        """
+        graph = build_graph(
+            CPLink(provider_asn=1, customer_asn=2),
+            CPLink(provider_asn=2, customer_asn=3),
+            CPLink(provider_asn=3, customer_asn=4),
+        )
+        assert graph.as_dict[1].customer_cone_size == 0   
+        assert graph.as_dict[2].customer_cone_size == 2   
+        assert graph.as_dict[3].customer_cone_size == 1   
+        assert graph.as_dict[4].customer_cone_size == 0   
+
+    def test_diamond_no_double_counting(self):
+        """
+        Topology(diamond): AS1 -> AS2, AS1 -> AS3
+                           AS2 -> AS4, AS3 -> AS4
         
-        graph._get_customer_cone_size()
-        assert as1.customer_cone_size == 0
+        AS1 -> customer_cone_size = 3 (AS4 is counted once as it should)
+        AS2 -> customer_cone_size = 1
+        AS3 -> customer_cone_size = 1
+        AS4 -> customer_cone_size = 0
+        """
+        graph = build_graph(
+            CPLink(provider_asn=1, customer_asn=2),
+            CPLink(provider_asn=1, customer_asn=3),
+            CPLink(provider_asn=2, customer_asn=4),
+            CPLink(provider_asn=3, customer_asn=4),
+        )
+        assert graph.as_dict[4].multihomed is True
+        assert graph.as_dict[4].customer_cone_size == 0
+        assert graph.as_dict[2].customer_cone_size == 1
+        assert graph.as_dict[3].customer_cone_size == 1
+        assert graph.as_dict[1].customer_cone_size == 3
 
-    def test_single_customer(self):
-        as1 = make_as(1, rank=1)
-        as2 = make_as(2, rank=0)
-        link_customer_provider(as1, as2)
-        
-        graph = MockGraph({1: as1, 2: as2})
-        graph._get_customer_cone_size()
-        
-        assert as1.customer_cone_size == 1
+    def test_two_providers_one_shared_multihomed_customer(self):
+        """
+        Topology: AS1 -> AS3, AS2 -> AS3
 
-    def test_recursive_chain(self):
-        """Tests recursion"""
-        as1 = make_as(1, rank=2)
-        as2 = make_as(2, rank=1)
-        as3 = make_as(3, rank=0)
-        link_customer_provider(as1, as2)
-        link_customer_provider(as2, as3)
+        AS1 -> customer_cone_size = 0
+        AS2 -> customer_cone_size = 0
+        AS3 -> customer_cone_size = 0
         
-        graph = MockGraph({1: as1, 2: as2, 3: as3})
-        graph._get_customer_cone_size()
-        
-        assert as1.customer_cone_size == 2
-        assert as2.customer_cone_size == 1
+        AS1 and AS2 are considered stubs so customer_cone_size = 0
+        """
+        graph = build_graph(
+            CPLink(provider_asn=1, customer_asn=3),
+            CPLink(provider_asn=2, customer_asn=3),
+        )
+        assert graph.as_dict[3].multihomed is True
+        assert graph.as_dict[3].customer_cone_size == 0
+        assert graph.as_dict[1].stub is True
+        assert graph.as_dict[1].customer_cone_size == 0
+        assert graph.as_dict[2].stub is True
+        assert graph.as_dict[2].customer_cone_size == 0
 
-    def test_multihomed_customers(self):
-        """Tests multiple provide->customers relationships, each customer should be counted once"""
-        as1 = make_as(1, rank=2)
-        as2 = make_as(2, rank=1)
-        as3 = make_as(3, rank=1)
-        as4 = make_as(4, rank=0)
-        
-        link_customer_provider(as1, as2)
-        link_customer_provider(as1, as3)
-        link_customer_provider(as2, as4)
-        link_customer_provider(as3, as4)
-        
-        graph = MockGraph({1: as1, 2: as2, 3: as3, 4: as4})
-        graph._get_customer_cone_size()
-        
-        assert as1.customer_cone_size == 3
+
+    def test_three_tier_topology(self):
+        """
+        Topology: AS1 -> AS2, AS3
+                  AS2 -> AS4, AS5
+                  AS3 -> AS5, AS6
+
+        AS1 -> customer_cone_size = 5
+        AS2 -> customer_cone_size = 2
+        AS3 -> customer_cone_size = 2
+        Rest of AS are zero
+        """
+        graph = build_graph(
+            CPLink(provider_asn=1, customer_asn=2),
+            CPLink(provider_asn=1, customer_asn=3),
+            CPLink(provider_asn=2, customer_asn=4),
+            CPLink(provider_asn=2, customer_asn=5),
+            CPLink(provider_asn=3, customer_asn=5),
+            CPLink(provider_asn=3, customer_asn=6),
+        )
+        assert graph.as_dict[5].multihomed is True
+        assert graph.as_dict[5].customer_cone_size == 0
+        assert graph.as_dict[4].customer_cone_size == 0
+        assert graph.as_dict[6].customer_cone_size == 0
+        assert graph.as_dict[2].customer_cone_size == 2
+        assert graph.as_dict[3].customer_cone_size == 2
+        assert graph.as_dict[1].customer_cone_size == 5
