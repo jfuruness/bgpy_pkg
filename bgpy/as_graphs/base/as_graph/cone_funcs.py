@@ -21,7 +21,11 @@ def _get_and_store_customer_cone_and_set_size(self, store_asns: bool = False) ->
     non_edges: list[AS] = []
     cone_dict: dict[int, set[int]] = {}
     for as_obj in self:
-        if as_obj.stub or as_obj.multihomed:
+        #The bug originates because stubs are correctly checking if there is only one neighbor. 
+        #By the RFC definition, as long as traffic terminates at that AS, it's considered local traffic, even if it's from another AS.
+        #So in theory, according to the definition, a stub could actually have customers as long as the traffic for those customers is terminated at that AS.
+        #For the general topology, this doesn't matter, because the internet is a connected graph. But for unit tests, this actually does make a difference.
+        if len(as_obj.customers) == 0:
             as_obj.customer_cone_size = 0
             cone_dict[as_obj.asn] = set()
             if store_asns:
