@@ -5,9 +5,9 @@ from .ann_containers import LocalRIB, RecvQueue, RIBsIn, RIBsOut
 # Custom attacker policies
 from .policies import (
     ASRAUS,
-    ASRAD,
-    ASRAD1,
-    ASRAD2,
+    ASPAPP,
+    ASPAPP1,
+    ASPAPP2,
     BGP,
     ROV,
     ASPA,
@@ -112,6 +112,9 @@ __all__ = [
     "ROVPPV2ImprovedLiteFull",
     "ASPA",
     "ASPAFull",
+    "ASPAPP",
+    "ASPAPP1",
+    "ASPAPP2",
     "ASRA",
     "ASRAFull",
     "ASPAwN",

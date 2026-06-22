@@ -1,4 +1,4 @@
-from .aspa import ASPA, ASPAFull, ASRA, ASRAFull, ASPAwN, ASPAwNFull, ASRAD, ASRAD1, ASRAD2, ASRAUS
+from .aspa import ASPA, ASPAFull, ASRA, ASRAFull, ASPAwN, ASPAwNFull, ASPAPP, ASPAPP1, ASPAPP2, ASRAUS
 from .bgp import BGP, BGPFull, BGPFullIgnoreInvalid, BGPFullSuppressWithdrawals
 from .bgpisec import (
     BGPiSecTransitive,
@@ -41,9 +41,9 @@ from .rovpp import (
 
 __all__ = [
     "ASRAUS",
-    "ASRAD1",
-    "ASRAD2",
-    "ASRAD",
+    "ASPAPP1",
+    "ASPAPP2",
+    "ASPAPP",
     "BGP",
     "BGPFull",
     "BGPFullIgnoreInvalid",
