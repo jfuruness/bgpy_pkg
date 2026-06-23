@@ -10,12 +10,6 @@ if TYPE_CHECKING:
 
 
 class ASPA_MCC(ASPAPP):
-    """
-    ASPA++ using only the max customer chain (mcc) checks.
-    Cases 1 and 2 are skipped entirely since they only check mpc.
-    Case 3 only applies the mcc bounds (hops toward origin and toward F),
-    skipping the mpc bounds.
-    """
     name = "ASPA-MCC"
 
     def _aspapp_valid(self, ann: "Ann", from_rel: Relationships) -> bool:
@@ -23,19 +17,38 @@ class ASPA_MCC(ASPAPP):
         rpath = ann.as_path[::-1]
         n = len(rpath) - 1
 
+        # Case 1: Received from customer
+        # n - i + 1 - slack <= mpc_i
         if from_rel == Relationships.CUSTOMERS:
-            # mcc has no information about purely upward paths
+            # no mpc
             return True
 
+        # Case 2: Received from peer 
+        # n - i - slack <= mpc_i
         elif from_rel == Relationships.PEERS:
-            # mcc has no information about purely upward paths
+            # no mpc
             return True
 
+        # Case 3: Received from provider
         elif from_rel == Relationships.PROVIDERS:
-            return self._provider_valid(rpath, n, as_dict)
+            path_asns = set(rpath)
+
+            # (1) try to find exact peak
+            peak = self._find_peak(rpath, n, as_dict, path_asns)
+            if peak is not None:
+                return self._check_peak(rpath, n, as_dict, peak[0], peak[1])
+
+            # (2) Peak unknown, collect potential peaks and accept if any pass
+            potential = self._potential_peaks(rpath, n, as_dict, path_asns)
+            if not potential:
+                return True 
+            for k0, k1 in potential:
+                if self._check_peak(rpath, n, as_dict, k0, k1):
+                    return True
+            return False
 
         else:
-            raise NotImplementedError("Relationship not accounted for")
+            raise NotImplementedError("No Relationship? ( ͡• _•)")
 
     def _check_peak(
         self,
@@ -52,13 +65,11 @@ class ASPA_MCC(ASPAPP):
             mcc = obj.max_customer_depth
 
             if i <= k0:
-                # Upward segment: hops below p_i toward origin
-                if mcc is not None and i - self.DOWN_SLACK > mcc:
+                if mcc is not None and i - self.DOWN_SLACK <= mcc:
                     return False
 
             elif i > k1:
-                # Downward segment: hops below p_i toward F
-                if mcc is not None and (n - i + 1) - self.DOWN_SLACK > mcc:
+                if mcc is not None and n - i + 1 - self.DOWN_SLACK <= mcc:
                     return False
 
         return True
