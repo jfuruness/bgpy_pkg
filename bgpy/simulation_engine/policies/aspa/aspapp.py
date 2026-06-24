@@ -44,7 +44,7 @@ class ASPAPP(ASRA):
                 
             f_obj = self.as_
             if (f_obj.max_customer_depth is not None
-                and n + 1 - self.UP_SLACK > f_obj.max_customer_depth):
+                and n + 1 - self.DOWN_SLACK > f_obj.max_customer_depth):
                 return False
             
             return True
@@ -92,9 +92,9 @@ class ASPAPP(ASRA):
     ) -> tuple[int, int] | None:
         """
         Attempt to identify the peak using:
-        1. Two top ASes (Tier-1 or ASPA with no path neighbors as providers)
-        2. ASRA confirmed peer link
-        3. ASPA/ASRA confirmed shared provider
+            1. Two top ASes (Tier-1 or ASPA with no path neighbors as providers)
+            2. ASRA confirmed peer link
+            3. ASPA/ASRA confirmed shared provider
         Returns (k0, k1) where k0 is leftmost peak AS and k1 is rightmost 
         or None if the peak cannot be determined.
         """
