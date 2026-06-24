@@ -29,28 +29,36 @@ class ASPAPP(ASRA):
         rpath = ann.as_path[::-1]
         print(rpath, flush=True)
         n = len(rpath) - 1  # index of last AS before F
-
+        
         # Case 1: Received from customer
-        # n - i + 1 - slack <= mpc_i
+        # n - i + 1 - up_slack <= mpc_i
+        # i - down_slack <= mcc_i
         if from_rel == Relationships.CUSTOMERS:
             for i, asn in enumerate(rpath):
                 obj = as_dict.get(asn)
-                if (obj is not None
-                        and isinstance(obj.policy, ASPAPP)
-                        and obj.max_provider_depth is not None
-                        and n - i + 1 - self.UP_SLACK <= obj.max_provider_depth):
+                if (obj is not None and isinstance(obj.policy, ASPAPP)
+                    and ((obj.max_provider_depth is not None and n - i + 1 - self.UP_SLACK > obj.max_provider_depth)
+                    or (obj.max_customer_depth is not None and i - self.DOWN_SLACK > obj.max_customer_depth))
+                ):
                     return False
+                
+            f_obj = self.as_
+            if (f_obj.max_customer_depth is not None
+                and n + 1 - self.UP_SLACK > f_obj.max_customer_depth):
+                return False
+            
             return True
 
         # Case 2: Received from peer 
         # n - i - slack <= mpc_i
+        # i - down_slack <= mcc_i
         elif from_rel == Relationships.PEERS:
             for i, asn in enumerate(rpath):
                 obj = as_dict.get(asn)
-                if (obj is not None
-                        and isinstance(obj.policy, ASPAPP)
-                        and obj.max_provider_depth is not None
-                        and n - i - self.UP_SLACK <= obj.max_provider_depth):
+                if (obj is not None and isinstance(obj.policy, ASPAPP)
+                    and ((obj.max_provider_depth is not None and n - i - self.UP_SLACK > obj.max_provider_depth)
+                    or (obj.max_customer_depth is not None and i - self.DOWN_SLACK > obj.max_customer_depth))
+                ):
                     return False
             return True
 
@@ -173,16 +181,52 @@ class ASPAPP(ASRA):
             # Immediate neighbors are potential a part of the peak
             p = top[0]
             potential_peaks = [(p, p)]
+
             if p > 0:
-                potential_peaks.append((p - 1, p))
+                la = as_dict.get(rpath[p - 1])
+                ra = as_dict.get(rpath[p])
+                # Only add (p-1, p) as bilateral peer if the link is not
+                # already confirmed as UP or DOWN
+                link_confirmed = (
+                    (ra is not None and isinstance(ra.policy, ASPA)
+                    and rpath[p - 1] in ra.provider_asns)
+                    or
+                    (la is not None and isinstance(la.policy, ASRA)
+                    and rpath[p] in la.customer_asns)
+                    or
+                    (la is not None and isinstance(la.policy, ASPA)
+                    and rpath[p] in la.provider_asns)
+                    or
+                    (ra is not None and isinstance(ra.policy, ASRA)
+                    and rpath[p - 1] in ra.customer_asns)
+                )
+                if not link_confirmed:
+                    potential_peaks.append((p - 1, p))
+
             if p < n:
-                potential_peaks.append((p, p + 1))
+                la = as_dict.get(rpath[p])
+                ra = as_dict.get(rpath[p + 1])
+                # Only add (p, p+1) as bilateral peer if the link is not
+                # already confirmed as UP or DOWN
+                link_confirmed = (
+                    (ra is not None and isinstance(ra.policy, ASPA)
+                    and rpath[p] in ra.provider_asns)
+                    or
+                    (la is not None and isinstance(la.policy, ASRA)
+                    and rpath[p + 1] in la.customer_asns)
+                    or
+                    (la is not None and isinstance(la.policy, ASPA)
+                    and rpath[p + 1] in la.provider_asns)
+                    or
+                    (ra is not None and isinstance(ra.policy, ASRA)
+                    and rpath[p] in ra.customer_asns)
+                )
+                if not link_confirmed:
+                    potential_peaks.append((p, p + 1))
+
             return potential_peaks
 
         # No top ASes, classify links using ASPA/ASRA to bound peak range
-        # peak k0 must be at AS index > rightmost_up_link
-        # for shared provider k0 <= leftmost_down_link
-        # for bilateral peer k0 < leftmost_down_link
         rightmost_up = -1 
         leftmost_down = n 
 
@@ -238,17 +282,22 @@ class ASPAPP(ASRA):
             mcc = obj.max_customer_depth 
 
             if i <= k0:
-                if mpc is not None and k0 - i - self.UP_SLACK <= mpc:
+                if mpc is not None and (k0 - i - self.UP_SLACK) > mpc:
                     return False
-                if mcc is not None and i - self.DOWN_SLACK <= mcc:
-                    return False
-
-            elif i > k1:
-                if mcc is not None and (n - i + 1) - self.DOWN_SLACK <= mcc:
-                    return False
-                if mpc is not None and (i - k1) - self.UP_SLACK <= mpc:
+                if mcc is not None and (i - self.DOWN_SLACK) > mcc:
                     return False
 
+            if i >= k1:
+                if mpc is not None and (i - k1 - self.UP_SLACK) > mpc:
+                    return False
+                if mcc is not None and (n - i + 1 - self.DOWN_SLACK) > mcc:
+                    return False
+                
+        f_obj = self.as_
+        if (f_obj.max_provider_depth is not None
+            and (n + 1 - k1 - self.DOWN_SLACK) > f_obj.max_provider_depth):
+            return False
+    
         return True
 
 
