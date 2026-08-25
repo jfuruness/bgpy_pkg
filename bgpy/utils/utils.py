@@ -9,7 +9,7 @@ from rov_collector import rov_collector_classes
 from bgpy.simulation_engine import ROV, PeerROV, Policy
 
 
-def max_prob_rov(asn, info_list) -> None | type[Policy]:
+def max_prob_rov(asn, info_list) -> type[Policy] | None:
     """Takes the max probability from all datasets and adopts probabilistically"""
 
     # AT&T famously only filters peers

@@ -1,4 +1,5 @@
 import ipaddress
+from collections import deque
 from pathlib import Path
 from typing import TYPE_CHECKING
 
@@ -39,9 +40,137 @@ class Diagram:
         display_next_hop_asn = self._display_next_hop_asn(engine, scenario)
         self._add_ases(engine, traceback, scenario, display_next_hop_asn)
         self._add_edges(engine)
+        # Always recompute diagram rows from the engine's AS-graph relationships.
+        # The passed-in diagram_ranks may use the propagation convention (leaves
+        # at index 0) or may contain Rule-1 violations; recomputing here
+        # guarantees Rule 1 (provider strictly above customer) and Rule 2
+        # (peers share a row when safe).  static_order still controls whether
+        # invisible horizontal-ordering edges are added within each rank.
+        diagram_ranks = self._compute_diagram_rows(engine)
         self._add_diagram_ranks(diagram_ranks, static_order)
         self._add_description(description, display_next_hop_asn)
         self._render(path=path, view=view, dpi=dpi)
+
+    # ------------------------------------------------------------------
+    # Row-assignment helpers
+    # ------------------------------------------------------------------
+
+    def _compute_diagram_rows(
+        self, engine: BaseSimulationEngine
+    ) -> tuple[tuple["AS", ...], ...]:
+        """Return diagram rows satisfying two invariants.
+
+        Rule 1 (hard): every provider sits in a strictly smaller row index than
+        every one of its customers.  Row 0 is the top of the diagram (root
+        providers); higher indices are further down.
+
+        Rule 2 (soft): peers share a row when doing so does not violate Rule 1
+        for any node in the graph.  When the constraint cannot be satisfied the
+        peer edge simply crosses rows; it is never allowed to break Rule 1.
+        """
+        as_graph = engine.as_graph
+        as_dict: dict[int, AS] = {a.asn: a for a in as_graph}
+
+        # --- Step 1: longest-path-from-root via Kahn's topological sort -------
+        # Each node's row = length of the longest provider-customer chain from
+        # any root provider down to that node.  Using Kahn's algorithm ensures
+        # every provider is fully settled before we update its customers, so
+        # each customer always receives the true maximum depth.
+        rows: dict[int, int] = {a.asn: 0 for a in as_graph}
+        in_degree: dict[int, int] = {a.asn: len(a.providers) for a in as_graph}
+
+        # Seed the queue with root nodes (no providers) — these are row 0.
+        queue: deque[AS] = deque(a for a in as_graph if not a.providers)
+
+        while queue:
+            node = queue.popleft()
+            for customer in node.customers:
+                # Rule 1: customer must be at least one row below this provider.
+                rows[customer.asn] = max(
+                    rows[customer.asn], rows[node.asn] + 1
+                )
+                in_degree[customer.asn] -= 1
+                if in_degree[customer.asn] == 0:
+                    queue.append(customer)
+
+        # --- Step 2: peer alignment (Rule 2, soft constraint) -----------------
+        # For each peer pair try to place them on the same row.  Only move a
+        # node when every one of its provider-customer constraints remains
+        # strictly satisfied after the move.
+        seen: set[tuple[int, int]] = set()
+        for as_obj in as_graph:
+            for peer in as_obj.peers:
+                key = (min(as_obj.asn, peer.asn), max(as_obj.asn, peer.asn))
+                if key in seen:
+                    continue
+                seen.add(key)
+
+                if rows[as_obj.asn] == rows[peer.asn]:
+                    continue  # already aligned
+
+                # Try moving `peer` to `as_obj`'s row, then the reverse.
+                # Use _peer_move_safe rather than _row_change_safe so we also
+                # refuse to move a node away from a row where it is already
+                # aligned with another peer (prevents the greedy pass from
+                # breaking prior alignments in peer triangles).
+                if self._peer_move_safe(peer.asn, rows[as_obj.asn], rows, as_dict):
+                    rows[peer.asn] = rows[as_obj.asn]
+                elif self._peer_move_safe(
+                    as_obj.asn, rows[peer.asn], rows, as_dict
+                ):
+                    rows[as_obj.asn] = rows[peer.asn]
+                # else: leave them on different rows; cross-row peer edges are
+                # drawn as dashed lines and do not violate any invariant.
+
+        # --- Assemble into tuple-of-tuples ------------------------------------
+        max_row = max(rows.values(), default=0)
+        buckets: list[list[AS]] = [[] for _ in range(max_row + 1)]
+        for as_obj in as_graph:
+            buckets[rows[as_obj.asn]].append(as_obj)
+        return tuple(tuple(sorted(group)) for group in buckets)
+
+    def _row_change_safe(
+        self,
+        asn: int,
+        new_row: int,
+        rows: dict[int, int],
+        as_dict: dict[int, "AS"],
+    ) -> bool:
+        """Return True if assigning *new_row* to *asn* keeps Rule 1 intact.
+
+        Rule 1 requires every provider to occupy a strictly smaller row index
+        than every one of its customers (row 0 = top of the diagram).
+        """
+        as_obj = as_dict[asn]
+        # Every provider must remain strictly above this node.
+        for provider in as_obj.providers:
+            if rows[provider.asn] >= new_row:
+                return False
+        # Every customer must remain strictly below this node.
+        return all(rows[customer.asn] > new_row for customer in as_obj.customers)
+
+    def _peer_move_safe(
+        self,
+        asn: int,
+        new_row: int,
+        rows: dict[int, int],
+        as_dict: dict[int, "AS"],
+    ) -> bool:
+        """Return True if moving *asn* to *new_row* is safe for peer alignment.
+
+        A move is safe when it satisfies Rule 1 (via _row_change_safe) AND
+        does not de-align any peer that is already on the same row as *asn*.
+        Without this second check a greedy pass over peer pairs can move a
+        floating node into alignment with one peer while breaking a prior
+        alignment with another (classic peer-triangle problem: if A-B are both
+        at row 0 and C is at row 2, processing pair (B, C) must not move B to
+        row 2 and silently break the A-B alignment).
+        """
+        if not self._row_change_safe(asn, new_row, rows, as_dict):
+            return False
+        # Refuse to vacate the current row if another peer is already there.
+        current_row = rows[asn]
+        return all(rows[peer.asn] != current_row for peer in as_dict[asn].peers)
 
     def _add_legend(self, traceback: dict[int, int], scenario: Scenario) -> None:
         """Adds legend to the graph with outcome counts"""
@@ -263,6 +392,12 @@ class Diagram:
                         dir="none",
                         style="dashed",
                         penwidth="2",
+                        # Peer edges must not affect Graphviz rank (vertical
+                        # placement).  Without constraint=false a peer edge
+                        # A->B creates a hidden rank constraint rank(B)≥rank(A)+1
+                        # which can contradict the provider-customer hierarchy
+                        # and cause directed cycles that flip PC arrows upward.
+                        constraint="false",
                     )
 
     def _add_diagram_ranks(

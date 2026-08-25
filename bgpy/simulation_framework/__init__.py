@@ -43,7 +43,6 @@ __all__ = [
     "ScenarioConfig",
     "Scenario",
     "Simulation",
-    "GraphCategory",
     "AccidentalRouteLeak",
     "PrefixHijack",
     "SubprefixHijack",

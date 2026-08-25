@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "bgpy_pkg"
-version = "13.0.12"
+version = "13.0.13"
 requires-python = ">=3.10"
 description = "Simulates BGP, ROV, ASPA, etc in an extensible manner"
 readme = "README.md"
@@ -15,6 +15,9 @@ authors = [
     {name = "Arvind Kasiliya", email = "arvind.kasiliya@uconn.edu"},
     {name = "Joel Braun", email = "joelbraun@protonmail.com"},
     {name = "Dan Foster", email = "danfosterdev@gmail.com"},
+    {name = "Cooper Frank", email = "coopfrank04@gmail.com"},
+    {name = "Amr Ahmed", email = "amr032007@gmail.com"},
+    {name = "Leo Pagano", email = "leo.pagano@uconn.edu"}
 ]
 maintainers = [
   {name = "Justin Furuness", email = "jfuruness@gmail.com"}
@@ -90,7 +93,7 @@ test = [
     "mypy==1.19.1",
     "tox==4.34.1",
     "pytest-xdist==3.8.0",
-    "ruff==0.14.13",
+    "ruff==0.14.13"
 ]
 
 [tool.setuptools]
@@ -170,7 +173,6 @@ ignore = [
     # "PTH",  # Uncomment this if you don't use pathlib
     "PD",  # Haven't vetted this since there is no pandas in this repo
     "NPY",  # Haven't vetted this since there is no numpy in this repo
-    "FAST",  # Haven't vetted this since there is no FastAPI in this repo
     "AIR",  # Haven't vetted this since there is no AIR in this repo
 
     ########################################################
@@ -297,6 +299,9 @@ ignore = [
     # wants vague rsplit and other weird syntax. Imo splitting twice
     # is more readable
     "PLC0207",
+    # Wants you to add quotes around all casts, which doesn't make sense
+    # for generics of type T
+    "TC006",
 ]
 
 unfixable = []
@@ -309,6 +314,24 @@ unfixable = []
 
 [tool.ruff.lint.isort]
 known-first-party = ["bgpy"]
+
+[lint.flake8-type-checking]
+# This let's TC001/TC002 know that these types are evaluated at runtime
+# so we can't move them into the TYPE_CHECKING block
+runtime-evaluated-decorators = [
+    "dataclasses.dataclass",
+    "fastapi.APIRouter.get",
+    "fastapi.APIRouter.post",
+    "fastapi.APIRouter.put",
+    "fastapi.APIRouter.patch",
+    "fastapi.APIRouter.delete",
+    "fastapi.FastAPI.get",
+    "fastapi.FastAPI.post",
+    "fastapi.FastAPI.put",
+    "fastapi.FastAPI.patch",
+    "fastapi.FastAPI.delete",
+]
+runtime-evaluated-base-classes = ["pydantic.BaseModel"]
 
 [tool.ruff.lint.flake8-bugbear]
 # Allow default arguments like, e.g., `data: frozendict[str, str] = frozendict()
