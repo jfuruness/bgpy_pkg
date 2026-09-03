@@ -27,7 +27,7 @@ class ASPAPP(ASRA):
     def _aspapp_valid(self, ann: "Ann", from_rel: Relationships) -> bool:
         as_dict = self.as_.as_graph.as_dict
         rpath = ann.as_path[::-1]
-        print(rpath, flush=True)
+        # print(rpath, flush=True)
         n = len(rpath) - 1  # index of last AS before F
         
         # Case 1: Received from customer
