@@ -1,13 +1,13 @@
 from typing import TYPE_CHECKING
 
-from bgpy.simulation_engine import ASRA, ProviderConeID
+from bgpy.simulation_engine import ASRA_B_CLP, ProviderConeID
 
 if TYPE_CHECKING:
     from bgpy.shared.enums import Relationships
     from bgpy.simulation_engine.announcement import Announcement as Ann
 
 
-class ASPACV(ASRA):
+class ASPACV(ASRA_B_CLP):
     """Esentially ASPA and checking neighbors at every AS together"""
 
     name = "ASPA-CV"

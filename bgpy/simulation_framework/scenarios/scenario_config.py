@@ -5,10 +5,11 @@ from warnings import warn
 from frozendict import frozendict
 from roa_checker import ROA
 
+from bgpy.shared.aspa_records import ASPARecord, ASRARecord
 from bgpy.shared.enums import ASGroups
 from bgpy.simulation_engine import (
     ASPA,
-    ASRA,
+    ASRA_B_CLP,
     BGP,
     ASPAwN,
     BGPFull,
@@ -72,6 +73,15 @@ class ScenarioConfig:
     override_adopting_asns: frozenset[int] | None = None
     override_announcements: tuple["Ann", ...] | None = None
     override_roas: tuple[ROA, ...] | None = None
+    # ASPA/ASRA records
+    override_aspa_publishing_asns: frozenset[int] | None = None
+    override_asra_publishing_asns: frozenset[int] | None = None
+    override_aspa_records: tuple[ASPARecord, ...] | None = None
+    override_asra_records: tuple[ASRARecord, ...] | None = None
+    # Which ASRA record classes publishers emit. None means one ASRA-CLP each.
+    # e.g. (ASRACRecord, ASRALPRecord) to publish customers and lateral peers
+    # as separate records for a policy that needs to tell them apart.
+    override_asra_record_types: tuple[type[ASRARecord], ...] | None = None
     # If you'd like to add an extra CSV label you do so here
     # This only adds basically your own notes, isn't used for
     # anything in particular
@@ -135,7 +145,7 @@ class ScenarioConfig:
     def _set_AttackerBasePolicyCls(self):
         # This is to assist with ShortestPathPrefixHijacks
         if issubclass(self.AdoptPolicyCls, ASPA) and not (
-            issubclass(self.AdoptPolicyCls, ASRA)
+            issubclass(self.AdoptPolicyCls, ASRA_B_CLP)
             or issubclass(self.AdoptPolicyCls, ASPAwN)
         ):
             AttackerBasePolicyCls = getattr(

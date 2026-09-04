@@ -11,13 +11,13 @@ from bgpy.shared.enums import (
 )
 from bgpy.simulation_engine import (
     ASPA,
-    ASRA,
+    ASRA_B_CLP,
     BGP,
     ROV,
     ASPAFull,
     ASPAwN,
     ASPAwNFull,
-    ASRAFull,
+    ASRA_B_CLP_Full,
     BGPFull,
     BGPFullIgnoreInvalid,
     BGPFullSuppressWithdrawals,
@@ -546,7 +546,7 @@ class ShortestPathPrefixHijack(VictimsPrefix):
         i.e. shortest contiguous chain of ASPA providers ending in non adopter
         """
 
-        return frozenset({ASRA, ASRAFull, ASPAwN, ASPAwNFull})
+        return frozenset({ASRA_B_CLP, ASRA_B_CLP_Full, ASPAwN, ASPAwNFull})
 
     @property
     def bgpisec_policy_classes(self) -> frozenset[type[Policy]]:

@@ -1,14 +1,14 @@
 from typing import TYPE_CHECKING
 
 from bgpy.shared.enums import Relationships
-from .asra import ASRA
+from .asra_b_clp import ASRA_B_CLP
 from .aspa import ASPA
 
 if TYPE_CHECKING:
     from bgpy.simulation_engine import Announcement as Ann
 
 
-class ASRAUS(ASRA):
+class ASRAUS(ASRA_B_CLP):
     name = "ASRA Ultra Simple"
 
     def _valid_ann(self, ann: "Ann", from_rel: Relationships) -> bool:

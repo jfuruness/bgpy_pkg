@@ -1,13 +1,13 @@
 from typing import TYPE_CHECKING
 
 from bgpy.shared.enums import Relationships
-from bgpy.simulation_engine import ASPA, ASRA
+from bgpy.simulation_engine import ASPA, ASRA_B_CLP
 
 if TYPE_CHECKING:
     from bgpy.simulation_engine import Announcement as Ann
 
 
-class ASPAPP(ASRA):
+class ASPAPP(ASRA_B_CLP):
     name = "ASPA++"
 
     @property
@@ -108,10 +108,10 @@ class ASPAPP(ASRA):
             la = as_dict.get(rpath[i])
             ra = as_dict.get(rpath[i + 1])
             if (
-                (la is not None and isinstance(la.policy, ASRA)
+                (la is not None and isinstance(la.policy, ASRA_B_CLP)
                  and rpath[i + 1] in la.peer_asns)
                 or
-                (ra is not None and isinstance(ra.policy, ASRA)
+                (ra is not None and isinstance(ra.policy, ASRA_B_CLP)
                  and rpath[i] in ra.peer_asns)
             ):
                 return (i, i + 1)
@@ -125,14 +125,14 @@ class ASPAPP(ASRA):
                 (la is not None and isinstance(la.policy, ASPA)
                  and rpath[i + 1] in la.provider_asns)
                 or
-                (ma is not None and isinstance(ma.policy, ASRA)
+                (ma is not None and isinstance(ma.policy, ASRA_B_CLP)
                  and rpath[i] in ma.customer_asns)
             )
             right_up = (
                 (ra is not None and isinstance(ra.policy, ASPA)
                  and rpath[i + 1] in ra.provider_asns)
                 or
-                (ma is not None and isinstance(ma.policy, ASRA)
+                (ma is not None and isinstance(ma.policy, ASRA_B_CLP)
                  and rpath[i + 2] in ma.customer_asns)
             )
             if left_up and right_up:
@@ -191,13 +191,13 @@ class ASPAPP(ASRA):
                     (ra is not None and isinstance(ra.policy, ASPA)
                     and rpath[p - 1] in ra.provider_asns)
                     or
-                    (la is not None and isinstance(la.policy, ASRA)
+                    (la is not None and isinstance(la.policy, ASRA_B_CLP)
                     and rpath[p] in la.customer_asns)
                     or
                     (la is not None and isinstance(la.policy, ASPA)
                     and rpath[p] in la.provider_asns)
                     or
-                    (ra is not None and isinstance(ra.policy, ASRA)
+                    (ra is not None and isinstance(ra.policy, ASRA_B_CLP)
                     and rpath[p - 1] in ra.customer_asns)
                 )
                 if not link_confirmed:
@@ -212,13 +212,13 @@ class ASPAPP(ASRA):
                     (ra is not None and isinstance(ra.policy, ASPA)
                     and rpath[p] in ra.provider_asns)
                     or
-                    (la is not None and isinstance(la.policy, ASRA)
+                    (la is not None and isinstance(la.policy, ASRA_B_CLP)
                     and rpath[p + 1] in la.customer_asns)
                     or
                     (la is not None and isinstance(la.policy, ASPA)
                     and rpath[p + 1] in la.provider_asns)
                     or
-                    (ra is not None and isinstance(ra.policy, ASRA)
+                    (ra is not None and isinstance(ra.policy, ASRA_B_CLP)
                     and rpath[p] in ra.customer_asns)
                 )
                 if not link_confirmed:
@@ -237,14 +237,14 @@ class ASPAPP(ASRA):
                 (la is not None and isinstance(la.policy, ASPA)
                  and rpath[i + 1] in la.provider_asns)
                 or
-                (ra is not None and isinstance(ra.policy, ASRA)
+                (ra is not None and isinstance(ra.policy, ASRA_B_CLP)
                  and rpath[i] in ra.customer_asns)
             )
             is_down = (
                 (ra is not None and isinstance(ra.policy, ASPA)
                  and rpath[i] in ra.provider_asns)
                 or
-                (la is not None and isinstance(la.policy, ASRA)
+                (la is not None and isinstance(la.policy, ASRA_B_CLP)
                  and rpath[i + 1] in la.customer_asns)
             )
             if is_up and not is_down:

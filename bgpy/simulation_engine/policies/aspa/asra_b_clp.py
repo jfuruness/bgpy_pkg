@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING
 
-from bgpy.enums import Relationships
+from bgpy.shared.enums import Relationships
 
 from .aspa import ASPA
 
@@ -8,10 +8,12 @@ if TYPE_CHECKING:
     from bgpy.simulation_engine.announcement import Announcement as Ann
 
 
-class ASRA(ASPA):
-    """Algo B using ASRA records 3"""
+class ASRA_B_CLP(ASPA):
+    """Algorithm B using ASRA-CLP records"""
 
-    name = "ASRA"
+    name = "ASRA-B-CLP"
+
+    publishes_asra_records: bool = True
 
     def _valid_ann(self, ann: "Ann", from_rel: Relationships) -> bool:
         """
@@ -66,7 +68,7 @@ class ASRA(ASPA):
     def _get_min_up_ramp_length(self, ann: "Ann") -> int:
         """
         We define min_up_ramp ~ the first 'i' from the origin side
-        where the ASPA check fails or the AS does not adopt ASPA.
+        where the ASPA check fails or the AS published no ASPA record.
 
         If we never fail, we return len(path).
         """
@@ -74,17 +76,18 @@ class ASRA(ASPA):
         for i in range(len(path) - 1):
             asn1 = path[i]
             asn2 = path[i + 1]
-            asn1_obj = self.as_.as_graph.as_dict.get(asn1)
 
-            # 1/5/2024 JF: Added check for if as1_obj doesn't exist
-            # If asn1 does not adopt ASPA, we treat that
-            # as 'No Attestation', so min_up_ramp ends here.
-            if not asn1_obj or not isinstance(asn1_obj.policy, ASPA):
+            aspa_record = self.aspa_records.get(asn1)
+
+            # If asn1 published no ASPA record we treat that as
+            # 'No Attestation', so min_up_ramp ends here. This covers the case
+            # where asn1 isn't in the graph at all
+            if aspa_record is None:
                 return i
 
-            # If asn2 is not in asn1's provider list => 'Not Provider+',
+            # If asn2 is not in asn1's published provider list => 'Not Provider+',
             # so min_up_ramp ends here
-            if asn2 not in asn1_obj.provider_asns:
+            if asn2 not in aspa_record.provider_asns:
                 return i
 
         return len(path)
@@ -96,30 +99,25 @@ class ASRA(ASPA):
          AND AS(i) has valid ASRA(s) and does not list AS(i+1) as neighbor,
          => FAKE LINK."
 
-        We'll interpret "valid ASPA(s)" as "this AS is adopting ASPA
-        (i.e. policy is ASPA or child class), and asn2 is not in
-        asn1.provider_asns."
+        Both conditions key off published records rather than asn1's policy, so
+        an AS can publish without verifying. A missing record means "no
+        attestation", which is never a failure.
 
-        We'll interpret "valid ASRA(s)" as "this AS is adopting ASRA
-        (i.e. policy is ASRA or child class), and asn2 is not in
-        asn1.neighbor_asns."
+        This variant reads ASRA-CLP records, which merge customers and lateral
+        peers into a single set.
         """
-        asn1_obj = self.as_.as_graph.as_dict.get(asn1)
 
-        # Must meet BOTH conditions to declare fake link:
-        # 1) asn1 adopts ASPA and does NOT list asn2 as a provider
-        has_aspa_but_not_provider = (
-            asn1_obj
-            and isinstance(asn1_obj.policy, ASPA)
-            and asn2 not in asn1_obj.provider_asns
+        aspa_record = self.aspa_records.get(asn1)
+        asra_record = self.asra_clp_records.get(asn1)
+
+        # A record asn1 never published attests nothing, so it can't detect
+        # a fake link. Both records are required to declare one
+        if aspa_record is None or asra_record is None:
+            return False
+
+        # 1) asn1's ASPA does NOT list asn2 as a provider, and
+        # 2) asn1's ASRA-CLP does NOT list asn2 as a customer or lateral peer
+        return (
+            asn2 not in aspa_record.provider_asns
+            and asn2 not in asra_record.customer_and_peer_asns
         )
-
-        # 2) asn1 also adopts ASRA and does NOT list asn2 as neighbor
-        has_asra_but_not_neighbor = (
-            asn1_obj
-            and isinstance(asn1_obj.policy, ASRA)
-            and asn2 not in asn1_obj.neighbor_asns
-        )
-
-        # If both are True => fake link
-        return has_aspa_but_not_provider and has_asra_but_not_neighbor

@@ -8,7 +8,7 @@ if TYPE_CHECKING:
 
 
 class ASPA(ROV):
-    """A Policy that deploys ASPA and ASPA Records
+    """A Policy that verifies paths against published ASPA records
 
     We adopt from ROV since deploying ASPA makes no sense without ROV
 
@@ -23,6 +23,10 @@ class ASPA(ROV):
     """
 
     name: str = "ASPA"
+
+    # An ASPA adopter publishes its own ASPA by default. Verifying and
+    # publishing are still independent: see Scenario._get_aspa_records
+    publishes_aspa_record: bool = True
 
     def _valid_ann(self, ann: "Ann", from_rel: Relationships) -> bool:
         """Returns False if from peer/customer when aspa is set"""
@@ -124,7 +128,7 @@ class ASPA(ROV):
         return len(ann.as_path)
 
     def _provider_check(self, asn1: int, asn2: int) -> bool:
-        """Returns False if asn2 is not in asn1's provider_asns, AND asn1 adopts ASPA
+        """Returns False if asn1 published an ASPA record not listing asn2
 
         This also essentially can take the place of the "hop check" listed in
         ASPA RFC section 5 in ASPA v16
@@ -133,13 +137,19 @@ class ASPA(ROV):
         False indicates Not Provider+
         True indicates No Attestation or Provider+
 
+        Keys off the published ASPA record rather than asn1's policy: publishing
+        a record and deploying ASPA verification are independent, the same way a
+        ROA is independent of deploying ROV. An AS with no record is "No
+        Attestation", which is not a failure.
+
         Updated so that if either AS doesn't exist, this function returns properly
         """
 
-        cur_as_obj = self.as_.as_graph.as_dict.get(asn1)
-        if cur_as_obj and isinstance(cur_as_obj.policy, ASPA):
-            next_as_obj = self.as_.as_graph.as_dict.get(asn2)
-            next_asn = next_as_obj.asn if next_as_obj else next_as_obj
-            if next_asn not in cur_as_obj.provider_asns:
-                return False
-        return True
+        aspa_record = self.aspa_records.get(asn1)
+        # No record published means No Attestation, which isn't a failure
+        if aspa_record is None:
+            return True
+
+        next_as_obj = self.as_.as_graph.as_dict.get(asn2)
+        next_asn = next_as_obj.asn if next_as_obj else None
+        return next_asn in aspa_record.provider_asns

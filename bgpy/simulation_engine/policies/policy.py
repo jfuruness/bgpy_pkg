@@ -5,6 +5,14 @@ from typing import TYPE_CHECKING, Any, ClassVar
 from roa_checker import ROAChecker, ROAOutcome, ROARouted, ROAValidity
 from yamlable import YamlAble, yaml_info_decorate
 
+from bgpy.shared.aspa_records import (
+    ASPAPPRecord,
+    ASPARecord,
+    ASRACLPRecord,
+    ASRACRecord,
+    ASRALPRecord,
+)
+
 if TYPE_CHECKING:
     from bgpy.shared.enums import Relationships
     from bgpy.simulation_engine import Announcement as Ann
@@ -17,6 +25,15 @@ class Policy(YamlAble, metaclass=ABCMeta):
     name_to_subclass_dict: ClassVar[dict[str, type["Policy"]]] = dict()
     # Simulates RPKI and something like routinator that is globally available
     roa_checker: ROAChecker = ROAChecker()
+    # ASPA + variants records
+    aspa_records: ClassVar[dict[int, ASPARecord]] = dict()
+    aspapp_records: ClassVar[dict[int, ASPAPPRecord]] = dict()
+    asra_c_records: ClassVar[dict[int, ASRACRecord]] = dict()
+    asra_lp_records: ClassVar[dict[int, ASRALPRecord]] = dict()
+    asra_clp_records: ClassVar[dict[int, ASRACLPRecord]] = dict()
+    publishes_aspa_record: ClassVar[bool] = False
+    publishes_aspapp_record: ClassVar[bool] = False
+    publishes_asra_records: ClassVar[bool] = False
 
     def __init_subclass__(cls: type["Policy"], *args, **kwargs) -> None:
         """This method essentially creates a list of all subclasses
