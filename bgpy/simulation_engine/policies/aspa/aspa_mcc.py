@@ -21,12 +21,12 @@ class ASPA_MCC(ASPAPP):
         # i - slack <= mcc_i
         if from_rel == Relationships.CUSTOMERS:
             for i, asn in enumerate(rpath):
-                obj = as_dict.get(asn)
-                if (obj is not None and isinstance(obj.policy, ASPAPP)
-                        and obj.max_customer_depth is not None
-                        and i - self.DOWN_SLACK > obj.max_customer_depth):
+                aspapp_record = self.aspapp_records.get(asn)
+                if (aspapp_record is not None
+                        and aspapp_record.max_customer_path is not None
+                        and i - self.DOWN_SLACK > aspapp_record.max_customer_path):
                     return False
-                
+
             f_obj = self.as_
             if (f_obj.max_customer_depth is not None
                     and n + 1 - self.DOWN_SLACK > f_obj.max_customer_depth):
@@ -37,10 +37,10 @@ class ASPA_MCC(ASPAPP):
         # i - slack <= mcc_i
         elif from_rel == Relationships.PEERS:
             for i, asn in enumerate(rpath):
-                obj = as_dict.get(asn)
-                if (obj is not None and isinstance(obj.policy, ASPAPP)
-                        and obj.max_customer_depth is not None
-                        and i - self.DOWN_SLACK > obj.max_customer_depth):
+                aspapp_record = self.aspapp_records.get(asn)
+                if (aspapp_record is not None
+                        and aspapp_record.max_customer_path is not None
+                        and i - self.DOWN_SLACK > aspapp_record.max_customer_path):
                     return False
             return True
 
@@ -72,10 +72,10 @@ class ASPA_MCC(ASPAPP):
         k1: int,
     ) -> bool:
         for i, asn in enumerate(rpath):
-            obj = as_dict.get(asn)
-            if obj is None or not isinstance(obj.policy, ASPAPP):
+            aspapp_record = self.aspapp_records.get(asn)
+            if aspapp_record is None:
                 continue
-            mcc = obj.max_customer_depth
+            mcc = aspapp_record.max_customer_path
 
             if i <= k0:
                 if mcc is not None and (i - self.DOWN_SLACK) > mcc:
