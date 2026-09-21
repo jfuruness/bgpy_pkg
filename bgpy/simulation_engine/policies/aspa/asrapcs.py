@@ -3,20 +3,21 @@ from typing import TYPE_CHECKING
 from bgpy.shared.enums import Relationships
 
 from .aspa import ASPA
-from .asra import ASRA
+from .asra_b_clp import ASRA_B_CLP
 
 if TYPE_CHECKING:
     from bgpy.simulation_engine.announcement import Announcement as Ann
 
-class ASRAPCS(ASRA):
+
+class ASRAPCS(ASRA_B_CLP):
     """
-        ASRA with Customer/Peer Separation.
+    ASRA with Customer/Peer Separation.
     """
 
     name = "ASRAPCS"
 
     def _valid_ann(self, ann: "Ann", from_rel: Relationships) -> bool:
-        
+
         # Do ASPA Check
         if not ASPA._valid_ann(self, ann, from_rel):
             return False
@@ -41,30 +42,35 @@ class ASRAPCS(ASRA):
     def _is_fake_link_cps(self, asn1: int, asn2: int, is_peak: bool) -> bool:
         """Fake-link check with customer/peer separation.
 
-        At the peak a customer or peer link can be valid, 
+        At the peak a customer or peer link can be valid,
         but in the down ramp only customer link is valid
         """
 
-        asn1_obj = self.as_.as_graph.as_dict.get(asn1)
-        if not asn1_obj:
-            return False
-
+        aspa_record = self.aspa_records.get(asn1)
         # ASN1 has ASPA but ASN2 is not its provider
         has_aspa_but_not_provider = (
-            isinstance(asn1_obj.policy, ASPA)
-            and asn2 not in asn1_obj.provider_asns
+            aspa_record is not None and asn2 not in aspa_record.provider_asns
         )
 
-        # Direction-specific check
-        if isinstance(asn1_obj.policy, ASRAPCS):
-            valid_set = (
-                asn1_obj.customer_asns | asn1_obj.peer_asns
-                if is_peak
-                else asn1_obj.customer_asns
+        asra_c_record = self.asra_c_records.get(asn1)
+        asra_lp_record = self.asra_lp_records.get(asn1)
+
+        if asra_c_record is not None or asra_lp_record is not None:
+            customer_asns = (
+                asra_c_record.customer_asns
+                if asra_c_record is not None
+                else frozenset()
             )
+            peer_asns = (
+                asra_lp_record.peer_asns if asra_lp_record is not None else frozenset()
+            )
+            valid_set = customer_asns | peer_asns if is_peak else customer_asns
             not_valid_direction = asn2 not in valid_set
         else:
-            # Doesn't adopt ASRAPCS, fall back to basic neighbor check
-            not_valid_direction = asn2 not in asn1_obj.neighbor_asns
+            # No ASRA-C or ASRA-LP record, fall back to basic neighbor check
+            asn1_obj = self.as_.as_graph.as_dict.get(asn1)
+            not_valid_direction = (
+                asn1_obj is not None and asn2 not in asn1_obj.neighbor_asns
+            )
 
         return has_aspa_but_not_provider and not_valid_direction
