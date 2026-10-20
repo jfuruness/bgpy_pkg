@@ -1,7 +1,6 @@
 from .aspapp import ASPAPP
 
 
-
 class ASPA_MPC(ASPAPP):
     name = "ASPA-MPC"
 
@@ -12,19 +11,19 @@ class ASPA_MPC(ASPAPP):
 
         if from_rel.CUSTOMERS:
             for i, asn in enumerate(rpath):
-                obj = as_dict.get(asn)
-                if (obj is not None and isinstance(obj.policy, ASPA_MPC)
-                        and obj.max_provider_depth is not None
-                        and n - i + 1 - self.UP_SLACK > obj.max_provider_depth):
+                aspapp_record = self.aspapp_records.get(asn)
+                if (aspapp_record is not None
+                        and aspapp_record.max_provider_path is not None
+                        and n - i + 1 - self.UP_SLACK > aspapp_record.max_provider_path):
                     return False
             return True
 
         elif from_rel.PEERS:
             for i, asn in enumerate(rpath):
-                obj = as_dict.get(asn)
-                if (obj is not None and isinstance(obj.policy, ASPA_MPC)
-                        and obj.max_provider_depth is not None
-                        and n - i - self.UP_SLACK > obj.max_provider_depth):
+                aspapp_record = self.aspapp_records.get(asn)
+                if (aspapp_record is not None
+                        and aspapp_record.max_provider_path is not None
+                        and n - i - self.UP_SLACK > aspapp_record.max_provider_path):
                     return False
             return True
 
@@ -53,10 +52,10 @@ class ASPA_MPC(ASPAPP):
         k1: int,
     ) -> bool:
         for i, asn in enumerate(rpath):
-            obj = as_dict.get(asn)
-            if obj is None or not isinstance(obj.policy, ASPA_MPC):
+            aspapp_record = self.aspapp_records.get(asn)
+            if aspapp_record is None:
                 continue
-            mpc = obj.max_provider_depth
+            mpc = aspapp_record.max_provider_path
 
             if i <= k0:
                 if mpc is not None and (k0 - i - self.UP_SLACK) > mpc:
