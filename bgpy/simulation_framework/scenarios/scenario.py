@@ -9,6 +9,7 @@ from warnings import warn
 from roa_checker import ROA
 
 from bgpy.shared.aspa_records import (
+    ASPAPPRecord,
     ASPARecord,
     ASRACLPRecord,
     ASRACRecord,
@@ -96,6 +97,9 @@ class Scenario:
             )
         else:
             self.aspa_records = self._get_aspa_records(engine=engine)
+        self.aspapp_records: tuple[ASPAPPRecord, ...] = self._get_aspapp_records(
+            engine=engine
+        )
         if self.scenario_config.override_asra_records is not None:
             self.asra_records: tuple[ASRARecord, ...] = (
                 self.scenario_config.override_asra_records
@@ -116,21 +120,19 @@ class Scenario:
             Policy.roa_checker.insert(roa.prefix, roa)
 
     def _reset_and_add_aspa_asra_records(self) -> None:
-        """Clears & adds ASPA/ASRA records to the globally readable registries
-
-        Same role as _reset_and_add_roas_to_roa_checker: these registries are
-        RPKI-published state, readable by any verifying AS, and independent of
-        which ASes adopt a verification policy.
-        """
+        """Clears & adds ASPA/ASRA records"""
 
         Policy.aspa_records.clear()
         for aspa_record in self.aspa_records:
             Policy.aspa_records[aspa_record.asn] = aspa_record
 
+        Policy.aspapp_records.clear()
+        for aspapp_record in self.aspapp_records:
+            Policy.aspapp_records[aspapp_record.asn] = aspapp_record
+
         Policy.asra_c_records.clear()
         Policy.asra_lp_records.clear()
         Policy.asra_clp_records.clear()
-        # One registry per variant, so a policy looks up the kind it understands
         registry_by_cls = {
             ASRACRecord: Policy.asra_c_records,
             ASRALPRecord: Policy.asra_lp_records,
@@ -191,11 +193,8 @@ class Scenario:
         *,
         engine: BaseSimulationEngine | None = None,
     ) -> tuple[ASPARecord, ...]:
-        """Returns the published ASPA records
-
-        By default each publisher attests its true provider set from the graph,
-        so results are unchanged from before the split. Override to publish
-        stale, partial, or incorrect records.
+        """
+        Returns the published ASPA records
         """
 
         if engine is None:
@@ -206,6 +205,27 @@ class Scenario:
             ASPARecord(
                 asn=as_obj.asn,
                 provider_asns=frozenset(as_obj.provider_asns),
+            )
+            for as_obj in engine.as_graph
+            if as_obj.asn in publishing_asns
+        )
+
+    def _get_aspapp_records(
+        self,
+        *,
+        engine: BaseSimulationEngine | None = None,
+    ) -> tuple[ASPAPPRecord, ...]:
+        """
+        Returns the published ASPA++ path records
+        """
+
+        if engine is None:
+            return ()
+
+        publishing_asns = self._get_aspa_publishing_asns(engine)
+        return tuple(
+            ASPAPPRecord(
+                asn=as_obj.asn,
                 max_provider_path=as_obj.max_provider_depth,
                 max_customer_path=as_obj.max_customer_depth,
             )
@@ -218,13 +238,8 @@ class Scenario:
         *,
         engine: BaseSimulationEngine | None = None,
     ) -> tuple[ASRARecord, ...]:
-        """Returns the published ASRA records
-
-        Defaults to one ASRA-CLP per publisher, listing its true customers and
-        lateral peers. Providers are excluded since ASPA attests those. Set
-        ScenarioConfig.override_asra_record_types to publish other variants,
-        e.g. (ASRACRecord, ASRALPRecord) for a policy that needs to tell
-        customers and lateral peers apart.
+        """
+        Returns the published ASRA records
         """
 
         if engine is None:
@@ -241,12 +256,24 @@ class Scenario:
                 continue
             for RecordCls in record_classes:
                 if RecordCls is ASRACRecord:
-                    asns = frozenset(as_obj.customer_asns)
+                    record: ASRARecord = ASRACRecord(
+                        asn=as_obj.asn,
+                        customer_asns=frozenset(as_obj.customer_asns),
+                    )
                 elif RecordCls is ASRALPRecord:
-                    asns = frozenset(as_obj.peer_asns)
+                    record = ASRALPRecord(
+                        asn=as_obj.asn,
+                        peer_asns=frozenset(as_obj.peer_asns),
+                    )
+                elif RecordCls is ASRACLPRecord:
+                    record = ASRACLPRecord(
+                        asn=as_obj.asn,
+                        customer_and_peer_asns=frozenset(as_obj.customer_asns)
+                        | frozenset(as_obj.peer_asns),
+                    )
                 else:
-                    asns = frozenset(as_obj.customer_asns) | frozenset(as_obj.peer_asns)
-                records.append(RecordCls(asn=as_obj.asn, asns=asns))
+                    raise NotImplementedError(f"Unknown ASRA record {RecordCls}")
+                records.append(record)
         return tuple(records)
 
     #################

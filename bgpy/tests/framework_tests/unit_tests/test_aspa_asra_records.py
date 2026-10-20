@@ -7,19 +7,22 @@ expressed as isinstance(as_obj.policy, ASPA), which conflated publishing with
 verifying and made "No Attestation" unreachable for any adopter.
 """
 
+from types import SimpleNamespace
+
 import pytest
 
 from bgpy.shared.aspa_records import (
+    ASPAPPRecord,
     ASPARecord,
     ASRACLPRecord,
     ASRACRecord,
     ASRALPRecord,
 )
-from bgpy.simulation_engine import Policy
+from bgpy.simulation_engine import ASPA, Policy
 
 
 class RecordTestPolicy(Policy):
-    """Minimal concrete Policy so aspa_not_provider_plus can be called"""
+    """Minimal concrete Policy so the class level registries can be read"""
 
     name: str = "record test policy"
 
@@ -62,10 +65,12 @@ def policy():
     Policy.aspa_records[1] = ASPARecord(asn=1, provider_asns=frozenset({2}))
     # 3 publishes an ASPA and an ASRA-CLP
     Policy.aspa_records[3] = ASPARecord(asn=3, provider_asns=frozenset({4}))
-    Policy.asra_clp_records[3] = ASRACLPRecord(asn=3, asns=frozenset({4, 5}))
+    Policy.asra_clp_records[3] = ASRACLPRecord(
+        asn=3, customer_and_peer_asns=frozenset({4, 5})
+    )
     # 6 splits its ASRA across the two distinguishing variants
-    Policy.asra_c_records[6] = ASRACRecord(asn=6, asns=frozenset({61}))
-    Policy.asra_lp_records[6] = ASRALPRecord(asn=6, asns=frozenset({62}))
+    Policy.asra_c_records[6] = ASRACRecord(asn=6, customer_asns=frozenset({61}))
+    Policy.asra_lp_records[6] = ASRALPRecord(asn=6, peer_asns=frozenset({62}))
     # 9 publishes nothing at all
 
     yield RecordTestPolicy()
@@ -79,47 +84,63 @@ def policy():
         registry.clear()
 
 
+def provider_check(asn1, asn2, graph_asns=(1, 2, 3, 4, 7, 9)) -> bool:
+    """Calls ASPA._provider_check against the class level ASPA registry
+
+    _provider_check only touches self.aspa_records and self.as_.as_graph, so a
+    stand-in self with a small as_dict is enough to exercise the real method.
+    True means "No Attestation or Provider+", False means "Not Provider+".
+    """
+
+    stand_in = SimpleNamespace(
+        aspa_records=Policy.aspa_records,
+        as_=SimpleNamespace(
+            as_graph=SimpleNamespace(
+                as_dict={asn: SimpleNamespace(asn=asn) for asn in graph_asns}
+            )
+        ),
+    )
+    return ASPA._provider_check(stand_in, asn1, asn2)
+
+
 class TestASPARecords:
     def test_lookup_gives_the_provider_set(self, policy):
         assert policy.aspa_records[1].provider_asns == frozenset({2})
 
-    def test_authorized_provider_is_not_a_failure(self, policy):
-        assert policy.aspa_not_provider_plus(1, 2) is False
+    def test_authorized_provider_passes(self, policy):
+        assert provider_check(1, 2) is True
 
     def test_omitted_provider_is_not_provider_plus(self, policy):
         """A published record that omits the hop is a real failure"""
 
-        assert policy.aspa_not_provider_plus(1, 7) is True
+        assert provider_check(1, 7) is False
 
     def test_no_record_is_no_attestation_not_failure(self, policy):
         """The case that could not exist before the split"""
 
         assert policy.aspa_records.get(9) is None
-        assert policy.aspa_not_provider_plus(9, 7) is False
+        assert provider_check(9, 7) is True
 
     def test_unknown_asn_is_no_attestation(self, policy):
-        assert policy.aspa_not_provider_plus(123456, 7) is False
+        assert provider_check(123456, 7) is True
 
-    def test_none_hop_is_not_authorized(self, policy):
-        """_provider_check passes None when the next ASN is not in the graph"""
+    def test_hop_missing_from_graph_is_not_authorized(self, policy):
+        """A next hop absent from the graph can never be a listed provider"""
 
-        assert policy.aspa_not_provider_plus(1, None) is True
+        assert provider_check(1, 555) is False
 
-    def test_path_attestations_ride_on_the_record(self):
-        """ASPA++ path fields are published data, not graph ground truth"""
+    def test_path_attestations_are_their_own_record(self):
+        """ASPA++ path fields live on ASPAPPRecord, not on the ASPA record"""
 
-        with_paths = ASPARecord(
-            asn=1,
-            provider_asns=frozenset({2}),
-            max_provider_path=3,
-            max_customer_path=4,
-        )
+        with_paths = ASPAPPRecord(asn=1, max_provider_path=3, max_customer_path=4)
         assert with_paths.max_provider_path == 3
         assert with_paths.max_customer_path == 4
 
-        plain = ASPARecord(asn=1, provider_asns=frozenset({2}))
+        plain = ASPAPPRecord(asn=1)
         assert plain.max_provider_path is None
         assert plain.max_customer_path is None
+
+        assert not hasattr(ASPARecord(asn=1), "max_provider_path")
 
 
 class TestASRARecords:
@@ -128,7 +149,7 @@ class TestASRARecords:
     def test_clp_lookup_gives_customers_and_peers_merged(self, policy):
         record = policy.asra_clp_records.get(3)
         assert record is not None
-        assert record.asns == frozenset({4, 5})
+        assert record.customer_and_peer_asns == frozenset({4, 5})
         # Nothing on the record says which entry is a customer vs a peer
         assert not hasattr(record, "customer_asns")
         assert not hasattr(record, "peer_asns")
@@ -136,8 +157,8 @@ class TestASRARecords:
     def test_c_and_lp_lookups_are_separate(self, policy):
         """A policy that distinguishes reads the two registries independently"""
 
-        assert policy.asra_c_records[6].asns == frozenset({61})
-        assert policy.asra_lp_records[6].asns == frozenset({62})
+        assert policy.asra_c_records[6].customer_asns == frozenset({61})
+        assert policy.asra_lp_records[6].peer_asns == frozenset({62})
 
     def test_registries_do_not_bleed_into_each_other(self, policy):
         """3 published only a CLP, 6 published only a C and an LP"""
