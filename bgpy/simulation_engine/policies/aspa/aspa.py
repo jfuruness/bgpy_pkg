@@ -1,6 +1,7 @@
 from typing import TYPE_CHECKING
 
 from bgpy.shared.enums import Relationships
+from bgpy.shared.utils import collapse_prepending
 from bgpy.simulation_engine.policies.rov import ROV
 
 if TYPE_CHECKING:
@@ -31,8 +32,16 @@ class ASPA(ROV):
         # route server to RS-Client behaviour
         if not self._next_hop_valid(ann):
             return False
+
+        # The draft verifies the AS_PATH with prepending collapsed
+        # (-18 section 7.1, -28 section 5.2 COMPRESSED_AS_PATH).
+        # BGPy never prepends, so this only copies for user-seeded prepended paths
+        as_path = collapse_prepending(ann.as_path)
+        if as_path is not ann.as_path:
+            ann = ann.copy({"as_path": as_path})
+
         # Most ASes recieve anns from providers (moved here for speed)
-        elif from_rel.value == Relationships.PROVIDERS.value:
+        if from_rel.value == Relationships.PROVIDERS.value:
             return self._downstream_check(ann, from_rel)
         elif from_rel.value in (
             Relationships.CUSTOMERS.value,
