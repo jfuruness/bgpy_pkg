@@ -86,3 +86,15 @@ class ASPA_MCC(ASPAPP):
                     return False
 
         return True
+
+
+class ASPA_MCC1(ASPA_MCC):
+    name = "ASPA-MCC1"
+    UP_SLACK: int = 1
+    DOWN_SLACK: int = 1
+
+
+class ASPA_MCC2(ASPA_MCC):
+    name = "ASPA-MCC2"
+    UP_SLACK: int = 2
+    DOWN_SLACK: int = 2
