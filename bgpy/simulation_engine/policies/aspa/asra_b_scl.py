@@ -9,12 +9,13 @@ if TYPE_CHECKING:
     from bgpy.simulation_engine.announcement import Announcement as Ann
 
 
-class ASRAPCS(ASRA_B_CLP):
+class ASRA_B_SCL(ASRA_B_CLP):
     """
-    ASRA with Customer/Peer Separation.
+    ASRA B utilizing customers and lateral-peers are published
+    in separate records.
     """
 
-    name = "ASRAPCS"
+    name = "ASRA_B_SCL"
 
     def _valid_ann(self, ann: "Ann", from_rel: Relationships) -> bool:
 
@@ -54,23 +55,19 @@ class ASRAPCS(ASRA_B_CLP):
 
         asra_c_record = self.asra_c_records.get(asn1)
         asra_lp_record = self.asra_lp_records.get(asn1)
+        customer_asns = (
+            asra_c_record.customer_asns 
+            if asra_c_record is not None
+            else frozenset()
+        )
+        peer_asns = (
+            asra_lp_record.peer_asns 
+            if asra_lp_record is not None 
+            else frozenset()
+        )
+        valid_set = customer_asns | peer_asns if is_peak else customer_asns
 
-        if asra_c_record is not None or asra_lp_record is not None:
-            customer_asns = (
-                asra_c_record.customer_asns
-                if asra_c_record is not None
-                else frozenset()
-            )
-            peer_asns = (
-                asra_lp_record.peer_asns if asra_lp_record is not None else frozenset()
-            )
-            valid_set = customer_asns | peer_asns if is_peak else customer_asns
-            not_valid_direction = asn2 not in valid_set
-        else:
-            # No ASRA-C or ASRA-LP record, fall back to basic neighbor check
-            asn1_obj = self.as_.as_graph.as_dict.get(asn1)
-            not_valid_direction = (
-                asn1_obj is not None and asn2 not in asn1_obj.neighbor_asns
-            )
-
-        return has_aspa_but_not_provider and not_valid_direction
+        return (
+            has_aspa_but_not_provider 
+            and asn2 not in valid_set
+        )
