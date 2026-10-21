@@ -157,13 +157,13 @@ class Scenario:
         if engine is None:
             return frozenset()
 
-        # Imported here to avoid a circular import at module load
-        from bgpy.simulation_engine import ASPA
-
+        # Each policy declares whether its adopters publish, via
+        # Policy.publishes_aspa_record. ASPA sets it, so every ASPA subclass
+        # publishes, including copies of policies defined outside bgpy.
         return frozenset(
             as_obj.asn
             for as_obj in engine.as_graph
-            if issubclass(self.get_policy_cls(as_obj), ASPA)
+            if self.get_policy_cls(as_obj).publishes_aspa_record
         )
 
     def _get_asra_publishing_asns(
@@ -180,12 +180,10 @@ class Scenario:
         if engine is None:
             return frozenset()
 
-        from bgpy.simulation_engine import ASRA_B_CLP
-
         return frozenset(
             as_obj.asn
             for as_obj in engine.as_graph
-            if issubclass(self.get_policy_cls(as_obj), ASRA_B_CLP)
+            if self.get_policy_cls(as_obj).publishes_asra_records
         )
 
     def _get_aspa_records(
@@ -245,15 +243,20 @@ class Scenario:
         if engine is None:
             return ()
 
-        record_classes = self.scenario_config.override_asra_record_types or (
-            ASRACLPRecord,
-        )
+        override_record_classes = self.scenario_config.override_asra_record_types
         publishing_asns = self._get_asra_publishing_asns(engine)
 
         records: list[ASRARecord] = []
         for as_obj in engine.as_graph:
             if as_obj.asn not in publishing_asns:
                 continue
+            # The scenario override applies to every publisher. Otherwise each
+            # AS publishes the variants its own policy declares, which
+            # defaults to ASRA-CLP on Policy
+            record_classes = (
+                override_record_classes
+                or self.get_policy_cls(as_obj).publishes_asra_record_types
+            )
             for RecordCls in record_classes:
                 if RecordCls is ASRACRecord:
                     record: ASRARecord = ASRACRecord(

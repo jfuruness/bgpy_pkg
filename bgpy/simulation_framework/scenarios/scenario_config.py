@@ -78,9 +78,6 @@ class ScenarioConfig:
     override_asra_publishing_asns: frozenset[int] | None = None
     override_aspa_records: tuple[ASPARecord, ...] | None = None
     override_asra_records: tuple[ASRARecord, ...] | None = None
-    # Which ASRA record classes publishers emit. None means one ASRA-CLP each.
-    # e.g. (ASRACRecord, ASRALPRecord) to publish customers and lateral peers
-    # as separate records for a policy that needs to tell them apart.
     override_asra_record_types: tuple[type[ASRARecord], ...] | None = None
     # If you'd like to add an extra CSV label you do so here
     # This only adds basically your own notes, isn't used for

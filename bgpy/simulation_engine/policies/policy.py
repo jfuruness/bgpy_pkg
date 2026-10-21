@@ -11,6 +11,7 @@ from bgpy.shared.aspa_records import (
     ASRACLPRecord,
     ASRACRecord,
     ASRALPRecord,
+    ASRARecord,
 )
 
 if TYPE_CHECKING:
@@ -34,6 +35,9 @@ class Policy(YamlAble, metaclass=ABCMeta):
     publishes_aspa_record: ClassVar[bool] = False
     publishes_aspapp_record: ClassVar[bool] = False
     publishes_asra_records: ClassVar[bool] = False
+    publishes_asra_record_types: ClassVar[tuple[type[ASRARecord], ...]] = (
+        ASRACLPRecord,
+    )
 
     def __init_subclass__(cls: type["Policy"], *args, **kwargs) -> None:
         """This method essentially creates a list of all subclasses

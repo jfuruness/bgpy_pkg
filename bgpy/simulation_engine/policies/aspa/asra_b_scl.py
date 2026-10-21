@@ -1,5 +1,6 @@
 from typing import TYPE_CHECKING
 
+from bgpy.shared.aspa_records import ASRACLPRecord, ASRACRecord, ASRALPRecord
 from bgpy.shared.enums import Relationships
 
 from .aspa import ASPA
@@ -16,6 +17,8 @@ class ASRA_B_SCL(ASRA_B_CLP):
     """
 
     name = "ASRA_B_SCL"
+
+    publishes_asra_record_types = (ASRACLPRecord, ASRACRecord, ASRALPRecord)
 
     def _valid_ann(self, ann: "Ann", from_rel: Relationships) -> bool:
 
@@ -34,9 +37,14 @@ class ASRA_B_SCL(ASRA_B_CLP):
         if min_up_ramp == n:
             return True
 
+        # The peak can be anywhere from min_up_ramp to max_up_ramp - 1, since
+        # ASes without an ASPA record leave the top of the up ramp uncertain
+        max_up_ramp = self._get_max_up_ramp_length(ann)
+
         # Iterate from min_up_ramp to the end of the path, checking for fake links
         for i in range(min_up_ramp, n - 1):
-            if self._is_fake_link_cps(path[i], path[i + 1], is_peak=(i == min_up_ramp)):
+            is_peak = min_up_ramp <= i < max_up_ramp
+            if self._is_fake_link_cps(path[i], path[i + 1], is_peak=is_peak):
                 return False
         return True
 
@@ -48,26 +56,26 @@ class ASRA_B_SCL(ASRA_B_CLP):
         """
 
         aspa_record = self.aspa_records.get(asn1)
-        # ASN1 has ASPA but ASN2 is not its provider
-        has_aspa_but_not_provider = (
-            aspa_record is not None and asn2 not in aspa_record.provider_asns
-        )
+        if aspa_record is None or asn2 in aspa_record.provider_asns:
+            return False
 
         asra_c_record = self.asra_c_records.get(asn1)
         asra_lp_record = self.asra_lp_records.get(asn1)
-        customer_asns = (
-            asra_c_record.customer_asns 
-            if asra_c_record is not None
-            else frozenset()
-        )
-        peer_asns = (
-            asra_lp_record.peer_asns 
-            if asra_lp_record is not None 
-            else frozenset()
-        )
-        valid_set = customer_asns | peer_asns if is_peak else customer_asns
+        asra_clp_record = self.asra_clp_records.get(asn1)
 
-        return (
-            has_aspa_but_not_provider 
-            and asn2 not in valid_set
-        )
+        if is_peak:
+            if asra_c_record is not None and asra_lp_record is not None:
+                valid_set = asra_c_record.customer_asns | asra_lp_record.peer_asns
+            elif asra_clp_record is not None:
+                valid_set = asra_clp_record.customer_and_peer_asns
+            else:
+                return False
+        else:
+            if asra_c_record is not None:
+                valid_set = asra_c_record.customer_asns
+            elif asra_clp_record is not None:
+                valid_set = asra_clp_record.customer_and_peer_asns
+            else:
+                return False
+
+        return asn2 not in valid_set
