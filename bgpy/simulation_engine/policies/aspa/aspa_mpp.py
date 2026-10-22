@@ -1,8 +1,8 @@
 from .aspapp import ASPAPP
 
 
-class ASPA_MPC(ASPAPP):
-    name = "ASPA-MPC"
+class ASPA_MPP(ASPAPP):
+    name = "ASPA-MPP"
 
     def _aspapp_valid(self, ann, from_rel):
         as_dict = self.as_.as_graph.as_dict
@@ -73,13 +73,19 @@ class ASPA_MPC(ASPAPP):
         return True
 
 
-class ASPA_MPC1(ASPA_MPC):
-    name = "ASPA-MPC1"
+class ASPA_MPP1(ASPA_MPP):
+    name = "ASPA-MPP1"
     UP_SLACK: int = 1
     DOWN_SLACK: int = 1
 
 
-class ASPA_MPC2(ASPA_MPC):
-    name = "ASPA-MPC2"
+class ASPA_MPP2(ASPA_MPP):
+    name = "ASPA-MPP2"
     UP_SLACK: int = 2
     DOWN_SLACK: int = 2
+
+
+class ASPA_MPP3(ASPA_MPP):
+    name = "ASPA-MPP3"
+    UP_SLACK: int = 3
+    DOWN_SLACK: int = 3

@@ -9,8 +9,8 @@ if TYPE_CHECKING:
 
 
 
-class ASPA_MCC(ASPAPP):
-    name = "ASPA-MCC"
+class ASPA_MCP(ASPAPP):
+    name = "ASPA-MCP"
 
     def _aspapp_valid(self, ann: "Ann", from_rel: Relationships) -> bool:
         as_dict = self.as_.as_graph.as_dict
@@ -88,13 +88,19 @@ class ASPA_MCC(ASPAPP):
         return True
 
 
-class ASPA_MCC1(ASPA_MCC):
-    name = "ASPA-MCC1"
+class ASPA_MCP1(ASPA_MCP):
+    name = "ASPA-MCP1"
     UP_SLACK: int = 1
     DOWN_SLACK: int = 1
 
 
-class ASPA_MCC2(ASPA_MCC):
-    name = "ASPA-MCC2"
+class ASPA_MCP2(ASPA_MCP):
+    name = "ASPA-MCP2"
     UP_SLACK: int = 2
     DOWN_SLACK: int = 2
+
+
+class ASPA_MCP3(ASPA_MCP):
+    name = "ASPA-MCP3"
+    UP_SLACK: int = 3
+    DOWN_SLACK: int = 3

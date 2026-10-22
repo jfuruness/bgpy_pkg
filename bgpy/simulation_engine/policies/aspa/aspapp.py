@@ -302,3 +302,9 @@ class ASPAPP2(ASPAPP):
     name = "ASPA++2"
     UP_SLACK: int = 2
     DOWN_SLACK: int = 2
+
+
+class ASPAPP3(ASPAPP):
+    name = "ASPA++3"
+    UP_SLACK: int = 3
+    DOWN_SLACK: int = 3
